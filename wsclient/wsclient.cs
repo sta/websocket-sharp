@@ -46,7 +46,7 @@ namespace Example
                                              "notification-network-disconnected");
           nf.Show();
 #else
-          Console.WriteLine("Error: ", e);
+          Console.WriteLine("Error: {0}", e);
 #endif
         };
         /*ws.OnClose += (o, e) =>
