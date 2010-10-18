@@ -1,4 +1,6 @@
+#if LINUX
 using Notifications;
+#endif
 using System;
 using System.Threading;
 using WebSocketSharp;
