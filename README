@@ -1,8 +1,8 @@
-websocket-sharp
+# websocket-sharp #
 
 A C# implementation of a WebSocket protocol client.
 
-Usage:
+## Usage ##
 
 Please refer to wsclient/wsclient.cs.
 
