@@ -1,4 +1,4 @@
-#if LINUX
+#if NOTIFY
 using Notifications;
 #endif
 using System;
@@ -19,36 +19,24 @@ namespace Example
           //Do something.
         };
          */
-        ws.OnMessage += (o, e) =>
+        ws.OnMessage += (o, s) =>
         {
-#if LINUX
-  #if NOTIFY
-          ws.MsgNf.Summary = "[WebSocket] Message";
-          ws.MsgNf.Body = e;
-          ws.MsgNf.IconName = "notification-message-im";
-          ws.MsgNf.Show();
-  #else
+#if NOTIFY
           Notification nf = new Notification("[WebSocket] Message",
-                                             e,
+                                             s,
                                              "notification-message-im");
+          nf.AddHint("append", "allowed");
           nf.Show();
-  #endif
 #else
-          Console.WriteLine(e);
+          Console.WriteLine("[WebSocket] Message: {0}", s);
 #endif
         };
 
-        ws.OnError += (o, e) =>
+        ws.OnError += (o, s) =>
         {
-#if LINUX
-          Notification nf = new Notification("[WebSocket] Error",
-                                             e,
-                                             "notification-network-disconnected");
-          nf.Show();
-#else
-          Console.WriteLine("Error: {0}", e);
-#endif
+          Console.WriteLine("[WebSocket] Error  : {0}", s);
         };
+
         /*ws.OnClose += (o, e) =>
         {
           //Do something.

@@ -30,9 +30,6 @@
  */
 #endregion
 
-#if NOTIFY
-using Notifications;
-#endif
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -109,13 +106,7 @@ namespace WebSocketSharp
     private SslStream sslStream;
     private IWsStream wsStream;
     private Thread msgThread;
-#if NOTIFY
-    private Notification msgNf;
-    public Notification MsgNf
-    {
-      get { return msgNf; }
-    }
-#endif
+
     public event EventHandler OnOpen;
     public event MessageEventHandler OnMessage;
     public event MessageEventHandler OnError;
@@ -205,11 +196,6 @@ namespace WebSocketSharp
 
       readyState = state;
 
-      if (OnClose != null)
-      {
-        OnClose(this, EventArgs.Empty);
-      }
-
       if (wsStream != null && tcpClient.Connected)
       {
         try
@@ -228,7 +214,7 @@ namespace WebSocketSharp
 #endif
         }
       }
-       
+
       if (wsStream != null)
       {
         wsStream.Dispose();
@@ -240,6 +226,14 @@ namespace WebSocketSharp
         tcpClient.Close();
         tcpClient = null;
       }
+
+      if (OnClose != null)
+      {
+        OnClose(this, EventArgs.Empty);
+      }
+#if DEBUG
+      Console.WriteLine("WS: Info @close: Exit close method.");
+#endif
     }
 
     private void createConnection()
@@ -355,10 +349,6 @@ namespace WebSocketSharp
       Console.WriteLine("WS: Info @message: Current thread IsBackground: {0}", Thread.CurrentThread.IsBackground);
 #endif
       string data;
-#if NOTIFY
-      this.msgNf = new Notification();
-      msgNf.AddHint("append", "allowed");
-#endif
       while (readyState == WsState.OPEN)
       {
         data = receive();
@@ -435,7 +425,7 @@ namespace WebSocketSharp
             OnError(this, e.Message);
           }
 
-          ReadyState = WsState.CLOSING;
+          ReadyState = WsState.CLOSED;
 #if DEBUG
           Console.WriteLine("WS: Error @receive: {0}", e.Message);
 #endif

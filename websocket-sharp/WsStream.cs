@@ -42,16 +42,16 @@ namespace WebSocketSharp
 
     public WsStream(T innerStream)
     {
-      if (innerStream == null)
-      {
-        throw new ArgumentNullException("innerStream");
-      }
-
-      Type streamType = innerStream.GetType();
+      Type streamType = typeof(T);
       if (streamType != typeof(NetworkStream) &&
           streamType != typeof(SslStream))
       {
-        throw new ArgumentException("Unsupported Stream type: " + streamType.ToString());
+        throw new NotSupportedException("Unsupported Stream type: " + streamType.ToString());
+      }
+
+      if (innerStream == null)
+      {
+        throw new ArgumentNullException("innerStream");
       }
 
       this.innerStream = innerStream;
