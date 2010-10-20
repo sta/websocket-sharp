@@ -219,16 +219,14 @@ namespace WebSocketSharp
         }
         catch (Exception e)
         {
+          if (OnError != null)
+          {
+            OnError(this, e.Message);
+          }
 #if DEBUG
           Console.WriteLine("WS: Error @close: {0}", e.Message);
 #endif
         }
-      }
-
-      if (!(Thread.CurrentThread.IsBackground) &&
-          msgThread != null && msgThread.IsAlive)
-      {
-        msgThread.Join();
       }
        
       if (wsStream != null)
@@ -363,14 +361,11 @@ namespace WebSocketSharp
 #endif
       while (readyState == WsState.OPEN)
       {
-        while (readyState == WsState.OPEN && netStream.DataAvailable)
-        {
-          data = receive();
+        data = receive();
 
-          if (OnMessage != null && data != null)
-          {
-            OnMessage(this, data);
-          }
+        if (OnMessage != null && data != null)
+        {
+          OnMessage(this, data);
         }
       }
 #if DEBUG
@@ -433,15 +428,18 @@ namespace WebSocketSharp
       }
       catch (Exception e)
       {
-        if (OnError != null)
+        if (readyState == WsState.OPEN)
         {
-          OnError(this, e.Message);
-        }
+          if (OnError != null)
+          {
+            OnError(this, e.Message);
+          }
 
-        ReadyState = WsState.CLOSED;
+          ReadyState = WsState.CLOSING;
 #if DEBUG
-        Console.WriteLine("WS: Error @receive: {0}", e.Message);
+          Console.WriteLine("WS: Error @receive: {0}", e.Message);
 #endif
+        }
       }
 
       return null;
