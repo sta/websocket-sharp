@@ -196,28 +196,9 @@ namespace WebSocketSharp
 
       readyState = state;
 
-      if (wsStream != null && tcpClient.Connected)
-      {
-        try
-        {
-          wsStream.WriteByte(0xff);
-          wsStream.WriteByte(0x00);
-        }
-        catch (Exception e)
-        {
-          if (OnError != null)
-          {
-            OnError(this, e.Message);
-          }
-#if DEBUG
-          Console.WriteLine("WS: Error @close: {0}", e.Message);
-#endif
-        }
-      }
-
       if (wsStream != null)
       {
-        wsStream.Dispose();
+        wsStream.Close();
         wsStream = null;
       }
 
