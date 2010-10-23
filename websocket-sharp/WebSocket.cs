@@ -48,19 +48,13 @@ namespace WebSocketSharp
     private Uri uri;
     public string Url
     {
-      get
-      {
-        return uri.ToString();
-      }
+      get { return uri.ToString(); }
     }
 
     private volatile WsState readyState;
     public WsState ReadyState
     {
-      get
-      {
-        return readyState;
-      }
+      get { return readyState; }
 
       private set
       {
@@ -315,6 +309,7 @@ namespace WebSocketSharp
         {
           int j = response[i].IndexOf(":");
           protocol = response[i].Substring(j + 1).Trim();
+          break;
         }
       }
 #if DEBUG
