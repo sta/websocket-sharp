@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebSocketSharp
 {
@@ -40,11 +41,91 @@ namespace WebSocketSharp
       return b == Convert.ToByte(c);
     }
 
-    public static void NotEqualsDo(this string a, string b, Action<string> action)
+    public static uint GenerateKey(this Random rand, int space)
+    {
+      uint max = (uint)(0xffffffff / space);
+
+      int upper16 = (int)((max & 0xffff0000) >> 16);
+      int lower16 = (int)(max & 0x0000ffff);
+
+      return ((uint)rand.Next(upper16 + 1) << 16) + (uint)rand.Next(lower16 + 1);
+    }
+
+    public static string GenerateSecKey(this Random rand, out uint key)
+    {
+      int space = rand.Next(1, 13);
+      int ascii = rand.Next(1, 13);
+
+      key = rand.GenerateKey(space);
+
+      long mKey = key * space;
+      char[] mKeyChars = mKey.ToString().ToCharArray();
+      int mKeyCharsLen = mKeyChars.Length;
+
+      int secKeyCharsLen = mKeyCharsLen + space + ascii;
+      char[] secKeyChars = new char[secKeyCharsLen].InitializeWith(' ');
+
+      secKeyChars[0] = mKeyChars[0];
+      secKeyChars[secKeyCharsLen - 1] = mKeyChars[mKeyCharsLen - 1];
+
+      int i = 0;
+      for (int j = 1; j < mKeyCharsLen - 1; j++)
+      {
+        i = rand.Next(i + 1, secKeyCharsLen - mKeyCharsLen + j + 1);
+        secKeyChars[i] = mKeyChars[j];
+      }
+
+      var convToAscii = secKeyChars
+                        .IndexOf(' ')
+                        .OrderBy( x => Guid.NewGuid() )
+                        .Where( (x, idx) => idx < ascii );
+
+      int k; 
+      foreach (int index in convToAscii)
+      {
+        k = rand.Next(2) == 0 ? rand.Next(33, 48) : rand.Next(58, 127);
+        secKeyChars[index] = Convert.ToChar(k);
+      }
+
+      return new String(secKeyChars);
+    }
+
+    public static IEnumerable<int> IndexOf<T>(this T[] array, T val)
+    {
+      for (int i = 0; i < array.Length; i++)
+      {
+        if (array[i].Equals(val))
+        {
+          yield return i;
+        }
+      }
+    }
+
+    public static T[] InitializeWith<T>(this T[] array, T val)
+    {
+      for (int i = 0; i < array.Length; i++)
+      {
+        array[i] = val;
+      }
+
+      return array;
+    }
+
+    public static Byte[] InitializeWithASCII(this Byte[] bytes, Random rand)
+    {
+      for (int i = 0; i < bytes.Length; i++)  
+      {  
+        bytes[i] = (byte)rand.Next(32, 127);
+      }  
+  
+      return bytes;  
+    }
+
+    public static void NotEqualsDo(this string a, string b, Action<string, string> action)
     {
       if (a != b)
       {
-        action(a);
+        action(a, b);
       }
     }
   }
