@@ -51,6 +51,12 @@ namespace WebSocketSharp
       return ((uint)rand.Next(upper16 + 1) << 16) + (uint)rand.Next(lower16 + 1);
     }
 
+    public static char GeneratePrintableASCIIwithoutSPandNum(this Random rand)
+    {
+        int ascii = rand.Next(2) == 0 ? rand.Next(33, 48) : rand.Next(58, 127);
+        return Convert.ToChar(ascii);
+    }
+
     public static string GenerateSecKey(this Random rand, out uint key)
     {
       int space = rand.Next(1, 13);
@@ -59,35 +65,22 @@ namespace WebSocketSharp
       key = rand.GenerateKey(space);
 
       long mKey = key * space;
-      char[] mKeyChars = mKey.ToString().ToCharArray();
-      int mKeyCharsLen = mKeyChars.Length;
+      List<char> secKey = new List<char>(mKey.ToString().ToCharArray());
 
-      int secKeyCharsLen = mKeyCharsLen + space + ascii;
-      char[] secKeyChars = new char[secKeyCharsLen].InitializeWith(' ');
-
-      secKeyChars[0] = mKeyChars[0];
-      secKeyChars[secKeyCharsLen - 1] = mKeyChars[mKeyCharsLen - 1];
-
-      int i = 0;
-      for (int j = 1; j < mKeyCharsLen - 1; j++)
+      int i;
+      for (int n = 0; n < ascii; n++)
       {
-        i = rand.Next(i + 1, secKeyCharsLen - mKeyCharsLen + j + 1);
-        secKeyChars[i] = mKeyChars[j];
+        i = rand.Next(secKey.Count + 1);
+        secKey.Insert(i, rand.GeneratePrintableASCIIwithoutSPandNum());
       }
 
-      var convToAscii = secKeyChars
-                        .IndexOf(' ')
-                        .OrderBy( x => Guid.NewGuid() )
-                        .Where( (x, idx) => idx < ascii );
-
-      int k; 
-      foreach (int index in convToAscii)
+      for (int n = 0; n < space; n++)
       {
-        k = rand.Next(2) == 0 ? rand.Next(33, 48) : rand.Next(58, 127);
-        secKeyChars[index] = Convert.ToChar(k);
+        i = rand.Next(1, secKey.Count);
+        secKey.Insert(i, ' ');
       }
 
-      return new String(secKeyChars);
+      return new String(secKey.ToArray());
     }
 
     public static IEnumerable<int> IndexOf<T>(this T[] array, T val)
@@ -111,7 +104,7 @@ namespace WebSocketSharp
       return array;
     }
 
-    public static Byte[] InitializeWithASCII(this Byte[] bytes, Random rand)
+    public static Byte[] InitializeWithPrintableASCII(this Byte[] bytes, Random rand)
     {
       for (int i = 0; i < bytes.Length; i++)  
       {  

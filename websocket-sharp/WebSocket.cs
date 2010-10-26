@@ -263,7 +263,7 @@ namespace WebSocketSharp
                            : protocol;
 #if !CHALLENGE
       string secKeys = String.Empty;
-      string key3AsASCII = String.Empty;
+      string key3ToAscii = String.Empty;
 #else
       Random rand = new Random();
 
@@ -271,13 +271,13 @@ namespace WebSocketSharp
       string secKey1 = rand.GenerateSecKey(out key1);
       string secKey2 = rand.GenerateSecKey(out key2);
 
-      byte[] key3 = new byte[8].InitializeWithASCII(rand);
+      byte[] key3 = new byte[8].InitializeWithPrintableASCII(rand);
 
       string secKeys = "Sec-WebSocket-Key1: {0}\r\n" +
                        "Sec-WebSocket-Key2: {1}\r\n";
       secKeys = String.Format(secKeys, secKey1, secKey2);
 
-      string key3AsASCII = Encoding.ASCII.GetString(key3);
+      string key3ToAscii = Encoding.ASCII.GetString(key3);
 
       byte[] expectedRes = createExpectedRes(key1, key2, key3);
       byte[] actualRes = new byte[16];
@@ -290,7 +290,7 @@ namespace WebSocketSharp
                        "Origin: " + origin + "\r\n" +
                        secKeys +
                        "\r\n" +
-                       key3AsASCII;
+                       key3ToAscii;
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
 #endif
@@ -354,10 +354,10 @@ namespace WebSocketSharp
       Console.WriteLine("WS: Info @doHandshake: Sub protocol: {0}", protocol);
 #endif
 #if CHALLENGE
-      string expectedResHexStr = BitConverter.ToString(expectedRes);
-      string actualResHexStr = BitConverter.ToString(actualRes);
+      string expectedResToHexStr = BitConverter.ToString(expectedRes);
+      string actualResToHexStr = BitConverter.ToString(actualRes);
 
-      actualResHexStr.NotEqualsDo(expectedResHexStr, (a, b) =>
+      actualResToHexStr.NotEqualsDo(expectedResToHexStr, (a, b) =>
         {
           Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
           Console.WriteLine("\texpected: {0}", b);
@@ -366,7 +366,7 @@ namespace WebSocketSharp
         }
       );
   #if DEBUG
-      Console.WriteLine("WS: Info @doHandshake: challenge response: {0}", actualResHexStr);
+      Console.WriteLine("WS: Info @doHandshake: challenge response: {0}", actualResToHexStr);
   #endif
 #endif
       ReadyState = WsState.OPEN;
