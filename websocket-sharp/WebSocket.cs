@@ -329,17 +329,17 @@ namespace WebSocketSharp
         Console.WriteLine("{0}", s);
       }
 #endif
-      Action<string, string> action = (e, a) =>
+      Action<string, string> act = (e, a) =>
       { 
         throw new IOException("Invalid handshake response: " + a);
       };
 #if !CHALLENGE
-      "HTTP/1.1 101 Web Socket Protocol Handshake".NotEqualsDo(response[0], action);
+      "HTTP/1.1 101 Web Socket Protocol Handshake".NotEqualsDo(response[0], act);
 #else
-      "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], action);
+      "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], act);
 #endif
-      "Upgrade: WebSocket".NotEqualsDo(response[1], action);
-      "Connection: Upgrade".NotEqualsDo(response[2], action);
+      "Upgrade: WebSocket".NotEqualsDo(response[1], act);
+      "Connection: Upgrade".NotEqualsDo(response[2], act);
 
       for (int i = 3; i < response.Length; i++)
       {

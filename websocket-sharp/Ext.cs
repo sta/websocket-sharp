@@ -34,9 +34,9 @@ namespace WebSocketSharp
 {
   public static class Ext
   {
-    public static bool EqualsWithSaveTo(this int asbyte, char c, List<byte> dist)
+    public static bool EqualsWithSaveTo(this int asByte, char c, List<byte> dist)
     {
-      byte b = (byte)asbyte;
+      byte b = (byte)asByte;
       dist.Add(b);
       return b == Convert.ToByte(c);
     }
@@ -68,17 +68,17 @@ namespace WebSocketSharp
       List<char> secKey = new List<char>(mKey.ToString().ToCharArray());
 
       int i;
-      for (int n = 0; n < ascii; n++)
+      ascii.Times( () =>
       {
         i = rand.Next(secKey.Count + 1);
         secKey.Insert(i, rand.GeneratePrintableASCIIwithoutSPandNum());
-      }
+      } );
 
-      for (int n = 0; n < space; n++)
+      space.Times( () =>
       {
         i = rand.Next(1, secKey.Count);
         secKey.Insert(i, ' ');
-      }
+      } );
 
       return new String(secKey.ToArray());
     }
@@ -93,11 +93,19 @@ namespace WebSocketSharp
       return bytes;  
     }
 
-    public static void NotEqualsDo(this string expected, string actual, Action<string, string> action)
+    public static void NotEqualsDo(this string expected, string actual, Action<string, string> act)
     {
       if (expected != actual)
       {
-        action(expected, actual);
+        act(expected, actual);
+      }
+    }
+
+    public static void Times(this int n, Action act)
+    {
+      for (int i = 0; i < n; i++)
+      {
+        act();
       }
     }
   }
