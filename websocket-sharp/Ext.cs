@@ -83,27 +83,6 @@ namespace WebSocketSharp
       return new String(secKey.ToArray());
     }
 
-    public static IEnumerable<int> IndexOf<T>(this T[] array, T val)
-    {
-      for (int i = 0; i < array.Length; i++)
-      {
-        if (array[i].Equals(val))
-        {
-          yield return i;
-        }
-      }
-    }
-
-    public static T[] InitializeWith<T>(this T[] array, T val)
-    {
-      for (int i = 0; i < array.Length; i++)
-      {
-        array[i] = val;
-      }
-
-      return array;
-    }
-
     public static Byte[] InitializeWithPrintableASCII(this Byte[] bytes, Random rand)
     {
       for (int i = 0; i < bytes.Length; i++)  
@@ -114,11 +93,11 @@ namespace WebSocketSharp
       return bytes;  
     }
 
-    public static void NotEqualsDo(this string a, string b, Action<string, string> action)
+    public static void NotEqualsDo(this string expected, string actual, Action<string, string> action)
     {
-      if (a != b)
+      if (expected != actual)
       {
-        action(a, b);
+        action(expected, actual);
       }
     }
   }

@@ -259,7 +259,11 @@ namespace WebSocketSharp
       }
 
       string subProtocol = protocol != String.Empty
+#if !CHALLENGE
+                           ? String.Format("WebSocket-Protocol: {0}\r\n", protocol)
+#else
                            ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
+#endif
                            : protocol;
 #if !CHALLENGE
       string secKeys = String.Empty;
@@ -325,17 +329,17 @@ namespace WebSocketSharp
         Console.WriteLine("{0}", s);
       }
 #endif
-      Action<string, string> action = (a, b) =>
+      Action<string, string> action = (e, a) =>
       { 
         throw new IOException("Invalid handshake response: " + a);
       };
 #if !CHALLENGE
-      response[0].NotEqualsDo("HTTP/1.1 101 Web Socket Protocol Handshake", action);
+      "HTTP/1.1 101 Web Socket Protocol Handshake".NotEqualsDo(response[0], action);
 #else
-      response[0].NotEqualsDo("HTTP/1.1 101 WebSocket Protocol Handshake", action);
+      "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], action);
 #endif
-      response[1].NotEqualsDo("Upgrade: WebSocket", action);
-      response[2].NotEqualsDo("Connection: Upgrade", action);
+      "Upgrade: WebSocket".NotEqualsDo(response[1], action);
+      "Connection: Upgrade".NotEqualsDo(response[2], action);
 
       for (int i = 3; i < response.Length; i++)
       {
@@ -357,17 +361,15 @@ namespace WebSocketSharp
       string expectedResToHexStr = BitConverter.ToString(expectedRes);
       string actualResToHexStr = BitConverter.ToString(actualRes);
 
-      actualResToHexStr.NotEqualsDo(expectedResToHexStr, (a, b) =>
-        {
-          Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
-          Console.WriteLine("\texpected: {0}", b);
-          Console.WriteLine("\tactual  : {0}", a);
-          throw new IOException("Invalid challenge response: " + a);
-        }
-      );
+      expectedResToHexStr.NotEqualsDo(actualResToHexStr, (e, a) =>
+      {
   #if DEBUG
-      Console.WriteLine("WS: Info @doHandshake: challenge response: {0}", actualResToHexStr);
+        Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
+        Console.WriteLine("\texpected: {0}", e);
+        Console.WriteLine("\tactual  : {0}", a);
   #endif
+        throw new IOException("Invalid challenge response: " + a);
+      });
 #endif
       ReadyState = WsState.OPEN;
     }
