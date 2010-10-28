@@ -248,12 +248,8 @@ namespace WebSocketSharp
 
     private void doHandshake()
     {
-#if !CHALLENGE
-      string request = createOpeningHandshake();
-#else
       byte[] expectedRes, actualRes = new byte[16];
       string request = createOpeningHandshake(out expectedRes);
-#endif
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
 #endif
@@ -270,10 +266,8 @@ namespace WebSocketSharp
             wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
             wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata))
         {
-#if CHALLENGE
           wsStream.Read(actualRes, 0, actualRes.Length);
           rawdata.AddRange(actualRes);
-#endif
           break;
         }
       }
@@ -292,21 +286,13 @@ namespace WebSocketSharp
       { 
         throw new IOException("Invalid handshake response: " + a);
       };
-#if !CHALLENGE
-      "HTTP/1.1 101 Web Socket Protocol Handshake".NotEqualsDo(response[0], act);
-#else
       "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], act);
-#endif
       "Upgrade: WebSocket".NotEqualsDo(response[1], act);
       "Connection: Upgrade".NotEqualsDo(response[2], act);
 
       for (int i = 3; i < response.Length; i++)
       {
-#if !CHALLENGE
-        if (response[i].Contains("WebSocket-Protocol:"))
-#else
         if (response[i].Contains("Sec-WebSocket-Protocol:"))
-#endif
         {
           int j = response[i].IndexOf(":");
           protocol = response[i].Substring(j + 1).Trim();
@@ -316,7 +302,6 @@ namespace WebSocketSharp
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Sub protocol: {0}", protocol);
 #endif
-#if CHALLENGE
       string expectedResToHexStr = BitConverter.ToString(expectedRes);
       string actualResToHexStr = BitConverter.ToString(actualRes);
 
@@ -329,15 +314,11 @@ namespace WebSocketSharp
   #endif
         throw new IOException("Invalid challenge response: " + a);
       });
-#endif
+
       ReadyState = WsState.OPEN;
     }
 
-#if !CHALLENGE
-    private string createOpeningHandshake()
-#else
     private string createOpeningHandshake(out byte[] expectedRes)
-#endif
     {
       string path = uri.PathAndQuery;
       string host = uri.DnsSafeHost;
@@ -350,16 +331,9 @@ namespace WebSocketSharp
       }
 
       string subProtocol = protocol != String.Empty
-#if !CHALLENGE
-                           ? String.Format("WebSocket-Protocol: {0}\r\n", protocol)
-#else
                            ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
-#endif
                            : protocol;
-#if !CHALLENGE
-      string secKeys = String.Empty;
-      string key3ToAscii = String.Empty;
-#else
+
       Random rand = new Random();
 
       uint key1, key2;
@@ -375,7 +349,7 @@ namespace WebSocketSharp
       string key3ToAscii = Encoding.ASCII.GetString(key3);
 
       expectedRes = createExpectedRes(key1, key2, key3);
-#endif
+
       return "GET " + path + " HTTP/1.1\r\n" +
              "Upgrade: WebSocket\r\n" +
              "Connection: Upgrade\r\n" +
