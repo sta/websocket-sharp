@@ -28,7 +28,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace WebSocketSharp
 {
@@ -41,71 +40,11 @@ namespace WebSocketSharp
       return b == Convert.ToByte(c);
     }
 
-    public static uint GenerateKey(this Random rand, int space)
-    {
-      uint max = (uint)(0xffffffff / space);
-
-      int upper16 = (int)((max & 0xffff0000) >> 16);
-      int lower16 = (int)(max & 0x0000ffff);
-
-      return ((uint)rand.Next(upper16 + 1) << 16) + (uint)rand.Next(lower16 + 1);
-    }
-
-    public static char GeneratePrintableASCIIwithoutSPandNum(this Random rand)
-    {
-        int ascii = rand.Next(2) == 0 ? rand.Next(33, 48) : rand.Next(58, 127);
-        return Convert.ToChar(ascii);
-    }
-
-    public static string GenerateSecKey(this Random rand, out uint key)
-    {
-      int space = rand.Next(1, 13);
-      int ascii = rand.Next(1, 13);
-
-      key = rand.GenerateKey(space);
-
-      long mKey = key * space;
-      List<char> secKey = new List<char>(mKey.ToString().ToCharArray());
-
-      int i;
-      ascii.Times( () =>
-      {
-        i = rand.Next(secKey.Count + 1);
-        secKey.Insert(i, rand.GeneratePrintableASCIIwithoutSPandNum());
-      } );
-
-      space.Times( () =>
-      {
-        i = rand.Next(1, secKey.Count);
-        secKey.Insert(i, ' ');
-      } );
-
-      return new String(secKey.ToArray());
-    }
-
-    public static Byte[] InitializeWithPrintableASCII(this Byte[] bytes, Random rand)
-    {
-      for (int i = 0; i < bytes.Length; i++)  
-      {  
-        bytes[i] = (byte)rand.Next(32, 127);
-      }  
-  
-      return bytes;  
-    }
-
     public static void NotEqualsDo(this string expected, string actual, Action<string, string> act)
     {
       if (expected != actual)
       {
         act(expected, actual);
-      }
-    }
-
-    public static void Times(this int n, Action act)
-    {
-      for (int i = 0; i < n; i++)
-      {
-        act();
       }
     }
   }

@@ -33,13 +33,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Security.Cryptography;
 
 namespace WebSocketSharp
 {
@@ -248,12 +246,7 @@ namespace WebSocketSharp
 
     private void doHandshake()
     {
-#if !CHALLENGE
       string request = createOpeningHandshake();
-#else
-      byte[] expectedRes, actualRes = new byte[16];
-      string request = createOpeningHandshake(out expectedRes);
-#endif
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
 #endif
@@ -270,10 +263,6 @@ namespace WebSocketSharp
             wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
             wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata))
         {
-#if CHALLENGE
-          wsStream.Read(actualRes, 0, actualRes.Length);
-          rawdata.AddRange(actualRes);
-#endif
           break;
         }
       }
@@ -292,21 +281,14 @@ namespace WebSocketSharp
       { 
         throw new IOException("Invalid handshake response: " + a);
       };
-#if !CHALLENGE
+
       "HTTP/1.1 101 Web Socket Protocol Handshake".NotEqualsDo(response[0], act);
-#else
-      "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], act);
-#endif
       "Upgrade: WebSocket".NotEqualsDo(response[1], act);
       "Connection: Upgrade".NotEqualsDo(response[2], act);
 
       for (int i = 3; i < response.Length; i++)
       {
-#if !CHALLENGE
         if (response[i].Contains("WebSocket-Protocol:"))
-#else
-        if (response[i].Contains("Sec-WebSocket-Protocol:"))
-#endif
         {
           int j = response[i].IndexOf(":");
           protocol = response[i].Substring(j + 1).Trim();
@@ -316,28 +298,10 @@ namespace WebSocketSharp
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Sub protocol: {0}", protocol);
 #endif
-#if CHALLENGE
-      string expectedResToHexStr = BitConverter.ToString(expectedRes);
-      string actualResToHexStr = BitConverter.ToString(actualRes);
-
-      expectedResToHexStr.NotEqualsDo(actualResToHexStr, (e, a) =>
-      {
-  #if DEBUG
-        Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
-        Console.WriteLine("\texpected: {0}", e);
-        Console.WriteLine("\tactual  : {0}", a);
-  #endif
-        throw new IOException("Invalid challenge response: " + a);
-      });
-#endif
       ReadyState = WsState.OPEN;
     }
 
-#if !CHALLENGE
     private string createOpeningHandshake()
-#else
-    private string createOpeningHandshake(out byte[] expectedRes)
-#endif
     {
       string path = uri.PathAndQuery;
       string host = uri.DnsSafeHost;
@@ -350,43 +314,18 @@ namespace WebSocketSharp
       }
 
       string subProtocol = protocol != String.Empty
-#if !CHALLENGE
                            ? String.Format("WebSocket-Protocol: {0}\r\n", protocol)
-#else
-                           ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
-#endif
                            : protocol;
-#if !CHALLENGE
-      string secKeys = String.Empty;
-      string key3ToAscii = String.Empty;
-#else
-      Random rand = new Random();
 
-      uint key1, key2;
-      string secKey1 = rand.GenerateSecKey(out key1);
-      string secKey2 = rand.GenerateSecKey(out key2);
-
-      byte[] key3 = new byte[8].InitializeWithPrintableASCII(rand);
-
-      string secKeys = "Sec-WebSocket-Key1: {0}\r\n" +
-                       "Sec-WebSocket-Key2: {1}\r\n";
-      secKeys = String.Format(secKeys, secKey1, secKey2);
-
-      string key3ToAscii = Encoding.ASCII.GetString(key3);
-
-      expectedRes = createExpectedRes(key1, key2, key3);
-#endif
       return "GET " + path + " HTTP/1.1\r\n" +
              "Upgrade: WebSocket\r\n" +
              "Connection: Upgrade\r\n" +
              subProtocol +
              "Host: " + host + "\r\n" +
              "Origin: " + origin + "\r\n" +
-             secKeys +
-             "\r\n" +
-             key3ToAscii;
+             "\r\n";
     }
-
+/*
     private byte[] createExpectedRes(uint key1, uint key2, byte[] key3)
     {
       byte[] key1Bytes = BitConverter.GetBytes(key1);
@@ -400,7 +339,7 @@ namespace WebSocketSharp
       MD5 md5 = MD5.Create();
       return md5.ComputeHash(concatKeys);
     }
-
+ */
     private void message()
     {
 #if DEBUG
