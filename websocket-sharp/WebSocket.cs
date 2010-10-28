@@ -248,53 +248,12 @@ namespace WebSocketSharp
 
     private void doHandshake()
     {
-      string path = uri.PathAndQuery;
-      string host = uri.DnsSafeHost;
-      string origin = "http://" + host;
-
-      int port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
-      if (port != 80)
-      {
-        host += ":" + port;
-      }
-
-      string subProtocol = protocol != String.Empty
 #if !CHALLENGE
-                           ? String.Format("WebSocket-Protocol: {0}\r\n", protocol)
+      string request = createOpeningHandshake();
 #else
-                           ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
+      byte[] expectedRes, actualRes = new byte[16];
+      string request = createOpeningHandshake(out expectedRes);
 #endif
-                           : protocol;
-#if !CHALLENGE
-      string secKeys = String.Empty;
-      string key3ToAscii = String.Empty;
-#else
-      Random rand = new Random();
-
-      uint key1, key2;
-      string secKey1 = rand.GenerateSecKey(out key1);
-      string secKey2 = rand.GenerateSecKey(out key2);
-
-      byte[] key3 = new byte[8].InitializeWithPrintableASCII(rand);
-
-      string secKeys = "Sec-WebSocket-Key1: {0}\r\n" +
-                       "Sec-WebSocket-Key2: {1}\r\n";
-      secKeys = String.Format(secKeys, secKey1, secKey2);
-
-      string key3ToAscii = Encoding.ASCII.GetString(key3);
-
-      byte[] expectedRes = createExpectedRes(key1, key2, key3);
-      byte[] actualRes = new byte[16];
-#endif
-      string request = "GET " + path + " HTTP/1.1\r\n" +
-                       "Upgrade: WebSocket\r\n" +
-                       "Connection: Upgrade\r\n" +
-                       subProtocol +
-                       "Host: " + host + "\r\n" +
-                       "Origin: " + origin + "\r\n" +
-                       secKeys +
-                       "\r\n" +
-                       key3ToAscii;
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
 #endif
@@ -372,6 +331,60 @@ namespace WebSocketSharp
       });
 #endif
       ReadyState = WsState.OPEN;
+    }
+
+#if !CHALLENGE
+    private string createOpeningHandshake()
+#else
+    private string createOpeningHandshake(out byte[] expectedRes)
+#endif
+    {
+      string path = uri.PathAndQuery;
+      string host = uri.DnsSafeHost;
+      string origin = "http://" + host;
+
+      int port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
+      if (port != 80)
+      {
+        host += ":" + port;
+      }
+
+      string subProtocol = protocol != String.Empty
+#if !CHALLENGE
+                           ? String.Format("WebSocket-Protocol: {0}\r\n", protocol)
+#else
+                           ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
+#endif
+                           : protocol;
+#if !CHALLENGE
+      string secKeys = String.Empty;
+      string key3ToAscii = String.Empty;
+#else
+      Random rand = new Random();
+
+      uint key1, key2;
+      string secKey1 = rand.GenerateSecKey(out key1);
+      string secKey2 = rand.GenerateSecKey(out key2);
+
+      byte[] key3 = new byte[8].InitializeWithPrintableASCII(rand);
+
+      string secKeys = "Sec-WebSocket-Key1: {0}\r\n" +
+                       "Sec-WebSocket-Key2: {1}\r\n";
+      secKeys = String.Format(secKeys, secKey1, secKey2);
+
+      string key3ToAscii = Encoding.ASCII.GetString(key3);
+
+      expectedRes = createExpectedRes(key1, key2, key3);
+#endif
+      return "GET " + path + " HTTP/1.1\r\n" +
+             "Upgrade: WebSocket\r\n" +
+             "Connection: Upgrade\r\n" +
+             subProtocol +
+             "Host: " + host + "\r\n" +
+             "Origin: " + origin + "\r\n" +
+             secKeys +
+             "\r\n" +
+             key3ToAscii;
     }
 
     private byte[] createExpectedRes(uint key1, uint key2, byte[] key3)
