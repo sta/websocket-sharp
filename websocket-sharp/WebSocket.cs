@@ -325,21 +325,7 @@ namespace WebSocketSharp
              "Origin: " + origin + "\r\n" +
              "\r\n";
     }
-/*
-    private byte[] createExpectedRes(uint key1, uint key2, byte[] key3)
-    {
-      byte[] key1Bytes = BitConverter.GetBytes(key1);
-      byte[] key2Bytes = BitConverter.GetBytes(key2);
 
-      Array.Reverse(key1Bytes);
-      Array.Reverse(key2Bytes);
-
-      byte[] concatKeys = key1Bytes.Concat(key2Bytes).Concat(key3).ToArray();
-
-      MD5 md5 = MD5.Create();
-      return md5.ComputeHash(concatKeys);
-    }
- */
     private void message()
     {
 #if DEBUG
