@@ -93,7 +93,7 @@ namespace WebSocketSharp
       return bytes;  
     }
 
-    public static void NotEqualsDo(this string expected, string actual, Action<string, string> act)
+    public static void AreNotEqualDo(this string expected, string actual, Action<string, string> act)
     {
       if (expected != actual)
       {

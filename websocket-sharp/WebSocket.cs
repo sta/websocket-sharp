@@ -129,8 +129,41 @@ namespace WebSocketSharp
       this.protocol = protocol;
     }
 
+    public WebSocket(
+      string url,
+      EventHandler onOpen,
+      MessageEventHandler onMessage,
+      MessageEventHandler onError,
+      EventHandler onClose)
+      : this(url, String.Empty, onOpen, onMessage, onError, onClose)
+    {
+    }
+
+    public WebSocket(
+      string url,
+      string protocol,
+      EventHandler onOpen,
+      MessageEventHandler onMessage,
+      MessageEventHandler onError,
+      EventHandler onClose)
+      : this(url, protocol)
+    {
+      this.OnOpen += onOpen;
+      this.OnMessage += onMessage;
+      this.OnError += onError;
+      this.OnClose += onClose;
+      
+      Connect();
+    }
+
     public void Connect()
     {
+      if (readyState == WsState.OPEN)
+      {
+        Console.WriteLine("WS: Info @Connect: Connection is already established.");
+        return;
+      }
+
       createConnection();
       doHandshake();
 
@@ -286,9 +319,10 @@ namespace WebSocketSharp
       { 
         throw new IOException("Invalid handshake response: " + a);
       };
-      "HTTP/1.1 101 WebSocket Protocol Handshake".NotEqualsDo(response[0], act);
-      "Upgrade: WebSocket".NotEqualsDo(response[1], act);
-      "Connection: Upgrade".NotEqualsDo(response[2], act);
+
+      "HTTP/1.1 101 WebSocket Protocol Handshake".AreNotEqualDo(response[0], act);
+      "Upgrade: WebSocket".AreNotEqualDo(response[1], act);
+      "Connection: Upgrade".AreNotEqualDo(response[2], act);
 
       for (int i = 3; i < response.Length; i++)
       {
@@ -305,13 +339,13 @@ namespace WebSocketSharp
       string expectedResToHexStr = BitConverter.ToString(expectedRes);
       string actualResToHexStr = BitConverter.ToString(actualRes);
 
-      expectedResToHexStr.NotEqualsDo(actualResToHexStr, (e, a) =>
+      expectedResToHexStr.AreNotEqualDo(actualResToHexStr, (e, a) =>
       {
-  #if DEBUG
+#if DEBUG
         Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
         Console.WriteLine("\texpected: {0}", e);
         Console.WriteLine("\tactual  : {0}", a);
-  #endif
+#endif
         throw new IOException("Invalid challenge response: " + a);
       });
 
