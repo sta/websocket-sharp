@@ -34,6 +34,22 @@ namespace WebSocketSharp
 {
   public static class Ext
   {
+    public static bool AreNotEqualDo(
+      this string expected,
+      string actual,
+      Func<string, string, string> func,
+      out string ret)
+    {
+      if (expected != actual)
+      {
+        ret = func(expected, actual);
+        return true;
+      }
+
+      ret = String.Empty;
+      return false;
+    }
+
     public static bool EqualsWithSaveTo(this int asByte, char c, List<byte> dist)
     {
       byte b = (byte)asByte;
@@ -83,7 +99,7 @@ namespace WebSocketSharp
       return new String(secKey.ToArray());
     }
 
-    public static Byte[] InitializeWithPrintableASCII(this Byte[] bytes, Random rand)
+    public static byte[] InitializeWithPrintableASCII(this byte[] bytes, Random rand)
     {
       for (int i = 0; i < bytes.Length; i++)  
       {  
@@ -93,12 +109,39 @@ namespace WebSocketSharp
       return bytes;  
     }
 
-    public static void AreNotEqualDo(this string expected, string actual, Action<string, string> act)
+    public static bool IsValid(this string[] response, byte[] expectedCR, byte[] actualCR, out string message)
     {
-      if (expected != actual)
+      string expectedCRtoHexStr = BitConverter.ToString(expectedCR);
+      string actualCRtoHexStr = BitConverter.ToString(actualCR);
+
+      Func<string, Func<string, string, string>> func = s =>
       {
-        act(expected, actual);
+        return (e, a) =>
+        {
+#if DEBUG
+          Console.WriteLine("WS: Error @IsValid: Invalid {0} response.", s);
+          Console.WriteLine("  expected: {0}", e);
+          Console.WriteLine("  actual  : {0}", a);
+#endif
+          return String.Format("Invalid {0} response: {1}", s, a);
+        };
+      };
+
+      Func<string, string, string> func1 = func("handshake");
+      Func<string, string, string> func2 = func("challenge");
+
+      string msg;
+      if ("HTTP/1.1 101 WebSocket Protocol Handshake".AreNotEqualDo(response[0], func1, out msg) ||
+          "Upgrade: WebSocket".AreNotEqualDo(response[1], func1, out msg) ||
+          "Connection: Upgrade".AreNotEqualDo(response[2], func1, out msg) ||
+          expectedCRtoHexStr.AreNotEqualDo(actualCRtoHexStr, func2, out msg))
+      {
+        message = msg;
+        return false;
       }
+
+      message = String.Empty;
+      return true;
     }
 
     public static void Times(this int n, Action act)

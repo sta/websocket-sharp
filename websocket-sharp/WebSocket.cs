@@ -281,33 +281,12 @@ namespace WebSocketSharp
 
     private void doHandshake()
     {
-      byte[] expectedRes, actualRes = new byte[16];
-      string request = createOpeningHandshake(out expectedRes);
+      byte[] expectedCR, actualCR;
+      string request = createOpeningHandshake(out expectedCR);
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
 #endif
-      byte[] sendBuffer = Encoding.UTF8.GetBytes(request);
-      wsStream.Write(sendBuffer, 0, sendBuffer.Length);
-
-      string[] response;
-      List<byte> rawdata = new List<byte>();
-
-      while (true)
-      {
-        if (wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata))
-        {
-          wsStream.Read(actualRes, 0, actualRes.Length);
-          rawdata.AddRange(actualRes);
-          break;
-        }
-      }
-
-      response = Encoding.UTF8.GetString(rawdata.ToArray())
-        .Replace("\r\n", "\n").Replace("\n\n", "\n")
-        .Split('\n');
+      string[] response = sendOpeningHandshake(request, out actualCR);
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Handshake from server:");
       foreach (string s in response)
@@ -315,14 +294,11 @@ namespace WebSocketSharp
         Console.WriteLine("{0}", s);
       }
 #endif
-      Action<string, string> act = (e, a) =>
-      { 
-        throw new IOException("Invalid handshake response: " + a);
-      };
-
-      "HTTP/1.1 101 WebSocket Protocol Handshake".AreNotEqualDo(response[0], act);
-      "Upgrade: WebSocket".AreNotEqualDo(response[1], act);
-      "Connection: Upgrade".AreNotEqualDo(response[2], act);
+      string msg;
+      if (!(response.IsValid(expectedCR, actualCR, out msg)))
+      {
+        throw new IOException(msg);
+      }
 
       for (int i = 3; i < response.Length; i++)
       {
@@ -336,23 +312,10 @@ namespace WebSocketSharp
 #if DEBUG
       Console.WriteLine("WS: Info @doHandshake: Sub protocol: {0}", protocol);
 #endif
-      string expectedResToHexStr = BitConverter.ToString(expectedRes);
-      string actualResToHexStr = BitConverter.ToString(actualRes);
-
-      expectedResToHexStr.AreNotEqualDo(actualResToHexStr, (e, a) =>
-      {
-#if DEBUG
-        Console.WriteLine("WS: Error @doHandshake: Invalid challenge response.");
-        Console.WriteLine("\texpected: {0}", e);
-        Console.WriteLine("\tactual  : {0}", a);
-#endif
-        throw new IOException("Invalid challenge response: " + a);
-      });
-
       ReadyState = WsState.OPEN;
     }
 
-    private string createOpeningHandshake(out byte[] expectedRes)
+    private string createOpeningHandshake(out byte[] expectedCR)
     {
       string path = uri.PathAndQuery;
       string host = uri.DnsSafeHost;
@@ -382,7 +345,7 @@ namespace WebSocketSharp
 
       string key3ToAscii = Encoding.ASCII.GetString(key3);
 
-      expectedRes = createExpectedRes(key1, key2, key3);
+      expectedCR = createExpectedCR(key1, key2, key3);
 
       return "GET " + path + " HTTP/1.1\r\n" +
              "Upgrade: WebSocket\r\n" +
@@ -395,7 +358,7 @@ namespace WebSocketSharp
              key3ToAscii;
     }
 
-    private byte[] createExpectedRes(uint key1, uint key2, byte[] key3)
+    private byte[] createExpectedCR(uint key1, uint key2, byte[] key3)
     {
       byte[] key1Bytes = BitConverter.GetBytes(key1);
       byte[] key2Bytes = BitConverter.GetBytes(key2);
@@ -407,6 +370,31 @@ namespace WebSocketSharp
 
       MD5 md5 = MD5.Create();
       return md5.ComputeHash(concatKeys);
+    }
+
+    private string[] sendOpeningHandshake(string openingHandshake, out byte[] challengeResponse)
+    {
+      challengeResponse = new byte[16];
+      List<byte> rawdata = new List<byte>();
+
+      byte[] sendBuffer = Encoding.UTF8.GetBytes(openingHandshake);
+      wsStream.Write(sendBuffer, 0, sendBuffer.Length);
+
+      while (true)
+      {
+        if (wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
+            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata) &&
+            wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
+            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata))
+        {
+          wsStream.Read(challengeResponse, 0, challengeResponse.Length);
+          break;
+        }
+      }
+
+      return Encoding.UTF8.GetString(rawdata.ToArray())
+             .Replace("\r\n", "\n").Replace("\n\n", "\n")
+             .Split('\n');
     }
 
     private void message()
