@@ -60,22 +60,21 @@ namespace WebSocketSharp
 
       private set
       {
-        switch (value)
-        {
-          case WsState.OPEN:
-            if (OnOpen != null)
-            {
-              OnOpen(this, EventArgs.Empty);
-            }
-            goto default;
-          case WsState.CLOSING:
-          case WsState.CLOSED:
-            close(value);
-            break;
-          default:
-            readyState = value;
-            break;
-        }
+          readyState = value;
+          switch (value)
+          {
+
+              case WsState.OPEN:
+                  if (OnOpen != null)
+                  {
+                      OnOpen(this, EventArgs.Empty);
+                  }
+                  break;
+              case WsState.CLOSING:
+              case WsState.CLOSED:
+                  close(value);
+                  break;
+          }
       }
     }
 
