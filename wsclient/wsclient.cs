@@ -14,11 +14,11 @@ namespace Example
       //using (WebSocket ws = new WebSocket("ws://localhost:8000/"))
       using (WebSocket ws = new WebSocket("ws://localhost:8000/", "chat"))
       {
-        /*ws.OnOpen += (o, e) =>
+        ws.OnOpen += (o, e) =>
         {
-          //Do something.
+          ws.Send("Hi, all!");
         };
-         */
+
         ws.OnMessage += (o, s) =>
         {
 #if NOTIFY

@@ -53,6 +53,8 @@ namespace WebSocketSharp
       get { return uri.ToString(); }
     }
 
+    private Object sync = new Object();
+
     private volatile WsState readyState;
     public WsState ReadyState
     {
@@ -63,17 +65,18 @@ namespace WebSocketSharp
         switch (value)
         {
           case WsState.OPEN:
+            readyState = value;
             if (OnOpen != null)
             {
               OnOpen(this, EventArgs.Empty);
             }
-            goto default;
+            break;
           case WsState.CLOSING:
           case WsState.CLOSED:
-            close(value);
-            break;
-          default:
-            readyState = value;
+            lock(sync)
+            {
+              close(value);
+            }
             break;
         }
       }
