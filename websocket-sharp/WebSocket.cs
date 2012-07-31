@@ -226,23 +226,17 @@ namespace WebSocketSharp
         {
           return;
         }
-
-        if (OnClose != null)
-        {
-          OnClose(this, new CloseEventArgs(data));
-        }
-
-        if (_readyState == WsState.CONNECTING)
+        else if (_readyState == WsState.CONNECTING)
         {
           ReadyState = WsState.CLOSED;
+          emitOnClose(data);
           return;
         }
-        else
-        {
-          ReadyState = WsState.CLOSING;
-        }
-      }
 
+        ReadyState = WsState.CLOSING;
+      }
+      
+      emitOnClose(data);
       var frame = new WsFrame(Opcode.CLOSE, data);
       closeHandshake(frame);
       #if DEBUG
@@ -432,6 +426,14 @@ namespace WebSocketSharp
       }
 
       ReadyState = WsState.OPEN;
+    }
+
+    private void emitOnClose(PayloadData data)
+    {
+      if (OnClose != null)
+      {
+        OnClose(this, new CloseEventArgs(data));
+      }
     }
 
     private void error(string message)
