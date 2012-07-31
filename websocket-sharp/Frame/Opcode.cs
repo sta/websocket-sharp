@@ -1,10 +1,10 @@
 #region MIT License
 /**
- * WsState.cs
+ * Opcode.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,16 @@
 
 using System;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Frame
 {
-  public enum WsState
+  [Flags]
+  public enum Opcode : byte
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    CONT   = 0x0,
+    TEXT   = 0x1,
+    BINARY = 0x2,
+    CLOSE  = 0x8,
+    PING   = 0x9,
+    PONG   = 0xa
   }
 }

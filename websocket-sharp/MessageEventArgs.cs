@@ -1,10 +1,10 @@
 #region MIT License
 /**
- * WsState.cs
+ * MessageEventArgs.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,61 @@
 #endregion
 
 using System;
+using System.Text;
+using WebSocketSharp.Frame;
 
 namespace WebSocketSharp
 {
-  public enum WsState
+  public class MessageEventArgs : EventArgs
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    private Opcode      _type;
+    private PayloadData _data;
+
+    public Opcode Type
+    {
+      get
+      {
+        return _type;
+      }
+    }
+
+    public string Data
+    {
+      get
+      {
+        if (((Opcode.TEXT | Opcode.PING | Opcode.PONG) & _type) == _type)
+        {
+          if (_data.Length > 0)
+          {
+            return Encoding.UTF8.GetString(_data.ToBytes());
+          }
+          else
+          {
+            return String.Empty;
+          }
+        }
+
+        return _type.ToString();
+      }
+    }
+
+    public byte[] RawData
+    {
+      get
+      {
+        return _data.ToBytes();
+      }
+    }
+
+    public MessageEventArgs(string data)
+    : this(Opcode.TEXT, new PayloadData(data))
+    {
+    }
+
+    public MessageEventArgs(Opcode type, PayloadData data)
+    {
+      _type = type;
+      _data = data;
+    }
   }
 }

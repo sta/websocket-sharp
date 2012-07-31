@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2009 Adam MacBeth
- * Copyright (c) 2010 sta.blockhead
+ * Copyright (c) 2010-2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,228 +32,285 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Security.Authentication;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using WebSocketSharp.Frame;
+using WebSocketSharp.Stream;
 
 namespace WebSocketSharp
 {
-  public delegate void MessageEventHandler(object sender, string eventdata);
-
   public class WebSocket : IDisposable
   {
-    private Uri uri;
-    public string Url
+    #region Private Const Fields
+
+    private const string _guid    = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private const string _version = "13";
+
+    #endregion
+
+    #region Private Fields
+
+    private string                          _base64key;
+    private string                          _binaryType;
+    private string                          _extensions;
+    private Object                          _forClose;
+    private Object                          _forSend;
+    private int                             _fragmentLen;
+    private Thread                          _msgThread;
+    private NetworkStream                   _netStream;
+    private string                          _protocol;
+    private string                          _protocols;
+    private volatile WsState                _readyState;
+    private SslStream                       _sslStream;
+    private TcpClient                       _tcpClient;
+    private Uri                             _uri;
+    private SynchronizedCollection<WsFrame> _unTransmittedBuffer;
+    private IWsStream                       _wsStream;
+
+    #endregion
+
+    #region Properties
+
+    public string BinaryType
     {
-      get { return uri.ToString(); }
+      get { return _binaryType; }
     }
 
-    private Object sync = new Object();
+    public ulong BufferedAmount
+    {
+      get
+      {
+        ulong bufferedAmount = 0;
 
-    private volatile WsState readyState;
+        lock (_unTransmittedBuffer.SyncRoot)
+        {
+          foreach (WsFrame frame in _unTransmittedBuffer)
+          {
+            bufferedAmount += frame.PayloadLength;
+          }
+        }
+
+        return bufferedAmount;
+      }
+    }
+
+    public string Extensions
+    {
+      get { return _extensions; }
+    }
+
+    public string Protocol
+    {
+      get { return _protocol; }
+    }
+
     public WsState ReadyState
     {
-      get { return readyState; }
+      get { return _readyState; }
 
       private set
       {
+        _readyState = value;
+
         switch (value)
         {
           case WsState.OPEN:
-            readyState = value;
+            messageThreadStart();
             if (OnOpen != null)
             {
               OnOpen(this, EventArgs.Empty);
             }
             break;
           case WsState.CLOSING:
+            break;
           case WsState.CLOSED:
-            lock(sync)
-            {
-              close(value);
-            }
+            closeConnection();
             break;
         }
       }
     }
 
-    private StringBuilder unTransmittedBuffer;
-    public String UnTransmittedBuffer
+    public SynchronizedCollection<WsFrame> UnTransmittedBuffer
     {
-      get { return unTransmittedBuffer.ToString(); }
+      get { return _unTransmittedBuffer; }
     }
 
-    private long bufferedAmount;
-    public long BufferedAmount
+    public string Url
     {
-      get { return bufferedAmount; }
+      get { return _uri.ToString(); }
     }
 
-    private string protocol;
-    public string Protocol
+    #endregion
+
+    #region Events
+
+    public event EventHandler                   OnOpen;
+    public event EventHandler<MessageEventArgs> OnMessage;
+    public event EventHandler<MessageEventArgs> OnError;
+    public event EventHandler<CloseEventArgs>   OnClose;
+
+    #endregion
+
+    #region Private Constructors
+
+    private WebSocket()
     {
-      get { return protocol; }
+      _binaryType          = String.Empty;
+      _extensions          = String.Empty;
+      _forClose            = new Object();
+      _forSend             = new Object();
+      _fragmentLen         = 1024; // Max value is int.MaxValue - 14.
+      _protocol            = String.Empty;
+      _readyState          = WsState.CONNECTING;
+      _unTransmittedBuffer = new SynchronizedCollection<WsFrame>();
     }
 
-    private TcpClient tcpClient;
-    private NetworkStream netStream;
-    private SslStream sslStream;
-    private IWsStream wsStream;
-    private Thread msgThread;
+    #endregion
 
-    public event EventHandler OnOpen;
-    public event MessageEventHandler OnMessage;
-    public event MessageEventHandler OnError;
-    public event EventHandler OnClose;
+    #region Public Constructors
 
-    public WebSocket(string url)
-      : this(url, String.Empty)
+    public WebSocket(string url, params string[] protocols)
+    : this()
     {
-    }
-
-    public WebSocket(string url, string protocol)
-    {
-      this.uri = new Uri(url);
-      string scheme = uri.Scheme;
+      _uri          = new Uri(url);
+      string scheme = _uri.Scheme;
 
       if (scheme != "ws" && scheme != "wss")
       {
-        throw new ArgumentException("Unsupported scheme: " + scheme);
+        throw new ArgumentException("Unsupported WebSocket URI scheme: " + scheme);
       }
 
-      this.readyState = WsState.CONNECTING;
-      this.unTransmittedBuffer = new StringBuilder();
-      this.bufferedAmount = 0;
-      this.protocol = protocol;
+      _protocols  = protocols.ToString(", ");
     }
 
     public WebSocket(
-      string url,
-      EventHandler onOpen,
-      MessageEventHandler onMessage,
-      MessageEventHandler onError,
-      EventHandler onClose)
-      : this(url, String.Empty, onOpen, onMessage, onError, onClose)
+      string                         url,
+      EventHandler                   onOpen,
+      EventHandler<MessageEventArgs> onMessage,
+      EventHandler<MessageEventArgs> onError,
+      EventHandler<CloseEventArgs>   onClose,
+      params string[]                protocols)
+      : this(url, protocols)
     {
-    }
+      OnOpen    = onOpen;
+      OnMessage = onMessage;
+      OnError   = onError;
+      OnClose   = onClose;
 
-    public WebSocket(
-      string url,
-      string protocol,
-      EventHandler onOpen,
-      MessageEventHandler onMessage,
-      MessageEventHandler onError,
-      EventHandler onClose)
-      : this(url, protocol)
-    {
-      this.OnOpen += onOpen;
-      this.OnMessage += onMessage;
-      this.OnError += onError;
-      this.OnClose += onClose;
-      
       Connect();
     }
 
-    public void Connect()
+    #endregion
+
+    #region Private Methods
+
+    private void close(PayloadData data)
     {
-      if (readyState == WsState.OPEN)
+      #if DEBUG
+      Console.WriteLine("WS: Info@close: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
+      #endif
+      lock(_forClose)
       {
-        Console.WriteLine("WS: Info @Connect: Connection is already established.");
-        return;
+        if (_readyState == WsState.CLOSING ||
+            _readyState == WsState.CLOSED)
+        {
+          return;
+        }
+
+        if (OnClose != null)
+        {
+          OnClose(this, new CloseEventArgs(data));
+        }
+
+        if (_readyState == WsState.CONNECTING)
+        {
+          ReadyState = WsState.CLOSED;
+          return;
+        }
+        else
+        {
+          ReadyState = WsState.CLOSING;
+        }
       }
 
-      createConnection();
-      doHandshake();
-
-      this.msgThread = new Thread(new ThreadStart(message)); 
-      msgThread.IsBackground = true;
-      msgThread.Start();
+      var frame = new WsFrame(Opcode.CLOSE, data);
+      closeHandshake(frame);
+      #if DEBUG
+      Console.WriteLine("WS: Info@close: Exit close method.");
+      #endif
     }
 
-    public void Send(string data)
+    private void close(CloseStatusCode code, string reason)
     {
-      if (readyState == WsState.CONNECTING)
+      byte[]     buffer;
+      List<byte> data;
+
+      data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
+
+      if (reason != String.Empty)
       {
-        throw new InvalidOperationException("Handshake not complete.");
+        buffer = Encoding.UTF8.GetBytes(reason);
+        data.AddRange(buffer);
       }
 
-      byte[] dataBuffer = Encoding.UTF8.GetBytes(data);
+      close(new PayloadData(data.ToArray()));
+    }
 
+    private void closeConnection()
+    {
+      if (_wsStream != null)
+      {
+        _wsStream.Dispose();
+        _wsStream = null;
+      }
+      else if (_netStream != null)
+      {
+        _netStream.Dispose();
+        _netStream = null;
+      }
+
+      if (_tcpClient != null)
+      {
+        _tcpClient.Close();
+        _tcpClient = null;
+      }
+    }
+
+    private void closeHandshake(WsFrame frame)
+    {
       try
       {
-        wsStream.WriteByte(0x00);
-        wsStream.Write(dataBuffer, 0, dataBuffer.Length);
-        wsStream.WriteByte(0xff);
+        _wsStream.WriteFrame(frame);
       }
-      catch (Exception e)
+      catch (Exception ex)
       {
-        unTransmittedBuffer.Append(data);
-        bufferedAmount += dataBuffer.Length;
-
-        if (OnError != null)
-        {
-          OnError(this, e.Message);
-        }
-#if DEBUG
-        Console.WriteLine("WS: Error @Send: {0}", e.Message);
-#endif
+        _unTransmittedBuffer.Add(frame);
+        error(ex.Message);
       }
-    }
 
-    public void Close()
-    {
-      ReadyState = WsState.CLOSING;
-    }
-
-    public void Dispose()
-    {
-      Close();
-    }
-
-    private void close(WsState state)
-    {
-#if DEBUG
-      Console.WriteLine("WS: Info @close: Current thread IsBackground: {0}", Thread.CurrentThread.IsBackground);
-#endif
-      if (readyState == WsState.CLOSING ||
-          readyState == WsState.CLOSED)
+      if (!Thread.CurrentThread.IsBackground)
       {
-        return;
+        _msgThread.Join(5000);
       }
 
-      readyState = state;
-
-      if (wsStream != null)
-      {
-        wsStream.Close();
-        wsStream = null;
-      }
-
-      if (tcpClient != null)
-      {
-        tcpClient.Close();
-        tcpClient = null;
-      }
-
-      if (OnClose != null)
-      {
-        OnClose(this, EventArgs.Empty);
-      }
-#if DEBUG
-      Console.WriteLine("WS: Info @close: Exit close method.");
-#endif
+      ReadyState = WsState.CLOSED;
     }
 
     private void createConnection()
     {
-      string scheme = uri.Scheme;
-      string host = uri.DnsSafeHost;
-      int port = uri.Port;
+      string scheme = _uri.Scheme;
+      string host   = _uri.DnsSafeHost;
+      int    port   = _uri.Port;
 
       if (port <= 0)
       {
@@ -267,229 +324,610 @@ namespace WebSocketSharp
         }
       }
 
-      this.tcpClient = new TcpClient(host, port);
-      this.netStream = tcpClient.GetStream();
+      _tcpClient = new TcpClient(host, port);
+      _netStream = _tcpClient.GetStream();
 
       if (scheme == "wss")
       {
-        this.sslStream = new SslStream(netStream);
-        sslStream.AuthenticateAsClient(host);
-        this.wsStream = new WsStream<SslStream>(sslStream);
+        RemoteCertificateValidationCallback validation = (sender, certificate, chain, sslPolicyErrors) =>
+        {
+          // Temporary implementation
+          return true;
+        };
+
+        _sslStream = new SslStream(_netStream, false, validation);
+        _sslStream.AuthenticateAsClient(host);
+        
+        _wsStream  = new WsStream<SslStream>(_sslStream);
       }
       else
       {
-        this.wsStream = new WsStream<NetworkStream>(netStream);
+        _wsStream = new WsStream<NetworkStream>(_netStream);
       }
     }
 
-    private void doHandshake()
+    private string createExpectedKey()
     {
-      byte[] expectedCR, actualCR;
-      string request = createOpeningHandshake(out expectedCR);
-#if DEBUG
-      Console.WriteLine("WS: Info @doHandshake: Handshake from client: \n{0}", request);
-#endif
-      string[] response = sendOpeningHandshake(request, out actualCR);
-#if DEBUG
-      Console.WriteLine("WS: Info @doHandshake: Handshake from server:");
-      foreach (string s in response)
-      {
-        Console.WriteLine("{0}", s);
-      }
-#endif
-      string msg;
-      if (!(response.IsValid(expectedCR, actualCR, out msg)))
-      {
-        throw new IOException(msg);
-      }
+      byte[]        keySrc;
+      SHA1          sha1 = new SHA1CryptoServiceProvider();
+      StringBuilder sb   = new StringBuilder(_base64key);
 
-      for (int i = 3; i < response.Length; i++)
-      {
-        if (response[i].Contains("Sec-WebSocket-Protocol:"))
-        {
-          int j = response[i].IndexOf(":");
-          protocol = response[i].Substring(j + 1).Trim();
-          break;
-        }
-      }
-#if DEBUG
-      Console.WriteLine("WS: Info @doHandshake: Sub protocol: {0}", protocol);
-#endif
-      ReadyState = WsState.OPEN;
+      sb.Append(_guid);
+      keySrc = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+
+      return Convert.ToBase64String(keySrc);
     }
 
-    private string createOpeningHandshake(out byte[] expectedCR)
+    private string createOpeningHandshake()
     {
-      string path = uri.PathAndQuery;
-      string host = uri.DnsSafeHost;
-      string origin = "http://" + host;
+      byte[] keySrc;
+      int    port;
+      string crlf, host, origin, path;
+      string reqConnection, reqHost, reqMethod, reqOrigin, reqUpgrade;
+      string secWsKey, secWsProtocol, secWsVersion;
+      Random rand;
 
-      int port = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
+      path = _uri.PathAndQuery;
+
+      host = _uri.DnsSafeHost;
+      port = ((IPEndPoint)_tcpClient.Client.RemoteEndPoint).Port;
       if (port != 80)
       {
         host += ":" + port;
       }
 
-      string subProtocol = protocol != String.Empty
-                           ? String.Format("Sec-WebSocket-Protocol: {0}\r\n", protocol)
-                           : protocol;
+      origin = "http://" + host;
 
-      Random rand = new Random();
+      keySrc     = new byte[16];
+      rand       = new Random();
+      rand.NextBytes(keySrc);
+      _base64key = Convert.ToBase64String(keySrc);
 
-      uint key1, key2;
-      string secKey1 = rand.GenerateSecKey(out key1);
-      string secKey2 = rand.GenerateSecKey(out key2);
+      crlf = "\r\n";
 
-      byte[] key3 = new byte[8].InitializeWithPrintableASCII(rand);
+      reqMethod     = String.Format("GET {0} HTTP/1.1{1}", path, crlf);
+      reqHost       = String.Format("Host: {0}{1}", host, crlf);
+      reqUpgrade    = String.Format("Upgrade: websocket{0}", crlf);
+      reqConnection = String.Format("Connection: Upgrade{0}", crlf);
+      reqOrigin     = String.Format("Origin: {0}{1}", origin, crlf);
+      secWsKey      = String.Format("Sec-WebSocket-Key: {0}{1}", _base64key, crlf);
+      
+      secWsProtocol = _protocols != String.Empty
+                    ? String.Format("Sec-WebSocket-Protocol: {0}{1}", _protocols, crlf)
+                    : _protocols;
 
-      string secKeys = "Sec-WebSocket-Key1: {0}\r\n" +
-                       "Sec-WebSocket-Key2: {1}\r\n";
-      secKeys = String.Format(secKeys, secKey1, secKey2);
+      secWsVersion  = String.Format("Sec-WebSocket-Version: {0}{1}", _version, crlf);
 
-      string key3ToAscii = Encoding.ASCII.GetString(key3);
-
-      expectedCR = createExpectedCR(key1, key2, key3);
-
-      return "GET " + path + " HTTP/1.1\r\n" +
-             "Upgrade: WebSocket\r\n" +
-             "Connection: Upgrade\r\n" +
-             subProtocol +
-             "Host: " + host + "\r\n" +
-             "Origin: " + origin + "\r\n" +
-             secKeys +
-             "\r\n" +
-             key3ToAscii;
+      return reqMethod +
+             reqHost +
+             reqUpgrade +
+             reqConnection +
+             secWsKey +
+             reqOrigin +
+             secWsProtocol +
+             secWsVersion +
+             crlf;
     }
 
-    private byte[] createExpectedCR(uint key1, uint key2, byte[] key3)
+    private void doHandshake()
     {
-      byte[] key1Bytes = BitConverter.GetBytes(key1);
-      byte[] key2Bytes = BitConverter.GetBytes(key2);
+      string   msg, request;
+      string[] response;
 
-      Array.Reverse(key1Bytes);
-      Array.Reverse(key2Bytes);
-
-      byte[] concatKeys = key1Bytes.Concat(key2Bytes).Concat(key3).ToArray();
-
-      MD5 md5 = MD5.Create();
-      return md5.ComputeHash(concatKeys);
-    }
-
-    private string[] sendOpeningHandshake(string openingHandshake, out byte[] challengeResponse)
-    {
-      challengeResponse = new byte[16];
-      List<byte> rawdata = new List<byte>();
-
-      byte[] sendBuffer = Encoding.UTF8.GetBytes(openingHandshake);
-      wsStream.Write(sendBuffer, 0, sendBuffer.Length);
-
-      while (true)
+      request  = createOpeningHandshake();
+      #if DEBUG
+      Console.WriteLine("WS: Info@doHandshake: Opening handshake from client:\n{0}", request);
+      #endif
+      response = sendOpeningHandshake(request);
+      #if DEBUG
+      Console.WriteLine("WS: Info@doHandshake: Opening handshake from server:");
+      foreach (string s in response)
       {
-        if (wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\r', rawdata) &&
-            wsStream.ReadByte().EqualsWithSaveTo('\n', rawdata))
-        {
-          wsStream.Read(challengeResponse, 0, challengeResponse.Length);
-          break;
-        }
+        Console.WriteLine("{0}", s);
+      }
+      #endif
+      if (!isValidResponse(response, out msg))
+      {
+        throw new InvalidOperationException(msg);
       }
 
-      return Encoding.UTF8.GetString(rawdata.ToArray())
-             .Replace("\r\n", "\n").Replace("\n\n", "\n")
-             .Split('\n');
+      ReadyState = WsState.OPEN;
+    }
+
+    private void error(string message)
+    {
+      var callerFrame = new StackFrame(1);
+      var caller      = callerFrame.GetMethod();
+
+      if (OnError != null)
+      {
+        OnError(this, new MessageEventArgs(message));
+      }
+      else
+      {
+        Console.WriteLine("WS: Error@{0}: {1}", caller.Name, message);
+      }
+    }
+
+    private bool isValidResponse(string[] response, out string message)
+    {
+      Func<string, Func<string, string, string>> func;
+      string       resUpgrade, resConnection;
+      string       secWsAccept, secWsVersion;
+      string[]     resStatus;
+      List<string> extensionList = new List<string>();
+
+      func = s =>
+      {
+        return (e, a) =>
+        {
+          return String.Format("Invalid response {0} value: {1}(expected: {2})", s, a, e);
+        };
+      };
+
+      resStatus = response[0].Split(' ');
+      if ("HTTP/1.1".NotEqualsDo(resStatus[0], func("HTTP Version"), out message, false))
+      {
+        return false;
+      }
+      if ("101".NotEqualsDo(resStatus[1], func("Status Code"), out message, false))
+      {
+        return false;
+      }
+
+      for (int i = 1; i < response.Length; i++)
+      {
+        if (response[i].Contains("Upgrade:"))
+        {
+          resUpgrade = response[i].GetHeaderValue(":");
+          if ("websocket".NotEqualsDo(resUpgrade, func("Upgrade"), out message, true))
+          {
+            return false;
+          }
+        }
+        else if (response[i].Contains("Connection:"))
+        {
+          resConnection = response[i].GetHeaderValue(":");
+          if ("Upgrade".NotEqualsDo(resConnection, func("Connection"), out message, true))
+          {
+            return false;
+          }
+        }
+        else if (response[i].Contains("Sec-WebSocket-Accept:"))
+        {
+          secWsAccept = response[i].GetHeaderValue(":");
+          if (createExpectedKey().NotEqualsDo(secWsAccept, func("Sec-WebSocket-Accept"), out message, false))
+          {
+            return false;
+          }
+        }
+        else if (response[i].Contains("Sec-WebSocket-Extensions:"))
+        {
+          extensionList.Add(response[i].GetHeaderValue(":"));
+        }
+        else if (response[i].Contains("Sec-WebSocket-Protocol:"))
+        {
+          _protocol = response[i].GetHeaderValue(":");
+          #if DEBUG
+          Console.WriteLine("WS: Info@isValidResponse: Sub protocol: {0}", _protocol);
+          #endif
+        }
+        else if (response[i].Contains("Sec-WebSocket-Version:"))
+        {
+          secWsVersion = response[i].GetHeaderValue(":");
+          #if DEBUG
+          Console.WriteLine("WS: Info@isValidResponse: Version: {0}", secWsVersion);
+          #endif
+        }
+        else
+        {
+          Console.WriteLine("WS: Info@isValidResponse: Unsupported response header line: {0}", response[i]);
+        }
+      }
+      #if DEBUG
+      foreach (string s in extensionList)
+      {
+        Console.WriteLine("WS: Info@isValidResponse: Extensions: {0}", s);
+      }
+      #endif
+      message = String.Empty;
+      return true;
     }
 
     private void message()
     {
-#if DEBUG
-      Console.WriteLine("WS: Info @message: Current thread IsBackground: {0}", Thread.CurrentThread.IsBackground);
-#endif
-      string data;
-      while (readyState == WsState.OPEN)
+      #if DEBUG
+      Console.WriteLine("WS: Info@message: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
+      #endif
+      MessageEventArgs eventArgs;
+      while (_readyState == WsState.OPEN)
       {
-        data = receive();
-
-        if (OnMessage != null && data != null)
+        try
         {
-          OnMessage(this, data);
+          eventArgs = receive();
+
+          if (OnMessage != null && eventArgs != null)
+          {
+            OnMessage(this, eventArgs);
+          }
+        }
+        catch (WsReceivedTooBigMessageException ex)
+        {
+          close(CloseStatusCode.TOO_BIG, ex.Message);
         }
       }
-#if DEBUG
-      Console.WriteLine("WS: Info @message: Exit message method.");
-#endif
+      #if DEBUG
+      Console.WriteLine("WS: Info@message: Exit message method.");
+      #endif
     }
 
-    private string receive()
+    private void messageThreadStart()
     {
-      try
+      _msgThread = new Thread(new ThreadStart(message)); 
+      _msgThread.IsBackground = true;
+      _msgThread.Start();
+    }
+
+    private MessageEventArgs receive()
+    {
+      List<byte>       dataBuffer;
+      MessageEventArgs eventArgs;
+      Fin              fin;
+      WsFrame          frame;
+      Opcode           opcode;
+      PayloadData      payloadData;
+
+      frame = _wsStream.ReadFrame();
+      if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
+          (frame.Fin == Fin.MORE  && frame.Opcode == Opcode.CONT))
       {
-        byte frame_type = (byte)wsStream.ReadByte();
-        byte b;
+        return null;
+      }
 
-        if ((frame_type & 0x80) == 0x80)
-        {
-          // Skip data frame
-          int len = 0;
-          int b_v;
+      fin         = frame.Fin;
+      opcode      = frame.Opcode;
+      payloadData = frame.PayloadData;
+      eventArgs   = null;
 
-          do
-          {
-            b = (byte)wsStream.ReadByte();
-            b_v = b & 0x7f;
-            len = len * 128 + b_v;
-          }
-          while ((b & 0x80) == 0x80);
-
-          for (int i = 0; i < len; i++)
-          {
-            wsStream.ReadByte();
-          }
-
-          if (frame_type == 0xff && len == 0)
-          {
-            ReadyState = WsState.CLOSED;
-#if DEBUG
-            Console.WriteLine("WS: Info @receive: Server start closing handshake.");
-#endif
-          }
-        }
-        else if (frame_type == 0x00)
-        {
-          List<byte> raw_data = new List<byte>();
-
+      switch (fin)
+      {
+        case Fin.MORE:
+          dataBuffer = new List<byte>(payloadData.ToBytes());
           while (true)
           {
-            b = (byte)wsStream.ReadByte();
+            frame = _wsStream.ReadFrame();
 
-            if (b == 0xff)
+            if (frame.Fin == Fin.MORE)
             {
+              if (frame.Opcode == Opcode.CONT)
+              {// MORE & CONT
+                dataBuffer.AddRange(frame.PayloadData.ToBytes());
+              }
+              else
+              {
+                #if DEBUG
+                Console.WriteLine("WS: Info@receive: Client starts closing handshake.");
+                #endif
+                close(CloseStatusCode.INCORRECT_DATA, String.Empty);
+                return null;
+              }
+            }
+            else if (frame.Opcode == Opcode.CONT)
+            {// FINAL & CONT
+              dataBuffer.AddRange(frame.PayloadData.ToBytes());
               break;
             }
-
-            raw_data.Add(b);
+            else if (frame.Opcode == Opcode.CLOSE)
+            {// FINAL & CLOSE
+              #if DEBUG
+              Console.WriteLine("WS: Info@receive: Server starts closing handshake.");
+              #endif
+              close(frame.PayloadData);
+              return null;
+            }
+            else if (frame.Opcode == Opcode.PING)
+            {// FINAL & PING
+              pong(frame.PayloadData);
+              if (OnMessage != null)
+              {
+                OnMessage(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
+              }
+            }
+            else if (frame.Opcode == Opcode.PONG)
+            {// FINAL & PONG
+              if (OnMessage != null)
+              {
+                OnMessage(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
+              }
+            }
+            else
+            {// FINAL & (TEXT | BINARY)
+              #if DEBUG
+              Console.WriteLine("WS: Info@receive: Client starts closing handshake.");
+              #endif
+              close(CloseStatusCode.INCORRECT_DATA, String.Empty);
+              return null;
+            }
           }
 
-          return Encoding.UTF8.GetString(raw_data.ToArray());
-        }
-      }
-      catch (Exception e)
-      {
-        if (readyState == WsState.OPEN)
-        {
-          if (OnError != null)
+          eventArgs = new MessageEventArgs(opcode, new PayloadData(dataBuffer.ToArray()));
+          break;
+        case Fin.FINAL:
+          switch (opcode)
           {
-            OnError(this, e.Message);
+            case Opcode.TEXT:
+            case Opcode.BINARY:
+            case Opcode.PONG:
+              goto default;
+            case Opcode.CLOSE:
+              #if DEBUG
+              Console.WriteLine("WS: Info@receive: Server starts closing handshake.");
+              #endif
+              close(payloadData);
+              break;
+            case Opcode.PING:
+              pong(payloadData);
+              goto default;
+            default:
+              eventArgs = new MessageEventArgs(opcode, payloadData);
+              break;
           }
+        
+          break;
+      }
 
-          ReadyState = WsState.CLOSED;
-#if DEBUG
-          Console.WriteLine("WS: Error @receive: {0}", e.Message);
-#endif
+      return eventArgs;
+    }
+
+    private void pong(PayloadData data)
+    {
+      var frame = new WsFrame(Opcode.PONG, data);
+      send(frame);
+    }
+
+    private void pong(string data)
+    {
+      var payloadData = new PayloadData(data);
+      pong(payloadData);
+    }
+
+    private bool send(WsFrame frame)
+    {
+      if (_readyState != WsState.OPEN)
+      {
+        var msg = "Connection isn't established or connection was closed.";
+        error(msg);
+
+        return false;
+      }
+
+      try
+      {
+        if (_unTransmittedBuffer.Count == 0)
+        {
+          _wsStream.WriteFrame(frame);
+        }
+        else
+        {
+          _unTransmittedBuffer.Add(frame);
+        }
+      }
+      catch (Exception ex)
+      {
+        _unTransmittedBuffer.Add(frame);
+        error(ex.Message);
+
+        return false;
+      }
+
+      return true;
+    }
+
+    private void send(Opcode opcode, PayloadData data)
+    {
+      using (MemoryStream ms = new MemoryStream(data.ToBytes()))
+      {
+        send(opcode, ms);
+      }
+    }
+
+    private void send<TStream>(Opcode opcode, TStream stream)
+      where TStream : System.IO.Stream
+    {
+      if (_unTransmittedBuffer.Count > 0)
+      {
+        var msg = "Current data can not be sent because there is untransmitted data.";
+        error(msg);
+      }
+
+      lock(_forSend)
+      {
+        var length = stream.Length;
+        if (length <= _fragmentLen)
+        {
+          var buffer = new byte[length];
+          stream.Read(buffer, 0, (int)length);
+          var frame  = new WsFrame(opcode, new PayloadData(buffer));
+          send(frame);
+        }
+        else
+        {
+          sendFragmented(opcode, stream);
+        }
+      }
+    }
+
+    private ulong sendFragmented<TStream>(Opcode opcode, TStream stream)
+      where TStream : System.IO.Stream
+    {
+      if (_readyState != WsState.OPEN)
+      {
+        var msg = "Connection isn't established or connection was closed.";
+        error(msg);
+
+        return 0;
+      }
+
+      WsFrame     frame;
+      PayloadData payloadData;
+
+      var   buffer1 = new byte[_fragmentLen];
+      var   buffer2 = new byte[_fragmentLen];
+      ulong readLen = 0;
+      int   tmpLen1 = 0;
+      int   tmpLen2 = 0;
+
+      tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
+      while (tmpLen1 > 0)
+      {
+        payloadData = new PayloadData(buffer1.SubArray(0, tmpLen1));
+
+        tmpLen2 = stream.Read(buffer2, 0, _fragmentLen);
+        if (tmpLen2 > 0)
+        {
+          if (readLen > 0)
+          {
+            frame = new WsFrame(Fin.MORE, Opcode.CONT, payloadData);
+          }
+          else
+          {
+            frame = new WsFrame(Fin.MORE, opcode, payloadData);
+          }
+        }
+        else
+        {
+          if (readLen > 0)
+          {
+            frame = new WsFrame(Opcode.CONT, payloadData);
+          }
+          else
+          {
+            frame = new WsFrame(opcode, payloadData);
+          }
+        }
+
+        readLen += (ulong)tmpLen1;
+        send(frame);
+
+        if (tmpLen2 == 0) break;
+        payloadData = new PayloadData(buffer2.SubArray(0, tmpLen2));
+
+        tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
+        if (tmpLen1 > 0)
+        {
+          frame = new WsFrame(Fin.MORE, Opcode.CONT, payloadData);
+        }
+        else
+        {
+          frame = new WsFrame(Opcode.CONT, payloadData);
+        }
+
+        readLen += (ulong)tmpLen2;
+        send(frame);
+      }
+
+      return readLen;
+    }
+
+    private string[] sendOpeningHandshake(string value)
+    {
+      var readData = new List<byte>();
+      var buffer   = Encoding.UTF8.GetBytes(value);
+
+      _wsStream.Write(buffer, 0, buffer.Length);
+
+      while (true)
+      {
+        if (_wsStream.ReadByte().EqualsAndSaveTo('\r', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\n', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\r', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\n', readData))
+        {
+          break;
         }
       }
 
-      return null;
+      return Encoding.UTF8.GetString(readData.ToArray())
+             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
+             .Split('\n');
     }
+
+    #endregion
+
+    #region Public Methods
+
+    public void Connect()
+    {
+      if (_readyState == WsState.OPEN)
+      {
+        Console.WriteLine("WS: Info@Connect: Connection is already established.");
+        return;
+      }
+
+      try
+      { 
+        createConnection();
+        doHandshake();
+      }
+      catch (Exception ex)
+      {
+        error(ex.Message);
+        close(CloseStatusCode.HANDSHAKE_FAILURE, ex.Message);
+      }
+    }
+
+    public void Close()
+    {
+      Close(CloseStatusCode.NORMAL);
+    }
+
+    public void Close(CloseStatusCode code)
+    {
+      Close(code, String.Empty);
+    }
+
+    public void Close(CloseStatusCode code, string reason)
+    {
+      close(code, reason);
+    }
+
+    public void Dispose()
+    {
+      Close(CloseStatusCode.AWAY);
+    }
+
+    public void Ping()
+    {
+      Ping(String.Empty);
+    }
+
+    public void Ping(string data)
+    {
+      var payloadData = new PayloadData(data);
+      var frame       = new WsFrame(Opcode.PING, payloadData);
+      send(frame);
+    }
+
+    public void Send(string data)
+    {
+      var payloadData = new PayloadData(data);
+      send(Opcode.TEXT, payloadData);
+    }
+
+    public void Send(byte[] data)
+    {
+      var payloadData = new PayloadData(data);
+      send(Opcode.BINARY, payloadData);
+    }
+
+    public void Send(FileInfo file)
+    {
+      using (FileStream fs = file.OpenRead())
+      {
+        send(Opcode.BINARY, fs);
+      }
+    }
+
+    #endregion
   }
 }

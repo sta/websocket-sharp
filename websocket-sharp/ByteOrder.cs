@@ -1,10 +1,10 @@
 #region MIT License
 /**
- * WsState.cs
+ * ByteOrder.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +30,9 @@ using System;
 
 namespace WebSocketSharp
 {
-  public enum WsState
+  public enum ByteOrder : byte
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    LITTLE = 0x0,
+    BIG    = 0x1
   }
 }

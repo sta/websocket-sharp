@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * WsState.cs
+ * IWsStream.cs
  *
  * The MIT License
  *
@@ -27,14 +27,18 @@
 #endregion
 
 using System;
+using WebSocketSharp.Frame;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Stream
 {
-  public enum WsState
+  public interface IWsStream : IDisposable
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    void    Close();
+    int     Read(byte[] buffer, int offset, int size);
+    int     ReadByte();
+    WsFrame ReadFrame();
+    void    Write(byte[] buffer, int offset, int count);
+    void    WriteByte(byte value);
+    void    WriteFrame(WsFrame frame);
   }
 }

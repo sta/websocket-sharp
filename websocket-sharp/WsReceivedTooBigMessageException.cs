@@ -1,10 +1,10 @@
 #region MIT License
 /**
- * WsState.cs
+ * WsReceivedTooBigMessageException.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,28 @@
 #endregion
 
 using System;
+using WebSocketSharp.Frame;
 
 namespace WebSocketSharp
 {
-  public enum WsState
+  public class WsReceivedTooBigMessageException : Exception
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    private static readonly string _defaultMessage;
+
+    static WsReceivedTooBigMessageException()
+    {
+      _defaultMessage = String.Format(
+        "Client received a payload data bigger than the allowable value({0} bytes).", PayloadData.MaxLength);
+    }
+
+    public WsReceivedTooBigMessageException()
+     : this(_defaultMessage)
+    {
+    }
+
+    public WsReceivedTooBigMessageException(string message)
+     : base(message)
+    {
+    }
   }
 }

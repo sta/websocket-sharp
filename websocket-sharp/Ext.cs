@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2010 sta.blockhead
+ * Copyright (c) 2010-2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,19 +28,59 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace WebSocketSharp
 {
   public static class Ext
   {
-    public static bool AreNotEqualDo(
+    public static bool EqualsAndSaveTo(this int value, char c, List<byte> dest)
+    {
+      byte b = (byte)value;
+      dest.Add(b);
+      return b == Convert.ToByte(c);
+    }
+
+    public static string GetHeaderValue(this string src, string separater)
+    {
+      int i = src.IndexOf(separater);
+      return src.Substring(i + 1).Trim();
+    }
+
+    public static bool IsHostOrder(this ByteOrder order)
+    {
+      if (BitConverter.IsLittleEndian ^ (order == ByteOrder.LITTLE))
+      {// true ^ false or false ^ true
+        return false;
+      }
+      else
+      {// true ^ true or false ^ false
+        return true;
+      }
+    }
+
+    public static bool IsNullDo<T>(this T value, Action act)
+      where T : class
+    {
+      if (value == null)
+      {
+        act();
+        return true;
+      }
+
+      return false;
+    }
+
+    public static bool NotEqualsDo(
       this string expected,
       string actual,
       Func<string, string, string> func,
-      out string ret)
+      out string ret,
+      bool ignoreCase)
     {
-      if (expected != actual)
+      if (String.Compare(expected, actual, ignoreCase) != 0)
       {
         ret = func(expected, actual);
         return true;
@@ -50,106 +90,226 @@ namespace WebSocketSharp
       return false;
     }
 
-    public static bool EqualsWithSaveTo(this int asByte, char c, List<byte> dist)
+    public static byte[] ReadBytes<TStream>(this TStream stream, ulong length, int bufferLength)
+      where TStream : System.IO.Stream
     {
-      byte b = (byte)asByte;
-      dist.Add(b);
-      return b == Convert.ToByte(c);
-    }
+      List<byte> readData = new List<byte>();
 
-    public static uint GenerateKey(this Random rand, int space)
-    {
-      uint max = (uint)(0xffffffff / space);
+      ulong count     = length / (ulong)bufferLength;
+      int   remainder = (int)(length % (ulong)bufferLength);
 
-      int upper16 = (int)((max & 0xffff0000) >> 16);
-      int lower16 = (int)(max & 0x0000ffff);
+      byte[] buffer1 = new byte[bufferLength];
 
-      return ((uint)rand.Next(upper16 + 1) << 16) + (uint)rand.Next(lower16 + 1);
-    }
-
-    public static char GeneratePrintableASCIIwithoutSPandNum(this Random rand)
-    {
-        int ascii = rand.Next(2) == 0 ? rand.Next(33, 48) : rand.Next(58, 127);
-        return Convert.ToChar(ascii);
-    }
-
-    public static string GenerateSecKey(this Random rand, out uint key)
-    {
-      int space = rand.Next(1, 13);
-      int ascii = rand.Next(1, 13);
-
-      key = rand.GenerateKey(space);
-
-      long mKey = key * space;
-      List<char> secKey = new List<char>(mKey.ToString().ToCharArray());
-
-      int i;
-      ascii.Times( () =>
+      count.Times(() =>
       {
-        i = rand.Next(secKey.Count + 1);
-        secKey.Insert(i, rand.GeneratePrintableASCIIwithoutSPandNum());
-      } );
+        stream.Read(buffer1, 0, bufferLength);
+        readData.AddRange(buffer1);
+      });
 
-      space.Times( () =>
+      if (remainder > 0)
       {
-        i = rand.Next(1, secKey.Count);
-        secKey.Insert(i, ' ');
-      } );
-
-      return new String(secKey.ToArray());
-    }
-
-    public static byte[] InitializeWithPrintableASCII(this byte[] bytes, Random rand)
-    {
-      for (int i = 0; i < bytes.Length; i++)  
-      {  
-        bytes[i] = (byte)rand.Next(32, 127);
-      }  
-  
-      return bytes;  
-    }
-
-    public static bool IsValid(this string[] response, byte[] expectedCR, byte[] actualCR, out string message)
-    {
-      string expectedCRtoHexStr = BitConverter.ToString(expectedCR);
-      string actualCRtoHexStr = BitConverter.ToString(actualCR);
-
-      Func<string, Func<string, string, string>> func = s =>
-      {
-        return (e, a) =>
-        {
-#if DEBUG
-          Console.WriteLine("WS: Error @IsValid: Invalid {0} response.", s);
-          Console.WriteLine("  expected: {0}", e);
-          Console.WriteLine("  actual  : {0}", a);
-#endif
-          return String.Format("Invalid {0} response: {1}", s, a);
-        };
-      };
-
-      Func<string, string, string> func1 = func("handshake");
-      Func<string, string, string> func2 = func("challenge");
-
-      string msg;
-      if ("HTTP/1.1 101 WebSocket Protocol Handshake".AreNotEqualDo(response[0], func1, out msg) ||
-          "Upgrade: WebSocket".AreNotEqualDo(response[1], func1, out msg) ||
-          "Connection: Upgrade".AreNotEqualDo(response[2], func1, out msg) ||
-          expectedCRtoHexStr.AreNotEqualDo(actualCRtoHexStr, func2, out msg))
-      {
-        message = msg;
-        return false;
+        byte[] buffer2 = new byte[remainder];
+        stream.Read(buffer2, 0, remainder);
+        readData.AddRange(buffer2);
       }
 
-      message = String.Empty;
-      return true;
+      return readData.ToArray();
     }
 
-    public static void Times(this int n, Action act)
+    public static T[] SubArray<T>(this T[] array, int startIndex, int length)
     {
-      for (int i = 0; i < n; i++)
+      if (startIndex == 0 && array.Length == length)
+      {
+        return array;
+      }
+
+      T[] subArray = new T[length];
+      Array.Copy(array, startIndex, subArray, 0, length); 
+      return subArray;
+    }
+
+    public static void Times<T>(this T n, Action act)
+      where T : struct
+    {
+      if (typeof(T) != typeof(byte)   &&
+          typeof(T) != typeof(Int16)  &&
+          typeof(T) != typeof(Int32)  &&
+          typeof(T) != typeof(Int64)  &&
+          typeof(T) != typeof(UInt16) &&
+          typeof(T) != typeof(UInt32) &&
+          typeof(T) != typeof(UInt64))
+      {
+        throw new NotSupportedException("Not supported Struct type: " + typeof(T).ToString());
+      }
+
+      ulong m = (ulong)(object)n;
+
+      for (ulong i = 0; i < m; i++)
       {
         act();
       }
+    }
+
+    public static void Times<T>(this T n, Action<ulong> act)
+      where T : struct
+    {
+      if (typeof(T) != typeof(byte)   &&
+          typeof(T) != typeof(Int16)  &&
+          typeof(T) != typeof(Int32)  &&
+          typeof(T) != typeof(Int64)  &&
+          typeof(T) != typeof(UInt16) &&
+          typeof(T) != typeof(UInt32) &&
+          typeof(T) != typeof(UInt64))
+      {
+        throw new NotSupportedException("Not supported Struct type: " + typeof(T).ToString());
+      }
+
+      ulong m = (ulong)(object)n;
+
+      for (ulong i = 0; i < m; i++)
+      {
+        act(i);
+      }
+    }
+
+    public static T To<T>(this byte[] src, ByteOrder srcOrder)
+      where T : struct
+    {
+      T      dest;
+      byte[] buffer = src.ToHostOrder(srcOrder);
+
+      if (typeof(T) == typeof(Boolean))
+      {
+        dest = (T)(object)BitConverter.ToBoolean(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Char))
+      {
+        dest = (T)(object)BitConverter.ToChar(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Double))
+      {
+        dest = (T)(object)BitConverter.ToDouble(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Int16))
+      {
+        dest = (T)(object)BitConverter.ToInt16(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Int32))
+      {
+        dest = (T)(object)BitConverter.ToInt32(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Int64))
+      {
+        dest = (T)(object)BitConverter.ToInt64(buffer, 0);
+      }
+      else if (typeof(T) == typeof(Single))
+      {
+        dest = (T)(object)BitConverter.ToSingle(buffer, 0);
+      }
+      else if (typeof(T) == typeof(UInt16))
+      {
+        dest = (T)(object)BitConverter.ToUInt16(buffer, 0);
+      }
+      else if (typeof(T) == typeof(UInt32))
+      {
+        dest = (T)(object)BitConverter.ToUInt32(buffer, 0);
+      }
+      else if (typeof(T) == typeof(UInt64))
+      {
+        dest = (T)(object)BitConverter.ToUInt64(buffer, 0);
+      }
+      else
+      {
+        dest = default(T);
+      }
+
+      return dest;
+    }
+
+    public static byte[] ToBytes<T>(this T value, ByteOrder order)
+      where T : struct
+    {
+      byte[] buffer;
+
+      if (typeof(T) == typeof(Boolean))
+      {
+        buffer = BitConverter.GetBytes((Boolean)(object)value);
+      }
+      else if (typeof(T) == typeof(Char))
+      {
+        buffer = BitConverter.GetBytes((Char)(object)value);
+      }
+      else if (typeof(T) == typeof(Double))
+      {
+        buffer = BitConverter.GetBytes((Double)(object)value);
+      }
+      else if (typeof(T) == typeof(Int16))
+      {
+        buffer = BitConverter.GetBytes((Int16)(object)value);
+      }
+      else if (typeof(T) == typeof(Int32))
+      {
+        buffer = BitConverter.GetBytes((Int32)(object)value);
+      }
+      else if (typeof(T) == typeof(Int64))
+      {
+        buffer = BitConverter.GetBytes((Int64)(object)value);
+      }
+      else if (typeof(T) == typeof(Single))
+      {
+        buffer = BitConverter.GetBytes((Single)(object)value);
+      }
+      else if (typeof(T) == typeof(UInt16))
+      {
+        buffer = BitConverter.GetBytes((UInt16)(object)value);
+      }
+      else if (typeof(T) == typeof(UInt32))
+      {
+        buffer = BitConverter.GetBytes((UInt32)(object)value);
+      }
+      else if (typeof(T) == typeof(UInt64))
+      {
+        buffer = BitConverter.GetBytes((UInt64)(object)value);
+      }
+      else
+      {
+        buffer = new byte[]{};
+      }
+
+      return order.IsHostOrder()
+             ? buffer
+             : buffer.Reverse().ToArray();
+    }
+
+    public static byte[] ToHostOrder(this byte[] src, ByteOrder srcOrder)
+    {
+      byte[] buffer = new byte[src.Length];
+      src.CopyTo(buffer, 0);
+
+      return srcOrder.IsHostOrder()
+             ? buffer
+             : buffer.Reverse().ToArray();
+    }
+
+    public static string ToString<T>(this T[] array, string separater)
+    {
+      int len;
+      StringBuilder sb;
+
+      len = array.Length;
+      if (len == 0)
+      {
+        return String.Empty;
+      }
+
+      sb = new StringBuilder();
+      for (int i = 0; i < len - 1; i++)
+      {
+        sb.AppendFormat("{0}{1}", array[i].ToString(), separater);
+      }
+      sb.Append(array[len - 1].ToString());
+
+      return sb.ToString();
     }
   }
 }

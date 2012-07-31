@@ -1,10 +1,10 @@
 #region MIT License
 /**
- * WsState.cs
+ * CloseEventArgs.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2012 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,61 @@
 #endregion
 
 using System;
+using System.Text;
+using WebSocketSharp.Frame;
 
 namespace WebSocketSharp
 {
-  public enum WsState
+  public class CloseEventArgs : MessageEventArgs
   {
-    CONNECTING,
-    OPEN,
-    CLOSING,
-    CLOSED
+    private ushort _code;
+    private string _reason;
+    private bool   _wasClean;
+
+    public CloseStatusCode Code
+    {
+      get
+      {
+        return (CloseStatusCode)_code;
+      }
+    }
+
+    public string Reason
+    {
+      get
+      {
+        return _reason;
+      }
+    }
+
+    public bool WasClean
+    {
+      get
+      {
+        return _wasClean;
+      }
+      set
+      {
+        _wasClean = value;
+      }
+    }
+
+    public CloseEventArgs(PayloadData data)
+    : base(Opcode.CLOSE, data)
+    {
+      _code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
+
+      if (data.Length > 2)
+      {
+        var buffer = data.ToBytes().SubArray(2, (int)(data.Length - 2));
+        _reason = Encoding.UTF8.GetString(buffer);
+      }
+      else
+      {
+        _reason = String.Empty;
+      }
+
+      _wasClean = false;
+    }
   }
 }

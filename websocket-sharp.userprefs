@@ -1,12 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="websocket-sharp/WebSocket.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release_Ubuntu" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="websocket-sharp/WebSocket.cs">
     <Files>
-      <File FileName="websocket-sharp/WebSocket.cs" Line="80" Column="19" />
+      <File FileName="websocket-sharp/WebSocket.cs" Line="217" Column="41" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("websocket-sharp")]
-[assembly: AssemblyDescription("A C# implementation of a WebSocket protocol client")]
+[assembly: AssemblyTitle("Example1")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("websocket-sharp.dll")]
-[assembly: AssemblyCopyright("sta.blockhead")]
+[assembly: AssemblyProduct("")]
+[assembly: AssemblyCopyright("sta")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 // The form "{Major}.{Minor}.*" will automatically update the build and revision,
 // and "{Major}.{Minor}.{Build}.*" will update just the revision.
 
-[assembly: AssemblyVersion("1.0.1.*")]
+[assembly: AssemblyVersion("1.0.*")]
 
 // The following attributes are used to specify the signing key for the assembly, 
 // if desired. See the Mono documentation for more information about signing.
