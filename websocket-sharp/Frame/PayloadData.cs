@@ -47,7 +47,8 @@ namespace WebSocketSharp.Frame
 
     public byte[] ExtensionData   { get; private set; }
     public byte[] ApplicationData { get; private set; }
-    public bool   IsMasked        { get; private set; }
+
+    public bool IsMasked { get; private set; }
 
     public ulong Length
     {
@@ -154,6 +155,7 @@ namespace WebSocketSharp.Frame
       {
         mask(ExtensionData, maskingKey);
       }
+
       if (ApplicationData.LongLength > 0)
       {
         mask(ApplicationData, maskingKey);

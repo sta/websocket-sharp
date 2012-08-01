@@ -36,6 +36,25 @@ namespace WebSocketSharp
 {
   public static class Ext
   {
+    public static void Emit(
+      this EventHandler eventHandler, object sender, EventArgs e)
+    {
+      if (eventHandler != null)
+      {
+        eventHandler(sender, e);
+      }
+    }
+
+    public static void Emit<TEventArgs>(
+      this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e)
+      where TEventArgs : EventArgs
+    {
+      if (eventHandler != null)
+      {
+        eventHandler(sender, e);
+      }
+    }
+
     public static bool EqualsAndSaveTo(this int value, char c, List<byte> dest)
     {
       byte b = (byte)value;

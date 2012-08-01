@@ -108,7 +108,7 @@ namespace Example
 
       _ws.OnError += (sender, e) =>
       {
-        enNfMessage("[AudioStreamer] error", "WS Error: " + e.Data, "notification-message-im");
+        enNfMessage("[AudioStreamer] error", "WS: Error: " + e.Data, "notification-message-im");
       };
 
       _ws.OnClose += (sender, e) =>
@@ -116,7 +116,7 @@ namespace Example
         enNfMessage
         (
           "[AudioStreamer] disconnect",
-          String.Format("WS Close({0}:{1}): {2}", (ushort)e.Code, e.Code, e.Reason),
+          String.Format("WS: Close({0}:{1}): {2}", (ushort)e.Code, e.Code, e.Reason),
           "notification-message-im"
         );
       };

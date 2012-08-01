@@ -126,10 +126,7 @@ namespace WebSocketSharp
         {
           case WsState.OPEN:
             messageThreadStart();
-            if (OnOpen != null)
-            {
-              OnOpen(this, EventArgs.Empty);
-            }
+            OnOpen.Emit(this, EventArgs.Empty);
             break;
           case WsState.CLOSING:
             break;
@@ -229,14 +226,14 @@ namespace WebSocketSharp
         else if (_readyState == WsState.CONNECTING)
         {
           ReadyState = WsState.CLOSED;
-          emitOnClose(data);
+          OnClose.Emit(this, new CloseEventArgs(data));
           return;
         }
 
         ReadyState = WsState.CLOSING;
       }
       
-      emitOnClose(data);
+      OnClose.Emit(this, new CloseEventArgs(data));
       var frame = new WsFrame(Opcode.CLOSE, data);
       closeHandshake(frame);
       #if DEBUG
@@ -428,27 +425,14 @@ namespace WebSocketSharp
       ReadyState = WsState.OPEN;
     }
 
-    private void emitOnClose(PayloadData data)
-    {
-      if (OnClose != null)
-      {
-        OnClose(this, new CloseEventArgs(data));
-      }
-    }
-
     private void error(string message)
     {
+      #if DEBUG
       var callerFrame = new StackFrame(1);
       var caller      = callerFrame.GetMethod();
-
-      if (OnError != null)
-      {
-        OnError(this, new MessageEventArgs(message));
-      }
-      else
-      {
-        Console.WriteLine("WS: Error@{0}: {1}", caller.Name, message);
-      }
+      Console.WriteLine("WS: Error@{0}: {1}", caller.Name, message);
+      #endif
+      OnError.Emit(this, new MessageEventArgs(message));
     }
 
     private bool isValidResponse(string[] response, out string message)
@@ -548,9 +532,9 @@ namespace WebSocketSharp
         {
           eventArgs = receive();
 
-          if (OnMessage != null && eventArgs != null)
+          if (eventArgs != null)
           {
-            OnMessage(this, eventArgs);
+            OnMessage.Emit(this, eventArgs);
           }
         }
         catch (WsReceivedTooBigMessageException ex)
@@ -630,17 +614,11 @@ namespace WebSocketSharp
             else if (frame.Opcode == Opcode.PING)
             {// FINAL & PING
               pong(frame.PayloadData);
-              if (OnMessage != null)
-              {
-                OnMessage(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
-              }
+              OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
             }
             else if (frame.Opcode == Opcode.PONG)
             {// FINAL & PONG
-              if (OnMessage != null)
-              {
-                OnMessage(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
-              }
+              OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
             }
             else
             {// FINAL & (TEXT | BINARY)
