@@ -26,7 +26,7 @@ So `WebSocket` class inherits `IDisposable` interface, you can use `using` state
 
 ### Step 3 ###
 
-Setting of `WebSocket` event handlers.
+Setting `WebSocket` event handlers.
 
 #### WebSocket.OnOpen event ####
 
@@ -64,7 +64,7 @@ So **type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSh
 
 If `e.Type` is `Opcode.TEXT`, you operate `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`).
 
-if `e.Type` is `Opcode.BINARY`, you operate `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte[]`).
+If `e.Type` is `Opcode.BINARY`, you operate `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte[]`).
 
 #### WebSocket.OnError event ####
 
@@ -75,7 +75,7 @@ if `e.Type` is `Opcode.BINARY`, you operate `e.RawData` (`WebSocketSharp.Message
       ...
     };
 
-So error message is stored in `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`) , you operate it.
+So error message is stored in `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`), you operate it.
 
 #### WebSocket.OnClose event ####
 
@@ -102,7 +102,7 @@ Sending data.
 
 `WebSocket.Send` method is overloaded.
 
-data types are `string`, `byte[]` and `FileInfo` class.
+`data` types are `string`, `byte[]` and `FileInfo` class.
 
 ### Step 6 ###
 

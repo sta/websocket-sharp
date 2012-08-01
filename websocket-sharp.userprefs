@@ -1,8 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release_Ubuntu" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="websocket-sharp/WebSocket.cs">
     <Files>
-      <File FileName="websocket-sharp/WebSocket.cs" Line="428" Column="39" />
+      <File FileName="websocket-sharp/WebSocket.cs" Line="220" Column="8" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
