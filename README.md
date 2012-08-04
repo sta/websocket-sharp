@@ -50,7 +50,7 @@ Setting `WebSocket` event handlers.
       ...
     };
 
-**Type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
+**Frame type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
 
     switch (e.Type)
     {
