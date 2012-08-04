@@ -1,6 +1,6 @@
 # websocket-sharp #
 
-**websocket-sharp** is a C# implementation of a WebSocket protocol client & server.
+**websocket-sharp** is a C# implementation of WebSocket protocol client & server.
 
 ## Usage ##
 
@@ -13,7 +13,7 @@ Required namespaces.
     using WebSocketSharp;
     using WebSocketSharp.Frame;
 
-In `WebSocketSharp` namespace `WebSocket` class exists, in `WebSocketSharp.Frame` namespace WebSocket data frame resources (e.g. `WsFrame` class) exist.
+`WebSocket` class exists in `WebSocketSharp` namespace, WebSocket data frame resources (e.g. `WsFrame` class) exist in `WebSocketSharp.Frame` namespace.
 
 #### Step 2 ####
 
@@ -50,7 +50,7 @@ Setting `WebSocket` event handlers.
       ...
     };
 
-**type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
+**Type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
 
     switch (e.Type)
     {
