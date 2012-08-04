@@ -73,8 +73,9 @@ namespace Example
 
       ThreadPool.QueueUserWorkItem(notifyMsg);
 
-      using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
+      //using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
       //using (WebSocket ws = new WebSocket("wss://echo.websocket.org", "echo"))
+      using (WebSocket ws = new WebSocket("ws://localhost:4649"))
       {
         ws.OnOpen += (sender, e) =>
         {
@@ -88,7 +89,7 @@ namespace Example
 
         ws.OnError += (sender, e) =>
         {
-          enNfMessage("[WebSocket] Error", e.Data, "notification-message-im");
+          enNfMessage("[WebSocket] Error", e.Message, "notification-message-im");
         };
 
         ws.OnClose += (sender, e) =>

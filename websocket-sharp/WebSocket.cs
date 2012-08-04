@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -60,12 +61,14 @@ namespace WebSocketSharp
 
     #region Private Fields
 
+    private AutoResetEvent                  _autoEvent;
     private string                          _base64key;
     private string                          _binaryType;
     private string                          _extensions;
     private Object                          _forClose;
     private Object                          _forSend;
     private int                             _fragmentLen;
+    private bool                            _isClient;
     private Thread                          _msgThread;
     private NetworkStream                   _netStream;
     private string                          _protocol;
@@ -125,7 +128,7 @@ namespace WebSocketSharp
         switch (value)
         {
           case WsState.OPEN:
-            messageThreadStart();
+            startMessageThread();
             OnOpen.Emit(this, EventArgs.Empty);
             break;
           case WsState.CLOSING:
@@ -153,7 +156,7 @@ namespace WebSocketSharp
 
     public event EventHandler                   OnOpen;
     public event EventHandler<MessageEventArgs> OnMessage;
-    public event EventHandler<MessageEventArgs> OnError;
+    public event EventHandler<ErrorEventArgs>   OnError;
     public event EventHandler<CloseEventArgs>   OnClose;
 
     #endregion
@@ -174,27 +177,43 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Constructors
+
+    internal WebSocket(string url, TcpClient tcpClient)
+      : this()
+    {
+      _uri = new Uri(url);
+      if (!isValidScheme(_uri))
+      {
+        throw new ArgumentException("Unsupported WebSocket URI scheme: " + _uri.Scheme);
+      }
+
+      _tcpClient = tcpClient;
+      _isClient  = false;
+    }
+
+    #endregion
+
     #region Public Constructors
 
     public WebSocket(string url, params string[] protocols)
-    : this()
+      : this()
     {
-      _uri          = new Uri(url);
-      string scheme = _uri.Scheme;
-
-      if (scheme != "ws" && scheme != "wss")
+      _uri = new Uri(url);
+      if (!isValidScheme(_uri))
       {
-        throw new ArgumentException("Unsupported WebSocket URI scheme: " + scheme);
+        throw new ArgumentException("Unsupported WebSocket URI scheme: " + _uri.Scheme);
       }
 
-      _protocols  = protocols.ToString(", ");
+      _protocols = protocols.ToString(", ");
+      _isClient  = true;
     }
 
     public WebSocket(
       string                         url,
       EventHandler                   onOpen,
       EventHandler<MessageEventArgs> onMessage,
-      EventHandler<MessageEventArgs> onError,
+      EventHandler<ErrorEventArgs>   onError,
       EventHandler<CloseEventArgs>   onClose,
       params string[]                protocols)
       : this(url, protocols)
@@ -211,10 +230,37 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private void acceptHandshake()
+    {
+      string   msg, response;
+      string[] request;
+
+      request = receiveOpeningHandshake();
+      #if DEBUG
+      Console.WriteLine("\nWS: Info@acceptHandshake: Opening handshake from client:\n");
+      foreach (string s in request)
+      {
+        Console.WriteLine("{0}", s);
+      }
+      #endif
+      if (!isValidRequest(request, out msg))
+      {
+        throw new InvalidOperationException(msg);
+      }
+
+      response = createResponseHandshake();
+      #if DEBUG
+      Console.WriteLine("\nWS: Info@acceptHandshake: Opening handshake from server:\n{0}", response);
+      #endif
+      sendResponseHandshake(response);
+
+      ReadyState = WsState.OPEN;
+    }
+
     private void close(PayloadData data)
     {
       #if DEBUG
-      Console.WriteLine("WS: Info@close: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
+      Console.WriteLine("\nWS: Info@close: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
       #endif
       lock(_forClose)
       {
@@ -291,13 +337,20 @@ namespace WebSocketSharp
 
       if (!Thread.CurrentThread.IsBackground)
       {
-        _msgThread.Join(5000);
+        if (_isClient)
+        {
+          _msgThread.Join(5000);
+        }
+        else
+        {
+          _autoEvent.WaitOne();
+        }
       }
 
       ReadyState = WsState.CLOSED;
     }
 
-    private void createConnection()
+    private void createClientStream()
     {
       string scheme = _uri.Scheme;
       string host   = _uri.DnsSafeHost;
@@ -400,6 +453,45 @@ namespace WebSocketSharp
              crlf;
     }
 
+    private string createResponseHandshake()
+    {
+      string crlf          = "\r\n";
+
+      string resStatus     = "HTTP/1.1 101 Switching Protocols" + crlf;
+      string resUpgrade    = "Upgrade: websocket" + crlf;
+      string resConnection = "Connection: Upgrade" + crlf;
+      string secWsAccept   = String.Format("Sec-WebSocket-Accept: {0}{1}", createExpectedKey(), crlf);
+      //string secWsProtocol = "Sec-WebSocket-Protocol: chat" + crlf;
+      string secWsVersion  = String.Format("Sec-WebSocket-Version: {0}{1}", _version, crlf);
+
+      return resStatus +
+             resUpgrade +
+             resConnection +
+             secWsAccept +
+             //secWsProtocol +
+             secWsVersion +
+             crlf;
+    }
+
+    private void createServerStream()
+    {
+      _netStream = _tcpClient.GetStream();
+
+      if (_uri.Scheme == "wss")
+      {
+        _sslStream = new SslStream(_netStream);
+
+        string certPath = ConfigurationManager.AppSettings["ServerCertPath"];
+        _sslStream.AuthenticateAsServer(new X509Certificate(certPath));
+
+        _wsStream = new WsStream<SslStream>(_sslStream);
+      }
+      else
+      {
+        _wsStream = new WsStream<NetworkStream>(_netStream);
+      }
+    }
+
     private void doHandshake()
     {
       string   msg, request;
@@ -407,11 +499,11 @@ namespace WebSocketSharp
 
       request  = createOpeningHandshake();
       #if DEBUG
-      Console.WriteLine("WS: Info@doHandshake: Opening handshake from client:\n{0}", request);
+      Console.WriteLine("\nWS: Info@doHandshake: Opening handshake from client:\n{0}", request);
       #endif
       response = sendOpeningHandshake(request);
       #if DEBUG
-      Console.WriteLine("WS: Info@doHandshake: Opening handshake from server:");
+      Console.WriteLine("\nWS: Info@doHandshake: Opening handshake from server:\n");
       foreach (string s in response)
       {
         Console.WriteLine("{0}", s);
@@ -432,18 +524,123 @@ namespace WebSocketSharp
       var caller      = callerFrame.GetMethod();
       Console.WriteLine("WS: Error@{0}: {1}", caller.Name, message);
       #endif
-      OnError.Emit(this, new MessageEventArgs(message));
+      OnError.Emit(this, new ErrorEventArgs(message));
+    }
+
+    private bool isValidRequest(string[] request, out string message)
+    {
+      string   reqConnection, reqHost, reqUpgrade, secWsVersion;
+      string[] reqRequest;
+
+      List<string> extensionList = new List<string>();
+
+      Func<string, Func<string, string, string>> func = s =>
+      {
+        return (e, a) =>
+        {
+          return String.Format("Invalid request {0} value: {1}(expected: {2})", s, a, e);
+        };
+      };
+
+      string expectedHost = _uri.DnsSafeHost;
+      int port = ((IPEndPoint)_tcpClient.Client.LocalEndPoint).Port;
+      if (port != 80)
+      {
+        expectedHost += ":" + port;
+      }
+
+      reqRequest = request[0].Split(' ');
+      if ("GET".NotEqualsDo(reqRequest[0], func("HTTP Method"), out message, false))
+      {
+        return false;
+      }
+      if ("HTTP/1.1".NotEqualsDo(reqRequest[2], func("HTTP Version"), out message, false))
+      {
+        return false;
+      }
+
+      for (int i = 1; i < request.Length; i++)
+      {
+        if (request[i].Contains("Connection:"))
+        {
+          reqConnection = request[i].GetHeaderValue(":");
+          if ("Upgrade".NotEqualsDo(reqConnection, func("Connection"), out message, true))
+          {
+            return false;
+          }
+        }
+        else if (request[i].Contains("Host:"))
+        {
+          reqHost = request[i].GetHeaderValue(":");
+          if (expectedHost.NotEqualsDo(reqHost, func("Host"), out message, true))
+          {
+            return false;
+          }
+        }
+        else if (request[i].Contains("Origin:"))
+        {
+          continue;
+        }
+        else if (request[i].Contains("Upgrade:"))
+        {
+          reqUpgrade = request[i].GetHeaderValue(":");
+          if ("websocket".NotEqualsDo(reqUpgrade, func("Upgrade"), out message, true))
+          {
+            return false;
+          }
+        }
+        else if (request[i].Contains("Sec-WebSocket-Extensions:"))
+        {
+          extensionList.Add(request[i].GetHeaderValue(":"));
+        }
+        else if (request[i].Contains("Sec-WebSocket-Key:"))
+        {
+          _base64key = request[i].GetHeaderValue(":");
+        }
+        else if (request[i].Contains("Sec-WebSocket-Protocol:"))
+        {
+          _protocols = request[i].GetHeaderValue(":");
+          #if DEBUG
+          Console.WriteLine("WS: Info@isValidRequest: Sub protocol: {0}", _protocols);
+          #endif
+        }
+        else if (request[i].Contains("Sec-WebSocket-Version:"))
+        {
+          secWsVersion = request[i].GetHeaderValue(":");
+          if (_version.NotEqualsDo(secWsVersion, func("Sec-WebSocket-Version"), out message, true))
+          {
+            return false;
+          }
+        }
+        else
+        {
+          Console.WriteLine("WS: Info@isValidRequest: Unsupported request header line: {0}", request[i]);
+        }
+      }
+
+      if (String.IsNullOrEmpty(_base64key))
+      {
+        message = "Sec-WebSocket-Key header field does not exist or the value isn't set.";
+        return false;
+      }
+      #if DEBUG
+      foreach (string s in extensionList)
+      {
+        Console.WriteLine("WS: Info@isValidRequest: Extensions: {0}", s);
+      }
+      #endif
+      message = String.Empty;
+      return true;
     }
 
     private bool isValidResponse(string[] response, out string message)
     {
-      Func<string, Func<string, string, string>> func;
-      string       resUpgrade, resConnection;
-      string       secWsAccept, secWsVersion;
+      string       resUpgrade, resConnection, secWsAccept, secWsVersion;
       string[]     resStatus;
+
       List<string> extensionList = new List<string>();
 
-      func = s =>
+      Func<string, Func<string, string, string>> func = s =>
       {
         return (e, a) =>
         {
@@ -501,9 +698,10 @@ namespace WebSocketSharp
         else if (response[i].Contains("Sec-WebSocket-Version:"))
         {
           secWsVersion = response[i].GetHeaderValue(":");
-          #if DEBUG
-          Console.WriteLine("WS: Info@isValidResponse: Version: {0}", secWsVersion);
-          #endif
+          if (_version.NotEqualsDo(secWsVersion, func("Sec-WebSocket-Version"), out message, true))
+          {
+            return false;
+          }
         }
         else
         {
@@ -520,38 +718,81 @@ namespace WebSocketSharp
       return true;
     }
 
+    private bool isValidScheme(Uri uri)
+    {
+      string scheme = uri.Scheme;
+      if (scheme == "ws" || scheme == "wss")
+      {
+        return true;
+      }
+
+      return false;
+    }
+
     private void message()
     {
-      #if DEBUG
-      Console.WriteLine("WS: Info@message: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
-      #endif
-      MessageEventArgs eventArgs;
-      while (_readyState == WsState.OPEN)
+      try
       {
-        try
-        {
-          eventArgs = receive();
+        MessageEventArgs eventArgs = receive();
 
-          if (eventArgs != null)
-          {
-            OnMessage.Emit(this, eventArgs);
-          }
-        }
-        catch (WsReceivedTooBigMessageException ex)
+        if (eventArgs != null)
         {
-          close(CloseStatusCode.TOO_BIG, ex.Message);
+          OnMessage.Emit(this, eventArgs);
         }
       }
+      catch (WsReceivedTooBigMessageException ex)
+      {
+        close(CloseStatusCode.TOO_BIG, ex.Message);
+      }
+    }
+
+    private void messageLoop()
+    {
       #if DEBUG
-      Console.WriteLine("WS: Info@message: Exit message method.");
+      Console.WriteLine("\nWS: Info@messageLoop: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
+      #endif
+      while (_readyState == WsState.OPEN)
+      {
+        message();
+      }
+      #if DEBUG
+      Console.WriteLine("WS: Info@messageLoop: Exit messageLoop method.");
       #endif
     }
 
-    private void messageThreadStart()
+    private void startMessageThread()
     {
-      _msgThread = new Thread(new ThreadStart(message)); 
-      _msgThread.IsBackground = true;
-      _msgThread.Start();
+      if (_isClient)
+      {
+        _msgThread = new Thread(new ThreadStart(messageLoop)); 
+        _msgThread.IsBackground = true;
+        _msgThread.Start();
+      }
+      else
+      {
+        _autoEvent = new AutoResetEvent(false);
+        Action act = () =>
+        {
+          if (_readyState == WsState.OPEN)
+          {
+            message();
+          }
+        };
+        AsyncCallback callback = (ar) =>
+        {
+          act.EndInvoke(ar);
+
+          if (_readyState == WsState.OPEN)
+          {
+            act.BeginInvoke(callback, null);
+          }
+          else
+          {
+            _autoEvent.Set();
+          }
+        };
+        act.BeginInvoke(callback, null);
+      }
     }
 
     private MessageEventArgs receive()
@@ -669,6 +910,26 @@ namespace WebSocketSharp
     {
       var payloadData = new PayloadData(data);
       pong(payloadData);
+    }
+
+    private string[] receiveOpeningHandshake()
+    {
+      var readData = new List<byte>();
+    
+      while (true)
+      {
+        if (_wsStream.ReadByte().EqualsAndSaveTo('\r', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\n', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\r', readData) &&
+            _wsStream.ReadByte().EqualsAndSaveTo('\n', readData))
+        {
+          break;
+        }
+      }
+
+      return Encoding.UTF8.GetString(readData.ToArray())
+             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
+             .Split('\n');
     }
 
     private bool send(WsFrame frame)
@@ -832,6 +1093,12 @@ namespace WebSocketSharp
              .Split('\n');
     }
 
+    private void sendResponseHandshake(string value)
+    {
+      var buffer = Encoding.UTF8.GetBytes(value);
+      _wsStream.Write(buffer, 0, buffer.Length);
+    }
+
     #endregion
 
     #region Public Methods
@@ -840,14 +1107,22 @@ namespace WebSocketSharp
     {
       if (_readyState == WsState.OPEN)
       {
-        Console.WriteLine("WS: Info@Connect: Connection is already established.");
+        Console.WriteLine("\nWS: Info@Connect: Connection is already established.");
         return;
       }
 
       try
-      { 
-        createConnection();
-        doHandshake();
+      {
+        if (_isClient)
+        {
+          createClientStream();
+          doHandshake();
+        }
+        else
+        {
+          createServerStream();
+          acceptHandshake();
+        }
       }
       catch (Exception ex)
       {
