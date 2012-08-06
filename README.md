@@ -122,7 +122,7 @@ Type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, type of `reason` is `s
 
 #### Step 1 ####
 
-Required namespaces.
+Required namespace.
 
     using WebSocketSharp.Server;
 
@@ -130,10 +130,11 @@ Required namespaces.
 
 #### Step 2 ####
 
-Creating a class that inherits from `WebSocketService`.
+Creating a class that inherits `WebSocketService`.
 
 For example, if you want to provide the echo service,
 
+    using System;
     using WebSocketSharp;
     using WebSocketSharp.Server;
 
@@ -147,6 +148,7 @@ For example, if you want to provide the echo service,
 
 For example, if you want to provide the chat service,
 
+    using System;
     using WebSocketSharp;
     using WebSocketSharp.Server;
 
@@ -164,7 +166,7 @@ Creating instance of `WebSocketServer<T>` class.
 
     var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
 
-Type of `T` inherits from `WebSocketService` class, so you can use a class that was created in **Step 2**.
+Type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
 If you set WebSocket url without port number, `WebSocketServer<T>` set 80 or 443 to port number automatically.
 So it is necessary to run with root permission.
@@ -175,9 +177,9 @@ So it is necessary to run with root permission.
 
 Setting WebSocketServer event handler.
 
-##### WebSocketServer.OnError event #####
+##### WebSocketServer<T>.OnError event #####
 
-`WebSocketServer.OnError` event is emitted when some error is occurred.
+`WebSocketServer<T>.OnError` event is emitted when some error is occurred.
 
     wssv.OnError += (sender, e) =>
     {

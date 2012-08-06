@@ -34,8 +34,8 @@ namespace WebSocketSharp.Server
   public interface IWebSocketServer
   {
     void AddService(WebSocketService service);
-    void Close();
-    void Close(CloseStatusCode code, string reason);
+    void CloseService();
+    void CloseService(CloseStatusCode code, string reason);
     void Ping(string data);
     void RemoveService(WebSocketService service);
     void Send(byte[] data);

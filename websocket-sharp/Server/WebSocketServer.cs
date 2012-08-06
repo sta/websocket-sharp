@@ -173,12 +173,12 @@ namespace WebSocketSharp.Server
       _services.Add(service);
     }
 
-    public void Close()
+    public void CloseService()
     {
-      Close(CloseStatusCode.NORMAL, String.Empty);
+      CloseService(CloseStatusCode.NORMAL, String.Empty);
     }
 
-    public void Close(CloseStatusCode code, string reason)
+    public void CloseService(CloseStatusCode code, string reason)
     {
       lock (_services.SyncRoot)
       {
@@ -248,7 +248,7 @@ namespace WebSocketSharp.Server
     public void Stop()
     {
       _tcpListener.Stop();
-      Close();
+      CloseService();
     }
 
     #endregion
