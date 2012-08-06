@@ -72,14 +72,16 @@
     <Compile Include="Frame\Opcode.cs" />
     <Compile Include="Frame\PayloadData.cs" />
     <Compile Include="Frame\Rsv.cs" />
-    <Compile Include="ConnectionEventArgs.cs" />
     <Compile Include="ErrorEventArgs.cs" />
-    <Compile Include="WebSocketServer.cs" />
     <Compile Include="WebSocket.cs" />
+    <Compile Include="Server\IWebSocketServer.cs" />
+    <Compile Include="Server\WebSocketServer.cs" />
+    <Compile Include="Server\WebSocketService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Stream\" />
     <Folder Include="Frame\" />
+    <Folder Include="Server\" />
   </ItemGroup>
 </Project>

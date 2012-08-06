@@ -12,7 +12,7 @@ using System.Threading;
 using WebSocketSharp;
 using WebSocketSharp.Frame;
 
-namespace Example
+namespace Example1
 {
   public struct NfMessage
   {

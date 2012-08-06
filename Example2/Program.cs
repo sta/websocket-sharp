@@ -1,27 +1,15 @@
 using System;
 using System.Threading;
-using WebSocketSharp;
+using WebSocketSharp.Server;
 
-namespace Example
+namespace Example2
 {
   public class Program
   {
-    public static void Main (string[] args)
+    public static void Main(string[] args)
     {
-      //WebSocketServer wssv = new WebSocketServer("ws://localhost");
-      WebSocketServer wssv = new WebSocketServer("ws://localhost:4649");
-
-      wssv.OnConnection += (sender, e) =>
-      {
-        WebSocket ws = e.Socket;
-        ws.OnMessage += (sender_, e_) =>
-        {
-          // Echo
-          ws.Send(e_.Data);
-          // Chat
-          //wssv.Send(e_.Data);
-        };
-      };
+      var wssv = new WebSocketServer<Echo>("ws://localhost:4649");
+      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649");
 
       wssv.Start();
       Console.WriteLine(

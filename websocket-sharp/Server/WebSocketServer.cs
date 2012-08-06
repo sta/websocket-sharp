@@ -37,15 +37,16 @@ using System.Text;
 using System.Threading;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Server
 {
-  public class WebSocketServer
+  public class WebSocketServer<T> : IWebSocketServer
+    where T : WebSocketService, new()
   {
     #region Private Fields
 
-    private TcpListener                       _tcpListener;
-    private Uri                               _uri;
-    private SynchronizedCollection<WebSocket> _webSockets;
+    private SynchronizedCollection<WebSocketService> _services;
+    private TcpListener                              _tcpListener;
+    private Uri                                      _uri;
 
     #endregion
 
@@ -75,8 +76,7 @@ namespace WebSocketSharp
 
     #region Events
 
-    public event EventHandler<ConnectionEventArgs> OnConnection;
-    public event EventHandler<ErrorEventArgs>      OnError;
+    public event EventHandler<ErrorEventArgs> OnError;
 
     #endregion
 
@@ -106,7 +106,7 @@ namespace WebSocketSharp
       }
 
       _tcpListener = new TcpListener(IPAddress.Any, port);
-      _webSockets  = new SynchronizedCollection<WebSocket>();
+      _services    = new SynchronizedCollection<WebSocketService>();
     }
 
     #endregion
@@ -125,12 +125,10 @@ namespace WebSocketSharp
       try
       {
         TcpClient client = listener.EndAcceptTcpClient(ar);
-
-        WebSocket ws = new WebSocket(_uri.ToString(), client);
-        OnConnection.Emit(this, new ConnectionEventArgs(ws));
-        _webSockets.Add(ws);
-
-        ws.Connect();
+        WebSocket socket = new WebSocket(_uri.ToString(), client);
+        T service = new T();
+        service.Bind(this, socket);
+        service.Open();
       }
       catch (ObjectDisposedException)
       {
@@ -170,32 +168,56 @@ namespace WebSocketSharp
 
     #region Public Methods
 
+    public void AddService(WebSocketService service)
+    {
+      _services.Add(service);
+    }
+
+    public void Close()
+    {
+      Close(CloseStatusCode.NORMAL, String.Empty);
+    }
+
     public void Close(CloseStatusCode code, string reason)
     {
-      lock (_webSockets.SyncRoot)
+      lock (_services.SyncRoot)
       {
-        foreach (WebSocket ws in _webSockets)
+        foreach (WebSocketService service in _services)
         {
-          if (ws.ReadyState == WsState.OPEN)
-          {
-            ws.Close(code, reason);
-          }
+          service.Close(code, reason);
         }
       }
+    }
+
+    public void Ping(string data)
+    {
+      WaitCallback broadcast = (state) =>
+      {
+        lock (_services.SyncRoot)
+        {
+          foreach (WebSocketService service in _services)
+          {
+            service.Ping(data);
+          }
+        }
+      };
+      ThreadPool.QueueUserWorkItem(broadcast);
+    }
+
+    public void RemoveService(WebSocketService service)
+    {
+      _services.Remove(service);
     }
 
     public void Send(byte[] data)
     {
       WaitCallback broadcast = (state) =>
       {
-        lock (_webSockets.SyncRoot)
+        lock (_services.SyncRoot)
         {
-          foreach (WebSocket ws in _webSockets)
+          foreach (WebSocketService service in _services)
           {
-            if (ws.ReadyState == WsState.OPEN)
-            {
-              ws.Send(data);
-            }
+            service.Send(data);
           }
         }
       };
@@ -206,14 +228,11 @@ namespace WebSocketSharp
     {
       WaitCallback broadcast = (state) =>
       {
-        lock (_webSockets.SyncRoot)
+        lock (_services.SyncRoot)
         {
-          foreach (WebSocket ws in _webSockets)
+          foreach (WebSocketService service in _services)
           {
-            if (ws.ReadyState == WsState.OPEN)
-            {
-              ws.Send(data);
-            }
+            service.Send(data);
           }
         }
       };
@@ -229,7 +248,7 @@ namespace WebSocketSharp
     public void Stop()
     {
       _tcpListener.Stop();
-      Close(CloseStatusCode.NORMAL, String.Empty);
+      Close();
     }
 
     #endregion

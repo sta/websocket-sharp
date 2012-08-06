@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * ConnectionEventArgs.cs
+ * IWebSocketServer.cs
  *
  * The MIT License
  *
@@ -27,16 +27,20 @@
 #endregion
 
 using System;
+using WebSocketSharp.Frame;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Server
 {
-  public class ConnectionEventArgs : EventArgs
+  public interface IWebSocketServer
   {
-    public WebSocket Socket { get; private set; }
-
-    public ConnectionEventArgs(WebSocket webSocket)
-    {
-      Socket = webSocket;
-    }
+    void AddService(WebSocketService service);
+    void Close();
+    void Close(CloseStatusCode code, string reason);
+    void Ping(string data);
+    void RemoveService(WebSocketService service);
+    void Send(byte[] data);
+    void Send(string data);
+    void Start();
+    void Stop();
   }
 }

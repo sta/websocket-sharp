@@ -124,56 +124,56 @@ Type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, type of `reason` is `s
 
 Required namespaces.
 
-    using WebSocketSharp;
-    using WebSocketSharp.Frame;
+    using WebSocketSharp.Server;
 
-Same as **WebSocket Client**.
+`WebSocketServer<T>` class exists in `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
-Creating instance of `WebSocketServer` class.
+Creating a class that inherits from `WebSocketService`.
 
-    WebSocketServer wssv = new WebSocketServer("ws://example.com:4649");
+For example, if you want to provide the echo service,
 
-If you set WebSocket url without port number, `WebSocketServer` set 80 or 443 to port number automatically.
+    using WebSocketSharp;
+    using WebSocketSharp.Server;
+
+    public class Echo : WebSocketService
+    {
+      protected override void onMessage(object sender, MessageEventArgs e)
+      {
+        Send(e.Data);
+      }
+    }
+
+For example, if you want to provide the chat service,
+
+    using WebSocketSharp;
+    using WebSocketSharp.Server;
+
+    public class Chat : WebSocketService
+    {
+      protected override void onMessage(object sender, MessageEventArgs e)
+      {
+        Server.Send(e.Data);
+      }
+    }
+
+#### Step 3 ####
+
+Creating instance of `WebSocketServer<T>` class.
+
+    var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
+
+Type of `T` inherits from `WebSocketService` class, so you can use a class that was created in **Step 2**.
+
+If you set WebSocket url without port number, `WebSocketServer<T>` set 80 or 443 to port number automatically.
 So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
 
-#### Step 3 ####
+#### Step 4 ####
 
-Setting WebSocketServer event handlers.
-
-##### WebSocketServer.OnConnection event #####
-
-`WebSocketServer.OnConnection` event is emitted each time client makes a connection request.
-
-    wssv.OnConnection += (sender, e) =>
-    {
-      ...
-    };
-
-`WebSocket` to communicate with client is stored in `e.Socket` (`WebSocketSharp.ConnectionEventArgs.Socket`, its type is `WebSocketSharp.WebSocket`), so you operate it.
-
-    WebSocket ws = e.Socket;
-    ws.OnMessage += (sender_, e_) =>
-    {
-      ...
-    };
-
-Same settings of `WebSocket` event handlers as **WebSocket Client**.
-
-This WebSocket is server-side, so data is sent from server to client.
-
-If you want to function as echo server that returns a data to client as it is received,
-
-    // Echo
-    ws.Send(e_.Data);
-
-If you want to function as chat server that returns a data to all clients,
-
-    // Chat
-    wssv.Send(e_.Data);
+Setting WebSocketServer event handler.
 
 ##### WebSocketServer.OnError event #####
 
@@ -186,21 +186,11 @@ If you want to function as chat server that returns a data to all clients,
 
 Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
 
-#### Step 4 ####
+#### Step 5 ####
 
 Starting server.
 
     wssv.Start();
-
-#### Step 5 ####
-
-Sending data to all clients.
-
-    wssv.Send(data);
-
-`WebSocketServer.Send` method is overloaded.
-
-`data` types are `string` and `byte[]`.
 
 #### Step 6 ####
 

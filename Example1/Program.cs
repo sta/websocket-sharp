@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Example
+namespace Example1
 {
   public class Program
   {

@@ -748,16 +748,10 @@ namespace WebSocketSharp
 
     private void messageLoop()
     {
-      #if DEBUG
-      Console.WriteLine("\nWS: Info@messageLoop: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
-      #endif
       while (_readyState == WsState.OPEN)
       {
         message();
       }
-      #if DEBUG
-      Console.WriteLine("WS: Info@messageLoop: Exit messageLoop method.");
-      #endif
     }
 
     private void startMessageThread()
