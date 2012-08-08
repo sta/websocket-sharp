@@ -10,8 +10,10 @@
 
 Required namespaces.
 
-    using WebSocketSharp;
-    using WebSocketSharp.Frame;
+```cs
+using WebSocketSharp;
+using WebSocketSharp.Frame;
+```
 
 `WebSocket` class exists in `WebSocketSharp` namespace, WebSocket data frame resources (e.g. `WsFrame` class) exist in `WebSocketSharp.Frame` namespace.
 
@@ -19,10 +21,12 @@ Required namespaces.
 
 Creating a instance of `WebSocket` class.
 
-    using (WebSocket ws = new WebSocket("ws://example.com"))
-    {
-      ...
-    }
+```cs
+using (WebSocket ws = new WebSocket("ws://example.com"))
+{
+  ...
+}
+```
 
 `WebSocket` class inherits `IDisposable` interface, so you can use `using` statement.
 
@@ -34,10 +38,12 @@ Setting `WebSocket` event handlers.
 
 `WebSocket.OnOpen` event is emitted immediately after WebSocket connection has been established.
 
-    ws.OnOpen += (sender, e) =>
-    {
-      ...
-    };
+```cs
+ws.OnOpen += (sender, e) =>
+{
+  ...
+};
+```
 
 `e` has come across as `EventArgs.Empty`, so there is no operation on `e`.
 
@@ -45,24 +51,28 @@ Setting `WebSocket` event handlers.
 
 `WebSocket.OnMessage` event is emitted each time WebSocket data frame is received.
 
-    ws.OnMessage += (sender, e) =>
-    {
-      ...
-    };
+```cs
+ws.OnMessage += (sender, e) =>
+{
+  ...
+};
+```
 
 **Frame type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
 
-    switch (e.Type)
-    {
-      case Opcode.TEXT:
-        ...
-        break;
-      case Opcode.BINARY:
-        ...
-        break;
-      default:
-        break;
+```cs
+switch (e.Type)
+{
+  case Opcode.TEXT:
+    ...
+    break;
+  case Opcode.BINARY:
+    ...
+    break;
+  default:
+    break;
     }
+```
 
 If `e.Type` is `Opcode.TEXT`, you operate `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`).
 
@@ -72,21 +82,24 @@ If `e.Type` is `Opcode.BINARY`, you operate `e.RawData` (`WebSocketSharp.Message
 
 `WebSocket.OnError` event is emitted when some error is occurred.
 
-    ws.OnError += (sender, e) =>
-    {
-      ...
-    };
-
+```cs
+ws.OnError += (sender, e) =>
+{
+  ...
+};
+```
 Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
 
 ##### WebSocket.OnClose event #####
 
 `WebSocket.OnClose` event is emitted when WebSocket connection is closed.
 
-    ws.OnClose += (sender, e) =>
-    {
-      ...
-    };
+```cs
+ws.OnClose += (sender, e) =>
+{
+  ...
+};
+```
 
 Close status code is stored in `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) and reason of close is stored in `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`), so you operate them.
 
@@ -94,13 +107,17 @@ Close status code is stored in `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, i
 
 Connecting to server using WebSocket.
 
-    ws.Connect();
+```cs
+ws.Connect();
+```
 
 #### Step 5 ####
 
 Sending data.
 
-    ws.Send(data);
+```cs
+ws.Send(data);
+```
 
 `WebSocket.Send` method is overloaded.
 
@@ -110,7 +127,9 @@ Sending data.
 
 Closing WebSocket connection.
 
-    ws.Close(code, reason);
+```cs
+ws.Close(code, reason);
+```
 
 If you want to close WebSocket connection explicitly, you can use `Close` method.
 
@@ -124,7 +143,9 @@ Type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, type of `reason` is `s
 
 Required namespace.
 
-    using WebSocketSharp.Server;
+```cs
+using WebSocketSharp.Server;
+```
 
 `WebSocketServer<T>` class and `WebSocketService` class exist in `WebSocketSharp.Server` namespace.
 
@@ -150,25 +171,27 @@ public class Echo : WebSocketService
 
 For example, if you want to provide the chat service,
 
-    ```cs
-    using System;
-    using WebSocketSharp;
-    using WebSocketSharp.Server;
+```cs
+using System;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
-    public class Chat : WebSocketService
-    {
-      protected override void onMessage(object sender, MessageEventArgs e)
-      {
-        Publish(e.Data);
-      }
-    }
-    ```
+public class Chat : WebSocketService
+{
+  protected override void onMessage(object sender, MessageEventArgs e)
+  {
+    Publish(e.Data);
+  }
+}
+```
 
 #### Step 3 ####
 
 Creating a instance of `WebSocketServer<T>` class.
 
-    var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
+```cs
+var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
+```
 
 Type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
@@ -185,10 +208,12 @@ Setting WebSocketServer event handler.
 
 `WebSocketServer<T>.OnError` event is emitted when some error is occurred.
 
-    wssv.OnError += (sender, e) =>
-    {
-      ...
-    };
+```cs
+wssv.OnError += (sender, e) =>
+{
+  ...
+};
+```
 
 Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
 
@@ -196,13 +221,17 @@ Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`,
 
 Starting server.
 
-    wssv.Start();
+```cs
+wssv.Start();
+```
 
 #### Step 6 ####
 
 Stopping server.
 
-    wssv.Stop();
+```cs
+wssv.Stop();
+```
 
 ## Examples ##
 
