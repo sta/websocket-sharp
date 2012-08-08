@@ -33,10 +33,16 @@ namespace WebSocketSharp.Server
 {
   public abstract class WebSocketService
   {
-    #region Properties
+    #region Private Fields
 
-    public IWebSocketServer Server { get; private set; }
-    public WebSocket        Socket { get; private set; }
+    private IWebSocketServer _server;
+    private WebSocket        _socket;
+
+    #endregion
+
+    #region Property
+
+    public bool IsBinded { get; private set; }
 
     #endregion
 
@@ -44,6 +50,7 @@ namespace WebSocketSharp.Server
 
     public WebSocketService()
     {
+      IsBinded = false;
     }
 
     #endregion
@@ -52,9 +59,14 @@ namespace WebSocketSharp.Server
 
     private void defaultBind()
     {
-      Socket.OnOpen += (sender, e) =>
+      _socket.OnOpen += (sender, e) =>
       {
-        Server.AddService(this);
+        _server.AddService(this);
+      };
+
+      _socket.OnClose += (sender, e) =>
+      {
+        _server.RemoveService(this);
       };
     }
 
@@ -76,7 +88,6 @@ namespace WebSocketSharp.Server
 
     protected virtual void onClose(object sender, CloseEventArgs e)
     {
-      Server.RemoveService(this);
     }
 
     #endregion
@@ -85,44 +96,71 @@ namespace WebSocketSharp.Server
 
     public void Bind(IWebSocketServer server, WebSocket socket)
     {
-      Server = server;
-      Socket = socket;
+      _server = server;
+      _socket = socket;
 
       defaultBind();
-      Socket.OnOpen    += onOpen;
-      Socket.OnMessage += onMessage;
-      Socket.OnError   += onError;
-      Socket.OnClose   += onClose;
+      _socket.OnOpen    += onOpen;
+      _socket.OnMessage += onMessage;
+      _socket.OnError   += onError;
+      _socket.OnClose   += onClose;
+
+      IsBinded = true;
+    }
+
+    public void BPing()
+    {
+      BPing(String.Empty);
+    }
+
+    public void BPing(string data)
+    {
+      if (IsBinded) _server.Ping(data);
     }
 
     public void Close()
     {
-      Socket.Close();
+      if (IsBinded) _socket.Close();
     }
 
     public void Close(CloseStatusCode code, string reason)
     {
-      Socket.Close(code, reason);
+      if (IsBinded) _socket.Close(code, reason);
     }
 
     public void Open()
     {
-      Socket.Connect();
+      if (IsBinded) _socket.Connect();
+    }
+
+    public void Ping()
+    {
+      if (IsBinded) _socket.Ping();
     }
 
     public void Ping(string data)
     {
-      Socket.Ping(data);
+      if (IsBinded) _socket.Ping(data);
+    }
+
+    public void Publish(byte[] data)
+    {
+      if (IsBinded) _server.Publish(data);
+    }
+
+    public void Publish(string data)
+    {
+      if (IsBinded) _server.Publish(data);
     }
 
     public void Send(byte[] data)
     {
-      Socket.Send(data);
+      if (IsBinded) _socket.Send(data);
     }
 
     public void Send(string data)
     {
-      Socket.Send(data);
+      if (IsBinded) _socket.Send(data);
     }
 
     #endregion

@@ -34,12 +34,11 @@ namespace WebSocketSharp.Server
   public interface IWebSocketServer
   {
     void AddService(WebSocketService service);
-    void CloseService();
-    void CloseService(CloseStatusCode code, string reason);
+    void CloseServices(CloseStatusCode code, string reason);
     void Ping(string data);
+    void Publish(byte[] data);
+    void Publish(string data);
     void RemoveService(WebSocketService service);
-    void Send(byte[] data);
-    void Send(string data);
     void Start();
     void Stop();
   }

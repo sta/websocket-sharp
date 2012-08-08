@@ -173,12 +173,12 @@ namespace WebSocketSharp.Server
       _services.Add(service);
     }
 
-    public void CloseService()
+    public void CloseServices()
     {
-      CloseService(CloseStatusCode.NORMAL, String.Empty);
+      CloseServices(CloseStatusCode.NORMAL, String.Empty);
     }
 
-    public void CloseService(CloseStatusCode code, string reason)
+    public void CloseServices(CloseStatusCode code, string reason)
     {
       lock (_services.SyncRoot)
       {
@@ -187,6 +187,11 @@ namespace WebSocketSharp.Server
           service.Close(code, reason);
         }
       }
+    }
+
+    public void Ping()
+    {
+      Ping(String.Empty);
     }
 
     public void Ping(string data)
@@ -204,39 +209,39 @@ namespace WebSocketSharp.Server
       ThreadPool.QueueUserWorkItem(broadcast);
     }
 
+    public void Publish(byte[] data)
+    {
+      WaitCallback broadcast = (state) =>
+      {
+        lock (_services.SyncRoot)
+        {
+          foreach (WebSocketService service in _services)
+          {
+            service.Send(data);
+          }
+        }
+      };
+      ThreadPool.QueueUserWorkItem(broadcast);
+    }
+
+    public void Publish(string data)
+    {
+      WaitCallback broadcast = (state) =>
+      {
+        lock (_services.SyncRoot)
+        {
+          foreach (WebSocketService service in _services)
+          {
+            service.Send(data);
+          }
+        }
+      };
+      ThreadPool.QueueUserWorkItem(broadcast);
+    }
+
     public void RemoveService(WebSocketService service)
     {
       _services.Remove(service);
-    }
-
-    public void Send(byte[] data)
-    {
-      WaitCallback broadcast = (state) =>
-      {
-        lock (_services.SyncRoot)
-        {
-          foreach (WebSocketService service in _services)
-          {
-            service.Send(data);
-          }
-        }
-      };
-      ThreadPool.QueueUserWorkItem(broadcast);
-    }
-
-    public void Send(string data)
-    {
-      WaitCallback broadcast = (state) =>
-      {
-        lock (_services.SyncRoot)
-        {
-          foreach (WebSocketService service in _services)
-          {
-            service.Send(data);
-          }
-        }
-      };
-      ThreadPool.QueueUserWorkItem(broadcast);
     }
 
     public void Start()
@@ -248,7 +253,7 @@ namespace WebSocketSharp.Server
     public void Stop()
     {
       _tcpListener.Stop();
-      CloseService();
+      CloseServices();
     }
 
     #endregion

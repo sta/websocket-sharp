@@ -17,7 +17,7 @@ Required namespaces.
 
 #### Step 2 ####
 
-Creating instance of `WebSocket` class.
+Creating a instance of `WebSocket` class.
 
     using (WebSocket ws = new WebSocket("ws://example.com"))
     {
@@ -126,14 +126,15 @@ Required namespace.
 
     using WebSocketSharp.Server;
 
-`WebSocketServer<T>` class exists in `WebSocketSharp.Server` namespace.
+`WebSocketServer<T>` class and `WebSocketService` class exist in `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
-Creating a class that inherits `WebSocketService`.
+Creating a class that inherits `WebSocketService` class.
 
 For example, if you want to provide the echo service,
 
+    ```cs
     using System;
     using WebSocketSharp;
     using WebSocketSharp.Server;
@@ -145,9 +146,11 @@ For example, if you want to provide the echo service,
         Send(e.Data);
       }
     }
+    ```
 
 For example, if you want to provide the chat service,
 
+    ```cs
     using System;
     using WebSocketSharp;
     using WebSocketSharp.Server;
@@ -156,19 +159,20 @@ For example, if you want to provide the chat service,
     {
       protected override void onMessage(object sender, MessageEventArgs e)
       {
-        Server.Send(e.Data);
+        Publish(e.Data);
       }
     }
+    ```
 
 #### Step 3 ####
 
-Creating instance of `WebSocketServer<T>` class.
+Creating a instance of `WebSocketServer<T>` class.
 
     var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
 
 Type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
-If you set WebSocket url without port number, `WebSocketServer<T>` set 80 or 443 to port number automatically.
+If you set WebSocket url without port number, `WebSocketServer<T>` set **80** or **443** to port number automatically.
 So it is necessary to run with root permission.
 
     $ sudo mono example2.exe

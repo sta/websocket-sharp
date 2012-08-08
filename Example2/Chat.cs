@@ -8,7 +8,7 @@ namespace Example2
   {
     protected override void onMessage(object sender, MessageEventArgs e)
     {
-      Server.Send(e.Data);
+      Publish(e.Data);
     }
   }
 }

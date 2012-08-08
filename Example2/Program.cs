@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using WebSocketSharp.Server;
 
 namespace Example2
@@ -13,7 +12,8 @@ namespace Example2
 
       wssv.Start();
       Console.WriteLine(
-        "WebSocket Server ({0}) listening on address: {1} port: {2}\n", wssv.Url, wssv.Address, wssv.Port);
+        "WebSocket Server (url: {0})\n  listening on address: {1} port: {2}\n",
+        wssv.Url, wssv.Address, wssv.Port);
 
       Console.WriteLine("Press any key to stop server...");
       Console.ReadLine();
