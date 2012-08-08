@@ -71,7 +71,7 @@ switch (e.Type)
     break;
   default:
     break;
-    }
+}
 ```
 
 If `e.Type` is `Opcode.TEXT`, you operate `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`).
