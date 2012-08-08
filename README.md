@@ -134,19 +134,19 @@ Creating a class that inherits `WebSocketService` class.
 
 For example, if you want to provide the echo service,
 
-    ```cs
-    using System;
-    using WebSocketSharp;
-    using WebSocketSharp.Server;
+```cs
+using System;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
-    public class Echo : WebSocketService
-    {
-      protected override void onMessage(object sender, MessageEventArgs e)
-      {
-        Send(e.Data);
-      }
-    }
-    ```
+public class Echo : WebSocketService
+{
+  protected override void onMessage(object sender, MessageEventArgs e)
+  {
+    Send(e.Data);
+  }
+}
+```
 
 For example, if you want to provide the chat service,
 
