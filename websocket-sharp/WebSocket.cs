@@ -271,8 +271,8 @@ namespace WebSocketSharp
         }
         else if (_readyState == WsState.CONNECTING)
         {
-          ReadyState = WsState.CLOSED;
           OnClose.Emit(this, new CloseEventArgs(data));
+          ReadyState = WsState.CLOSED;
           return;
         }
 
@@ -280,7 +280,7 @@ namespace WebSocketSharp
       }
       
       OnClose.Emit(this, new CloseEventArgs(data));
-      var frame = new WsFrame(Opcode.CLOSE, data);
+      var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
       closeHandshake(frame);
       #if DEBUG
       Console.WriteLine("WS: Info@close: Exit close method.");
@@ -289,18 +289,24 @@ namespace WebSocketSharp
 
     private void close(CloseStatusCode code, string reason)
     {
-      byte[]     buffer;
-      List<byte> data;
-
-      data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
+      var data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
 
       if (reason != String.Empty)
       {
-        buffer = Encoding.UTF8.GetBytes(reason);
+        var buffer = Encoding.UTF8.GetBytes(reason);
         data.AddRange(buffer);
       }
 
-      close(new PayloadData(data.ToArray()));
+      var payloadData = new PayloadData(data.ToArray());
+
+      if (payloadData.Length > 125)
+      {
+        var msg = "Close frame must have a payload length of 125 bytes or less.";
+        error(msg);
+        return;
+      }
+
+      close(payloadData);
     }
 
     private void closeConnection()
@@ -325,17 +331,7 @@ namespace WebSocketSharp
 
     private void closeHandshake(WsFrame frame)
     {
-      try
-      {
-        _wsStream.WriteFrame(frame);
-      }
-      catch (Exception ex)
-      {
-        _unTransmittedBuffer.Add(frame);
-        error(ex.Message);
-      }
-
-      if (!Thread.CurrentThread.IsBackground)
+      if (send(frame) && !Thread.CurrentThread.IsBackground)
       {
         if (_isClient)
         {
@@ -400,6 +396,18 @@ namespace WebSocketSharp
       keySrc = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
 
       return Convert.ToBase64String(keySrc);
+    }
+
+    private WsFrame createFrame(Fin fin, Opcode opcode, PayloadData payloadData)
+    {
+      if (_isClient)
+      {
+        return new WsFrame(fin, opcode, payloadData);
+      }
+      else
+      {
+        return new WsFrame(fin, opcode, Mask.UNMASK, payloadData);
+      }      
     }
 
     private string createOpeningHandshake()
@@ -896,7 +904,7 @@ namespace WebSocketSharp
 
     private void pong(PayloadData data)
     {
-      var frame = new WsFrame(Opcode.PONG, data);
+      var frame = createFrame(Fin.FINAL, Opcode.PONG, data);
       send(frame);
     }
 
@@ -928,11 +936,11 @@ namespace WebSocketSharp
 
     private bool send(WsFrame frame)
     {
-      if (_readyState != WsState.OPEN)
+      if (_readyState == WsState.CONNECTING ||
+          _readyState == WsState.CLOSED)
       {
         var msg = "Connection isn't established or connection was closed.";
         error(msg);
-
         return false;
       }
 
@@ -945,13 +953,15 @@ namespace WebSocketSharp
         else
         {
           _unTransmittedBuffer.Add(frame);
+          var msg = "Current data can not be sent because there is untransmitted data.";
+          error(msg);
+          return false;
         }
       }
       catch (Exception ex)
       {
         _unTransmittedBuffer.Add(frame);
         error(ex.Message);
-
         return false;
       }
 
@@ -969,20 +979,21 @@ namespace WebSocketSharp
     private void send<TStream>(Opcode opcode, TStream stream)
       where TStream : System.IO.Stream
     {
-      if (_unTransmittedBuffer.Count > 0)
-      {
-        var msg = "Current data can not be sent because there is untransmitted data.";
-        error(msg);
-      }
-
       lock(_forSend)
       {
+        if (_readyState != WsState.OPEN)
+        {
+          var msg = "Connection isn't established or connection was closed.";
+          error(msg);
+          return;
+        }
+
         var length = stream.Length;
         if (length <= _fragmentLen)
         {
           var buffer = new byte[length];
           stream.Read(buffer, 0, (int)length);
-          var frame  = new WsFrame(opcode, new PayloadData(buffer));
+          var frame = createFrame(Fin.FINAL, opcode, new PayloadData(buffer));
           send(frame);
         }
         else
@@ -995,22 +1006,14 @@ namespace WebSocketSharp
     private ulong sendFragmented<TStream>(Opcode opcode, TStream stream)
       where TStream : System.IO.Stream
     {
-      if (_readyState != WsState.OPEN)
-      {
-        var msg = "Connection isn't established or connection was closed.";
-        error(msg);
-
-        return 0;
-      }
-
       WsFrame     frame;
       PayloadData payloadData;
 
-      var   buffer1 = new byte[_fragmentLen];
-      var   buffer2 = new byte[_fragmentLen];
-      ulong readLen = 0;
-      int   tmpLen1 = 0;
-      int   tmpLen2 = 0;
+      byte[] buffer1 = new byte[_fragmentLen];
+      byte[] buffer2 = new byte[_fragmentLen];
+      ulong  readLen = 0;
+      int    tmpLen1 = 0;
+      int    tmpLen2 = 0;
 
       tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
       while (tmpLen1 > 0)
@@ -1022,22 +1025,22 @@ namespace WebSocketSharp
         {
           if (readLen > 0)
           {
-            frame = new WsFrame(Fin.MORE, Opcode.CONT, payloadData);
+            frame = createFrame(Fin.MORE, Opcode.CONT, payloadData);
           }
           else
           {
-            frame = new WsFrame(Fin.MORE, opcode, payloadData);
+            frame = createFrame(Fin.MORE, opcode, payloadData);
           }
         }
         else
         {
           if (readLen > 0)
           {
-            frame = new WsFrame(Opcode.CONT, payloadData);
+            frame = createFrame(Fin.FINAL, Opcode.CONT, payloadData);
           }
           else
           {
-            frame = new WsFrame(opcode, payloadData);
+            frame = createFrame(Fin.FINAL, opcode, payloadData);
           }
         }
 
@@ -1050,11 +1053,11 @@ namespace WebSocketSharp
         tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
         if (tmpLen1 > 0)
         {
-          frame = new WsFrame(Fin.MORE, Opcode.CONT, payloadData);
+          frame = createFrame(Fin.MORE, Opcode.CONT, payloadData);
         }
         else
         {
-          frame = new WsFrame(Opcode.CONT, payloadData);
+          frame = createFrame(Fin.FINAL, Opcode.CONT, payloadData);
         }
 
         readLen += (ulong)tmpLen2;
@@ -1153,7 +1156,15 @@ namespace WebSocketSharp
     public void Ping(string data)
     {
       var payloadData = new PayloadData(data);
-      var frame       = new WsFrame(Opcode.PING, payloadData);
+
+      if (payloadData.Length > 125)
+      {
+        var msg = "Ping frame must have a payload length of 125 bytes or less.";
+        error(msg);
+        return;
+      }
+
+      var frame = createFrame(Fin.FINAL, Opcode.PING, payloadData);
       send(frame);
     }
 
