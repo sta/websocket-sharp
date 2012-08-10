@@ -752,6 +752,10 @@ namespace WebSocketSharp
       {
         close(CloseStatusCode.TOO_BIG, ex.Message);
       }
+      catch (Exception ex)
+      {
+        close(CloseStatusCode.ABNORMAL, ex.Message);
+      }
     }
 
     private void messageLoop()
@@ -762,39 +766,16 @@ namespace WebSocketSharp
       }
     }
 
-    private void startMessageThread()
+    private void pong(PayloadData data)
     {
-      if (_isClient)
-      {
-        _msgThread = new Thread(new ThreadStart(messageLoop)); 
-        _msgThread.IsBackground = true;
-        _msgThread.Start();
-      }
-      else
-      {
-        _autoEvent = new AutoResetEvent(false);
-        Action act = () =>
-        {
-          if (_readyState == WsState.OPEN)
-          {
-            message();
-          }
-        };
-        AsyncCallback callback = (ar) =>
-        {
-          act.EndInvoke(ar);
+      var frame = createFrame(Fin.FINAL, Opcode.PONG, data);
+      send(frame);
+    }
 
-          if (_readyState == WsState.OPEN)
-          {
-            act.BeginInvoke(callback, null);
-          }
-          else
-          {
-            _autoEvent.Set();
-          }
-        };
-        act.BeginInvoke(callback, null);
-      }
+    private void pong(string data)
+    {
+      var payloadData = new PayloadData(data);
+      pong(payloadData);
     }
 
     private MessageEventArgs receive()
@@ -806,7 +787,15 @@ namespace WebSocketSharp
       Opcode           opcode;
       PayloadData      payloadData;
 
+      Action act = () =>
+      {
+        var msg = "WebSocket data frame can not be read from network stream.";
+        close(CloseStatusCode.ABNORMAL, msg);
+      };
+
       frame = _wsStream.ReadFrame();
+      if (frame.IsNullDo(act)) return null;
+
       if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
           (frame.Fin == Fin.MORE  && frame.Opcode == Opcode.CONT))
       {
@@ -825,6 +814,7 @@ namespace WebSocketSharp
           while (true)
           {
             frame = _wsStream.ReadFrame();
+            if (frame.IsNullDo(act)) return null;
 
             if (frame.Fin == Fin.MORE)
             {
@@ -856,8 +846,10 @@ namespace WebSocketSharp
             }
             else if (frame.Opcode == Opcode.PING)
             {// FINAL & PING
+              #if DEBUG
+              Console.WriteLine("WS: Info@receive: Return Pong.");
+              #endif
               pong(frame.PayloadData);
-              OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
             }
             else if (frame.Opcode == Opcode.PONG)
             {// FINAL & PONG
@@ -889,8 +881,11 @@ namespace WebSocketSharp
               close(payloadData);
               break;
             case Opcode.PING:
+              #if DEBUG
+              Console.WriteLine("WS: Info@receive: Return Pong.");
+              #endif
               pong(payloadData);
-              goto default;
+              break;
             default:
               eventArgs = new MessageEventArgs(opcode, payloadData);
               break;
@@ -900,18 +895,6 @@ namespace WebSocketSharp
       }
 
       return eventArgs;
-    }
-
-    private void pong(PayloadData data)
-    {
-      var frame = createFrame(Fin.FINAL, Opcode.PONG, data);
-      send(frame);
-    }
-
-    private void pong(string data)
-    {
-      var payloadData = new PayloadData(data);
-      pong(payloadData);
     }
 
     private string[] receiveOpeningHandshake()
@@ -1096,9 +1079,59 @@ namespace WebSocketSharp
       _wsStream.Write(buffer, 0, buffer.Length);
     }
 
+    private void startMessageThread()
+    {
+      if (_isClient)
+      {
+        _msgThread = new Thread(new ThreadStart(messageLoop)); 
+        _msgThread.IsBackground = true;
+        _msgThread.Start();
+      }
+      else
+      {
+        _autoEvent = new AutoResetEvent(false);
+        Action act = () =>
+        {
+          if (_readyState == WsState.OPEN)
+          {
+            message();
+          }
+        };
+        AsyncCallback callback = (ar) =>
+        {
+          act.EndInvoke(ar);
+
+          if (_readyState == WsState.OPEN)
+          {
+            act.BeginInvoke(callback, null);
+          }
+          else
+          {
+            _autoEvent.Set();
+          }
+        };
+        act.BeginInvoke(callback, null);
+      }
+    }
+
     #endregion
 
     #region Public Methods
+
+    public void Close()
+    {
+      Close(CloseStatusCode.NORMAL);
+    }
+
+    public void Close(CloseStatusCode code)
+    {
+      Close(code, String.Empty);
+    }
+
+    public void Close(CloseStatusCode code, string reason)
+    {
+      close(code, reason);
+    }
 
     public void Connect()
     {
@@ -1126,21 +1159,6 @@ namespace WebSocketSharp
         error(ex.Message);
         close(CloseStatusCode.HANDSHAKE_FAILURE, ex.Message);
       }
-    }
-
-    public void Close()
-    {
-      Close(CloseStatusCode.NORMAL);
-    }
-
-    public void Close(CloseStatusCode code)
-    {
-      Close(code, String.Empty);
-    }
-
-    public void Close(CloseStatusCode code, string reason)
-    {
-      close(code, reason);
     }
 
     public void Dispose()

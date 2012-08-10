@@ -112,24 +112,24 @@ namespace WebSocketSharp
     public static byte[] ReadBytes<TStream>(this TStream stream, ulong length, int bufferLength)
       where TStream : System.IO.Stream
     {
-      List<byte> readData = new List<byte>();
-
       ulong count     = length / (ulong)bufferLength;
       int   remainder = (int)(length % (ulong)bufferLength);
 
-      byte[] buffer1 = new byte[bufferLength];
+      List<byte> readData = new List<byte>();
+      byte[]     buffer1  = new byte[bufferLength];
+      int        readLen  = 0;
 
       count.Times(() =>
       {
-        stream.Read(buffer1, 0, bufferLength);
-        readData.AddRange(buffer1);
+        readLen = stream.Read(buffer1, 0, bufferLength);
+        if (readLen > 0) readData.AddRange(buffer1.SubArray(0, readLen));
       });
 
       if (remainder > 0)
       {
         byte[] buffer2 = new byte[remainder];
-        stream.Read(buffer2, 0, remainder);
-        readData.AddRange(buffer2);
+        readLen = stream.Read(buffer2, 0, remainder);
+        if (readLen > 0) readData.AddRange(buffer2.SubArray(0, readLen));
       }
 
       return readData.ToArray();

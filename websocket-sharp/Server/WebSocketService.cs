@@ -64,10 +64,10 @@ namespace WebSocketSharp.Server
         _server.AddService(this);
       };
 
-      _socket.OnClose += (sender, e) =>
-      {
-        _server.RemoveService(this);
-      };
+//      _socket.OnClose += (sender, e) =>
+//      {
+//        _server.RemoveService(this);
+//      };
     }
 
     #endregion
