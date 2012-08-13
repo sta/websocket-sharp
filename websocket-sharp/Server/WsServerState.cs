@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * IWebSocketServer.cs
+ * WsServerState.cs
  *
  * The MIT License
  *
@@ -27,21 +27,14 @@
 #endregion
 
 using System;
-using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server
 {
-  public interface IWebSocketServer
+  public enum WsServerState
   {
-    WsServerState State { get; }
-
-    void AddService(WebSocketService service);
-    void CloseServices(CloseStatusCode code, string reason);
-    void Ping(string data);
-    void Publish(byte[] data);
-    void Publish(string data);
-    void RemoveService(WebSocketService service);
-    void Start();
-    void Stop();
+    READY,
+    START,
+    SHUTDOWN,
+    STOP
   }
 }

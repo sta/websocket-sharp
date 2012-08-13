@@ -45,6 +45,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private SynchronizedCollection<WebSocketService> _services;
+    private WsServerState                            _state;
     private TcpListener                              _tcpListener;
     private Uri                                      _uri;
 
@@ -65,6 +66,11 @@ namespace WebSocketSharp.Server
     public int Port
     {
       get { return Endpoint.Port; }
+    }
+
+    public WsServerState State
+    {
+      get { return _state; }
     }
 
     public string Url
@@ -107,6 +113,7 @@ namespace WebSocketSharp.Server
 
       _tcpListener = new TcpListener(IPAddress.Any, port);
       _services    = new SynchronizedCollection<WebSocketService>();
+      _state       = WsServerState.READY;
     }
 
     #endregion
@@ -248,12 +255,17 @@ namespace WebSocketSharp.Server
     {
       _tcpListener.Start();
       _tcpListener.BeginAcceptTcpClient(acceptClient, _tcpListener);
+      _state = WsServerState.START;
     }
 
     public void Stop()
     {
+      _state = WsServerState.SHUTDOWN;
+
       _tcpListener.Stop();
       CloseServices();
+
+      _state = WsServerState.STOP;
     }
 
     #endregion

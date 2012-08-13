@@ -74,12 +74,24 @@ namespace WebSocketSharp.Stream
 
     public int Read(byte[] buffer, int offset, int size)
     {
-      return _innerStream.Read(buffer, offset, size);
+      lock (_forRead)
+      {
+        var readLen = _innerStream.Read(buffer, offset, size);
+        if (readLen < size)
+        {
+          var msg = String.Format("Data can not be read from {0}.", typeof(TStream).Name);
+          throw new IOException(msg);
+        }
+        return readLen;
+      }
     }
 
     public int ReadByte()
     {
-      return _innerStream.ReadByte();
+      lock (_forRead)
+      {
+        return _innerStream.ReadByte();
+      }
     }
 
     public WsFrame ReadFrame()
@@ -92,12 +104,18 @@ namespace WebSocketSharp.Stream
 
     public void Write(byte[] buffer, int offset, int count)
     {
-      _innerStream.Write(buffer, offset, count);
+      lock (_forWrite)
+      {
+        _innerStream.Write(buffer, offset, count);
+      }
     }
 
     public void WriteByte(byte value)
     {
-      _innerStream.WriteByte(value);
+      lock (_forWrite)
+      {
+        _innerStream.WriteByte(value);
+      }
     }
 
     public void WriteFrame(WsFrame frame)

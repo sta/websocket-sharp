@@ -42,7 +42,7 @@ namespace WebSocketSharp.Server
 
     #region Property
 
-    public bool IsBinded { get; private set; }
+    public bool IsBound { get; private set; }
 
     #endregion
 
@@ -50,7 +50,7 @@ namespace WebSocketSharp.Server
 
     public WebSocketService()
     {
-      IsBinded = false;
+      IsBound = false;
     }
 
     #endregion
@@ -64,10 +64,13 @@ namespace WebSocketSharp.Server
         _server.AddService(this);
       };
 
-//      _socket.OnClose += (sender, e) =>
-//      {
-//        _server.RemoveService(this);
-//      };
+      _socket.OnClose += (sender, e) =>
+      {
+        if (_server.State == WsServerState.START)
+        {
+          _server.RemoveService(this);
+        }
+      };
     }
 
     #endregion
@@ -105,7 +108,7 @@ namespace WebSocketSharp.Server
       _socket.OnError   += onError;
       _socket.OnClose   += onClose;
 
-      IsBinded = true;
+      IsBound = true;
     }
 
     public void BPing()
@@ -115,52 +118,52 @@ namespace WebSocketSharp.Server
 
     public void BPing(string data)
     {
-      if (IsBinded) _server.Ping(data);
+      if (IsBound) _server.Ping(data);
     }
 
     public void Close()
     {
-      if (IsBinded) _socket.Close();
+      if (IsBound) _socket.Close();
     }
 
     public void Close(CloseStatusCode code, string reason)
     {
-      if (IsBinded) _socket.Close(code, reason);
+      if (IsBound) _socket.Close(code, reason);
     }
 
     public void Open()
     {
-      if (IsBinded) _socket.Connect();
+      if (IsBound) _socket.Connect();
     }
 
     public void Ping()
     {
-      if (IsBinded) _socket.Ping();
+      if (IsBound) _socket.Ping();
     }
 
     public void Ping(string data)
     {
-      if (IsBinded) _socket.Ping(data);
+      if (IsBound) _socket.Ping(data);
     }
 
     public void Publish(byte[] data)
     {
-      if (IsBinded) _server.Publish(data);
+      if (IsBound) _server.Publish(data);
     }
 
     public void Publish(string data)
     {
-      if (IsBinded) _server.Publish(data);
+      if (IsBound) _server.Publish(data);
     }
 
     public void Send(byte[] data)
     {
-      if (IsBinded) _socket.Send(data);
+      if (IsBound) _socket.Send(data);
     }
 
     public void Send(string data)
     {
-      if (IsBinded) _socket.Send(data);
+      if (IsBound) _socket.Send(data);
     }
 
     #endregion
