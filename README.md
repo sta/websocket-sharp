@@ -185,6 +185,10 @@ public class Chat : WebSocketService
 }
 ```
 
+If you override `onMessage` method, it is bound to server side `WebSocket.OnMessage` event.
+
+In addition, if you override `onOpen`, `onError` and `onClose` methods, each of them is bound to `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
+
 #### Step 3 ####
 
 Creating a instance of `WebSocketServer<T>` class.
