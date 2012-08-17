@@ -766,6 +766,21 @@ namespace WebSocketSharp
       }
     }
 
+    private void messageLoopCallback(IAsyncResult ar)
+    {
+      Action messageInvoker = (Action)ar.AsyncState;
+      messageInvoker.EndInvoke(ar);
+
+      if (_readyState == WsState.OPEN)
+      {
+        messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
+      }
+      else
+      {
+        _autoEvent.Set();
+      }
+    }
+
     private void pong(PayloadData data)
     {
       var frame = createFrame(Fin.FINAL, Opcode.PONG, data);
@@ -1090,27 +1105,14 @@ namespace WebSocketSharp
       else
       {
         _autoEvent = new AutoResetEvent(false);
-        Action act = () =>
+        Action messageInvoker = () =>
         {
           if (_readyState == WsState.OPEN)
           {
             message();
           }
         };
-        AsyncCallback callback = (ar) =>
-        {
-          act.EndInvoke(ar);
-
-          if (_readyState == WsState.OPEN)
-          {
-            act.BeginInvoke(callback, null);
-          }
-          else
-          {
-            _autoEvent.Set();
-          }
-        };
-        act.BeginInvoke(callback, null);
+        messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
       }
     }
 
