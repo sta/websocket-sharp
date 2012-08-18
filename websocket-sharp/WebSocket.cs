@@ -112,6 +112,30 @@ namespace WebSocketSharp
       get { return _extensions; }
     }
 
+    public bool IsConnected
+    {
+      get
+      {
+        if (_tcpClient == null) return false;
+
+        var socket = _tcpClient.Client;
+        if (!socket.Connected) return false;
+
+        if (socket.Poll(0, SelectMode.SelectWrite) &&
+            !socket.Poll(0, SelectMode.SelectError))
+        {
+          var buffer = new byte[1];
+
+          if (socket.Receive(buffer, SocketFlags.Peek) != 0)
+          {
+            return true;
+          }
+        }
+
+        return false;
+      }
+    }
+
     public string Protocol
     {
       get { return _protocol; }
