@@ -112,7 +112,7 @@ namespace Example
 
           Console.Write("> ");
           data = Console.ReadLine();
-          if (data == "exit")
+          if (data == "exit" || !ws.IsConnected)
           {
             break;
           }

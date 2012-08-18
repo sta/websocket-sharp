@@ -124,12 +124,14 @@ namespace WebSocketSharp
         if (socket.Poll(0, SelectMode.SelectWrite) &&
             !socket.Poll(0, SelectMode.SelectError))
         {
-          var buffer = new byte[1];
+//          var buffer = new byte[1];
+//
+//          if (socket.Receive(buffer, SocketFlags.Peek) != 0)
+//          {
+//            return true;
+//          }
 
-          if (socket.Receive(buffer, SocketFlags.Peek) != 0)
-          {
-            return true;
-          }
+          return true;
         }
 
         return false;
