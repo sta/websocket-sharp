@@ -111,9 +111,18 @@ namespace WebSocketSharp.Frame
     {
       Fin    = fin;
       Opcode = opcode;
-      Masked = mask;
 
       ulong dataLength = payloadData.Length;
+
+      if (dataLength == 0)
+      {
+        Masked = Mask.UNMASK;
+      }
+      else
+      {
+        Masked = mask;
+      }
+
       if (dataLength < 126)
       {
         PayloadLen = (byte)dataLength;
@@ -130,6 +139,7 @@ namespace WebSocketSharp.Frame
       }
 
       PayloadData = payloadData;
+
       if (Masked == Mask.MASK)
       {
         MaskingKey = new byte[4];
@@ -264,7 +274,11 @@ namespace WebSocketSharp.Frame
         }
       }
       // Payload Data
-      if (buffer3Len <= (ulong)_readBufferLen)
+      if (buffer3Len == 0)
+      {
+        buffer3 = new byte[]{};
+      }
+      else if (buffer3Len <= (ulong)_readBufferLen)
       {
         buffer3 = new byte[buffer3Len];
         readLen = stream.Read(buffer3, 0, (int)buffer3Len);

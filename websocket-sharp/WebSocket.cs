@@ -74,6 +74,7 @@ namespace WebSocketSharp
     private string                          _protocol;
     private string                          _protocols;
     private volatile WsState                _readyState;
+    private AutoResetEvent                  _receivedPong;
     private SslStream                       _sslStream;
     private TcpClient                       _tcpClient;
     private Uri                             _uri;
@@ -116,25 +117,8 @@ namespace WebSocketSharp
     {
       get
       {
-        if (_tcpClient == null) return false;
-
-        var socket = _tcpClient.Client;
-        if (!socket.Connected) return false;
-
-        if (socket.Poll(0, SelectMode.SelectWrite) &&
-            !socket.Poll(0, SelectMode.SelectError))
-        {
-//          var buffer = new byte[1];
-//
-//          if (socket.Receive(buffer, SocketFlags.Peek) != 0)
-//          {
-//            return true;
-//          }
-
-          return true;
-        }
-
-        return false;
+        if (_readyState != WsState.OPEN) return false;
+        return Ping();
       }
     }
 
@@ -198,6 +182,7 @@ namespace WebSocketSharp
       _fragmentLen         = 1024; // Max value is int.MaxValue - 14.
       _protocol            = String.Empty;
       _readyState          = WsState.CONNECTING;
+      _receivedPong        = new AutoResetEvent(false);
       _unTransmittedBuffer = new SynchronizedCollection<WsFrame>();
     }
 
@@ -894,6 +879,7 @@ namespace WebSocketSharp
             }
             else if (frame.Opcode == Opcode.PONG)
             {// FINAL & PONG
+              _receivedPong.Set();
               OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
             }
             else
@@ -913,7 +899,9 @@ namespace WebSocketSharp
           {
             case Opcode.TEXT:
             case Opcode.BINARY:
+              goto default;            
             case Opcode.PONG:
+              _receivedPong.Set();
               goto default;
             case Opcode.CLOSE:
               #if DEBUG
@@ -1194,12 +1182,12 @@ namespace WebSocketSharp
       Close(CloseStatusCode.AWAY);
     }
 
-    public void Ping()
+    public bool Ping()
     {
-      Ping(String.Empty);
+      return Ping(String.Empty);
     }
 
-    public void Ping(string data)
+    public bool Ping(string data)
     {
       var payloadData = new PayloadData(data);
 
@@ -1207,11 +1195,13 @@ namespace WebSocketSharp
       {
         var msg = "Ping frame must have a payload length of 125 bytes or less.";
         error(msg);
-        return;
+        return false;
       }
 
       var frame = createFrame(Fin.FINAL, Opcode.PING, payloadData);
-      send(frame);
+      if (!send(frame)) return false;
+
+      return _receivedPong.WaitOne(5 * 1000);
     }
 
     public void Send(string data)

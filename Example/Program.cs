@@ -84,7 +84,10 @@ namespace Example
 
         ws.OnMessage += (sender, e) =>
         {
-          enNfMessage("[WebSocket] Message", e.Data, "notification-message-im");
+          if (!String.IsNullOrEmpty(e.Data))
+          {
+            enNfMessage("[WebSocket] Message", e.Data, "notification-message-im");
+          }
         };
 
         ws.OnError += (sender, e) =>
@@ -112,7 +115,8 @@ namespace Example
 
           Console.Write("> ");
           data = Console.ReadLine();
-          if (data == "exit" || !ws.IsConnected)
+          if (data == "exit")
+          //if (data == "exit" || !ws.IsConnected)
           {
             break;
           }
