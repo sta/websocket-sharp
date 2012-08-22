@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server
@@ -40,9 +41,10 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Property
+    #region Properties
 
-    public bool IsBound { get; private set; }
+    public string ID      { get; private set; }
+    public bool   IsBound { get; private set; }
 
     #endregion
 
@@ -50,6 +52,7 @@ namespace WebSocketSharp.Server
 
     public WebSocketService()
     {
+      ID      = String.Empty;
       IsBound = false;
     }
 
@@ -57,18 +60,24 @@ namespace WebSocketSharp.Server
 
     #region Private Method
 
+    private string getNewID()
+    {
+      return Guid.NewGuid().ToString("N");
+    }
+
     private void defaultBind()
     {
       _socket.OnOpen += (sender, e) =>
       {
-        _server.AddService(this);
+        ID = getNewID();
+        _server.AddService(ID, this);
       };
 
       _socket.OnClose += (sender, e) =>
       {
         if (_server.State == WsServerState.START)
         {
-          _server.RemoveService(this);
+          _server.RemoveService(ID);
         }
       };
     }
@@ -111,47 +120,30 @@ namespace WebSocketSharp.Server
       IsBound = true;
     }
 
-    public void BPing()
+    public Dictionary<string, bool> PingAround()
     {
-      BPing(String.Empty);
+      return PingAround(String.Empty);
     }
 
-    public void BPing(string data)
+    public Dictionary<string, bool> PingAround(string data)
     {
-      if (IsBound) _server.Ping(data);
+      if (IsBound) return _server.PingAround(data);
+      return null;
     }
 
-    public void Close()
+    public bool Ping()
     {
-      if (IsBound) _socket.Close();
+      if (IsBound) return _socket.Ping();
+      return false;
     }
 
-    public void Close(CloseStatusCode code, string reason)
+    public bool Ping(string data)
     {
-      if (IsBound) _socket.Close(code, reason);
+      if (IsBound) return _socket.Ping(data);
+      return false;
     }
 
-    public void Open()
-    {
-      if (IsBound) _socket.Connect();
-    }
-
-    public void Ping()
-    {
-      if (IsBound) _socket.Ping();
-    }
-
-    public void Ping(string data)
-    {
-      if (IsBound) _socket.Ping(data);
-    }
-
-    public void Publish(byte[] data)
-    {
-      if (IsBound) _server.Publish(data);
-    }
-
-    public void Publish(string data)
+    public void Publish<TData>(TData data)
     {
       if (IsBound) _server.Publish(data);
     }
@@ -164,6 +156,31 @@ namespace WebSocketSharp.Server
     public void Send(string data)
     {
       if (IsBound) _socket.Send(data);
+    }
+
+    public void SendTo<TData>(string id, TData data)
+    {
+      if (IsBound) _server.SendTo(id, data);
+    }
+
+    public void SendTo<TData>(IEnumerable<string> group, TData data)
+    {
+      if (IsBound) _server.SendTo(group, data);
+    }
+
+    public void Start()
+    {
+      if (IsBound) _socket.Connect();
+    }
+
+    public void Stop()
+    {
+      if (IsBound) _socket.Close();
+    }
+
+    public void Stop(CloseStatusCode code, string reason)
+    {
+      if (IsBound) _socket.Close(code, reason);
     }
 
     #endregion

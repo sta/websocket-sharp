@@ -61,9 +61,9 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private AutoResetEvent                  _autoEvent;
     private string                          _base64key;
     private string                          _binaryType;
+    private AutoResetEvent                  _exitedMessageLoop;
     private string                          _extensions;
     private Object                          _forClose;
     private Object                          _forSend;
@@ -190,15 +190,10 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal WebSocket(string url, TcpClient tcpClient)
+    internal WebSocket(Uri uri, TcpClient tcpClient)
       : this()
     {
-      _uri = new Uri(url);
-      if (!isValidScheme(_uri))
-      {
-        throw new ArgumentException("Unsupported WebSocket URI scheme: " + _uri.Scheme);
-      }
-
+      _uri       = uri;
       _tcpClient = tcpClient;
       _isClient  = false;
     }
@@ -211,9 +206,11 @@ namespace WebSocketSharp
       : this()
     {
       _uri = new Uri(url);
+
       if (!isValidScheme(_uri))
       {
-        throw new ArgumentException("Unsupported WebSocket URI scheme: " + _uri.Scheme);
+        var msg = "Unsupported WebSocket URI scheme: " + _uri.Scheme;
+        throw new ArgumentException(msg);
       }
 
       _protocols = protocols.ToString(", ");
@@ -346,11 +343,11 @@ namespace WebSocketSharp
       {
         if (_isClient)
         {
-          _msgThread.Join(5000);
+          _msgThread.Join(5 * 1000);
         }
         else
         {
-          _autoEvent.WaitOne();
+          _exitedMessageLoop.WaitOne(5 * 1000);
         }
       }
 
@@ -788,7 +785,7 @@ namespace WebSocketSharp
       }
       else
       {
-        _autoEvent.Set();
+        _exitedMessageLoop.Set();
       }
     }
 
@@ -1118,7 +1115,7 @@ namespace WebSocketSharp
       }
       else
       {
-        _autoEvent = new AutoResetEvent(false);
+        _exitedMessageLoop = new AutoResetEvent(false);
         Action messageInvoker = () =>
         {
           if (_readyState == WsState.OPEN)
