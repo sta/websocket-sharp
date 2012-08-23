@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server
@@ -35,13 +36,14 @@ namespace WebSocketSharp.Server
   {
     WsServerState State { get; }
 
-    void AddService(WebSocketService service);
-    void CloseServices(CloseStatusCode code, string reason);
-    void Ping(string data);
-    void Publish(byte[] data);
-    void Publish(string data);
-    void RemoveService(WebSocketService service);
+    void AddService(string id, WebSocketService service);
+    Dictionary<string, bool> PingAround(string data);
+    void Publish<TData>(TData data);
+    void RemoveService(string id);
+    void SendTo<TData>(string id, TData data);
+    void SendTo<TData>(IEnumerable<string> group, TData data);
     void Start();
     void Stop();
+    void StopServices(CloseStatusCode code, string reason);
   }
 }
