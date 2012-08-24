@@ -74,10 +74,8 @@
     <Compile Include="Frame\Rsv.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
-    <Compile Include="Server\IWebSocketServer.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Server\WebSocketService.cs" />
-    <Compile Include="Server\WsServerState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

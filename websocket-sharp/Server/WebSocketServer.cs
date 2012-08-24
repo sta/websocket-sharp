@@ -34,20 +34,17 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server
 {
-  public class WebSocketServer<T> : IWebSocketServer
+  public class WebSocketServer<T>
     where T : WebSocketService, new()
   {
     #region Private Fields
 
-    private object                               _forServices;
     private Dictionary<string, WebSocketService> _services;
-    private WsServerState                        _state;
     private TcpListener                          _tcpListener;
     private Uri                                  _uri;
 
@@ -68,11 +65,6 @@ namespace WebSocketSharp.Server
     public int Port
     {
       get { return Endpoint.Port; }
-    }
-
-    public WsServerState State
-    {
-      get { return _state; }
     }
 
     public string Url
@@ -116,9 +108,7 @@ namespace WebSocketSharp.Server
       }
 
       _tcpListener = new TcpListener(IPAddress.Any, port);
-      _forServices = new object();
       _services    = new Dictionary<string, WebSocketService>();
-      _state       = WsServerState.READY;
     }
 
     #endregion
@@ -139,7 +129,7 @@ namespace WebSocketSharp.Server
         TcpClient client = listener.EndAcceptTcpClient(ar);
         WebSocket socket = new WebSocket(_uri, client);
         T service = new T();
-        service.Bind(this, socket);
+        service.Bind(socket, _services);
         service.Start();
       }
       catch (ObjectDisposedException)
@@ -180,116 +170,16 @@ namespace WebSocketSharp.Server
 
     #region Public Methods
 
-    public void AddService(string id, WebSocketService service)
-    {
-      lock (_forServices)
-      {
-        _services.Add(id, service);
-      }
-    }
-
-    public Dictionary<string, bool> PingAround()
-    {
-      return PingAround(String.Empty);
-    }
-
-    public Dictionary<string, bool> PingAround(string data)
-    {
-      var result = new Dictionary<string, bool>();
-
-      lock (_forServices)
-      {
-        foreach (WebSocketService service in _services.Values)
-        {
-          result.Add(service.ID, service.Ping(data));
-        }
-      }
-
-      return result;
-    }
-
-    public void Publish<TData>(TData data)
-    {
-      WaitCallback broadcast = (state) =>
-      {
-        lock (_forServices)
-        {
-          SendTo(_services.Keys, data);
-        }
-      };
-      ThreadPool.QueueUserWorkItem(broadcast);
-    }
-
-    public void RemoveService(string id)
-    {
-      lock (_forServices)
-      {
-        _services.Remove(id);
-      }
-    }
-
-    public void SendTo<TData>(string id, TData data)
-    {
-      if (typeof(TData) != typeof(string) &&
-          typeof(TData) != typeof(byte[]))
-      {
-        var msg = "Type of data must be string or byte[].";
-        throw new ArgumentException(msg);
-      }
-
-      lock (_forServices)
-      {
-        WebSocketService service;
-
-        if (_services.TryGetValue(id, out service))
-        {
-          if (typeof(TData) == typeof(string))
-          {
-            string data_ = (string)(object)data;
-            service.Send(data_);
-          }
-          else if (typeof(TData) == typeof(byte[]))
-          {
-            byte[] data_ = (byte[])(object)data;
-            service.Send(data_);
-          }
-        }
-      }
-    }
-
-    public void SendTo<TData>(IEnumerable<string> group, TData data)
-    {
-      if (typeof(TData) != typeof(string) &&
-          typeof(TData) != typeof(byte[]))
-      {
-        var msg = "Type of data must be string or byte[].";
-        throw new ArgumentException(msg);
-      }
-
-      lock (_forServices)
-      {
-        foreach (string id in group)
-        {
-          SendTo(id, data);
-        }
-      }
-    }
-
     public void Start()
     {
       _tcpListener.Start();
       _tcpListener.BeginAcceptTcpClient(acceptClient, _tcpListener);
-      _state = WsServerState.START;
     }
 
     public void Stop()
     {
-      _state = WsServerState.SHUTDOWN;
-
       _tcpListener.Stop();
       StopServices();
-
-      _state = WsServerState.STOP;
     }
 
     public void StopServices()
@@ -299,7 +189,7 @@ namespace WebSocketSharp.Server
 
     public void StopServices(CloseStatusCode code, string reason)
     {
-      lock (_forServices)
+      lock (((ICollection)_services).SyncRoot)
       {
         foreach (WebSocketService service in _services.Values)
         {

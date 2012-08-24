@@ -27,7 +27,9 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server
@@ -36,8 +38,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private IWebSocketServer _server;
-    private WebSocket        _socket;
+    private Dictionary<string, WebSocketService> _services;
+    private WebSocket                            _socket;
 
     #endregion
 
@@ -45,6 +47,7 @@ namespace WebSocketSharp.Server
 
     public string ID      { get; private set; }
     public bool   IsBound { get; private set; }
+    public bool   IsStop  { get; private set; }
 
     #endregion
 
@@ -54,11 +57,20 @@ namespace WebSocketSharp.Server
     {
       ID      = String.Empty;
       IsBound = false;
+      IsStop  = false;
     }
 
     #endregion
 
     #region Private Method
+
+    private void addService(string id, WebSocketService service)
+    {
+      lock (((ICollection)_services).SyncRoot)
+      {
+        _services.Add(id, service);
+      }
+    }
 
     private string getNewID()
     {
@@ -70,16 +82,24 @@ namespace WebSocketSharp.Server
       _socket.OnOpen += (sender, e) =>
       {
         ID = getNewID();
-        _server.AddService(ID, this);
+        addService(ID, this);
       };
 
       _socket.OnClose += (sender, e) =>
       {
-        if (_server.State == WsServerState.START)
+        if (!IsStop)
         {
-          _server.RemoveService(ID);
+          removeService(ID);
         }
       };
+    }
+
+    private void removeService(string id)
+    {
+      lock (((ICollection)_services).SyncRoot)
+      {
+        _services.Remove(id);
+      }
     }
 
     #endregion
@@ -106,10 +126,10 @@ namespace WebSocketSharp.Server
 
     #region Public Methods
 
-    public void Bind(IWebSocketServer server, WebSocket socket)
+    public void Bind(WebSocket socket, Dictionary<string, WebSocketService> services)
     {
-      _server = server;
-      _socket = socket;
+      _socket   = socket;
+      _services = services;
 
       defaultBind();
       _socket.OnOpen    += onOpen;
@@ -120,6 +140,18 @@ namespace WebSocketSharp.Server
       IsBound = true;
     }
 
+    public bool Ping()
+    {
+      return Ping(String.Empty);
+    }
+
+    public bool Ping(string data)
+    {
+      return IsBound
+             ? _socket.Ping(data)
+             : false;
+    }
+
     public Dictionary<string, bool> PingAround()
     {
       return PingAround(String.Empty);
@@ -127,25 +159,67 @@ namespace WebSocketSharp.Server
 
     public Dictionary<string, bool> PingAround(string data)
     {
-      if (IsBound) return _server.PingAround(data);
-      return null;
+      if (!IsBound) return null;
+
+      lock (((ICollection)_services).SyncRoot)
+      {
+        return PingTo(_services.Keys, data);
+      }
     }
 
-    public bool Ping()
+    public bool PingTo(string id)
     {
-      if (IsBound) return _socket.Ping();
-      return false;
+      return PingTo(id, String.Empty);
     }
 
-    public bool Ping(string data)
+    public Dictionary<string, bool> PingTo(IEnumerable<string> group)
     {
-      if (IsBound) return _socket.Ping(data);
-      return false;
+      return PingTo(group, String.Empty);
+    }
+
+    public bool PingTo(string id, string data)
+    {
+      if (!IsBound) return false;
+
+      lock (((ICollection)_services).SyncRoot)
+      {
+        WebSocketService service;
+
+        return _services.TryGetValue(id, out service)
+               ? service.Ping(data)
+               : false;
+      }
+    }
+
+    public Dictionary<string, bool> PingTo(IEnumerable<string> group, string data)
+    {
+      if (!IsBound) return null;
+
+      var result = new Dictionary<string, bool>();
+
+      lock (((ICollection)_services).SyncRoot)
+      {
+        foreach (string id in group)
+        {
+          result.Add(id, PingTo(id, data));
+        }
+      }
+
+      return result;
     }
 
     public void Publish<TData>(TData data)
     {
-      if (IsBound) _server.Publish(data);
+      if (!IsBound) return;
+
+      WaitCallback broadcast = (state) =>
+      {
+        lock (((ICollection)_services).SyncRoot)
+        {
+          SendTo(_services.Keys, data);
+        }
+      };
+      ThreadPool.QueueUserWorkItem(broadcast);
     }
 
     public void Send(byte[] data)
@@ -160,12 +234,53 @@ namespace WebSocketSharp.Server
 
     public void SendTo<TData>(string id, TData data)
     {
-      if (IsBound) _server.SendTo(id, data);
+      if (!IsBound) return;
+
+      if (typeof(TData) != typeof(string) &&
+          typeof(TData) != typeof(byte[]))
+      {
+        var msg = "Type of data must be string or byte[].";
+        throw new ArgumentException(msg);
+      }
+
+      lock (((ICollection)_services).SyncRoot)
+      {
+        WebSocketService service;
+
+        if (_services.TryGetValue(id, out service))
+        {
+          if (typeof(TData) == typeof(string))
+          {
+            string data_ = (string)(object)data;
+            service.Send(data_);
+          }
+          else if (typeof(TData) == typeof(byte[]))
+          {
+            byte[] data_ = (byte[])(object)data;
+            service.Send(data_);
+          }
+        }
+      }
     }
 
     public void SendTo<TData>(IEnumerable<string> group, TData data)
     {
-      if (IsBound) _server.SendTo(group, data);
+      if (!IsBound) return;
+
+      if (typeof(TData) != typeof(string) &&
+          typeof(TData) != typeof(byte[]))
+      {
+        var msg = "Type of data must be string or byte[].";
+        throw new ArgumentException(msg);
+      }
+
+      lock (((ICollection)_services).SyncRoot)
+      {
+        foreach (string id in group)
+        {
+          SendTo(id, data);
+        }
+      }
     }
 
     public void Start()
@@ -175,12 +290,15 @@ namespace WebSocketSharp.Server
 
     public void Stop()
     {
-      if (IsBound) _socket.Close();
+      Stop(CloseStatusCode.NORMAL, String.Empty);
     }
 
     public void Stop(CloseStatusCode code, string reason)
     {
-      if (IsBound) _socket.Close(code, reason);
+      if (!IsBound || IsStop) return;
+ 
+      IsStop = true;
+      _socket.Close(code, reason);
     }
 
     #endregion
