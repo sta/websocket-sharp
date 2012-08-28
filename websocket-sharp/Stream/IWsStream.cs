@@ -34,7 +34,6 @@ namespace WebSocketSharp.Stream
   public interface IWsStream : IDisposable
   {
     void    Close();
-    int     Read(byte[] buffer, int offset, int size);
     int     ReadByte();
     WsFrame ReadFrame();
     void    Write(byte[] buffer, int offset, int count);
