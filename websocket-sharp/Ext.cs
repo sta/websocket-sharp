@@ -330,5 +330,26 @@ namespace WebSocketSharp
 
       return sb.ToString();
     }
+
+    public static int BlockingRead(this System.IO.Stream stream, byte[] buffer, int offset, int count)
+    {
+        IAsyncResult ar = stream.BeginRead(buffer, offset, count, null, null);
+        return stream.EndRead(ar);
+    }
+
+    public static void ReadExactBytes(this System.IO.Stream stream, byte[] buffer, int offset, int count)
+    {
+        int remain = count;
+
+        while (remain > 0)
+        {
+            int nread = stream.BlockingRead(buffer, offset, remain);
+            if (nread == 0)
+                throw new IOException("Connection has been closed before request bytes are read");
+
+            remain -= nread;
+            offset += nread;
+        }
+    }
   }
 }

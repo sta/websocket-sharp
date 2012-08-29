@@ -72,26 +72,13 @@ namespace WebSocketSharp.Stream
       _innerStream.Dispose();
     }
 
-    public int Read(byte[] buffer, int offset, int size)
-    {
-      lock (_forRead)
-      {
-        var readLen = _innerStream.Read(buffer, offset, size);
-        if (readLen < size)
-        {
-          var msg = String.Format("Data can not be read from {0}.", typeof(TStream).Name);
-          throw new IOException(msg);
-        }
-        return readLen;
-      }
-    }
-
     public int ReadByte()
     {
-      lock (_forRead)
-      {
-        return _innerStream.ReadByte();
-      }
+        byte[] buffer = new byte[1];
+
+        _innerStream.ReadExactBytes(buffer, 0, 1);
+
+        return buffer[0];
     }
 
     public WsFrame ReadFrame()

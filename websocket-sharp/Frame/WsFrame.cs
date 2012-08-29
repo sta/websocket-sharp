@@ -192,10 +192,14 @@ namespace WebSocketSharp.Frame
       int    readLen       = 0;
 
       buffer1 = new byte[buffer1Len];
-      readLen = stream.Read(buffer1, 0, buffer1Len);
-      if (readLen < buffer1Len)
+
+      try
       {
-        return null;
+          stream.ReadExactBytes(buffer1, 0, buffer1Len);
+      }
+      catch (IOException e)
+      {
+          return null;
       }
 
       // FIN
@@ -239,11 +243,14 @@ namespace WebSocketSharp.Frame
       if (buffer2Len > 0)
       {
         buffer2 = new byte[buffer2Len];
-        readLen = stream.Read(buffer2, 0, buffer2Len);
 
-        if (readLen < buffer2Len)
+        try
         {
-          return null;
+            stream.ReadExactBytes(buffer2, 0, buffer2Len);
+        }
+        catch (IOException)
+        {
+            return null;
         }
 
         extPayloadLen = buffer2;
@@ -266,11 +273,14 @@ namespace WebSocketSharp.Frame
       if (masked == Mask.MASK)
       {
         maskingKey = new byte[maskingKeyLen];
-        readLen    = stream.Read(maskingKey, 0, maskingKeyLen);
 
-        if (readLen < maskingKeyLen)
+        try
         {
-          return null;
+            stream.ReadExactBytes(maskingKey, 0, maskingKeyLen);
+        }
+        catch (IOException)
+        {
+            return null;
         }
       }
       // Payload Data
@@ -281,11 +291,14 @@ namespace WebSocketSharp.Frame
       else if (buffer3Len <= (ulong)_readBufferLen)
       {
         buffer3 = new byte[buffer3Len];
-        readLen = stream.Read(buffer3, 0, (int)buffer3Len);
 
-        if (readLen < (int)buffer3Len)
+        try
         {
-          return null;
+            stream.ReadExactBytes(buffer3, 0, buffer3.Length);
+        }
+        catch (IOException)
+        {
+            return null;
         }
       }
       else

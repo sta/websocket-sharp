@@ -543,6 +543,11 @@ namespace WebSocketSharp
       OnError.Emit(this, new ErrorEventArgs(message));
     }
 
+    private bool isBindingAnyIP()
+    {
+      return _uri.Host.Equals("0.0.0.0");
+    }
+
     private bool isValidRequest(string[] request, out string message)
     {
       string   reqConnection, reqHost, reqUpgrade, secWsVersion;
@@ -585,7 +590,7 @@ namespace WebSocketSharp
             return false;
           }
         }
-        else if (request[i].Contains("Host:"))
+        else if (request[i].Contains("Host:") && !isBindingAnyIP())
         {
           reqHost = request[i].GetHeaderValue(":");
           if (expectedHost.NotEqualsDo(reqHost, func("Host"), out message, true))
