@@ -77,6 +77,8 @@
     <Compile Include="IWsStream.cs" />
     <Compile Include="WsStream.cs" />
     <Compile Include="RequestHandshake.cs" />
+    <Compile Include="ResponseHandshake.cs" />
+    <Compile Include="Handshake.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -251,7 +251,7 @@ namespace WebSocketSharp
       var response = createResponseHandshake();
       #if DEBUG
       Console.WriteLine("WS: Info@acceptHandshake: Opening handshake from server:\n");
-      Console.WriteLine(response);
+      Console.WriteLine(response.ToString());
       #endif
       sendResponseHandshake(response);
 
@@ -435,24 +435,12 @@ namespace WebSocketSharp
       return request;
     }
 
-    private string createResponseHandshake()
+    private ResponseHandshake createResponseHandshake()
     {
-      string crlf          = "\r\n";
+      var response = new ResponseHandshake();
+      response.AddHeader("Sec-WebSocket-Accept", createExpectedKey());
 
-      string resStatus     = "HTTP/1.1 101 Switching Protocols" + crlf;
-      string resUpgrade    = "Upgrade: websocket" + crlf;
-      string resConnection = "Connection: Upgrade" + crlf;
-      string secWsAccept   = String.Format("Sec-WebSocket-Accept: {0}{1}", createExpectedKey(), crlf);
-      //string secWsProtocol = "Sec-WebSocket-Protocol: chat" + crlf;
-      string secWsVersion  = String.Format("Sec-WebSocket-Version: {0}{1}", _version, crlf);
-
-      return resStatus +
-             resUpgrade +
-             resConnection +
-             secWsAccept +
-             //secWsProtocol +
-             secWsVersion +
-             crlf;
+      return response;
     }
 
     private void createServerStream()
@@ -467,32 +455,28 @@ namespace WebSocketSharp
         _sslStream.AuthenticateAsServer(new X509Certificate(certPath));
 
         _wsStream = new WsStream<SslStream>(_sslStream);
+
+        return;
       }
-      else
-      {
-        _wsStream = new WsStream<NetworkStream>(_netStream);
-      }
+
+      _wsStream = new WsStream<NetworkStream>(_netStream);
     }
 
     private void doHandshake()
     {
       var request = createOpeningHandshake();
       #if DEBUG
-      Console.WriteLine("WS: Info@doHandshake: Opening handshake from client:\n{0}", request);
+      Console.WriteLine("WS: Info@doHandshake: Opening handshake from client:\n");
+      Console.WriteLine(request.ToString());
       #endif
       var response = sendOpeningHandshake(request);
       #if DEBUG
       Console.WriteLine("WS: Info@doHandshake: Opening handshake from server:\n");
-      foreach (string s in response)
-      {
-        Console.WriteLine("{0}", s);
-      }
+      Console.WriteLine(response.ToString());
       #endif
       string msg;
       if (!isValidResponse(response, out msg))
-      {
         throw new InvalidOperationException(msg);
-      }
 
       ReadyState = WsState.OPEN;
     }
@@ -552,87 +536,35 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool isValidResponse(string[] response, out string message)
+    private bool isValidResponse(ResponseHandshake response, out string message)
     {
-      string       resUpgrade, resConnection, secWsAccept, secWsVersion;
-      string[]     resStatus;
-
-      List<string> extensionList = new List<string>();
-
-      Func<string, Func<string, string, string>> func = s =>
+      if (!response.IsWebSocketResponse)
       {
-        return (e, a) =>
-        {
-          return String.Format("Invalid response {0} value: {1}(expected: {2})", s, a, e);
-        };
-      };
-
-      resStatus = response[0].Split(' ');
-      if ("HTTP/1.1".NotEqualsDo(resStatus[0], func("HTTP Version"), out message, false))
-      {
-        return false;
-      }
-      if ("101".NotEqualsDo(resStatus[1], func("Status Code"), out message, false))
-      {
+        message = "Not WebSocket response.";
         return false;
       }
 
-      for (int i = 1; i < response.Length; i++)
+      if (!response.HeaderExists("Sec-WebSocket-Accept", createExpectedKey()))
       {
-        if (response[i].Contains("Upgrade:"))
+        message = "Invalid Sec-WebSocket-Accept value.";
+        return false;
+      }
+
+      if (response.HeaderExists("Sec-WebSocket-Version"))
+      {
+        if (!response.HeaderExists("Sec-WebSocket-Version", _version))
         {
-          resUpgrade = response[i].GetHeaderValue(":");
-          if ("websocket".NotEqualsDo(resUpgrade, func("Upgrade"), out message, true))
-          {
-            return false;
-          }
-        }
-        else if (response[i].Contains("Connection:"))
-        {
-          resConnection = response[i].GetHeaderValue(":");
-          if ("Upgrade".NotEqualsDo(resConnection, func("Connection"), out message, true))
-          {
-            return false;
-          }
-        }
-        else if (response[i].Contains("Sec-WebSocket-Accept:"))
-        {
-          secWsAccept = response[i].GetHeaderValue(":");
-          if (createExpectedKey().NotEqualsDo(secWsAccept, func("Sec-WebSocket-Accept"), out message, false))
-          {
-            return false;
-          }
-        }
-        else if (response[i].Contains("Sec-WebSocket-Extensions:"))
-        {
-          extensionList.Add(response[i].GetHeaderValue(":"));
-        }
-        else if (response[i].Contains("Sec-WebSocket-Protocol:"))
-        {
-          _protocol = response[i].GetHeaderValue(":");
-          #if DEBUG
-          Console.WriteLine("WS: Info@isValidResponse: Sub protocol: {0}", _protocol);
-          #endif
-        }
-        else if (response[i].Contains("Sec-WebSocket-Version:"))
-        {
-          secWsVersion = response[i].GetHeaderValue(":");
-          if (_version.NotEqualsDo(secWsVersion, func("Sec-WebSocket-Version"), out message, true))
-          {
-            return false;
-          }
-        }
-        else
-        {
-          Console.WriteLine("WS: Info@isValidResponse: Unsupported response header line: {0}", response[i]);
+          message = "Unsupported Sec-WebSocket-Version.";
+          return false;
         }
       }
-      #if DEBUG
-      foreach (string s in extensionList)
-      {
-        Console.WriteLine("WS: Info@isValidResponse: Extensions: {0}", s);
-      }
-      #endif
+
+      if (response.HeaderExists("Sec-WebSocket-Protocol"))
+        _protocol = response.Headers["Sec-WebSocket-Protocol"];
+
+      if (response.HeaderExists("Sec-WebSocket-Extensions"))
+        _extensions = response.Headers["Sec-WebSocket-Extensions"];
+
       message = String.Empty;
       return true;
     }
@@ -641,9 +573,7 @@ namespace WebSocketSharp
     {
       string scheme = uri.Scheme;
       if (scheme == "ws" || scheme == "wss")
-      {
         return true;
-      }
 
       return false;
     }
@@ -704,7 +634,7 @@ namespace WebSocketSharp
       pong(payloadData);
     }
 
-    private byte[] readHandshake()
+    private string[] readHandshake()
     {
       var buffer = new List<byte>();
 
@@ -717,7 +647,9 @@ namespace WebSocketSharp
           break;
       }
 
-      return buffer.ToArray();
+      return Encoding.UTF8.GetString(buffer.ToArray())
+             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
+             .Split('\n');
     }
 
     private MessageEventArgs receive()
@@ -980,21 +912,15 @@ namespace WebSocketSharp
       return readLen;
     }
 
-    private string[] sendOpeningHandshake(RequestHandshake request)
+    private ResponseHandshake sendOpeningHandshake(RequestHandshake request)
     {
       _wsStream.Write(request.ToBytes(), 0, request.ToBytes().Length);
-
-      var readData = readHandshake();
-
-      return Encoding.UTF8.GetString(readData)
-             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
-             .Split('\n');
+      return ResponseHandshake.Parse(readHandshake());
     }
 
-    private void sendResponseHandshake(string value)
+    private void sendResponseHandshake(ResponseHandshake response)
     {
-      var buffer = Encoding.UTF8.GetBytes(value);
-      _wsStream.Write(buffer, 0, buffer.Length);
+      _wsStream.Write(response.ToBytes(), 0, response.ToBytes().Length);
     }
 
     private void startMessageThread()

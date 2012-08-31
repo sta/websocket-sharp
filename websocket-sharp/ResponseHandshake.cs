@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * RequestHandshake.cs
+ * ResponseHandshake.cs
  *
  * The MIT License
  *
@@ -27,36 +27,32 @@
 #endregion
 
 using System;
-using System.Net;
 using System.Collections.Specialized;
+using System.Net;
 using System.Text;
 
 namespace WebSocketSharp {
 
-  public class RequestHandshake : Handshake
+  public class ResponseHandshake : Handshake
   {
-    private RequestHandshake()
+    public ResponseHandshake()
     {
-    }
-
-    public RequestHandshake(string uri)
-    {
-      Method  = "GET";
-      Uri     = uri;
       Version = "HTTP/1.1";
+      Status  = "101";
+      Reason  = "Switching Protocols";
       Headers = new NameValueCollection();
 
       AddHeader("Upgrade", "websocket");
       AddHeader("Connection", "Upgrade");
     }
 
-    public bool IsWebSocketRequest {
+    public bool IsWebSocketResponse {
 
       get {
-        if (Method != "GET")
+        if (Version != "HTTP/1.1")
           return false;
 
-        if (Version != "HTTP/1.1")
+        if (Status != "101")
           return false;
 
         if (!HeaderExists("Upgrade", "websocket"))
@@ -65,37 +61,35 @@ namespace WebSocketSharp {
         if (!HeaderExists("Connection", "Upgrade"))
           return false;
 
-        if (!HeaderExists("Host"))
-          return false;
-
-        if (!HeaderExists("Sec-WebSocket-Key"))
-          return false;
-
-        if (!HeaderExists("Sec-WebSocket-Version"))
+        if (!HeaderExists("Sec-WebSocket-Accept"))
           return false;
 
         return true;
       }
     }
 
-    public string Method  { get; private set; }
-    public string Uri     { get; private set; }
+    public string Reason  { get; private set; }
+    public string Status  { get; private set; }
 
-    public static RequestHandshake Parse(string[] request)
+    public static ResponseHandshake Parse(string[] response)
     {
-      var requestLine = request[0].Split(' ');
-      if (requestLine.Length != 3)
-        throw new ArgumentException("Invalid request line.");
+      var statusLine = response[0].Split(' ');
+      if (statusLine.Length < 3)
+        throw new ArgumentException("Invalid status line.");
+
+      var reason = new StringBuilder(statusLine[2]);
+      for (int i = 3; i < statusLine.Length; i++)
+        reason.AppendFormat(" {0}", statusLine[i]);
 
       var headers = new WebHeaderCollection();
-      for (int i = 1; i < request.Length; i++)
-        headers.Add(request[i]);
+      for (int i = 1; i < response.Length; i++)
+        headers.Add(response[i]);
 
-      return new RequestHandshake {
+      return new ResponseHandshake {
         Headers = headers,
-        Method  = requestLine[0],
-        Uri     = requestLine[1],
-        Version = requestLine[2]        
+        Reason  = reason.ToString(),
+        Status  = statusLine[1],
+        Version = statusLine[0]
       };
     }
 
@@ -103,7 +97,7 @@ namespace WebSocketSharp {
     {
       var buffer = new StringBuilder();
 
-      buffer.AppendFormat("{0} {1} {2}{3}", Method, Uri, Version, _crlf);
+      buffer.AppendFormat("{0} {1} {2}{3}", Version, Status, Reason, _crlf);
 
       foreach (string key in Headers.AllKeys)
         buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
