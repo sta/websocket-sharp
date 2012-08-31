@@ -29,7 +29,7 @@
 using System;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp.Stream
+namespace WebSocketSharp
 {
   public interface IWsStream : IDisposable
   {

@@ -63,8 +63,6 @@
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="WsReceivedTooBigMessageException.cs" />
     <Compile Include="ByteOrder.cs" />
-    <Compile Include="Stream\IWsStream.cs" />
-    <Compile Include="Stream\WsStream.cs" />
     <Compile Include="Frame\WsFrame.cs" />
     <Compile Include="Frame\CloseStatusCode.cs" />
     <Compile Include="Frame\Fin.cs" />
@@ -76,10 +74,12 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Server\WebSocketService.cs" />
+    <Compile Include="IWsStream.cs" />
+    <Compile Include="WsStream.cs" />
+    <Compile Include="RequestHandshake.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Stream\" />
     <Folder Include="Frame\" />
     <Folder Include="Server\" />
   </ItemGroup>

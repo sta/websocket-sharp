@@ -34,10 +34,10 @@ using System.Net.Sockets;
 using System.Reflection;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp.Stream
+namespace WebSocketSharp
 {
   public class WsStream<TStream> : IWsStream
-    where TStream : System.IO.Stream
+    where TStream : Stream
   {
     private TStream _innerStream;
     private Object  _forRead;
