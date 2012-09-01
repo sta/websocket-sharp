@@ -37,16 +37,62 @@ using System.Net.Sockets;
 using System.Threading;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp.Server
-{
+namespace WebSocketSharp.Server {
+
   public class WebSocketServer<T>
     where T : WebSocketService, new()
   {
     #region Private Fields
 
+    private Thread                               _acceptClientThread;
     private Dictionary<string, WebSocketService> _services;
     private TcpListener                          _tcpListener;
     private Uri                                  _uri;
+
+    #endregion
+
+    #region Constructor
+
+    public WebSocketServer(string url)
+    {
+      _uri = new Uri(url);
+      if (!isValidScheme(_uri))
+      {
+        var msg = "Unsupported WebSocket URI scheme: " + _uri.Scheme;
+        throw new ArgumentException(msg);
+      }
+
+      var host = _uri.DnsSafeHost;
+      var ips  = Dns.GetHostAddresses(host);
+      if (ips.Length == 0)
+      {
+        var msg = "Invalid WebSocket URI host: " + host;
+        throw new ArgumentException(msg);
+      }
+
+      var scheme = _uri.Scheme;
+      var port   = _uri.Port;
+      if (port <= 0)
+      {
+        port = 80;
+        if (scheme == "wss")
+          port = 443;
+      }
+
+      _tcpListener = new TcpListener(ips[0], port);
+      _services    = new Dictionary<string, WebSocketService>();
+    }
+
+    public WebSocketServer(string absPath, int port)
+    {
+      _uri = new Uri(absPath, UriKind.Relative);
+
+      if (port <= 0)
+        port = 80;
+
+      _tcpListener = new TcpListener(IPAddress.Any, port);
+      _services    = new Dictionary<string, WebSocketService>();
+    }
 
     #endregion
 
@@ -80,69 +126,27 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Public Constructor
-
-    public WebSocketServer(string url)
-    {
-      _uri = new Uri(url);
-
-      if (!isValidScheme(_uri))
-      {
-        var msg = "Unsupported WebSocket URI scheme: " + _uri.Scheme;
-        throw new ArgumentException(msg);
-      }
-
-      string scheme = _uri.Scheme;
-      int    port   = _uri.Port;
-
-      if (port <= 0)
-      {
-        if (scheme == "wss")
-        {
-          port = 443;
-        }
-        else
-        {
-          port = 80;
-        }
-      }
-
-      _tcpListener = new TcpListener(IPAddress.Any, port);
-      _services    = new Dictionary<string, WebSocketService>();
-    }
-
-    #endregion
-
     #region Private Methods
 
-    private void acceptClient(IAsyncResult ar)
+    private void acceptClient()
     {
-      TcpListener listener = (TcpListener)ar.AsyncState;
-
-      if (listener.Server == null || !listener.Server.IsBound)
+      while (true)
       {
-        return;
+        try {
+          var client = _tcpListener.AcceptTcpClient();
+          startService(client);
+        }
+        catch (SocketException)
+        {
+          // TcpListener has been stopped.
+          break;
+        }
+        catch (Exception ex)
+        {
+          error(ex.Message);
+          break;
+        }
       }
-
-      try
-      {
-        TcpClient client = listener.EndAcceptTcpClient(ar);
-        WebSocket socket = new WebSocket(_uri, client);
-        T service = new T();
-        service.Bind(socket, _services);
-        service.Start();
-      }
-      catch (ObjectDisposedException)
-      {
-        // TcpListener has been stopped.
-        return;
-      }
-      catch (Exception ex)
-      {
-        error(ex.Message);
-      }
-
-      listener.BeginAcceptTcpClient(acceptClient, listener);
     }
 
     private void error(string message)
@@ -157,28 +161,57 @@ namespace WebSocketSharp.Server
 
     private bool isValidScheme(Uri uri)
     {
-      string scheme = uri.Scheme;
+      var scheme = uri.Scheme;
       if (scheme == "ws" || scheme == "wss")
-      {
         return true;
-      }
 
       return false;
+    }
+
+    private void startAcceptClientThread()
+    {
+      _acceptClientThread = new Thread(new ThreadStart(acceptClient)); 
+      _acceptClientThread.IsBackground = true;
+      _acceptClientThread.Start();
+    }
+
+    private void startService(TcpClient client)
+    {
+      WaitCallback startCb = (state) =>
+      {
+        try {
+          var socket = new WebSocket(_uri, client);
+          BindWebSocket(socket);
+        }
+        catch (Exception ex)
+        {
+          error(ex.Message);
+        }
+      };
+      ThreadPool.QueueUserWorkItem(startCb);
     }
 
     #endregion
 
     #region Public Methods
 
+    public void BindWebSocket(WebSocket socket)
+    {
+      T service = new T();
+      service.Bind(socket, _services);
+      service.Start();
+    }
+
     public void Start()
     {
       _tcpListener.Start();
-      _tcpListener.BeginAcceptTcpClient(acceptClient, _tcpListener);
+      startAcceptClientThread();
     }
 
     public void Stop()
     {
       _tcpListener.Stop();
+      _acceptClientThread.Join(5 * 1000);
       StopServices();
     }
 
@@ -192,9 +225,7 @@ namespace WebSocketSharp.Server
       lock (((ICollection)_services).SyncRoot)
       {
         foreach (WebSocketService service in _services.Values)
-        {
           service.Stop(code, reason);
-        }
       }
     }
 

@@ -57,6 +57,8 @@ namespace WebSocketSharp
 
     public static bool EqualsAndSaveTo(this int value, char c, List<byte> dest)
     {
+      if (value < 0)
+        throw new ArgumentOutOfRangeException("value");
       byte b = (byte)value;
       dest.Add(b);
       return b == Convert.ToByte(c);

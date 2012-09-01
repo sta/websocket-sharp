@@ -62,6 +62,7 @@ namespace WebSocketSharp
 
     private string                          _base64key;
     private string                          _binaryType;
+    private IPEndPoint                      _endPoint;
     private AutoResetEvent                  _exitedMessageLoop;
     private string                          _extensions;
     private Object                          _forClose;
@@ -106,6 +107,7 @@ namespace WebSocketSharp
     {
       _uri       = uri;
       _tcpClient = tcpClient;
+      _endPoint  = (IPEndPoint)_tcpClient.Client.LocalEndPoint;
       _isClient  = false;
     }
 
@@ -177,12 +179,21 @@ namespace WebSocketSharp
       get { return _extensions; }
     }
 
-    public bool IsConnected
-    {
-      get
-      {
-        if (_readyState != WsState.OPEN) return false;
+    public bool IsConnected {
+      get {
+        if (_readyState != WsState.OPEN)
+          return false;
+
         return Ping();
+      }
+    }
+
+    public bool IsSecure {
+      get {
+        if (_endPoint.Port == 443)
+          return true;
+
+        return false;
       }
     }
 
@@ -447,7 +458,7 @@ namespace WebSocketSharp
     {
       _netStream = _tcpClient.GetStream();
 
-      if (_uri.Scheme == "wss")
+      if (IsSecure)
       {
         _sslStream = new SslStream(_netStream);
 
@@ -507,16 +518,18 @@ namespace WebSocketSharp
         };
       };
 
-      string expectedHost = _uri.DnsSafeHost;
-      int port = ((IPEndPoint)_tcpClient.Client.LocalEndPoint).Port;
-      if (port != 80)
-        expectedHost += ":" + port;
+      if (_uri.IsAbsoluteUri)
+      {
+        if (_uri.PathAndQuery.NotEqualsDo(request.Uri, func("Request URI"), out message, false))
+          return false;
 
-      if (_uri.PathAndQuery.NotEqualsDo(request.Uri, func("Request URI"), out message, false))
-        return false;
+        if (!isValidRequestHost(request.GetHeaderValues("Host")[0], func("Host"), out message))
+          return false;
+      }
 
-      if (expectedHost.NotEqualsDo(request.GetHeaderValues("Host")[0], func("Host"), out message, false))
-        return false;
+      if (!_uri.IsAbsoluteUri)
+        if (_uri.ToString().NotEqualsDo(request.Uri, func("Request URI"), out message, false))
+          return false;
 
       if (!request.HeaderExists("Sec-WebSocket-Version", _version))
       {
@@ -531,6 +544,27 @@ namespace WebSocketSharp
 
       if (request.HeaderExists("Sec-WebSocket-Extensions"))
         _extensions = request.Headers["Sec-WebSocket-Extensions"];
+
+      message = String.Empty;
+      return true;
+    }
+
+    private bool isValidRequestHost(string value, Func<string, string, string> func, out string message)
+    {
+      var address = _endPoint.Address;
+      var port    = _endPoint.Port;
+
+      var expectedHost1 = _uri.DnsSafeHost;
+      var expectedHost2 = address.ToString();
+      if (port != 80)
+      {
+        expectedHost1 += ":" + port;
+        expectedHost2 += ":" + port;
+      }
+
+      if (expectedHost1.NotEqualsDo(value, func, out message, false))
+        if (expectedHost2.NotEqualsDo(value, func, out message, false))
+          return false;
 
       message = String.Empty;
       return true;
