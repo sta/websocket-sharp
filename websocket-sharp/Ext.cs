@@ -149,48 +149,36 @@ namespace WebSocketSharp
       return subArray;
     }
 
-    public static void Times<T>(this T n, Action act)
-      where T : struct
+    public static void Times(this int n, Action act)
     {
-      if (typeof(T) != typeof(byte)   &&
-          typeof(T) != typeof(Int16)  &&
-          typeof(T) != typeof(Int32)  &&
-          typeof(T) != typeof(Int64)  &&
-          typeof(T) != typeof(UInt16) &&
-          typeof(T) != typeof(UInt32) &&
-          typeof(T) != typeof(UInt64))
-      {
-        throw new NotSupportedException("Not supported Struct type: " + typeof(T).ToString());
-      }
-
-      ulong m = (ulong)(object)n;
-
-      for (ulong i = 0; i < m; i++)
-      {
-        act();
-      }
+      ((ulong)n).Times(act);
     }
 
-    public static void Times<T>(this T n, Action<ulong> act)
-      where T : struct
+    public static void Times(this uint n, Action act)
     {
-      if (typeof(T) != typeof(byte)   &&
-          typeof(T) != typeof(Int16)  &&
-          typeof(T) != typeof(Int32)  &&
-          typeof(T) != typeof(Int64)  &&
-          typeof(T) != typeof(UInt16) &&
-          typeof(T) != typeof(UInt32) &&
-          typeof(T) != typeof(UInt64))
-      {
-        throw new NotSupportedException("Not supported Struct type: " + typeof(T).ToString());
-      }
+      ((ulong)n).Times(act);
+    }
 
-      ulong m = (ulong)(object)n;
+    public static void Times(this ulong n, Action act)
+    {
+      for (ulong i = 0; i < n; i++)
+        act();
+    }
 
-      for (ulong i = 0; i < m; i++)
-      {
+    public static void Times(this int n, Action<ulong> act)
+    {
+      ((ulong)n).Times(act);
+    }
+
+    public static void Times(this uint n, Action<ulong> act)
+    {
+      ((ulong)n).Times(act);
+    }
+
+    public static void Times(this ulong n, Action<ulong> act)
+    {
+      for (ulong i = 0; i < n; i++)
         act(i);
-      }
     }
 
     public static T To<T>(this byte[] src, ByteOrder srcOrder)

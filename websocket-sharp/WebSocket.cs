@@ -69,6 +69,7 @@ namespace WebSocketSharp
     private Object                          _forSend;
     private int                             _fragmentLen;
     private bool                            _isClient;
+    private bool                            _isSecure;
     private Thread                          _msgThread;
     private NetworkStream                   _netStream;
     private string                          _protocol;
@@ -109,6 +110,7 @@ namespace WebSocketSharp
       _tcpClient = tcpClient;
       _endPoint  = (IPEndPoint)_tcpClient.Client.LocalEndPoint;
       _isClient  = false;
+      _isSecure  = _endPoint.Port == 443 ? true : false;
     }
 
     #endregion
@@ -119,7 +121,6 @@ namespace WebSocketSharp
       : this()
     {
       _uri = new Uri(url);
-
       if (!isValidScheme(_uri))
       {
         var msg = "Unsupported WebSocket URI scheme: " + _uri.Scheme;
@@ -128,6 +129,7 @@ namespace WebSocketSharp
 
       _protocols = protocols.ToString(", ");
       _isClient  = true;
+      _isSecure  = _uri.Scheme == "wss" ? true : false;
     }
 
     public WebSocket(
@@ -179,7 +181,7 @@ namespace WebSocketSharp
       get { return _extensions; }
     }
 
-    public bool IsConnected {
+    public bool IsKeepAlive {
       get {
         if (_readyState != WsState.OPEN)
           return false;
@@ -190,10 +192,7 @@ namespace WebSocketSharp
 
     public bool IsSecure {
       get {
-        if (_endPoint.Port == 443)
-          return true;
-
-        return false;
+        return _isSecure;
       }
     }
 
@@ -360,21 +359,19 @@ namespace WebSocketSharp
 
     private void createClientStream()
     {
-      string scheme = _uri.Scheme;
-      string host   = _uri.DnsSafeHost;
-      int    port   = _uri.Port;
-
+      var host = _uri.DnsSafeHost;
+      var port = _uri.Port;
       if (port <= 0)
       {
         port = 80;
-        if (scheme == "wss")
+        if (IsSecure)
           port = 443;
       }
 
       _tcpClient = new TcpClient(host, port);
       _netStream = _tcpClient.GetStream();
 
-      if (scheme == "wss")
+      if (IsSecure)
       {
         RemoteCertificateValidationCallback validation = (sender, certificate, chain, sslPolicyErrors) =>
         {

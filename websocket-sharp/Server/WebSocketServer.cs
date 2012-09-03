@@ -51,7 +51,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
     public WebSocketServer(string url)
     {
@@ -81,6 +81,11 @@ namespace WebSocketSharp.Server {
 
       _tcpListener = new TcpListener(ips[0], port);
       _services    = new Dictionary<string, WebSocketService>();
+    }
+
+    public WebSocketServer(int port)
+      : this("/", port)
+    {
     }
 
     public WebSocketServer(string absPath, int port)
@@ -177,7 +182,7 @@ namespace WebSocketSharp.Server {
 
     private void startService(TcpClient client)
     {
-      WaitCallback startCb = (state) =>
+      WaitCallback startSv = (state) =>
       {
         try {
           var socket = new WebSocket(_uri, client);
@@ -188,7 +193,7 @@ namespace WebSocketSharp.Server {
           error(ex.Message);
         }
       };
-      ThreadPool.QueueUserWorkItem(startCb);
+      ThreadPool.QueueUserWorkItem(startSv);
     }
 
     #endregion

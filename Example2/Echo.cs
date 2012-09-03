@@ -10,5 +10,10 @@ namespace Example2
     {
       Send(e.Data);
     }
+
+    protected override void onClose(object sender, CloseEventArgs e)
+    {
+      Console.WriteLine("[Echo] Close({0}: {1})", (ushort)e.Code, e.Code);
+    }
   }
 }

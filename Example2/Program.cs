@@ -9,7 +9,7 @@ namespace Example2
     {
       //var wssv = new WebSocketServer<Echo>("ws://localhost:4649");
       //var wssv = new WebSocketServer<Chat>("ws://localhost:4649");
-      var wssv = new WebSocketServer<Echo>("/", 4649);
+      var wssv = new WebSocketServer<Echo>(4649);
 
       wssv.Start();
       Console.WriteLine(

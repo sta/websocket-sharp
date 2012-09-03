@@ -124,7 +124,7 @@ namespace Example1
       _notifyMsgState = new ThreadState();
       _notifyMsg = (state) =>
       {
-        while (_notifyMsgState.Enabled)
+        while (_notifyMsgState.Enabled || _msgQ.Count > 0)
         {
           Thread.Sleep(500);
 
@@ -197,7 +197,7 @@ namespace Example1
       float[,] buffer_array  = new float[ch_num, buffer_length];
 
       int offset = 9;
-      ch_num.Times(i =>
+      ((int)ch_num).Times(i =>
       {
         buffer_length.Times(j =>
         {

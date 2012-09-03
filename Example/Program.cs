@@ -49,7 +49,7 @@ namespace Example
 
       WaitCallback notifyMsg = state => 
       {
-        while (ts.Enabled)
+        while (ts.Enabled || _msgQ.Count > 0)
         {
           Thread.Sleep(500);
 
@@ -73,9 +73,9 @@ namespace Example
 
       ThreadPool.QueueUserWorkItem(notifyMsg);
 
-      using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
+      //using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
       //using (WebSocket ws = new WebSocket("wss://echo.websocket.org", "echo"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649"))
+      using (WebSocket ws = new WebSocket("ws://localhost:4649"))
       {
         ws.OnOpen += (sender, e) =>
         {
@@ -116,7 +116,7 @@ namespace Example
           Console.Write("> ");
           data = Console.ReadLine();
           if (data == "exit")
-          //if (data == "exit" || !ws.IsConnected)
+          //if (data == "exit" || !ws.IsKeepAlive)
           {
             break;
           }
