@@ -295,8 +295,13 @@ namespace WebSocketSharp.Server
 
     public void Stop(CloseStatusCode code, string reason)
     {
+      Stop((ushort)code, reason);
+    }
+
+    public void Stop(ushort code, string reason)
+    {
       if (!IsBound || IsStop) return;
- 
+
       IsStop = true;
       _socket.Close(code, reason);
     }

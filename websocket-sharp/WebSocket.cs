@@ -297,24 +297,29 @@ namespace WebSocketSharp
 
     private void close(CloseStatusCode code, string reason)
     {
-      var data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
+        closeWithCode((ushort)code, reason);
+    }
 
-      if (reason != String.Empty)
-      {
-        var buffer = Encoding.UTF8.GetBytes(reason);
-        data.AddRange(buffer);
-      }
+    private void closeWithCode(ushort code, string reason)
+    {
+        var data = new List<byte>(code.ToBytes(ByteOrder.BIG));
 
-      var payloadData = new PayloadData(data.ToArray());
+        if (reason != String.Empty)
+        {
+            var buffer = Encoding.UTF8.GetBytes(reason);
+            data.AddRange(buffer);
+        }
 
-      if (payloadData.Length > 125)
-      {
-        var msg = "Close frame must have a payload length of 125 bytes or less.";
-        error(msg);
-        return;
-      }
+        var payloadData = new PayloadData(data.ToArray());
 
-      close(payloadData);
+        if (payloadData.Length > 125)
+        {
+            var msg = "Close frame must have a payload length of 125 bytes or less.";
+            error(msg);
+            return;
+        }
+
+        close(payloadData);
     }
 
     private void closeConnection()
@@ -1149,6 +1154,11 @@ namespace WebSocketSharp
     public void Close(CloseStatusCode code, string reason)
     {
       close(code, reason);
+    }
+
+    public void Close(ushort code, string reason)
+    {
+        closeWithCode(code, reason);
     }
 
     public void Connect()
