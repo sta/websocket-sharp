@@ -153,35 +153,29 @@ namespace WebSocketSharp
 
     #region Properties
 
-    public string BinaryType
-    {
+    public string BinaryType {
       get { return _binaryType; }
     }
 
-    public ulong BufferedAmount
-    {
-      get
-      {
+    public ulong BufferedAmount {
+      get {
         ulong bufferedAmount = 0;
 
         lock (_unTransmittedBuffer.SyncRoot)
         {
           foreach (WsFrame frame in _unTransmittedBuffer)
-          {
             bufferedAmount += frame.PayloadLength;
-          }
         }
 
         return bufferedAmount;
       }
     }
 
-    public string Extensions
-    {
+    public string Extensions {
       get { return _extensions; }
     }
 
-    public bool IsKeepAlive {
+    public bool IsAlive {
       get {
         if (_readyState != WsState.OPEN)
           return false;
@@ -196,17 +190,14 @@ namespace WebSocketSharp
       }
     }
 
-    public string Protocol
-    {
+    public string Protocol {
       get { return _protocol; }
     }
 
-    public WsState ReadyState
-    {
+    public WsState ReadyState {
       get { return _readyState; }
 
-      private set
-      {
+      private set {
         _readyState = value;
 
         switch (value)
@@ -224,13 +215,11 @@ namespace WebSocketSharp
       }
     }
 
-    public SynchronizedCollection<WsFrame> UnTransmittedBuffer
-    {
+    public SynchronizedCollection<WsFrame> UnTransmittedBuffer {
       get { return _unTransmittedBuffer; }
     }
 
-    public string Url
-    {
+    public string Url {
       get { return _uri.ToString(); }
     }
 

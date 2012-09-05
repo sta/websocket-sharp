@@ -116,7 +116,7 @@ namespace Example
           Console.Write("> ");
           data = Console.ReadLine();
           if (data == "exit")
-          //if (data == "exit" || !ws.IsKeepAlive)
+          //if (data == "exit" || !ws.IsAlive)
           {
             break;
           }

@@ -84,11 +84,11 @@ namespace WebSocketSharp.Server {
     }
 
     public WebSocketServer(int port)
-      : this("/", port)
+      : this(port, "/")
     {
     }
 
-    public WebSocketServer(string absPath, int port)
+    public WebSocketServer(int port, string absPath)
     {
       _uri = new Uri(absPath, UriKind.Relative);
 
