@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example1", "Example1\Exampl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example2", "Example2\Example2.csproj", "{B81A24C8-25BB-42B2-AF99-1E1EACCE74C7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example3", "Example3\Example3.csproj", "{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,14 @@ Global
 		{B81A24C8-25BB-42B2-AF99-1E1EACCE74C7}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
 		{B81A24C8-25BB-42B2-AF99-1E1EACCE74C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B81A24C8-25BB-42B2-AF99-1E1EACCE74C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug_Ubuntu|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Debug_Ubuntu|Any CPU.Build.0 = Debug_Ubuntu|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release_Ubuntu|Any CPU.ActiveCfg = Release_Ubuntu|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = websocket-sharp\websocket-sharp.csproj

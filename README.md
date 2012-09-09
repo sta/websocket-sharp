@@ -237,6 +237,18 @@ Stopping server.
 wssv.Stop();
 ```
 
+### HTTP Server with WebSocket ###
+
+I modified System.Net.HttpListener, System.Net.HttpListenerContext and some others of [Mono] to create the HTTP server that the connection can be upgraded to the WebSocket connection if the HTTP server received a WebSocket request.
+
+You can specify the WebSocket service in the same way as the WebSocket server.
+
+```cs
+var httpsv = new HttpServer<Echo>(4649);
+```
+
+For more information, please refer to the [Example3].
+
 ## Examples ##
 
 Examples of using **websocket-sharp**.
@@ -253,7 +265,11 @@ Examples of using **websocket-sharp**.
 
 ### Example2 ###
 
-[Example2] starts WebSocket server.
+[Example2] starts the WebSocket server.
+
+### Example3 ###
+
+[Example3] starts the HTTP server that the connection can be upgraded to the WebSocket connection.
 
 ## Supported WebSocket Protocol ##
 
@@ -286,10 +302,12 @@ Licensed under the **[MIT License]**.
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example1]: https://github.com/sta/websocket-sharp/tree/master/Example1
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
+[Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
 [hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [MIT License]: http://www.opensource.org/licenses/mit-license.php
+[Mono]: http://www.mono-project.com/
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://dev.w3.org/html5/websockets
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html

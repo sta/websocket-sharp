@@ -27,36 +27,47 @@
 #endregion
 
 using System;
-using System.Net;
 using System.Collections.Specialized;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp {
 
   public class RequestHandshake : Handshake
   {
+    #region Private Constructor
+
     private RequestHandshake()
     {
     }
 
-    public RequestHandshake(string uri)
+    #endregion
+
+
+    #region Public Constructor
+
+    public RequestHandshake(string uriString)
     {
-      Method  = "GET";
-      Uri     = uri;
-      Version = "HTTP/1.1";
-      Headers = new NameValueCollection();
+      HttpMethod = "GET";
+      RequestUri = uriString.ToUri();
 
       AddHeader("Upgrade", "websocket");
       AddHeader("Connection", "Upgrade");
     }
 
+    #endregion
+
+    #region Properties
+
+    public string HttpMethod { get; private set; }
+
     public bool IsWebSocketRequest {
 
       get {
-        if (Method != "GET")
+        if (HttpMethod != "GET")
           return false;
 
-        if (Version != "HTTP/1.1")
+        if (ProtocolVersion != HttpVersion.Version11)
           return false;
 
         if (!HeaderExists("Upgrade", "websocket"))
@@ -78,8 +89,21 @@ namespace WebSocketSharp {
       }
     }
 
-    public string Method  { get; private set; }
-    public string Uri     { get; private set; }
+    public Uri RequestUri { get; private set; }
+
+    #endregion
+
+    #region Public Static Methods
+
+    public static RequestHandshake Parse(WebSocketContext context)
+    {
+      return new RequestHandshake {
+        Headers         = context.Headers,
+        HttpMethod      = "GET",
+        RequestUri      = context.RequestUri,
+        ProtocolVersion = HttpVersion.Version11
+      };
+    }
 
     public static RequestHandshake Parse(string[] request)
     {
@@ -92,18 +116,22 @@ namespace WebSocketSharp {
         headers.Add(request[i]);
 
       return new RequestHandshake {
-        Headers = headers,
-        Method  = requestLine[0],
-        Uri     = requestLine[1],
-        Version = requestLine[2]        
+        Headers         = headers,
+        HttpMethod      = requestLine[0],
+        RequestUri      = requestLine[1].ToUri(),
+        ProtocolVersion = new Version(requestLine[2].Substring(5))
       };
     }
+
+    #endregion
+
+    #region Public Method
 
     public override string ToString()
     {
       var buffer = new StringBuilder();
 
-      buffer.AppendFormat("{0} {1} {2}{3}", Method, Uri, Version, _crlf);
+      buffer.AppendFormat("{0} {1} HTTP/{2}{3}", HttpMethod, RequestUri, ProtocolVersion, _crlf);
 
       foreach (string key in Headers.AllKeys)
         buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
@@ -112,5 +140,7 @@ namespace WebSocketSharp {
 
       return buffer.ToString();
     }
+
+    #endregion
   }
 }

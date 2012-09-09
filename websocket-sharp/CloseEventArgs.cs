@@ -69,19 +69,18 @@ namespace WebSocketSharp
     public CloseEventArgs(PayloadData data)
     : base(Opcode.CLOSE, data)
     {
-      _code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
+      _code     = (ushort)CloseStatusCode.NO_STATUS_CODE;
+      _reason   = String.Empty;
+      _wasClean = false;
+
+      if (data.Length >= 2)
+        _code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
 
       if (data.Length > 2)
       {
         var buffer = data.ToBytes().SubArray(2, (int)(data.Length - 2));
         _reason = Encoding.UTF8.GetString(buffer);
       }
-      else
-      {
-        _reason = String.Empty;
-      }
-
-      _wasClean = false;
     }
   }
 }

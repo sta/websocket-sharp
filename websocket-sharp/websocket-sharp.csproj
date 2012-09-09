@@ -79,10 +79,40 @@
     <Compile Include="RequestHandshake.cs" />
     <Compile Include="ResponseHandshake.cs" />
     <Compile Include="Handshake.cs" />
+    <Compile Include="Net\AuthenticationSchemeSelector.cs" />
+    <Compile Include="Net\AuthenticationSchemes.cs" />
+    <Compile Include="Net\ChunkStream.cs" />
+    <Compile Include="Net\ChunkedInputStream.cs" />
+    <Compile Include="Net\Cookie.cs" />
+    <Compile Include="Net\CookieCollection.cs" />
+    <Compile Include="Net\CookieException.cs" />
+    <Compile Include="Net\EndPointListener.cs" />
+    <Compile Include="Net\EndPointManager.cs" />
+    <Compile Include="Net\HttpConnection.cs" />
+    <Compile Include="Net\HttpListener.cs" />
+    <Compile Include="Net\HttpListenerContext.cs" />
+    <Compile Include="Net\HttpListenerException.cs" />
+    <Compile Include="Net\HttpListenerPrefixCollection.cs" />
+    <Compile Include="Net\HttpListenerRequest.cs" />
+    <Compile Include="Net\HttpListenerResponse.cs" />
+    <Compile Include="Net\HttpListenerWebSocketContext.cs" />
+    <Compile Include="Net\HttpStreamAsyncResult.cs" />
+    <Compile Include="Net\HttpUtility.cs" />
+    <Compile Include="Net\ListenerAsyncResult.cs" />
+    <Compile Include="Net\ListenerPrefix.cs" />
+    <Compile Include="Net\RequestStream.cs" />
+    <Compile Include="Net\ResponseStream.cs" />
+    <Compile Include="Net\WebHeaderCollection.cs" />
+    <Compile Include="Net\WebSocketContext.cs" />
+    <Compile Include="Server\HttpServer.cs" />
+    <Compile Include="Server\ResponseEventArgs.cs" />
+    <Compile Include="Net\HttpVersion.cs" />
+    <Compile Include="Net\HttpStatusCode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Frame\" />
     <Folder Include="Server\" />
+    <Folder Include="Net\" />
   </ItemGroup>
 </Project>

@@ -29,19 +29,36 @@
 using System;
 using System.Collections.Specialized;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp {
 
   public abstract class Handshake {
 
+    #region Field
+
     protected const string _crlf = "\r\n";
+
+    #endregion
+
+    #region Constructor
 
     protected Handshake()
     {
+      ProtocolVersion = HttpVersion.Version11;
+      Headers         = new NameValueCollection();
     }
 
-    public NameValueCollection Headers { get; protected set; }
-    public string              Version { get; protected set; }
+    #endregion
+
+    #region Properties
+
+    public NameValueCollection Headers         { get; protected set; }
+    public Version             ProtocolVersion { get; protected set; }
+
+    #endregion
+
+    #region Methods
 
     public void AddHeader(string name, string value)
     {
@@ -55,27 +72,19 @@ namespace WebSocketSharp {
 
     public bool HeaderExists(string name)
     {
-      return Headers[name] != null
-             ? true
-             : false;
+      return Headers.Exists(name);
     }
 
     public bool HeaderExists(string name, string value)
     {
-      var values = GetHeaderValues(name);
-      if (values == null)
-        return false;
-
-      foreach (string v in values)
-        if (String.Compare(value, v, true) == 0)
-          return true;
-
-      return false;
+      return Headers.Exists(name, value);
     }
 
     public byte[] ToBytes()
     {
       return Encoding.UTF8.GetBytes(ToString());
     }
+    
+    #endregion
   }
 }

@@ -1,11 +1,17 @@
 #region MIT License
 /**
  * Ext.cs
+ *  IsPredefinedScheme and MaybeUri methods derived from System.Uri
  *
  * The MIT License
  *
+ * (C) 2001 Garrett Rooney (System.Uri)
+ * (C) 2003 Ian MacLean (System.Uri)
+ * (C) 2003 Ben Maurer (System.Uri)
+ * Copyright (C) 2003,2009 Novell, Inc (http://www.novell.com) (System.Uri)
+ * Copyright (c) 2009 Stephane Delcroix (System.Uri)
  * Copyright (c) 2010-2012 sta.blockhead
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -28,9 +34,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
@@ -64,6 +72,26 @@ namespace WebSocketSharp
       return b == Convert.ToByte(c);
     }
 
+    public static bool Exists(this NameValueCollection headers, string name)
+    {
+      return headers[name] != null
+             ? true
+             : false;
+    }
+
+    public static bool Exists(this NameValueCollection headers, string name, string value)
+    {
+      var values = headers[name];
+      if (values == null)
+        return false;
+
+      foreach (string v in values.Split(','))
+        if (String.Compare(v.Trim(), value, true) == 0)
+          return true;
+
+      return false;
+    }
+
     public static string GetHeaderValue(this string src, string separater)
     {
       int i = src.IndexOf(separater);
@@ -94,6 +122,39 @@ namespace WebSocketSharp
       return false;
     }
 
+    // Derived from System.Uri.IsPredefinedScheme method
+    public static bool IsPredefinedScheme(this string scheme)
+    {
+      if (scheme == null && scheme.Length < 3)
+        return false;
+
+      char c = scheme[0];
+
+      if (c == 'h')
+        return (scheme == "http" || scheme == "https");
+
+      if (c == 'f')
+        return (scheme == "file" || scheme == "ftp");
+        
+      if (c == 'n')
+      {
+        c = scheme[1];
+
+        if (c == 'e')
+          return (scheme == "news" || scheme == "net.pipe" || scheme == "net.tcp");
+          
+        if (scheme == "nntp")
+          return true;
+
+        return false;
+      }
+
+      if ((c == 'g' && scheme == "gopher") || (c == 'm' && scheme == "mailto"))
+        return true;
+
+      return false;
+    }
+
     public static bool NotEqualsDo(
       this string expected,
       string actual,
@@ -109,6 +170,19 @@ namespace WebSocketSharp
 
       ret = String.Empty;
       return false;
+    }
+
+    // Derived from System.Uri.MaybeUri method
+    public static bool MaybeUri(this string uriString)
+    {
+      int p = uriString.IndexOf(':');
+      if (p == -1)
+        return false;
+
+      if (p >= 10)
+        return false;
+
+      return uriString.Substring(0, p).IsPredefinedScheme();
     }
 
     public static byte[] ReadBytes<TStream>(this TStream stream, ulong length, int bufferLength)
@@ -319,6 +393,22 @@ namespace WebSocketSharp
       sb.Append(array[len - 1].ToString());
 
       return sb.ToString();
+    }
+
+    public static Uri ToUri(this string uriString)
+    {
+      if (!uriString.MaybeUri())
+        return new Uri(uriString, UriKind.Relative);
+
+      return new Uri(uriString);
+    }
+
+    public static void WriteContent(this HttpListenerResponse response, byte[] content)
+    {
+      var output = response.OutputStream;
+      response.ContentLength64 = content.Length;
+      output.Write(content, 0, content.Length);
+      output.Close();
     }
   }
 }

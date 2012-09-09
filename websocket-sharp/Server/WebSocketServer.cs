@@ -42,16 +42,27 @@ namespace WebSocketSharp.Server {
   public class WebSocketServer<T>
     where T : WebSocketService, new()
   {
-    #region Private Fields
+    #region Fields
 
     private Thread                               _acceptClientThread;
+    private bool                                 _isSelfHost;
     private Dictionary<string, WebSocketService> _services;
     private TcpListener                          _tcpListener;
     private Uri                                  _uri;
 
     #endregion
 
-    #region Constructors
+    #region Internal Constructor
+
+    internal WebSocketServer()
+    {
+      _services   = new Dictionary<string, WebSocketService>();
+      _isSelfHost = false;
+    }
+
+    #endregion
+
+    #region Public Constructors
 
     public WebSocketServer(string url)
     {
@@ -81,6 +92,7 @@ namespace WebSocketSharp.Server {
 
       _tcpListener = new TcpListener(ips[0], port);
       _services    = new Dictionary<string, WebSocketService>();
+      _isSelfHost  = true;
     }
 
     public WebSocketServer(int port)
@@ -97,6 +109,7 @@ namespace WebSocketSharp.Server {
 
       _tcpListener = new TcpListener(IPAddress.Any, port);
       _services    = new Dictionary<string, WebSocketService>();
+      _isSelfHost  = true;
     }
 
     #endregion
@@ -111,6 +124,10 @@ namespace WebSocketSharp.Server {
     public IPEndPoint Endpoint
     {
       get { return (IPEndPoint)_tcpListener.LocalEndpoint; }
+    }
+
+    public bool IsSelfHost {
+      get { return _isSelfHost; }
     }
 
     public int Port
@@ -209,14 +226,21 @@ namespace WebSocketSharp.Server {
 
     public void Start()
     {
+      if (!_isSelfHost)
+        return;
+
       _tcpListener.Start();
       startAcceptClientThread();
     }
 
     public void Stop()
     {
-      _tcpListener.Stop();
-      _acceptClientThread.Join(5 * 1000);
+      if (_isSelfHost)
+      {
+        _tcpListener.Stop();
+        _acceptClientThread.Join(5 * 1000);
+      }
+
       StopServices();
     }
 

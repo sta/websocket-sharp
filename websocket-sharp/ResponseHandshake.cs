@@ -28,31 +28,35 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Net;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp {
 
   public class ResponseHandshake : Handshake
   {
+    #region Public Constructor
+
     public ResponseHandshake()
     {
-      Version = "HTTP/1.1";
-      Status  = "101";
-      Reason  = "Switching Protocols";
-      Headers = new NameValueCollection();
+      StatusCode = "101";
+      Reason     = "Switching Protocols";
 
       AddHeader("Upgrade", "websocket");
       AddHeader("Connection", "Upgrade");
     }
 
+    #endregion
+
+    #region Properties
+
     public bool IsWebSocketResponse {
 
       get {
-        if (Version != "HTTP/1.1")
+        if (ProtocolVersion != HttpVersion.Version11)
           return false;
 
-        if (Status != "101")
+        if (StatusCode != "101")
           return false;
 
         if (!HeaderExists("Upgrade", "websocket"))
@@ -68,8 +72,12 @@ namespace WebSocketSharp {
       }
     }
 
-    public string Reason  { get; private set; }
-    public string Status  { get; private set; }
+    public string Reason     { get; private set; }
+    public string StatusCode { get; private set; }
+
+    #endregion
+
+    #region Public Static Methods
 
     public static ResponseHandshake Parse(string[] response)
     {
@@ -86,18 +94,22 @@ namespace WebSocketSharp {
         headers.Add(response[i]);
 
       return new ResponseHandshake {
-        Headers = headers,
-        Reason  = reason.ToString(),
-        Status  = statusLine[1],
-        Version = statusLine[0]
+        Headers         = headers,
+        Reason          = reason.ToString(),
+        StatusCode      = statusLine[1],
+        ProtocolVersion = new Version(statusLine[0].Substring(5))
       };
     }
+
+    #endregion
+
+    #region Public Methods
 
     public override string ToString()
     {
       var buffer = new StringBuilder();
 
-      buffer.AppendFormat("{0} {1} {2}{3}", Version, Status, Reason, _crlf);
+      buffer.AppendFormat("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, _crlf);
 
       foreach (string key in Headers.AllKeys)
         buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
@@ -106,5 +118,7 @@ namespace WebSocketSharp {
 
       return buffer.ToString();
     }
+
+    #endregion
   }
 }
