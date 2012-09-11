@@ -67,6 +67,7 @@ namespace WebSocketSharp
     {
       if (value < 0)
         throw new ArgumentOutOfRangeException("value");
+
       byte b = (byte)value;
       dest.Add(b);
       return b == Convert.ToByte(c);

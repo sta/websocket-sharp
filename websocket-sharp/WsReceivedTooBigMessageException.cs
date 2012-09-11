@@ -38,7 +38,7 @@ namespace WebSocketSharp
     static WsReceivedTooBigMessageException()
     {
       _defaultMessage = String.Format(
-        "Client received a payload data bigger than the allowable value({0} bytes).", PayloadData.MaxLength);
+        "Size of received payload data is bigger than the allowable value({0} bytes).", PayloadData.MaxLength);
     }
 
     public WsReceivedTooBigMessageException()

@@ -677,9 +677,9 @@ namespace WebSocketSharp
       {
         close(CloseStatusCode.TOO_BIG, ex.Message);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        close(CloseStatusCode.ABNORMAL, ex.Message);
+        close(CloseStatusCode.ABNORMAL, "An exception has been raised.");
       }
     }
 
@@ -1075,7 +1075,7 @@ namespace WebSocketSharp
       catch (Exception ex)
       {
         error(ex.Message);
-        close(CloseStatusCode.HANDSHAKE_FAILURE, ex.Message);
+        close(CloseStatusCode.HANDSHAKE_FAILURE, "An exception has been raised.");
       }
     }
 

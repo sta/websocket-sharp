@@ -16,9 +16,9 @@ namespace Example3
     {
       _httpsv = new HttpServer<Echo>(4649);
 
-      _httpsv.OnResponse += (sender, e) =>
+      _httpsv.OnGet += (sender, e) =>
       {
-        onResponse(e.Context);
+        onGet(e.Request, e.Response);
       };
 
       _httpsv.OnError += (sender, e) =>
@@ -53,20 +53,6 @@ namespace Example3
       }
 
       response.StatusCode = (int)HttpStatusCode.NotFound;
-    }
-
-    private static void onResponse(HttpListenerContext context)
-    {
-      var req = context.Request;
-      var res = context.Response;
-
-      if (req.HttpMethod == "GET")
-      {
-        onGet(req, res);
-        return;
-      }
-
-      res.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
     }
   }
 }

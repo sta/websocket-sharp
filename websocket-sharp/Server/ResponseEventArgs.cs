@@ -33,11 +33,13 @@ namespace WebSocketSharp.Server {
 
   public class ResponseEventArgs : EventArgs
   {
-    public HttpListenerContext Context { get; private set; }
+    public HttpListenerRequest  Request  { get; private set; }
+    public HttpListenerResponse Response { get; private set; }
 
     public ResponseEventArgs(HttpListenerContext context)
     {
-      Context = context;
+      Request  = context.Request;
+      Response = context.Response;
     }
   }
 }

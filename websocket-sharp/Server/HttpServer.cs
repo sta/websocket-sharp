@@ -67,9 +67,9 @@ namespace WebSocketSharp.Server {
       var prefix = String.Format(
         "http{0}://*:{1}/", _port == 443 ? "s" : String.Empty, _port);
       _listener.Prefixes.Add(prefix);
-      _rootPath  = ConfigurationManager.AppSettings["RootPath"];
       _wsPath    = wsPath.ToUri();
       _wsServer  = new WebSocketServer<T>();
+      configureFromConfigFile();
     }
 
     #endregion
@@ -84,8 +84,16 @@ namespace WebSocketSharp.Server {
 
     #region Events
 
+    public event EventHandler<ResponseEventArgs> OnConnect;
+    public event EventHandler<ResponseEventArgs> OnDelete;
     public event EventHandler<ErrorEventArgs>    OnError;
-    public event EventHandler<ResponseEventArgs> OnResponse;
+    public event EventHandler<ResponseEventArgs> OnGet;
+    public event EventHandler<ResponseEventArgs> OnHead;
+    public event EventHandler<ResponseEventArgs> OnOptions;
+    public event EventHandler<ResponseEventArgs> OnPatch;
+    public event EventHandler<ResponseEventArgs> OnPost;
+    public event EventHandler<ResponseEventArgs> OnPut;
+    public event EventHandler<ResponseEventArgs> OnTrace;
 
     #endregion
 
@@ -113,23 +121,25 @@ namespace WebSocketSharp.Server {
       }
     }
 
+    private void configureFromConfigFile()
+    {
+      _rootPath = ConfigurationManager.AppSettings["RootPath"];
+    }
+
     private void respond(HttpListenerContext context)
     {
       WaitCallback respondCb = (state) =>
       {
         try
         {
-          var req = context.Request;
-          var res = context.Response;
-
-          if (req.IsWebSocketRequest)
+          if (context.Request.IsWebSocketRequest)
           {
             upgradeToWebSocket(context);
           }
           else
           {
-            OnResponse.Emit(this, new ResponseEventArgs(context));
-            res.Close();
+            respondToClient(context);
+            context.Response.Close();
           }
         }
         catch (Exception ex)
@@ -138,6 +148,69 @@ namespace WebSocketSharp.Server {
         }
       };
       ThreadPool.QueueUserWorkItem(respondCb);
+    }
+
+    private void respondToClient(HttpListenerContext context)
+    {
+      var req = context.Request;
+      var res = context.Response;
+      var eventArgs = new ResponseEventArgs(context);
+
+      if (req.HttpMethod == "GET" && OnGet != null)
+      {
+        OnGet(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "HEAD" && OnHead != null)
+      {
+        OnHead(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "POST" && OnPost != null)
+      {
+        OnPost(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "PUT" && OnPut != null)
+      {
+        OnPut(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "DELETE" && OnDelete != null)
+      {
+        OnDelete(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "OPTIONS" && OnOptions != null)
+      {
+        OnOptions(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "TRACE" && OnTrace != null)
+      {
+        OnTrace(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "CONNECT" && OnConnect != null)
+      {
+        OnConnect(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "PATCH" && OnPatch != null)
+      {
+        OnPatch(this, eventArgs);
+        return;
+      }
+
+      res.StatusCode = (int)HttpStatusCode.NotImplemented;
     }
 
     private void startAcceptRequestThread()
