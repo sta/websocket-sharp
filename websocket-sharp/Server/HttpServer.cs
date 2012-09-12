@@ -257,9 +257,11 @@ namespace WebSocketSharp.Server {
     public byte[] GetFile(string path)
     {
       var filePath = _rootPath + path;
-    #if WINDOWS
-      filePath = filePath.Replace("/", "\\");
-    #endif
+
+      var os = Environment.OSVersion;
+      if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
+        filePath = filePath.Replace("/", "\\");
+
       if (File.Exists(filePath))
         return File.ReadAllBytes(filePath);
 
