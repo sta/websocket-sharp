@@ -126,26 +126,47 @@ namespace WebSocketSharp.Server {
       _rootPath = ConfigurationManager.AppSettings["RootPath"];
     }
 
+    private bool isUpgrade(HttpListenerRequest request, string value)
+    {
+      if (!request.Headers.Exists("Upgrade", value))
+        return false;
+
+      if (!request.Headers.Exists("Connection", "Upgrade"))
+        return false;
+
+      return true;
+    }
+
     private void respond(HttpListenerContext context)
     {
       WaitCallback respondCb = (state) =>
       {
+        var req = context.Request;
+        var res = context.Response;
+
         try
         {
-          if (context.Request.IsWebSocketRequest)
+          if (isUpgrade(req, "websocket"))
           {
-            upgradeToWebSocket(context);
+            if (req.IsWebSocketRequest)
+            {
+              upgradeToWebSocket(context);
+              return;
+            }
+
+            res.StatusCode = (int)HttpStatusCode.BadRequest;
           }
           else
           {
             respondToClient(context);
-            context.Response.Close();
           }
         }
         catch (Exception ex)
         {
           OnError.Emit(this, new ErrorEventArgs(ex.Message));
         }
+
+        res.Close();
       };
       ThreadPool.QueueUserWorkItem(respondCb);
     }
@@ -236,6 +257,9 @@ namespace WebSocketSharp.Server {
     public byte[] GetFile(string path)
     {
       var filePath = _rootPath + path;
+    #if WINDOWS
+      filePath = filePath.Replace("/", "\\");
+    #endif
       if (File.Exists(filePath))
         return File.ReadAllBytes(filePath);
 
