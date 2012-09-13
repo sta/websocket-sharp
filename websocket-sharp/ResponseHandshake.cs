@@ -72,8 +72,8 @@ namespace WebSocketSharp {
       }
     }
 
-    public string Reason     { get; private set; }
-    public string StatusCode { get; private set; }
+    public string Reason     { get; internal set; }
+    public string StatusCode { get; internal set; }
 
     #endregion
 

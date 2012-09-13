@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -255,21 +256,17 @@ namespace WebSocketSharp
 
     private void acceptHandshake()
     {
-      var request = receiveOpeningHandshake();
-      #if DEBUG
-      Console.WriteLine("WS: Info@acceptHandshake: Opening handshake from client:\n");
-      Console.WriteLine(request.ToString());
-      #endif
-      string msg;
-      if (!isValidRequest(request, out msg))
-        throw new InvalidOperationException(msg);
+      var req = receiveOpeningHandshake();
 
-      var response = createResponseHandshake();
-      #if DEBUG
-      Console.WriteLine("WS: Info@acceptHandshake: Opening handshake from server:\n");
-      Console.WriteLine(response.ToString());
-      #endif
-      sendResponseHandshake(response);
+      string msg;
+      if (!isValidRequest(req, out msg))
+      {
+        error(msg);
+        close(CloseStatusCode.HANDSHAKE_FAILURE, msg);
+        return;
+      }
+
+      sendResponseHandshake();
 
       ReadyState = WsState.OPEN;
     }
@@ -283,12 +280,12 @@ namespace WebSocketSharp
       {
         if (_readyState == WsState.CLOSING ||
             _readyState == WsState.CLOSED)
-        {
           return;
-        }
-        else if (_readyState == WsState.CONNECTING)
+
+        if (_readyState == WsState.CONNECTING && !_isClient)
         {
           OnClose.Emit(this, new CloseEventArgs(data));
+          sendResponseHandshakeForInvalid();
           ReadyState = WsState.CLOSED;
           return;
         }
@@ -509,19 +506,15 @@ namespace WebSocketSharp
 
     private void doHandshake()
     {
-      var request = createOpeningHandshake();
-      #if DEBUG
-      Console.WriteLine("WS: Info@doHandshake: Opening handshake from client:\n");
-      Console.WriteLine(request.ToString());
-      #endif
-      var response = sendOpeningHandshake(request);
-      #if DEBUG
-      Console.WriteLine("WS: Info@doHandshake: Opening handshake from server:\n");
-      Console.WriteLine(response.ToString());
-      #endif
+      var res = sendOpeningHandshake();
+
       string msg;
-      if (!isValidResponse(response, out msg))
-        throw new InvalidOperationException(msg);
+      if (!isValidResponse(res, out msg))
+      {
+        error(msg);
+        close(CloseStatusCode.HANDSHAKE_FAILURE, msg);
+        return;
+      }
 
       ReadyState = WsState.OPEN;
     }
@@ -860,10 +853,17 @@ namespace WebSocketSharp
 
     private RequestHandshake receiveOpeningHandshake()
     {
-      if (_context != null)
-        return RequestHandshake.Parse(_context);
+      RequestHandshake req;
 
-      return RequestHandshake.Parse(readHandshake());
+      if (_context == null)
+        req = RequestHandshake.Parse(readHandshake());
+      else
+        req = RequestHandshake.Parse(_context);
+      #if DEBUG
+      Console.WriteLine("WS: Info@receiveOpeningHandshake: Opening handshake from client:\n");
+      Console.WriteLine(req.ToString());
+      #endif
+      return req;
     }
 
     private bool send(WsFrame frame)
@@ -999,15 +999,43 @@ namespace WebSocketSharp
       return readLen;
     }
 
-    private ResponseHandshake sendOpeningHandshake(RequestHandshake request)
+    private ResponseHandshake sendOpeningHandshake()
     {
-      _wsStream.Write(request.ToBytes(), 0, request.ToBytes().Length);
-      return ResponseHandshake.Parse(readHandshake());
+      var req = createOpeningHandshake();
+      #if DEBUG
+      Console.WriteLine("WS: Info@sendOpeningHandshake: Opening handshake from client:\n");
+      Console.WriteLine(req.ToString());
+      #endif
+      _wsStream.Write(req.ToBytes(), 0, req.ToBytes().Length);
+
+      var res = ResponseHandshake.Parse(readHandshake());
+      #if DEBUG
+      Console.WriteLine("WS: Info@sendOpeningHandshake: Response handshake from server:\n");
+      Console.WriteLine(res.ToString());
+      #endif
+      return res;
     }
 
-    private void sendResponseHandshake(ResponseHandshake response)
+    private void sendResponseHandshake()
     {
-      _wsStream.Write(response.ToBytes(), 0, response.ToBytes().Length);
+      var res = createResponseHandshake();
+      #if DEBUG
+      Console.WriteLine("WS: Info@sendResponseHandshake: Response handshake from server:\n");
+      Console.WriteLine(res.ToString());
+      #endif
+      _wsStream.Write(res.ToBytes(), 0, res.ToBytes().Length);
+    }
+
+    private void sendResponseHandshakeForInvalid()
+    {
+      var code = (int)WebSocketSharp.Net.HttpStatusCode.BadRequest;
+      var res  = new ResponseHandshake {
+        Headers    = new NameValueCollection(),
+        Reason     = "Bad Request",
+        StatusCode = code.ToString()
+      };
+
+      _wsStream.Write(res.ToBytes(), 0, res.ToBytes().Length);
     }
 
     private void startMessageThread()

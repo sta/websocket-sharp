@@ -59,7 +59,7 @@ namespace WebSocketSharp {
 
     #region Properties
 
-    public string HttpMethod { get; private set; }
+    public string HttpMethod { get; internal set; }
 
     public bool IsWebSocketRequest {
 
@@ -89,7 +89,7 @@ namespace WebSocketSharp {
       }
     }
 
-    public Uri RequestUri { get; private set; }
+    public Uri RequestUri { get; internal set; }
 
     #endregion
 

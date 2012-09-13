@@ -53,8 +53,8 @@ namespace WebSocketSharp {
 
     #region Properties
 
-    public NameValueCollection Headers         { get; protected set; }
-    public Version             ProtocolVersion { get; protected set; }
+    public NameValueCollection Headers         { get; internal set; }
+    public Version             ProtocolVersion { get; internal set; }
 
     #endregion
 
