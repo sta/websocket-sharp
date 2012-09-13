@@ -40,6 +40,7 @@ namespace WebSocketSharp.Server {
     #region Fields
 
     private Thread             _acceptRequestThread;
+    private bool               _isWindows;
     private HttpListener       _listener;
     private int                _port;
     private string             _rootPath;
@@ -62,14 +63,9 @@ namespace WebSocketSharp.Server {
 
     public HttpServer(int port, string wsPath)
     {
-      _listener  = new HttpListener();
-      _port      = port;
-      var prefix = String.Format(
-        "http{0}://*:{1}/", _port == 443 ? "s" : String.Empty, _port);
-      _listener.Prefixes.Add(prefix);
-      _wsPath    = wsPath.ToUri();
-      _wsServer  = new WebSocketServer<T>();
-      configureFromConfigFile();
+      _port   = port;
+      _wsPath = wsPath.ToUri();
+      init();
     }
 
     #endregion
@@ -124,6 +120,23 @@ namespace WebSocketSharp.Server {
     private void configureFromConfigFile()
     {
       _rootPath = ConfigurationManager.AppSettings["RootPath"];
+    }
+
+    private void init()
+    {
+      _isWindows = false;
+      _listener  = new HttpListener();
+      _wsServer  = new WebSocketServer<T>();
+
+      var os = Environment.OSVersion;
+      if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
+        _isWindows = true;
+
+      var prefix = String.Format(
+        "http{0}://*:{1}/", _port == 443 ? "s" : String.Empty, _port);
+      _listener.Prefixes.Add(prefix);
+
+      configureFromConfigFile();
     }
 
     private bool isUpgrade(HttpListenerRequest request, string value)
@@ -257,9 +270,7 @@ namespace WebSocketSharp.Server {
     public byte[] GetFile(string path)
     {
       var filePath = _rootPath + path;
-
-      var os = Environment.OSVersion;
-      if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
+      if (_isWindows)
         filePath = filePath.Replace("/", "\\");
 
       if (File.Exists(filePath))
