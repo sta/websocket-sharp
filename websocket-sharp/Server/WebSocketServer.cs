@@ -45,7 +45,9 @@ namespace WebSocketSharp.Server {
     #region Fields
 
     private Thread                               _acceptClientThread;
+    private IPAddress                            _address;
     private bool                                 _isSelfHost;
+    private int                                  _port;
     private Dictionary<string, WebSocketService> _services;
     private TcpListener                          _tcpListener;
     private Uri                                  _uri;
@@ -65,33 +67,15 @@ namespace WebSocketSharp.Server {
     #region Public Constructors
 
     public WebSocketServer(string url)
+      : this()
     {
-      _uri = new Uri(url);
-      if (!isValidScheme(_uri))
-      {
-        var msg = "Unsupported WebSocket URI scheme: " + _uri.Scheme;
-        throw new ArgumentException(msg);
-      }
+      var uri = new Uri(url);
 
-      var host = _uri.DnsSafeHost;
-      var ips  = Dns.GetHostAddresses(host);
-      if (ips.Length == 0)
-      {
-        var msg = "Invalid WebSocket URI host: " + host;
-        throw new ArgumentException(msg);
-      }
+      string msg;
+      if (!isValidUri(uri, out msg))
+        throw new ArgumentException(msg, "url");
 
-      var scheme = _uri.Scheme;
-      var port   = _uri.Port;
-      if (port <= 0)
-      {
-        port = 80;
-        if (scheme == "wss")
-          port = 443;
-      }
-
-      _tcpListener = new TcpListener(ips[0], port);
-      _services    = new Dictionary<string, WebSocketService>();
+      _tcpListener = new TcpListener(_address, _port);
       _isSelfHost  = true;
     }
 
@@ -100,15 +84,21 @@ namespace WebSocketSharp.Server {
     {
     }
 
-    public WebSocketServer(int port, string absPath)
+    public WebSocketServer(int port, string path)
+      : this()
     {
-      _uri = new Uri(absPath, UriKind.Relative);
+      var uri = path.ToUri();
+      if (uri.IsAbsoluteUri)
+      {
+        var msg = "Not absolute path: " + path;
+        throw new ArgumentException(msg, "path");
+      }
 
-      if (port <= 0)
-        port = 80;
+      _uri     = uri;
+      _address = IPAddress.Any;
+      _port    = port <= 0 ? 80 : port;
 
-      _tcpListener = new TcpListener(IPAddress.Any, port);
-      _services    = new Dictionary<string, WebSocketService>();
+      _tcpListener = new TcpListener(_address, _port);
       _isSelfHost  = true;
     }
 
@@ -118,12 +108,7 @@ namespace WebSocketSharp.Server {
 
     public IPAddress Address
     {
-      get { return Endpoint.Address; }
-    }
-
-    public IPEndPoint Endpoint
-    {
-      get { return (IPEndPoint)_tcpListener.LocalEndpoint; }
+      get { return _address; }
     }
 
     public bool IsSelfHost {
@@ -132,12 +117,12 @@ namespace WebSocketSharp.Server {
 
     public int Port
     {
-      get { return Endpoint.Port; }
+      get { return _port; }
     }
 
-    public string Url
+    public Uri Uri
     {
-      get { return _uri.ToString(); }
+      get { return _uri; }
     }
 
     #endregion
@@ -181,13 +166,42 @@ namespace WebSocketSharp.Server {
       OnError.Emit(this, new ErrorEventArgs(message));
     }
 
-    private bool isValidScheme(Uri uri)
+    private bool isValidUri(Uri uri, out string message)
     {
       var scheme = uri.Scheme;
-      if (scheme == "ws" || scheme == "wss")
-        return true;
+      var port   = uri.Port;
+      var host   = uri.DnsSafeHost;
+      var ips    = Dns.GetHostAddresses(host);
 
-      return false;
+      if (scheme != "ws" && scheme != "wss")
+      {
+        message = "Unsupported WebSocket URI scheme: " + scheme;
+        return false;
+      }
+
+      if ((scheme == "wss" && port != 443) ||
+          (scheme != "wss" && port == 443))
+      {
+        message = String.Format(
+          "Invalid pair of WebSocket URI scheme and port: {0}, {1}", scheme, port);
+        return false;
+      }
+
+      if (ips.Length == 0)
+      {
+        message = "Invalid WebSocket URI host: " + host;
+        return false;
+      }
+
+      if (port <= 0)
+        port = scheme == "ws" ? 80 : 443;
+
+      _uri     = uri;
+      _address = ips[0];
+      _port    = port;
+
+      message = String.Empty;
+      return true;
     }
 
     private void startAcceptClientThread()
@@ -199,7 +213,7 @@ namespace WebSocketSharp.Server {
 
     private void startService(TcpClient client)
     {
-      WaitCallback startSv = (state) =>
+      WaitCallback startServiceCb = (state) =>
       {
         try {
           var socket = new WebSocket(_uri, client);
@@ -210,7 +224,7 @@ namespace WebSocketSharp.Server {
           error(ex.Message);
         }
       };
-      ThreadPool.QueueUserWorkItem(startSv);
+      ThreadPool.QueueUserWorkItem(startServiceCb);
     }
 
     #endregion
