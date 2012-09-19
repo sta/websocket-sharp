@@ -39,7 +39,7 @@ using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server {
 
-  public class WebSocketServer<T>
+  public class WebSocketServer<T> : IWebSocketServer
     where T : WebSocketService, new()
   {
     #region Fields

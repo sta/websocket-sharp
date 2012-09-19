@@ -108,6 +108,7 @@
     <Compile Include="Server\ResponseEventArgs.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
+    <Compile Include="Server\IWebSocketServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

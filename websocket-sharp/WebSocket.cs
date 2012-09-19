@@ -106,10 +106,10 @@ namespace WebSocketSharp
 
     #region Internal Constructor
 
-    internal WebSocket(HttpListenerWebSocketContext context)
+    internal WebSocket(Uri uri, HttpListenerWebSocketContext context)
       : this()
     {
-      _uri      = new Uri("/", UriKind.Relative);
+      _uri      = uri;
       _context  = context;
       _isClient = false;
       _isSecure = _context.IsSecureConnection;
@@ -356,14 +356,11 @@ namespace WebSocketSharp
     {
       if (send(frame) && !Thread.CurrentThread.IsBackground)
       {
-        if (_isClient)
-        {
+        if (_isClient && _msgThread != null)
           _msgThread.Join(5 * 1000);
-        }
-        else
-        {
+
+        if (!_isClient && _exitedMessageLoop != null)
           _exitedMessageLoop.WaitOne(5 * 1000);
-        }
       }
 
       ReadyState = WsState.CLOSED;
@@ -880,15 +877,21 @@ namespace WebSocketSharp
       {
         if (_unTransmittedBuffer.Count == 0)
         {
-          _wsStream.WriteFrame(frame);
+          if (_wsStream != null)
+          {
+            _wsStream.WriteFrame(frame);
+            return true;
+          }
         }
-        else
+
+        if (_unTransmittedBuffer.Count > 0)
         {
           _unTransmittedBuffer.Add(frame);
           var msg = "Current data can not be sent because there is untransmitted data.";
           error(msg);
-          return false;
         }
+
+        return false;
       }
       catch (Exception ex)
       {
@@ -896,8 +899,6 @@ namespace WebSocketSharp
         error(ex.Message);
         return false;
       }
-
-      return true;
     }
 
     private void send(Opcode opcode, PayloadData data)

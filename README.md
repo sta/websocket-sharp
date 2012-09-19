@@ -241,10 +241,11 @@ wssv.Stop();
 
 I modified System.Net.HttpListener, System.Net.HttpListenerContext and some others of [Mono] to create the HTTP server that the connection can be upgraded to the WebSocket connection if the HTTP server received a WebSocket request.
 
-You can specify the WebSocket service in the same way as the WebSocket server.
+You can add to your `HttpServer` any WebSocket service and a matching path to that service by using `HttpServer.AddService<T>` method.
 
 ```cs
-var httpsv = new HttpServer<Echo>(4649);
+var httpsv = new HttpServer(4649);
+httpsv.AddService<Echo>("/");
 ```
 
 For more information, please refer to the [Example3].

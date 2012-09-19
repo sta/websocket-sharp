@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Threading;
@@ -34,18 +35,16 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server {
 
-  public class HttpServer<T>
-    where T : WebSocketService, new()
-  {
+  public class HttpServer {
+
     #region Fields
 
-    private Thread             _acceptRequestThread;
-    private bool               _isWindows;
-    private HttpListener       _listener;
-    private int                _port;
-    private string             _rootPath;
-    private Uri                _wsPath;
-    private WebSocketServer<T> _wsServer;
+    private Thread                               _acceptRequestThread;
+    private bool                                 _isWindows;
+    private HttpListener                         _listener;
+    private int                                  _port;
+    private string                               _rootPath;
+    private Dictionary<string, IWebSocketServer> _wsServers;
 
     #endregion
 
@@ -57,14 +56,8 @@ namespace WebSocketSharp.Server {
     }
 
     public HttpServer(int port)
-      : this(port, "/")
     {
-    }
-
-    public HttpServer(int port, string wsPath)
-    {
-      _port   = port;
-      _wsPath = wsPath.ToUri();
+      _port = port;
       init();
     }
 
@@ -126,7 +119,7 @@ namespace WebSocketSharp.Server {
     {
       _isWindows = false;
       _listener  = new HttpListener();
-      _wsServer  = new WebSocketServer<T>();
+      _wsServers = new Dictionary<string, IWebSocketServer>();
 
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
@@ -163,11 +156,15 @@ namespace WebSocketSharp.Server {
           {
             if (req.IsWebSocketRequest)
             {
-              upgradeToWebSocket(context);
-              return;
-            }
+              if (upgradeToWebSocket(context))
+                return;
 
-            res.StatusCode = (int)HttpStatusCode.BadRequest;
+              res.StatusCode = (int)HttpStatusCode.NotImplemented;
+            }
+            else
+            {
+              res.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
           }
           else
           {
@@ -254,18 +251,30 @@ namespace WebSocketSharp.Server {
       _acceptRequestThread.Start();
     }
 
-    private void upgradeToWebSocket(HttpListenerContext context)
+    private bool upgradeToWebSocket(HttpListenerContext context)
     {
-      var wsContext = context.AcceptWebSocket();
+      var path = context.Request.RawUrl;
+      if (!_wsServers.ContainsKey(path))
+        return false;
+
+      var wsContext = context.AcceptWebSocket(path);
       var socket    = wsContext.WebSocket;
-      if (_wsPath.ToString() != "/")
-        socket.Url = _wsPath;
-      _wsServer.BindWebSocket(socket);
+      var wsServer  = _wsServers[path];
+      wsServer.BindWebSocket(socket);
+
+      return true;
     }
 
     #endregion
 
     #region Public Methods
+
+    public void AddService<T>(string path)
+      where T : WebSocketService, new()
+    {
+      var server = new WebSocketServer<T>();
+      _wsServers.Add(path, server);
+    }
 
     public byte[] GetFile(string path)
     {
@@ -289,7 +298,8 @@ namespace WebSocketSharp.Server {
     {
       _listener.Close();
       _acceptRequestThread.Join(5 * 1000);
-      _wsServer.StopServices();
+      foreach (var server in _wsServers.Values)
+        server.Stop();
     }
 
     #endregion

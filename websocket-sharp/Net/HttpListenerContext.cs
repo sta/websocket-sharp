@@ -169,9 +169,9 @@ namespace WebSocketSharp.Net {
 
 		#region Public Method
 
-		public HttpListenerWebSocketContext AcceptWebSocket ()
+		public HttpListenerWebSocketContext AcceptWebSocket (string path)
 		{
-			return new HttpListenerWebSocketContext (this);
+			return new HttpListenerWebSocketContext (path, this);
 		}
 
 		#endregion

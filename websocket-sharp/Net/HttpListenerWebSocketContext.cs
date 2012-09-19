@@ -40,10 +40,10 @@ namespace WebSocketSharp.Net {
     private HttpListenerContext _context;
     private WebSocket           _socket;
 
-    internal HttpListenerWebSocketContext(HttpListenerContext context)
+    internal HttpListenerWebSocketContext(string path, HttpListenerContext context)
     {
       _context = context;
-      _socket  = new WebSocket(this);
+      _socket  = new WebSocket(path.ToUri(), this);
     }
 
     internal HttpListenerContext BaseContext {

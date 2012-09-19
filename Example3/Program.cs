@@ -7,11 +7,12 @@ namespace Example3
 {
   public class Program
   {
-    private static HttpServer<Echo> _httpsv;
+    private static HttpServer _httpsv;
 
     public static void Main(string[] args)
     {
-      _httpsv = new HttpServer<Echo>(4649);
+      _httpsv = new HttpServer(4649);
+      _httpsv.AddService<Echo>("/");
 
       _httpsv.OnGet += (sender, e) =>
       {
