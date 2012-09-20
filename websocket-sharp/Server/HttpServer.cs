@@ -154,17 +154,8 @@ namespace WebSocketSharp.Server {
         {
           if (isUpgrade(req, "websocket"))
           {
-            if (req.IsWebSocketRequest)
-            {
-              if (upgradeToWebSocket(context))
-                return;
-
-              res.StatusCode = (int)HttpStatusCode.NotImplemented;
-            }
-            else
-            {
-              res.StatusCode = (int)HttpStatusCode.BadRequest;
-            }
+            if (upgradeToWebSocket(context))
+              return;
           }
           else
           {
@@ -253,9 +244,21 @@ namespace WebSocketSharp.Server {
 
     private bool upgradeToWebSocket(HttpListenerContext context)
     {
-      var path = context.Request.RawUrl;
-      if (!_wsServers.ContainsKey(path))
+      var req = context.Request;
+      var res = context.Response;
+
+      if (!req.IsWebSocketRequest)
+      {
+        res.StatusCode = (int)HttpStatusCode.BadRequest;
         return false;
+      }
+
+      var path = req.RawUrl;
+      if (!_wsServers.ContainsKey(path))
+      {
+        res.StatusCode = (int)HttpStatusCode.NotImplemented;
+        return false;
+      }
 
       var wsContext = context.AcceptWebSocket(path);
       var socket    = wsContext.WebSocket;
