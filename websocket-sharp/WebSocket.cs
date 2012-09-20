@@ -66,14 +66,13 @@ namespace WebSocketSharp
     private string                          _binaryType;
     private HttpListenerWebSocketContext    _context;
     private IPEndPoint                      _endPoint;
-    private AutoResetEvent                  _exitedMessageLoop;
+    private AutoResetEvent                  _exitMessageLoop;
     private string                          _extensions;
     private Object                          _forClose;
     private Object                          _forSend;
     private int                             _fragmentLen;
     private bool                            _isClient;
     private bool                            _isSecure;
-    private Thread                          _msgThread;
     private NetworkStream                   _netStream;
     private string                          _protocol;
     private string                          _protocols;
@@ -355,13 +354,8 @@ namespace WebSocketSharp
     private void closeHandshake(WsFrame frame)
     {
       if (send(frame) && !Thread.CurrentThread.IsBackground)
-      {
-        if (_isClient && _msgThread != null)
-          _msgThread.Join(5 * 1000);
-
-        if (!_isClient && _exitedMessageLoop != null)
-          _exitedMessageLoop.WaitOne(5 * 1000);
-      }
+        if (_exitMessageLoop != null)
+          _exitMessageLoop.WaitOne(5 * 1000);
 
       ReadyState = WsState.CLOSED;
     }
@@ -673,14 +667,6 @@ namespace WebSocketSharp
       }
     }
 
-    private void messageLoop()
-    {
-      while (_readyState == WsState.OPEN)
-      {
-        message();
-      }
-    }
-
     private void messageLoopCallback(IAsyncResult ar)
     {
       Action messageInvoker = (Action)ar.AsyncState;
@@ -689,11 +675,10 @@ namespace WebSocketSharp
       if (_readyState == WsState.OPEN)
       {
         messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
+        return;
       }
-      else
-      {
-        _exitedMessageLoop.Set();
-      }
+
+      _exitMessageLoop.Set();
     }
 
     private void pong(PayloadData data)
@@ -1042,24 +1027,15 @@ namespace WebSocketSharp
 
     private void startMessageThread()
     {
-      if (_isClient)
+      _exitMessageLoop = new AutoResetEvent(false);
+
+      Action messageInvoker = () =>
       {
-        _msgThread = new Thread(new ThreadStart(messageLoop)); 
-        _msgThread.IsBackground = true;
-        _msgThread.Start();
-      }
-      else
-      {
-        _exitedMessageLoop = new AutoResetEvent(false);
-        Action messageInvoker = () =>
-        {
-          if (_readyState == WsState.OPEN)
-          {
-            message();
-          }
-        };
-        messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
-      }
+        if (_readyState == WsState.OPEN)
+          message();
+      };
+
+      messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
     }
 
     #endregion
