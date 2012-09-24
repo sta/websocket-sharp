@@ -32,6 +32,7 @@ using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp
@@ -39,9 +40,15 @@ namespace WebSocketSharp
   public class WsStream<TStream> : IWsStream
     where TStream : Stream
   {
+    #region Fields
+
     private TStream _innerStream;
     private Object  _forRead;
     private Object  _forWrite;
+
+    #endregion
+
+    #region Constructor
 
     public WsStream(TStream innerStream)
     {
@@ -61,6 +68,10 @@ namespace WebSocketSharp
       _forRead     = new object();
       _forWrite    = new object();
     }
+
+    #endregion
+
+    #region Public Methods
 
     public void Close()
     {
@@ -102,6 +113,27 @@ namespace WebSocketSharp
       }
     }
 
+    public string[] ReadHandshake()
+    {
+      lock (_forRead)
+      {
+        var buffer = new List<byte>();
+
+        while (true)
+        {
+          if (ReadByte().EqualsAndSaveTo('\r', buffer) &&
+              ReadByte().EqualsAndSaveTo('\n', buffer) &&
+              ReadByte().EqualsAndSaveTo('\r', buffer) &&
+              ReadByte().EqualsAndSaveTo('\n', buffer))
+            break;
+        }
+
+        return Encoding.UTF8.GetString(buffer.ToArray())
+               .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
+               .Split('\n');
+      }
+    }
+
     public void Write(byte[] buffer, int offset, int count)
     {
       lock (_forWrite)
@@ -126,5 +158,16 @@ namespace WebSocketSharp
         _innerStream.Write(buffer, 0, buffer.Length);
       }
     }
+
+    public void WriteHandshake(Handshake handshake)
+    {
+      lock (_forWrite)
+      {
+        var buffer = handshake.ToBytes();
+        _innerStream.Write(buffer, 0, buffer.Length);
+      }
+    }
+
+    #endregion
   }
 }

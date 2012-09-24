@@ -37,13 +37,20 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using WebSocketSharp.Net;
+using WebSocketSharp.Net.Sockets;
 
 namespace WebSocketSharp
 {
   public static class Ext
   {
+    public static TcpListenerWebSocketContext AcceptWebSocket(this TcpClient client)
+    {
+      return new TcpListenerWebSocketContext(client);
+    }
+
     public static void Emit(
       this EventHandler eventHandler, object sender, EventArgs e)
     {
@@ -126,7 +133,7 @@ namespace WebSocketSharp
     // Derived from System.Uri.IsPredefinedScheme method
     public static bool IsPredefinedScheme(this string scheme)
     {
-      if (scheme == null && scheme.Length < 3)
+      if (scheme == null && scheme.Length < 2)
         return false;
 
       char c = scheme[0];
@@ -136,7 +143,10 @@ namespace WebSocketSharp
 
       if (c == 'f')
         return (scheme == "file" || scheme == "ftp");
-        
+
+      if (c == 'w')
+        return (scheme == "ws" || scheme == "wss");
+
       if (c == 'n')
       {
         c = scheme[1];
@@ -156,6 +166,19 @@ namespace WebSocketSharp
       return false;
     }
 
+    // Derived from System.Uri.MaybeUri method
+    public static bool MaybeUri(this string uriString)
+    {
+      int p = uriString.IndexOf(':');
+      if (p == -1)
+        return false;
+
+      if (p >= 10)
+        return false;
+
+      return uriString.Substring(0, p).IsPredefinedScheme();
+    }
+
     public static bool NotEqualsDo(
       this string expected,
       string actual,
@@ -171,19 +194,6 @@ namespace WebSocketSharp
 
       ret = String.Empty;
       return false;
-    }
-
-    // Derived from System.Uri.MaybeUri method
-    public static bool MaybeUri(this string uriString)
-    {
-      int p = uriString.IndexOf(':');
-      if (p == -1)
-        return false;
-
-      if (p >= 10)
-        return false;
-
-      return uriString.Substring(0, p).IsPredefinedScheme();
     }
 
     public static byte[] ReadBytes<TStream>(this TStream stream, ulong length, int bufferLength)

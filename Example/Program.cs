@@ -76,6 +76,8 @@ namespace Example
       using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
       //using (WebSocket ws = new WebSocket("wss://echo.websocket.org", "echo"))
       //using (WebSocket ws = new WebSocket("ws://localhost:4649"))
+      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Echo"))
+      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Chat"))
       {
         ws.OnOpen += (sender, e) =>
         {

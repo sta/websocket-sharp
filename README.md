@@ -147,7 +147,7 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-`WebSocketServer<T>` class and `WebSocketService` class exist in `WebSocketSharp.Server` namespace.
+`WebSocketServer`, `WebSocketServer<T>` and `WebSocketService` classes exist in `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
@@ -191,15 +191,25 @@ In addition, if you override `onOpen`, `onError` and `onClose` methods, each of 
 
 #### Step 3 ####
 
-Creating a instance of `WebSocketServer<T>` class.
+Creating a instance of `WebSocketServer<T>` class if you want single WebSocket service server.
 
 ```cs
 var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
 ```
 
+Creating a instance of `WebSocketServer` class if you want multi WebSocket service server.
+
+```cs
+var wssv = new WebSocketServer(4649);
+wssv.AddService<Echo>("/Echo");
+wssv.AddService<Chat>("/Chat");
+```
+
+You can add to your `WebSocketServer` any WebSocket service and a matching path to that service by using `WebSocketServer.AddService<T>` method.
+
 Type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
-If you set WebSocket url without port number, `WebSocketServer<T>` set **80** or **443** to port number automatically.
+If you create a instance of WebSocket Server without port number, WebSocket Server set **80** or **443** to port number automatically.
 So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
@@ -271,6 +281,8 @@ Examples of using **websocket-sharp**.
 ### Example3 ###
 
 [Example3] starts the HTTP server that the connection can be upgraded to the WebSocket connection.
+
+Please access http://localhost:4649 to do WebSocket Echo Test with your web browser after [Example3] running.
 
 ## Supported WebSocket Protocol ##
 

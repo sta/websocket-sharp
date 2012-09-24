@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * HttpListenerWebSocketContext.cs
+ * TcpListenerWebSocketContext.cs
  *
  * The MIT License
  *
@@ -29,28 +29,29 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net {
+namespace WebSocketSharp.Net.Sockets {
 
-  public class HttpListenerWebSocketContext : WebSocketContext
+  public class TcpListenerWebSocketContext : WebSocketContext
   {
-    private HttpListenerContext _context;
-    private WebSocket           _socket;
-    private IWsStream           _stream;
+    private TcpClient        _client;
+    private bool             _isSecure;
+    private RequestHandshake _request;
+    private WebSocket        _socket;
+    private IWsStream        _stream;
 
-    internal HttpListenerWebSocketContext(string path, HttpListenerContext context)
+    internal TcpListenerWebSocketContext(TcpClient client)
     {
-      _context = context;
-      _stream  = WebSocket.CreateServerStream(context);
-      _socket  = new WebSocket(path.ToUri(), this);
+      _client = client;
+      init();
     }
 
-    internal HttpListenerContext BaseContext {
-      get { return _context; }
+    internal TcpClient Client {
+      get { return _client; }
     }
 
     internal IWsStream Stream {
@@ -58,23 +59,23 @@ namespace WebSocketSharp.Net {
     }
 
     public override CookieCollection CookieCollection {
-      get { return _context.Request.Cookies; }
+      get { throw new NotImplementedException(); }
     }
 
     public override NameValueCollection Headers {
-      get { return _context.Request.Headers; }
+      get { return _request.Headers; }
     }
 
     public override bool IsAuthenticated {
-      get { return _context.Request.IsAuthenticated; }
+      get { throw new NotImplementedException(); }
     }
 
     public override bool IsSecureConnection {
-      get { return _context.Request.IsSecureConnection; }
+      get { return _isSecure; }
     }
 
     public override bool IsLocal {
-      get { return _context.Request.IsLocal; }
+      get { throw new NotImplementedException(); }
     }
 
     public override string Origin {
@@ -82,7 +83,7 @@ namespace WebSocketSharp.Net {
     }
 
     public override Uri RequestUri {
-      get { return _context.Request.RawUrl.ToUri(); }
+      get { return _request.RequestUri; }
     }
 
     public override string SecWebSocketKey {
@@ -98,11 +99,22 @@ namespace WebSocketSharp.Net {
     }
 
     public override IPrincipal User {
-      get { return _context.User; }
+      get { throw new NotImplementedException(); }
     }
 
     public override WebSocket WebSocket {
       get { return _socket; }
+    }
+
+    private void init()
+    {
+      _stream  = WebSocket.CreateServerStream(_client);
+      _request = RequestHandshake.Parse(_stream.ReadHandshake());
+
+      var port = ((IPEndPoint)_client.Client.LocalEndPoint).Port;
+      _isSecure = port == 443 ? true : false;
+
+      _socket = new WebSocket(this);
     }
   }
 }

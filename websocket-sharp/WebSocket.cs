@@ -48,6 +48,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using WebSocketSharp.Frame;
 using WebSocketSharp.Net;
+using WebSocketSharp.Net.Sockets;
 
 namespace WebSocketSharp
 {
@@ -62,27 +63,28 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private string                          _base64key;
-    private string                          _binaryType;
-    private HttpListenerWebSocketContext    _context;
-    private IPEndPoint                      _endPoint;
-    private AutoResetEvent                  _exitMessageLoop;
-    private string                          _extensions;
-    private Object                          _forClose;
-    private Object                          _forSend;
-    private int                             _fragmentLen;
-    private bool                            _isClient;
-    private bool                            _isSecure;
-    private NetworkStream                   _netStream;
-    private string                          _protocol;
-    private string                          _protocols;
-    private volatile WsState                _readyState;
-    private AutoResetEvent                  _receivedPong;
-    private SslStream                       _sslStream;
-    private TcpClient                       _tcpClient;
-    private Uri                             _uri;
-    private SynchronizedCollection<WsFrame> _unTransmittedBuffer;
-    private IWsStream                       _wsStream;
+    private string                                 _base64key;
+    private WebSocketSharp.Net.HttpListenerContext _baseContext;
+    private string                                 _binaryType;
+    private WebSocketContext                       _context;
+    private IPEndPoint                             _endPoint;
+    private AutoResetEvent                         _exitMessageLoop;
+    private string                                 _extensions;
+    private Object                                 _forClose;
+    private Object                                 _forSend;
+    private int                                    _fragmentLen;
+    private bool                                   _isClient;
+    private bool                                   _isSecure;
+    private NetworkStream                          _netStream;
+    private string                                 _protocol;
+    private string                                 _protocols;
+    private volatile WsState                       _readyState;
+    private AutoResetEvent                         _receivedPong;
+    private SslStream                              _sslStream;
+    private TcpClient                              _tcpClient;
+    private Uri                                    _uri;
+    private SynchronizedCollection<WsFrame>        _unTransmittedBuffer;
+    private IWsStream                              _wsStream;
 
     #endregion
 
@@ -105,13 +107,28 @@ namespace WebSocketSharp
 
     #region Internal Constructor
 
+    internal WebSocket(TcpListenerWebSocketContext context)
+      : this()
+    {
+      _uri       = context.RequestUri;
+      _context   = context;
+      _tcpClient = context.Client;
+      _wsStream  = context.Stream;
+      _endPoint  = (IPEndPoint)_tcpClient.Client.LocalEndPoint;
+      _isClient  = false;
+      _isSecure  = context.IsSecureConnection;
+    }
+
     internal WebSocket(Uri uri, HttpListenerWebSocketContext context)
       : this()
     {
-      _uri      = uri;
-      _context  = context;
-      _isClient = false;
-      _isSecure = _context.IsSecureConnection;
+      _uri         = uri;
+      _context     = context;
+      _baseContext = context.BaseContext;
+      _wsStream    = context.Stream;
+      _endPoint    = _baseContext.Connection.LocalEndPoint;
+      _isClient    = false;
+      _isSecure    = context.IsSecureConnection;
     }
 
     internal WebSocket(Uri uri, TcpClient tcpClient)
@@ -325,11 +342,11 @@ namespace WebSocketSharp
 
     private void closeConnection()
     {
-      if (_context != null)
+      if (_baseContext != null)
       {
-        _context.BaseContext.Response.Close();
-        _wsStream = null;
-        _context  = null;
+        _baseContext.Response.Close();
+        _wsStream    = null;
+        _baseContext = null;
       }
 
       if (_wsStream != null)
@@ -363,13 +380,10 @@ namespace WebSocketSharp
     private void createClientStream()
     {
       var host = _uri.DnsSafeHost;
+
       var port = _uri.Port;
       if (port <= 0)
-      {
-        port = 80;
-        if (IsSecure)
-          port = 443;
-      }
+        port = IsSecure ? 443 : 80;
 
       _tcpClient = new TcpClient(host, port);
       _netStream = _tcpClient.GetStream();
@@ -378,7 +392,7 @@ namespace WebSocketSharp
       {
         RemoteCertificateValidationCallback validation = (sender, certificate, chain, sslPolicyErrors) =>
         {
-          // Temporary implementation
+          // FIXME: Always returns true
           return true;
         };
 
@@ -449,44 +463,20 @@ namespace WebSocketSharp
 
     private void createServerStream()
     {
-      if (_context != null)
-      {
-        _wsStream = createServerStreamFromContext();
+      if (_wsStream != null)
         return;
-      }
 
       if (_tcpClient != null)
       {
-        _wsStream = createServerStreamFromTcpClient();
+        _wsStream = CreateServerStream(_tcpClient);
         return;
       }
-    }
 
-    private IWsStream createServerStreamFromContext()
-    {
-      var stream = _context.BaseContext.Connection.Stream;
-
-      if (IsSecure)
-        return new WsStream<SslStream>((SslStream)stream);
-
-      return new WsStream<NetworkStream>((NetworkStream)stream);
-    }
-
-    private IWsStream createServerStreamFromTcpClient()
-    {
-      _netStream = _tcpClient.GetStream();
-
-      if (IsSecure)
+      if (_baseContext != null)
       {
-        _sslStream = new SslStream(_netStream);
-
-        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
-        _sslStream.AuthenticateAsServer(new X509Certificate(certPath));
-
-        return new WsStream<SslStream>(_sslStream);
+        _wsStream = CreateServerStream(_baseContext);
+        return;
       }
-
-      return new WsStream<NetworkStream>(_netStream);
     }
 
     private void doHandshake()
@@ -695,20 +685,7 @@ namespace WebSocketSharp
 
     private string[] readHandshake()
     {
-      var buffer = new List<byte>();
-
-      while (true)
-      {
-        if (_wsStream.ReadByte().EqualsAndSaveTo('\r', buffer) &&
-            _wsStream.ReadByte().EqualsAndSaveTo('\n', buffer) &&
-            _wsStream.ReadByte().EqualsAndSaveTo('\r', buffer) &&
-            _wsStream.ReadByte().EqualsAndSaveTo('\n', buffer))
-          break;
-      }
-
-      return Encoding.UTF8.GetString(buffer.ToArray())
-             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
-             .Split('\n');
+      return _wsStream.ReadHandshake();
     }
 
     private MessageEventArgs receive()
@@ -992,7 +969,7 @@ namespace WebSocketSharp
       Console.WriteLine("WS: Info@sendOpeningHandshake: Opening handshake from client:\n");
       Console.WriteLine(req.ToString());
       #endif
-      _wsStream.Write(req.ToBytes(), 0, req.ToBytes().Length);
+      _wsStream.WriteHandshake(req);
 
       var res = ResponseHandshake.Parse(readHandshake());
       #if DEBUG
@@ -1009,20 +986,14 @@ namespace WebSocketSharp
       Console.WriteLine("WS: Info@sendResponseHandshake: Response handshake from server:\n");
       Console.WriteLine(res.ToString());
       #endif
-      _wsStream.Write(res.ToBytes(), 0, res.ToBytes().Length);
+      _wsStream.WriteHandshake(res);
     }
 
     private void sendResponseHandshakeForInvalid()
     {
-      var code = (int)WebSocketSharp.Net.HttpStatusCode.BadRequest;
-      var res  = new ResponseHandshake {
-        Reason     = "Bad Request",
-        StatusCode = code.ToString()
-      };
-      res.Headers.Clear();
+      var res = ResponseHandshake.BadRequest;
       res.AddHeader("Sec-WebSocket-Version", _version);
-
-      _wsStream.Write(res.ToBytes(), 0, res.ToBytes().Length);
+      _wsStream.WriteHandshake(res);
     }
 
     private void startMessageThread()
@@ -1036,6 +1007,39 @@ namespace WebSocketSharp
       };
 
       messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
+    }
+
+    #endregion
+
+    #region Internal Static Methods
+
+    internal static IWsStream CreateServerStream(TcpClient client)
+    {
+      var netStream = client.GetStream();
+
+      var port = ((IPEndPoint)client.Client.LocalEndPoint).Port;
+      if (port == 443)
+      {
+        var sslStream = new SslStream(netStream);
+
+        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
+        sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
+
+        return new WsStream<SslStream>(sslStream);
+      }
+
+      return new WsStream<NetworkStream>(netStream);
+    }
+
+    internal static IWsStream CreateServerStream(WebSocketSharp.Net.HttpListenerContext context)
+    {
+      var conn   = context.Connection;
+      var stream = conn.Stream;
+
+      if (conn.IsSecure)
+        return new WsStream<SslStream>((SslStream)stream);
+
+      return new WsStream<NetworkStream>((NetworkStream)stream);
     }
 
     #endregion

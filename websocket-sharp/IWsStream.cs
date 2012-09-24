@@ -33,12 +33,14 @@ namespace WebSocketSharp
 {
   public interface IWsStream : IDisposable
   {
-    void    Close();
-    int     Read(byte[] buffer, int offset, int size);
-    int     ReadByte();
-    WsFrame ReadFrame();
-    void    Write(byte[] buffer, int offset, int count);
-    void    WriteByte(byte value);
-    void    WriteFrame(WsFrame frame);
+    void     Close();
+    int      Read(byte[] buffer, int offset, int size);
+    int      ReadByte();
+    WsFrame  ReadFrame();
+    string[] ReadHandshake();
+    void     Write(byte[] buffer, int offset, int count);
+    void     WriteByte(byte value);
+    void     WriteFrame(WsFrame frame);
+    void     WriteHandshake(Handshake handshake);
   }
 }

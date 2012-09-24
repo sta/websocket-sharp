@@ -35,6 +35,36 @@ namespace WebSocketSharp {
 
   public class ResponseHandshake : Handshake
   {
+    #region Public Static Fields
+
+    public static ResponseHandshake BadRequest;
+    public static ResponseHandshake NotImplemented;
+
+    #endregion
+
+    #region Static Constructor
+
+    static ResponseHandshake()
+    {
+      var badRequest = new ResponseHandshake {
+        Reason     = "Bad Request",
+        StatusCode = ((int)HttpStatusCode.BadRequest).ToString()
+      };
+      badRequest.Headers.Clear();
+      badRequest.AddHeader("Connection", "Close");
+      BadRequest = badRequest;
+
+      var notImplemented = new ResponseHandshake {
+        Reason     = "Not Implemented",
+        StatusCode = ((int)HttpStatusCode.NotImplemented).ToString()
+      };
+      notImplemented.Headers.Clear();
+      notImplemented.AddHeader("Connection", "Close");
+      NotImplemented = notImplemented;
+    }
+
+    #endregion
+
     #region Public Constructor
 
     public ResponseHandshake()
