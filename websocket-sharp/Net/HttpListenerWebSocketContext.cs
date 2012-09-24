@@ -29,9 +29,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net {
@@ -40,12 +37,12 @@ namespace WebSocketSharp.Net {
   {
     private HttpListenerContext _context;
     private WebSocket           _socket;
-    private IWsStream           _stream;
+    private WsStream            _stream;
 
     internal HttpListenerWebSocketContext(string path, HttpListenerContext context)
     {
       _context = context;
-      _stream  = WebSocket.CreateServerStream(context);
+      _stream  = WsStream.CreateServerStream(context);
       _socket  = new WebSocket(path.ToUri(), this);
     }
 
@@ -53,7 +50,7 @@ namespace WebSocketSharp.Net {
       get { return _context; }
     }
 
-    internal IWsStream Stream {
+    internal WsStream Stream {
       get { return _stream; }
     }
 

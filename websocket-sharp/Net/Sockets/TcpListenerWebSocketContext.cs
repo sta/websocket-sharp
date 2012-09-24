@@ -29,8 +29,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Principal;
 
@@ -42,7 +40,7 @@ namespace WebSocketSharp.Net.Sockets {
     private bool             _isSecure;
     private RequestHandshake _request;
     private WebSocket        _socket;
-    private IWsStream        _stream;
+    private WsStream         _stream;
 
     internal TcpListenerWebSocketContext(TcpClient client)
     {
@@ -54,7 +52,7 @@ namespace WebSocketSharp.Net.Sockets {
       get { return _client; }
     }
 
-    internal IWsStream Stream {
+    internal WsStream Stream {
       get { return _stream; }
     }
 
@@ -108,13 +106,10 @@ namespace WebSocketSharp.Net.Sockets {
 
     private void init()
     {
-      _stream  = WebSocket.CreateServerStream(_client);
-      _request = RequestHandshake.Parse(_stream.ReadHandshake());
-
-      var port = ((IPEndPoint)_client.Client.LocalEndPoint).Port;
-      _isSecure = port == 443 ? true : false;
-
-      _socket = new WebSocket(this);
+      _stream   = WsStream.CreateServerStream(_client);
+      _isSecure = _stream.IsSecure;
+      _request  = RequestHandshake.Parse(_stream.ReadHandshake());
+      _socket   = new WebSocket(this);
     }
   }
 }

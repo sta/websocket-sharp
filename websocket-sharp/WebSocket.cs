@@ -33,19 +33,15 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Security.Authentication;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using WebSocketSharp.Frame;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
@@ -75,16 +71,14 @@ namespace WebSocketSharp
     private int                                    _fragmentLen;
     private bool                                   _isClient;
     private bool                                   _isSecure;
-    private NetworkStream                          _netStream;
     private string                                 _protocol;
     private string                                 _protocols;
     private volatile WsState                       _readyState;
     private AutoResetEvent                         _receivedPong;
-    private SslStream                              _sslStream;
     private TcpClient                              _tcpClient;
     private Uri                                    _uri;
     private SynchronizedCollection<WsFrame>        _unTransmittedBuffer;
-    private IWsStream                              _wsStream;
+    private WsStream                               _wsStream;
 
     #endregion
 
@@ -355,12 +349,6 @@ namespace WebSocketSharp
         _wsStream = null;
       }
 
-      if (_netStream != null)
-      {
-        _netStream.Dispose();
-        _netStream = null;
-      }
-
       if (_tcpClient != null)
       {
         _tcpClient.Close();
@@ -385,25 +373,7 @@ namespace WebSocketSharp
       if (port <= 0)
         port = IsSecure ? 443 : 80;
 
-      _tcpClient = new TcpClient(host, port);
-      _netStream = _tcpClient.GetStream();
-
-      if (IsSecure)
-      {
-        RemoteCertificateValidationCallback validation = (sender, certificate, chain, sslPolicyErrors) =>
-        {
-          // FIXME: Always returns true
-          return true;
-        };
-
-        _sslStream = new SslStream(_netStream, false, validation);
-        _sslStream.AuthenticateAsClient(host);
-        _wsStream  = new WsStream<SslStream>(_sslStream);
-
-        return;
-      }
-
-      _wsStream = new WsStream<NetworkStream>(_netStream);
+      _wsStream = WsStream.CreateClientStream(host, port, out _tcpClient);
     }
 
     private string createExpectedKey()
@@ -468,13 +438,13 @@ namespace WebSocketSharp
 
       if (_tcpClient != null)
       {
-        _wsStream = CreateServerStream(_tcpClient);
+        _wsStream = WsStream.CreateServerStream(_tcpClient);
         return;
       }
 
       if (_baseContext != null)
       {
-        _wsStream = CreateServerStream(_baseContext);
+        _wsStream = WsStream.CreateServerStream(_baseContext);
         return;
       }
     }
@@ -1011,39 +981,6 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Internal Static Methods
-
-    internal static IWsStream CreateServerStream(TcpClient client)
-    {
-      var netStream = client.GetStream();
-
-      var port = ((IPEndPoint)client.Client.LocalEndPoint).Port;
-      if (port == 443)
-      {
-        var sslStream = new SslStream(netStream);
-
-        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
-        sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
-
-        return new WsStream<SslStream>(sslStream);
-      }
-
-      return new WsStream<NetworkStream>(netStream);
-    }
-
-    internal static IWsStream CreateServerStream(WebSocketSharp.Net.HttpListenerContext context)
-    {
-      var conn   = context.Connection;
-      var stream = conn.Stream;
-
-      if (conn.IsSecure)
-        return new WsStream<SslStream>((SslStream)stream);
-
-      return new WsStream<NetworkStream>((NetworkStream)stream);
-    }
-
-    #endregion
-
     #region Public Methods
 
     public void Close()
@@ -1111,7 +1048,8 @@ namespace WebSocketSharp
       }
 
       var frame = createFrame(Fin.FINAL, Opcode.PING, payloadData);
-      if (!send(frame)) return false;
+      if (!send(frame))
+        return false;
 
       return _receivedPong.WaitOne(5 * 1000);
     }

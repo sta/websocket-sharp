@@ -74,7 +74,6 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Server\WebSocketService.cs" />
-    <Compile Include="IWsStream.cs" />
     <Compile Include="WsStream.cs" />
     <Compile Include="RequestHandshake.cs" />
     <Compile Include="ResponseHandshake.cs" />

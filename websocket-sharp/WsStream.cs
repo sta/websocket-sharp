@@ -28,45 +28,118 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebSocketSharp.Frame;
 
 namespace WebSocketSharp
 {
-  public class WsStream<TStream> : IWsStream
-    where TStream : Stream
+  public class WsStream : IDisposable
   {
     #region Fields
 
-    private TStream _innerStream;
-    private Object  _forRead;
-    private Object  _forWrite;
+    private Stream _innerStream;
+    private Type   _innerStreamType;
+    private bool   _isSecure;
+    private Object _forRead;
+    private Object _forWrite;
 
     #endregion
 
     #region Constructor
 
-    public WsStream(TStream innerStream)
+    public WsStream(NetworkStream innerStream)
     {
-      Type streamType = typeof(TStream);
-      if (streamType != typeof(NetworkStream) &&
-          streamType != typeof(SslStream))
-      {
-        throw new NotSupportedException("Not supported Stream type: " + streamType.ToString());
-      }
+      init(innerStream);
+    }
 
+    public WsStream(SslStream innerStream)
+    {
+      init(innerStream);
+    }
+
+    #endregion
+
+    #region Public Property
+
+    public bool IsSecure {
+      get { return _isSecure; }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void init(Stream innerStream)
+    {
       if (innerStream == null)
-      {
         throw new ArgumentNullException("innerStream");
+
+      _innerStream     = innerStream;
+      _innerStreamType = innerStream.GetType();
+      _isSecure        = _innerStreamType == typeof(SslStream) ? true : false;
+      _forRead         = new object();
+      _forWrite        = new object();
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal static WsStream CreateClientStream(string hostname, int port, out TcpClient client)
+    {
+      client = new TcpClient(hostname, port);
+      var netStream = client.GetStream();
+
+      if (port == 443)
+      {
+        RemoteCertificateValidationCallback validationCb = (sender, certificate, chain, sslPolicyErrors) =>
+        {
+          // FIXME: Always returns true
+          return true;
+        };
+
+        var sslStream = new SslStream(netStream, false, validationCb);
+        sslStream.AuthenticateAsClient(hostname);
+
+        return new WsStream(sslStream);
       }
 
-      _innerStream = innerStream;
-      _forRead     = new object();
-      _forWrite    = new object();
+      return new WsStream(netStream);
+    }
+
+    internal static WsStream CreateServerStream(TcpClient client)
+    {
+      var netStream = client.GetStream();
+
+      var port = ((IPEndPoint)client.Client.LocalEndPoint).Port;
+      if (port == 443)
+      {
+        var sslStream = new SslStream(netStream);
+
+        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
+        sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
+
+        return new WsStream(sslStream);
+      }
+
+      return new WsStream(netStream);
+    }
+
+    internal static WsStream CreateServerStream(WebSocketSharp.Net.HttpListenerContext context)
+    {
+      var conn   = context.Connection;
+      var stream = conn.Stream;
+
+      if (conn.IsSecure)
+        return new WsStream((SslStream)stream);
+
+      return new WsStream((NetworkStream)stream);
     }
 
     #endregion
@@ -90,7 +163,7 @@ namespace WebSocketSharp
         var readLen = _innerStream.Read(buffer, offset, size);
         if (readLen < size)
         {
-          var msg = String.Format("Data can not be read from {0}.", typeof(TStream).Name);
+          var msg = String.Format("Data can not be read from {0}.", _innerStreamType);
           throw new IOException(msg);
         }
         return readLen;
