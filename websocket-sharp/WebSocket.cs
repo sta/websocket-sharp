@@ -643,6 +643,18 @@ namespace WebSocketSharp
       pong(payloadData);
     }
 
+    private WsFrame readFrame()
+    {
+      var frame = _wsStream.ReadFrame();
+      if (frame == null)
+      {
+        var msg = "WebSocket data frame can not be read from network stream.";
+        close(CloseStatusCode.ABNORMAL, msg);
+      }
+
+      return frame;
+    }
+
     private string[] readHandshake()
     {
       return _wsStream.ReadHandshake();
@@ -650,124 +662,115 @@ namespace WebSocketSharp
 
     private MessageEventArgs receive()
     {
-      List<byte>       dataBuffer;
-      MessageEventArgs eventArgs;
-      Fin              fin;
-      WsFrame          frame;
-      Opcode           opcode;
-      PayloadData      payloadData;
-
-      Action act = () =>
-      {
-        var msg = "WebSocket data frame can not be read from network stream.";
-        close(CloseStatusCode.ABNORMAL, msg);
-      };
-
-      frame = _wsStream.ReadFrame();
-      if (frame.IsNullDo(act)) return null;
+      var frame = readFrame();
+      if (frame == null)
+        return null;
 
       if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
           (frame.Fin == Fin.MORE  && frame.Opcode == Opcode.CONT))
-      {
+        return null;
+
+      if (frame.Fin == Fin.MORE)
+      {// MORE
+        var merged = receiveFragmented(frame);
+        if (merged == null)
+          return null;
+
+        return new MessageEventArgs(frame.Opcode, new PayloadData(merged));
+      }
+
+      if (frame.Opcode == Opcode.CLOSE)
+      {// FINAL & CLOSE
+        #if DEBUG
+        Console.WriteLine("WS: Info@receive: Start closing handshake.");
+        #endif
+        close(frame.PayloadData);
         return null;
       }
 
-      fin         = frame.Fin;
-      opcode      = frame.Opcode;
-      payloadData = frame.PayloadData;
-      eventArgs   = null;
-
-      switch (fin)
-      {
-        case Fin.MORE:
-          dataBuffer = new List<byte>(payloadData.ToBytes());
-          while (true)
-          {
-            frame = _wsStream.ReadFrame();
-            if (frame.IsNullDo(act)) return null;
-
-            if (frame.Fin == Fin.MORE)
-            {
-              if (frame.Opcode == Opcode.CONT)
-              {// MORE & CONT
-                dataBuffer.AddRange(frame.PayloadData.ToBytes());
-              }
-              else
-              {
-                #if DEBUG
-                Console.WriteLine("WS: Info@receive: Start closing handshake.");
-                #endif
-                close(CloseStatusCode.INCORRECT_DATA, String.Empty);
-                return null;
-              }
-            }
-            else if (frame.Opcode == Opcode.CONT)
-            {// FINAL & CONT
-              dataBuffer.AddRange(frame.PayloadData.ToBytes());
-              break;
-            }
-            else if (frame.Opcode == Opcode.CLOSE)
-            {// FINAL & CLOSE
-              #if DEBUG
-              Console.WriteLine("WS: Info@receive: Start closing handshake.");
-              #endif
-              close(frame.PayloadData);
-              return null;
-            }
-            else if (frame.Opcode == Opcode.PING)
-            {// FINAL & PING
-              #if DEBUG
-              Console.WriteLine("WS: Info@receive: Return Pong.");
-              #endif
-              pong(frame.PayloadData);
-            }
-            else if (frame.Opcode == Opcode.PONG)
-            {// FINAL & PONG
-              _receivedPong.Set();
-              OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
-            }
-            else
-            {// FINAL & (TEXT | BINARY)
-              #if DEBUG
-              Console.WriteLine("WS: Info@receive: Start closing handshake.");
-              #endif
-              close(CloseStatusCode.INCORRECT_DATA, String.Empty);
-              return null;
-            }
-          }
-
-          eventArgs = new MessageEventArgs(opcode, new PayloadData(dataBuffer.ToArray()));
-          break;
-        case Fin.FINAL:
-          switch (opcode)
-          {
-            case Opcode.TEXT:
-            case Opcode.BINARY:
-              goto default;            
-            case Opcode.PONG:
-              _receivedPong.Set();
-              goto default;
-            case Opcode.CLOSE:
-              #if DEBUG
-              Console.WriteLine("WS: Info@receive: Start closing handshake.");
-              #endif
-              close(payloadData);
-              break;
-            case Opcode.PING:
-              #if DEBUG
-              Console.WriteLine("WS: Info@receive: Return Pong.");
-              #endif
-              pong(payloadData);
-              break;
-            default:
-              eventArgs = new MessageEventArgs(opcode, payloadData);
-              break;
-          }
-        
-          break;
+      if (frame.Opcode == Opcode.PING)
+      {// FINAL & PING
+        #if DEBUG
+        Console.WriteLine("WS: Info@receive: Return Pong.");
+        #endif
+        pong(frame.PayloadData);
+        return null;
       }
 
-      return eventArgs;
+      if (frame.Opcode == Opcode.PONG)
+      {// FINAL & PONG
+        _receivedPong.Set();
+      }
+
+      // FINAL & (TEXT | BINARY | PONG)
+      return new MessageEventArgs(frame.Opcode, frame.PayloadData);
+    }
+
+    private byte[] receiveFragmented(WsFrame firstFrame)
+    {
+      var buffer = new List<byte>(firstFrame.PayloadData.ToBytes());
+
+      while (true)
+      {
+        var frame = readFrame();
+        if (frame == null)
+          return null;
+
+        if (frame.Fin == Fin.MORE)
+        {
+          if (frame.Opcode == Opcode.CONT)
+          {// MORE & CONT
+            buffer.AddRange(frame.PayloadData.ToBytes());
+            continue;
+          }
+
+          #if DEBUG
+          Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+          #endif
+          close(CloseStatusCode.INCORRECT_DATA, String.Empty);
+          return null;
+        }
+
+        if (frame.Opcode == Opcode.CONT)
+        {// FINAL & CONT
+          buffer.AddRange(frame.PayloadData.ToBytes());
+          break;
+        }
+
+        if (frame.Opcode == Opcode.CLOSE)
+        {// FINAL & CLOSE
+          #if DEBUG
+          Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+          #endif
+          close(frame.PayloadData);
+          return null;
+        }
+
+        if (frame.Opcode == Opcode.PING)
+        {// FINAL & PING
+          #if DEBUG
+          Console.WriteLine("WS: Info@receiveFragmented: Return Pong.");
+          #endif
+          pong(frame.PayloadData);
+          continue;
+        }
+
+        if (frame.Opcode == Opcode.PONG)
+        {// FINAL & PONG
+          _receivedPong.Set();
+          OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
+          continue;
+        }
+
+        // FINAL & (TEXT | BINARY)
+        #if DEBUG
+        Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+        #endif
+        close(CloseStatusCode.INCORRECT_DATA, String.Empty);
+        return null;
+      }
+
+      return buffer.ToArray();
     }
 
     private RequestHandshake receiveOpeningHandshake()
