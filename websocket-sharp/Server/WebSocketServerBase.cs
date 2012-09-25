@@ -55,17 +55,14 @@ namespace WebSocketSharp.Server {
 
     protected WebSocketServerBase(string url)
     {
-      string msg;
-      if (!isValidUri(url, out msg))
-        throw new ArgumentException(msg, "url");
-
-      init();
+      init(url);
     }
 
     protected WebSocketServerBase(IPAddress address, int port)
     {
-      _port    = port <= 0 ? 80 : port;
       _address = address;
+      _port    = port <= 0 ? 80 : port;
+
       init();
     }
 
@@ -149,48 +146,26 @@ namespace WebSocketSharp.Server {
       _isSelfHost  = true;
     }
 
-    private bool isValidUri(string url, out string message)
+    private void init(string url)
     {
       var uri = url.ToUri();
-      if (!uri.IsAbsoluteUri)
-      {
-        message = "Not absolute uri: " + url;
-        return false;
-      }
+
+      string msg;
+      if (!uri.IsValidWsUri(out msg))
+        throw new ArgumentException(msg, "url");
 
       var scheme = uri.Scheme;
       var port   = uri.Port;
       var host   = uri.DnsSafeHost;
-      var ips    = Dns.GetHostAddresses(host);
-
-      if (scheme != "ws" && scheme != "wss")
-      {
-        message = "Unsupported WebSocket URI scheme: " + scheme;
-        return false;
-      }
-
-      if ((scheme == "wss" && port != 443) ||
-          (scheme != "wss" && port == 443))
-      {
-        message = String.Format(
-          "Invalid pair of WebSocket URI scheme and port: {0}, {1}", scheme, port);
-        return false;
-      }
-
-      if (ips.Length == 0)
-      {
-        message = "Invalid WebSocket URI host: " + host;
-        return false;
-      }
+      var addrs  = Dns.GetHostAddresses(host);
 
       if (port <= 0)
         port = scheme == "ws" ? 80 : 443;
 
-      _address = ips[0];
+      _address = addrs[0];
       _port    = port;
 
-      message = String.Empty;
-      return true;
+      init();
     }
 
     private void startAcceptClientThread()

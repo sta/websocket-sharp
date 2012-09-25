@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using WebSocketSharp.Net;
@@ -164,6 +165,45 @@ namespace WebSocketSharp
         return true;
 
       return false;
+    }
+
+    public static bool IsValidWsUri(this Uri uri, out string message)
+    {
+      if (!uri.IsAbsoluteUri)
+      {
+        message = "Not absolute uri: " + uri.ToString();
+        return false;
+      }
+
+      var scheme = uri.Scheme;
+      if (scheme != "ws" && scheme != "wss")
+      {
+        message = "Unsupported WebSocket URI scheme: " + scheme;
+        return false;
+      }
+
+      var port = uri.Port;
+      if (port > 0)
+      {
+        if ((scheme == "wss" && port != 443) ||
+            (scheme != "wss" && port == 443))
+        {
+          message = String.Format(
+            "Invalid pair of WebSocket URI scheme and port: {0}, {1}", scheme, port);
+          return false;
+        }
+      }
+
+      var host  = uri.DnsSafeHost;
+      var addrs = Dns.GetHostAddresses(host);
+      if (addrs.Length == 0)
+      {
+        message = "Invalid WebSocket URI host: " + host;
+        return false;
+      }
+
+      message = String.Empty;
+      return true;
     }
 
     // Derived from System.Uri.MaybeUri method
@@ -414,7 +454,8 @@ namespace WebSocketSharp
       return new Uri(uriString);
     }
 
-    public static void WriteContent(this HttpListenerResponse response, byte[] content)
+    public static void WriteContent(
+      this WebSocketSharp.Net.HttpListenerResponse response, byte[] content)
     {
       var output = response.OutputStream;
       response.ContentLength64 = content.Length;

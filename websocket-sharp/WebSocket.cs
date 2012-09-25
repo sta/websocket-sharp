@@ -142,17 +142,16 @@ namespace WebSocketSharp
     public WebSocket(string url, params string[] protocols)
       : this()
     {
-      var uri = new Uri(url);
-      if (!isValidScheme(uri))
-      {
-        var msg = "Unsupported WebSocket URI scheme: " + uri.Scheme;
+      var uri = url.ToUri();
+
+      string msg;
+      if (!uri.IsValidWsUri(out msg))
         throw new ArgumentException(msg, "url");
-      }
 
       _uri       = uri;
       _protocols = protocols.ToString(", ");
       _isClient  = true;
-      _isSecure  = _uri.Scheme == "wss" ? true : false;
+      _isSecure  = uri.Scheme == "wss" ? true : false;
     }
 
     public WebSocket(
@@ -595,15 +594,6 @@ namespace WebSocketSharp
 
       message = String.Empty;
       return true;
-    }
-
-    private bool isValidScheme(Uri uri)
-    {
-      string scheme = uri.Scheme;
-      if (scheme == "ws" || scheme == "wss")
-        return true;
-
-      return false;
     }
 
     private void message()
