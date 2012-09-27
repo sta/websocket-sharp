@@ -290,7 +290,7 @@ namespace WebSocketSharp.Frame
       }
       else
       {
-        buffer3 = stream.ReadBytes(buffer3Len, _readBufferLen);
+        buffer3 = stream.ReadBytes((long)buffer3Len, _readBufferLen);
 
         if ((ulong)buffer3.LongLength < buffer3Len)
         {

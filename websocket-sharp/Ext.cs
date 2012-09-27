@@ -236,27 +236,34 @@ namespace WebSocketSharp
       return false;
     }
 
-    public static byte[] ReadBytes<TStream>(this TStream stream, ulong length, int bufferLength)
-      where TStream : System.IO.Stream
+    public static byte[] ReadBytes(this Stream stream, int length)
     {
-      ulong count     = length / (ulong)bufferLength;
-      int   remainder = (int)(length % (ulong)bufferLength);
+      var buffer = new byte[length];
+      stream.Read(buffer, 0, length);
+      return buffer;
+    }
 
-      List<byte> readData = new List<byte>();
-      byte[]     buffer1  = new byte[bufferLength];
-      int        readLen  = 0;
+    public static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
+    {
+      var count    = length / bufferLength;
+      var rem      = length % bufferLength;
+      var readData = new List<byte>();
+      var readLen  = 0;
+      var buffer   = new byte[bufferLength];
 
       count.Times(() =>
       {
-        readLen = stream.Read(buffer1, 0, bufferLength);
-        if (readLen > 0) readData.AddRange(buffer1.SubArray(0, readLen));
+        readLen = stream.Read(buffer, 0, bufferLength);
+        if (readLen > 0)
+          readData.AddRange(buffer.SubArray(0, readLen));
       });
 
-      if (remainder > 0)
+      if (rem > 0)
       {
-        byte[] buffer2 = new byte[remainder];
-        readLen = stream.Read(buffer2, 0, remainder);
-        if (readLen > 0) readData.AddRange(buffer2.SubArray(0, readLen));
+        buffer = new byte[rem];
+        readLen = stream.Read(buffer, 0, (int)rem);
+        if (readLen > 0)
+          readData.AddRange(buffer.SubArray(0, readLen));
       }
 
       return readData.ToArray();
@@ -284,6 +291,11 @@ namespace WebSocketSharp
       ((ulong)n).Times(act);
     }
 
+    public static void Times(this long n, Action act)
+    {
+      ((ulong)n).Times(act);
+    }
+
     public static void Times(this ulong n, Action act)
     {
       for (ulong i = 0; i < n; i++)
@@ -296,6 +308,11 @@ namespace WebSocketSharp
     }
 
     public static void Times(this uint n, Action<ulong> act)
+    {
+      ((ulong)n).Times(act);
+    }
+
+    public static void Times(this long n, Action<ulong> act)
     {
       ((ulong)n).Times(act);
     }

@@ -52,8 +52,9 @@ namespace WebSocketSharp
   {
     #region Private Const Fields
 
-    private const string _guid    = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-    private const string _version = "13";
+    private const int    _fragmentLen = 1016; // Max value is int.MaxValue - 14.
+    private const string _guid        = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private const string _version     = "13";
 
     #endregion
 
@@ -68,7 +69,6 @@ namespace WebSocketSharp
     private string                                 _extensions;
     private Object                                 _forClose;
     private Object                                 _forSend;
-    private int                                    _fragmentLen;
     private bool                                   _isClient;
     private bool                                   _isSecure;
     private string                                 _protocol;
@@ -90,7 +90,6 @@ namespace WebSocketSharp
       _extensions          = String.Empty;
       _forClose            = new Object();
       _forSend             = new Object();
-      _fragmentLen         = 1024; // Max value is int.MaxValue - 14.
       _protocol            = String.Empty;
       _readyState          = WsState.CONNECTING;
       _receivedPong        = new AutoResetEvent(false);
@@ -793,7 +792,7 @@ namespace WebSocketSharp
       if (_readyState == WsState.CONNECTING ||
           _readyState == WsState.CLOSED)
       {
-        var msg = "Connection isn't established or connection was closed.";
+        var msg = "Connection isn't established or has been closed.";
         error(msg);
         return false;
       }
@@ -826,22 +825,21 @@ namespace WebSocketSharp
       }
     }
 
-    private void send(Opcode opcode, PayloadData data)
+    private void send(Opcode opcode, byte[] data)
     {
-      using (MemoryStream ms = new MemoryStream(data.ToBytes()))
+      using (MemoryStream ms = new MemoryStream(data))
       {
         send(opcode, ms);
       }
     }
 
-    private void send<TStream>(Opcode opcode, TStream stream)
-      where TStream : Stream
+    private void send(Opcode opcode, Stream stream)
     {
-      lock(_forSend)
+      lock (_forSend)
       {
         if (_readyState != WsState.OPEN)
         {
-          var msg = "Connection isn't established or connection was closed.";
+          var msg = "Connection isn't established or has been closed.";
           error(msg);
           return;
         }
@@ -849,78 +847,46 @@ namespace WebSocketSharp
         var length = stream.Length;
         if (length <= _fragmentLen)
         {
-          var buffer = new byte[length];
-          stream.Read(buffer, 0, (int)length);
-          var frame = createFrame(Fin.FINAL, opcode, new PayloadData(buffer));
-          send(frame);
+          var buffer = stream.ReadBytes((int)length);
+          send(Fin.FINAL, opcode, buffer);
+          return;
         }
-        else
-        {
-          sendFragmented(opcode, stream);
-        }
+
+        sendFragmented(opcode, stream);
       }
     }
 
-    private ulong sendFragmented<TStream>(Opcode opcode, TStream stream)
-      where TStream : Stream
+    private void send(Fin fin, Opcode opcode, byte[] data)
     {
-      WsFrame     frame;
-      PayloadData payloadData;
+      var payloadData = new PayloadData(data);
+      var frame       = createFrame(fin, opcode, payloadData);
+      send(frame);
+    }
 
-      byte[] buffer1 = new byte[_fragmentLen];
-      byte[] buffer2 = new byte[_fragmentLen];
-      ulong  readLen = 0;
-      int    tmpLen1 = 0;
-      int    tmpLen2 = 0;
+    private long sendFragmented(Opcode opcode, Stream stream)
+    {
+      var length = stream.Length;
+      var quo    = length / _fragmentLen;
+      var rem    = length % _fragmentLen;
+      var count  = rem == 0 ? quo - 2 : quo - 1;
 
-      tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
-      while (tmpLen1 > 0)
+      // First
+      var buffer   = new byte[_fragmentLen];
+      long readLen = stream.Read(buffer, 0, _fragmentLen);
+      send(Fin.MORE, opcode, buffer);
+
+      // Mid
+      count.Times(() =>
       {
-        payloadData = new PayloadData(buffer1.SubArray(0, tmpLen1));
+        readLen += stream.Read(buffer, 0, _fragmentLen);
+        send(Fin.MORE, Opcode.CONT, buffer);
+      });
 
-        tmpLen2 = stream.Read(buffer2, 0, _fragmentLen);
-        if (tmpLen2 > 0)
-        {
-          if (readLen > 0)
-          {
-            frame = createFrame(Fin.MORE, Opcode.CONT, payloadData);
-          }
-          else
-          {
-            frame = createFrame(Fin.MORE, opcode, payloadData);
-          }
-        }
-        else
-        {
-          if (readLen > 0)
-          {
-            frame = createFrame(Fin.FINAL, Opcode.CONT, payloadData);
-          }
-          else
-          {
-            frame = createFrame(Fin.FINAL, opcode, payloadData);
-          }
-        }
-
-        readLen += (ulong)tmpLen1;
-        send(frame);
-
-        if (tmpLen2 == 0) break;
-        payloadData = new PayloadData(buffer2.SubArray(0, tmpLen2));
-
-        tmpLen1 = stream.Read(buffer1, 0, _fragmentLen);
-        if (tmpLen1 > 0)
-        {
-          frame = createFrame(Fin.MORE, Opcode.CONT, payloadData);
-        }
-        else
-        {
-          frame = createFrame(Fin.FINAL, Opcode.CONT, payloadData);
-        }
-
-        readLen += (ulong)tmpLen2;
-        send(frame);
-      }
+      // Final
+      if (rem != 0)
+        buffer = new byte[rem];
+      readLen += stream.Read(buffer, 0, buffer.Length);
+      send(Fin.FINAL, Opcode.CONT, buffer);
 
       return readLen;
     }
@@ -1049,14 +1015,13 @@ namespace WebSocketSharp
 
     public void Send(string data)
     {
-      var payloadData = new PayloadData(data);
-      send(Opcode.TEXT, payloadData);
+      var buffer = Encoding.UTF8.GetBytes(data);
+      send(Opcode.TEXT, buffer);
     }
 
     public void Send(byte[] data)
     {
-      var payloadData = new PayloadData(data);
-      send(Opcode.BINARY, payloadData);
+      send(Opcode.BINARY, data);
     }
 
     public void Send(FileInfo file)
