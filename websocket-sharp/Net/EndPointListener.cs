@@ -79,44 +79,6 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Private Static Methods
-
-		static void OnAccept (object sender, EventArgs e)
-		{
-			SocketAsyncEventArgs args = (SocketAsyncEventArgs) e;
-			EndPointListener epl = (EndPointListener) args.UserToken;
-			Socket accepted = null;
-			if (args.SocketError == SocketError.Success) {
-				accepted = args.AcceptSocket;
-				args.AcceptSocket = null;
-			}
-
-			try {
-				if (epl.sock != null)
-					epl.sock.AcceptAsync (args);
-			} catch {
-				if (accepted != null) {
-					try {
-						accepted.Close ();
-					} catch {}
-					accepted = null;
-				}
-			} 
-
-			if (accepted == null)
-				return;
-
-			if (epl.secure && (epl.cert == null || epl.key == null)) {
-				accepted.Close ();
-				return;
-			}
-			HttpConnection conn = new HttpConnection (accepted, epl, epl.secure, epl.cert, epl.key);
-			epl.unregistered [conn] = conn;
-			conn.BeginReadRequest ();
-		}
-
-		#endregion
-
 		#region Private Methods
 
 		void AddSpecial (List<ListenerPrefix> coll, ListenerPrefix prefix)
@@ -202,6 +164,40 @@ namespace WebSocketSharp.Net {
 			}
 
 			return best_match;
+		}
+
+		static void OnAccept (object sender, EventArgs e)
+		{
+			SocketAsyncEventArgs args = (SocketAsyncEventArgs) e;
+			EndPointListener epl = (EndPointListener) args.UserToken;
+			Socket accepted = null;
+			if (args.SocketError == SocketError.Success) {
+				accepted = args.AcceptSocket;
+				args.AcceptSocket = null;
+			}
+
+			try {
+				if (epl.sock != null)
+					epl.sock.AcceptAsync (args);
+			} catch {
+				if (accepted != null) {
+					try {
+						accepted.Close ();
+					} catch {}
+					accepted = null;
+				}
+			} 
+
+			if (accepted == null)
+				return;
+
+			if (epl.secure && (epl.cert == null || epl.key == null)) {
+				accepted.Close ();
+				return;
+			}
+			HttpConnection conn = new HttpConnection (accepted, epl, epl.secure, epl.cert, epl.key);
+			epl.unregistered [conn] = conn;
+			conn.BeginReadRequest ();
 		}
 
 		bool RemoveSpecial (List<ListenerPrefix> coll, ListenerPrefix prefix)
@@ -343,8 +339,10 @@ namespace WebSocketSharp.Net {
 		{
 			sock.Close ();
 			lock (unregistered.SyncRoot) {
-				foreach (HttpConnection c in unregistered.Keys)
+				Hashtable copy = (Hashtable) unregistered.Clone ();
+				foreach (HttpConnection c in copy.Keys)
 					c.Close (true);
+				copy.Clear ();
 				unregistered.Clear ();
 			}
 		}
