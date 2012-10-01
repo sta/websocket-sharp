@@ -36,7 +36,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
@@ -46,8 +45,8 @@ using WebSocketSharp.Frame;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
 
-namespace WebSocketSharp
-{
+namespace WebSocketSharp {
+
   public class WebSocket : IDisposable
   {
     #region Private Const Fields
@@ -60,25 +59,25 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private string                                 _base64key;
-    private WebSocketSharp.Net.HttpListenerContext _baseContext;
-    private string                                 _binaryType;
-    private WebSocketContext                       _context;
-    private IPEndPoint                             _endPoint;
-    private AutoResetEvent                         _exitMessageLoop;
-    private string                                 _extensions;
-    private Object                                 _forClose;
-    private Object                                 _forSend;
-    private bool                                   _isClient;
-    private bool                                   _isSecure;
-    private string                                 _protocol;
-    private string                                 _protocols;
-    private volatile WsState                       _readyState;
-    private AutoResetEvent                         _receivedPong;
-    private TcpClient                              _tcpClient;
-    private Uri                                    _uri;
-    private SynchronizedCollection<WsFrame>        _unTransmittedBuffer;
-    private WsStream                               _wsStream;
+    private string                          _base64key;
+    private HttpListenerContext             _baseContext;
+    private string                          _binaryType;
+    private WebSocketContext                _context;
+    private System.Net.IPEndPoint           _endPoint;
+    private AutoResetEvent                  _exitMessageLoop;
+    private string                          _extensions;
+    private Object                          _forClose;
+    private Object                          _forSend;
+    private bool                            _isClient;
+    private bool                            _isSecure;
+    private string                          _protocol;
+    private string                          _protocols;
+    private volatile WsState                _readyState;
+    private AutoResetEvent                  _receivePong;
+    private TcpClient                       _tcpClient;
+    private Uri                             _uri;
+    private SynchronizedCollection<WsFrame> _unTransmittedBuffer;
+    private WsStream                        _wsStream;
 
     #endregion
 
@@ -92,7 +91,7 @@ namespace WebSocketSharp
       _forSend             = new Object();
       _protocol            = String.Empty;
       _readyState          = WsState.CONNECTING;
-      _receivedPong        = new AutoResetEvent(false);
+      _receivePong         = new AutoResetEvent(false);
       _unTransmittedBuffer = new SynchronizedCollection<WsFrame>();
     }
 
@@ -107,7 +106,7 @@ namespace WebSocketSharp
       _context   = context;
       _tcpClient = context.Client;
       _wsStream  = context.Stream;
-      _endPoint  = (IPEndPoint)_tcpClient.Client.LocalEndPoint;
+      _endPoint  = (System.Net.IPEndPoint)_tcpClient.Client.LocalEndPoint;
       _isClient  = false;
       _isSecure  = context.IsSecureConnection;
     }
@@ -129,9 +128,10 @@ namespace WebSocketSharp
     {
       _uri       = uri;
       _tcpClient = tcpClient;
-      _endPoint  = (IPEndPoint)_tcpClient.Client.LocalEndPoint;
+      _wsStream  = WsStream.CreateServerStream(tcpClient);
+      _endPoint  = (System.Net.IPEndPoint)tcpClient.Client.LocalEndPoint;
       _isClient  = false;
-      _isSecure  = _endPoint.Port == 443 ? true : false;
+      _isSecure  = _wsStream.IsSecure;
     }
 
     #endregion
@@ -276,8 +276,16 @@ namespace WebSocketSharp
       }
 
       sendResponseHandshake();
-
       ReadyState = WsState.OPEN;
+    }
+
+    private void close(HttpStatusCode code)
+    {
+      if (_readyState != WsState.CONNECTING || _isClient)
+        return;
+
+      sendResponseHandshake(code);
+      ReadyState = WsState.CLOSED;
     }
 
     private void close(PayloadData data)
@@ -294,8 +302,7 @@ namespace WebSocketSharp
         if (_readyState == WsState.CONNECTING && !_isClient)
         {
           OnClose.Emit(this, new CloseEventArgs(data));
-          sendResponseHandshakeForInvalid();
-          ReadyState = WsState.CLOSED;
+          close(HttpStatusCode.BadRequest);
           return;
         }
 
@@ -314,14 +321,13 @@ namespace WebSocketSharp
     {
       var data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
 
-      if (reason != String.Empty)
+      if (!String.IsNullOrEmpty(reason))
       {
         var buffer = Encoding.UTF8.GetBytes(reason);
         data.AddRange(buffer);
       }
 
       var payloadData = new PayloadData(data.ToArray());
-
       if (payloadData.Length > 125)
       {
         var msg = "Close frame must have a payload length of 125 bytes or less.";
@@ -366,7 +372,6 @@ namespace WebSocketSharp
     private void createClientStream()
     {
       var host = _uri.DnsSafeHost;
-
       var port = _uri.Port;
       if (port <= 0)
         port = IsSecure ? 443 : 80;
@@ -376,33 +381,27 @@ namespace WebSocketSharp
 
     private string createExpectedKey()
     {
-      byte[]        keySrc;
-      SHA1          sha1 = new SHA1CryptoServiceProvider();
-      StringBuilder sb   = new StringBuilder(_base64key);
+      SHA1 sha1 = new SHA1CryptoServiceProvider();
+      var  sb   = new StringBuilder(_base64key);
 
       sb.Append(_guid);
-      keySrc = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+      var keySrc = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
 
       return Convert.ToBase64String(keySrc);
     }
 
     private WsFrame createFrame(Fin fin, Opcode opcode, PayloadData payloadData)
     {
-      if (_isClient)
-      {
-        return new WsFrame(fin, opcode, payloadData);
-      }
-      else
-      {
-        return new WsFrame(fin, opcode, Mask.UNMASK, payloadData);
-      }      
+      return _isClient
+             ? new WsFrame(fin, opcode, payloadData)
+             : new WsFrame(fin, opcode, Mask.UNMASK, payloadData);
     }
 
     private RequestHandshake createOpeningHandshake()
     {
       var path = _uri.PathAndQuery;
       var host = _uri.DnsSafeHost;
-      var port = ((IPEndPoint)_tcpClient.Client.RemoteEndPoint).Port;
+      var port = ((System.Net.IPEndPoint)_tcpClient.Client.RemoteEndPoint).Port;
       if (port != 80)
         host += ":" + port;
 
@@ -429,22 +428,12 @@ namespace WebSocketSharp
       return res;
     }
 
-    private void createServerStream()
+    private ResponseHandshake createResponseHandshake(HttpStatusCode code)
     {
-      if (_wsStream != null)
-        return;
+      var res = ResponseHandshake.CreateCloseResponse(code);
+      res.AddHeader("Sec-WebSocket-Version", _version);
 
-      if (_tcpClient != null)
-      {
-        _wsStream = WsStream.CreateServerStream(_tcpClient);
-        return;
-      }
-
-      if (_baseContext != null)
-      {
-        _wsStream = WsStream.CreateServerStream(_baseContext);
-        return;
-      }
+      return res;
     }
 
     private void doHandshake()
@@ -524,7 +513,7 @@ namespace WebSocketSharp
       var expectedHost1 = host;
       var expectedHost2 = address.ToString();
       if (type != UriHostNameType.Dns)
-        expectedHost2 = Dns.GetHostEntry(address).HostName;
+        expectedHost2 = System.Net.Dns.GetHostEntry(address).HostName;
 
       if (port != 80)
       {
@@ -612,7 +601,7 @@ namespace WebSocketSharp
       }
       catch (Exception)
       {
-        close(CloseStatusCode.ABNORMAL, "An exception has been raised.");
+        close(CloseStatusCode.ABNORMAL, "An exception has occured.");
       }
     }
 
@@ -698,7 +687,7 @@ namespace WebSocketSharp
 
       if (frame.Opcode == Opcode.PONG)
       {// FINAL & PONG
-        _receivedPong.Set();
+        _receivePong.Set();
       }
 
       // FINAL & (TEXT | BINARY | PONG)
@@ -756,7 +745,7 @@ namespace WebSocketSharp
 
         if (frame.Opcode == Opcode.PONG)
         {// FINAL & PONG
-          _receivedPong.Set();
+          _receivePong.Set();
           OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
           continue;
         }
@@ -774,17 +763,24 @@ namespace WebSocketSharp
 
     private RequestHandshake receiveOpeningHandshake()
     {
-      RequestHandshake req;
-
-      if (_context == null)
-        req = RequestHandshake.Parse(readHandshake());
-      else
-        req = RequestHandshake.Parse(_context);
+      var req = _context != null
+              ? RequestHandshake.Parse(_context)
+              : RequestHandshake.Parse(readHandshake());
       #if DEBUG
       Console.WriteLine("WS: Info@receiveOpeningHandshake: Opening handshake from client:\n");
       Console.WriteLine(req.ToString());
       #endif
       return req;
+    }
+
+    private ResponseHandshake receiveResponseHandshake()
+    {
+      var res = ResponseHandshake.Parse(readHandshake());
+      #if DEBUG
+      Console.WriteLine("WS: Info@receiveResponseHandshake: Response handshake from server:\n");
+      Console.WriteLine(res.ToString());
+      #endif
+      return res;
     }
 
     private bool send(WsFrame frame)
@@ -856,11 +852,10 @@ namespace WebSocketSharp
       }
     }
 
-    private void send(Fin fin, Opcode opcode, byte[] data)
+    private bool send(Fin fin, Opcode opcode, byte[] data)
     {
-      var payloadData = new PayloadData(data);
-      var frame       = createFrame(fin, opcode, payloadData);
-      send(frame);
+      var frame = createFrame(fin, opcode, new PayloadData(data));
+      return send(frame);
     }
 
     private long sendFragmented(Opcode opcode, Stream stream)
@@ -894,35 +889,38 @@ namespace WebSocketSharp
     private ResponseHandshake sendOpeningHandshake()
     {
       var req = createOpeningHandshake();
+      sendOpeningHandshake(req);
+      return receiveResponseHandshake();
+    }
+
+    private void sendOpeningHandshake(RequestHandshake request)
+    {
       #if DEBUG
       Console.WriteLine("WS: Info@sendOpeningHandshake: Opening handshake from client:\n");
-      Console.WriteLine(req.ToString());
+      Console.WriteLine(request.ToString());
       #endif
-      _wsStream.WriteHandshake(req);
-
-      var res = ResponseHandshake.Parse(readHandshake());
-      #if DEBUG
-      Console.WriteLine("WS: Info@sendOpeningHandshake: Response handshake from server:\n");
-      Console.WriteLine(res.ToString());
-      #endif
-      return res;
+      writeHandshake(request);
     }
 
     private void sendResponseHandshake()
     {
       var res = createResponseHandshake();
-      #if DEBUG
-      Console.WriteLine("WS: Info@sendResponseHandshake: Response handshake from server:\n");
-      Console.WriteLine(res.ToString());
-      #endif
-      _wsStream.WriteHandshake(res);
+      sendResponseHandshake(res);
     }
 
-    private void sendResponseHandshakeForInvalid()
+    private void sendResponseHandshake(HttpStatusCode code)
     {
-      var res = ResponseHandshake.BadRequest;
-      res.AddHeader("Sec-WebSocket-Version", _version);
-      _wsStream.WriteHandshake(res);
+      var res = createResponseHandshake(code);
+      sendResponseHandshake(res);
+    }
+
+    private void sendResponseHandshake(ResponseHandshake response)
+    {
+      #if DEBUG
+      Console.WriteLine("WS: Info@sendResponseHandshake: Response handshake from server:\n");
+      Console.WriteLine(response.ToString());
+      #endif
+      writeHandshake(response);
     }
 
     private void startMessageThread()
@@ -936,6 +934,20 @@ namespace WebSocketSharp
       };
 
       messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
+    }
+
+    private void writeHandshake(Handshake handshake)
+    {
+      _wsStream.WriteHandshake(handshake);
+    }
+
+    #endregion
+
+    #region Internal Method
+
+    internal void Close(HttpStatusCode code)
+    {
+      close(code);
     }
 
     #endregion
@@ -961,27 +973,27 @@ namespace WebSocketSharp
     {
       if (_readyState == WsState.OPEN)
       {
-        Console.WriteLine("\nWS: Info@Connect: Connection is already established.");
+        Console.WriteLine("WS: Info@Connect: Connection has been established already.");
         return;
       }
 
       try
       {
+        // As client
         if (_isClient)
         {
           createClientStream();
           doHandshake();
+          return;
         }
-        else
-        {
-          createServerStream();
-          acceptHandshake();
-        }
+
+        // As server
+        acceptHandshake();
       }
       catch (Exception ex)
       {
         error(ex.Message);
-        close(CloseStatusCode.HANDSHAKE_FAILURE, "An exception has been raised.");
+        close(CloseStatusCode.HANDSHAKE_FAILURE, "An exception has occured.");
       }
     }
 
@@ -997,20 +1009,18 @@ namespace WebSocketSharp
 
     public bool Ping(string data)
     {
-      var payloadData = new PayloadData(data);
-
-      if (payloadData.Length > 125)
+      var buffer = Encoding.UTF8.GetBytes(data);
+      if (buffer.Length > 125)
       {
         var msg = "Ping frame must have a payload length of 125 bytes or less.";
         error(msg);
         return false;
       }
 
-      var frame = createFrame(Fin.FINAL, Opcode.PING, payloadData);
-      if (!send(frame))
+      if (!send(Fin.FINAL, Opcode.PING, buffer))
         return false;
 
-      return _receivedPong.WaitOne(5 * 1000);
+      return _receivePong.WaitOne(5 * 1000);
     }
 
     public void Send(string data)

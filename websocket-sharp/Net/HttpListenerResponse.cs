@@ -1,11 +1,12 @@
 //
 // HttpListenerResponse.cs
-//	Copied from System.Net.HttpListenerResponse
+//	Copied from System.Net.HttpListenerResponse.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
+// Copyright (c) 2012 sta.blockhead (sta.blockhead@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -37,32 +38,52 @@ namespace WebSocketSharp.Net {
 
 	public sealed class HttpListenerResponse : IDisposable
 	{
-		bool disposed;
-		Encoding content_encoding;
-		long content_length;
-		bool cl_set;
-		string content_type;
-		CookieCollection cookies;
-		WebHeaderCollection headers = new WebHeaderCollection ();
-		bool keep_alive = true;
-		ResponseStream output_stream;
-		Version version = HttpVersion.Version11;
-		string location;
-		int status_code = 200;
-		string status_description = "OK";
-		bool chunked;
+		#region Private Fields
+
+		bool                chunked;
+		bool                cl_set;
+		Encoding            content_encoding;
+		long                content_length;
+		string              content_type;
 		HttpListenerContext context;
+		CookieCollection    cookies;
+		bool                disposed;
+		bool                force_close_chunked;
+		WebHeaderCollection headers;
+		bool                keep_alive;
+		string              location;
+		ResponseStream      output_stream;
+		int                 status_code;
+		string              status_description;
+		Version             version;
+
+		#endregion
+
+		#region Internal Fields
+
 		internal bool HeadersSent;
-		bool force_close_chunked;
+
+		#endregion
+
+		#region Constructor
 
 		internal HttpListenerResponse (HttpListenerContext context)
 		{
 			this.context = context;
+			Init ();
 		}
+
+		#endregion
+
+		#region Internal Property
 
 		internal bool ForceCloseChunked {
 			get { return force_close_chunked; }
 		}
+
+		#endregion
+
+		#region Public Properties
 
 		public Encoding ContentEncoding {
 			get {
@@ -74,10 +95,10 @@ namespace WebSocketSharp.Net {
 				if (disposed)
 					throw new ObjectDisposedException (GetType ().ToString ());
 
-				//TODO: is null ok?
+				// TODO: is null ok?
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
-					
+
 				content_encoding = value;
 			}
 		}
@@ -214,65 +235,13 @@ namespace WebSocketSharp.Net {
 
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
-					
+
 				if (value < 100 || value > 999)
 					throw new ProtocolViolationException ("StatusCode must be between 100 and 999.");
-				status_code = value;
-				status_description = GetStatusDescription (value);
-			}
-		}
 
-		internal static string GetStatusDescription (int code)
-		{
-			switch (code){
-			case 100: return "Continue";
-			case 101: return "Switching Protocols";
-			case 102: return "Processing";
-			case 200: return "OK";
-			case 201: return "Created";
-			case 202: return "Accepted";
-			case 203: return "Non-Authoritative Information";
-			case 204: return "No Content";
-			case 205: return "Reset Content";
-			case 206: return "Partial Content";
-			case 207: return "Multi-Status";
-			case 300: return "Multiple Choices";
-			case 301: return "Moved Permanently";
-			case 302: return "Found";
-			case 303: return "See Other";
-			case 304: return "Not Modified";
-			case 305: return "Use Proxy";
-			case 307: return "Temporary Redirect";
-			case 400: return "Bad Request";
-			case 401: return "Unauthorized";
-			case 402: return "Payment Required";
-			case 403: return "Forbidden";
-			case 404: return "Not Found";
-			case 405: return "Method Not Allowed";
-			case 406: return "Not Acceptable";
-			case 407: return "Proxy Authentication Required";
-			case 408: return "Request Timeout";
-			case 409: return "Conflict";
-			case 410: return "Gone";
-			case 411: return "Length Required";
-			case 412: return "Precondition Failed";
-			case 413: return "Request Entity Too Large";
-			case 414: return "Request-Uri Too Long";
-			case 415: return "Unsupported Media Type";
-			case 416: return "Requested Range Not Satisfiable";
-			case 417: return "Expectation Failed";
-			case 422: return "Unprocessable Entity";
-			case 423: return "Locked";
-			case 424: return "Failed Dependency";
-			case 500: return "Internal Server Error";
-			case 501: return "Not Implemented";
-			case 502: return "Bad Gateway";
-			case 503: return "Service Unavailable";
-			case 504: return "Gateway Timeout";
-			case 505: return "Http Version Not Supported";
-			case 507: return "Insufficient Storage";
+				status_code = value;
+				status_description = value.GetStatusDescription ();
 			}
-			return "";
 		}
 
 		public string StatusDescription {
@@ -282,55 +251,9 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		void IDisposable.Dispose ()
-		{
-			Close (true); //TODO: Abort or Close?
-		}
+		#endregion
 
-		public void Abort ()
-		{
-			if (disposed)
-				return;
-
-			Close (true);
-		}
-
-		public void AddHeader (string name, string value)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (name == "")
-				throw new ArgumentException ("'name' cannot be empty", "name");
-			
-			//TODO: check for forbidden headers and invalid characters
-			if (value.Length > 65535)
-				throw new ArgumentOutOfRangeException ("value");
-
-			headers.Set (name, value);
-		}
-
-		public void AppendCookie (Cookie cookie)
-		{
-			if (cookie == null)
-				throw new ArgumentNullException ("cookie");
-			
-			Cookies.Add (cookie);
-		}
-
-		public void AppendHeader (string name, string value)
-		{
-			if (name == null)
-				throw new ArgumentNullException ("name");
-
-			if (name == "")
-				throw new ArgumentException ("'name' cannot be empty", "name");
-			
-			if (value.Length > 65535)
-				throw new ArgumentOutOfRangeException ("value");
-
-			headers.Add (name, value);
-		}
+		#region Private Methods
 
 		void Close (bool force)
 		{
@@ -338,43 +261,9 @@ namespace WebSocketSharp.Net {
 			context.Connection.Close (force);
 		}
 
-		public void Close ()
+		void IDisposable.Dispose ()
 		{
-			if (disposed)
-				return;
-
-			Close (false);
-		}
-
-		public void Close (byte [] responseEntity, bool willBlock)
-		{
-			if (disposed)
-				return;
-
-			if (responseEntity == null)
-				throw new ArgumentNullException ("responseEntity");
-
-			//TODO: if willBlock -> BeginWrite + Close ?
-			ContentLength64 = responseEntity.Length;
-			OutputStream.Write (responseEntity, 0, (int) content_length);
-			Close (false);
-		}
-
-		public void CopyFrom (HttpListenerResponse templateResponse)
-		{
-			headers.Clear ();
-			headers.Add (templateResponse.headers);
-			content_length = templateResponse.content_length;
-			status_code = templateResponse.status_code;
-			status_description = templateResponse.status_description;
-			keep_alive = templateResponse.keep_alive;
-			version = templateResponse.version;
-		}
-
-		public void Redirect (string url)
-		{
-			StatusCode = 302; // Found
-			location = url;
+			Close (true); // TODO: Abort or Close?
 		}
 
 		bool FindCookie (Cookie cookie)
@@ -393,6 +282,19 @@ namespace WebSocketSharp.Net {
 
 			return false;
 		}
+
+		void Init ()
+		{
+			headers = new WebHeaderCollection ();
+			keep_alive = true;
+			status_code = 200;
+			status_description = "OK";
+			version = HttpVersion.Version11;
+		}
+
+		#endregion
+
+		#region Internal Method
 
 		internal void SendHeaders (bool closing, MemoryStream ms)
 		{
@@ -431,13 +333,13 @@ namespace WebSocketSharp.Net {
 				chunked = true;
 				
 			/* Apache forces closing the connection for these status codes:
-			 *	HttpStatusCode.BadRequest 		400
-			 *	HttpStatusCode.RequestTimeout 		408
-			 *	HttpStatusCode.LengthRequired 		411
+			 *	HttpStatusCode.BadRequest 				400
+			 *	HttpStatusCode.RequestTimeout 			408
+			 *	HttpStatusCode.LengthRequired 			411
 			 *	HttpStatusCode.RequestEntityTooLarge 	413
-			 *	HttpStatusCode.RequestUriTooLong 	414
-			 *	HttpStatusCode.InternalServerError 	500
-			 *	HttpStatusCode.ServiceUnavailable 	503
+			 *	HttpStatusCode.RequestUriTooLong 		414
+			 *	HttpStatusCode.InternalServerError 		500
+			 *	HttpStatusCode.ServiceUnavailable 		503
 			 */
 			bool conn_close = (status_code == 400 || status_code == 408 || status_code == 411 ||
 					status_code == 413 || status_code == 414 || status_code == 500 ||
@@ -492,6 +394,94 @@ namespace WebSocketSharp.Net {
 			HeadersSent = true;
 		}
 
+		#endregion
+
+		#region Public Methods
+
+		public void Abort ()
+		{
+			if (disposed)
+				return;
+
+			Close (true);
+		}
+
+		public void AddHeader (string name, string value)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (name == "")
+				throw new ArgumentException ("'name' cannot be empty", "name");
+			
+			// TODO: check for forbidden headers and invalid characters
+			if (value.Length > 65535)
+				throw new ArgumentOutOfRangeException ("value");
+
+			headers.Set (name, value);
+		}
+
+		public void AppendCookie (Cookie cookie)
+		{
+			if (cookie == null)
+				throw new ArgumentNullException ("cookie");
+			
+			Cookies.Add (cookie);
+		}
+
+		public void AppendHeader (string name, string value)
+		{
+			if (name == null)
+				throw new ArgumentNullException ("name");
+
+			if (name == "")
+				throw new ArgumentException ("'name' cannot be empty", "name");
+			
+			if (value.Length > 65535)
+				throw new ArgumentOutOfRangeException ("value");
+
+			headers.Add (name, value);
+		}
+
+		public void Close ()
+		{
+			if (disposed)
+				return;
+
+			Close (false);
+		}
+
+		public void Close (byte [] responseEntity, bool willBlock)
+		{
+			if (disposed)
+				return;
+
+			if (responseEntity == null)
+				throw new ArgumentNullException ("responseEntity");
+
+			// TODO: if willBlock -> BeginWrite + Close ?
+			ContentLength64 = responseEntity.Length;
+			OutputStream.Write (responseEntity, 0, (int) content_length);
+			Close (false);
+		}
+
+		public void CopyFrom (HttpListenerResponse templateResponse)
+		{
+			headers.Clear ();
+			headers.Add (templateResponse.headers);
+			content_length = templateResponse.content_length;
+			status_code = templateResponse.status_code;
+			status_description = templateResponse.status_description;
+			keep_alive = templateResponse.keep_alive;
+			version = templateResponse.version;
+		}
+
+		public void Redirect (string url)
+		{
+			StatusCode = 302; // Found
+			location = url;
+		}
+
 		public void SetCookie (Cookie cookie)
 		{
 			if (cookie == null)
@@ -506,5 +496,7 @@ namespace WebSocketSharp.Net {
 
 			cookies.Add (cookie);
 		}
+
+		#endregion
 	}
 }

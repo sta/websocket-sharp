@@ -1,6 +1,6 @@
 //
 // HttpListenerRequest.cs
-//	Copied from System.Net.HttpListenerRequest
+//	Copied from System.Net.HttpListenerRequest.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)

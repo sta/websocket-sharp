@@ -35,45 +35,19 @@ namespace WebSocketSharp {
 
   public class ResponseHandshake : Handshake
   {
-    #region Public Static Fields
-
-    public static ResponseHandshake BadRequest;
-    public static ResponseHandshake NotImplemented;
-
-    #endregion
-
-    #region Static Constructor
-
-    static ResponseHandshake()
-    {
-      var badRequest = new ResponseHandshake {
-        Reason     = "Bad Request",
-        StatusCode = ((int)HttpStatusCode.BadRequest).ToString()
-      };
-      badRequest.Headers.Clear();
-      badRequest.AddHeader("Connection", "Close");
-      BadRequest = badRequest;
-
-      var notImplemented = new ResponseHandshake {
-        Reason     = "Not Implemented",
-        StatusCode = ((int)HttpStatusCode.NotImplemented).ToString()
-      };
-      notImplemented.Headers.Clear();
-      notImplemented.AddHeader("Connection", "Close");
-      NotImplemented = notImplemented;
-    }
-
-    #endregion
-
-    #region Public Constructor
+    #region Constructor
 
     public ResponseHandshake()
+      : this(HttpStatusCode.SwitchingProtocols)
     {
-      StatusCode = "101";
-      Reason     = "Switching Protocols";
-
       AddHeader("Upgrade", "websocket");
       AddHeader("Connection", "Upgrade");
+    }
+
+    public ResponseHandshake(HttpStatusCode code)
+    {
+      StatusCode = ((int)code).ToString();
+      Reason     = code.GetDescription();
     }
 
     #endregion
@@ -102,12 +76,21 @@ namespace WebSocketSharp {
       }
     }
 
-    public string Reason     { get; internal set; }
+    public string Reason { get; internal set; }
+
     public string StatusCode { get; internal set; }
 
     #endregion
 
-    #region Public Static Methods
+    #region Methods
+
+    public static ResponseHandshake CreateCloseResponse(HttpStatusCode code)
+    {
+      var res = new ResponseHandshake(code);
+      res.AddHeader("Connection", "close");
+
+      return res;
+    }
 
     public static ResponseHandshake Parse(string[] response)
     {
@@ -130,10 +113,6 @@ namespace WebSocketSharp {
         ProtocolVersion = new Version(statusLine[0].Substring(5))
       };
     }
-
-    #endregion
-
-    #region Public Methods
 
     public override string ToString()
     {

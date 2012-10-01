@@ -31,9 +31,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using WebSocketSharp.Frame;
+using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
 
 namespace WebSocketSharp.Server {
@@ -54,7 +54,7 @@ namespace WebSocketSharp.Server {
     }
 
     public WebSocketServer(int port)
-      : base(IPAddress.Any, port)
+      : base(System.Net.IPAddress.Any, port)
     {
       _servers = new Dictionary<string, IWebSocketServer>();
     }
@@ -66,18 +66,14 @@ namespace WebSocketSharp.Server {
     protected override void bindSocket(TcpClient client)
     {
       var context = client.AcceptWebSocket();
+      var socket  = context.WebSocket;
       var path    = context.RequestUri.ToString();
       if (!_servers.ContainsKey(path))
       {
-        var stream = context.Stream;
-        var res    = ResponseHandshake.NotImplemented;
-        stream.WriteHandshake(res);
-        stream.Close();
-        client.Close();
+        socket.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
-      var socket = context.WebSocket;
       var server = _servers[path];
       server.BindWebSocket(socket);
     }
@@ -98,6 +94,7 @@ namespace WebSocketSharp.Server {
       base.Stop();
       foreach (var server in _servers.Values)
         server.Stop();
+      _servers.Clear();
     }
 
     #endregion
@@ -137,7 +134,7 @@ namespace WebSocketSharp.Server {
     }
 
     public WebSocketServer(int port, string path)
-      : base(IPAddress.Any, port)
+      : base(System.Net.IPAddress.Any, port)
     {
       var uri = path.ToUri();
       if (uri.IsAbsoluteUri)
@@ -206,6 +203,7 @@ namespace WebSocketSharp.Server {
       {
         foreach (WebSocketService service in _services.Values)
           service.Stop(code, reason);
+        _services.Clear();
       }
     }
 

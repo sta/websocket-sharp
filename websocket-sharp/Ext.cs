@@ -1,14 +1,15 @@
 #region MIT License
 /**
  * Ext.cs
- *  IsPredefinedScheme and MaybeUri methods derived from System.Uri
+ *  IsPredefinedScheme and MaybeUri methods derived from System.Uri.cs
+ *  GetStatusDescription method derived from System.Net.HttpListenerResponse.cs
  *
  * The MIT License
  *
  * (C) 2001 Garrett Rooney (System.Uri)
  * (C) 2003 Ian MacLean (System.Uri)
  * (C) 2003 Ben Maurer (System.Uri)
- * Copyright (C) 2003,2009 Novell, Inc (http://www.novell.com) (System.Uri)
+ * Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com) (System.Uri, System.Net.HttpListenerResponse)
  * Copyright (c) 2009 Stephane Delcroix (System.Uri)
  * Copyright (c) 2010-2012 sta.blockhead
  *
@@ -37,16 +38,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
 
-namespace WebSocketSharp
-{
-  public static class Ext
-  {
+namespace WebSocketSharp {
+
+  public static class Ext {
+
     public static TcpListenerWebSocketContext AcceptWebSocket(this TcpClient client)
     {
       return new TcpListenerWebSocketContext(client);
@@ -101,10 +101,71 @@ namespace WebSocketSharp
       return false;
     }
 
+    public static string GetDescription(this HttpStatusCode code)
+    {
+      return ((int)code).GetStatusDescription();
+    }
+
     public static string GetHeaderValue(this string src, string separater)
     {
       int i = src.IndexOf(separater);
       return src.Substring(i + 1).Trim();
+    }
+
+    // Derived from System.Net.HttpListenerResponse.GetStatusDescription method
+    public static string GetStatusDescription(this int code)
+    {
+      switch (code)
+      {
+        case 100: return "Continue";
+        case 101: return "Switching Protocols";
+        case 102: return "Processing";
+        case 200: return "OK";
+        case 201: return "Created";
+        case 202: return "Accepted";
+        case 203: return "Non-Authoritative Information";
+        case 204: return "No Content";
+        case 205: return "Reset Content";
+        case 206: return "Partial Content";
+        case 207: return "Multi-Status";
+        case 300: return "Multiple Choices";
+        case 301: return "Moved Permanently";
+        case 302: return "Found";
+        case 303: return "See Other";
+        case 304: return "Not Modified";
+        case 305: return "Use Proxy";
+        case 307: return "Temporary Redirect";
+        case 400: return "Bad Request";
+        case 401: return "Unauthorized";
+        case 402: return "Payment Required";
+        case 403: return "Forbidden";
+        case 404: return "Not Found";
+        case 405: return "Method Not Allowed";
+        case 406: return "Not Acceptable";
+        case 407: return "Proxy Authentication Required";
+        case 408: return "Request Timeout";
+        case 409: return "Conflict";
+        case 410: return "Gone";
+        case 411: return "Length Required";
+        case 412: return "Precondition Failed";
+        case 413: return "Request Entity Too Large";
+        case 414: return "Request-Uri Too Long";
+        case 415: return "Unsupported Media Type";
+        case 416: return "Requested Range Not Satisfiable";
+        case 417: return "Expectation Failed";
+        case 422: return "Unprocessable Entity";
+        case 423: return "Locked";
+        case 424: return "Failed Dependency";
+        case 500: return "Internal Server Error";
+        case 501: return "Not Implemented";
+        case 502: return "Bad Gateway";
+        case 503: return "Service Unavailable";
+        case 504: return "Gateway Timeout";
+        case 505: return "Http Version Not Supported";
+        case 507: return "Insufficient Storage";
+      }
+
+      return String.Empty;
     }
 
     public static bool IsHostOrder(this ByteOrder order)
@@ -195,7 +256,7 @@ namespace WebSocketSharp
       }
 
       var host  = uri.DnsSafeHost;
-      var addrs = Dns.GetHostAddresses(host);
+      var addrs = System.Net.Dns.GetHostAddresses(host);
       if (addrs.Length == 0)
       {
         message = "Invalid WebSocket URI host: " + host;
@@ -238,6 +299,9 @@ namespace WebSocketSharp
 
     public static byte[] ReadBytes(this Stream stream, int length)
     {
+      if (length <= 0)
+        return new byte[]{};
+
       var buffer = new byte[length];
       stream.Read(buffer, 0, length);
       return buffer;
@@ -471,8 +535,7 @@ namespace WebSocketSharp
       return new Uri(uriString);
     }
 
-    public static void WriteContent(
-      this WebSocketSharp.Net.HttpListenerResponse response, byte[] content)
+    public static void WriteContent(this HttpListenerResponse response, byte[] content)
     {
       var output = response.OutputStream;
       response.ContentLength64 = content.Length;

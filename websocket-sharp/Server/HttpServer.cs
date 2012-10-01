@@ -161,13 +161,13 @@ namespace WebSocketSharp.Server {
           {
             respondToClient(context);
           }
+
+          res.Close();
         }
         catch (Exception ex)
         {
           OnError.Emit(this, new ErrorEventArgs(ex.Message));
         }
-
-        res.Close();
       };
       ThreadPool.QueueUserWorkItem(respondCb);
     }
@@ -247,12 +247,6 @@ namespace WebSocketSharp.Server {
       var req = context.Request;
       var res = context.Response;
 
-      if (!req.IsWebSocketRequest)
-      {
-        res.StatusCode = (int)HttpStatusCode.BadRequest;
-        return false;
-      }
-
       var path = req.RawUrl;
       if (!_wsServers.ContainsKey(path))
       {
@@ -303,6 +297,7 @@ namespace WebSocketSharp.Server {
       _acceptRequestThread.Join(5 * 1000);
       foreach (var server in _wsServers.Values)
         server.Stop();
+      _wsServers.Clear();
     }
 
     #endregion
