@@ -218,7 +218,7 @@ So it is necessary to run with root permission.
 
 Setting WebSocketServer event handler.
 
-##### WebSocketServer<T>.OnError event #####
+##### WebSocketServer&lt;T>.OnError event #####
 
 `WebSocketServer<T>.OnError` event is emitted when some error is occurred.
 
@@ -233,7 +233,7 @@ Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`,
 
 ##### WebSocketServer.OnError event #####
 
-Same as WebSocketServer<T>.OnError event.
+Same as `WebSocketServer<T>.OnError` event.
 
 #### Step 5 ####
 
