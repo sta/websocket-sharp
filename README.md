@@ -231,6 +231,10 @@ wssv.OnError += (sender, e) =>
 
 Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
 
+##### WebSocketServer.OnError event #####
+
+Same as WebSocketServer<T>.OnError event.
+
 #### Step 5 ####
 
 Starting server.
@@ -282,7 +286,7 @@ Examples of using **websocket-sharp**.
 
 [Example3] starts the HTTP server that the connection can be upgraded to the WebSocket connection.
 
-Please access http://localhost:4649 to do WebSocket Echo Test with your web browser after [Example3] running.
+Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
 
 ## Supported WebSocket Protocol ##
 
