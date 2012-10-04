@@ -110,6 +110,7 @@
     <Compile Include="Server\IWebSocketServer.cs" />
     <Compile Include="Net\Sockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Server\WebSocketServerBase.cs" />
+    <Compile Include="Net\Security\SslStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -117,5 +118,6 @@
     <Folder Include="Server\" />
     <Folder Include="Net\" />
     <Folder Include="Net\Sockets\" />
+    <Folder Include="Net\Security\" />
   </ItemGroup>
 </Project>

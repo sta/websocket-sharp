@@ -302,35 +302,45 @@ namespace WebSocketSharp {
       if (length <= 0)
         return new byte[]{};
 
-      var buffer = new byte[length];
-      stream.Read(buffer, 0, length);
-      return buffer;
+      var buffer  = new byte[length];
+      var readLen = stream.Read(buffer, 0, length);
+
+      return readLen == length ? buffer : null;
     }
 
     public static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
     {
-      var count    = length / bufferLength;
-      var rem      = length % bufferLength;
-      var readData = new List<byte>();
-      var readLen  = 0;
-      var buffer   = new byte[bufferLength];
+      var  count      = length / bufferLength;
+      var  rem        = length % bufferLength;
+      var  readData   = new List<byte>();
+      var  readBuffer = new byte[bufferLength];
+      long readLen    = 0;
+      var  tmpLen     = 0;
+
+      Action<byte[]> read = (buffer) =>
+      {
+        tmpLen = stream.Read(buffer, 0, buffer.Length);
+        if (tmpLen > 0)
+        {
+          readLen += tmpLen;
+          readData.AddRange(buffer.SubArray(0, tmpLen));
+        }
+      };
 
       count.Times(() =>
       {
-        readLen = stream.Read(buffer, 0, bufferLength);
-        if (readLen > 0)
-          readData.AddRange(buffer.SubArray(0, readLen));
+        read(readBuffer);
       });
 
       if (rem > 0)
       {
-        buffer = new byte[rem];
-        readLen = stream.Read(buffer, 0, (int)rem);
-        if (readLen > 0)
-          readData.AddRange(buffer.SubArray(0, readLen));
+        readBuffer = new byte[rem];
+        read(readBuffer);
       }
 
-      return readData.ToArray();
+      return readLen == length
+             ? readData.ToArray()
+             : null;
     }
 
     public static T[] SubArray<T>(this T[] array, int startIndex, int length)

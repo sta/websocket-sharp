@@ -643,6 +643,19 @@ namespace WebSocketSharp {
       return frame;
     }
 
+    private WsFrame readFrameWithTimeout()
+    {
+      if (!_wsStream.DataAvailable)
+      {
+        var timeout = 1 * 100;
+        Thread.Sleep(timeout);
+        if (!_wsStream.DataAvailable)
+          return null;
+      }
+
+      return readFrame();
+    }
+
     private string[] readHandshake()
     {
       return _wsStream.ReadHandshake();
@@ -650,7 +663,7 @@ namespace WebSocketSharp {
 
     private MessageEventArgs receive()
     {
-      var frame = readFrame();
+      var frame = _isClient ? readFrame() : readFrameWithTimeout();
       if (frame == null)
         return null;
 

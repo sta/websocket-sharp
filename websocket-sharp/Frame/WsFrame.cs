@@ -28,6 +28,7 @@
 
 using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -35,7 +36,7 @@ namespace WebSocketSharp.Frame
 {
   public class WsFrame : IEnumerable<byte>
   {
-    #region Private Static Fields
+    #region Field
 
     private static readonly int _readBufferLen;
 
@@ -81,7 +82,7 @@ namespace WebSocketSharp.Frame
 
     #endregion
 
-    #region Private Constructors
+    #region Private Constructor
 
     private WsFrame()
     {
@@ -109,49 +110,159 @@ namespace WebSocketSharp.Frame
     public WsFrame(Fin fin, Opcode opcode, Mask mask, PayloadData payloadData)
     : this()
     {
-      Fin    = fin;
-      Opcode = opcode;
-
-      ulong dataLength = payloadData.Length;
-
-      if (dataLength == 0)
-      {
-        Masked = Mask.UNMASK;
-      }
-      else
-      {
-        Masked = mask;
-      }
-
-      if (dataLength < 126)
-      {
-        PayloadLen = (byte)dataLength;
-      }
-      else if (dataLength < 0x010000)
-      {
-        PayloadLen    = (byte)126;
-        ExtPayloadLen = ((ushort)dataLength).ToBytes(ByteOrder.BIG);
-      }
-      else
-      {
-        PayloadLen    = (byte)127;
-        ExtPayloadLen = dataLength.ToBytes(ByteOrder.BIG);
-      }
-
+      Fin         = fin;
+      Opcode      = opcode;
+      Masked      = payloadData.Length != 0 ? mask : Mask.UNMASK;
       PayloadData = payloadData;
 
-      if (Masked == Mask.MASK)
-      {
-        MaskingKey = new byte[4];
-        var rand   = new Random();
-        rand.NextBytes(MaskingKey);
-        PayloadData.Mask(MaskingKey);
-      }
+      init();
     }
 
     #endregion
 
-    #region Public Static Methods
+    #region Private Methods
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+
+    private void init()
+    {
+      setPayloadLen(PayloadLength);
+      if (Masked == Mask.MASK)
+        maskPayloadData();
+    }
+
+    private void maskPayloadData()
+    {
+      var key  = new byte[4];
+      var rand = new Random();
+      rand.NextBytes(key);
+
+      MaskingKey = key;
+      PayloadData.Mask(key);
+    }
+
+    private static void readExtPayloadLen(Stream stream, WsFrame frame)
+    {
+      var length = frame.PayloadLen <= 125
+                 ? 0
+                 : frame.PayloadLen == 126 ? 2 : 8;
+
+      if (length > 0)
+      {
+        var extLength = stream.ReadBytes(length);
+        if (extLength == null)
+          throw new IOException();
+        frame.ExtPayloadLen = extLength;
+      }
+    }
+
+    private static WsFrame readHeader(Stream stream)
+    {
+      var header = stream.ReadBytes(2);
+      if (header == null)
+        return null;
+
+      // FIN
+      Fin fin = (header[0] & 0x80) == 0x80 ? Fin.FINAL : Fin.MORE;
+      // RSV1
+      Rsv rsv1 = (header[0] & 0x40) == 0x40 ? Rsv.ON : Rsv.OFF;
+      // RSV2
+      Rsv rsv2 = (header[0] & 0x20) == 0x20 ? Rsv.ON : Rsv.OFF;
+      // RSV3
+      Rsv rsv3 = (header[0] & 0x10) == 0x10 ? Rsv.ON : Rsv.OFF;
+      // Opcode
+      Opcode opcode = (Opcode)(header[0] & 0x0f);
+      // MASK
+      Mask masked = (header[1] & 0x80) == 0x80 ? Mask.MASK : Mask.UNMASK;
+      // Payload len
+      byte payloadLen = (byte)(header[1] & 0x7f);
+
+      return new WsFrame {
+        Fin        = fin,
+        Rsv1       = rsv1,
+        Rsv2       = rsv2,
+        Rsv3       = rsv3,
+        Opcode     = opcode,
+        Masked     = masked,
+        PayloadLen = payloadLen};
+    }
+
+    private static void readMaskingKey(Stream stream, WsFrame frame)
+    {
+      if (frame.Masked == Mask.MASK)
+      {
+        var maskingKey = stream.ReadBytes(4);
+        if (maskingKey == null)
+          throw new IOException();
+        frame.MaskingKey = maskingKey;
+      }
+    }
+
+    private static void readPayloadData(Stream stream, WsFrame frame, bool unmask)
+    {
+      ulong length = frame.PayloadLen <= 125
+                   ? frame.PayloadLen
+                   : frame.PayloadLen == 126
+                     ? frame.ExtPayloadLen.To<ushort>(ByteOrder.BIG)
+                     : frame.ExtPayloadLen.To<ulong>(ByteOrder.BIG);
+
+      var buffer = length <= (ulong)_readBufferLen
+                 ? stream.ReadBytes((int)length)
+                 : stream.ReadBytes((long)length, _readBufferLen);
+
+      if (buffer == null)
+        throw new IOException();
+
+      PayloadData payloadData;
+      if (frame.Masked == Mask.MASK)
+      {
+        payloadData = new PayloadData(buffer, true);
+        if (unmask == true)
+        {
+          payloadData.Mask(frame.MaskingKey);
+          frame.Masked     = Mask.UNMASK;
+          frame.MaskingKey = new byte[]{};
+        }
+      }
+      else
+      {
+        payloadData = new PayloadData(buffer);
+      }
+
+      frame.PayloadData = payloadData;
+    }
+
+    private void setPayloadLen(ulong length)
+    {
+      if (length < 126)
+      {
+        PayloadLen = (byte)length;
+        return;
+      }
+
+      if (length < 0x010000)
+      {
+        PayloadLen    = (byte)126;
+        ExtPayloadLen = ((ushort)length).ToBytes(ByteOrder.BIG);
+        return;
+      }
+
+      PayloadLen    = (byte)127;
+      ExtPayloadLen = length.ToBytes(ByteOrder.BIG);
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public IEnumerator<byte> GetEnumerator()
+    {
+      foreach (byte b in ToBytes())
+        yield return b;
+    }
 
     public static WsFrame Parse(byte[] src)
     {
@@ -166,183 +277,22 @@ namespace WebSocketSharp.Frame
       }
     }
 
-    public static WsFrame Parse<TStream>(TStream stream)
-      where TStream : System.IO.Stream
+    public static WsFrame Parse(Stream stream)
     {
       return Parse(stream, true);
     }
 
-    public static WsFrame Parse<TStream>(TStream stream, bool unmask)
-      where TStream : System.IO.Stream
+    public static WsFrame Parse(Stream stream, bool unmask)
     {
-      Fin         fin;
-      Rsv         rsv1, rsv2, rsv3;
-      Opcode      opcode;
-      Mask        masked;
-      byte        payloadLen;
-      byte[]      extPayloadLen = new byte[]{};
-      byte[]      maskingKey    = new byte[]{};
-      PayloadData payloadData;
-
-      byte[] buffer1, buffer2, buffer3;
-      int    buffer1Len    = 2;
-      int    buffer2Len    = 0;
-      ulong  buffer3Len    = 0;
-      int    maskingKeyLen = 4;
-      int    readLen       = 0;
-
-      buffer1 = new byte[buffer1Len];
-      readLen = stream.Read(buffer1, 0, buffer1Len);
-      if (readLen < buffer1Len)
-      {
+      var frame = readHeader(stream);
+      if (frame == null)
         return null;
-      }
 
-      // FIN
-      fin = (buffer1[0] & 0x80) == 0x80
-          ? Fin.FINAL
-          : Fin.MORE;
-      // RSV1
-      rsv1 = (buffer1[0] & 0x40) == 0x40
-           ? Rsv.ON
-           : Rsv.OFF;
-      // RSV2
-      rsv2 = (buffer1[0] & 0x20) == 0x20
-           ? Rsv.ON
-           : Rsv.OFF;
-      // RSV3
-      rsv3 = (buffer1[0] & 0x10) == 0x10
-           ? Rsv.ON
-           : Rsv.OFF;
-      // opcode
-      opcode = (Opcode)(buffer1[0] & 0x0f);
-      // MASK
-      masked = (buffer1[1] & 0x80) == 0x80
-             ? Mask.MASK
-             : Mask.UNMASK;
-      // Payload len
-      payloadLen = (byte)(buffer1[1] & 0x7f);
-      // Extended payload length
-      if (payloadLen <= 125)
-      {
-        buffer3Len = payloadLen;
-      }
-      else if (payloadLen == 126)
-      {
-        buffer2Len = 2;
-      }
-      else
-      {
-        buffer2Len = 8;
-      }
+      readExtPayloadLen(stream, frame);
+      readMaskingKey(stream, frame);
+      readPayloadData(stream, frame, unmask);
 
-      if (buffer2Len > 0)
-      {
-        buffer2 = new byte[buffer2Len];
-        readLen = stream.Read(buffer2, 0, buffer2Len);
-
-        if (readLen < buffer2Len)
-        {
-          return null;
-        }
-
-        extPayloadLen = buffer2;
-        switch (buffer2Len)
-        {
-          case 2:
-            buffer3Len = extPayloadLen.To<ushort>(ByteOrder.BIG);
-            break;
-          case 8:
-            buffer3Len = extPayloadLen.To<ulong>(ByteOrder.BIG);
-            break;
-        }
-      }
-
-      if (buffer3Len > PayloadData.MaxLength)
-      {
-        throw new WsReceivedTooBigMessageException();
-      }
-      // Masking-key
-      if (masked == Mask.MASK)
-      {
-        maskingKey = new byte[maskingKeyLen];
-        readLen    = stream.Read(maskingKey, 0, maskingKeyLen);
-
-        if (readLen < maskingKeyLen)
-        {
-          return null;
-        }
-      }
-      // Payload Data
-      if (buffer3Len == 0)
-      {
-        buffer3 = new byte[]{};
-      }
-      else if (buffer3Len <= (ulong)_readBufferLen)
-      {
-        buffer3 = new byte[buffer3Len];
-        readLen = stream.Read(buffer3, 0, (int)buffer3Len);
-
-        if (readLen < (int)buffer3Len)
-        {
-          return null;
-        }
-      }
-      else
-      {
-        buffer3 = stream.ReadBytes((long)buffer3Len, _readBufferLen);
-
-        if ((ulong)buffer3.LongLength < buffer3Len)
-        {
-          return null;
-        }
-      }
-
-      if (masked == Mask.MASK)
-      {
-        payloadData = new PayloadData(buffer3, true);
-        if (unmask == true)
-        {
-          payloadData.Mask(maskingKey);
-          masked     = Mask.UNMASK;
-          maskingKey = new byte[]{};
-        }
-      }
-      else
-      {
-        payloadData = new PayloadData(buffer3);
-      }
-
-      return new WsFrame
-             {
-               Fin           = fin,
-               Rsv1          = rsv1,
-               Rsv2          = rsv2,
-               Rsv3          = rsv3,
-               Opcode        = opcode,
-               Masked        = masked,
-               PayloadLen    = payloadLen,
-               ExtPayloadLen = extPayloadLen,
-               MaskingKey    = maskingKey,
-               PayloadData   = payloadData
-             };
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public IEnumerator<byte> GetEnumerator()
-    {
-      foreach (byte b in ToBytes())
-      {
-        yield return b;
-      }
-    }
-
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
+      return frame;
     }
 
     public void Print()
@@ -462,33 +412,27 @@ namespace WebSocketSharp.Frame
 
     public byte[] ToBytes()
     {
-      var bytes = new List<byte>();
+      var buffer = new List<byte>();
 
-      int first16 = (int)Fin;
-      first16 = (first16 << 1) + (int)Rsv1;
-      first16 = (first16 << 1) + (int)Rsv2;
-      first16 = (first16 << 1) + (int)Rsv3;
-      first16 = (first16 << 4) + (int)Opcode;
-      first16 = (first16 << 1) + (int)Masked;
-      first16 = (first16 << 7) + (int)PayloadLen;
-      bytes.AddRange(((ushort)first16).ToBytes(ByteOrder.BIG));
+      int header = (int)Fin;
+      header = (header << 1) + (int)Rsv1;
+      header = (header << 1) + (int)Rsv2;
+      header = (header << 1) + (int)Rsv3;
+      header = (header << 4) + (int)Opcode;
+      header = (header << 1) + (int)Masked;
+      header = (header << 7) + (int)PayloadLen;
+      buffer.AddRange(((ushort)header).ToBytes(ByteOrder.BIG));
 
       if (PayloadLen >= 126)
-      {
-        bytes.AddRange(ExtPayloadLen);
-      }
+        buffer.AddRange(ExtPayloadLen);
 
       if (Masked == Mask.MASK)
-      {
-        bytes.AddRange(MaskingKey);
-      }
+        buffer.AddRange(MaskingKey);
 
       if (PayloadLen > 0)
-      {
-        bytes.AddRange(PayloadData.ToBytes());
-      }
+        buffer.AddRange(PayloadData.ToBytes());
 
-      return bytes.ToArray();
+      return buffer.ToArray();
     }
 
     public override string ToString()

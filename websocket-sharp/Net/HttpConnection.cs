@@ -31,13 +31,13 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp.Net {
 
@@ -122,7 +122,7 @@ namespace WebSocketSharp.Net {
 			if (!secure) {
 				stream = net_stream;
 			} else {
-				var ssl_stream = new SslStream(net_stream);
+				var ssl_stream = new SslStream(net_stream, false);
 				ssl_stream.AuthenticateAsServer(cert);
 				stream = ssl_stream;
 			}

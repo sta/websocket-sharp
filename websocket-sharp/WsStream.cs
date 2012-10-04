@@ -31,11 +31,11 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebSocketSharp.Frame;
+using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp
 {
@@ -51,7 +51,7 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
     public WsStream(NetworkStream innerStream)
     {
@@ -65,7 +65,16 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Public Property
+    #region Properties
+
+    public bool DataAvailable {
+      get {
+        if (_innerStreamType == typeof(SslStream))
+          return ((SslStream)_innerStream).DataAvailable;
+
+        return ((NetworkStream)_innerStream).DataAvailable;
+      }
+    }
 
     public bool IsSecure {
       get { return _isSecure; }
@@ -73,7 +82,7 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Private Methods
+    #region Private Method
 
     private void init(Stream innerStream)
     {
@@ -98,7 +107,7 @@ namespace WebSocketSharp
 
       if (port == 443)
       {
-        RemoteCertificateValidationCallback validationCb = (sender, certificate, chain, sslPolicyErrors) =>
+        System.Net.Security.RemoteCertificateValidationCallback validationCb = (sender, certificate, chain, sslPolicyErrors) =>
         {
           // FIXME: Always returns true
           return true;
@@ -120,7 +129,7 @@ namespace WebSocketSharp
       var port = ((IPEndPoint)client.Client.LocalEndPoint).Port;
       if (port == 443)
       {
-        var sslStream = new SslStream(netStream);
+        var sslStream = new SslStream(netStream, false);
 
         var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
         sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
