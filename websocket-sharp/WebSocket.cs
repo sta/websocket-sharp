@@ -32,11 +32,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -588,12 +586,9 @@ namespace WebSocketSharp {
     {
       try
       {
-        MessageEventArgs eventArgs = receive();
-
+        var eventArgs = receive();
         if (eventArgs != null)
-        {
           OnMessage.Emit(this, eventArgs);
-        }
       }
       catch (WsReceivedTooBigMessageException ex)
       {
@@ -609,7 +604,6 @@ namespace WebSocketSharp {
     {
       Action messageInvoker = (Action)ar.AsyncState;
       messageInvoker.EndInvoke(ar);
-
       if (_readyState == WsState.OPEN)
       {
         messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
@@ -617,6 +611,22 @@ namespace WebSocketSharp {
       }
 
       _exitMessageLoop.Set();
+    }
+
+    private bool ping(string data, int millisecondsTimeout)
+    {
+      var buffer = Encoding.UTF8.GetBytes(data);
+      if (buffer.Length > 125)
+      {
+        var msg = "Ping frame must have a payload length of 125 bytes or less.";
+        error(msg);
+        return false;
+      }
+
+      if (!send(Fin.FINAL, Opcode.PING, buffer))
+        return false;
+
+      return _receivePong.WaitOne(millisecondsTimeout);
     }
 
     private void pong(PayloadData data)
@@ -643,12 +653,11 @@ namespace WebSocketSharp {
       return frame;
     }
 
-    private WsFrame readFrameWithTimeout()
+    private WsFrame readFrameWithTimeout(int millisecondsTimeout)
     {
       if (!_wsStream.DataAvailable)
       {
-        var timeout = 1 * 100;
-        Thread.Sleep(timeout);
+        Thread.Sleep(millisecondsTimeout);
         if (!_wsStream.DataAvailable)
           return null;
       }
@@ -663,7 +672,7 @@ namespace WebSocketSharp {
 
     private MessageEventArgs receive()
     {
-      var frame = _isClient ? readFrame() : readFrameWithTimeout();
+      var frame = _isClient ? readFrame() : readFrameWithTimeout(1 * 100);
       if (frame == null)
         return null;
 
@@ -939,7 +948,6 @@ namespace WebSocketSharp {
     private void startMessageThread()
     {
       _exitMessageLoop = new AutoResetEvent(false);
-
       Action messageInvoker = () =>
       {
         if (_readyState == WsState.OPEN)
@@ -1022,18 +1030,7 @@ namespace WebSocketSharp {
 
     public bool Ping(string data)
     {
-      var buffer = Encoding.UTF8.GetBytes(data);
-      if (buffer.Length > 125)
-      {
-        var msg = "Ping frame must have a payload length of 125 bytes or less.";
-        error(msg);
-        return false;
-      }
-
-      if (!send(Fin.FINAL, Opcode.PING, buffer))
-        return false;
-
-      return _receivePong.WaitOne(5 * 1000);
+      return ping(data, 5 * 1000);
     }
 
     public void Send(string data)

@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * IWebSocketServer.cs
+ * IServiceHost.cs
  *
  * The MIT License
  *
@@ -30,11 +30,10 @@ using System;
 
 namespace WebSocketSharp.Server {
 
-  public interface IWebSocketServer {
+  public interface IServiceHost {
 
     void BindWebSocket(WebSocket socket);
     void Start();
     void Stop();
-    void StopServices();
   }
 }

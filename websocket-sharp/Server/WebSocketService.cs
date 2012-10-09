@@ -27,7 +27,6 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using WebSocketSharp.Frame;
@@ -38,16 +37,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private Dictionary<string, WebSocketService> _services;
-    private WebSocket                            _socket;
-
-    #endregion
-
-    #region Properties
-
-    public string ID      { get; private set; }
-    public bool   IsBound { get; private set; }
-    public bool   IsStop  { get; private set; }
+    private SessionManager _sessions;
+    private WebSocket      _socket;
 
     #endregion
 
@@ -55,51 +46,35 @@ namespace WebSocketSharp.Server
 
     public WebSocketService()
     {
-      ID      = String.Empty;
-      IsBound = false;
-      IsStop  = false;
+      ID        = String.Empty;
+      IsBound   = false;
+      IsStopped = false;
     }
+
+    #endregion
+
+    #region Properties
+
+    public string ID        { get; private set; }
+    public bool   IsBound   { get; private set; }
+    public bool   IsStopped { get; private set; }
 
     #endregion
 
     #region Private Method
 
-    private void addService(string id, WebSocketService service)
-    {
-      lock (((ICollection)_services).SyncRoot)
-      {
-        _services.Add(id, service);
-      }
-    }
-
-    private string getNewID()
-    {
-      return Guid.NewGuid().ToString("N");
-    }
-
     private void defaultBind()
     {
       _socket.OnOpen += (sender, e) =>
       {
-        ID = getNewID();
-        addService(ID, this);
+        ID = _sessions.Add(this);
       };
 
       _socket.OnClose += (sender, e) =>
       {
-        if (!IsStop)
-        {
-          removeService(ID);
-        }
+        if (!IsStopped)
+          _sessions.Remove(ID);
       };
-    }
-
-    private void removeService(string id)
-    {
-      lock (((ICollection)_services).SyncRoot)
-      {
-        _services.Remove(id);
-      }
     }
 
     #endregion
@@ -126,10 +101,10 @@ namespace WebSocketSharp.Server
 
     #region Public Methods
 
-    public void Bind(WebSocket socket, Dictionary<string, WebSocketService> services)
+    public void Bind(WebSocket socket, SessionManager sessions)
     {
       _socket   = socket;
-      _services = services;
+      _sessions = sessions;
 
       defaultBind();
       _socket.OnOpen    += onOpen;
@@ -159,12 +134,9 @@ namespace WebSocketSharp.Server
 
     public Dictionary<string, bool> PingAround(string data)
     {
-      if (!IsBound) return null;
-
-      lock (((ICollection)_services).SyncRoot)
-      {
-        return PingTo(_services.Keys, data);
-      }
+      return IsBound
+             ? _sessions.Broadping(data)
+             : null;
     }
 
     public bool PingTo(string id)
@@ -172,120 +144,83 @@ namespace WebSocketSharp.Server
       return PingTo(id, String.Empty);
     }
 
-    public Dictionary<string, bool> PingTo(IEnumerable<string> group)
-    {
-      return PingTo(group, String.Empty);
-    }
-
     public bool PingTo(string id, string data)
     {
-      if (!IsBound) return false;
+      if (!IsBound)
+        return false;
 
-      lock (((ICollection)_services).SyncRoot)
-      {
-        WebSocketService service;
-
-        return _services.TryGetValue(id, out service)
-               ? service.Ping(data)
-               : false;
-      }
+      WebSocketService service;
+      return _sessions.TryGetByID(id, out service)
+             ? service.Ping(data)
+             : false;
     }
 
-    public Dictionary<string, bool> PingTo(IEnumerable<string> group, string data)
+    public void Publish(byte[] data)
     {
-      if (!IsBound) return null;
-
-      var result = new Dictionary<string, bool>();
-
-      lock (((ICollection)_services).SyncRoot)
-      {
-        foreach (string id in group)
-        {
-          result.Add(id, PingTo(id, data));
-        }
-      }
-
-      return result;
+      if (IsBound)
+        _sessions.Broadcast(data);
     }
 
-    public void Publish<TData>(TData data)
+    public void Publish(string data)
     {
-      if (!IsBound) return;
-
-      WaitCallback broadcast = (state) =>
-      {
-        lock (((ICollection)_services).SyncRoot)
-        {
-          SendTo(_services.Keys, data);
-        }
-      };
-      ThreadPool.QueueUserWorkItem(broadcast);
+      if (IsBound)
+        _sessions.Broadcast(data);
     }
 
     public void Send(byte[] data)
     {
-      if (IsBound) _socket.Send(data);
+      if (IsBound)
+        _socket.Send(data);
     }
 
     public void Send(string data)
     {
-      if (IsBound) _socket.Send(data);
+      if (IsBound)
+        _socket.Send(data);
     }
 
-    public void SendTo<TData>(string id, TData data)
+    public void SendAsync(byte[] data)
     {
-      if (!IsBound) return;
-
-      if (typeof(TData) != typeof(string) &&
-          typeof(TData) != typeof(byte[]))
+      WaitCallback sendCb = (state) =>
       {
-        var msg = "Type of data must be string or byte[].";
-        throw new ArgumentException(msg);
-      }
-
-      lock (((ICollection)_services).SyncRoot)
-      {
-        WebSocketService service;
-
-        if (_services.TryGetValue(id, out service))
-        {
-          if (typeof(TData) == typeof(string))
-          {
-            string data_ = (string)(object)data;
-            service.Send(data_);
-          }
-          else if (typeof(TData) == typeof(byte[]))
-          {
-            byte[] data_ = (byte[])(object)data;
-            service.Send(data_);
-          }
-        }
-      }
+        Send(data);
+      };
+      ThreadPool.QueueUserWorkItem(sendCb);
     }
 
-    public void SendTo<TData>(IEnumerable<string> group, TData data)
+    public void SendAsync(string data)
     {
-      if (!IsBound) return;
-
-      if (typeof(TData) != typeof(string) &&
-          typeof(TData) != typeof(byte[]))
+      WaitCallback sendCb = (state) =>
       {
-        var msg = "Type of data must be string or byte[].";
-        throw new ArgumentException(msg);
-      }
+        Send(data);
+      };
+      ThreadPool.QueueUserWorkItem(sendCb);
+    }
 
-      lock (((ICollection)_services).SyncRoot)
-      {
-        foreach (string id in group)
-        {
-          SendTo(id, data);
-        }
-      }
+    public void SendTo(string id, byte[] data)
+    {
+      if (!IsBound)
+        return;
+
+      WebSocketService service;
+      if (_sessions.TryGetByID(id, out service))
+        service.Send(data);
+    }
+
+    public void SendTo(string id, string data)
+    {
+      if (!IsBound)
+        return;
+
+      WebSocketService service;
+      if (_sessions.TryGetByID(id, out service))
+        service.Send(data);
     }
 
     public void Start()
     {
-      if (IsBound) _socket.Connect();
+      if (IsBound)
+        _socket.Connect();
     }
 
     public void Stop()
@@ -295,9 +230,10 @@ namespace WebSocketSharp.Server
 
     public void Stop(CloseStatusCode code, string reason)
     {
-      if (!IsBound || IsStop) return;
+      if (!IsBound || IsStopped)
+        return;
  
-      IsStop = true;
+      IsStopped = true;
       _socket.Close(code, reason);
     }
 

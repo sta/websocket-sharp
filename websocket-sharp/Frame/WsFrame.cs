@@ -32,44 +32,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebSocketSharp.Frame
-{
+namespace WebSocketSharp.Frame {
+
   public class WsFrame : IEnumerable<byte>
   {
     #region Field
 
     private static readonly int _readBufferLen;
-
-    #endregion
-
-    #region Properties
-
-    public Fin         Fin           { get; private set; }
-    public Rsv         Rsv1          { get; private set; }
-    public Rsv         Rsv2          { get; private set; }
-    public Rsv         Rsv3          { get; private set; }
-    public Opcode      Opcode        { get; private set; }
-    public Mask        Masked        { get; private set; }
-    public byte        PayloadLen    { get; private set; }
-    public byte[]      ExtPayloadLen { get; private set; }
-    public byte[]      MaskingKey    { get; private set; }
-    public PayloadData PayloadData   { get; private set; }
-
-    public ulong Length
-    {
-      get
-      {
-        return 2 + (ulong)(ExtPayloadLen.Length + MaskingKey.Length) + PayloadLength;
-      }
-    }
-
-    public ulong PayloadLength
-    {
-      get
-      {
-        return PayloadData.Length;
-      }
-    }
 
     #endregion
 
@@ -116,6 +85,37 @@ namespace WebSocketSharp.Frame
       PayloadData = payloadData;
 
       init();
+    }
+
+    #endregion
+
+    #region Properties
+
+    public Fin         Fin           { get; private set; }
+    public Rsv         Rsv1          { get; private set; }
+    public Rsv         Rsv2          { get; private set; }
+    public Rsv         Rsv3          { get; private set; }
+    public Opcode      Opcode        { get; private set; }
+    public Mask        Masked        { get; private set; }
+    public byte        PayloadLen    { get; private set; }
+    public byte[]      ExtPayloadLen { get; private set; }
+    public byte[]      MaskingKey    { get; private set; }
+    public PayloadData PayloadData   { get; private set; }
+
+    public ulong Length
+    {
+      get
+      {
+        return 2 + (ulong)(ExtPayloadLen.Length + MaskingKey.Length) + PayloadLength;
+      }
+    }
+
+    public ulong PayloadLength
+    {
+      get
+      {
+        return PayloadData.Length;
+      }
     }
 
     #endregion

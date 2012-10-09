@@ -39,12 +39,12 @@ namespace WebSocketSharp.Server {
 
     #region Fields
 
-    private Thread                               _acceptRequestThread;
-    private bool                                 _isWindows;
-    private HttpListener                         _listener;
-    private int                                  _port;
-    private string                               _rootPath;
-    private Dictionary<string, IWebSocketServer> _wsServers;
+    private Thread                           _acceptRequestThread;
+    private bool                             _isWindows;
+    private HttpListener                     _listener;
+    private int                              _port;
+    private string                           _rootPath;
+    private Dictionary<string, IServiceHost> _services;
 
     #endregion
 
@@ -119,7 +119,7 @@ namespace WebSocketSharp.Server {
     {
       _isWindows = false;
       _listener  = new HttpListener();
-      _wsServers = new Dictionary<string, IWebSocketServer>();
+      _services  = new Dictionary<string, IServiceHost>();
 
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
@@ -248,7 +248,7 @@ namespace WebSocketSharp.Server {
       var res = context.Response;
 
       var path = req.RawUrl;
-      if (!_wsServers.ContainsKey(path))
+      if (!_services.ContainsKey(path))
       {
         res.StatusCode = (int)HttpStatusCode.NotImplemented;
         return false;
@@ -256,8 +256,8 @@ namespace WebSocketSharp.Server {
 
       var wsContext = context.AcceptWebSocket(path);
       var socket    = wsContext.WebSocket;
-      var wsServer  = _wsServers[path];
-      wsServer.BindWebSocket(socket);
+      var service   = _services[path];
+      service.BindWebSocket(socket);
 
       return true;
     }
@@ -269,8 +269,8 @@ namespace WebSocketSharp.Server {
     public void AddService<T>(string path)
       where T : WebSocketService, new()
     {
-      var server = new WebSocketServer<T>();
-      _wsServers.Add(path, server);
+      var service = new WebSocketServer<T>();
+      _services.Add(path, service);
     }
 
     public byte[] GetFile(string path)
@@ -295,9 +295,9 @@ namespace WebSocketSharp.Server {
     {
       _listener.Close();
       _acceptRequestThread.Join(5 * 1000);
-      foreach (var server in _wsServers.Values)
-        server.Stop();
-      _wsServers.Clear();
+      foreach (var service in _services.Values)
+        service.Stop();
+      _services.Clear();
     }
 
     #endregion

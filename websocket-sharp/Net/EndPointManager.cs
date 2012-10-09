@@ -1,6 +1,6 @@
 //
 // EndPointManager.cs
-//	Copied from System.Net.EndPointManager
+//	Copied from System.Net.EndPointManager.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)

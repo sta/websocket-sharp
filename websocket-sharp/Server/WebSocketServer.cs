@@ -29,10 +29,8 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using WebSocketSharp.Frame;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
 
@@ -42,7 +40,7 @@ namespace WebSocketSharp.Server {
   {
     #region Field
 
-    private Dictionary<string, IWebSocketServer> _servers;
+    private Dictionary<string, IServiceHost> _services;
 
     #endregion
 
@@ -56,7 +54,7 @@ namespace WebSocketSharp.Server {
     public WebSocketServer(int port)
       : base(System.Net.IPAddress.Any, port)
     {
-      _servers = new Dictionary<string, IWebSocketServer>();
+      _services = new Dictionary<string, IServiceHost>();
     }
 
     #endregion
@@ -68,14 +66,14 @@ namespace WebSocketSharp.Server {
       var context = client.AcceptWebSocket();
       var socket  = context.WebSocket;
       var path    = context.RequestUri.ToString();
-      if (!_servers.ContainsKey(path))
+      if (!_services.ContainsKey(path))
       {
         socket.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
-      var server = _servers[path];
-      server.BindWebSocket(socket);
+      var service = _services[path];
+      service.BindWebSocket(socket);
     }
 
     #endregion
@@ -85,28 +83,28 @@ namespace WebSocketSharp.Server {
     public void AddService<T>(string path)
       where T : WebSocketService, new()
     {
-      var server = new WebSocketServer<T>();
-      _servers.Add(path, server);
+      var service = new WebSocketServer<T>();
+      _services.Add(path, service);
     }
 
     public override void Stop()
     {
       base.Stop();
-      foreach (var server in _servers.Values)
-        server.Stop();
-      _servers.Clear();
+      foreach (var service in _services.Values)
+        service.Stop();
+      _services.Clear();
     }
 
     #endregion
   }
 
-  public class WebSocketServer<T> : WebSocketServerBase, IWebSocketServer
+  public class WebSocketServer<T> : WebSocketServerBase, IServiceHost
     where T : WebSocketService, new()
   {
     #region Fields
 
-    private Dictionary<string, WebSocketService> _services;
-    private Uri                                  _uri;
+    private SessionManager _sessions;
+    private Uri            _uri;
 
     #endregion
 
@@ -162,7 +160,7 @@ namespace WebSocketSharp.Server {
 
     private void init()
     {
-      _services = new Dictionary<string, WebSocketService>();
+      _sessions = new SessionManager();
     }
 
     #endregion
@@ -182,29 +180,14 @@ namespace WebSocketSharp.Server {
     public void BindWebSocket(WebSocket socket)
     {
       T service = new T();
-      service.Bind(socket, _services);
+      service.Bind(socket, _sessions);
       service.Start();
     }
 
     public override void Stop()
     {
       base.Stop();
-      StopServices();
-    }
-
-    public void StopServices()
-    {
-      StopServices(CloseStatusCode.NORMAL, String.Empty);
-    }
-
-    public void StopServices(CloseStatusCode code, string reason)
-    {
-      lock (((ICollection)_services).SyncRoot)
-      {
-        foreach (WebSocketService service in _services.Values)
-          service.Stop(code, reason);
-        _services.Clear();
-      }
+      _sessions.Stop();
     }
 
     #endregion
