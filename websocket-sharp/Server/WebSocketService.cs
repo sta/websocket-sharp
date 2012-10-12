@@ -53,7 +53,17 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Properties
+    #region Protected Property
+
+    protected SessionManager sessions {
+      get {
+        return _sessions;
+      }
+    }
+
+    #endregion
+
+    #region Public Properties
 
     public string ID        { get; private set; }
     public bool   IsBound   { get; private set; }

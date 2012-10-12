@@ -1,10 +1,10 @@
 # websocket-sharp #
 
-**websocket-sharp** is a C# implementation of WebSocket protocol client & server.
+**websocket-sharp** is a C# implementation of the WebSocket protocol client & server.
 
 ## Usage ##
 
-### WebSocket Client ###
+### The WebSocket client ###
 
 #### Step 1 ####
 
@@ -15,11 +15,11 @@ using WebSocketSharp;
 using WebSocketSharp.Frame;
 ```
 
-`WebSocket` class exists in `WebSocketSharp` namespace, WebSocket data frame resources (e.g. `WsFrame` class) exist in `WebSocketSharp.Frame` namespace.
+The `WebSocket` class exists in the `WebSocketSharp` namespace, the WebSocket frame resources (e.g. `WsFrame` class) exist in the `WebSocketSharp.Frame` namespace.
 
 #### Step 2 ####
 
-Creating a instance of `WebSocket` class.
+Creating a instance of the `WebSocket` class.
 
 ```cs
 using (WebSocket ws = new WebSocket("ws://example.com"))
@@ -28,15 +28,15 @@ using (WebSocket ws = new WebSocket("ws://example.com"))
 }
 ```
 
-`WebSocket` class inherits `IDisposable` interface, so you can use `using` statement.
+The `WebSocket` class inherits the `IDisposable` interface, so you can use the `using` statement.
 
 #### Step 3 ####
 
-Setting `WebSocket` event handlers.
+Setting the `WebSocket` events.
 
 ##### WebSocket.OnOpen event #####
 
-`WebSocket.OnOpen` event is emitted immediately after WebSocket connection has been established.
+The `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
 
 ```cs
 ws.OnOpen += (sender, e) =>
@@ -45,11 +45,11 @@ ws.OnOpen += (sender, e) =>
 };
 ```
 
-`e` has come across as `EventArgs.Empty`, so there is no operation on `e`.
+The `e` has come across as the `EventArgs.Empty`, so there is no operation on the `e`.
 
 ##### WebSocket.OnMessage event #####
 
-`WebSocket.OnMessage` event is emitted each time WebSocket data frame is received.
+The `WebSocket.OnMessage` event occurs when the `WebSocket` receives a data frame.
 
 ```cs
 ws.OnMessage += (sender, e) =>
@@ -58,7 +58,7 @@ ws.OnMessage += (sender, e) =>
 };
 ```
 
-**Frame type** of received WebSocket data frame is stored in `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`), so you check it out and you determine which item you should operate.
+The `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`) contains the **Frame type** of the data frame, so you check it out and you determine which item you should operate.
 
 ```cs
 switch (e.Type)
@@ -74,13 +74,13 @@ switch (e.Type)
 }
 ```
 
-If `e.Type` is `Opcode.TEXT`, you operate `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`).
+If the `e.Type` is `Opcode.TEXT`, you operate the `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`).
 
-If `e.Type` is `Opcode.BINARY`, you operate `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte[]`).
+If the `e.Type` is `Opcode.BINARY`, you operate the `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte[]`).
 
 ##### WebSocket.OnError event #####
 
-`WebSocket.OnError` event is emitted when some error is occurred.
+The `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
 
 ```cs
 ws.OnError += (sender, e) =>
@@ -88,11 +88,11 @@ ws.OnError += (sender, e) =>
   ...
 };
 ```
-Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
+The `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains the error message, so you operate it.
 
 ##### WebSocket.OnClose event #####
 
-`WebSocket.OnClose` event is emitted when WebSocket connection is closed.
+The `WebSocket.OnClose` event occurs when the `WebSocket` receives a Close frame or the `Close` method is called.
 
 ```cs
 ws.OnClose += (sender, e) =>
@@ -101,11 +101,12 @@ ws.OnClose += (sender, e) =>
 };
 ```
 
-Close status code is stored in `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) and reason of close is stored in `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`), so you operate them.
+The `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) contains the close status code  
+and the `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason why closes, so you operate them.
 
 #### Step 4 ####
 
-Connecting to server using WebSocket.
+Connecting to the WebSocket server.
 
 ```cs
 ws.Connect();
@@ -113,31 +114,31 @@ ws.Connect();
 
 #### Step 5 ####
 
-Sending data.
+Sending a data.
 
 ```cs
 ws.Send(data);
 ```
 
-`WebSocket.Send` method is overloaded.
+The `Send` method is overloaded.
 
-`data` types are `string`, `byte[]` and `FileInfo` class.
+The types of `data` are `string`, `byte[]` or `FileInfo` class.
 
 #### Step 6 ####
 
-Closing WebSocket connection.
+Closing the WebSocket connection.
 
 ```cs
 ws.Close(code, reason);
 ```
 
-If you want to close WebSocket connection explicitly, you can use `Close` method.
+If you want to close the WebSocket connection explicitly, you can use the `Close` method.
 
-Type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, type of `reason` is `string`.
+The type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, the type of `reason` is `string`.
 
-`WebSocket.Close` method is overloaded (In addition `Close()` and `Close(code)` exist).
+The `Close` method is overloaded. (In addition, the `Close()` and `Close(code)` methods exist.)
 
-### WebSocket Server ###
+### The WebSocket server ###
 
 #### Step 1 ####
 
@@ -147,11 +148,11 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-`WebSocketServer`, `WebSocketServer<T>` and `WebSocketService` classes exist in `WebSocketSharp.Server` namespace.
+The `WebSocketServer`, `WebSocketServer<T>` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
-Creating a class that inherits `WebSocketService` class.
+Creating a class that inherits the `WebSocketService` class.
 
 For example, if you want to provide the echo service,
 
@@ -169,7 +170,7 @@ public class Echo : WebSocketService
 }
 ```
 
-For example, if you want to provide the chat service,
+Or if you want to provide the chat service,
 
 ```cs
 using System;
@@ -185,19 +186,19 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override `onMessage` method, it is bound to server side `WebSocket.OnMessage` event.
+If you override the `onMessage` method, it is bound to the server side `WebSocket.OnMessage` event.
 
-In addition, if you override `onOpen`, `onError` and `onClose` methods, each of them is bound to `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
+In addition, if you override the `onOpen`, `onError` and `onClose` methods, each of them is bound to the `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
 
 #### Step 3 ####
 
-Creating a instance of `WebSocketServer<T>` class if you want single WebSocket service server.
+Creating a instance of the `WebSocketServer<T>` class if you want the single WebSocket service server.
 
 ```cs
 var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
 ```
 
-Creating a instance of `WebSocketServer` class if you want multi WebSocket service server.
+Creating a instance of the `WebSocketServer` class if you want the multi WebSocket service server.
 
 ```cs
 var wssv = new WebSocketServer(4649);
@@ -205,22 +206,22 @@ wssv.AddService<Echo>("/Echo");
 wssv.AddService<Chat>("/Chat");
 ```
 
-You can add to your `WebSocketServer` any WebSocket service and a matching path to that service by using `WebSocketServer.AddService<T>` method.
+You can add to your `WebSocketServer` any WebSocket service and a matching path to that service by using the `WebSocketServer.AddService<T>` method.
 
-Type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
+The type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
-If you create a instance of WebSocket Server without port number, WebSocket Server set **80** or **443** to port number automatically.
+If you create a instance of the `WebSocketServer` class without port number, `WebSocketServer` set **80** to port number automatically.  
 So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
 
 #### Step 4 ####
 
-Setting WebSocketServer event handler.
+Setting the event.
 
 ##### WebSocketServer&lt;T>.OnError event #####
 
-`WebSocketServer<T>.OnError` event is emitted when some error is occurred.
+The `WebSocketServer<T>.OnError` event occurs when the `WebSocketServer<T>` gets an error.
 
 ```cs
 wssv.OnError += (sender, e) =>
@@ -229,15 +230,15 @@ wssv.OnError += (sender, e) =>
 };
 ```
 
-Error message is stored in `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`), so you operate it.
+The `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains the error message, so you operate it.
 
 ##### WebSocketServer.OnError event #####
 
-Same as `WebSocketServer<T>.OnError` event.
+Same as the `WebSocketServer<T>.OnError` event.
 
 #### Step 5 ####
 
-Starting server.
+Starting the server.
 
 ```cs
 wssv.Start();
@@ -245,17 +246,17 @@ wssv.Start();
 
 #### Step 6 ####
 
-Stopping server.
+Stopping the server.
 
 ```cs
 wssv.Stop();
 ```
 
-### HTTP Server with WebSocket ###
+### The HTTP server with the WebSocket ###
 
-I modified System.Net.HttpListener, System.Net.HttpListenerContext and some others of [Mono] to create the HTTP server that the connection can be upgraded to the WebSocket connection if the HTTP server received a WebSocket request.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket request.
 
-You can add to your `HttpServer` any WebSocket service and a matching path to that service by using `HttpServer.AddService<T>` method.
+You can add to your `HttpServer` any WebSocket service and a matching path to that service by using the `HttpServer.AddService<T>` method.
 
 ```cs
 var httpsv = new HttpServer(4649);
@@ -284,7 +285,7 @@ Examples of using **websocket-sharp**.
 
 ### Example3 ###
 
-[Example3] starts the HTTP server that the connection can be upgraded to the WebSocket connection.
+[Example3] starts the HTTP server that can upgrade the connection to the WebSocket connection.
 
 Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
 
@@ -326,7 +327,7 @@ Licensed under the **[MIT License]**.
 [MIT License]: http://www.opensource.org/licenses/mit-license.php
 [Mono]: http://www.mono-project.com/
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
-[The WebSocket API]: http://dev.w3.org/html5/websockets
+[The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
 [The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html

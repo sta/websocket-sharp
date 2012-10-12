@@ -518,20 +518,13 @@ namespace WebSocketSharp {
 
     public static string ToString<T>(this T[] array, string separater)
     {
-      int len;
-      StringBuilder sb;
-
-      len = array.Length;
+      var len = array.Length;
       if (len == 0)
-      {
         return String.Empty;
-      }
 
-      sb = new StringBuilder();
+      var sb = new StringBuilder();
       for (int i = 0; i < len - 1; i++)
-      {
         sb.AppendFormat("{0}{1}", array[i].ToString(), separater);
-      }
       sb.Append(array[len - 1].ToString());
 
       return sb.ToString();

@@ -2,7 +2,7 @@
 /**
  * WebSocket.cs
  *
- * A C# implementation of a WebSocket protocol client.
+ * A C# implementation of the WebSocket interface.
  * This code derived from WebSocket.java (http://github.com/adamac/Java-WebSocket-client).
  *
  * The MIT License
@@ -36,15 +36,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Security.Cryptography;
 using WebSocketSharp.Frame;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Sockets;
 
 namespace WebSocketSharp {
 
+  /// <summary>
+  /// Implements the WebSocket interface.
+  /// </summary>
+  /// <remarks>
+  /// The WebSocket class provides methods and properties for two-way communication with a remote host
+  /// with the WebSocket protocol (RFC 6455).
+  /// </remarks>
   public class WebSocket : IDisposable
   {
     #region Private Const Fields
@@ -59,11 +66,10 @@ namespace WebSocketSharp {
 
     private string                          _base64key;
     private HttpListenerContext             _baseContext;
-    private string                          _binaryType;
     private WebSocketContext                _context;
     private System.Net.IPEndPoint           _endPoint;
-    private AutoResetEvent                  _exitMessageLoop;
     private string                          _extensions;
+    private AutoResetEvent                  _exitMessageLoop;
     private Object                          _forClose;
     private Object                          _forSend;
     private bool                            _isClient;
@@ -83,13 +89,11 @@ namespace WebSocketSharp {
 
     private WebSocket()
     {
-      _binaryType          = String.Empty;
       _extensions          = String.Empty;
       _forClose            = new Object();
       _forSend             = new Object();
       _protocol            = String.Empty;
       _readyState          = WsState.CONNECTING;
-      _receivePong         = new AutoResetEvent(false);
       _unTransmittedBuffer = new SynchronizedCollection<WsFrame>();
     }
 
@@ -136,6 +140,18 @@ namespace WebSocketSharp {
 
     #region Public Constructors
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL and subprotocols.
+    /// </summary>
+    /// <param name='url'>
+    /// A <see cref="string"/> that contains the WebSocket URL.
+    /// </param>
+    /// <param name='protocols'>
+    /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
+    /// </param>
+    /// <exception cref='ArgumentException'>
+    /// <paramref name="url"/> is not valid WebSocket URL.
+    /// </exception>
     public WebSocket(string url, params string[] protocols)
       : this()
     {
@@ -151,6 +167,30 @@ namespace WebSocketSharp {
       _isSecure  = uri.Scheme == "wss" ? true : false;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+    /// </summary>
+    /// <param name='url'>
+    /// A <see cref="string"/> that contains the WebSocket URL.
+    /// </param>
+    /// <param name='onOpen'>
+    /// An OnOpen event handler.
+    /// </param>
+    /// <param name='onMessage'>
+    /// An OnMessage event handler.
+    /// </param>
+    /// <param name='onError'>
+    /// An OnError event handler.
+    /// </param>
+    /// <param name='onClose'>
+    /// An OnClose event handler.
+    /// </param>
+    /// <param name='protocols'>
+    /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
+    /// </param>
+    /// <exception cref='ArgumentException'>
+    /// <paramref name="url"/> is not valid WebSocket URL.
+    /// </exception>
     public WebSocket(
       string                         url,
       EventHandler                   onOpen,
@@ -172,28 +212,43 @@ namespace WebSocketSharp {
 
     #region Properties
 
-    public string BinaryType {
-      get { return _binaryType; }
-    }
-
+    /// <summary>
+    /// Gets the amount of untransmitted data.
+    /// </summary>
+    /// <value>
+    /// The number of bytes of untransmitted data.
+    /// </value>
     public ulong BufferedAmount {
       get {
-        ulong bufferedAmount = 0;
-
         lock (_unTransmittedBuffer.SyncRoot)
         {
+          ulong bufferedAmount = 0;
           foreach (WsFrame frame in _unTransmittedBuffer)
             bufferedAmount += frame.PayloadLength;
-        }
 
-        return bufferedAmount;
+          return bufferedAmount;
+        }
       }
     }
 
+    /// <summary>
+    /// Gets the extensions selected by the server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the extensions if any. By default, <c>String.Empty</c>. (Currently this will only ever be the <c>String.Empty</c>.)
+    /// </value>
     public string Extensions {
-      get { return _extensions; }
+      get {
+        return _extensions;
+      }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether a connection is alive.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
+    /// </value>
     public bool IsAlive {
       get {
         if (_readyState != WsState.OPEN)
@@ -203,18 +258,40 @@ namespace WebSocketSharp {
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether a connection is secure.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
+    /// </value>
     public bool IsSecure {
       get {
         return _isSecure;
       }
     }
 
+    /// <summary>
+    /// Gets the subprotocol selected by the server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the subprotocol if any. By default, <c>String.Empty</c>.
+    /// </value>
     public string Protocol {
-      get { return _protocol; }
+      get {
+        return _protocol;
+      }
     }
 
+    /// <summary>
+    /// Gets the state of the connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketSharp.WsState"/>. By default, <c>WsState.CONNECTING</c>.
+    /// </value>
     public WsState ReadyState {
-      get { return _readyState; }
+      get {
+        return _readyState;
+      }
 
       private set {
         _readyState = value;
@@ -234,10 +311,24 @@ namespace WebSocketSharp {
       }
     }
 
-    public SynchronizedCollection<WsFrame> UnTransmittedBuffer {
-      get { return _unTransmittedBuffer; }
+    /// <summary>
+    /// Gets the untransmitted WebSocket frames.
+    /// </summary>
+    /// <value>
+    /// A <c>IList&lt;WsFrame&gt;</c> that contains the untransmitted WebSocket frames.
+    /// </value>
+    public IList<WsFrame> UnTransmittedBuffer {
+      get {
+        return _unTransmittedBuffer;
+      }
     }
 
+    /// <summary>
+    /// Gets or sets the WebSocket URL.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Uri"/> that contains the WebSocket URL.
+    /// </value>
     public Uri Url {
       get { return _uri; }
       set {
@@ -252,10 +343,25 @@ namespace WebSocketSharp {
 
     #region Events
 
-    public event EventHandler                   OnOpen;
+    /// <summary>
+    /// Occurs when the WebSocket connection has been established.
+    /// </summary>
+    public event EventHandler OnOpen;
+
+    /// <summary>
+    /// Occurs when the WebSocket receives a data frame.
+    /// </summary>
     public event EventHandler<MessageEventArgs> OnMessage;
-    public event EventHandler<ErrorEventArgs>   OnError;
-    public event EventHandler<CloseEventArgs>   OnClose;
+
+    /// <summary>
+    /// Occurs when the WebSocket gets an error.
+    /// </summary>
+    public event EventHandler<ErrorEventArgs> OnError;
+
+    /// <summary>
+    /// Occurs when the WebSocket receives a Close frame or the Close method is called.
+    /// </summary>
+    public event EventHandler<CloseEventArgs> OnClose;
 
     #endregion
 
@@ -318,7 +424,6 @@ namespace WebSocketSharp {
     private void close(CloseStatusCode code, string reason)
     {
       var data = new List<byte>(((ushort)code).ToBytes(ByteOrder.BIG));
-
       if (!String.IsNullOrEmpty(reason))
       {
         var buffer = Encoding.UTF8.GetBytes(reason);
@@ -947,6 +1052,7 @@ namespace WebSocketSharp {
 
     private void startMessageThread()
     {
+      _receivePong     = new AutoResetEvent(false);
       _exitMessageLoop = new AutoResetEvent(false);
       Action messageInvoker = () =>
       {
@@ -975,21 +1081,42 @@ namespace WebSocketSharp {
 
     #region Public Methods
 
+    /// <summary>
+    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// </summary>
     public void Close()
     {
       Close(CloseStatusCode.NORMAL);
     }
 
+    /// <summary>
+    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// </summary>
+    /// <param name='code'>
+    /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/>.
+    /// </param>
     public void Close(CloseStatusCode code)
     {
       Close(code, String.Empty);
     }
 
+    /// <summary>
+    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// </summary>
+    /// <param name='code'>
+    /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/>.
+    /// </param>
+    /// <param name='reason'>
+    /// A <see cref="string"/> that contains the reason why closes.
+    /// </param>
     public void Close(CloseStatusCode code, string reason)
     {
       close(code, reason);
     }
 
+    /// <summary>
+    /// Establishes a connection.
+    /// </summary>
     public void Connect()
     {
       if (_readyState == WsState.OPEN)
@@ -1018,32 +1145,74 @@ namespace WebSocketSharp {
       }
     }
 
+    /// <summary>
+    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// </summary>
+    /// <remarks>
+    /// Call <see cref="Dispose"/> when you are finished using the <see cref="WebSocketSharp.WebSocket"/>. The
+    /// <see cref="Dispose"/> method leaves the <see cref="WebSocketSharp.WebSocket"/> in an unusable state. After
+    /// calling <see cref="Dispose"/>, you must release all references to the <see cref="WebSocketSharp.WebSocket"/> so
+    /// the garbage collector can reclaim the memory that the <see cref="WebSocketSharp.WebSocket"/> was occupying.
+    /// </remarks>
     public void Dispose()
     {
       Close(CloseStatusCode.AWAY);
     }
 
+    /// <summary>
+    /// Sends a Ping frame.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+    /// </returns>
     public bool Ping()
     {
       return Ping(String.Empty);
     }
 
+    /// <summary>
+    /// Sends a Ping frame with a message.
+    /// </summary>
+    /// <param name='data'>
+    /// A <see cref="string"/> that contains the message data to be sent.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+    /// </returns>
     public bool Ping(string data)
     {
       return ping(data, 5 * 1000);
     }
 
+    /// <summary>
+    /// Sends a Text data frame.
+    /// </summary>
+    /// <param name='data'>
+    /// A <see cref="string"/> that contains the text data to be sent.
+    /// </param>
     public void Send(string data)
     {
       var buffer = Encoding.UTF8.GetBytes(data);
       send(Opcode.TEXT, buffer);
     }
 
+    /// <summary>
+    /// Sends a Binary data frame.
+    /// </summary>
+    /// <param name='data'>
+    /// An array of <see cref="byte"/> that contains the binary data to be sent.
+    /// </param>
     public void Send(byte[] data)
     {
       send(Opcode.BINARY, data);
     }
 
+    /// <summary>
+    /// Sends a Binary data frame.
+    /// </summary>
+    /// <param name='file'>
+    /// A <see cref="FileInfo"/> that contains the binary data to be sent.
+    /// </param>
     public void Send(FileInfo file)
     {
       using (FileStream fs = file.OpenRead())
