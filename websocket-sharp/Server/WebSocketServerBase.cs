@@ -151,7 +151,7 @@ namespace WebSocketSharp.Server {
       var uri = url.ToUri();
 
       string msg;
-      if (!uri.IsValidWsUri(out msg))
+      if (!uri.IsValidWebSocketUri(out msg))
         throw new ArgumentException(msg, "url");
 
       var scheme = uri.Scheme;

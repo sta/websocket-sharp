@@ -228,11 +228,11 @@ namespace WebSocketSharp {
       return false;
     }
 
-    public static bool IsValidWsUri(this Uri uri, out string message)
+    public static bool IsValidWebSocketUri(this Uri uri, out string message)
     {
       if (!uri.IsAbsoluteUri)
       {
-        message = "Not absolute uri: " + uri.ToString();
+        message = "Not absolute URI: " + uri.ToString();
         return false;
       }
 
@@ -243,24 +243,23 @@ namespace WebSocketSharp {
         return false;
       }
 
+      var original = uri.OriginalString;
+      if (original.Contains('#'))
+      {
+        message = "WebSocket URI must not contain the fragment identifier: " + original;
+        return false;
+      }
+
       var port = uri.Port;
       if (port > 0)
       {
-        if ((scheme == "wss" && port != 443) ||
-            (scheme != "wss" && port == 443))
+        if ((scheme == "ws"  && port == 443) ||
+            (scheme == "wss" && port == 80))
         {
           message = String.Format(
             "Invalid pair of WebSocket URI scheme and port: {0}, {1}", scheme, port);
           return false;
         }
-      }
-
-      var host  = uri.DnsSafeHost;
-      var addrs = System.Net.Dns.GetHostAddresses(host);
-      if (addrs.Length == 0)
-      {
-        message = "Invalid WebSocket URI host: " + host;
-        return false;
       }
 
       message = String.Empty;

@@ -49,8 +49,7 @@ namespace WebSocketSharp {
   /// Implements the WebSocket interface.
   /// </summary>
   /// <remarks>
-  /// The WebSocket class provides methods and properties for two-way communication with a remote host
-  /// with the WebSocket protocol (RFC 6455).
+  /// The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
   /// </remarks>
   public class WebSocket : IDisposable
   {
@@ -143,52 +142,58 @@ namespace WebSocketSharp {
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL and subprotocols.
     /// </summary>
-    /// <param name='url'>
+    /// <param name="url">
     /// A <see cref="string"/> that contains the WebSocket URL.
     /// </param>
-    /// <param name='protocols'>
+    /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
     /// </param>
-    /// <exception cref='ArgumentException'>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
     /// <paramref name="url"/> is not valid WebSocket URL.
     /// </exception>
     public WebSocket(string url, params string[] protocols)
       : this()
     {
-      var uri = url.ToUri();
+      if (url == null)
+        throw new ArgumentNullException("url");
 
       string msg;
-      if (!uri.IsValidWsUri(out msg))
+      if (!isValidUrl(url, out msg))
         throw new ArgumentException(msg, "url");
 
-      _uri       = uri;
       _protocols = protocols.ToString(", ");
       _isClient  = true;
-      _isSecure  = uri.Scheme == "wss" ? true : false;
+      _isSecure  = _uri.Scheme == "wss" ? true : false;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
     /// </summary>
-    /// <param name='url'>
+    /// <param name="url">
     /// A <see cref="string"/> that contains the WebSocket URL.
     /// </param>
-    /// <param name='onOpen'>
+    /// <param name="onOpen">
     /// An OnOpen event handler.
     /// </param>
-    /// <param name='onMessage'>
+    /// <param name="onMessage">
     /// An OnMessage event handler.
     /// </param>
-    /// <param name='onError'>
+    /// <param name="onError">
     /// An OnError event handler.
     /// </param>
-    /// <param name='onClose'>
+    /// <param name="onClose">
     /// An OnClose event handler.
     /// </param>
-    /// <param name='protocols'>
+    /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
     /// </param>
-    /// <exception cref='ArgumentException'>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
     /// <paramref name="url"/> is not valid WebSocket URL.
     /// </exception>
     public WebSocket(
@@ -687,6 +692,24 @@ namespace WebSocketSharp {
       return true;
     }
 
+    private bool isValidUrl(string url, out string message)
+    {
+      if (url == String.Empty)
+      {
+        message = "'url' is empty.";
+        return false;
+      }
+
+      var uri = url.ToUri();
+      if (!uri.IsValidWebSocketUri(out message))
+        return false;
+
+      _uri    = uri;
+      message = String.Empty;
+
+      return true;
+    }
+
     private void message()
     {
       try
@@ -1082,7 +1105,7 @@ namespace WebSocketSharp {
     #region Public Methods
 
     /// <summary>
-    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// Sends a Close frame using the connection and closes the connection and releases all associated resources.
     /// </summary>
     public void Close()
     {
@@ -1090,9 +1113,9 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// Sends a Close frame using the connection and closes the connection and releases all associated resources.
     /// </summary>
-    /// <param name='code'>
+    /// <param name="code">
     /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/>.
     /// </param>
     public void Close(CloseStatusCode code)
@@ -1101,12 +1124,12 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// Sends a Close frame using the connection and closes the connection and releases all associated resources.
     /// </summary>
-    /// <param name='code'>
+    /// <param name="code">
     /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/>.
     /// </param>
-    /// <param name='reason'>
+    /// <param name="reason">
     /// A <see cref="string"/> that contains the reason why closes.
     /// </param>
     public void Close(CloseStatusCode code, string reason)
@@ -1146,7 +1169,7 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Close frame and closes the WebSocket connection and releases all associated resources.
+    /// Sends a Close frame using the connection and closes the connection and releases all associated resources.
     /// </summary>
     /// <remarks>
     /// Call <see cref="Dispose"/> when you are finished using the <see cref="WebSocketSharp.WebSocket"/>. The
@@ -1160,7 +1183,7 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Ping frame.
+    /// Sends a Ping frame using the connection.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
@@ -1171,9 +1194,9 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Ping frame with a message.
+    /// Sends a Ping frame with a message using the connection.
     /// </summary>
-    /// <param name='data'>
+    /// <param name="data">
     /// A <see cref="string"/> that contains the message data to be sent.
     /// </param>
     /// <returns>
@@ -1185,9 +1208,9 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Text data frame.
+    /// Sends a text data using the connection.
     /// </summary>
-    /// <param name='data'>
+    /// <param name="data">
     /// A <see cref="string"/> that contains the text data to be sent.
     /// </param>
     public void Send(string data)
@@ -1197,9 +1220,9 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Binary data frame.
+    /// Sends a binary data using the connection.
     /// </summary>
-    /// <param name='data'>
+    /// <param name="data">
     /// An array of <see cref="byte"/> that contains the binary data to be sent.
     /// </param>
     public void Send(byte[] data)
@@ -1208,9 +1231,9 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Binary data frame.
+    /// Sends a binary data using the connection.
     /// </summary>
-    /// <param name='file'>
+    /// <param name="file">
     /// A <see cref="FileInfo"/> that contains the binary data to be sent.
     /// </param>
     public void Send(FileInfo file)

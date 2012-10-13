@@ -101,8 +101,7 @@ ws.OnClose += (sender, e) =>
 };
 ```
 
-The `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) contains the close status code  
-and the `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason why closes, so you operate them.
+The `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) contains the close status code and the `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason why closes, so you operate them.
 
 #### Step 4 ####
 
