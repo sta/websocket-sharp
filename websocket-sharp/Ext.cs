@@ -106,12 +106,6 @@ namespace WebSocketSharp {
       return ((int)code).GetStatusDescription();
     }
 
-    public static string GetHeaderValue(this string src, string separater)
-    {
-      int i = src.IndexOf(separater);
-      return src.Substring(i + 1).Trim();
-    }
-
     // Derived from System.Net.HttpListenerResponse.GetStatusDescription method
     public static string GetStatusDescription(this int code)
     {
@@ -166,6 +160,27 @@ namespace WebSocketSharp {
       }
 
       return String.Empty;
+    }
+
+    /// <summary>
+    /// Gets the value from a <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> that contains the value if can get; otherwise, <c>null</c>.
+    /// </returns>
+    /// <param name="nameAndValue">
+    /// A <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// </param>
+    /// <param name="separator">
+    /// A <see cref="string"/> that contains a separator string.
+    /// </param>
+    public static string GetValue(this string nameAndValue, string separator)
+    {
+      var i = nameAndValue.IndexOf(separator);
+      if (i <= 0)
+        return null;
+
+      return nameAndValue.Substring(i + 1).Trim();
     }
 
     public static bool IsHostOrder(this ByteOrder order)
@@ -228,6 +243,18 @@ namespace WebSocketSharp {
       return false;
     }
 
+    /// <summary>
+    /// Determines whether <paramref name="uri"/> is valid WebSocket URI.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="uri"/> is valid WebSocket URI; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="uri">
+    /// A <see cref="Uri"/> that contains a WebSocket URI.
+    /// </param>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains a error message if <paramref name="uri"/> is invalid WebSocket URI; otherwise, <c>String.Empty</c>.
+    /// </param>
     public static bool IsValidWebSocketUri(this Uri uri, out string message)
     {
       if (!uri.IsAbsoluteUri)
@@ -246,7 +273,7 @@ namespace WebSocketSharp {
       var original = uri.OriginalString;
       if (original.Contains('#'))
       {
-        message = "WebSocket URI must not contain the fragment identifier: " + original;
+        message = "WebSocket URI must not contain a fragment component: " + original;
         return false;
       }
 

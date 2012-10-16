@@ -38,30 +38,27 @@ namespace WebSocketSharp
     private string _reason;
     private bool   _wasClean;
 
-    public CloseStatusCode Code
+    public ushort Code
     {
-      get
-      {
-        return (CloseStatusCode)_code;
+      get {
+        return _code;
       }
     }
 
     public string Reason
     {
-      get
-      {
+      get {
         return _reason;
       }
     }
 
     public bool WasClean
     {
-      get
-      {
+      get {
         return _wasClean;
       }
-      set
-      {
+
+      set {
         _wasClean = value;
       }
     }

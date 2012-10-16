@@ -4,7 +4,7 @@
 
 ## Usage ##
 
-### The WebSocket client ###
+### WebSocket client ###
 
 #### Step 1 ####
 
@@ -101,7 +101,7 @@ ws.OnClose += (sender, e) =>
 };
 ```
 
-The `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `WebSocketSharp.Frame.CloseStatusCode`) contains the close status code and the `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason why closes, so you operate them.
+The `e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `ushort`) contains a status code indicating a reason for closure and the `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains a reason for closure, so you operate them.
 
 #### Step 4 ####
 
@@ -133,11 +133,13 @@ ws.Close(code, reason);
 
 If you want to close the WebSocket connection explicitly, you can use the `Close` method.
 
-The type of `code` is `WebSocketSharp.Frame.CloseStatusCode`, the type of `reason` is `string`.
+The `Close` method is overloaded.
 
-The `Close` method is overloaded. (In addition, the `Close()` and `Close(code)` methods exist.)
+The types of `code` are `WebSocketSharp.Frame.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
 
-### The WebSocket server ###
+In addition, the `Close()` and `Close(code)` methods exist.
+
+### WebSocket server ###
 
 #### Step 1 ####
 
@@ -251,7 +253,7 @@ Stopping the server.
 wssv.Stop();
 ```
 
-### The HTTP server with the WebSocket ###
+### HTTP server with the WebSocket ###
 
 I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket request.
 

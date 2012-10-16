@@ -100,7 +100,7 @@ namespace Example
         ws.OnClose += (sender, e) =>
         {
           enNfMessage(
-            String.Format("[WebSocket] Close({0}:{1})", (ushort)e.Code, e.Code),
+            String.Format("[WebSocket] Close({0})", e.Code),
             e.Reason,
             "notification-message-im");
         };

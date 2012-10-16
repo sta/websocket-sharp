@@ -116,7 +116,7 @@ namespace Example1
         enNfMessage
         (
           "[AudioStreamer] disconnect",
-          String.Format("WS: Close({0}:{1}): {2}", (ushort)e.Code, e.Code, e.Reason),
+          String.Format("WS: Close({0}: {1})", e.Code, e.Reason),
           "notification-message-im"
         );
       };
