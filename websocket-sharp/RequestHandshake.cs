@@ -35,6 +35,12 @@ namespace WebSocketSharp {
 
   public class RequestHandshake : Handshake
   {
+    #region Private Field
+
+    private NameValueCollection _queryString;
+
+    #endregion
+
     #region Private Constructor
 
     private RequestHandshake()
@@ -42,7 +48,6 @@ namespace WebSocketSharp {
     }
 
     #endregion
-
 
     #region Public Constructor
 
@@ -59,7 +64,7 @@ namespace WebSocketSharp {
 
     #region Properties
 
-    public string HttpMethod { get; internal set; }
+    public string HttpMethod { get; private set; }
 
     public bool IsWebSocketRequest {
 
@@ -89,7 +94,44 @@ namespace WebSocketSharp {
       }
     }
 
-    public Uri RequestUri { get; internal set; }
+    public NameValueCollection QueryString {
+      get {
+        if (_queryString == null)
+        {
+          _queryString = new NameValueCollection();
+
+          var i = RawUrl.IndexOf('?');
+          if (i > 0)
+          {
+            var query      = RawUrl.Substring(i + 1);
+            var components = query.Split('&');
+            foreach (var c in components)
+            {
+              var nv = c.GetNameAndValue("=");
+              if (nv.Key != null)
+              {
+                var name = nv.Key.UrlDecode();
+                var val  = nv.Value.UrlDecode();
+                _queryString.Add(name, val);
+              }
+            }
+          }
+        }
+
+        return _queryString;
+      }
+    }
+
+    public string RawUrl {
+      get {
+        if (RequestUri.IsAbsoluteUri)
+          return RequestUri.PathAndQuery;
+
+        return RequestUri.OriginalString;
+      }
+    }
+
+    public Uri RequestUri { get; private set; }
 
     #endregion
 
@@ -109,7 +151,10 @@ namespace WebSocketSharp {
     {
       var requestLine = request[0].Split(' ');
       if (requestLine.Length != 3)
-        throw new ArgumentException("Invalid request line.");
+      {
+        var msg = "Invalid HTTP Request-Line: " + request[0];
+        throw new ArgumentException(msg, "request");
+      }
 
       var headers = new WebHeaderCollection();
       for (int i = 1; i < request.Length; i++)
@@ -130,14 +175,11 @@ namespace WebSocketSharp {
     public override string ToString()
     {
       var buffer = new StringBuilder();
-
-      buffer.AppendFormat("{0} {1} HTTP/{2}{3}", HttpMethod, RequestUri, ProtocolVersion, _crlf);
-
+      buffer.AppendFormat("{0} {1} HTTP/{2}{3}", HttpMethod, RawUrl, ProtocolVersion, _crlf);
       foreach (string key in Headers.AllKeys)
         buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
 
       buffer.Append(_crlf);
-
       return buffer.ToString();
     }
 

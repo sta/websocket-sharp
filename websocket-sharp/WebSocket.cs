@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -75,6 +76,7 @@ namespace WebSocketSharp {
     private bool                            _isSecure;
     private string                          _protocol;
     private string                          _protocols;
+    private NameValueCollection             _queryString;
     private volatile WsState                _readyState;
     private AutoResetEvent                  _receivePong;
     private TcpClient                       _tcpClient;
@@ -100,39 +102,28 @@ namespace WebSocketSharp {
 
     #region Internal Constructor
 
-    internal WebSocket(TcpListenerWebSocketContext context)
+    internal WebSocket(HttpListenerWebSocketContext context)
       : this()
     {
-      _uri       = context.RequestUri;
-      _context   = context;
-      _tcpClient = context.Client;
-      _wsStream  = context.Stream;
-      _endPoint  = (System.Net.IPEndPoint)_tcpClient.Client.LocalEndPoint;
-      _isClient  = false;
-      _isSecure  = context.IsSecureConnection;
-    }
-
-    internal WebSocket(Uri uri, HttpListenerWebSocketContext context)
-      : this()
-    {
-      _uri         = uri;
+      _uri         = context.Path.ToUri();
       _context     = context;
       _baseContext = context.BaseContext;
       _wsStream    = context.Stream;
-      _endPoint    = _baseContext.Connection.LocalEndPoint;
+      _endPoint    = context.ServerEndPoint;
       _isClient    = false;
       _isSecure    = context.IsSecureConnection;
     }
 
-    internal WebSocket(Uri uri, TcpClient tcpClient)
+    internal WebSocket(TcpListenerWebSocketContext context)
       : this()
     {
-      _uri       = uri;
-      _tcpClient = tcpClient;
-      _wsStream  = WsStream.CreateServerStream(tcpClient);
-      _endPoint  = (System.Net.IPEndPoint)tcpClient.Client.LocalEndPoint;
+      _uri       = context.Path.ToUri();
+      _context   = context;
+      _tcpClient = context.Client;
+      _wsStream  = context.Stream;
+      _endPoint  = context.ServerEndPoint;
       _isClient  = false;
-      _isSecure  = _wsStream.IsSecure;
+      _isSecure  = context.IsSecureConnection;
     }
 
     #endregion
@@ -157,16 +148,18 @@ namespace WebSocketSharp {
     public WebSocket(string url, params string[] protocols)
       : this()
     {
-      if (url == null)
+      if (url.IsNull())
         throw new ArgumentNullException("url");
 
+      Uri    uri;
       string msg;
-      if (!isValidUrl(url, out msg))
+      if (!tryCreateUri(url, out uri, out msg))
         throw new ArgumentException(msg, "url");
 
+      _uri       = uri;
       _protocols = protocols.ToString(", ");
       _isClient  = true;
-      _isSecure  = _uri.Scheme == "wss" ? true : false;
+      _isSecure  = uri.Scheme == "wss" ? true : false;
     }
 
     /// <summary>
@@ -215,7 +208,17 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Properties
+    #region Internal Property
+
+    internal NameValueCollection QueryString {
+      get {
+        return _queryString;
+      }
+    }
+
+    #endregion
+
+    #region Public Properties
 
     /// <summary>
     /// Gets the amount of untransmitted data.
@@ -320,10 +323,8 @@ namespace WebSocketSharp {
     public Uri Url {
       get { return _uri; }
       set {
-        if (_readyState != WsState.CONNECTING || _isClient)
-          return;
-
-        _uri = value;
+        if (_readyState == WsState.CONNECTING && !_isClient)
+          _uri = value;
       }
     }
 
@@ -355,6 +356,7 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
+    // As Server
     private void acceptHandshake()
     {
       var req = receiveOpeningHandshake();
@@ -439,7 +441,7 @@ namespace WebSocketSharp {
     private void close(ushort code, string reason)
     {
       var data = new List<byte>(code.ToBytes(ByteOrder.BIG));
-      if (!String.IsNullOrEmpty(reason))
+      if (!reason.IsNullOrEmpty())
       {
         var buffer = Encoding.UTF8.GetBytes(reason);
         data.AddRange(buffer);
@@ -462,20 +464,20 @@ namespace WebSocketSharp {
 
       try
       {
-        if (_baseContext != null)
+        if (!_baseContext.IsNull())
         {
           _baseContext.Response.Close();
           _wsStream    = null;
           _baseContext = null;
         }
 
-        if (_wsStream != null)
+        if (!_wsStream.IsNull())
         {
           _wsStream.Dispose();
           _wsStream = null;
         }
 
-        if (_tcpClient != null)
+        if (!_tcpClient.IsNull())
         {
           _tcpClient.Close();
           _tcpClient = null;
@@ -495,12 +497,13 @@ namespace WebSocketSharp {
       var args  = new CloseEventArgs(data);
       var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
       if (send(frame) && !Thread.CurrentThread.IsBackground)
-        if (_exitMessageLoop != null)
+        if (!_exitMessageLoop.IsNull())
           _exitMessageLoop.WaitOne(5 * 1000);
 
       onClose(args);
     }
 
+    // As Client
     private void createClientStream()
     {
       var host = _uri.DnsSafeHost;
@@ -529,6 +532,7 @@ namespace WebSocketSharp {
              : new WsFrame(fin, opcode, Mask.UNMASK, payloadData);
     }
 
+    // As Client
     private RequestHandshake createOpeningHandshake()
     {
       var path = _uri.PathAndQuery;
@@ -545,13 +549,14 @@ namespace WebSocketSharp {
       var req = new RequestHandshake(path);
       req.AddHeader("Host", host);
       req.AddHeader("Sec-WebSocket-Key", _base64key);
-      if (!String.IsNullOrEmpty(_protocols))
+      if (!_protocols.IsNullOrEmpty())
         req.AddHeader("Sec-WebSocket-Protocol", _protocols);
       req.AddHeader("Sec-WebSocket-Version", _version);
 
       return req;
     }
 
+    // As Server
     private ResponseHandshake createResponseHandshake()
     {
       var res = new ResponseHandshake();
@@ -560,6 +565,7 @@ namespace WebSocketSharp {
       return res;
     }
 
+    // As Server
     private ResponseHandshake createResponseHandshake(HttpStatusCode code)
     {
       var res = ResponseHandshake.CreateCloseResponse(code);
@@ -568,6 +574,7 @@ namespace WebSocketSharp {
       return res;
     }
 
+    // As Client
     private void doHandshake()
     {
       var res = sendOpeningHandshake();
@@ -601,6 +608,7 @@ namespace WebSocketSharp {
       return true;
     }
 
+    // As Server
     private bool isValidRequest(RequestHandshake request, out string message)
     {
       Func<string, Func<string, string, string>> func = s =>
@@ -616,9 +624,6 @@ namespace WebSocketSharp {
         message = "Invalid WebSocket request.";
         return false;
       }
-
-      if (!isValidRequestUri(request.RequestUri, func("Request URI"), out message))
-        return false;
 
       if (_uri.IsAbsoluteUri)
         if (!isValidRequestHost(request.GetHeaderValues("Host")[0], func("Host"), out message))
@@ -638,10 +643,13 @@ namespace WebSocketSharp {
       if (request.HeaderExists("Sec-WebSocket-Extensions"))
         _extensions = request.Headers["Sec-WebSocket-Extensions"];
 
+      _queryString = request.QueryString;
+
       message = String.Empty;
       return true;
     }
 
+    // As Server
     private bool isValidRequestHost(string value, Func<string, string, string> func, out string message)
     {
       var host = _uri.DnsSafeHost;
@@ -669,28 +677,7 @@ namespace WebSocketSharp {
       return true;
     }
 
-    private bool isValidRequestUri(Uri requestUri, Func<string, string, string> func, out string message)
-    {
-      if (_uri.IsAbsoluteUri && requestUri.IsAbsoluteUri)
-        if (_uri.ToString().NotEqualsDo(requestUri.ToString(), func, out message, false))
-          return false;
-
-      if (_uri.IsAbsoluteUri && !requestUri.IsAbsoluteUri)
-        if (_uri.PathAndQuery.NotEqualsDo(requestUri.ToString(), func, out message, false))
-          return false;
-
-      if (!_uri.IsAbsoluteUri && requestUri.IsAbsoluteUri)
-        if (_uri.ToString().NotEqualsDo(requestUri.PathAndQuery, func, out message, false))
-          return false;
-
-      if (!_uri.IsAbsoluteUri && !requestUri.IsAbsoluteUri)
-        if (_uri.ToString().NotEqualsDo(requestUri.ToString(), func, out message, false))
-          return false;
-
-      message = String.Empty;
-      return true;
-    }
-
+    // As Client
     private bool isValidResponse(ResponseHandshake response, out string message)
     {
       if (!response.IsWebSocketResponse)
@@ -721,24 +708,6 @@ namespace WebSocketSharp {
         _extensions = response.Headers["Sec-WebSocket-Extensions"];
 
       message = String.Empty;
-      return true;
-    }
-
-    private bool isValidUrl(string url, out string message)
-    {
-      if (url == String.Empty)
-      {
-        message = "'url' is empty.";
-        return false;
-      }
-
-      var uri = url.ToUri();
-      if (!uri.IsValidWebSocketUri(out message))
-        return false;
-
-      _uri    = uri;
-      message = String.Empty;
-
       return true;
     }
 
@@ -791,7 +760,7 @@ namespace WebSocketSharp {
 
     private void onMessage(MessageEventArgs eventArgs)
     {
-      if (eventArgs != null)
+      if (!eventArgs.IsNull())
         OnMessage.Emit(this, eventArgs);
     }
 
@@ -802,9 +771,9 @@ namespace WebSocketSharp {
       OnOpen.Emit(this, EventArgs.Empty);
     }
 
-    private bool ping(string data, int millisecondsTimeout)
+    private bool ping(string message, int millisecondsTimeout)
     {
-      var buffer = Encoding.UTF8.GetBytes(data);
+      var buffer = Encoding.UTF8.GetBytes(message);
       if (buffer.Length > 125)
       {
         var msg = "Ping frame must have a payload length of 125 bytes or less.";
@@ -833,7 +802,7 @@ namespace WebSocketSharp {
     private WsFrame readFrame()
     {
       var frame = _wsStream.ReadFrame();
-      if (frame == null)
+      if (frame.IsNull())
       {
         var msg = "WebSocket data frame can not be read from network stream.";
         close(CloseStatusCode.ABNORMAL, msg);
@@ -862,7 +831,7 @@ namespace WebSocketSharp {
     private MessageEventArgs receive()
     {
       var frame = _isClient ? readFrame() : readFrameWithTimeout(1 * 100);
-      if (frame == null)
+      if (frame.IsNull())
         return null;
 
       if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
@@ -872,7 +841,7 @@ namespace WebSocketSharp {
       if (frame.Fin == Fin.MORE)
       {// MORE
         var merged = receiveFragmented(frame);
-        if (merged == null)
+        if (merged.IsNull())
           return null;
 
         return new MessageEventArgs(frame.Opcode, new PayloadData(merged));
@@ -912,7 +881,7 @@ namespace WebSocketSharp {
       while (true)
       {
         var frame = readFrame();
-        if (frame == null)
+        if (frame.IsNull())
           return null;
 
         if (frame.Fin == Fin.MORE)
@@ -972,11 +941,10 @@ namespace WebSocketSharp {
       return buffer.ToArray();
     }
 
+    // As Server
     private RequestHandshake receiveOpeningHandshake()
     {
-      var req = _context != null
-              ? RequestHandshake.Parse(_context)
-              : RequestHandshake.Parse(readHandshake());
+      var req = RequestHandshake.Parse(_context);
       #if DEBUG
       Console.WriteLine("WS: Info@receiveOpeningHandshake: Opening handshake from client:\n");
       Console.WriteLine(req.ToString());
@@ -984,6 +952,7 @@ namespace WebSocketSharp {
       return req;
     }
 
+    // As Client
     private ResponseHandshake receiveResponseHandshake()
     {
       var res = ResponseHandshake.Parse(readHandshake());
@@ -1008,7 +977,7 @@ namespace WebSocketSharp {
       {
         if (_unTransmittedBuffer.Count == 0)
         {
-          if (_wsStream != null)
+          if (!_wsStream.IsNull())
           {
             _wsStream.WriteFrame(frame);
             return true;
@@ -1097,13 +1066,16 @@ namespace WebSocketSharp {
       return readLen;
     }
 
+    // As Client
     private ResponseHandshake sendOpeningHandshake()
     {
       var req = createOpeningHandshake();
       sendOpeningHandshake(req);
+
       return receiveResponseHandshake();
     }
 
+    // As Client
     private void sendOpeningHandshake(RequestHandshake request)
     {
       #if DEBUG
@@ -1113,18 +1085,21 @@ namespace WebSocketSharp {
       writeHandshake(request);
     }
 
+    // As Server
     private void sendResponseHandshake()
     {
       var res = createResponseHandshake();
       sendResponseHandshake(res);
     }
 
+    // As Server
     private void sendResponseHandshake(HttpStatusCode code)
     {
       var res = createResponseHandshake(code);
       sendResponseHandshake(res);
     }
 
+    // As Server
     private void sendResponseHandshake(ResponseHandshake response)
     {
       #if DEBUG
@@ -1147,6 +1122,11 @@ namespace WebSocketSharp {
       messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
     }
 
+    private bool tryCreateUri(string uriString, out Uri result, out string message)
+    {
+      return uriString.TryCreateWebSocketUri(out result, out message);
+    }
+
     private void writeHandshake(Handshake handshake)
     {
       _wsStream.WriteHandshake(handshake);
@@ -1156,6 +1136,7 @@ namespace WebSocketSharp {
 
     #region Internal Method
 
+    // As Server
     internal void Close(HttpStatusCode code)
     {
       close(code);
@@ -1290,15 +1271,18 @@ namespace WebSocketSharp {
     /// <summary>
     /// Sends a Ping frame with a message using the connection.
     /// </summary>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains the message data to be sent.
+    /// <param name="message">
+    /// A <see cref="string"/> that contains the message to be sent.
     /// </param>
     /// <returns>
     /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
     /// </returns>
-    public bool Ping(string data)
+    public bool Ping(string message)
     {
-      return ping(data, 5 * 1000);
+      if (message.IsNull())
+        message = String.Empty;
+
+      return ping(message, 5 * 1000);
     }
 
     /// <summary>
@@ -1309,6 +1293,12 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(string data)
     {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
       var buffer = Encoding.UTF8.GetBytes(data);
       send(Opcode.TEXT, buffer);
     }
@@ -1321,6 +1311,12 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(byte[] data)
     {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
       send(Opcode.BINARY, data);
     }
 
@@ -1332,6 +1328,12 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(FileInfo file)
     {
+      if (file.IsNull())
+      {
+        onError("'file' must not be null.");
+        return;
+      }
+
       using (FileStream fs = file.OpenRead())
       {
         send(Opcode.BINARY, fs);

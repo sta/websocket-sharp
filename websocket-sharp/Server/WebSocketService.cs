@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading;
 using WebSocketSharp.Frame;
 
@@ -53,9 +54,15 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Protected Property
+    #region Protected Properties
 
-    protected SessionManager sessions {
+    protected NameValueCollection QueryString {
+      get {
+        return _socket.QueryString;
+      }
+    }
+
+    protected SessionManager Sessions {
       get {
         return _sessions;
       }
@@ -91,19 +98,19 @@ namespace WebSocketSharp.Server
 
     #region Protected Methods
 
-    protected virtual void onOpen(object sender, EventArgs e)
+    protected virtual void OnClose(object sender, CloseEventArgs e)
     {
     }
 
-    protected virtual void onMessage(object sender, MessageEventArgs e)
+    protected virtual void OnError(object sender, ErrorEventArgs e)
     {
     }
 
-    protected virtual void onError(object sender, ErrorEventArgs e)
+    protected virtual void OnMessage(object sender, MessageEventArgs e)
     {
     }
 
-    protected virtual void onClose(object sender, CloseEventArgs e)
+    protected virtual void OnOpen(object sender, EventArgs e)
     {
     }
 
@@ -117,10 +124,10 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       defaultBind();
-      _socket.OnOpen    += onOpen;
-      _socket.OnMessage += onMessage;
-      _socket.OnError   += onError;
-      _socket.OnClose   += onClose;
+      _socket.OnOpen    += OnOpen;
+      _socket.OnMessage += OnMessage;
+      _socket.OnError   += OnError;
+      _socket.OnClose   += OnClose;
 
       IsBound = true;
     }

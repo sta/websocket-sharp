@@ -164,7 +164,7 @@ using WebSocketSharp.Server;
 
 public class Echo : WebSocketService
 {
-  protected override void onMessage(object sender, MessageEventArgs e)
+  protected override void OnMessage(object sender, MessageEventArgs e)
   {
     Send(e.Data);
   }
@@ -180,16 +180,16 @@ using WebSocketSharp.Server;
 
 public class Chat : WebSocketService
 {
-  protected override void onMessage(object sender, MessageEventArgs e)
+  protected override void OnMessage(object sender, MessageEventArgs e)
   {
     Publish(e.Data);
   }
 }
 ```
 
-If you override the `onMessage` method, it is bound to the server side `WebSocket.OnMessage` event.
+If you override the `OnMessage` method, it is bound to the server side `WebSocket.OnMessage` event.
 
-In addition, if you override the `onOpen`, `onError` and `onClose` methods, each of them is bound to the `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
+In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each of them is bound to the `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
 
 #### Step 3 ####
 

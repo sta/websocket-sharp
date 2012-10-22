@@ -6,7 +6,7 @@
  * 
  */
 
-var wsUri = "ws://localhost:4649/";
+var wsUri = "ws://localhost:4649/Echo";
 var output;
 
 function init(){

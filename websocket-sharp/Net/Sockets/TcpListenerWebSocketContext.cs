@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Net;
 using System.Net.Sockets;
 using System.Security.Principal;
 
@@ -44,72 +45,113 @@ namespace WebSocketSharp.Net.Sockets {
 
     internal TcpListenerWebSocketContext(TcpClient client)
     {
-      _client = client;
-      init();
-    }
-
-    internal TcpClient Client {
-      get { return _client; }
-    }
-
-    internal WsStream Stream {
-      get { return _stream; }
-    }
-
-    public override CookieCollection CookieCollection {
-      get { throw new NotImplementedException(); }
-    }
-
-    public override NameValueCollection Headers {
-      get { return _request.Headers; }
-    }
-
-    public override bool IsAuthenticated {
-      get { throw new NotImplementedException(); }
-    }
-
-    public override bool IsSecureConnection {
-      get { return _isSecure; }
-    }
-
-    public override bool IsLocal {
-      get { throw new NotImplementedException(); }
-    }
-
-    public override string Origin {
-      get { return Headers["Origin"]; }
-    }
-
-    public override Uri RequestUri {
-      get { return _request.RequestUri; }
-    }
-
-    public override string SecWebSocketKey {
-      get { return Headers["Sec-WebSocket-Key"]; }
-    }
-
-    public override IEnumerable<string> SecWebSocketProtocols {
-      get { return Headers.GetValues("Sec-WebSocket-Protocol"); }
-    }
-
-    public override string SecWebSocketVersion {
-      get { return Headers["Sec-WebSocket-Version"]; }
-    }
-
-    public override IPrincipal User {
-      get { throw new NotImplementedException(); }
-    }
-
-    public override WebSocket WebSocket {
-      get { return _socket; }
-    }
-
-    private void init()
-    {
-      _stream   = WsStream.CreateServerStream(_client);
+      _client   = client;
+      _stream   = WsStream.CreateServerStream(client);
       _isSecure = _stream.IsSecure;
       _request  = RequestHandshake.Parse(_stream.ReadHandshake());
       _socket   = new WebSocket(this);
+    }
+
+    internal TcpClient Client {
+      get {
+        return _client;
+      }
+    }
+
+    internal WsStream Stream {
+      get {
+        return _stream;
+      }
+    }
+
+    public override CookieCollection CookieCollection {
+      get {
+        throw new NotImplementedException();
+      }
+    }
+
+    public override NameValueCollection Headers {
+      get {
+        return _request.Headers;
+      }
+    }
+
+    public override bool IsAuthenticated {
+      get {
+        throw new NotImplementedException();
+      }
+    }
+
+    public override bool IsSecureConnection {
+      get {
+        return _isSecure;
+      }
+    }
+
+    public override bool IsLocal {
+      get {
+        throw new NotImplementedException();
+      }
+    }
+
+    public override string Origin {
+      get {
+        return Headers["Origin"];
+      }
+    }
+
+    public virtual string Path {
+      get {
+        return _request.RequestUri.GetAbsolutePath();
+      }
+    }
+
+    public override Uri RequestUri {
+      get {
+        return _request.RequestUri;
+      }
+    }
+
+    public override string SecWebSocketKey {
+      get {
+        return Headers["Sec-WebSocket-Key"];
+      }
+    }
+
+    public override IEnumerable<string> SecWebSocketProtocols {
+      get {
+        return Headers.GetValues("Sec-WebSocket-Protocol");
+      }
+    }
+
+    public override string SecWebSocketVersion {
+      get {
+        return Headers["Sec-WebSocket-Version"];
+      }
+    }
+
+    public virtual IPEndPoint ServerEndPoint {
+      get {
+        return (IPEndPoint)_client.Client.LocalEndPoint;
+      }
+    }
+
+    public override IPrincipal User {
+      get {
+        throw new NotImplementedException();
+      }
+    }
+
+    public virtual IPEndPoint UserEndPoint {
+      get {
+        return (IPEndPoint)_client.Client.RemoteEndPoint;
+      }
+    }
+
+    public override WebSocket WebSocket {
+      get {
+        return _socket;
+      }
     }
   }
 }

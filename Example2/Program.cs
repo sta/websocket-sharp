@@ -8,10 +8,18 @@ namespace Example2
     public static void Main(string[] args)
     {
       /* Single service server
-      var wssv = new WebSocketServer<Echo>("ws://localhost:4649");
+      //var wssv = new WebSocketServer<Echo>("ws://localhost:4649");
+      var wssv = new WebSocketServer<Echo>("ws://localhost:4649/Echo");
+      //var wssv = new WebSocketServer<Echo>("ws://localhost:4649/エコー");
       //var wssv = new WebSocketServer<Echo>(4649);
+      //var wssv = new WebSocketServer<Echo>(4649, "/Echo");
+      //var wssv = new WebSocketServer<Echo>(4649, "/エコー");
       //var wssv = new WebSocketServer<Chat>("ws://localhost:4649");
+      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649/Chat");
+      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649/チャット");
       //var wssv = new WebSocketServer<Chat>(4649);
+      //var wssv = new WebSocketServer<Chat>(4649, "/Chat");
+      //var wssv = new WebSocketServer<Chat>(4649, "/チャット");
 
       wssv.Start();
       Console.WriteLine(
@@ -22,7 +30,9 @@ namespace Example2
       // Multi services server
       var wssv = new WebSocketServer(4649);
       wssv.AddService<Echo>("/Echo");
+      wssv.AddService<Echo>("/エコー");
       wssv.AddService<Chat>("/Chat");
+      wssv.AddService<Chat>("/チャット");
 
       wssv.Start();
       Console.WriteLine(

@@ -34,8 +34,8 @@ using System.Threading;
 
 namespace WebSocketSharp.Server {
 
-  public abstract class WebSocketServerBase
-  {
+  public abstract class WebSocketServerBase {
+
     #region Fields
 
     private Thread      _acceptClientThread;
@@ -43,6 +43,7 @@ namespace WebSocketSharp.Server {
     private bool        _isSelfHost;
     private int         _port;
     private TcpListener _tcpListener;
+    private Uri         _uri;
 
     #endregion
 
@@ -55,31 +56,72 @@ namespace WebSocketSharp.Server {
 
     protected WebSocketServerBase(string url)
     {
-      init(url);
+      if (url.IsNull())
+        throw new ArgumentNullException("url");
+
+      Uri    uri;
+      string msg;
+      if (!tryCreateUri(url, out uri, out msg))
+        throw new ArgumentException(msg, "url");
+
+      init(uri);
     }
 
     protected WebSocketServerBase(IPAddress address, int port)
+      : this(address, port, "/")
     {
+    }
+
+    protected WebSocketServerBase(IPAddress address, int port, string absPath)
+    {
+      if (address.IsNull())
+        throw new ArgumentNullException("address");
+
+      if (absPath.IsNull())
+        throw new ArgumentNullException("absPath");
+
+      string msg;
+      if (!absPath.IsValidAbsolutePath(out msg))
+        throw new ArgumentException(msg, "absPath");
+
       _address = address;
       _port    = port <= 0 ? 80 : port;
+      _uri     = absPath.ToUri();
 
       init();
     }
 
     #endregion
 
-    #region Property
+    #region Protected Property
+
+    protected Uri BaseUri
+    {
+      get {
+        return _uri;
+      }
+    }
+
+    #endregion
+
+    #region Public Properties
 
     public IPAddress Address {
-      get { return _address; }
+      get {
+        return _address;
+      }
     }
 
     public bool IsSelfHost {
-      get { return _isSelfHost; }
+      get {
+        return _isSelfHost;
+      }
     }
     
     public int Port {
-      get { return _port; }
+      get {
+        return _port;
+      }
     }
 
     #endregion
@@ -99,7 +141,7 @@ namespace WebSocketSharp.Server {
         try
         {
           var client = _tcpListener.AcceptTcpClient();
-          acceptSocket(client);
+          acceptSocketAsync(client);
         }
         catch (SocketException)
         {
@@ -108,36 +150,27 @@ namespace WebSocketSharp.Server {
         }
         catch (Exception ex)
         {
-          error(ex.Message);
+          onError(ex.Message);
           break;
         }
       }
     }
 
-    private void acceptSocket(TcpClient client)
+    private void acceptSocketAsync(TcpClient client)
     {
       WaitCallback acceptSocketCb = (state) =>
       {
         try
         {
-          bindSocket(client);
+          AcceptWebSocket(client);
         }
         catch (Exception ex)
         {
-          error(ex.Message);
+          onError(ex.Message);
         }
       };
-      ThreadPool.QueueUserWorkItem(acceptSocketCb);
-    }
 
-    private void error(string message)
-    {
-      #if DEBUG
-      var callerFrame = new StackFrame(1);
-      var caller      = callerFrame.GetMethod();
-      Console.WriteLine("WSSV: Error@{0}: {1}", caller.Name, message);
-      #endif
-      OnError.Emit(this, new ErrorEventArgs(message));
+      ThreadPool.QueueUserWorkItem(acceptSocketCb);
     }
 
     private void init()
@@ -146,14 +179,9 @@ namespace WebSocketSharp.Server {
       _isSelfHost  = true;
     }
 
-    private void init(string url)
+    private void init(Uri uri)
     {
-      var uri = url.ToUri();
-
-      string msg;
-      if (!uri.IsValidWebSocketUri(out msg))
-        throw new ArgumentException(msg, "url");
-
+      _uri       = uri;
       var scheme = uri.Scheme;
       var port   = uri.Port;
       var host   = uri.DnsSafeHost;
@@ -168,6 +196,16 @@ namespace WebSocketSharp.Server {
       init();
     }
 
+    private void onError(string message)
+    {
+      #if DEBUG
+      var callerFrame = new StackFrame(1);
+      var caller      = callerFrame.GetMethod();
+      Console.WriteLine("WSSV: Error@{0}: {1}", caller.Name, message);
+      #endif
+      OnError.Emit(this, new ErrorEventArgs(message));
+    }
+
     private void startAcceptClientThread()
     {
       _acceptClientThread = new Thread(new ThreadStart(acceptClient)); 
@@ -175,11 +213,31 @@ namespace WebSocketSharp.Server {
       _acceptClientThread.Start();
     }
 
+    private bool tryCreateUri(string uriString, out Uri result, out string message)
+    {
+      if (!uriString.TryCreateWebSocketUri(out result, out message))
+        return false;
+
+      if (!result.Query.IsNullOrEmpty())
+      {
+        result  = null;
+        message = "Must not contain the query component: " + uriString;
+        return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Protected Method
 
-    protected abstract void bindSocket(TcpClient client);
+    protected abstract void AcceptWebSocket(TcpClient client);
+
+    protected virtual void Error(string message)
+    {
+      onError(message);
+    }
 
     #endregion
 

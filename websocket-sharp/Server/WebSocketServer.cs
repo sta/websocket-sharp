@@ -52,7 +52,33 @@ namespace WebSocketSharp.Server {
     }
 
     public WebSocketServer(int port)
-      : base(System.Net.IPAddress.Any, port)
+      : this(System.Net.IPAddress.Any, port)
+    {
+    }
+
+    public WebSocketServer(string url)
+      : base(url)
+    {
+      if (BaseUri.AbsolutePath != "/")
+      {
+        var msg = "Must not contain the path component: " + url;
+        throw new ArgumentException(msg, "url");
+      }
+
+      init();
+    }
+
+    public WebSocketServer(System.Net.IPAddress address, int port)
+      : base(address, port)
+    {
+      init();
+    }
+
+    #endregion
+
+    #region Private Method
+
+    private void init()
     {
       _services = new Dictionary<string, IServiceHost>();
     }
@@ -61,16 +87,19 @@ namespace WebSocketSharp.Server {
 
     #region Protected Method
 
-    protected override void bindSocket(TcpClient client)
+    protected override void AcceptWebSocket(TcpClient client)
     {
       var context = client.AcceptWebSocket();
       var socket  = context.WebSocket;
-      var path    = context.RequestUri.ToString();
+      var path    = context.Path.UrlDecode();
       if (!_services.ContainsKey(path))
       {
         socket.Close(HttpStatusCode.NotImplemented);
         return;
       }
+
+      if (BaseUri.IsAbsoluteUri)
+        socket.Url = new Uri(BaseUri, path);
 
       var service = _services[path];
       service.BindWebSocket(socket);
@@ -80,11 +109,18 @@ namespace WebSocketSharp.Server {
 
     #region Public Methods
 
-    public void AddService<T>(string path)
+    public void AddService<T>(string absPath)
       where T : WebSocketService, new()
     {
+      string msg;
+      if (!absPath.IsValidAbsolutePath(out msg))
+      {
+        Error(msg);
+        return;
+      }
+
       var service = new WebSocketServer<T>();
-      _services.Add(path, service);
+      _services.Add(absPath, service);
     }
 
     public override void Stop()
@@ -104,7 +140,6 @@ namespace WebSocketSharp.Server {
     #region Fields
 
     private SessionManager _sessions;
-    private Uri            _uri;
 
     #endregion
 
@@ -119,29 +154,25 @@ namespace WebSocketSharp.Server {
 
     #region Public Constructors
 
-    public WebSocketServer(string url)
-      : base(url)
-    {
-      _uri = url.ToUri();
-      init();
-    }
-
     public WebSocketServer(int port)
       : this(port, "/")
     {
     }
 
-    public WebSocketServer(int port, string path)
-      : base(System.Net.IPAddress.Any, port)
+    public WebSocketServer(string url)
+      : base(url)
     {
-      var uri = path.ToUri();
-      if (uri.IsAbsoluteUri)
-      {
-        var msg = "Not absolute path: " + path;
-        throw new ArgumentException(msg, "path");
-      }
+      init();
+    }
 
-      _uri = uri;
+    public WebSocketServer(int port, string absPath)
+      : this(System.Net.IPAddress.Any, port, absPath)
+    {
+    }
+
+    public WebSocketServer(System.Net.IPAddress address, int port, string absPath)
+      : base(address, port, absPath)
+    {
       init();
     }
 
@@ -149,9 +180,10 @@ namespace WebSocketSharp.Server {
 
     #region Property
 
-    public Uri Uri
-    {
-      get { return _uri; }
+    public Uri Uri {
+      get {
+        return BaseUri;
+      }
     }
 
     #endregion
@@ -167,9 +199,20 @@ namespace WebSocketSharp.Server {
 
     #region Protected Method
 
-    protected override void bindSocket(TcpClient client)
+    protected override void AcceptWebSocket(TcpClient client)
     {
-      var socket = new WebSocket(_uri, client);
+      var context = client.AcceptWebSocket();
+      var socket  = context.WebSocket;
+      var path    = context.Path.UrlDecode();
+      if (path != Uri.GetAbsolutePath().UrlDecode())
+      {
+        socket.Close(HttpStatusCode.NotImplemented);
+        return;
+      }
+
+      if (Uri.IsAbsoluteUri)
+        socket.Url = new Uri(Uri, path);
+
       BindWebSocket(socket);
     }
 

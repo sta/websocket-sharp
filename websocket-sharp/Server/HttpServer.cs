@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using WebSocketSharp.Net;
@@ -95,7 +96,7 @@ namespace WebSocketSharp.Server {
         try
         {
           var context = _listener.GetContext();
-          respond(context);
+          respondAsync(context);
         }
         catch (HttpListenerException)
         {
@@ -104,7 +105,7 @@ namespace WebSocketSharp.Server {
         }
         catch (Exception ex)
         {
-          OnError.Emit(this, new ErrorEventArgs(ex.Message));
+          onError(ex.Message);
           break;
         }
       }
@@ -143,36 +144,17 @@ namespace WebSocketSharp.Server {
       return true;
     }
 
-    private void respond(HttpListenerContext context)
+    private void onError(string message)
     {
-      WaitCallback respondCb = (state) =>
-      {
-        var req = context.Request;
-        var res = context.Response;
-
-        try
-        {
-          if (isUpgrade(req, "websocket"))
-          {
-            if (upgradeToWebSocket(context))
-              return;
-          }
-          else
-          {
-            respondToClient(context);
-          }
-
-          res.Close();
-        }
-        catch (Exception ex)
-        {
-          OnError.Emit(this, new ErrorEventArgs(ex.Message));
-        }
-      };
-      ThreadPool.QueueUserWorkItem(respondCb);
+      #if DEBUG
+      var callerFrame = new StackFrame(1);
+      var caller      = callerFrame.GetMethod();
+      Console.WriteLine("HTTPSV: Error@{0}: {1}", caller.Name, message);
+      #endif
+      OnError.Emit(this, new ErrorEventArgs(message));
     }
 
-    private void respondToClient(HttpListenerContext context)
+    private void respond(HttpListenerContext context)
     {
       var req = context.Request;
       var res = context.Response;
@@ -235,6 +217,36 @@ namespace WebSocketSharp.Server {
       res.StatusCode = (int)HttpStatusCode.NotImplemented;
     }
 
+    private void respondAsync(HttpListenerContext context)
+    {
+      WaitCallback respondCb = (state) =>
+      {
+        var req = context.Request;
+        var res = context.Response;
+
+        try
+        {
+          if (isUpgrade(req, "websocket"))
+          {
+            if (upgradeToWebSocket(context))
+              return;
+          }
+          else
+          {
+            respond(context);
+          }
+
+          res.Close();
+        }
+        catch (Exception ex)
+        {
+          onError(ex.Message);
+        }
+      };
+
+      ThreadPool.QueueUserWorkItem(respondCb);
+    }
+
     private void startAcceptRequestThread()
     {
       _acceptRequestThread = new Thread(new ThreadStart(acceptRequest)); 
@@ -244,19 +256,17 @@ namespace WebSocketSharp.Server {
 
     private bool upgradeToWebSocket(HttpListenerContext context)
     {
-      var req = context.Request;
-      var res = context.Response;
-
-      var path = req.RawUrl;
+      var res       = context.Response;
+      var wsContext = context.AcceptWebSocket();
+      var path      = wsContext.Path.UrlDecode();
       if (!_services.ContainsKey(path))
       {
         res.StatusCode = (int)HttpStatusCode.NotImplemented;
         return false;
       }
 
-      var wsContext = context.AcceptWebSocket(path);
-      var socket    = wsContext.WebSocket;
-      var service   = _services[path];
+      var socket  = wsContext.WebSocket;
+      var service = _services[path];
       service.BindWebSocket(socket);
 
       return true;
@@ -266,11 +276,18 @@ namespace WebSocketSharp.Server {
 
     #region Public Methods
 
-    public void AddService<T>(string path)
+    public void AddService<T>(string absPath)
       where T : WebSocketService, new()
     {
+      string msg;
+      if (!absPath.IsValidAbsolutePath(out msg))
+      {
+        onError(msg);
+        return;
+      }
+
       var service = new WebSocketServer<T>();
-      _services.Add(path, service);
+      _services.Add(absPath, service);
     }
 
     public byte[] GetFile(string path)

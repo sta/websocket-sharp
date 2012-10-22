@@ -12,7 +12,8 @@ namespace Example3
     public static void Main(string[] args)
     {
       _httpsv = new HttpServer(4649);
-      _httpsv.AddService<Echo>("/");
+      _httpsv.AddService<Echo>("/Echo");
+      _httpsv.AddService<Chat>("/Chat");
 
       _httpsv.OnGet += (sender, e) =>
       {
