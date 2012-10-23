@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * WebSocketServer.cs
+ * WebSocketServiceHost.cs
  *
  * A C# implementation of the WebSocket protocol server.
  *
@@ -29,47 +29,62 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server {
 
-  public class WebSocketServer : WebSocketServerBase
+  public class WebSocketServiceHost<T> : WebSocketServerBase, IServiceHost
+    where T : WebSocketService, new()
   {
     #region Field
 
-    private ServiceManager _services;
+    private SessionManager _sessions;
+
+    #endregion
+
+    #region Internal Constructor
+
+    internal WebSocketServiceHost()
+    {
+      init();
+    }
 
     #endregion
 
     #region Public Constructors
 
-    public WebSocketServer()
-      : this(80)
+    public WebSocketServiceHost(int port)
+      : this(port, "/")
     {
     }
 
-    public WebSocketServer(int port)
-      : this(System.Net.IPAddress.Any, port)
-    {
-    }
-
-    public WebSocketServer(string url)
+    public WebSocketServiceHost(string url)
       : base(url)
     {
-      if (BaseUri.AbsolutePath != "/")
-      {
-        var msg = "Must not contain the path component: " + url;
-        throw new ArgumentException(msg, "url");
-      }
-
       init();
     }
 
-    public WebSocketServer(System.Net.IPAddress address, int port)
-      : base(address, port)
+    public WebSocketServiceHost(int port, string absPath)
+      : this(System.Net.IPAddress.Any, port, absPath)
+    {
+    }
+
+    public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath)
+      : base(address, port, absPath)
     {
       init();
+    }
+
+    #endregion
+
+    #region Property
+
+    public Uri Uri {
+      get {
+        return BaseUri;
+      }
     }
 
     #endregion
@@ -78,7 +93,7 @@ namespace WebSocketSharp.Server {
 
     private void init()
     {
-      _services = new ServiceManager();
+      _sessions = new SessionManager();
     }
 
     #endregion
@@ -90,47 +105,43 @@ namespace WebSocketSharp.Server {
       var context = client.AcceptWebSocket();
       var socket  = context.WebSocket;
       var path    = context.Path.UrlDecode();
-
-      IServiceHost svcHost;
-      if (!_services.TryGetServiceHost(path, out svcHost))
+      if (path != Uri.GetAbsolutePath().UrlDecode())
       {
         socket.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
-      if (BaseUri.IsAbsoluteUri)
-        socket.Url = new Uri(BaseUri, path);
+      if (Uri.IsAbsoluteUri)
+        socket.Url = new Uri(Uri, path);
 
-      svcHost.BindWebSocket(socket);
+      BindWebSocket(socket);
     }
 
     #endregion
 
     #region Public Methods
 
-    public void AddService<T>(string absPath)
-      where T : WebSocketService, new()
+    public void BindWebSocket(WebSocket socket)
     {
-      string msg;
-      if (!absPath.IsValidAbsolutePath(out msg))
-      {
-        Error(msg);
-        return;
-      }
-
-      var svcHost = new WebSocketServiceHost<T>();
-      _services.Add(absPath, svcHost);
+      T service = new T();
+      service.Bind(socket, _sessions);
+      service.Start();
     }
 
     public void Broadcast(string data)
     {
-      _services.Broadcast(data);
+      _sessions.Broadcast(data);
+    }
+
+    public Dictionary<string, bool> Broadping(string message)
+    {
+      return _sessions.Broadping(message);
     }
 
     public override void Stop()
     {
       base.Stop();
-      _services.Stop();
+      _sessions.Stop();
     }
 
     #endregion

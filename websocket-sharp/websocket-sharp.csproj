@@ -112,6 +112,8 @@
     <Compile Include="Net\Security\SslStream.cs" />
     <Compile Include="Server\IServiceHost.cs" />
     <Compile Include="Server\SessionManager.cs" />
+    <Compile Include="Server\WebSocketServiceHost.cs" />
+    <Compile Include="Server\ServiceManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

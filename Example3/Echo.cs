@@ -2,8 +2,8 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Example3
-{
+namespace Example3 {
+
   public class Echo : WebSocketService
   {
     protected override void OnMessage(object sender, MessageEventArgs e)

@@ -149,7 +149,7 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-The `WebSocketServer`, `WebSocketServer<T>` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
+The `WebSocketServer`, `WebSocketServiceHost<T>` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
@@ -193,10 +193,10 @@ In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each
 
 #### Step 3 ####
 
-Creating a instance of the `WebSocketServer<T>` class if you want the single WebSocket service server.
+Creating a instance of the `WebSocketServiceHost<T>` class if you want the single WebSocket service server.
 
 ```cs
-var wssv = new WebSocketServer<Echo>("ws://example.com:4649");
+var wssv = new WebSocketServiceHost<Echo>("ws://example.com:4649");
 ```
 
 Creating a instance of the `WebSocketServer` class if you want the multi WebSocket service server.
@@ -220,9 +220,9 @@ So it is necessary to run with root permission.
 
 Setting the event.
 
-##### WebSocketServer&lt;T>.OnError event #####
+##### WebSocketServiceHost&lt;T>.OnError event #####
 
-The `WebSocketServer<T>.OnError` event occurs when the `WebSocketServer<T>` gets an error.
+The `WebSocketServiceHost<T>.OnError` event occurs when the `WebSocketServiceHost<T>` gets an error.
 
 ```cs
 wssv.OnError += (sender, e) =>
@@ -235,7 +235,7 @@ The `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) 
 
 ##### WebSocketServer.OnError event #####
 
-Same as the `WebSocketServer<T>.OnError` event.
+Same as the `WebSocketServiceHost<T>.OnError` event.
 
 #### Step 5 ####
 

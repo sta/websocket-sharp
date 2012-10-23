@@ -8,22 +8,22 @@ namespace Example2
     public static void Main(string[] args)
     {
       /* Single service server
-      //var wssv = new WebSocketServer<Echo>("ws://localhost:4649");
-      var wssv = new WebSocketServer<Echo>("ws://localhost:4649/Echo");
-      //var wssv = new WebSocketServer<Echo>("ws://localhost:4649/エコー");
-      //var wssv = new WebSocketServer<Echo>(4649);
-      //var wssv = new WebSocketServer<Echo>(4649, "/Echo");
-      //var wssv = new WebSocketServer<Echo>(4649, "/エコー");
-      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649");
-      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649/Chat");
-      //var wssv = new WebSocketServer<Chat>("ws://localhost:4649/チャット");
-      //var wssv = new WebSocketServer<Chat>(4649);
-      //var wssv = new WebSocketServer<Chat>(4649, "/Chat");
-      //var wssv = new WebSocketServer<Chat>(4649, "/チャット");
+      //var wssv = new WebSocketServiceHost<Echo>("ws://localhost:4649");
+      var wssv = new WebSocketServiceHost<Echo>("ws://localhost:4649/Echo");
+      //var wssv = new WebSocketServiceHost<Echo>("ws://localhost:4649/エコー");
+      //var wssv = new WebSocketServiceHost<Echo>(4649);
+      //var wssv = new WebSocketServiceHost<Echo>(4649, "/Echo");
+      //var wssv = new WebSocketServiceHost<Echo>(4649, "/エコー");
+      //var wssv = new WebSocketServiceHost<Chat>("ws://localhost:4649");
+      //var wssv = new WebSocketServiceHost<Chat>("ws://localhost:4649/Chat");
+      //var wssv = new WebSocketServiceHost<Chat>("ws://localhost:4649/チャット");
+      //var wssv = new WebSocketServiceHost<Chat>(4649);
+      //var wssv = new WebSocketServiceHost<Chat>(4649, "/Chat");
+      //var wssv = new WebSocketServiceHost<Chat>(4649, "/チャット");
 
       wssv.Start();
       Console.WriteLine(
-        "WebSocket Server (url: {0})\n  listening on address: {1} port: {2}\n",
+        "WebSocket Service Host (url: {0})\n  listening on address: {1} port: {2}\n",
         wssv.Uri, wssv.Address, wssv.Port);
        */
 

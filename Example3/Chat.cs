@@ -2,22 +2,27 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Example3
-{
+namespace Example3 {
+
   public class Chat : WebSocketService
   {
-    private static object _forId = new object();
-    private static uint   _id    = 0;
+    private static object _forNum = new object();
+    private static uint   _num    = 0;
 
     private string _name;
 
     private string getName()
     {
-      lock (_forId)
+      return QueryString.Exists("name")
+             ? QueryString["name"]
+             : "anon#" + getNum();
+    }
+
+    private uint getNum()
+    {
+      lock (_forNum)
       {
-        return QueryString.Exists("name")
-               ? QueryString["name"]
-               : "anon#" + (++_id);
+        return ++_num;
       }
     }
 

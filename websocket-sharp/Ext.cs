@@ -393,21 +393,11 @@ namespace WebSocketSharp {
       return uriString.Substring(0, p).IsPredefinedScheme();
     }
 
-    public static bool NotEqualsDo(
-      this string expected,
-      string actual,
-      Func<string, string, string> func,
-      out string ret,
-      bool ignoreCase)
+    public static bool NotEqual(this string expected, string actual, bool ignoreCase)
     {
-      if (String.Compare(expected, actual, ignoreCase) != 0)
-      {
-        ret = func(expected, actual);
-        return true;
-      }
-
-      ret = String.Empty;
-      return false;
+      return String.Compare(expected, actual, ignoreCase) != 0
+             ? true
+             : false;
     }
 
     public static byte[] ReadBytes(this Stream stream, int length)

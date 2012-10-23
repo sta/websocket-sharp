@@ -32,8 +32,8 @@ using System.Collections.Specialized;
 using System.Threading;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp.Server
-{
+namespace WebSocketSharp.Server {
+
   public abstract class WebSocketService
   {
     #region Private Fields
@@ -58,13 +58,13 @@ namespace WebSocketSharp.Server
 
     protected NameValueCollection QueryString {
       get {
-        return _socket.QueryString;
+        return IsBound ? _socket.QueryString : null;
       }
     }
 
     protected SessionManager Sessions {
       get {
-        return _sessions;
+        return IsBound ? _sessions : null;
       }
     }
 
@@ -137,10 +137,10 @@ namespace WebSocketSharp.Server
       return Ping(String.Empty);
     }
 
-    public bool Ping(string data)
+    public bool Ping(string message)
     {
       return IsBound
-             ? _socket.Ping(data)
+             ? _socket.Ping(message)
              : false;
     }
 
@@ -149,10 +149,10 @@ namespace WebSocketSharp.Server
       return PingAround(String.Empty);
     }
 
-    public Dictionary<string, bool> PingAround(string data)
+    public Dictionary<string, bool> PingAround(string message)
     {
       return IsBound
-             ? _sessions.Broadping(data)
+             ? _sessions.Broadping(message)
              : null;
     }
 
@@ -161,14 +161,14 @@ namespace WebSocketSharp.Server
       return PingTo(id, String.Empty);
     }
 
-    public bool PingTo(string id, string data)
+    public bool PingTo(string id, string message)
     {
       if (!IsBound)
         return false;
 
       WebSocketService service;
       return _sessions.TryGetByID(id, out service)
-             ? service.Ping(data)
+             ? service.Ping(message)
              : false;
     }
 

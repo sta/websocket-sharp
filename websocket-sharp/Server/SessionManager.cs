@@ -123,11 +123,11 @@ namespace WebSocketSharp.Server {
       }
     }
 
-    public Dictionary<string, bool> Broadping(string data)
+    public Dictionary<string, bool> Broadping(string message)
     {
       var result = new Dictionary<string, bool>();
       foreach (var session in copySessions())
-        result.Add(session.Key, session.Value.Ping(data));
+        result.Add(session.Key, session.Value.Ping(message));
 
       return result;
     }

@@ -1,6 +1,6 @@
 #region MIT License
 /**
- * IServiceHost.cs
+ * ServiceManager.cs
  *
  * The MIT License
  *
@@ -27,14 +27,62 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 
 namespace WebSocketSharp.Server {
 
-  public interface IServiceHost {
+  public class ServiceManager {
+  
+    #region Field
 
-    void BindWebSocket(WebSocket socket);
-    void Broadcast(string data);
-    void Start();
-    void Stop();
+    private Dictionary<string, IServiceHost> _services;
+
+    #endregion
+
+    #region Constructor
+
+    public ServiceManager()
+    {
+      _services = new Dictionary<string, IServiceHost>();
+    }
+
+    #endregion
+
+    #region Property
+
+    public int Count {
+      get {
+        return _services.Count;
+      }
+    } 
+
+    #endregion
+
+    #region Public Methods
+
+    public void Add(string absPath, IServiceHost svcHost)
+    {
+      _services.Add(absPath.UrlDecode(), svcHost);
+    }
+
+    public void Broadcast(string data)
+    {
+      foreach (var svcHost in _services.Values)
+        svcHost.Broadcast(data);
+    }
+
+    public void Stop()
+    {
+      foreach (var svcHost in _services.Values)
+        svcHost.Stop();
+      _services.Clear();
+    }
+
+    public bool TryGetServiceHost(string absPath, out IServiceHost svcHost)
+    {
+      return _services.TryGetValue(absPath, out svcHost);
+    }
+
+    #endregion
   }
 }

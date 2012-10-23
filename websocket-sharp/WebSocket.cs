@@ -65,7 +65,7 @@ namespace WebSocketSharp {
     #region Private Fields
 
     private string                          _base64key;
-    private HttpListenerContext             _baseContext;
+    private HttpListenerContext             _httpContext;
     private WebSocketContext                _context;
     private System.Net.IPEndPoint           _endPoint;
     private string                          _extensions;
@@ -107,7 +107,7 @@ namespace WebSocketSharp {
     {
       _uri         = context.Path.ToUri();
       _context     = context;
-      _baseContext = context.BaseContext;
+      _httpContext = context.BaseContext;
       _wsStream    = context.Stream;
       _endPoint    = context.ServerEndPoint;
       _isClient    = false;
@@ -158,6 +158,7 @@ namespace WebSocketSharp {
 
       _uri       = uri;
       _protocols = protocols.ToString(", ");
+      _base64key = createBase64Key();
       _isClient  = true;
       _isSecure  = uri.Scheme == "wss" ? true : false;
     }
@@ -464,11 +465,11 @@ namespace WebSocketSharp {
 
       try
       {
-        if (!_baseContext.IsNull())
+        if (!_httpContext.IsNull())
         {
-          _baseContext.Response.Close();
+          _httpContext.Response.Close();
           _wsStream    = null;
-          _baseContext = null;
+          _httpContext = null;
         }
 
         if (!_wsStream.IsNull())
@@ -504,6 +505,16 @@ namespace WebSocketSharp {
     }
 
     // As Client
+    private string createBase64Key()
+    {
+      var src  = new byte[16];
+      var rand = new Random();
+      rand.NextBytes(src);
+
+      return Convert.ToBase64String(src);
+    }
+
+    // As Client
     private void createClientStream()
     {
       var host = _uri.DnsSafeHost;
@@ -512,17 +523,6 @@ namespace WebSocketSharp {
         port = IsSecure ? 443 : 80;
 
       _wsStream = WsStream.CreateClientStream(host, port, out _tcpClient);
-    }
-
-    private string createExpectedKey()
-    {
-      SHA1 sha1 = new SHA1CryptoServiceProvider();
-      var  sb   = new StringBuilder(_base64key);
-
-      sb.Append(_guid);
-      var keySrc = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
-
-      return Convert.ToBase64String(keySrc);
     }
 
     private WsFrame createFrame(Fin fin, Opcode opcode, PayloadData payloadData)
@@ -541,11 +541,6 @@ namespace WebSocketSharp {
       if (port != 80)
         host += ":" + port;
 
-      var keySrc = new byte[16];
-      var rand   = new Random();
-      rand.NextBytes(keySrc);
-      _base64key = Convert.ToBase64String(keySrc);
-      
       var req = new RequestHandshake(path);
       req.AddHeader("Host", host);
       req.AddHeader("Sec-WebSocket-Key", _base64key);
@@ -560,7 +555,7 @@ namespace WebSocketSharp {
     private ResponseHandshake createResponseHandshake()
     {
       var res = new ResponseHandshake();
-      res.AddHeader("Sec-WebSocket-Accept", createExpectedKey());
+      res.AddHeader("Sec-WebSocket-Accept", createResponseKey());
 
       return res;
     }
@@ -572,6 +567,16 @@ namespace WebSocketSharp {
       res.AddHeader("Sec-WebSocket-Version", _version);
 
       return res;
+    }
+
+    private string createResponseKey()
+    {
+      SHA1 sha1 = new SHA1CryptoServiceProvider();
+      var  sb   = new StringBuilder(_base64key);
+      sb.Append(_guid);
+      var  src  = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+
+      return Convert.ToBase64String(src);
     }
 
     // As Client
@@ -611,23 +616,14 @@ namespace WebSocketSharp {
     // As Server
     private bool isValidRequest(RequestHandshake request, out string message)
     {
-      Func<string, Func<string, string, string>> func = s =>
-      {
-        return (e, a) =>
-        {
-          return String.Format("Invalid request {0} value: {1}(expected: {2})", s, a, e);
-        };
-      };
-
       if (!request.IsWebSocketRequest)
       {
         message = "Invalid WebSocket request.";
         return false;
       }
 
-      if (_uri.IsAbsoluteUri)
-        if (!isValidRequestHost(request.GetHeaderValues("Host")[0], func("Host"), out message))
-          return false;
+      if (_uri.IsAbsoluteUri && !isValidRequestHost(request.Headers["Host"], out message))
+        return false;
 
       if (!request.HeaderExists("Sec-WebSocket-Version", _version))
       {
@@ -635,7 +631,7 @@ namespace WebSocketSharp {
         return false;
       }
 
-      _base64key = request.GetHeaderValues("Sec-WebSocket-Key")[0];
+      _base64key = request.Headers["Sec-WebSocket-Key"];
 
       if (request.HeaderExists("Sec-WebSocket-Protocol"))
         _protocols = request.Headers["Sec-WebSocket-Protocol"];
@@ -650,18 +646,17 @@ namespace WebSocketSharp {
     }
 
     // As Server
-    private bool isValidRequestHost(string value, Func<string, string, string> func, out string message)
+    private bool isValidRequestHost(string value, out string message)
     {
-      var host = _uri.DnsSafeHost;
-      var type = Uri.CheckHostName(host);
-
+      var host    = _uri.DnsSafeHost;
+      var type    = Uri.CheckHostName(host);
       var address = _endPoint.Address;
       var port    = _endPoint.Port;
 
       var expectedHost1 = host;
-      var expectedHost2 = address.ToString();
-      if (type != UriHostNameType.Dns)
-        expectedHost2 = System.Net.Dns.GetHostEntry(address).HostName;
+      var expectedHost2 = type == UriHostNameType.Dns
+                        ? address.ToString()
+                        : System.Net.Dns.GetHostEntry(address).HostName;
 
       if (port != 80)
       {
@@ -669,9 +664,12 @@ namespace WebSocketSharp {
         expectedHost2 += ":" + port;
       }
 
-      if (expectedHost1.NotEqualsDo(value, func, out message, false))
-        if (expectedHost2.NotEqualsDo(value, func, out message, false))
-          return false;
+      if (expectedHost1.NotEqual(value, false) &&
+          expectedHost2.NotEqual(value, false))
+      {
+        message = "Invalid Host.";
+        return false;
+      }
 
       message = String.Empty;
       return true;
@@ -686,19 +684,17 @@ namespace WebSocketSharp {
         return false;
       }
 
-      if (!response.HeaderExists("Sec-WebSocket-Accept", createExpectedKey()))
+      if (!response.HeaderExists("Sec-WebSocket-Accept", createResponseKey()))
       {
-        message = "Invalid Sec-WebSocket-Accept value.";
+        message = "Invalid Sec-WebSocket-Accept.";
         return false;
       }
 
-      if (response.HeaderExists("Sec-WebSocket-Version"))
+      if ( response.HeaderExists("Sec-WebSocket-Version") &&
+          !response.HeaderExists("Sec-WebSocket-Version", _version))
       {
-        if (!response.HeaderExists("Sec-WebSocket-Version", _version))
-        {
-          message = "Unsupported Sec-WebSocket-Version.";
-          return false;
-        }
+        message = "Unsupported Sec-WebSocket-Version.";
+        return false;
       }
 
       if (response.HeaderExists("Sec-WebSocket-Protocol"))
