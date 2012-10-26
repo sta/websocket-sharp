@@ -14,6 +14,7 @@ namespace Example3
       _httpsv = new HttpServer(4649);
       _httpsv.AddService<Echo>("/Echo");
       _httpsv.AddService<Chat>("/Chat");
+      //_httpsv.Sweeped = false; // Must be set after any AddService methods done.
 
       _httpsv.OnGet += (sender, e) =>
       {

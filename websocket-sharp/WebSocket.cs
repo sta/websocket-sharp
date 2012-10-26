@@ -418,19 +418,19 @@ namespace WebSocketSharp {
           return;
         }
 
-        // Whether a close status code that must not be set for send is used ?
-        if (!canSendAsCloseFrame(data))
-        {
-          onClose(new CloseEventArgs(data));
-          return;
-        }
-
         _readyState = WsState.CLOSING;
+      }
+
+      // Whether a close status code that must not be set for send is used ?
+      if (!canSendAsCloseFrame(data))
+      {
+        onClose(new CloseEventArgs(data));
+        return;
       }
 
       closeHandshake(data);
       #if DEBUG
-      Console.WriteLine("WS: Info@close: Exit close method.");
+      Console.WriteLine("WS: Info@close: Exits close method.");
       #endif
     }
 
@@ -451,7 +451,7 @@ namespace WebSocketSharp {
       var payloadData = new PayloadData(data.ToArray());
       if (payloadData.Length > 125)
       {
-        var msg = "Close frame must have a payload length of 125 bytes or less.";
+        var msg = "A Close frame must have a payload length of 125 bytes or less.";
         onError(msg);
         return;
       }
@@ -497,10 +497,7 @@ namespace WebSocketSharp {
     {
       var args  = new CloseEventArgs(data);
       var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
-      if (send(frame) && !Thread.CurrentThread.IsBackground)
-        if (!_exitMessageLoop.IsNull())
-          _exitMessageLoop.WaitOne(5 * 1000);
-
+      send(frame);
       onClose(args);
     }
 
@@ -738,6 +735,10 @@ namespace WebSocketSharp {
 
     private void onClose(CloseEventArgs eventArgs)
     {
+      if (!Thread.CurrentThread.IsBackground)
+        if (!_exitMessageLoop.IsNull())
+          _exitMessageLoop.WaitOne(5 * 1000);
+
       if (closeConnection())
         eventArgs.WasClean = true;
 
@@ -772,7 +773,7 @@ namespace WebSocketSharp {
       var buffer = Encoding.UTF8.GetBytes(message);
       if (buffer.Length > 125)
       {
-        var msg = "Ping frame must have a payload length of 125 bytes or less.";
+        var msg = "A Ping frame must have a payload length of 125 bytes or less.";
         onError(msg);
         return false;
       }
@@ -800,7 +801,7 @@ namespace WebSocketSharp {
       var frame = _wsStream.ReadFrame();
       if (frame.IsNull())
       {
-        var msg = "WebSocket data frame can not be read from network stream.";
+        var msg = "The WebSocket frame can not be read from network stream.";
         close(CloseStatusCode.ABNORMAL, msg);
       }
 
@@ -846,7 +847,7 @@ namespace WebSocketSharp {
       if (frame.Opcode == Opcode.CLOSE)
       {// FINAL & CLOSE
         #if DEBUG
-        Console.WriteLine("WS: Info@receive: Start closing handshake.");
+        Console.WriteLine("WS: Info@receive: Starts closing handshake.");
         #endif
         close(frame.PayloadData);
         return null;
@@ -855,7 +856,7 @@ namespace WebSocketSharp {
       if (frame.Opcode == Opcode.PING)
       {// FINAL & PING
         #if DEBUG
-        Console.WriteLine("WS: Info@receive: Return Pong.");
+        Console.WriteLine("WS: Info@receive: Returns Pong.");
         #endif
         pong(frame.PayloadData);
         return null;
@@ -863,10 +864,14 @@ namespace WebSocketSharp {
 
       if (frame.Opcode == Opcode.PONG)
       {// FINAL & PONG
+        #if DEBUG
+        Console.WriteLine("WS: Info@receive: Receives Pong.");
+        #endif
         _receivePong.Set();
+        return null;
       }
 
-      // FINAL & (TEXT | BINARY | PONG)
+      // FINAL & (TEXT | BINARY)
       return new MessageEventArgs(frame.Opcode, frame.PayloadData);
     }
 
@@ -889,7 +894,7 @@ namespace WebSocketSharp {
           }
 
           #if DEBUG
-          Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+          Console.WriteLine("WS: Info@receiveFragmented: Starts closing handshake.");
           #endif
           close(CloseStatusCode.INCORRECT_DATA, String.Empty);
           return null;
@@ -904,7 +909,7 @@ namespace WebSocketSharp {
         if (frame.Opcode == Opcode.CLOSE)
         {// FINAL & CLOSE
           #if DEBUG
-          Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+          Console.WriteLine("WS: Info@receiveFragmented: Starts closing handshake.");
           #endif
           close(frame.PayloadData);
           return null;
@@ -913,7 +918,7 @@ namespace WebSocketSharp {
         if (frame.Opcode == Opcode.PING)
         {// FINAL & PING
           #if DEBUG
-          Console.WriteLine("WS: Info@receiveFragmented: Return Pong.");
+          Console.WriteLine("WS: Info@receiveFragmented: Returns Pong.");
           #endif
           pong(frame.PayloadData);
           continue;
@@ -921,14 +926,16 @@ namespace WebSocketSharp {
 
         if (frame.Opcode == Opcode.PONG)
         {// FINAL & PONG
+          #if DEBUG
+          Console.WriteLine("WS: Info@receiveFragmented: Receives Pong.");
+          #endif
           _receivePong.Set();
-          OnMessage.Emit(this, new MessageEventArgs(frame.Opcode, frame.PayloadData));
           continue;
         }
 
         // FINAL & (TEXT | BINARY)
         #if DEBUG
-        Console.WriteLine("WS: Info@receiveFragmented: Start closing handshake.");
+        Console.WriteLine("WS: Info@receiveFragmented: Starts closing handshake.");
         #endif
         close(CloseStatusCode.INCORRECT_DATA, String.Empty);
         return null;
@@ -964,7 +971,7 @@ namespace WebSocketSharp {
       if (_readyState == WsState.CONNECTING ||
           _readyState == WsState.CLOSED)
       {
-        var msg = "Connection isn't established or has been closed.";
+        var msg = "The WebSocket connection isn't established or has been closed.";
         onError(msg);
         return false;
       }
@@ -1011,7 +1018,7 @@ namespace WebSocketSharp {
       {
         if (_readyState != WsState.OPEN)
         {
-          var msg = "Connection isn't established or has been closed.";
+          var msg = "The WebSocket connection isn't established or has been closed.";
           onError(msg);
           return;
         }
@@ -1215,7 +1222,7 @@ namespace WebSocketSharp {
     {
       if (_readyState == WsState.OPEN)
       {
-        Console.WriteLine("WS: Info@Connect: Connection has been established already.");
+        Console.WriteLine("WS: Info@Connect: The WebSocket connection has been established already.");
         return;
       }
 
@@ -1278,7 +1285,9 @@ namespace WebSocketSharp {
       if (message.IsNull())
         message = String.Empty;
 
-      return ping(message, 5 * 1000);
+      return _isClient
+             ? ping(message, 5 * 1000)
+             : ping(message, 1 * 1000);
     }
 
     /// <summary>

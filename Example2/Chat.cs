@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -6,8 +7,7 @@ namespace Example2 {
 
   public class Chat : WebSocketService
   {
-    private static object _forNum = new object();
-    private static uint   _num    = 0;
+    private static int _num = 0;
 
     private string _name;
 
@@ -18,12 +18,9 @@ namespace Example2 {
              : "anon#" + getNum();
     }
 
-    private uint getNum()
+    private int getNum()
     {
-      lock (_forNum)
-      {
-        return ++_num;
-      }
+      return Interlocked.Increment(ref _num);
     }
 
     protected override void OnOpen(object sender, EventArgs e)

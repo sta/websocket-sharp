@@ -79,7 +79,17 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Property
+    #region Properties
+
+    public bool Sweeped {
+      get {
+        return _sessions.Sweeped;
+      }
+
+      set {
+        _sessions.Sweeped = value;
+      }
+    }
 
     public Uri Uri {
       get {

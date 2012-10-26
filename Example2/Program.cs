@@ -20,6 +20,7 @@ namespace Example2
       //var wssv = new WebSocketServiceHost<Chat>(4649);
       //var wssv = new WebSocketServiceHost<Chat>(4649, "/Chat");
       //var wssv = new WebSocketServiceHost<Chat>(4649, "/チャット");
+      //wssv.Sweeped = false; // Stop the Sweep inactive session Timer.
 
       wssv.Start();
       Console.WriteLine(
@@ -27,12 +28,13 @@ namespace Example2
         wssv.Uri, wssv.Address, wssv.Port);
        */
 
-      // Multi services server
+      /// Multi services server
       var wssv = new WebSocketServer(4649);
       wssv.AddService<Echo>("/Echo");
       wssv.AddService<Echo>("/エコー");
       wssv.AddService<Chat>("/Chat");
       wssv.AddService<Chat>("/チャット");
+      //wssv.Sweeped = false; // Must be set after any AddService methods done.
 
       wssv.Start();
       Console.WriteLine(

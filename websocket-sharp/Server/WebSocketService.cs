@@ -47,9 +47,8 @@ namespace WebSocketSharp.Server {
 
     public WebSocketService()
     {
-      ID        = String.Empty;
-      IsBound   = false;
-      IsStopped = false;
+      ID      = String.Empty;
+      IsBound = false;
     }
 
     #endregion
@@ -72,9 +71,8 @@ namespace WebSocketSharp.Server {
 
     #region Public Properties
 
-    public string ID        { get; private set; }
-    public bool   IsBound   { get; private set; }
-    public bool   IsStopped { get; private set; }
+    public string ID      { get; private set; }
+    public bool   IsBound { get; private set; }
 
     #endregion
 
@@ -89,8 +87,7 @@ namespace WebSocketSharp.Server {
 
       _socket.OnClose += (sender, e) =>
       {
-        if (!IsStopped)
-          _sessions.Remove(ID);
+        _sessions.Remove(ID);
       };
     }
 
@@ -202,6 +199,7 @@ namespace WebSocketSharp.Server {
       {
         Send(data);
       };
+
       ThreadPool.QueueUserWorkItem(sendCb);
     }
 
@@ -211,6 +209,7 @@ namespace WebSocketSharp.Server {
       {
         Send(data);
       };
+
       ThreadPool.QueueUserWorkItem(sendCb);
     }
 
@@ -242,15 +241,22 @@ namespace WebSocketSharp.Server {
 
     public void Stop()
     {
-      Stop(CloseStatusCode.NORMAL, String.Empty);
+      if (!IsBound)
+        return;
+
+      _socket.Close();
     }
 
     public void Stop(CloseStatusCode code, string reason)
     {
-      if (!IsBound || IsStopped)
+      Stop((ushort)code, reason);
+    }
+
+    public void Stop(ushort code, string reason)
+    {
+      if (!IsBound)
         return;
- 
-      IsStopped = true;
+
       _socket.Close(code, reason);
     }
 

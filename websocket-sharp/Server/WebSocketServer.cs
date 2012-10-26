@@ -74,6 +74,20 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
+    #region Property
+
+    public bool Sweeped {
+      get {
+        return _services.Sweeped;
+      }
+
+      set {
+        _services.Sweeped = value;
+      }
+    }
+
+    #endregion
+
     #region Private Method
 
     private void init()

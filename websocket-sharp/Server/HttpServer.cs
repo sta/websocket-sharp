@@ -63,10 +63,20 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Property
+    #region Properties
 
     public int Port {
       get { return _port; }
+    }
+
+    public bool Sweeped {
+      get {
+        return _services.Sweeped;
+      }
+
+      set {
+        _services.Sweeped = value;
+      }
     }
 
     #endregion

@@ -36,6 +36,7 @@ namespace WebSocketSharp.Server {
     #region Field
 
     private Dictionary<string, IServiceHost> _services;
+    private bool                             _sweeped;
 
     #endregion
 
@@ -44,17 +45,33 @@ namespace WebSocketSharp.Server {
     public ServiceManager()
     {
       _services = new Dictionary<string, IServiceHost>();
+      _sweeped  = true;
     }
 
     #endregion
 
-    #region Property
+    #region Properties
 
     public int Count {
       get {
         return _services.Count;
       }
     } 
+
+    public bool Sweeped {
+      get {
+        return _sweeped;
+      }
+
+      set {
+        if (value ^ _sweeped)
+        {
+          _sweeped = value;
+          foreach (var svcHost in _services.Values)
+            svcHost.Sweeped = value;
+        }
+      }
+    }
 
     #endregion
 
