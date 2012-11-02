@@ -12,9 +12,9 @@ namespace Example3
     public static void Main(string[] args)
     {
       _httpsv = new HttpServer(4649);
+      //_httpsv.Sweeped = false; // Stop the Sweep inactive session Timer.
       _httpsv.AddService<Echo>("/Echo");
       _httpsv.AddService<Chat>("/Chat");
-      //_httpsv.Sweeped = false; // Must be set after any AddService methods done.
 
       _httpsv.OnGet += (sender, e) =>
       {
@@ -27,7 +27,10 @@ namespace Example3
       };
 
       _httpsv.Start();
-      Console.WriteLine("HTTP Server listening on port: {0}\n", _httpsv.Port);
+      Console.WriteLine("HTTP Server listening on port: {0} service path:", _httpsv.Port);
+      foreach (var path in _httpsv.ServicePath)
+        Console.WriteLine("  {0}", path);
+      Console.WriteLine();
 
       Console.WriteLine("Press any key to stop server...");
       Console.ReadLine();

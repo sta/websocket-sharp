@@ -64,12 +64,24 @@ namespace WebSocketSharp.Server {
       }
 
       set {
-        if (value ^ _sweeped)
+        if (_sweeped ^ value)
         {
           _sweeped = value;
           foreach (var svcHost in _services.Values)
             svcHost.Sweeped = value;
         }
+      }
+    }
+
+    public IEnumerable<string> Path {
+      get {
+        return _services.Keys;
+      }
+    }
+
+    public IEnumerable<IServiceHost> ServiceHost {
+      get {
+        return _services.Values;
       }
     }
 

@@ -100,6 +100,10 @@ namespace WebSocketSharp.Server {
       get {
         return _uri;
       }
+
+      set {
+        _uri = value;
+      }
     }
 
     #endregion

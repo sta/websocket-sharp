@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -67,6 +68,12 @@ namespace WebSocketSharp.Server {
 
     public int Port {
       get { return _port; }
+    }
+
+    public IEnumerable<string> ServicePath {
+      get {
+        return _services.Path;
+      }
     }
 
     public bool Sweeped {
@@ -296,6 +303,10 @@ namespace WebSocketSharp.Server {
       }
 
       var svcHost = new WebSocketServiceHost<T>();
+      svcHost.Uri = absPath.ToUri();
+      if (!Sweeped)
+        svcHost.Sweeped = Sweeped;
+
       _services.Add(absPath, svcHost);
     }
 

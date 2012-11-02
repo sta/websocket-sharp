@@ -95,6 +95,10 @@ namespace WebSocketSharp.Server {
       get {
         return BaseUri;
       }
+
+      internal set {
+        BaseUri = value;
+      }
     }
 
     #endregion
@@ -122,7 +126,7 @@ namespace WebSocketSharp.Server {
       }
 
       if (Uri.IsAbsoluteUri)
-        socket.Url = new Uri(Uri, path);
+        socket.Url = Uri;
 
       BindWebSocket(socket);
     }

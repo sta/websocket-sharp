@@ -29,6 +29,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using WebSocketSharp.Net;
 
@@ -75,6 +76,16 @@ namespace WebSocketSharp.Server {
     #endregion
 
     #region Property
+
+    public IEnumerable<string> ServicePath {
+      get {
+        var url = BaseUri.IsAbsoluteUri
+                ? BaseUri.ToString().TrimEnd('/')
+                : String.Empty;
+        foreach (var path in _services.Path)
+          yield return url + path;
+      }
+    }
 
     public bool Sweeped {
       get {
@@ -133,6 +144,12 @@ namespace WebSocketSharp.Server {
       }
 
       var svcHost = new WebSocketServiceHost<T>();
+      svcHost.Uri = BaseUri.IsAbsoluteUri
+                  ? new Uri(BaseUri, absPath)
+                  : absPath.ToUri();
+      if (!Sweeped)
+        svcHost.Sweeped = Sweeped;
+
       _services.Add(absPath, svcHost);
     }
 
