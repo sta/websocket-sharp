@@ -125,7 +125,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Private Method
+    #region Private Methods
 
     private Dictionary<string, WebSocketService> copySessions()
     {
@@ -175,10 +175,7 @@ namespace WebSocketSharp.Server {
       lock (_syncRoot)
       {
         foreach (var service in _sessions.Values)
-          if (_isStopped || _isSweeping)
-            service.Send(data);
-          else
-            service.SendAsync(data);
+          service.Send(data);
       }
     }
 
@@ -187,10 +184,7 @@ namespace WebSocketSharp.Server {
       lock (_syncRoot)
       {
         foreach (var service in _sessions.Values)
-          if (_isStopped || _isSweeping)
-            service.Send(data);
-          else
-            service.SendAsync(data);
+          service.Send(data);
       }
     }
 

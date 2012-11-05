@@ -1041,6 +1041,26 @@ namespace WebSocketSharp {
       return send(frame);
     }
 
+    private void sendAsync(Opcode opcode, byte[] data, Action completed)
+    {
+      sendAsync(opcode, new MemoryStream(data), completed);
+    }
+
+    private void sendAsync(Opcode opcode, Stream stream, Action completed)
+    {
+      Action<Opcode, Stream> action = send;
+      AsyncCallback callback = null;
+      callback = (ar) =>
+      {
+        action.EndInvoke(ar);
+        stream.Close();
+        if (!completed.IsNull())
+          completed();
+      };
+
+      action.BeginInvoke(opcode, stream, callback, null);
+    }
+
     private long sendFragmented(Opcode opcode, Stream stream)
     {
       var length = stream.Length;
@@ -1343,6 +1363,40 @@ namespace WebSocketSharp {
       {
         send(Opcode.BINARY, fs);
       }
+    }
+
+    public void SendAsync(string data, Action completed)
+    {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
+      var buffer = Encoding.UTF8.GetBytes(data);
+      sendAsync(Opcode.TEXT, buffer, completed);
+    }
+
+    public void SendAsync(byte[] data, Action completed)
+    {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
+      sendAsync(Opcode.BINARY, data, completed);
+    }
+
+    public void SendAsync(FileInfo file, Action completed)
+    {
+      if (file.IsNull())
+      {
+        onError("'file' must not be null.");
+        return;
+      }
+
+      sendAsync(Opcode.BINARY, file.OpenRead(), completed);
     }
 
     #endregion

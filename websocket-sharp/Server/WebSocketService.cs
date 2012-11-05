@@ -193,26 +193,6 @@ namespace WebSocketSharp.Server {
         _socket.Send(data);
     }
 
-    public void SendAsync(byte[] data)
-    {
-      WaitCallback sendCb = (state) =>
-      {
-        Send(data);
-      };
-
-      ThreadPool.QueueUserWorkItem(sendCb);
-    }
-
-    public void SendAsync(string data)
-    {
-      WaitCallback sendCb = (state) =>
-      {
-        Send(data);
-      };
-
-      ThreadPool.QueueUserWorkItem(sendCb);
-    }
-
     public void SendTo(string id, byte[] data)
     {
       if (!IsBound)
