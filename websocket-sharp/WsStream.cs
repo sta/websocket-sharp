@@ -37,9 +37,9 @@ using System.Text;
 using WebSocketSharp.Frame;
 using WebSocketSharp.Net.Security;
 
-namespace WebSocketSharp
-{
-  public class WsStream : IDisposable
+namespace WebSocketSharp {
+
+  internal class WsStream : IDisposable
   {
     #region Fields
 
@@ -69,15 +69,16 @@ namespace WebSocketSharp
 
     public bool DataAvailable {
       get {
-        if (_innerStreamType == typeof(SslStream))
-          return ((SslStream)_innerStream).DataAvailable;
-
-        return ((NetworkStream)_innerStream).DataAvailable;
+        return _innerStreamType == typeof(SslStream)
+               ? ((SslStream)_innerStream).DataAvailable
+               : ((NetworkStream)_innerStream).DataAvailable;
       }
     }
 
     public bool IsSecure {
-      get { return _isSecure; }
+      get {
+        return _isSecure;
+      }
     }
 
     #endregion
@@ -94,6 +95,50 @@ namespace WebSocketSharp
       _isSecure        = _innerStreamType == typeof(SslStream) ? true : false;
       _forRead         = new object();
       _forWrite        = new object();
+    }
+
+    private int read(byte[] buffer, int offset, int size)
+    {
+      var readLen = _innerStream.Read(buffer, offset, size);
+      if (readLen < size)
+      {
+        var msg = String.Format("Data can not be read from {0}.", _innerStreamType);
+        throw new IOException(msg);
+      }
+
+      return readLen;
+    }
+
+    private int readByte()
+    {
+      return _innerStream.ReadByte();
+    }
+
+    private string[] readHandshake()
+    {
+      var buffer = new List<byte>();
+      while (true)
+      {
+        if (readByte().EqualsAndSaveTo('\r', buffer) &&
+            readByte().EqualsAndSaveTo('\n', buffer) &&
+            readByte().EqualsAndSaveTo('\r', buffer) &&
+            readByte().EqualsAndSaveTo('\n', buffer))
+          break;
+      }
+
+      return Encoding.UTF8.GetString(buffer.ToArray())
+             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
+             .Split('\n');
+    }
+
+    private void write(byte[] buffer, int offset, int count)
+    {
+      _innerStream.Write(buffer, offset, count);
+    }
+
+    private void writeByte(byte value)
+    {
+      _innerStream.WriteByte(value);
     }
 
     #endregion
@@ -145,10 +190,9 @@ namespace WebSocketSharp
       var conn   = context.Connection;
       var stream = conn.Stream;
 
-      if (conn.IsSecure)
-        return new WsStream((SslStream)stream);
-
-      return new WsStream((NetworkStream)stream);
+      return conn.IsSecure
+             ? new WsStream((SslStream)stream)
+             : new WsStream((NetworkStream)stream);
     }
 
     #endregion
@@ -165,88 +209,74 @@ namespace WebSocketSharp
       _innerStream.Dispose();
     }
 
-    public int Read(byte[] buffer, int offset, int size)
-    {
-      lock (_forRead)
-      {
-        var readLen = _innerStream.Read(buffer, offset, size);
-        if (readLen < size)
-        {
-          var msg = String.Format("Data can not be read from {0}.", _innerStreamType);
-          throw new IOException(msg);
-        }
-        return readLen;
-      }
-    }
-
-    public int ReadByte()
-    {
-      lock (_forRead)
-      {
-        return _innerStream.ReadByte();
-      }
-    }
-
     public WsFrame ReadFrame()
     {
       lock (_forRead)
       {
-        return WsFrame.Parse(_innerStream);
+        try
+        {
+          return WsFrame.Parse(_innerStream);
+        }
+        catch
+        {
+          return null;
+        }
       }
+    }
+
+    public void ReadFrameAsync(Action<WsFrame> completed)
+    {
+      WsFrame.ParseAsync(_innerStream, completed);
     }
 
     public string[] ReadHandshake()
     {
       lock (_forRead)
       {
-        var buffer = new List<byte>();
-
-        while (true)
+        try
         {
-          if (ReadByte().EqualsAndSaveTo('\r', buffer) &&
-              ReadByte().EqualsAndSaveTo('\n', buffer) &&
-              ReadByte().EqualsAndSaveTo('\r', buffer) &&
-              ReadByte().EqualsAndSaveTo('\n', buffer))
-            break;
+          return readHandshake();
         }
-
-        return Encoding.UTF8.GetString(buffer.ToArray())
-               .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
-               .Split('\n');
+        catch
+        {
+          return null;
+        }
       }
     }
 
-    public void Write(byte[] buffer, int offset, int count)
+    public bool WriteFrame(WsFrame frame)
     {
       lock (_forWrite)
       {
-        _innerStream.Write(buffer, offset, count);
+        try
+        {
+          var buffer = frame.ToBytes();
+          write(buffer, 0, buffer.Length);
+
+          return true;
+        }
+        catch
+        {
+          return false;
+        }
       }
     }
 
-    public void WriteByte(byte value)
+    public bool WriteHandshake(Handshake handshake)
     {
       lock (_forWrite)
       {
-        _innerStream.WriteByte(value);
-      }
-    }
+        try
+        {
+          var buffer = handshake.ToBytes();
+          write(buffer, 0, buffer.Length);
 
-    public void WriteFrame(WsFrame frame)
-    {
-      lock (_forWrite)
-      {
-        var buffer = frame.ToBytes();
-        _innerStream.Write(buffer, 0, buffer.Length);
-      }
-    }
-
-    public void WriteHandshake(Handshake handshake)
-    {
-      lock (_forWrite)
-      {
-        var buffer = handshake.ToBytes();
-        _innerStream.Write(buffer, 0, buffer.Length);
+          return true;
+        }
+        catch
+        {
+          return false;
+        }
       }
     }
 

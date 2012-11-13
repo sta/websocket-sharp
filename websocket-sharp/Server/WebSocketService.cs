@@ -113,6 +113,20 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
+    #region Internal Methods
+
+    internal void SendAsync(byte[] data, Action completed)
+    {
+      _socket.SendAsync(data, completed);
+    }
+
+    internal void SendAsync(string data, Action completed)
+    {
+      _socket.SendAsync(data, completed);
+    }
+
+    #endregion
+
     #region Public Methods
 
     public void Bind(WebSocket socket, SessionManager sessions)

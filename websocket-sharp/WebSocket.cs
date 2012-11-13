@@ -610,6 +610,19 @@ namespace WebSocketSharp {
       return true;
     }
 
+    private bool isValidFrame(WsFrame frame)
+    {
+      if (frame.IsNull())
+      {
+        var msg = "The WebSocket frame can not be read from the network stream.";
+        close(CloseStatusCode.ABNORMAL, msg);
+
+        return false;
+      }
+
+      return true;
+    }
+
     // As Server
     private bool isValidRequest(RequestHandshake request, out string message)
     {
@@ -704,35 +717,6 @@ namespace WebSocketSharp {
       return true;
     }
 
-    private void message()
-    {
-      try
-      {
-        onMessage(receive());
-      }
-      catch (WsReceivedTooBigMessageException ex)
-      {
-        close(CloseStatusCode.TOO_BIG, ex.Message);
-      }
-      catch (Exception)
-      {
-        close(CloseStatusCode.ABNORMAL, "An exception has occured.");
-      }
-    }
-
-    private void messageLoopCallback(IAsyncResult ar)
-    {
-      Action messageInvoker = (Action)ar.AsyncState;
-      messageInvoker.EndInvoke(ar);
-      if (_readyState == WsState.OPEN)
-      {
-        messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
-        return;
-      }
-
-      _exitMessageLoop.Set();
-    }
-
     private void onClose(CloseEventArgs eventArgs)
     {
       if (!Thread.CurrentThread.IsBackground)
@@ -764,7 +748,7 @@ namespace WebSocketSharp {
     private void onOpen()
     {
       _readyState = WsState.OPEN;
-      startMessageThread();
+      startMessageLoop();
       OnOpen.Emit(this, EventArgs.Empty);
     }
 
@@ -799,25 +783,7 @@ namespace WebSocketSharp {
     private WsFrame readFrame()
     {
       var frame = _wsStream.ReadFrame();
-      if (frame.IsNull())
-      {
-        var msg = "The WebSocket frame can not be read from network stream.";
-        close(CloseStatusCode.ABNORMAL, msg);
-      }
-
-      return frame;
-    }
-
-    private WsFrame readFrameWithTimeout(int millisecondsTimeout)
-    {
-      if (!_wsStream.DataAvailable)
-      {
-        Thread.Sleep(millisecondsTimeout);
-        if (!_wsStream.DataAvailable)
-          return null;
-      }
-
-      return readFrame();
+      return isValidFrame(frame) ? frame : null;
     }
 
     private string[] readHandshake()
@@ -825,10 +791,9 @@ namespace WebSocketSharp {
       return _wsStream.ReadHandshake();
     }
 
-    private MessageEventArgs receive()
+    private MessageEventArgs receive(WsFrame frame)
     {
-      var frame = _isClient ? readFrame() : readFrameWithTimeout(1 * 100);
-      if (frame.IsNull())
+      if (!isValidFrame(frame))
         return null;
 
       if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
@@ -838,10 +803,9 @@ namespace WebSocketSharp {
       if (frame.Fin == Fin.MORE)
       {// MORE
         var merged = receiveFragmented(frame);
-        if (merged.IsNull())
-          return null;
-
-        return new MessageEventArgs(frame.Opcode, new PayloadData(merged));
+        return !merged.IsNull()
+               ? new MessageEventArgs(frame.Opcode, new PayloadData(merged))
+               : null;
       }
 
       if (frame.Opcode == Opcode.CLOSE)
@@ -1016,22 +980,25 @@ namespace WebSocketSharp {
     {
       lock (_forSend)
       {
-        if (_readyState != WsState.OPEN)
+        try
         {
-          var msg = "The WebSocket connection isn't established or has been closed.";
-          onError(msg);
-          return;
-        }
+          if (_readyState != WsState.OPEN)
+          {
+            var msg = "The WebSocket connection isn't established or has been closed.";
+            onError(msg);
+            return;
+          }
 
-        var length = stream.Length;
-        if (length <= _fragmentLen)
+          var length = stream.Length;
+          if (length <= _fragmentLen)
+            send(Fin.FINAL, opcode, stream.ReadBytes((int)length));
+          else
+            sendFragmented(opcode, stream);
+        }
+        catch (Exception ex)
         {
-          var buffer = stream.ReadBytes((int)length);
-          send(Fin.FINAL, opcode, buffer);
-          return;
+          onError(ex.Message);
         }
-
-        sendFragmented(opcode, stream);
       }
     }
 
@@ -1049,13 +1016,23 @@ namespace WebSocketSharp {
     private void sendAsync(Opcode opcode, Stream stream, Action completed)
     {
       Action<Opcode, Stream> action = send;
-      AsyncCallback callback = null;
-      callback = (ar) =>
+
+      AsyncCallback callback = (ar) =>
       {
-        action.EndInvoke(ar);
-        stream.Close();
-        if (!completed.IsNull())
-          completed();
+        try
+        {
+          action.EndInvoke(ar);
+          if (!completed.IsNull())
+            completed();
+        }
+        catch (Exception ex)
+        {
+          onError(ex.Message);
+        }
+        finally
+        {
+          stream.Close();
+        }
       };
 
       action.BeginInvoke(opcode, stream, callback, null);
@@ -1132,17 +1109,33 @@ namespace WebSocketSharp {
       writeHandshake(response);
     }
 
-    private void startMessageThread()
+    private void startMessageLoop()
     {
-      _receivePong     = new AutoResetEvent(false);
       _exitMessageLoop = new AutoResetEvent(false);
-      Action messageInvoker = () =>
+      _receivePong     = new AutoResetEvent(false);
+
+      Action<WsFrame> completed = null;
+      completed = (frame) =>
       {
-        if (_readyState == WsState.OPEN)
-          message();
+        try
+        {
+          onMessage(receive(frame));
+          if (_readyState == WsState.OPEN)
+            _wsStream.ReadFrameAsync(completed);
+          else
+            _exitMessageLoop.Set();
+        }
+        catch (WsReceivedTooBigMessageException ex)
+        {
+          close(CloseStatusCode.TOO_BIG, ex.Message);
+        }
+        catch (Exception)
+        {
+          close(CloseStatusCode.ABNORMAL, "An exception has occured.");
+        }
       };
 
-      messageInvoker.BeginInvoke(messageLoopCallback, messageInvoker);
+      _wsStream.ReadFrameAsync(completed);
     }
 
     private bool tryCreateUri(string uriString, out Uri result, out string message)
@@ -1365,6 +1358,15 @@ namespace WebSocketSharp {
       }
     }
 
+    /// <summary>
+    /// Sends a text data asynchronously using the connection.
+    /// </summary>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains the text data to be sent.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// </param>
     public void SendAsync(string data, Action completed)
     {
       if (data.IsNull())
@@ -1377,6 +1379,15 @@ namespace WebSocketSharp {
       sendAsync(Opcode.TEXT, buffer, completed);
     }
 
+    /// <summary>
+    /// Sends a binary data asynchronously using the connection.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains the binary data to be sent.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// </param>
     public void SendAsync(byte[] data, Action completed)
     {
       if (data.IsNull())
@@ -1388,6 +1399,15 @@ namespace WebSocketSharp {
       sendAsync(Opcode.BINARY, data, completed);
     }
 
+    /// <summary>
+    /// Sends a binary data asynchronously using the connection.
+    /// </summary>
+    /// <param name="file">
+    /// A <see cref="FileInfo"/> that contains the binary data to be sent.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// </param>
     public void SendAsync(FileInfo file, Action completed)
     {
       if (file.IsNull())

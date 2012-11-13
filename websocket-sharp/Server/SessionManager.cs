@@ -55,7 +55,7 @@ namespace WebSocketSharp.Server {
       _isStopped  = false;
       _isSweeping = false;
       _sessions   = new Dictionary<string, WebSocketService>();
-      _sweepTimer = new Timer(30 * 1000);
+      _sweepTimer = new Timer(60 * 1000);
       _sweepTimer.Elapsed += (sender, e) =>
       {
         Sweep();
@@ -127,6 +127,56 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
+    private void broadcast(byte[] data)
+    {
+      lock (_syncRoot)
+      {
+        foreach (var service in _sessions.Values)
+          service.Send(data);
+      }
+    }
+
+    private void broadcast(string data)
+    {
+      lock (_syncRoot)
+      {
+        foreach (var service in _sessions.Values)
+          service.Send(data);
+      }
+    }
+
+    private void broadcastAsync(byte[] data)
+    {
+      var sessions = copySessions();
+      var services = sessions.Values.GetEnumerator();
+
+      Action completed = null;
+      completed = () =>
+      {
+        if (services.MoveNext())
+          services.Current.SendAsync(data, completed);
+      };
+
+      if (services.MoveNext())
+        services.Current.SendAsync(data, completed);
+    }
+
+    private void broadcastAsync(string data)
+    {
+      var sessions = copySessions();
+      var services = sessions.Values.GetEnumerator();
+
+      Action completed = null;
+      completed = () =>
+      {
+        if (services.MoveNext())
+          services.Current.SendAsync(data, completed);
+      };
+
+      if (services.MoveNext())
+        services.Current.SendAsync(data, completed);
+    }
+
     private Dictionary<string, WebSocketService> copySessions()
     {
       lock (_syncRoot)
@@ -172,20 +222,18 @@ namespace WebSocketSharp.Server {
 
     public void Broadcast(byte[] data)
     {
-      lock (_syncRoot)
-      {
-        foreach (var service in _sessions.Values)
-          service.Send(data);
-      }
+      if (_isStopped)
+        broadcast(data);
+      else
+        broadcastAsync(data);
     }
 
     public void Broadcast(string data)
     {
-      lock (_syncRoot)
-      {
-        foreach (var service in _sessions.Values)
-          service.Send(data);
-      }
+      if (_isStopped)
+        broadcast(data);
+      else
+        broadcastAsync(data);
     }
 
     public Dictionary<string, bool> Broadping(string message)

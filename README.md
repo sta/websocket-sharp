@@ -294,8 +294,8 @@ Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Ech
 
 **websocket-sharp** supports **[RFC 6455]**.
 
-- @**[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 (**[hybi-00]**).
-- @**[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 (**[hixie-75]**).
+- **[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 (**[hybi-00]**).
+- **[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 (**[hixie-75]**).
 
 ## Reference ##
 

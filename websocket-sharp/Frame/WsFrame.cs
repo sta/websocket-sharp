@@ -67,17 +67,17 @@ namespace WebSocketSharp.Frame {
     #region Public Constructors
 
     public WsFrame(Opcode opcode, PayloadData payloadData)
-    : this(Fin.FINAL, opcode, payloadData)
+      : this(Fin.FINAL, opcode, payloadData)
     {
     }
 
     public WsFrame(Fin fin, Opcode opcode, PayloadData payloadData)
-    : this(fin, opcode, Mask.MASK, payloadData)
+      : this(fin, opcode, Mask.MASK, payloadData)
     {
     }
 
     public WsFrame(Fin fin, Opcode opcode, Mask mask, PayloadData payloadData)
-    : this()
+      : this()
     {
       Fin         = fin;
       Opcode      = opcode;
@@ -104,16 +104,14 @@ namespace WebSocketSharp.Frame {
 
     public ulong Length
     {
-      get
-      {
+      get {
         return 2 + (ulong)(ExtPayloadLen.Length + MaskingKey.Length) + PayloadLength;
       }
     }
 
     public ulong PayloadLength
     {
-      get
-      {
+      get {
         return PayloadData.Length;
       }
     }
@@ -144,6 +142,31 @@ namespace WebSocketSharp.Frame {
       PayloadData.Mask(key);
     }
 
+    private static WsFrame parse(Stream stream, bool unmask)
+    {
+      return parse(stream.ReadBytes(2), stream, unmask);
+    }
+
+    private static WsFrame parse(byte[] header, Stream stream, bool unmask)
+    {
+      if (header.IsNull() || header.Length != 2)
+        return null;
+
+      try
+      {
+        var frame = readHeader(header);
+        readExtPayloadLen(stream, frame);
+        readMaskingKey(stream, frame);
+        readPayloadData(stream, frame, unmask);
+
+        return frame;
+      }
+      catch
+      {
+        return null;
+      }
+    }
+
     private static void readExtPayloadLen(Stream stream, WsFrame frame)
     {
       var length = frame.PayloadLen <= 125
@@ -155,16 +178,13 @@ namespace WebSocketSharp.Frame {
         var extLength = stream.ReadBytes(length);
         if (extLength == null)
           throw new IOException();
+
         frame.ExtPayloadLen = extLength;
       }
     }
 
-    private static WsFrame readHeader(Stream stream)
+    private static WsFrame readHeader(byte[] header)
     {
-      var header = stream.ReadBytes(2);
-      if (header == null)
-        return null;
-
       // FIN
       Fin fin = (header[0] & 0x80) == 0x80 ? Fin.FINAL : Fin.MORE;
       // RSV1
@@ -187,7 +207,8 @@ namespace WebSocketSharp.Frame {
         Rsv3       = rsv3,
         Opcode     = opcode,
         Masked     = masked,
-        PayloadLen = payloadLen};
+        PayloadLen = payloadLen
+      };
     }
 
     private static void readMaskingKey(Stream stream, WsFrame frame)
@@ -197,6 +218,7 @@ namespace WebSocketSharp.Frame {
         var maskingKey = stream.ReadBytes(4);
         if (maskingKey == null)
           throw new IOException();
+
         frame.MaskingKey = maskingKey;
       }
     }
@@ -284,15 +306,41 @@ namespace WebSocketSharp.Frame {
 
     public static WsFrame Parse(Stream stream, bool unmask)
     {
-      var frame = readHeader(stream);
-      if (frame == null)
-        return null;
+      return parse(stream, unmask);
+    }
 
-      readExtPayloadLen(stream, frame);
-      readMaskingKey(stream, frame);
-      readPayloadData(stream, frame, unmask);
+    public static void ParseAsync(Stream stream, Action<WsFrame> completed)
+    {
+      ParseAsync(stream, true, completed);
+    }
 
-      return frame;
+    public static void ParseAsync(Stream stream, bool unmask, Action<WsFrame> completed)
+    {
+      var headerLen = 2;
+      var header    = new byte[headerLen];
+
+      AsyncCallback callback = (ar) =>
+      {
+        WsFrame frame;
+        try
+        {
+          var readLen = stream.EndRead(ar);
+          frame = readLen == 2
+                  ? parse(header, stream, unmask)
+                  : null;
+        }
+        catch
+        {
+          frame = null;
+        }
+        finally
+        {
+          if (!completed.IsNull())
+            completed(frame);
+        }
+      };
+
+      stream.BeginRead(header, 0, headerLen, callback, null);
     }
 
     public void Print()
