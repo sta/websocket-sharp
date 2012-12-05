@@ -38,16 +38,7 @@ namespace WebSocketSharp.Frame {
   {
     #region Field
 
-    private static readonly int _readBufferLen;
-
-    #endregion
-
-    #region Static Constructor
-
-    static WsFrame()
-    {
-      _readBufferLen = 1024;
-    }
+    private const int _readBufferLen = 1024;
 
     #endregion
 
@@ -171,16 +162,18 @@ namespace WebSocketSharp.Frame {
     {
       var length = frame.PayloadLen <= 125
                  ? 0
-                 : frame.PayloadLen == 126 ? 2 : 8;
+                 : frame.PayloadLen == 126
+                   ? 2
+                   : 8;
 
-      if (length > 0)
-      {
-        var extLength = stream.ReadBytes(length);
-        if (extLength == null)
-          throw new IOException();
+      if (length == 0)
+        return;
 
-        frame.ExtPayloadLen = extLength;
-      }
+      var extLen = stream.ReadBytes(length);
+      if (extLen.Length != length)
+        throw new IOException();
+
+      frame.ExtPayloadLen = extLen;
     }
 
     private static WsFrame readHeader(byte[] header)
@@ -213,14 +206,14 @@ namespace WebSocketSharp.Frame {
 
     private static void readMaskingKey(Stream stream, WsFrame frame)
     {
-      if (frame.Masked == Mask.MASK)
-      {
-        var maskingKey = stream.ReadBytes(4);
-        if (maskingKey == null)
-          throw new IOException();
+      if (frame.Masked == Mask.UNMASK)
+        return;
 
-        frame.MaskingKey = maskingKey;
-      }
+      var maskingKey = stream.ReadBytes(4);
+      if (maskingKey.Length != 4)
+        throw new IOException();
+
+      frame.MaskingKey = maskingKey;
     }
 
     private static void readPayloadData(Stream stream, WsFrame frame, bool unmask)
@@ -231,27 +224,31 @@ namespace WebSocketSharp.Frame {
                      ? frame.ExtPayloadLen.To<ushort>(ByteOrder.BIG)
                      : frame.ExtPayloadLen.To<ulong>(ByteOrder.BIG);
 
+      if (length == 0)
+      {
+        frame.PayloadData = new PayloadData(new byte[]{});
+        return;
+      }
+
+      if (frame.PayloadLen > 126 && length > PayloadData.MaxLength)
+        throw new WsReceivedTooBigMessageException();
+
       var buffer = length <= (ulong)_readBufferLen
                  ? stream.ReadBytes((int)length)
                  : stream.ReadBytes((long)length, _readBufferLen);
 
-      if (buffer == null)
+      if (buffer.LongLength != (long)length)
         throw new IOException();
 
-      PayloadData payloadData;
-      if (frame.Masked == Mask.MASK)
+      var payloadData = frame.Masked == Mask.MASK
+                      ? new PayloadData(buffer, true)
+                      : new PayloadData(buffer);
+
+      if (frame.Masked == Mask.MASK && unmask)
       {
-        payloadData = new PayloadData(buffer, true);
-        if (unmask == true)
-        {
-          payloadData.Mask(frame.MaskingKey);
-          frame.Masked     = Mask.UNMASK;
-          frame.MaskingKey = new byte[]{};
-        }
-      }
-      else
-      {
-        payloadData = new PayloadData(buffer);
+        payloadData.Mask(frame.MaskingKey);
+        frame.Masked = Mask.UNMASK;
+        frame.MaskingKey = new byte[]{};
       }
 
       frame.PayloadData = payloadData;
@@ -462,7 +459,7 @@ namespace WebSocketSharp.Frame {
     {
       var buffer = new List<byte>();
 
-      int header = (int)Fin;
+      var header = (int)Fin;
       header = (header << 1) + (int)Rsv1;
       header = (header << 1) + (int)Rsv2;
       header = (header << 1) + (int)Rsv3;

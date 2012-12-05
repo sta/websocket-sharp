@@ -32,14 +32,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace WebSocketSharp.Frame
-{
+namespace WebSocketSharp.Frame {
+
   public class PayloadData : IEnumerable<byte>
   {
+    #region Field
 
-    #region Public Static Fields
+    public const ulong MaxLength = long.MaxValue;
 
-    public static readonly ulong MaxLength;
+    #endregion
+
+    #region Public Constructors
+
+    public PayloadData(string appData)
+      : this(Encoding.UTF8.GetBytes(appData))
+    {
+    }
+
+    public PayloadData(byte[] appData)
+      : this(new byte[]{}, appData)
+    {
+    }
+
+    public PayloadData(byte[] appData, bool masked)
+      : this(new byte[]{}, appData, masked)
+    {
+    }
+
+    public PayloadData(byte[] extData, byte[] appData)
+      : this(extData, appData, false)
+    {
+    }
+
+    public PayloadData(byte[] extData, byte[] appData, bool masked)
+    {
+      if (extData.IsNull())
+        throw new ArgumentNullException("extData");
+
+      if (appData.IsNull())
+        throw new ArgumentNullException("appData");
+
+      if ((ulong)extData.LongLength + (ulong)appData.LongLength > MaxLength)
+        throw new ArgumentOutOfRangeException("Plus 'extData' length and 'appData' lenght must be less than MaxLength.");
+
+      ExtensionData   = extData;
+      ApplicationData = appData;
+      IsMasked        = masked;
+    }
 
     #endregion
 
@@ -50,82 +89,25 @@ namespace WebSocketSharp.Frame
 
     public bool IsMasked { get; private set; }
 
-    public ulong Length
-    {
-      get
-      {
+    public ulong Length {
+      get {
         return (ulong)(ExtensionData.LongLength + ApplicationData.LongLength);
       }
     }
 
     #endregion
 
-    #region Static Constructor
-
-    static PayloadData()
-    {
-      MaxLength = long.MaxValue;
-    }
-
-    #endregion
-
-    #region Public Constructors
-
-    public PayloadData(string appData)
-     : this(Encoding.UTF8.GetBytes(appData))
-    {
-    }
-
-    public PayloadData(byte[] appData)
-    : this(new byte[]{}, appData)
-    {
-    }
-
-    public PayloadData(byte[] appData, bool masked)
-    : this(new byte[]{}, appData, masked)
-    {
-    }
-
-    public PayloadData(byte[] extData, byte[] appData)
-    : this(extData, appData, false)
-    {
-    }
-
-    public PayloadData(byte[] extData, byte[] appData, bool masked)
-    {
-      Func<string, Action> func = s => () =>
-      {
-        string message = String.Format("{0} must not be null.", s);
-        throw new ArgumentNullException(message);
-      };
-      extData.IsNullDo(func("extData"));
-      appData.IsNullDo(func("appData"));
-
-      if ((ulong)extData.LongLength + (ulong)appData.LongLength > MaxLength)
-      {
-        throw new ArgumentOutOfRangeException("Plus extData length and appData lenght must be less than MaxLength.");
-      }
-
-      ExtensionData   = extData;
-      ApplicationData = appData;
-      IsMasked        = masked;
-    }
-
-    #endregion
-
     #region Private Methods
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
 
     private void mask(byte[] src, byte[] key)
     {
-      if (key.Length != 4)
-      {
-        throw new ArgumentOutOfRangeException("key length must be 4.");
-      }
-
       for (long i = 0; i < src.LongLength; i++)
-      {
         src[i] = (byte)(src[i] ^ key[i % 4]);
-      }
     }
 
     #endregion
@@ -135,45 +117,34 @@ namespace WebSocketSharp.Frame
     public IEnumerator<byte> GetEnumerator()
     {
       foreach (byte b in ExtensionData)
-      {
         yield return b;
-      }
-      foreach (byte b in ApplicationData)
-      {
-        yield return b;
-      }
-    }
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
+      foreach (byte b in ApplicationData)
+        yield return b;
     }
 
     public void Mask(byte[] maskingKey)
     {
+      if (maskingKey.IsNull())
+        throw new ArgumentNullException("maskingKey");
+
+      if (maskingKey.Length != 4)
+        throw new ArgumentOutOfRangeException("maskingKey", "'maskingKey' length must be 4.");
+
       if (ExtensionData.LongLength > 0)
-      {
         mask(ExtensionData, maskingKey);
-      }
 
       if (ApplicationData.LongLength > 0)
-      {
         mask(ApplicationData, maskingKey);
-      }
 
       IsMasked = !IsMasked;
     }
 
     public byte[] ToBytes()
     {
-      if (ExtensionData.LongLength > 0)
-      {
-        return ExtensionData.Concat(ApplicationData).ToArray();
-      }
-      else
-      {
-        return ApplicationData;
-      }
+      return ExtensionData.LongLength > 0
+             ? ExtensionData.Concat(ApplicationData).ToArray()
+             : ApplicationData;
     }
 
     public override string ToString()

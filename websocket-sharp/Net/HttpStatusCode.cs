@@ -1,6 +1,6 @@
 //
 // HttpStatusCode.cs
-//	Copied from System.Net.HttpStatusCode
+//	Copied from System.Net.HttpStatusCode.cs
 //
 // This code was automatically generated from
 // ECMA CLI XML Library Specification.
@@ -34,6 +34,7 @@
 namespace WebSocketSharp.Net {
 
 	public enum HttpStatusCode {
+
 		Continue = 100,
 		SwitchingProtocols = 101,
 		OK = 200,
