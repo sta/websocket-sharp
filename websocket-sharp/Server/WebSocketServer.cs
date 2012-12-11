@@ -67,8 +67,18 @@ namespace WebSocketSharp.Server {
       init();
     }
 
+    public WebSocketServer(int port, bool secure)
+      : this(System.Net.IPAddress.Any, port, secure)
+    {
+    }
+
     public WebSocketServer(System.Net.IPAddress address, int port)
-      : base(address, port)
+      : this(address, port, port == 443 ? true : false)
+    {
+    }
+
+    public WebSocketServer(System.Net.IPAddress address, int port, bool secure)
+      : base(address, port, "/", secure)
     {
       init();
     }
@@ -112,7 +122,7 @@ namespace WebSocketSharp.Server {
 
     protected override void AcceptWebSocket(TcpClient client)
     {
-      var context = client.AcceptWebSocket();
+      var context = client.AcceptWebSocket(IsSecure);
       var socket  = context.WebSocket;
       var path    = context.Path.UrlDecode();
 

@@ -82,15 +82,18 @@ namespace WebSocketSharp {
     /// <param name="client">
     /// A <see cref="TcpClient"/> that contains a TCP connection to accept a WebSocket connection from.
     /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Is thrown when the <paramref name="client"/> parameter passed to a method is invalid because it is <see langword="null"/>.
     /// </exception>
-    public static TcpListenerWebSocketContext AcceptWebSocket(this TcpClient client)
+    public static TcpListenerWebSocketContext AcceptWebSocket(this TcpClient client, bool secure)
     {
       if (client.IsNull())
         throw new ArgumentNullException("client");
 
-      return new TcpListenerWebSocketContext(client);
+      return new TcpListenerWebSocketContext(client, secure);
     }
 
     /// <summary>

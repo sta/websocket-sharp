@@ -44,23 +44,42 @@ namespace WebSocketSharp {
     #region Fields
 
     private Stream _innerStream;
-    private Type   _innerStreamType;
     private bool   _isSecure;
     private Object _forRead;
     private Object _forWrite;
 
     #endregion
 
-    #region Constructors
+    #region Private Constructor
+
+    private WsStream()
+    {
+      _forRead  = new object();
+      _forWrite = new object();
+    }
+
+    #endregion
+
+    #region Public Constructors
 
     public WsStream(NetworkStream innerStream)
+      : this()
     {
-      init(innerStream);
+      if (innerStream.IsNull())
+        throw new ArgumentNullException("innerStream");
+
+      _innerStream = innerStream;
+      _isSecure    = false;
     }
 
     public WsStream(SslStream innerStream)
+      : this()
     {
-      init(innerStream);
+      if (innerStream.IsNull())
+        throw new ArgumentNullException("innerStream");
+
+      _innerStream = innerStream;
+      _isSecure    = true;
     }
 
     #endregion
@@ -69,7 +88,7 @@ namespace WebSocketSharp {
 
     public bool DataAvailable {
       get {
-        return _innerStreamType == typeof(SslStream)
+        return _isSecure
                ? ((SslStream)_innerStream).DataAvailable
                : ((NetworkStream)_innerStream).DataAvailable;
       }
@@ -83,26 +102,14 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Private Method
-
-    private void init(Stream innerStream)
-    {
-      if (innerStream == null)
-        throw new ArgumentNullException("innerStream");
-
-      _innerStream     = innerStream;
-      _innerStreamType = innerStream.GetType();
-      _isSecure        = _innerStreamType == typeof(SslStream) ? true : false;
-      _forRead         = new object();
-      _forWrite        = new object();
-    }
+    #region Private Methods
 
     private int read(byte[] buffer, int offset, int size)
     {
       var readLen = _innerStream.Read(buffer, offset, size);
       if (readLen < size)
       {
-        var msg = String.Format("Data can not be read from {0}.", _innerStreamType);
+        var msg = String.Format("Data can not be read from {0}.", _innerStream.GetType().Name);
         throw new IOException(msg);
       }
 
@@ -145,12 +152,10 @@ namespace WebSocketSharp {
 
     #region Internal Methods
 
-    internal static WsStream CreateClientStream(string hostname, int port, out TcpClient client)
+    internal static WsStream CreateClientStream(TcpClient client, string host, bool secure)
     {
-      client = new TcpClient(hostname, port);
       var netStream = client.GetStream();
-
-      if (port == 443)
+      if (secure)
       {
         System.Net.Security.RemoteCertificateValidationCallback validationCb = (sender, certificate, chain, sslPolicyErrors) =>
         {
@@ -159,7 +164,7 @@ namespace WebSocketSharp {
         };
 
         var sslStream = new SslStream(netStream, false, validationCb);
-        sslStream.AuthenticateAsClient(hostname);
+        sslStream.AuthenticateAsClient(host);
 
         return new WsStream(sslStream);
       }
@@ -167,16 +172,13 @@ namespace WebSocketSharp {
       return new WsStream(netStream);
     }
 
-    internal static WsStream CreateServerStream(TcpClient client)
+    internal static WsStream CreateServerStream(TcpClient client, bool secure)
     {
       var netStream = client.GetStream();
-
-      var port = ((IPEndPoint)client.Client.LocalEndPoint).Port;
-      if (port == 443)
+      if (secure)
       {
         var sslStream = new SslStream(netStream, false);
-
-        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
+        var certPath  = ConfigurationManager.AppSettings["ServerCertPath"];
         sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
 
         return new WsStream(sslStream);

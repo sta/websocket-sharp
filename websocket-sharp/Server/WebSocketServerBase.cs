@@ -40,6 +40,7 @@ namespace WebSocketSharp.Server {
 
     private Thread      _acceptClientThread;
     private IPAddress   _address;
+    private bool        _isSecure;
     private bool        _isSelfHost;
     private int         _port;
     private TcpListener _tcpListener;
@@ -67,12 +68,7 @@ namespace WebSocketSharp.Server {
       init(uri);
     }
 
-    protected WebSocketServerBase(IPAddress address, int port)
-      : this(address, port, "/")
-    {
-    }
-
-    protected WebSocketServerBase(IPAddress address, int port, string absPath)
+    protected WebSocketServerBase(IPAddress address, int port, string absPath, bool secure)
     {
       if (address.IsNull())
         throw new ArgumentNullException("address");
@@ -84,9 +80,20 @@ namespace WebSocketSharp.Server {
       if (!absPath.IsValidAbsolutePath(out msg))
         throw new ArgumentException(msg, "absPath");
 
-      _address = address;
-      _port    = port <= 0 ? 80 : port;
-      _uri     = absPath.ToUri();
+      if ((port == 80  && secure) ||
+          (port == 443 && !secure))
+      {
+        msg = String.Format(
+          "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure);
+        throw new ArgumentException(msg);
+      }
+
+      _address  = address;
+      _port     = port > 0
+                ? port
+                : secure ? 443 : 80;
+      _uri      = absPath.ToUri();
+      _isSecure = secure;
 
       init();
     }
@@ -113,6 +120,12 @@ namespace WebSocketSharp.Server {
     public IPAddress Address {
       get {
         return _address;
+      }
+    }
+
+    public bool IsSecure {
+      get {
+        return _isSecure;
       }
     }
 
@@ -185,17 +198,17 @@ namespace WebSocketSharp.Server {
 
     private void init(Uri uri)
     {
-      _uri       = uri;
       var scheme = uri.Scheme;
-      var port   = uri.Port;
       var host   = uri.DnsSafeHost;
+      var port   = uri.Port;
       var addrs  = Dns.GetHostAddresses(host);
 
-      if (port <= 0)
-        port = scheme == "ws" ? 80 : 443;
-
-      _address = addrs[0];
-      _port    = port;
+      _uri      = uri;
+      _address  = addrs[0];
+      _isSecure = scheme == "wss" ? true : false;
+      _port     = port > 0
+                  ? port
+                  : _isSecure ? 443 : 80;
 
       init();
     }
@@ -234,7 +247,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Protected Method
+    #region Protected Methods
 
     protected abstract void AcceptWebSocket(TcpClient client);
 

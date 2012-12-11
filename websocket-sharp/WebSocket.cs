@@ -515,11 +515,12 @@ namespace WebSocketSharp {
     private void createClientStream()
     {
       var host = _uri.DnsSafeHost;
-      var port = _uri.Port;
-      if (port <= 0)
-        port = IsSecure ? 443 : 80;
+      var port = _uri.Port > 0
+               ? _uri.Port
+               : _isSecure ? 443 : 80;
 
-      _wsStream = WsStream.CreateClientStream(host, port, out _tcpClient);
+      _tcpClient = new TcpClient(host, port);
+      _wsStream  = WsStream.CreateClientStream(_tcpClient, host, _isSecure);
     }
 
     private WsFrame createFrame(Fin fin, Opcode opcode, PayloadData payloadData)
@@ -1046,7 +1047,7 @@ namespace WebSocketSharp {
       var count  = rem == 0 ? quo - 2 : quo - 1;
 
       // First
-      var buffer   = new byte[_fragmentLen];
+      var  buffer  = new byte[_fragmentLen];
       long readLen = stream.Read(buffer, 0, _fragmentLen);
       send(Fin.MORE, opcode, buffer);
 

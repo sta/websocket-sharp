@@ -66,13 +66,28 @@ namespace WebSocketSharp.Server {
       init();
     }
 
+    public WebSocketServiceHost(int port, bool secure)
+      : this(port, "/", secure)
+    {
+    }
+
     public WebSocketServiceHost(int port, string absPath)
       : this(System.Net.IPAddress.Any, port, absPath)
     {
     }
 
+    public WebSocketServiceHost(int port, string absPath, bool secure)
+      : this(System.Net.IPAddress.Any, port, absPath, secure)
+    {
+    }
+
     public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath)
-      : base(address, port, absPath)
+      : this(address, port, absPath, port == 443 ? true : false)
+    {
+    }
+
+    public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath, bool secure)
+      : base(address, port, absPath, secure)
     {
       init();
     }
@@ -116,7 +131,7 @@ namespace WebSocketSharp.Server {
 
     protected override void AcceptWebSocket(TcpClient client)
     {
-      var context = client.AcceptWebSocket();
+      var context = client.AcceptWebSocket(IsSecure);
       var socket  = context.WebSocket;
       var path    = context.Path.UrlDecode();
       if (path != Uri.GetAbsolutePath().UrlDecode())

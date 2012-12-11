@@ -43,11 +43,11 @@ namespace WebSocketSharp.Net.Sockets {
     private WebSocket        _socket;
     private WsStream         _stream;
 
-    internal TcpListenerWebSocketContext(TcpClient client)
+    internal TcpListenerWebSocketContext(TcpClient client, bool secure)
     {
       _client   = client;
-      _stream   = WsStream.CreateServerStream(client);
-      _isSecure = _stream.IsSecure;
+      _isSecure = secure;
+      _stream   = WsStream.CreateServerStream(client, secure);
       _request  = RequestHandshake.Parse(_stream.ReadHandshake());
       _socket   = new WebSocket(this);
     }
