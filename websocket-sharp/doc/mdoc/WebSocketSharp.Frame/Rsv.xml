@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed Rsv extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -28,7 +28,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Rsv OFF = unsigned int8(0)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
@@ -44,7 +44,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Rsv ON = unsigned int8(1)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>

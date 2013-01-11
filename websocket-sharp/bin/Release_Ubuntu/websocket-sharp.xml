@@ -1053,25 +1053,9 @@
             One of the <see cref="T:WebSocketSharp.WsState" />. By default, <c>WsState.CONNECTING</c>.
             </value>
         </member>
-        <member name="P:WebSocketSharp.WebSocket.UnsentBuffer">
-            <summary>
-            Gets the buffer that contains unsent WebSocket frames.
-            </summary>
-            <value>
-            An array of <see cref="T:System.Byte" /> that contains unsent WebSocket frames.
-            </value>
-        </member>
-        <member name="P:WebSocketSharp.WebSocket.UnsentCount">
-            <summary>
-            Gets the count of unsent WebSocket frames.
-            </summary>
-            <value>
-            A <see cref="T:System.UInt32" /> that contains the count of unsent WebSocket frames.
-            </value>
-        </member>
         <member name="P:WebSocketSharp.WebSocket.Url">
             <summary>
-            Gets or sets the WebSocket URL.
+            Gets the WebSocket URL.
             </summary>
             <value>
             A <see cref="T:System.Uri" /> that contains the WebSocket URL.

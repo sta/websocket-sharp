@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WsFrame extends System.Object implements class System.Collections.Generic.IEnumerable`1&lt;unsigned int8&gt;, class System.Collections.IEnumerable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -23,7 +23,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(valuetype WebSocketSharp.Frame.Opcode opcode, class WebSocketSharp.Frame.PayloadData payloadData) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="opcode" Type="WebSocketSharp.Frame.Opcode" />
@@ -41,7 +41,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(valuetype WebSocketSharp.Frame.Fin fin, valuetype WebSocketSharp.Frame.Opcode opcode, class WebSocketSharp.Frame.PayloadData payloadData) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="fin" Type="WebSocketSharp.Frame.Fin" />
@@ -61,7 +61,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(valuetype WebSocketSharp.Frame.Fin fin, valuetype WebSocketSharp.Frame.Opcode opcode, valuetype WebSocketSharp.Frame.Mask mask, class WebSocketSharp.Frame.PayloadData payloadData) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="fin" Type="WebSocketSharp.Frame.Fin" />
@@ -83,7 +83,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int8[] ExtPayloadLen" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -99,7 +99,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Fin Fin" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Fin</ReturnType>
@@ -115,7 +115,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Collections.Generic.IEnumerator`1&lt;unsigned int8&gt; GetEnumerator() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerator&lt;System.Byte&gt;</ReturnType>
@@ -132,7 +132,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int64 Length" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.UInt64</ReturnType>
@@ -148,7 +148,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Mask Masked" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Mask</ReturnType>
@@ -164,7 +164,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int8[] MaskingKey" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -180,7 +180,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Opcode Opcode" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -196,7 +196,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Frame.WsFrame Parse(unsigned int8[] src) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.WsFrame</ReturnType>
@@ -216,7 +216,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Frame.WsFrame Parse(class System.IO.Stream stream) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.WsFrame</ReturnType>
@@ -236,7 +236,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Frame.WsFrame Parse(unsigned int8[] src, bool unmask) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.WsFrame</ReturnType>
@@ -258,7 +258,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Frame.WsFrame Parse(class System.IO.Stream stream, bool unmask) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.WsFrame</ReturnType>
@@ -280,7 +280,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ParseAsync(class System.IO.Stream stream, class System.Action`1&lt;class WebSocketSharp.Frame.WsFrame&gt; completed) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -301,7 +301,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void ParseAsync(class System.IO.Stream stream, bool unmask, class System.Action`1&lt;class WebSocketSharp.Frame.WsFrame&gt; completed) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -324,7 +324,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Frame.PayloadData PayloadData" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.PayloadData</ReturnType>
@@ -340,7 +340,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int8 PayloadLen" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte</ReturnType>
@@ -356,7 +356,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int64 PayloadLength" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.UInt64</ReturnType>
@@ -372,7 +372,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Print() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -388,7 +388,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Rsv Rsv1" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
@@ -404,7 +404,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Rsv Rsv2" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
@@ -420,7 +420,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Frame.Rsv Rsv3" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
@@ -436,7 +436,7 @@
       <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance class System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.IEnumerator</ReturnType>
@@ -453,7 +453,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] ToBytes() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -470,7 +470,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string ToString() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>

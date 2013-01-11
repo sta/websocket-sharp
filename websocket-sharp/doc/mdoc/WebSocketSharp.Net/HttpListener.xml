@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed beforefieldinit HttpListener extends System.Object implements class System.IDisposable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -23,7 +23,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -36,7 +36,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Abort() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -52,7 +52,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Net.AuthenticationSchemes AuthenticationSchemes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
@@ -68,7 +68,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemeSelector</ReturnType>
@@ -84,7 +84,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.IAsyncResult BeginGetContext(class System.AsyncCallback callback, object state) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.IAsyncResult</ReturnType>
@@ -106,7 +106,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -122,7 +122,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class WebSocketSharp.Net.HttpListenerContext EndGetContext(class System.IAsyncResult asyncResult) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerContext</ReturnType>
@@ -142,7 +142,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class WebSocketSharp.Net.HttpListenerContext GetContext() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerContext</ReturnType>
@@ -159,7 +159,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IgnoreWriteExceptions" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -175,7 +175,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsListening" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -191,7 +191,7 @@
       <MemberSignature Language="ILAsm" Value=".property bool IsSupported" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -207,7 +207,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerPrefixCollection Prefixes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerPrefixCollection</ReturnType>
@@ -223,7 +223,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string Realm" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -239,7 +239,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -255,7 +255,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -271,7 +271,7 @@
       <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void System.IDisposable.Dispose() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -287,7 +287,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool UnsafeConnectionNtlmAuthentication" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

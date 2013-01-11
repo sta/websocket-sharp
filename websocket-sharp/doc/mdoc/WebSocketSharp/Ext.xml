@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit Ext extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -21,7 +21,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext AcceptWebSocket(class System.Net.Sockets.TcpClient client, bool secure) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext</ReturnType>
@@ -54,7 +54,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Emit(class System.EventHandler eventHandler, object sender, class System.EventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -85,7 +85,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Emit&lt;(class System.EventArgs) TEventArgs&gt;(class System.EventHandler`1&lt;!!TEventArgs&gt; eventHandler, object sender, !!TEventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -126,7 +126,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool EqualsAndSaveTo(int32 value, char c, class System.Collections.Generic.List`1&lt;unsigned int8&gt; dest) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -164,7 +164,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -194,7 +194,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -228,7 +228,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetAbsolutePath(class System.Uri uri) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -254,7 +254,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetDescription(valuetype WebSocketSharp.Net.HttpStatusCode code) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -280,7 +280,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetName(string nameAndValue, string separator) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -310,7 +310,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype System.Collections.Generic.KeyValuePair`2&lt;string, string&gt; GetNameAndValue(string nameAndValue, string separator) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.KeyValuePair&lt;System.String,System.String&gt;</ReturnType>
@@ -340,7 +340,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetStatusDescription(int32 code) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -366,7 +366,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetValue(string nameAndValue, string separator) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -396,7 +396,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEmpty(string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -422,7 +422,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsHostOrder(valuetype WebSocketSharp.ByteOrder order) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -448,7 +448,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNull&lt;class T&gt;(!!T obj) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -484,7 +484,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullDo&lt;class T&gt;(!!T obj, class System.Action act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -525,7 +525,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullOrEmpty(string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -551,7 +551,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsPredefinedScheme(string scheme) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -577,7 +577,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsValidAbsolutePath(string absPath, string message) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -607,7 +607,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool MaybeUri(string uriString) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -633,7 +633,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool NotEqual(string expected, string actual, bool ignoreCase) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -667,7 +667,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int32 length) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -697,7 +697,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -727,7 +727,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length, int32 bufferLength) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -761,7 +761,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig !!T[] SubArray&lt;T&gt;(!!T[] array, int32 startIndex, int32 length) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>T[]</ReturnType>
@@ -801,7 +801,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -828,7 +828,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -856,7 +856,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -883,7 +883,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -911,7 +911,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -938,7 +938,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -966,7 +966,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int64 n, class System.Action act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -993,7 +993,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int64 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -1021,7 +1021,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig !!T To&lt;struct .ctor (class System.ValueType) T&gt;(unsigned int8[] src, valuetype WebSocketSharp.ByteOrder srcOrder) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>T</ReturnType>
@@ -1070,7 +1070,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToBytes&lt;struct .ctor (class System.ValueType) T&gt;(!!T value, valuetype WebSocketSharp.ByteOrder order) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -1112,7 +1112,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToHostOrder(unsigned int8[] src, valuetype WebSocketSharp.ByteOrder srcOrder) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -1145,7 +1145,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string ToString&lt;T&gt;(!!T[] array, string separator) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -1186,7 +1186,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig class System.Uri ToUri(string uriString) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Uri</ReturnType>
@@ -1213,7 +1213,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryCreateWebSocketUri(string uriString, class System.Uri result, string message) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -1250,7 +1250,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlDecode(string s) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -1277,7 +1277,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlEncode(string s) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -1304,7 +1304,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void WriteContent(class WebSocketSharp.Net.HttpListenerResponse response, unsigned int8[] content) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>

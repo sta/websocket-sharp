@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed beforefieldinit HttpListenerRequest extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -19,7 +19,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string[] AcceptTypes" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -35,7 +35,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.IAsyncResult BeginGetClientCertificate(class System.AsyncCallback requestCallback, object state) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.IAsyncResult</ReturnType>
@@ -57,7 +57,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance int32 ClientCertificateError" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -73,7 +73,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Text.Encoding ContentEncoding" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Text.Encoding</ReturnType>
@@ -89,7 +89,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance int64 ContentLength64" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int64</ReturnType>
@@ -105,7 +105,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string ContentType" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -121,7 +121,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.CookieCollection Cookies" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
@@ -137,7 +137,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.Security.Cryptography.X509Certificates.X509Certificate2 EndGetClientCertificate(class System.IAsyncResult asyncResult) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Security.Cryptography.X509Certificates.X509Certificate2</ReturnType>
@@ -157,7 +157,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.Security.Cryptography.X509Certificates.X509Certificate2 GetClientCertificate() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Security.Cryptography.X509Certificates.X509Certificate2</ReturnType>
@@ -174,7 +174,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool HasEntityBody" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -190,7 +190,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection Headers" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
@@ -206,7 +206,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string HttpMethod" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -222,7 +222,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.IO.Stream InputStream" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.IO.Stream</ReturnType>
@@ -238,7 +238,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsAuthenticated" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -254,7 +254,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsLocal" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -270,7 +270,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsSecureConnection" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -286,7 +286,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsWebSocketRequest" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -302,7 +302,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool KeepAlive" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -318,7 +318,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint LocalEndPoint" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.IPEndPoint</ReturnType>
@@ -334,7 +334,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Version ProtocolVersion" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Version</ReturnType>
@@ -350,7 +350,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection QueryString" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
@@ -366,7 +366,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string RawUrl" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -382,7 +382,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint RemoteEndPoint" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.IPEndPoint</ReturnType>
@@ -398,7 +398,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Guid RequestTraceIdentifier" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Guid</ReturnType>
@@ -414,7 +414,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Uri Url" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Uri</ReturnType>
@@ -430,7 +430,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Uri UrlReferrer" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Uri</ReturnType>
@@ -446,7 +446,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string UserAgent" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -462,7 +462,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string UserHostAddress" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -478,7 +478,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string UserHostName" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -494,7 +494,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string[] UserLanguages" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>

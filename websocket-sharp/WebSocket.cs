@@ -65,26 +65,24 @@ namespace WebSocketSharp {
 
     #region Private Fields
 
-    private string                          _base64key;
-    private HttpListenerContext             _httpContext;
-    private WebSocketContext                _context;
-    private System.Net.IPEndPoint           _endPoint;
-    private string                          _extensions;
-    private AutoResetEvent                  _exitMessageLoop;
-    private Object                          _forClose;
-    private Object                          _forSend;
-    private bool                            _isClient;
-    private bool                            _isSecure;
-    private string                          _protocol;
-    private string                          _protocols;
-    private NameValueCollection             _queryString;
-    private volatile WsState                _readyState;
-    private AutoResetEvent                  _receivePong;
-    private TcpClient                       _tcpClient;
-    private List<byte>                      _unsentBuffer;
-    private volatile uint                   _unsentCount;
-    private Uri                             _uri;
-    private WsStream                        _wsStream;
+    private string                _base64key;
+    private HttpListenerContext   _httpContext;
+    private WebSocketContext      _context;
+    private System.Net.IPEndPoint _endPoint;
+    private string                _extensions;
+    private AutoResetEvent        _exitMessageLoop;
+    private Object                _forClose;
+    private Object                _forSend;
+    private bool                  _isClient;
+    private bool                  _isSecure;
+    private string                _protocol;
+    private string                _protocols;
+    private NameValueCollection   _queryString;
+    private volatile WsState      _readyState;
+    private AutoResetEvent        _receivePong;
+    private TcpClient             _tcpClient;
+    private Uri                   _uri;
+    private WsStream              _wsStream;
 
     #endregion
 
@@ -92,13 +90,11 @@ namespace WebSocketSharp {
 
     private WebSocket()
     {
-      _extensions          = String.Empty;
-      _forClose            = new Object();
-      _forSend             = new Object();
-      _protocol            = String.Empty;
-      _readyState          = WsState.CONNECTING;
-      _unsentBuffer        = new List<byte>();
-      _unsentCount         = 0;
+      _extensions = String.Empty;
+      _forClose   = new Object();
+      _forSend    = new Object();
+      _protocol   = String.Empty;
+      _readyState = WsState.CONNECTING;
     }
 
     #endregion
@@ -288,41 +284,16 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the buffer that contains unsent WebSocket frames.
-    /// </summary>
-    /// <value>
-    /// An array of <see cref="byte"/> that contains unsent WebSocket frames.
-    /// </value>
-    public byte[] UnsentBuffer {
-      get {
-        lock (((ICollection)_unsentBuffer).SyncRoot)
-        {
-          return _unsentBuffer.ToArray();
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets the count of unsent WebSocket frames.
-    /// </summary>
-    /// <value>
-    /// A <see cref="uint"/> that contains the count of unsent WebSocket frames.
-    /// </value>
-    public uint UnsentCount {
-      get {
-        return _unsentCount;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the WebSocket URL.
+    /// Gets the WebSocket URL.
     /// </summary>
     /// <value>
     /// A <see cref="Uri"/> that contains the WebSocket URL.
     /// </value>
     public Uri Url {
-      get { return _uri; }
-      set {
+      get {
+        return _uri;
+      }
+      internal set {
         if (_readyState == WsState.CONNECTING && !_isClient)
           _uri = value;
       }
@@ -941,22 +912,15 @@ namespace WebSocketSharp {
 
       try
       {
-        if (_unsentCount == 0 && !_wsStream.IsNull())
-        {
-          _wsStream.WriteFrame(frame);
-          return true;
-        }
+        if (_wsStream.IsNull())
+          return false;
 
-        unsend(frame);
-        onError("Current data can not be sent because there is unsent data.");
-
-        return false;
+        _wsStream.WriteFrame(frame);
+        return true;
       }
       catch (Exception ex)
       {
-        unsend(frame);
         onError(ex.Message);
-
         return false;
       }
     }
@@ -1037,23 +1001,33 @@ namespace WebSocketSharp {
       var rem    = length % _fragmentLen;
       var count  = rem == 0 ? quo - 2 : quo - 1;
 
-      // First
+      long readLen = 0;
+      var  tmpLen  = 0;
       var  buffer  = new byte[_fragmentLen];
-      long readLen = stream.Read(buffer, 0, _fragmentLen);
-      send(Fin.MORE, opcode, buffer);
+
+      // First
+      tmpLen = stream.Read(buffer, 0, _fragmentLen);
+      if (send(Fin.MORE, opcode, buffer))
+        readLen += tmpLen;
+      else
+        return 0;
 
       // Mid
-      count.Times(() =>
+      for (long i = 0; i < count; i++)
       {
-        readLen += stream.Read(buffer, 0, _fragmentLen);
-        send(Fin.MORE, Opcode.CONT, buffer);
-      });
+        tmpLen = stream.Read(buffer, 0, _fragmentLen);
+        if (send(Fin.MORE, Opcode.CONT, buffer))
+          readLen += tmpLen;
+        else
+          return readLen;
+      }
 
       // Final
       if (rem != 0)
         buffer = new byte[rem];
-      readLen += stream.Read(buffer, 0, buffer.Length);
-      send(Fin.FINAL, Opcode.CONT, buffer);
+      tmpLen = stream.Read(buffer, 0, buffer.Length);
+      if (send(Fin.FINAL, Opcode.CONT, buffer))
+        readLen += tmpLen;
 
       return readLen;
     }
@@ -1133,15 +1107,6 @@ namespace WebSocketSharp {
     private bool tryCreateUri(string uriString, out Uri result, out string message)
     {
       return uriString.TryCreateWebSocketUri(out result, out message);
-    }
-
-    private void unsend(WsFrame frame)
-    {
-      lock (((ICollection)_unsentBuffer).SyncRoot)
-      {
-        _unsentCount++;
-        _unsentBuffer.AddRange(frame.ToBytes());
-      }
     }
 
     private void writeHandshake(Handshake handshake)

@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed Opcode extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -28,7 +28,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode BINARY = unsigned int8(2)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -44,7 +44,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode CLOSE = unsigned int8(8)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -60,7 +60,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode CONT = unsigned int8(0)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -76,7 +76,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode PING = unsigned int8(9)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -92,7 +92,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode PONG = unsigned int8(10)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
@@ -108,7 +108,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode TEXT = unsigned int8(1)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
