@@ -1,0 +1,1445 @@
+<html>
+  <head>
+    <title>WebSocketSharp.WebSocket</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      a { text-decoration: none }
+
+      div.SideBar {
+        padding-left: 1em;
+        padding-right: 1em;
+        right: 0;
+        float: right;
+        border: thin solid black;
+        background-color: #f2f2f2;
+      }
+    
+      .CollectionTitle { font-weight: bold }
+      .PageTitle { font-size: 150%; font-weight: bold }
+
+      .Summary { }
+      .Signature { }          
+      .Remarks { }
+      .Members { }
+      .Copyright { }
+      
+      .Section { font-size: 125%; font-weight: bold }
+      p.Summary {
+        margin-left: 1em;
+      }
+      .SectionBox { margin-left: 2em }
+      .NamespaceName { font-size: 105%; font-weight: bold }
+      .NamespaceSumary { }
+      .MemberName { font-size: 115%; font-weight: bold; margin-top: 1em }
+      .Subsection { font-size: 105%; font-weight: bold }
+      .SubsectionBox { margin-left: 2em; margin-bottom: 1em }
+
+      .CodeExampleTable { background-color: #f5f5dd; border: thin solid black; padding: .25em; }
+      
+      .TypesListing {
+        border-collapse: collapse;
+      }
+
+      td {
+        vertical-align: top;
+      }
+      th {
+        text-align: left;
+      }
+
+      .TypesListing td { 
+        margin: 0px;  
+        padding: .25em;
+        border: solid gray 1px;
+      }
+
+      .TypesListing th { 
+        margin: 0px;  
+        padding: .25em;
+        background-color: #f2f2f2;
+        border: solid gray 1px;
+      }
+
+      div.Footer {
+        border-top: 1px solid gray;
+        margin-top: 1.5em;
+        padding-top: 0.6em;
+        text-align: center;
+        color: gray;
+      }
+
+      span.NotEntered /* Documentation for this section has not yet been entered */ {
+        font-style: italic;
+        color: red;	
+      }
+
+      div.Header {
+        background: #B0C4DE;
+        border: double;
+        border-color: white;
+        border-width: 7px;
+        padding: 0.5em;
+      }
+
+      div.Header * {
+        font-size: smaller;
+      }
+
+      div.Note {
+      }
+
+      i.ParamRef {
+      }
+
+      i.subtitle {
+      }
+
+      ul.TypeMembersIndex {
+        text-align: left;
+        background: #F8F8F8;
+      }
+
+      ul.TypeMembersIndex li {
+        display: inline;
+        margin:  0.5em;
+      }
+
+      table.HeaderTable {
+      }
+
+      table.SignatureTable {
+      }
+
+      table.Documentation, table.Enumeration, table.TypeDocumentation {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      table.Documentation tr th, table.TypeMembers tr th, table.Enumeration tr th, table.TypeDocumentation tr th {
+        background: whitesmoke;
+        padding: 0.8em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: bottom;
+      }
+
+      table.Documentation tr td, table.TypeMembers tr td, table.Enumeration tr td, table.TypeDocumentation tr td {
+        padding: 0.5em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      table.TypeMembers {
+        border: 1px solid #C0C0C0;
+        width: 100%;
+      }
+
+      table.TypeMembers tr td {
+        background: #F8F8F8;
+        border: white;
+      }
+
+      table.Documentation {
+      }
+
+      table.TypeMembers {
+      }
+
+      div.CodeExample {
+        width: 100%;
+        border: 1px solid #DDDDDD;
+        background-color: #F8F8F8;
+      }
+
+      div.CodeExample p {
+        margin: 0.5em;
+        border-bottom: 1px solid #DDDDDD;
+      }
+
+      div.CodeExample div {
+        margin: 0.5em;
+      }
+
+      h4 {
+        margin-bottom: 0;
+      }
+
+      div.Signature {
+        border: 1px solid #C0C0C0;
+        background: #F2F2F2;
+        padding: 1em;
+      }
+    </style>
+    <script type="text/JavaScript">
+      function toggle_display (block) {
+        var w = document.getElementById (block);
+        var t = document.getElementById (block + ":toggle");
+        if (w.style.display == "none") {
+          w.style.display = "block";
+          t.innerHTML = "⊟";
+        } else {
+          w.style.display = "none";
+          t.innerHTML = "⊞";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="CollectionTitle">
+      <a href="index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp Namespace</a></div>
+    <div class="SideBar">
+      <p>
+        <a href="#T:WebSocketSharp.WebSocket">Overview</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.WebSocket:Signature">Signature</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.WebSocket:Docs">Remarks</a>
+      </p>
+      <p>
+        <a href="#Members">Members</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.WebSocket:Members">Member Details</a>
+      </p>
+    </div>
+    <h1 class="PageTitle" id="T:WebSocketSharp.WebSocket">WebSocket  Class</h1>
+    <p class="Summary" id="T:WebSocketSharp.WebSocket:Summary">
+            Implements the WebSocket interface.
+            </p>
+    <div id="T:WebSocketSharp.WebSocket:Signature">
+      <h2>Syntax</h2>
+      <div class="Signature">public class  <b>WebSocket</b> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IDisposable">IDisposable</a></div>
+    </div>
+    <div class="Remarks" id="T:WebSocketSharp.WebSocket:Docs">
+      <h2 class="Section">Remarks</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.WebSocket:Docs:Remarks">
+            The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
+            </div>
+      <h2 class="Section">Requirements</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.WebSocket:Docs:Version Information">
+        <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+      <h2 class="Section" id="Members">Members</h2>
+      <div class="SectionBox" id="_Members">
+        <p>
+								See Also: Inherited members from
+								<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>.
+							</p>
+        <h2 class="Section">Public Constructors</h2>
+        <div class="SectionBox" id="Public Constructors">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.WebSocket(System.String,System.String[])">WebSocket</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>[])</div>
+                </td>
+                <td>
+            Initializes a new instance of the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> class with the specified WebSocket URL and subprotocols.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[])">WebSocket</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;MessageEventArgs&gt;</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ErrorEventArgs&gt;</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;CloseEventArgs&gt;</a>, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>[])</div>
+                </td>
+                <td>
+            Initializes a new instance of the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+            </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Properties</h2>
+        <div class="SectionBox" id="Public Properties">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Extensions">Extensions</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
+                  </i>. 
+            Gets the extensions selected by the server.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.IsAlive">IsAlive</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. 
+            Gets a value indicating whether a connection is alive.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.IsSecure">IsSecure</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. 
+            Gets a value indicating whether a connection is secure.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Protocol">Protocol</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
+                  </i>. 
+            Gets the subprotocol selected by the server.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.ReadyState">ReadyState</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp/WsState.html">WsState</a>
+                  </i>. 
+            Gets the state of the connection.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.UnsentBuffer">UnsentBuffer</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</i>. 
+            Gets the buffer that contains unsent WebSocket frames.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.UnsentCount">UnsentCount</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a>
+                  </i>. 
+            Gets the count of unsent WebSocket frames.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Url">Url</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>
+                  </i>. 
+            Gets or sets the WebSocket URL.
+            </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Methods</h2>
+        <div class="SectionBox" id="Public Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Close">Close</a>
+                  </b>()<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Close(System.UInt16)">Close</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>)<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode)">Close</a>
+                  </b>(<a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a>)<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String)">Close</a>
+                  </b>(<a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Connect">Connect</a>
+                  </b>()<blockquote>
+            Establishes a connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Dispose">Dispose</a>
+                  </b>()<blockquote>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Ping">Ping</a>
+                  </b>()<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Sends a Ping frame using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Ping(System.String)">Ping</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Sends a Ping frame with a message using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Send(System.Byte[])">Send</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[])<blockquote>
+            Sends a binary data using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo)">Send</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a>)<blockquote>
+            Sends a binary data using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.Send(System.String)">Send</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
+            Sends a text data using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action)">SendAsync</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[], <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Sends a binary data asynchronously using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action)">SendAsync</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Sends a binary data asynchronously using the connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action)">SendAsync</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Sends a text data asynchronously using the connection.
+            </blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Events</h2>
+        <div class="SectionBox" id="Public Events">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.WebSocket.OnClose">OnClose</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the WebSocket receives a Close frame or the Close method is called.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.WebSocket.OnError">OnError</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the WebSocket gets an error.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.WebSocket.OnMessage">OnMessage</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the WebSocket receives a data frame.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.WebSocket.OnOpen">OnOpen</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the WebSocket connection has been established.
+            </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Extension Methods</h2>
+        <div class="SectionBox" id="Extension Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Members" id="T:WebSocketSharp.WebSocket:Members">
+      <h2 class="Section" id="MemberDetails">Member Details</h2>
+      <div class="SectionBox" id="_MemberDetails">
+        <h3 id="C:WebSocketSharp.WebSocket(System.String,System.String[])">WebSocket Constructor</h3>
+        <blockquote id="C:WebSocketSharp.WebSocket(System.String,System.String[]):member">
+          <p class="Summary">
+            Initializes a new instance of the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> class with the specified WebSocket URL and subprotocols.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocket</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> url, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>[] protocols)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.String[]):Parameters">
+            <dl>
+              <dt>
+                <i>url</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the WebSocket URL.
+            </dd>
+              <dt>
+                <i>protocols</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the WebSocket subprotocols if any.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.String[]):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>url</i> is <tt>null</tt>.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <i>url</i> is not valid WebSocket URL.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.String[]):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.String[]):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[])">WebSocket Constructor</h3>
+        <blockquote id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[]):member">
+          <p class="Summary">
+            Initializes a new instance of the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocket</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> url, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> onOpen, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;MessageEventArgs&gt;</a> onMessage, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ErrorEventArgs&gt;</a> onError, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;CloseEventArgs&gt;</a> onClose, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>[] protocols)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[]):Parameters">
+            <dl>
+              <dt>
+                <i>url</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the WebSocket URL.
+            </dd>
+              <dt>
+                <i>onOpen</i>
+              </dt>
+              <dd>
+            An OnOpen event handler.
+            </dd>
+              <dt>
+                <i>onMessage</i>
+              </dt>
+              <dd>
+            An OnMessage event handler.
+            </dd>
+              <dt>
+                <i>onError</i>
+              </dt>
+              <dd>
+            An OnError event handler.
+            </dd>
+              <dt>
+                <i>onClose</i>
+              </dt>
+              <dd>
+            An OnClose event handler.
+            </dd>
+              <dt>
+                <i>protocols</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the WebSocket subprotocols if any.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[]):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>url</i> is <tt>null</tt>.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <i>url</i> is not valid WebSocket URL.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[]):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.WebSocket(System.String,System.EventHandler,System.EventHandler{WebSocketSharp.MessageEventArgs},System.EventHandler{WebSocketSharp.ErrorEventArgs},System.EventHandler{WebSocketSharp.CloseEventArgs},System.String[]):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Close">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Close:member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Close(System.UInt16)">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Close(System.UInt16):member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that contains a status code indicating a reason for closure.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode)">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode):member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a> code)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a> that contains a status code indicating a reason for closure.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that contains a status code indicating a reason for closure.
+            </dd>
+              <dt>
+                <i>reason</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a reason for closure.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String)">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String):member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Frame/CloseStatusCode.html">WebSocketSharp.Frame.CloseStatusCode</a> that contains a status code indicating a reason for closure.
+            </dd>
+              <dt>
+                <i>reason</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a reason for closure.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Connect">Connect Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Connect:member">
+          <p class="Summary">
+            Establishes a connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Connect</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Connect:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Connect:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Dispose">Dispose Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Dispose:member">
+          <p class="Summary">
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Dispose</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Dispose:Remarks">
+            Call <a href="../WebSocketSharp/WebSocket.html#M:WebSocketSharp.WebSocket.Dispose">WebSocket.Dispose</a> when you are finished using the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>. The
+            <a href="../WebSocketSharp/WebSocket.html#M:WebSocketSharp.WebSocket.Dispose">WebSocket.Dispose</a> method leaves the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> in an unusable state. After
+            calling <a href="../WebSocketSharp/WebSocket.html#M:WebSocketSharp.WebSocket.Dispose">WebSocket.Dispose</a>, you must release all references to the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> so
+            the garbage collector can reclaim the memory that the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> was occupying.
+            </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Dispose:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Extensions">Extensions Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Extensions:member">
+          <p class="Summary">
+            Gets the extensions selected by the server.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Extensions</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the extensions if any. By default, <tt>String.Empty</tt>. (Currently this will only ever be the <tt>String.Empty</tt>.)
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.IsAlive">IsAlive Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.IsAlive:member">
+          <p class="Summary">
+            Gets a value indicating whether a connection is alive.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsAlive</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.IsAlive:Value">
+            <tt>true</tt> if the connection is alive; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.IsAlive:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.IsAlive:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.IsSecure">IsSecure Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.IsSecure:member">
+          <p class="Summary">
+            Gets a value indicating whether a connection is secure.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsSecure</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.IsSecure:Value">
+            <tt>true</tt> if the connection is secure; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.IsSecure:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.IsSecure:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="E:WebSocketSharp.WebSocket.OnClose">OnClose Event</h3>
+        <blockquote id="E:WebSocketSharp.WebSocket.OnClose:member">
+          <p class="Summary">
+            Occurs when the WebSocket receives a Close frame or the Close method is called.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;CloseEventArgs&gt;</a> <b>OnClose</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnClose:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnClose:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="E:WebSocketSharp.WebSocket.OnError">OnError Event</h3>
+        <blockquote id="E:WebSocketSharp.WebSocket.OnError:member">
+          <p class="Summary">
+            Occurs when the WebSocket gets an error.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ErrorEventArgs&gt;</a> <b>OnError</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnError:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnError:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="E:WebSocketSharp.WebSocket.OnMessage">OnMessage Event</h3>
+        <blockquote id="E:WebSocketSharp.WebSocket.OnMessage:member">
+          <p class="Summary">
+            Occurs when the WebSocket receives a data frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;MessageEventArgs&gt;</a> <b>OnMessage</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnMessage:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnMessage:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="E:WebSocketSharp.WebSocket.OnOpen">OnOpen Event</h3>
+        <blockquote id="E:WebSocketSharp.WebSocket.OnOpen:member">
+          <p class="Summary">
+            Occurs when the WebSocket connection has been established.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> <b>OnOpen</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnOpen:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnOpen:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Ping">Ping Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Ping:member">
+          <p class="Summary">
+            Sends a Ping frame using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> ()</div>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Ping:Returns">
+            <tt>true</tt> if the WebSocket receives a Pong frame in a time; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Ping(System.String)">Ping Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Ping(System.String):member">
+          <p class="Summary">
+            Sends a Ping frame with a message using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>message</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the message to be sent.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Returns">
+            <tt>true</tt> if the WebSocket receives a Pong frame in a time; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Protocol">Protocol Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Protocol:member">
+          <p class="Summary">
+            Gets the subprotocol selected by the server.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Protocol</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Protocol:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the subprotocol if any. By default, <tt>String.Empty</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Protocol:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Protocol:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.ReadyState">ReadyState Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.ReadyState:member">
+          <p class="Summary">
+            Gets the state of the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp/WsState.html">WsState</a> <b>ReadyState</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.ReadyState:Value">
+            One of the <a href="../WebSocketSharp/WsState.html">WebSocketSharp.WsState</a>. By default, <tt>WsState.CONNECTING</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.ReadyState:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.ReadyState:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Send(System.Byte[])">Send Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Send(System.Byte[]):member">
+          <p class="Summary">
+            Sends a binary data using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Send</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] data)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Send(System.Byte[]):Parameters">
+            <dl>
+              <dt>
+                <i>data</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that contains the binary data to be sent.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.Byte[]):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.Byte[]):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo)">Send Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo):member">
+          <p class="Summary">
+            Sends a binary data using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Send</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a> file)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo):Parameters">
+            <dl>
+              <dt>
+                <i>file</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a> that contains the binary data to be sent.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.Send(System.String)">Send Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.Send(System.String):member">
+          <p class="Summary">
+            Sends a text data using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Send</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Send(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>data</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the text data to be sent.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Send(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action)">SendAsync Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action):member">
+          <p class="Summary">
+            Sends a binary data asynchronously using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SendAsync</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] data, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> completed)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>data</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that contains the binary data to be sent.
+            </dd>
+              <dt>
+                <i>completed</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action)">SendAsync Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action):member">
+          <p class="Summary">
+            Sends a binary data asynchronously using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SendAsync</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a> file, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> completed)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>file</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.FileInfo">System.IO.FileInfo</a> that contains the binary data to be sent.
+            </dd>
+              <dt>
+                <i>completed</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.IO.FileInfo,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action)">SendAsync Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action):member">
+          <p class="Summary">
+            Sends a text data asynchronously using the connection.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SendAsync</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> completed)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>data</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the text data to be sent.
+            </dd>
+              <dt>
+                <i>completed</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.UnsentBuffer">UnsentBuffer Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.UnsentBuffer:member">
+          <p class="Summary">
+            Gets the buffer that contains unsent WebSocket frames.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>UnsentBuffer</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.UnsentBuffer:Value">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that contains unsent WebSocket frames.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.UnsentBuffer:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.UnsentBuffer:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.UnsentCount">UnsentCount Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.UnsentCount:member">
+          <p class="Summary">
+            Gets the count of unsent WebSocket frames.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> <b>UnsentCount</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.UnsentCount:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> that contains the count of unsent WebSocket frames.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.UnsentCount:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.UnsentCount:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Url">Url Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Url:member">
+          <p class="Summary">
+            Gets or sets the WebSocket URL.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> <b>Url</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Url:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> that contains the WebSocket URL.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Url:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Url:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+      </div>
+    </div>
+    <hr size="1" />
+    <div class="Copyright">
+    </div>
+  </body>
+</html>

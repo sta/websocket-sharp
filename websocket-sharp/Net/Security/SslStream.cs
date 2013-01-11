@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * SslStream.cs
  *
  * The MIT License
@@ -32,7 +32,7 @@ using System.Net.Sockets;
 
 namespace WebSocketSharp.Net.Security {
 
-  public class SslStream : System.Net.Security.SslStream
+  internal class SslStream : System.Net.Security.SslStream
   {
     #region Constructors
 

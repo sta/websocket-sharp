@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * HttpServer.cs
  *
  * The MIT License

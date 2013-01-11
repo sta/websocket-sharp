@@ -1,0 +1,2410 @@
+<html>
+  <head>
+    <title>WebSocketSharp.Ext</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      a { text-decoration: none }
+
+      div.SideBar {
+        padding-left: 1em;
+        padding-right: 1em;
+        right: 0;
+        float: right;
+        border: thin solid black;
+        background-color: #f2f2f2;
+      }
+    
+      .CollectionTitle { font-weight: bold }
+      .PageTitle { font-size: 150%; font-weight: bold }
+
+      .Summary { }
+      .Signature { }          
+      .Remarks { }
+      .Members { }
+      .Copyright { }
+      
+      .Section { font-size: 125%; font-weight: bold }
+      p.Summary {
+        margin-left: 1em;
+      }
+      .SectionBox { margin-left: 2em }
+      .NamespaceName { font-size: 105%; font-weight: bold }
+      .NamespaceSumary { }
+      .MemberName { font-size: 115%; font-weight: bold; margin-top: 1em }
+      .Subsection { font-size: 105%; font-weight: bold }
+      .SubsectionBox { margin-left: 2em; margin-bottom: 1em }
+
+      .CodeExampleTable { background-color: #f5f5dd; border: thin solid black; padding: .25em; }
+      
+      .TypesListing {
+        border-collapse: collapse;
+      }
+
+      td {
+        vertical-align: top;
+      }
+      th {
+        text-align: left;
+      }
+
+      .TypesListing td { 
+        margin: 0px;  
+        padding: .25em;
+        border: solid gray 1px;
+      }
+
+      .TypesListing th { 
+        margin: 0px;  
+        padding: .25em;
+        background-color: #f2f2f2;
+        border: solid gray 1px;
+      }
+
+      div.Footer {
+        border-top: 1px solid gray;
+        margin-top: 1.5em;
+        padding-top: 0.6em;
+        text-align: center;
+        color: gray;
+      }
+
+      span.NotEntered /* Documentation for this section has not yet been entered */ {
+        font-style: italic;
+        color: red;	
+      }
+
+      div.Header {
+        background: #B0C4DE;
+        border: double;
+        border-color: white;
+        border-width: 7px;
+        padding: 0.5em;
+      }
+
+      div.Header * {
+        font-size: smaller;
+      }
+
+      div.Note {
+      }
+
+      i.ParamRef {
+      }
+
+      i.subtitle {
+      }
+
+      ul.TypeMembersIndex {
+        text-align: left;
+        background: #F8F8F8;
+      }
+
+      ul.TypeMembersIndex li {
+        display: inline;
+        margin:  0.5em;
+      }
+
+      table.HeaderTable {
+      }
+
+      table.SignatureTable {
+      }
+
+      table.Documentation, table.Enumeration, table.TypeDocumentation {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      table.Documentation tr th, table.TypeMembers tr th, table.Enumeration tr th, table.TypeDocumentation tr th {
+        background: whitesmoke;
+        padding: 0.8em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: bottom;
+      }
+
+      table.Documentation tr td, table.TypeMembers tr td, table.Enumeration tr td, table.TypeDocumentation tr td {
+        padding: 0.5em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      table.TypeMembers {
+        border: 1px solid #C0C0C0;
+        width: 100%;
+      }
+
+      table.TypeMembers tr td {
+        background: #F8F8F8;
+        border: white;
+      }
+
+      table.Documentation {
+      }
+
+      table.TypeMembers {
+      }
+
+      div.CodeExample {
+        width: 100%;
+        border: 1px solid #DDDDDD;
+        background-color: #F8F8F8;
+      }
+
+      div.CodeExample p {
+        margin: 0.5em;
+        border-bottom: 1px solid #DDDDDD;
+      }
+
+      div.CodeExample div {
+        margin: 0.5em;
+      }
+
+      h4 {
+        margin-bottom: 0;
+      }
+
+      div.Signature {
+        border: 1px solid #C0C0C0;
+        background: #F2F2F2;
+        padding: 1em;
+      }
+    </style>
+    <script type="text/JavaScript">
+      function toggle_display (block) {
+        var w = document.getElementById (block);
+        var t = document.getElementById (block + ":toggle");
+        if (w.style.display == "none") {
+          w.style.display = "block";
+          t.innerHTML = "⊟";
+        } else {
+          w.style.display = "none";
+          t.innerHTML = "⊞";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="CollectionTitle">
+      <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp Namespace</a></div>
+    <div class="SideBar">
+      <p>
+        <a href="#T:WebSocketSharp.Ext">Overview</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Ext:Signature">Signature</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Ext:Docs">Remarks</a>
+      </p>
+      <p>
+        <a href="#Members">Members</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Ext:Members">Member Details</a>
+      </p>
+    </div>
+    <h1 class="PageTitle" id="T:WebSocketSharp.Ext">Ext  Class</h1>
+    <p class="Summary" id="T:WebSocketSharp.Ext:Summary">
+            Provides a set of static methods for the websocket-sharp.
+            </p>
+    <div id="T:WebSocketSharp.Ext:Signature">
+      <h2>Syntax</h2>
+      <div class="Signature">public static class  <b>Ext</b></div>
+    </div>
+    <div class="Remarks" id="T:WebSocketSharp.Ext:Docs">
+      <h2 class="Section">Remarks</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Ext:Docs:Remarks">
+        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+      </div>
+      <h2 class="Section">Requirements</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Ext:Docs:Version Information">
+        <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+      <h2 class="Section" id="Members">Members</h2>
+      <div class="SectionBox" id="_Members">
+        <p>
+								See Also: Inherited members from
+								<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>.
+							</p>
+        <h2 class="Section">Public Methods</h2>
+        <div class="SectionBox" id="Public Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean)">AcceptWebSocket</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)<nobr> : <a href="../WebSocketSharp.Net.Sockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext</a></nobr><blockquote>
+            Accept a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs)">Emit</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a>)<blockquote>
+            Emit the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> delegate if is not <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0)">Emit&lt;TEventArgs&gt;</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;TEventArgs&gt;</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>, <i title="&#xA;            The type of the event data generated by the event.&#xA;            ">TEventArgs</i>)<blockquote>
+            Emit the specified EventHandler&lt;TEventArgs&gt; delegate if is not <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte})">EqualsAndSaveTo</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.List`1">List&lt;byte&gt;</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> equals the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            And save this specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the specified List&lt;byte&gt;.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String)">Exists</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the entry with the specified key exists in the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String)">Exists</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the entry with the specified both key and value exists in the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri)">GetAbsolutePath</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Gets the absolute path from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode)">GetDescription</a>
+                  </b>(<i>this</i> <a href="../WebSocketSharp.Net/HttpStatusCode.html">WebSocketSharp.Net.HttpStatusCode</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Gets the description of the HTTP status code using the specified code.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetName(System.String,System.String)">GetName</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String)">GetNameAndValue</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.KeyValuePair`2">KeyValuePair&lt;string, string&gt;</a></nobr><blockquote>
+            Gets the name and value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetStatusDescription(System.Int32)">GetStatusDescription</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Gets the description of the HTTP status code using the specified code.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.GetValue(System.String,System.String)">GetValue</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsEmpty(System.String)">IsEmpty</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder)">IsHostOrder</a>
+                  </b>(<i>this</i> <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> is host (this computer architecture) byte order.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">IsNullOrEmpty</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsPredefinedScheme(System.String)">IsPredefinedScheme</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is predefined scheme.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@)">IsValidAbsolutePath</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is valid absolute path.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.MaybeUri(System.String)">MaybeUri</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a URI string.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean)">NotEqual</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether two specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> objects don't have the same value.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32)">ReadBytes</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</nobr><blockquote>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64)">ReadBytes</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</nobr><blockquote>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32)">ReadBytes</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</nobr><blockquote>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32)">SubArray&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[], <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)<nobr> : <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[]</nobr><blockquote>
+            Retrieves a sub-array from the specified <i>array</i>. A sub-array starts at the specified element position.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.Int32,System.Action)">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64})">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a>)<blockquote>
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.Int64,System.Action)">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64})">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a>)<blockquote>
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.UInt32,System.Action)">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64})">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a>)<blockquote>
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.UInt64,System.Action)">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64})">Times</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a>)<blockquote>
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder)">To&lt;T&gt;</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[], <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a>)<nobr> : <i title="&#xA;            The type of the return value. The T must be a value type.&#xA;            ">T</i></nobr><blockquote>
+            Converts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the specified type data.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder)">ToBytes&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the . The T must be a value type.&#xA;            ">T</i>, <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</nobr><blockquote>
+            Converts the specified data to an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder)">ToHostOrder</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[], <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[]</nobr><blockquote>
+            Converts the order of the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the host byte order.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ToString``1(``0[],System.String)">ToString&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[], <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            Converts the specified array to a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> concatenated the specified separator string
+            between each element of this array.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.ToUri(System.String)">ToUri</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a></nobr><blockquote>
+            Converts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> object.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@)">TryCreateWebSocketUri</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Tries to create a new WebSocket <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> using the specified <i>uriString</i>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.UrlDecode(System.String)">UrlDecode</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            URL-decodes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.UrlEncode(System.String)">UrlEncode</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
+            URL-encodes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[])">WriteContent</a>
+                  </b>(<i>this</i> <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[])<blockquote>
+            Writes the specified content data using the specified <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a>.
+            </blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Members" id="T:WebSocketSharp.Ext:Members">
+      <h2 class="Section" id="MemberDetails">Member Details</h2>
+      <div class="SectionBox" id="_MemberDetails">
+        <h3 id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean)">AcceptWebSocket Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):member">
+          <p class="Summary">
+            Accept a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="../WebSocketSharp.Net.Sockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext</a> <b>AcceptWebSocket</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a> client, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Parameters">
+            <dl>
+              <dt>
+                <i>client</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a> that contains a TCP connection to accept a WebSocket connection from.
+            </dd>
+              <dt>
+                <i>secure</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> that indicates a secure connection or not. (<tt>true</tt> indicates a secure connection.)
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Returns">
+            A <a href="../WebSocketSharp.Net.Sockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext</a> that contains a WebSocket connection.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>client</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs)">Emit Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs):member">
+          <p class="Summary">
+            Emit the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> delegate if is not <tt>null</tt>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Emit</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> eventHandler, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a> sender, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a> e)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs):Parameters">
+            <dl>
+              <dt>
+                <i>eventHandler</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler">EventHandler</a> to emit.
+            </dd>
+              <dt>
+                <i>sender</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a> that emits the <i>eventHandler</i>.
+            </dd>
+              <dt>
+                <i>e</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a> that contains no event data.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0)">Emit&lt;TEventArgs&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0):member">
+          <p class="Summary">
+            Emit the specified EventHandler&lt;TEventArgs&gt; delegate if is not <tt>null</tt>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Emit&lt;TEventArgs&gt;</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;TEventArgs&gt;</a> eventHandler, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a> sender, <i title="&#xA;            The type of the event data generated by the event.&#xA;            ">TEventArgs</i> e)<br /> where TEventArgs : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a></div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0):Type Parameters">
+            <dl>
+              <dt>
+                <i>TEventArgs</i>
+              </dt>
+              <dd>
+            The type of the event data generated by the event.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0):Parameters">
+            <dl>
+              <dt>
+                <i>eventHandler</i>
+              </dt>
+              <dd>
+            An EventHandler&lt;TEventArgs&gt; to emit.
+            </dd>
+              <dt>
+                <i>sender</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a> that emits the <i>eventHandler</i>.
+            </dd>
+              <dt>
+                <i>e</i>
+              </dt>
+              <dd>
+            A TEventArgs that contains the event data.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Emit``1(System.EventHandler{``0},System.Object,``0):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte})">EqualsAndSaveTo Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> equals the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            And save this specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the specified List&lt;byte&gt;.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>EqualsAndSaveTo</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> value, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> c, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.List`1">List&lt;byte&gt;</a> dest)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):Parameters">
+            <dl>
+              <dt>
+                <i>value</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> to compare.
+            </dd>
+              <dt>
+                <i>c</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> to compare.
+            </dd>
+              <dt>
+                <i>dest</i>
+              </dt>
+              <dd>
+            A List&lt;byte&gt; to save the <i>value</i> as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):Returns">
+            <tt>true</tt> if the <i>value</i> parameter equals the <i>c</i> parameter as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            Is thrown when the <i>value</i> parameter passed to a method is invalid because it is outside the allowable range of values as <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte}):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String)">Exists Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String):member">
+          <p class="Summary">
+            Determines whether the entry with the specified key exists in the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Exists</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> collection, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> name)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>collection</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> that contains the entries.
+            </dd>
+              <dt>
+                <i>name</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the key of the entry to find.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String):Returns">
+            <tt>true</tt> if the entry with the <i>name</i> exists in the <i>collection</i>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String)">Exists Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String):member">
+          <p class="Summary">
+            Determines whether the entry with the specified both key and value exists in the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Exists</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> collection, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> name, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>collection</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> that contains the entries.
+            </dd>
+              <dt>
+                <i>name</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the key of the entry to find.
+            </dd>
+              <dt>
+                <i>value</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the entry to find.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String):Returns">
+            <tt>true</tt> if the entry with the both <i>name</i> and <i>value</i> exists in the <i>collection</i>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri)">GetAbsolutePath Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri):member">
+          <p class="Summary">
+            Gets the absolute path from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetAbsolutePath</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> uri)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri):Parameters">
+            <dl>
+              <dt>
+                <i>uri</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> that contains the URI to get the absolute path from.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the absolute path if got successfully; otherwise, <tt>null</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode)">GetDescription Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode):member">
+          <p class="Summary">
+            Gets the description of the HTTP status code using the specified code.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetDescription</b> (<i>this</i> <a href="../WebSocketSharp.Net/HttpStatusCode.html">WebSocketSharp.Net.HttpStatusCode</a> code)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            One of <a href="../WebSocketSharp.Net/HttpStatusCode.html">WebSocketSharp.Net.HttpStatusCode</a> values that contains the HTTP status code.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the description of the <i>code</i>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetName(System.String,System.String)">GetName Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetName(System.String,System.String):member">
+          <p class="Summary">
+            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetName</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> nameAndValue, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetName(System.String,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>nameAndValue</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </dd>
+              <dt>
+                <i>separator</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a separator string.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetName(System.String,System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the name if any; otherwise, <tt>null</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetName(System.String,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetName(System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String)">GetNameAndValue Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String):member">
+          <p class="Summary">
+            Gets the name and value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.KeyValuePair`2">KeyValuePair&lt;string, string&gt;</a> <b>GetNameAndValue</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> nameAndValue, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>nameAndValue</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </dd>
+              <dt>
+                <i>separator</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a separator string.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String):Returns">
+            A KeyValuePair&lt;string, string&gt; that contains the name and value if any.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetNameAndValue(System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32)">GetStatusDescription Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32):member">
+          <p class="Summary">
+            Gets the description of the HTTP status code using the specified code.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetStatusDescription</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> code)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the HTTP status code.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the description of the <i>code</i>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.GetValue(System.String,System.String)">GetValue Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):member">
+          <p class="Summary">
+            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetValue</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> nameAndValue, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):Parameters">
+            <dl>
+              <dt>
+                <i>nameAndValue</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            </dd>
+              <dt>
+                <i>separator</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a separator string.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value if any; otherwise, <tt>null</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsEmpty(System.String)">IsEmpty Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsEmpty(System.String):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsEmpty</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>value</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Returns">
+            <tt>true</tt> if the <i>value</i> parameter is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder)">IsHostOrder Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder):member">
+          <p class="Summary">
+            Determines whether the specified <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> is host (this computer architecture) byte order.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsHostOrder</b> (<i>this</i> <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a> order)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder):Parameters">
+            <dl>
+              <dt>
+                <i>order</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder):Returns">
+            <tt>true</tt> if the <i>order</i> parameter is host byte order; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsNull``1(``0):member">
+          <p class="Summary">
+            Determines whether the specified object is <tt>null</tt>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNull&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i> obj)<br /> where T : class</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of the <i>obj</i> parameter.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Parameters">
+            <dl>
+              <dt>
+                <i>obj</i>
+              </dt>
+              <dd>
+            A class to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Returns">
+            <tt>true</tt> if the <i>obj</i> parameter is <tt>null</tt>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):member">
+          <p class="Summary">
+            Determines whether the specified object is <tt>null</tt>.
+            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNullDo&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i> obj, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)<br /> where T : class</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of the <i>obj</i> parameter.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>obj</i>
+              </dt>
+              <dd>
+            A class to test.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) called if the <i>obj</i> is <tt>null</tt>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Returns">
+            <tt>true</tt> if the <i>obj</i> parameter is <tt>null</tt>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">IsNullOrEmpty Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNullOrEmpty</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>value</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Returns">
+            <tt>true</tt> if the <i>value</i> parameter is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String)">IsPredefinedScheme Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is predefined scheme.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsPredefinedScheme</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> scheme)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>scheme</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String):Returns">
+            <tt>true</tt> if the <i>scheme</i> parameter is the predefined scheme; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsPredefinedScheme(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@)">IsValidAbsolutePath Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is valid absolute path.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsValidAbsolutePath</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> absPath, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@):Parameters">
+            <dl>
+              <dt>
+                <i>absPath</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
+            </dd>
+              <dt>
+                <i>message</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that receives a message if the <i>absPath</i> is invalid.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@):Returns">
+            <tt>true</tt> if the <i>absPath</i> parameter is valid absolute path; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.MaybeUri(System.String)">MaybeUri Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.MaybeUri(System.String):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a URI string.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>MaybeUri</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> uriString)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.MaybeUri(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>uriString</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.MaybeUri(System.String):Returns">
+            <tt>true</tt> if the <i>uriString</i> parameter is maybe a URI string; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.MaybeUri(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.MaybeUri(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean)">NotEqual Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean):member">
+          <p class="Summary">
+            Determines whether two specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> objects don't have the same value.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>NotEqual</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> expected, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> actual, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> ignoreCase)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean):Parameters">
+            <dl>
+              <dt>
+                <i>expected</i>
+              </dt>
+              <dd>
+            The first <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to compare.
+            </dd>
+              <dt>
+                <i>actual</i>
+              </dt>
+              <dd>
+            The second <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to compare.
+            </dd>
+              <dt>
+                <i>ignoreCase</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> that indicates a case-sensitive or insensitive comparison. (<tt>true</tt> indicates a case-insensitive comparison.)
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean):Returns">
+            <tt>true</tt> if the value of <i>expected</i> parameter isn't the same as the value of <i>actual</i> parameter; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32)">ReadBytes Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32):member">
+          <p class="Summary">
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>ReadBytes</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> stream, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> length)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>stream</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> that contains the data to read.
+            </dd>
+              <dt>
+                <i>length</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the number of bytes to read.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32):Returns">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that receives the read data.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64)">ReadBytes Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64):member">
+          <p class="Summary">
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>ReadBytes</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> stream, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> length)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64):Parameters">
+            <dl>
+              <dt>
+                <i>stream</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> that contains the data to read.
+            </dd>
+              <dt>
+                <i>length</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> that contains the number of bytes to read.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64):Returns">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that receives the read data.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32)">ReadBytes Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32):member">
+          <p class="Summary">
+            Reads a block of bytes from the specified stream and returns the read data in an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>ReadBytes</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> stream, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> length, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> bufferLength)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>stream</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IO.Stream">System.IO.Stream</a> that contains the data to read.
+            </dd>
+              <dt>
+                <i>length</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> that contains the number of bytes to read.
+            </dd>
+              <dt>
+                <i>bufferLength</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the buffer size in bytes of each internal read.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32):Returns">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that receives the read data.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32)">SubArray&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):member">
+          <p class="Summary">
+            Retrieves a sub-array from the specified <i>array</i>. A sub-array starts at the specified element position.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[] <b>SubArray&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[] array, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> startIndex, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> length)</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of elements in the <i>array</i>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>array</i>
+              </dt>
+              <dd>
+            An array of T that contains the data to retrieve a sub-array.
+            </dd>
+              <dt>
+                <i>startIndex</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the zero-based starting position of a sub-array in the <i>array</i>.
+            </dd>
+              <dt>
+                <i>length</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the number of elements to retrieve a sub-array.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):Returns">
+            An array of T that receives a sub-array, or an empty array of T if any problems with the parameters.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action)">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action):member">
+          <p class="Summary">
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) to execute.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64})">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64}):member">
+          <p class="Summary">
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64}):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An Action&lt;ulong&gt; delegate that contains the method(s) to execute.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64}):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action)">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action):member">
+          <p class="Summary">
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) to execute.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64})">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64}):member">
+          <p class="Summary">
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64}):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An Action&lt;ulong&gt; delegate that contains the method(s) to execute.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64}):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action)">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action):member">
+          <p class="Summary">
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) to execute.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64})">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64}):member">
+          <p class="Summary">
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64}):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An Action&lt;ulong&gt; delegate that contains the method(s) to execute.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64}):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action)">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action):member">
+          <p class="Summary">
+            Executes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) to execute.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64})">Times Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64}):member">
+          <p class="Summary">
+            Executes the specified Action&lt;ulong&gt; delegate <i>n</i> times.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Times</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> n, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;ulong&gt;</a> act)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64}):Parameters">
+            <dl>
+              <dt>
+                <i>n</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> that contains the number of times to execute.
+            </dd>
+              <dt>
+                <i>act</i>
+              </dt>
+              <dd>
+            An Action&lt;ulong&gt; delegate that contains the method(s) to execute.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64}):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder)">To&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):member">
+          <p class="Summary">
+            Converts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the specified type data.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <i title="&#xA;            The type of the return value. The T must be a value type.&#xA;            ">T</i> <b>To&lt;T&gt;</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] src, <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a> srcOrder)<br /> where T : struct</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of the return value. The T must be a value type.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Parameters">
+            <dl>
+              <dt>
+                <i>src</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to convert.
+            </dd>
+              <dt>
+                <i>srcOrder</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> that indicates the byte order of the <i>src</i>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Returns">
+            A T converted from the <i>src</i>, or a default value of T
+            if the <i>src</i> is an empty array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>
+            or if the types of T aren't the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Double">double</a>,
+            <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Single">float</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int16">short</a>,
+            <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt32">uint</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt64">ulong</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>src</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder)">ToBytes&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):member">
+          <p class="Summary">
+            Converts the specified data to an array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>ToBytes&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of the . The T must be a value type.&#xA;            ">T</i> value, <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a> order)<br /> where T : struct</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of the <i>value</i>. The T must be a value type.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):Parameters">
+            <dl>
+              <dt>
+                <i>value</i>
+              </dt>
+              <dd>
+            A T to convert.
+            </dd>
+              <dt>
+                <i>order</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> that indicates the byte order of the return.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):Returns">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> converted from the <i>value</i>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder)">ToHostOrder Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):member">
+          <p class="Summary">
+            Converts the order of the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the host byte order.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] <b>ToHostOrder</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] src, <a href="../WebSocketSharp/ByteOrder.html">ByteOrder</a> srcOrder)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):Parameters">
+            <dl>
+              <dt>
+                <i>src</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to convert.
+            </dd>
+              <dt>
+                <i>srcOrder</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp/ByteOrder.html">WebSocketSharp.ByteOrder</a> that indicates the byte order of the <i>src</i>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):Returns">
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> converted from the <i>src</i>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>src</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String)">ToString&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):member">
+          <p class="Summary">
+            Converts the specified array to a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> concatenated the specified separator string
+            between each element of this array.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>ToString&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of elements in the .&#xA;            ">T</i>[] array, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+            The type of elements in the <i>array</i>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Parameters">
+            <dl>
+              <dt>
+                <i>array</i>
+              </dt>
+              <dd>
+            An array of T to convert.
+            </dd>
+              <dt>
+                <i>separator</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a separator string.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> converted from the <i>array</i> parameter, or a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>
+            if the length of the <i>array</i> is zero.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>array</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToString``1(``0[],System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.ToUri(System.String)">ToUri Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.ToUri(System.String):member">
+          <p class="Summary">
+            Converts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> object.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> <b>ToUri</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> uriString)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToUri(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>uriString</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to convert.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.ToUri(System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> converted from the <i>uriString</i> parameter, or <tt>null</tt>
+            if the <i>uriString</i> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToUri(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.ToUri(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@)">TryCreateWebSocketUri Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):member">
+          <p class="Summary">
+            Tries to create a new WebSocket <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> using the specified <i>uriString</i>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>TryCreateWebSocketUri</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> uriString, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> result, <i>out</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):Parameters">
+            <dl>
+              <dt>
+                <i>uriString</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a WebSocket URI.
+            </dd>
+              <dt>
+                <i>result</i>
+              </dt>
+              <dd>
+            When this method returns, contains a created WebSocket <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> if the <i>uriString</i> parameter is valid WebSocket URI; otherwise, <tt>null</tt>.
+            </dd>
+              <dt>
+                <i>message</i>
+              </dt>
+              <dd>
+            When this method returns, contains a error message <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> if the <i>uriString</i> parameter is invalid WebSocket URI; otherwise, <tt>String.Empty</tt>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):Returns">
+            <tt>true</tt> if the WebSocket <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> was successfully created; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>uriString</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.TryCreateWebSocketUri(System.String,System.Uri@,System.String@):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.UrlDecode(System.String)">UrlDecode Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.UrlDecode(System.String):member">
+          <p class="Summary">
+            URL-decodes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>UrlDecode</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> s)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.UrlDecode(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>s</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to decode.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.UrlDecode(System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that receives a decoded string, or the <i>s</i> parameter
+            if the <i>s</i> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.UrlDecode(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.UrlDecode(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.UrlEncode(System.String)">UrlEncode Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.UrlEncode(System.String):member">
+          <p class="Summary">
+            URL-encodes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>UrlEncode</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> s)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.UrlEncode(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>s</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to encode.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.UrlEncode(System.String):Returns">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that receives a encoded string, or the <i>s</i> parameter
+            if the <i>s</i> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.UrlEncode(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.UrlEncode(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[])">WriteContent Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[]):member">
+          <p class="Summary">
+            Writes the specified content data using the specified <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>WriteContent</b> (<i>this</i> <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a> response, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] content)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[]):Parameters">
+            <dl>
+              <dt>
+                <i>response</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a> that contains a network stream to write a content data.
+            </dd>
+              <dt>
+                <i>content</i>
+              </dt>
+              <dd>
+            An array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> that contains a content data to write.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[]):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+            Is thrown when the <i>response</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[]):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.WriteContent(WebSocketSharp.Net.HttpListenerResponse,System.Byte[]):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+      </div>
+    </div>
+    <hr size="1" />
+    <div class="Copyright">
+    </div>
+  </body>
+</html>

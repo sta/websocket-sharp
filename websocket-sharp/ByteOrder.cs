@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * ByteOrder.cs
  *
  * The MIT License
@@ -28,11 +28,20 @@
 
 using System;
 
-namespace WebSocketSharp
-{
+namespace WebSocketSharp {
+
+  /// <summary>
+  /// Contains the values that indicate whether the byte order is a Little-endian or Big-endian.
+  /// </summary>
   public enum ByteOrder : byte
   {
-    LITTLE = 0x0,
-    BIG    = 0x1
+    /// <summary>
+    /// Indicates a Little-endian.
+    /// </summary>
+    LITTLE,
+    /// <summary>
+    /// Indicates a Big-endian.
+    /// </summary>
+    BIG
   }
 }

@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * CloseEventArgs.cs
  *
  * The MIT License
@@ -30,41 +30,30 @@ using System;
 using System.Text;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp
-{
+namespace WebSocketSharp {
+
+  /// <summary>
+  /// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
+  /// </summary>
+  /// <remarks>
+  /// The <see cref="WebSocket.OnClose"/> event occurs when the WebSocket receives a close control frame or
+  /// the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access the <see cref="CloseEventArgs.Code"/> or
+  /// <see cref="CloseEventArgs.Reason"/> properties.
+  /// </remarks>
   public class CloseEventArgs : MessageEventArgs
   {
+    #region Fields
+
     private ushort _code;
     private string _reason;
     private bool   _wasClean;
 
-    public ushort Code
-    {
-      get {
-        return _code;
-      }
-    }
+    #endregion
 
-    public string Reason
-    {
-      get {
-        return _reason;
-      }
-    }
+    #region Constructor
 
-    public bool WasClean
-    {
-      get {
-        return _wasClean;
-      }
-
-      set {
-        _wasClean = value;
-      }
-    }
-
-    public CloseEventArgs(PayloadData data)
-    : base(Opcode.CLOSE, data)
+    internal CloseEventArgs(PayloadData data)
+      : base(Opcode.CLOSE, data)
     {
       _code     = (ushort)CloseStatusCode.NO_STATUS_CODE;
       _reason   = String.Empty;
@@ -79,5 +68,51 @@ namespace WebSocketSharp
         _reason = Encoding.UTF8.GetString(buffer);
       }
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the status code for closure.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ushort"/> that contains a status code for closure.
+    /// </value>
+    public ushort Code {
+      get {
+        return _code;
+      }
+    }
+
+    /// <summary>
+    /// Gets the reason for closure.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains a reason for closure.
+    /// </value>
+    public string Reason {
+      get {
+        return _reason;
+      }
+    }
+
+    /// <summary>
+    /// Indicates whether the connection closed cleanly or not.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the connection closed cleanly; otherwise, <c>false</c>.
+    /// </value>
+    public bool WasClean {
+      get {
+        return _wasClean;
+      }
+
+      internal set {
+        _wasClean = value;
+      }
+    }
+
+    #endregion
   }
 }

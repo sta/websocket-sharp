@@ -1,0 +1,66 @@
+<Type Name="ResponseEventArgs" FullName="WebSocketSharp.Server.ResponseEventArgs">
+  <TypeSignature Language="C#" Value="public class ResponseEventArgs : EventArgs" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ResponseEventArgs extends System.EventArgs" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.EventArgs</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public ResponseEventArgs (WebSocketSharp.Net.HttpListenerContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class WebSocketSharp.Net.HttpListenerContext context) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="context" Type="WebSocketSharp.Net.HttpListenerContext" />
+      </Parameters>
+      <Docs>
+        <param name="context">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Request">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerRequest Request { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerRequest Request" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Net.HttpListenerRequest</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Response">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerResponse Response { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerResponse Response" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Net.HttpListenerResponse</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

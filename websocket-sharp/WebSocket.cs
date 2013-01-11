@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WebSocket.cs
  *
  * A C# implementation of the WebSocket interface.
@@ -31,6 +31,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -80,8 +81,9 @@ namespace WebSocketSharp {
     private volatile WsState                _readyState;
     private AutoResetEvent                  _receivePong;
     private TcpClient                       _tcpClient;
+    private List<byte>                      _unsentBuffer;
+    private volatile uint                   _unsentCount;
     private Uri                             _uri;
-    private SynchronizedCollection<WsFrame> _unTransmittedBuffer;
     private WsStream                        _wsStream;
 
     #endregion
@@ -95,12 +97,13 @@ namespace WebSocketSharp {
       _forSend             = new Object();
       _protocol            = String.Empty;
       _readyState          = WsState.CONNECTING;
-      _unTransmittedBuffer = new SynchronizedCollection<WsFrame>();
+      _unsentBuffer        = new List<byte>();
+      _unsentCount         = 0;
     }
 
     #endregion
 
-    #region Internal Constructor
+    #region Internal Constructors
 
     internal WebSocket(HttpListenerWebSocketContext context)
       : this()
@@ -222,25 +225,6 @@ namespace WebSocketSharp {
     #region Public Properties
 
     /// <summary>
-    /// Gets the amount of untransmitted data.
-    /// </summary>
-    /// <value>
-    /// The number of bytes of untransmitted data.
-    /// </value>
-    public ulong BufferedAmount {
-      get {
-        lock (_unTransmittedBuffer.SyncRoot)
-        {
-          ulong bufferedAmount = 0;
-          foreach (WsFrame frame in _unTransmittedBuffer)
-            bufferedAmount += frame.PayloadLength;
-
-          return bufferedAmount;
-        }
-      }
-    }
-
-    /// <summary>
     /// Gets the extensions selected by the server.
     /// </summary>
     /// <value>
@@ -295,7 +279,7 @@ namespace WebSocketSharp {
     /// Gets the state of the connection.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WsState"/>. By default, <c>WsState.CONNECTING</c>.
+    /// One of the <see cref="WebSocketSharp.WsState"/>. By default, <c>WsState.CONNECTING</c>.
     /// </value>
     public WsState ReadyState {
       get {
@@ -304,14 +288,29 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the untransmitted WebSocket frames.
+    /// Gets the buffer that contains unsent WebSocket frames.
     /// </summary>
     /// <value>
-    /// A <c>IList&lt;WsFrame&gt;</c> that contains the untransmitted WebSocket frames.
+    /// An array of <see cref="byte"/> that contains unsent WebSocket frames.
     /// </value>
-    public IList<WsFrame> UnTransmittedBuffer {
+    public byte[] UnsentBuffer {
       get {
-        return _unTransmittedBuffer;
+        lock (((ICollection)_unsentBuffer).SyncRoot)
+        {
+          return _unsentBuffer.ToArray();
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets the count of unsent WebSocket frames.
+    /// </summary>
+    /// <value>
+    /// A <see cref="uint"/> that contains the count of unsent WebSocket frames.
+    /// </value>
+    public uint UnsentCount {
+      get {
+        return _unsentCount;
       }
     }
 
@@ -366,7 +365,7 @@ namespace WebSocketSharp {
       if (!isValidRequest(req, out msg))
       {
         onError(msg);
-        close(CloseStatusCode.HANDSHAKE_FAILURE, msg);
+        close(CloseStatusCode.ABNORMAL, msg);
         return;
       }
 
@@ -381,7 +380,7 @@ namespace WebSocketSharp {
         var code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
         if (code == (ushort)CloseStatusCode.NO_STATUS_CODE ||
             code == (ushort)CloseStatusCode.ABNORMAL       ||
-            code == (ushort)CloseStatusCode.HANDSHAKE_FAILURE)
+            code == (ushort)CloseStatusCode.TLS_HANDSHAKE_FAILURE)
           return false;
       }
 
@@ -586,7 +585,7 @@ namespace WebSocketSharp {
       if (!isValidResponse(res, out msg))
       {
         onError(msg);
-        close(CloseStatusCode.HANDSHAKE_FAILURE, msg);
+        close(CloseStatusCode.ABNORMAL, msg);
         return;
       }
 
@@ -936,35 +935,28 @@ namespace WebSocketSharp {
       if (_readyState == WsState.CONNECTING ||
           _readyState == WsState.CLOSED)
       {
-        var msg = "The WebSocket connection isn't established or has been closed.";
-        onError(msg);
+        onError("The WebSocket connection isn't established or has been closed.");
         return false;
       }
 
       try
       {
-        if (_unTransmittedBuffer.Count == 0)
+        if (_unsentCount == 0 && !_wsStream.IsNull())
         {
-          if (!_wsStream.IsNull())
-          {
-            _wsStream.WriteFrame(frame);
-            return true;
-          }
+          _wsStream.WriteFrame(frame);
+          return true;
         }
 
-        if (_unTransmittedBuffer.Count > 0)
-        {
-          _unTransmittedBuffer.Add(frame);
-          var msg = "Current data can not be sent because there is untransmitted data.";
-          onError(msg);
-        }
+        unsend(frame);
+        onError("Current data can not be sent because there is unsent data.");
 
         return false;
       }
       catch (Exception ex)
       {
-        _unTransmittedBuffer.Add(frame);
+        unsend(frame);
         onError(ex.Message);
+
         return false;
       }
     }
@@ -985,8 +977,7 @@ namespace WebSocketSharp {
         {
           if (_readyState != WsState.OPEN)
           {
-            var msg = "The WebSocket connection isn't established or has been closed.";
-            onError(msg);
+            onError("The WebSocket connection isn't established or has been closed.");
             return;
           }
 
@@ -1144,6 +1135,15 @@ namespace WebSocketSharp {
       return uriString.TryCreateWebSocketUri(out result, out message);
     }
 
+    private void unsend(WsFrame frame)
+    {
+      lock (((ICollection)_unsentBuffer).SyncRoot)
+      {
+        _unsentCount++;
+        _unsentBuffer.AddRange(frame.ToBytes());
+      }
+    }
+
     private void writeHandshake(Handshake handshake)
     {
       _wsStream.WriteHandshake(handshake);
@@ -1256,7 +1256,7 @@ namespace WebSocketSharp {
       catch (Exception ex)
       {
         onError(ex.Message);
-        close(CloseStatusCode.HANDSHAKE_FAILURE, "An exception has occured.");
+        close(CloseStatusCode.ABNORMAL, "An exception has occured.");
       }
     }
 

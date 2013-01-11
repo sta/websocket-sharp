@@ -1,0 +1,258 @@
+<Type Name="HttpListenerWebSocketContext" FullName="WebSocketSharp.Net.HttpListenerWebSocketContext">
+  <TypeSignature Language="C#" Value="public class HttpListenerWebSocketContext : WebSocketSharp.Net.WebSocketContext" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpListenerWebSocketContext extends WebSocketSharp.Net.WebSocketContext" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>WebSocketSharp.Net.WebSocketContext</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="CookieCollection">
+      <MemberSignature Language="C#" Value="public override WebSocketSharp.Net.CookieCollection CookieCollection { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.CookieCollection CookieCollection" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Headers">
+      <MemberSignature Language="C#" Value="public override System.Collections.Specialized.NameValueCollection Headers { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection Headers" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsAuthenticated">
+      <MemberSignature Language="C#" Value="public override bool IsAuthenticated { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsAuthenticated" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsLocal">
+      <MemberSignature Language="C#" Value="public override bool IsLocal { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsLocal" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsSecureConnection">
+      <MemberSignature Language="C#" Value="public override bool IsSecureConnection { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsSecureConnection" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Origin">
+      <MemberSignature Language="C#" Value="public override string Origin { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Origin" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Path">
+      <MemberSignature Language="C#" Value="public virtual string Path { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Path" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RequestUri">
+      <MemberSignature Language="C#" Value="public override Uri RequestUri { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Uri RequestUri" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Uri</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SecWebSocketKey">
+      <MemberSignature Language="C#" Value="public override string SecWebSocketKey { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string SecWebSocketKey" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SecWebSocketProtocols">
+      <MemberSignature Language="C#" Value="public override System.Collections.Generic.IEnumerable&lt;string&gt; SecWebSocketProtocols { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; SecWebSocketProtocols" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SecWebSocketVersion">
+      <MemberSignature Language="C#" Value="public override string SecWebSocketVersion { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string SecWebSocketVersion" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ServerEndPoint">
+      <MemberSignature Language="C#" Value="public virtual System.Net.IPEndPoint ServerEndPoint { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint ServerEndPoint" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Net.IPEndPoint</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="User">
+      <MemberSignature Language="C#" Value="public override System.Security.Principal.IPrincipal User { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Security.Principal.IPrincipal User" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Security.Principal.IPrincipal</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UserEndPoint">
+      <MemberSignature Language="C#" Value="public virtual System.Net.IPEndPoint UserEndPoint { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint UserEndPoint" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Net.IPEndPoint</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="WebSocket">
+      <MemberSignature Language="C#" Value="public override WebSocketSharp.WebSocket WebSocket { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.WebSocket WebSocket" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WebSocket</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

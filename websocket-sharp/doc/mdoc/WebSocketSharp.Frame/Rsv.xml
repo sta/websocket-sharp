@@ -1,0 +1,59 @@
+<Type Name="Rsv" FullName="WebSocketSharp.Frame.Rsv">
+  <TypeSignature Language="C#" Value="public enum Rsv" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed Rsv extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>
+            Contains the values of the reserved bit in the WebSocket data frame.
+            </summary>
+    <remarks>
+      <para>
+            The <b>Rsv</b> enumeration contains the values of the reserved bit (<b>RSV1, RSV2, RSV3</b>) defined in
+            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+            </para>
+      <para>
+            The reserved bit must be zero unless an extension is negotiated that defines meanings for non-zero values.
+            </para>
+    </remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="OFF">
+      <MemberSignature Language="C#" Value="OFF" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Rsv OFF = unsigned int8(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 0.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="ON">
+      <MemberSignature Language="C#" Value="ON" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Rsv ON = unsigned int8(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Rsv</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 1.
+            </summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

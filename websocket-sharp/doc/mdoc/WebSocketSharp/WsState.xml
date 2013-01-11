@@ -1,0 +1,86 @@
+<Type Name="WsState" FullName="WebSocketSharp.WsState">
+  <TypeSignature Language="C#" Value="public enum WsState" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed WsState extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>
+            Contains the values of the state of the WebSocket connection.
+            </summary>
+    <remarks>
+            The <b>WsState</b> enumeration contains the values of the state of the WebSocket connection defined in
+            <a href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket API</a>.
+            </remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="CLOSED">
+      <MemberSignature Language="C#" Value="CLOSED" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.WsState CLOSED = unsigned int16(3)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsState</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 3. Indicates that the connection has been closed or could not be opened.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="CLOSING">
+      <MemberSignature Language="C#" Value="CLOSING" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.WsState CLOSING = unsigned int16(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsState</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 2. Indicates that the connection is going through the closing handshake, or the <b>Close</b> method has been invoked.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="CONNECTING">
+      <MemberSignature Language="C#" Value="CONNECTING" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.WsState CONNECTING = unsigned int16(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsState</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 0. Indicates that the connection has not yet been established.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="OPEN">
+      <MemberSignature Language="C#" Value="OPEN" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.WsState OPEN = unsigned int16(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsState</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 1. Indicates that the connection is established and communication is possible.
+            </summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

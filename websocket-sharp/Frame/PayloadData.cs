@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * PayloadData.cs
  *
  * The MIT License

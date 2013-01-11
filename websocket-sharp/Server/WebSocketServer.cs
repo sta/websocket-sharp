@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WebSocketServer.cs
  *
  * A C# implementation of the WebSocket protocol server.

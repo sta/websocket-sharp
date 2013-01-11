@@ -1,0 +1,698 @@
+<Type Name="WebSocket" FullName="WebSocketSharp.WebSocket">
+  <TypeSignature Language="C#" Value="public class WebSocket : IDisposable" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WebSocket extends System.Object implements class System.IDisposable" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces>
+    <Interface>
+      <InterfaceName>System.IDisposable</InterfaceName>
+    </Interface>
+  </Interfaces>
+  <Docs>
+    <summary>
+            Implements the WebSocket interface.
+            </summary>
+    <remarks>
+            The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
+            </remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public WebSocket (string url, string[] protocols);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string url, string[] protocols) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="url" Type="System.String" />
+        <Parameter Name="protocols" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="url">
+            A <see cref="T:System.String" /> that contains the WebSocket URL.
+            </param>
+        <param name="protocols">
+            An array of <see cref="T:System.String" /> that contains the WebSocket subprotocols if any.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class with the specified WebSocket URL and subprotocols.
+            </summary>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="url" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="url" /> is not valid WebSocket URL.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public WebSocket (string url, EventHandler onOpen, EventHandler&lt;WebSocketSharp.MessageEventArgs&gt; onMessage, EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt; onError, EventHandler&lt;WebSocketSharp.CloseEventArgs&gt; onClose, string[] protocols);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string url, class System.EventHandler onOpen, class System.EventHandler`1&lt;class WebSocketSharp.MessageEventArgs&gt; onMessage, class System.EventHandler`1&lt;class WebSocketSharp.ErrorEventArgs&gt; onError, class System.EventHandler`1&lt;class WebSocketSharp.CloseEventArgs&gt; onClose, string[] protocols) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="url" Type="System.String" />
+        <Parameter Name="onOpen" Type="System.EventHandler" />
+        <Parameter Name="onMessage" Type="System.EventHandler&lt;WebSocketSharp.MessageEventArgs&gt;" />
+        <Parameter Name="onError" Type="System.EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt;" />
+        <Parameter Name="onClose" Type="System.EventHandler&lt;WebSocketSharp.CloseEventArgs&gt;" />
+        <Parameter Name="protocols" Type="System.String[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="url">
+            A <see cref="T:System.String" /> that contains the WebSocket URL.
+            </param>
+        <param name="onOpen">
+            An OnOpen event handler.
+            </param>
+        <param name="onMessage">
+            An OnMessage event handler.
+            </param>
+        <param name="onError">
+            An OnError event handler.
+            </param>
+        <param name="onClose">
+            An OnClose event handler.
+            </param>
+        <param name="protocols">
+            An array of <see cref="T:System.String" /> that contains the WebSocket subprotocols if any.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+            </summary>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="url" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="url" /> is not valid WebSocket URL.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="Close">
+      <MemberSignature Language="C#" Value="public void Close ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Close">
+      <MemberSignature Language="C#" Value="public void Close (ushort code);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close(unsigned int16 code) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="System.UInt16" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            A <see cref="T:System.UInt16" /> that contains a status code indicating a reason for closure.
+            </param>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Close">
+      <MemberSignature Language="C#" Value="public void Close (WebSocketSharp.Frame.CloseStatusCode code);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close(valuetype WebSocketSharp.Frame.CloseStatusCode code) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="WebSocketSharp.Frame.CloseStatusCode" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            A <see cref="T:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            </param>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Close">
+      <MemberSignature Language="C#" Value="public void Close (ushort code, string reason);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close(unsigned int16 code, string reason) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="System.UInt16" />
+        <Parameter Name="reason" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            A <see cref="T:System.UInt16" /> that contains a status code indicating a reason for closure.
+            </param>
+        <param name="reason">
+            A <see cref="T:System.String" /> that contains a reason for closure.
+            </param>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Close">
+      <MemberSignature Language="C#" Value="public void Close (WebSocketSharp.Frame.CloseStatusCode code, string reason);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Close(valuetype WebSocketSharp.Frame.CloseStatusCode code, string reason) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="WebSocketSharp.Frame.CloseStatusCode" />
+        <Parameter Name="reason" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            A <see cref="T:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            </param>
+        <param name="reason">
+            A <see cref="T:System.String" /> that contains a reason for closure.
+            </param>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Connect">
+      <MemberSignature Language="C#" Value="public void Connect ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Connect() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>
+            Establishes a connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Dispose">
+      <MemberSignature Language="C#" Value="public void Dispose ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Dispose() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>
+            Closes the connection and releases all associated resources after sends a Close control frame.
+            </summary>
+        <remarks>
+            Call <see cref="M:WebSocketSharp.WebSocket.Dispose" /> when you are finished using the <see cref="T:WebSocketSharp.WebSocket" />. The
+            <see cref="M:WebSocketSharp.WebSocket.Dispose" /> method leaves the <see cref="T:WebSocketSharp.WebSocket" /> in an unusable state. After
+            calling <see cref="M:WebSocketSharp.WebSocket.Dispose" />, you must release all references to the <see cref="T:WebSocketSharp.WebSocket" /> so
+            the garbage collector can reclaim the memory that the <see cref="T:WebSocketSharp.WebSocket" /> was occupying.
+            </remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Extensions">
+      <MemberSignature Language="C#" Value="public string Extensions { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Extensions" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the extensions selected by the server.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the extensions if any. By default, <c>String.Empty</c>. (Currently this will only ever be the <c>String.Empty</c>.)
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsAlive">
+      <MemberSignature Language="C#" Value="public bool IsAlive { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsAlive" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets a value indicating whether a connection is alive.
+            </summary>
+        <value>
+          <c>true</c> if the connection is alive; otherwise, <c>false</c>.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsSecure">
+      <MemberSignature Language="C#" Value="public bool IsSecure { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsSecure" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets a value indicating whether a connection is secure.
+            </summary>
+        <value>
+          <c>true</c> if the connection is secure; otherwise, <c>false</c>.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnClose">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.CloseEventArgs&gt; OnClose;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.CloseEventArgs&gt; OnClose" />
+      <MemberType>Event</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.CloseEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the WebSocket receives a Close frame or the Close method is called.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnError">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt; OnError;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.ErrorEventArgs&gt; OnError" />
+      <MemberType>Event</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the WebSocket gets an error.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnMessage">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.MessageEventArgs&gt; OnMessage;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.MessageEventArgs&gt; OnMessage" />
+      <MemberType>Event</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.MessageEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the WebSocket receives a data frame.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnOpen">
+      <MemberSignature Language="C#" Value="public event EventHandler OnOpen;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler OnOpen" />
+      <MemberType>Event</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.EventHandler</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the WebSocket connection has been established.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Ping">
+      <MemberSignature Language="C#" Value="public bool Ping ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool Ping() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>
+            Sends a Ping frame using the connection.
+            </summary>
+        <returns>
+          <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Ping">
+      <MemberSignature Language="C#" Value="public bool Ping (string message);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool Ping(string message) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="message" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="message">
+            A <see cref="T:System.String" /> that contains the message to be sent.
+            </param>
+        <summary>
+            Sends a Ping frame with a message using the connection.
+            </summary>
+        <returns>
+          <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Protocol">
+      <MemberSignature Language="C#" Value="public string Protocol { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Protocol" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the subprotocol selected by the server.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the subprotocol if any. By default, <c>String.Empty</c>.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ReadyState">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.WsState ReadyState { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.WsState ReadyState" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsState</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the state of the connection.
+            </summary>
+        <value>
+            One of the <see cref="T:WebSocketSharp.WsState" />. By default, <c>WsState.CONNECTING</c>.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Send">
+      <MemberSignature Language="C#" Value="public void Send (byte[] data);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Send(unsigned int8[] data) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.Byte[]" />
+      </Parameters>
+      <Docs>
+        <param name="data">
+            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            </param>
+        <summary>
+            Sends a binary data using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Send">
+      <MemberSignature Language="C#" Value="public void Send (System.IO.FileInfo file);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Send(class System.IO.FileInfo file) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="file" Type="System.IO.FileInfo" />
+      </Parameters>
+      <Docs>
+        <param name="file">
+            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
+            </param>
+        <summary>
+            Sends a binary data using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Send">
+      <MemberSignature Language="C#" Value="public void Send (string data);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Send(string data) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="data">
+            A <see cref="T:System.String" /> that contains the text data to be sent.
+            </param>
+        <summary>
+            Sends a text data using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SendAsync">
+      <MemberSignature Language="C#" Value="public void SendAsync (byte[] data, Action completed);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendAsync(unsigned int8[] data, class System.Action completed) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.Byte[]" />
+        <Parameter Name="completed" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="data">
+            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            </param>
+        <param name="completed">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+        <summary>
+            Sends a binary data asynchronously using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SendAsync">
+      <MemberSignature Language="C#" Value="public void SendAsync (System.IO.FileInfo file, Action completed);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendAsync(class System.IO.FileInfo file, class System.Action completed) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="file" Type="System.IO.FileInfo" />
+        <Parameter Name="completed" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="file">
+            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
+            </param>
+        <param name="completed">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+        <summary>
+            Sends a binary data asynchronously using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SendAsync">
+      <MemberSignature Language="C#" Value="public void SendAsync (string data, Action completed);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendAsync(string data, class System.Action completed) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.String" />
+        <Parameter Name="completed" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="data">
+            A <see cref="T:System.String" /> that contains the text data to be sent.
+            </param>
+        <param name="completed">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+        <summary>
+            Sends a text data asynchronously using the connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UnsentBuffer">
+      <MemberSignature Language="C#" Value="public byte[] UnsentBuffer { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance unsigned int8[] UnsentBuffer" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the buffer that contains unsent WebSocket frames.
+            </summary>
+        <value>
+            An array of <see cref="T:System.Byte" /> that contains unsent WebSocket frames.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UnsentCount">
+      <MemberSignature Language="C#" Value="public uint UnsentCount { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance unsigned int32 UnsentCount" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.UInt32</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the count of unsent WebSocket frames.
+            </summary>
+        <value>
+            A <see cref="T:System.UInt32" /> that contains the count of unsent WebSocket frames.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Url">
+      <MemberSignature Language="C#" Value="public Uri Url { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Uri Url" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Uri</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets or sets the WebSocket URL.
+            </summary>
+        <value>
+            A <see cref="T:System.Uri" /> that contains the WebSocket URL.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WebSocketService.cs
  *
  * The MIT License

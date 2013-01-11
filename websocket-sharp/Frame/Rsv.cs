@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * Rsv.cs
  *
  * The MIT License
@@ -28,11 +28,29 @@
 
 using System;
 
-namespace WebSocketSharp.Frame
-{
+namespace WebSocketSharp.Frame {
+
+  /// <summary>
+  /// Contains the values of the reserved bit in the WebSocket data frame.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The <b>Rsv</b> enumeration contains the values of the reserved bit (<b>RSV1, RSV2, RSV3</b>) defined in
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+  /// </para>
+  /// <para>
+  /// The reserved bit must be zero unless an extension is negotiated that defines meanings for non-zero values.
+  /// </para>
+  /// </remarks>
   public enum Rsv : byte
   {
+    /// <summary>
+    /// Equivalent to numeric value 0.
+    /// </summary>
     OFF = 0x0,
+    /// <summary>
+    /// Equivalent to numeric value 1.
+    /// </summary>
     ON  = 0x1
   }
 }

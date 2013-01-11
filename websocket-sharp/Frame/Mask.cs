@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * Mask.cs
  *
  * The MIT License
@@ -28,11 +28,29 @@
 
 using System;
 
-namespace WebSocketSharp.Frame
-{
+namespace WebSocketSharp.Frame {
+
+  /// <summary>
+  /// Contains the values of the MASK bit in the WebSocket data frame.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// The <b>Mask</b> enumeration contains the values of the <b>MASK</b> bit defined in
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+  /// </para>
+  /// <para>
+  /// The <b>MASK</b> bit indicates whether the payload data in a WebSocket frame is masked.
+  /// </para>
+  /// </remarks>
   public enum Mask : byte
   {
+    /// <summary>
+    /// Equivalent to numeric value 0. Indicates that the payload data in a frame is not masked, no masking key in this frame.
+    /// </summary>
     UNMASK = 0x0,
+    /// <summary>
+    /// Equivalent to numeric value 1. Indicates that the payload data in a frame is masked, a masking key is present in this frame.
+    /// </summary>
     MASK   = 0x1
   }
 }

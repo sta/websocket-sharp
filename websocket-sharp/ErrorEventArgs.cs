@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * ErrorEventArgs.cs
  *
  * The MIT License
@@ -28,15 +28,36 @@
 
 using System;
 
-namespace WebSocketSharp
-{
+namespace WebSocketSharp {
+
+  /// <summary>
+  /// Contains the event data associated with a error event.
+  /// </summary>
+  /// <remarks>
+  /// The error event occurs when this event sender gets an error.
+  /// If you want to get the error message, you should access the <see cref="ErrorEventArgs.Message"/> property.
+  /// </remarks>
   public class ErrorEventArgs : EventArgs
   {
-    public string Message { get; private set; }
+    #region Constructor
 
-    public ErrorEventArgs(string message)
+    internal ErrorEventArgs(string message)
     {
       Message = message;
     }
+
+    #endregion
+
+    #region Property
+
+    /// <summary>
+    /// Gets the error message.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains a error message.
+    /// </value>
+    public string Message { get; private set; }
+
+    #endregion
   }
 }

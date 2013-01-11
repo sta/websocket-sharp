@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * ResponseEventArgs.cs
  *
  * The MIT License

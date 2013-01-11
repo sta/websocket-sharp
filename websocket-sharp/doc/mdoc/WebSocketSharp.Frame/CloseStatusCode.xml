@@ -1,0 +1,246 @@
+<Type Name="CloseStatusCode" FullName="WebSocketSharp.Frame.CloseStatusCode">
+  <TypeSignature Language="C#" Value="public enum CloseStatusCode" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed CloseStatusCode extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>
+            Contains the values of the status codes for the WebSocket connection closure.
+            </summary>
+    <remarks>
+      <para>
+            The <b>CloseStatusCode</b> enumeration contains the values of the status codes for the WebSocket connection closure
+            defined in <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</a> for the WebSocket protocol.
+            </para>
+      <para>
+            "<b>Reserved value</b>" must not be set as a status code in a close control frame by an endpoint.
+            It is designated for use in applications expecting a status code to indicate that connection
+            was closed due to a system grounds.
+            </para>
+    </remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="ABNORMAL">
+      <MemberSignature Language="C#" Value="ABNORMAL" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode ABNORMAL = unsigned int16(1006)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1006. Indicates that the connection was closed abnormally. Reserved value.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="AWAY">
+      <MemberSignature Language="C#" Value="AWAY" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode AWAY = unsigned int16(1001)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1001. Indicates that an endpoint is "going away".
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="IGNORE_EXTENSION">
+      <MemberSignature Language="C#" Value="IGNORE_EXTENSION" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode IGNORE_EXTENSION = unsigned int16(1010)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1010. Indicates that an endpoint (client) is terminating the connection
+            because it has expected the server to negotiate one or more extension, but the server didn't return
+            them in the response message of the WebSocket handshake.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="INCONSISTENT_DATA">
+      <MemberSignature Language="C#" Value="INCONSISTENT_DATA" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode INCONSISTENT_DATA = unsigned int16(1007)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1007. Indicates that an endpoint is terminating the connection
+            because it has received data within a message that was not consistent with the type of the message.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="INCORRECT_DATA">
+      <MemberSignature Language="C#" Value="INCORRECT_DATA" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode INCORRECT_DATA = unsigned int16(1003)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1003. Indicates that an endpoint is terminating the connection
+            because it has received a type of data it cannot accept.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="NO_STATUS_CODE">
+      <MemberSignature Language="C#" Value="NO_STATUS_CODE" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode NO_STATUS_CODE = unsigned int16(1005)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1005. Indicates that no status code was actually present. Reserved value.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="NORMAL">
+      <MemberSignature Language="C#" Value="NORMAL" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode NORMAL = unsigned int16(1000)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1000. Indicates a normal closure.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="POLICY_VIOLATION">
+      <MemberSignature Language="C#" Value="POLICY_VIOLATION" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode POLICY_VIOLATION = unsigned int16(1008)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1008. Indicates that an endpoint is terminating the connection
+            because it has received a message that violates its policy.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PROTOCOL_ERROR">
+      <MemberSignature Language="C#" Value="PROTOCOL_ERROR" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode PROTOCOL_ERROR = unsigned int16(1002)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1002. Indicates that an endpoint is terminating the connection
+            due to a protocol error.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="SERVER_ERROR">
+      <MemberSignature Language="C#" Value="SERVER_ERROR" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode SERVER_ERROR = unsigned int16(1011)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1011. Indicates that a server is terminating the connection because it encountered
+            an unexpected condition that prevented it from fulfilling the request.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="TLS_HANDSHAKE_FAILURE">
+      <MemberSignature Language="C#" Value="TLS_HANDSHAKE_FAILURE" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode TLS_HANDSHAKE_FAILURE = unsigned int16(1015)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1015. Indicates that the connection was closed due to a failure to perform
+            a TLS handshake. Reserved value.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="TOO_BIG">
+      <MemberSignature Language="C#" Value="TOO_BIG" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode TOO_BIG = unsigned int16(1009)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1009. Indicates that an endpoint is terminating the connection
+            because it has received a message that is too big for it to process.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="UNDEFINED">
+      <MemberSignature Language="C#" Value="UNDEFINED" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode UNDEFINED = unsigned int16(1004)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to close status 1004. Still undefined. Reserved value.
+            </summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

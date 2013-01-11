@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * MessageEventArgs.cs
  *
  * The MIT License
@@ -30,58 +30,77 @@ using System;
 using System.Text;
 using WebSocketSharp.Frame;
 
-namespace WebSocketSharp
-{
+namespace WebSocketSharp {
+
+  /// <summary>
+  /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
+  /// </summary>
+  /// <remarks>
+  /// The <see cref="WebSocket.OnMessage"/> event occurs when the WebSocket receives a text or binary data frame.
+  /// If you want to get the received data, you should access the <see cref="MessageEventArgs.Data"/> or
+  /// <see cref="MessageEventArgs.RawData"/> properties.
+  /// </remarks>
   public class MessageEventArgs : EventArgs
   {
-    private Opcode      _type;
+    #region Fields
+
     private PayloadData _data;
+    private Opcode      _type;
 
-    public Opcode Type
-    {
-      get
-      {
-        return _type;
-      }
-    }
+    #endregion
 
-    public string Data
-    {
-      get
-      {
-        if (((Opcode.TEXT | Opcode.PING | Opcode.PONG) & _type) == _type)
-        {
-          if (_data.Length > 0)
-          {
-            return Encoding.UTF8.GetString(_data.ToBytes());
-          }
-          else
-          {
-            return String.Empty;
-          }
-        }
+    #region Constructor
 
-        return _type.ToString();
-      }
-    }
-
-    public byte[] RawData
-    {
-      get
-      {
-        return _data.ToBytes();
-      }
-    }
-
-    public MessageEventArgs(string data)
-    : this(Opcode.TEXT, new PayloadData(data))
-    {
-    }
-
-    public MessageEventArgs(Opcode type, PayloadData data)
+    internal MessageEventArgs(Opcode type, PayloadData data)
     {
       _type = type;
       _data = data;
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the received data as a <see cref="string"/>.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains a received data.
+    /// </value>
+    public string Data {
+      get {
+        return ((Opcode.TEXT | Opcode.PING | Opcode.PONG) & _type) == _type
+               ? _data.Length > 0
+                 ? Encoding.UTF8.GetString(_data.ToBytes())
+                 : String.Empty
+               : _type.ToString();
+      }
+    }
+
+    /// <summary>
+    /// Gets the received data as an array of <see cref="byte"/>.
+    /// </summary>
+    /// <value>
+    /// An array of <see cref="byte"/> that contains a received data.
+    /// </value>
+    public byte[] RawData {
+      get {
+        return _data.ToBytes();
+      }
+    }
+
+    /// <summary>
+    /// Gets the type of received data.
+    /// </summary>
+    /// <value>
+    /// One of the <see cref="WebSocketSharp.Frame.Opcode"/> that indicates the type of received data.
+    /// </value>
+    public Opcode Type {
+      get {
+        return _type;
+      }
+    }
+
+    #endregion
   }
 }

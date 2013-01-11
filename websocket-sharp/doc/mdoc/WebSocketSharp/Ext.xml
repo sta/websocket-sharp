@@ -1,0 +1,1333 @@
+<Type Name="Ext" FullName="WebSocketSharp.Ext">
+  <TypeSignature Language="C#" Value="public static class Ext" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract sealed beforefieldinit Ext extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>
+            Provides a set of static methods for the websocket-sharp.
+            </summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="AcceptWebSocket">
+      <MemberSignature Language="C#" Value="public static WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext AcceptWebSocket (this System.Net.Sockets.TcpClient client, bool secure);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext AcceptWebSocket(class System.Net.Sockets.TcpClient client, bool secure) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="client" Type="System.Net.Sockets.TcpClient" RefType="this" />
+        <Parameter Name="secure" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="client">
+            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains a TCP connection to accept a WebSocket connection from.
+            </param>
+        <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
+            </param>
+        <summary>
+            Accept a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
+            </summary>
+        <returns>
+            A <see cref="T:WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="client" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="Emit">
+      <MemberSignature Language="C#" Value="public static void Emit (this EventHandler eventHandler, object sender, EventArgs e);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Emit(class System.EventHandler eventHandler, object sender, class System.EventArgs e) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="eventHandler" Type="System.EventHandler" RefType="this" />
+        <Parameter Name="sender" Type="System.Object" />
+        <Parameter Name="e" Type="System.EventArgs" />
+      </Parameters>
+      <Docs>
+        <param name="eventHandler">
+            An <see cref="T:System.EventHandler" /> to emit.
+            </param>
+        <param name="sender">
+            An <see cref="T:System.Object" /> that emits the <paramref name="eventHandler" />.
+            </param>
+        <param name="e">
+            An <see cref="T:System.EventArgs" /> that contains no event data.
+            </param>
+        <summary>
+            Emit the specified <see cref="T:System.EventHandler" /> delegate if is not <see langword="null" />.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Emit&lt;TEventArgs&gt;">
+      <MemberSignature Language="C#" Value="public static void Emit&lt;TEventArgs&gt; (this EventHandler&lt;TEventArgs&gt; eventHandler, object sender, TEventArgs e) where TEventArgs : EventArgs;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Emit&lt;(class System.EventArgs) TEventArgs&gt;(class System.EventHandler`1&lt;!!TEventArgs&gt; eventHandler, object sender, !!TEventArgs e) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="TEventArgs">
+          <Constraints>
+            <BaseTypeName>System.EventArgs</BaseTypeName>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="eventHandler" Type="System.EventHandler&lt;TEventArgs&gt;" RefType="this" />
+        <Parameter Name="sender" Type="System.Object" />
+        <Parameter Name="e" Type="TEventArgs" />
+      </Parameters>
+      <Docs>
+        <typeparam name="TEventArgs">
+            The type of the event data generated by the event.
+            </typeparam>
+        <param name="eventHandler">
+            An <b>EventHandler&lt;TEventArgs&gt;</b> to emit.
+            </param>
+        <param name="sender">
+            An <see cref="T:System.Object" /> that emits the <paramref name="eventHandler" />.
+            </param>
+        <param name="e">
+            A <b>TEventArgs</b> that contains the event data.
+            </param>
+        <summary>
+            Emit the specified <b>EventHandler&lt;TEventArgs&gt;</b> delegate if is not <see langword="null" />.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="EqualsAndSaveTo">
+      <MemberSignature Language="C#" Value="public static bool EqualsAndSaveTo (this int value, char c, System.Collections.Generic.List&lt;byte&gt; dest);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool EqualsAndSaveTo(int32 value, char c, class System.Collections.Generic.List`1&lt;unsigned int8&gt; dest) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.Int32" RefType="this" />
+        <Parameter Name="c" Type="System.Char" />
+        <Parameter Name="dest" Type="System.Collections.Generic.List&lt;System.Byte&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="value">
+            An <see cref="T:System.Int32" /> to compare.
+            </param>
+        <param name="c">
+            A <see cref="T:System.Char" /> to compare.
+            </param>
+        <param name="dest">
+            A <strong>List&lt;byte&gt;</strong> to save the <paramref name="value" /> as <see cref="T:System.Byte" />.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.Int32" /> equals the specified <see cref="T:System.Char" /> as <see cref="T:System.Byte" />.
+            And save this specified <see cref="T:System.Int32" /> as <see cref="T:System.Byte" /> to the specified <strong>List&lt;byte&gt;</strong>.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="value" /> parameter equals the <paramref name="c" /> parameter as <see cref="T:System.Byte" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            Is thrown when the <paramref name="value" /> parameter passed to a method is invalid because it is outside the allowable range of values as <see cref="T:System.Byte" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="Exists">
+      <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+        <Parameter Name="name" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+        <summary>
+            Determines whether the entry with the specified key exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
+            </summary>
+        <returns>
+          <c>true</c> if the entry with the <paramref name="name" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Exists">
+      <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name, string value);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+        <Parameter Name="name" Type="System.String" />
+        <Parameter Name="value" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the entry to find.
+            </param>
+        <summary>
+            Determines whether the entry with the specified both key and value exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
+            </summary>
+        <returns>
+          <c>true</c> if the entry with the both <paramref name="name" /> and <paramref name="value" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetAbsolutePath">
+      <MemberSignature Language="C#" Value="public static string GetAbsolutePath (this Uri uri);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetAbsolutePath(class System.Uri uri) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.Uri" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="uri">
+            A <see cref="T:System.Uri" /> that contains the URI to get the absolute path from.
+            </param>
+        <summary>
+            Gets the absolute path from the specified <see cref="T:System.Uri" />.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that contains the absolute path if got successfully; otherwise, <see langword="null" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetDescription">
+      <MemberSignature Language="C#" Value="public static string GetDescription (this WebSocketSharp.Net.HttpStatusCode code);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetDescription(valuetype WebSocketSharp.Net.HttpStatusCode code) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="WebSocketSharp.Net.HttpStatusCode" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            One of <see cref="T:WebSocketSharp.Net.HttpStatusCode" /> values that contains the HTTP status code.
+            </param>
+        <summary>
+            Gets the description of the HTTP status code using the specified code.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetName">
+      <MemberSignature Language="C#" Value="public static string GetName (this string nameAndValue, string separator);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetName(string nameAndValue, string separator) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="nameAndValue" Type="System.String" RefType="this" />
+        <Parameter Name="separator" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="nameAndValue">
+            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </param>
+        <param name="separator">
+            A <see cref="T:System.String" /> that contains a separator string.
+            </param>
+        <summary>
+            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that contains the name if any; otherwise, <c>null</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetNameAndValue">
+      <MemberSignature Language="C#" Value="public static System.Collections.Generic.KeyValuePair&lt;string,string&gt; GetNameAndValue (this string nameAndValue, string separator);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype System.Collections.Generic.KeyValuePair`2&lt;string, string&gt; GetNameAndValue(string nameAndValue, string separator) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.KeyValuePair&lt;System.String,System.String&gt;</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="nameAndValue" Type="System.String" RefType="this" />
+        <Parameter Name="separator" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="nameAndValue">
+            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </param>
+        <param name="separator">
+            A <see cref="T:System.String" /> that contains a separator string.
+            </param>
+        <summary>
+            Gets the name and value from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </summary>
+        <returns>
+            A <b>KeyValuePair&lt;string, string&gt;</b> that contains the name and value if any.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetStatusDescription">
+      <MemberSignature Language="C#" Value="public static string GetStatusDescription (this int code);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetStatusDescription(int32 code) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="System.Int32" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            An <see cref="T:System.Int32" /> that contains the HTTP status code.
+            </param>
+        <summary>
+            Gets the description of the HTTP status code using the specified code.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetValue">
+      <MemberSignature Language="C#" Value="public static string GetValue (this string nameAndValue, string separator);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetValue(string nameAndValue, string separator) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="nameAndValue" Type="System.String" RefType="this" />
+        <Parameter Name="separator" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="nameAndValue">
+            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </param>
+        <param name="separator">
+            A <see cref="T:System.String" /> that contains a separator string.
+            </param>
+        <summary>
+            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that contains the value if any; otherwise, <c>null</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsEmpty">
+      <MemberSignature Language="C#" Value="public static bool IsEmpty (this string value);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEmpty(string value) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="value">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is a <see cref="F:System.String.Empty" />.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="value" /> parameter is a <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsHostOrder">
+      <MemberSignature Language="C#" Value="public static bool IsHostOrder (this WebSocketSharp.ByteOrder order);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsHostOrder(valuetype WebSocketSharp.ByteOrder order) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="order" Type="WebSocketSharp.ByteOrder" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="order">
+            A <see cref="T:WebSocketSharp.ByteOrder" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:WebSocketSharp.ByteOrder" /> is host (this computer architecture) byte order.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="order" /> parameter is host byte order; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsNull&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static bool IsNull&lt;T&gt; (this T obj) where T : class;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNull&lt;class T&gt;(!!T obj) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T">
+          <Constraints>
+            <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="obj" Type="T" RefType="this" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of the <paramref name="obj" /> parameter.
+            </typeparam>
+        <param name="obj">
+            A <b>class</b> to test.
+            </param>
+        <summary>
+            Determines whether the specified object is <see langword="null" />.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsNullDo&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static bool IsNullDo&lt;T&gt; (this T obj, Action act) where T : class;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullDo&lt;class T&gt;(!!T obj, class System.Action act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T">
+          <Constraints>
+            <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="obj" Type="T" RefType="this" />
+        <Parameter Name="act" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of the <paramref name="obj" /> parameter.
+            </typeparam>
+        <param name="obj">
+            A <b>class</b> to test.
+            </param>
+        <param name="act">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) called if the <paramref name="obj" /> is <see langword="null" />.
+            </param>
+        <summary>
+            Determines whether the specified object is <see langword="null" />.
+            And invokes the specified <see cref="T:System.Action" /> delegate if the specified object is <see langword="null" />.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsNullOrEmpty">
+      <MemberSignature Language="C#" Value="public static bool IsNullOrEmpty (this string value);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullOrEmpty(string value) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="value" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="value">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="value" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsPredefinedScheme">
+      <MemberSignature Language="C#" Value="public static bool IsPredefinedScheme (this string scheme);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsPredefinedScheme(string scheme) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="scheme" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="scheme">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is predefined scheme.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="scheme" /> parameter is the predefined scheme; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsValidAbsolutePath">
+      <MemberSignature Language="C#" Value="public static bool IsValidAbsolutePath (this string absPath, out string message);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsValidAbsolutePath(string absPath, string message) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="absPath" Type="System.String" RefType="this" />
+        <Parameter Name="message" Type="System.String&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="absPath">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <param name="message">
+            A <see cref="T:System.String" /> that receives a message if the <paramref name="absPath" /> is invalid.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is valid absolute path.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="absPath" /> parameter is valid absolute path; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="MaybeUri">
+      <MemberSignature Language="C#" Value="public static bool MaybeUri (this string uriString);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool MaybeUri(string uriString) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uriString" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="uriString">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is a URI string.
+            </summary>
+        <returns>
+          <c>true</c> if the <paramref name="uriString" /> parameter is maybe a URI string; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="NotEqual">
+      <MemberSignature Language="C#" Value="public static bool NotEqual (this string expected, string actual, bool ignoreCase);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool NotEqual(string expected, string actual, bool ignoreCase) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="expected" Type="System.String" RefType="this" />
+        <Parameter Name="actual" Type="System.String" />
+        <Parameter Name="ignoreCase" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="expected">
+            The first <see cref="T:System.String" /> to compare.
+            </param>
+        <param name="actual">
+            The second <see cref="T:System.String" /> to compare.
+            </param>
+        <param name="ignoreCase">
+            A <see cref="T:System.Boolean" /> that indicates a case-sensitive or insensitive comparison. (<c>true</c> indicates a case-insensitive comparison.)
+            </param>
+        <summary>
+            Determines whether two specified <see cref="T:System.String" /> objects don't have the same value.
+            </summary>
+        <returns>
+          <c>true</c> if the value of <paramref name="expected" /> parameter isn't the same as the value of <paramref name="actual" /> parameter; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ReadBytes">
+      <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, int length);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int32 length) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="stream" Type="System.IO.Stream" RefType="this" />
+        <Parameter Name="length" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="stream">
+            A <see cref="T:System.IO.Stream" /> that contains the data to read.
+            </param>
+        <param name="length">
+            An <see cref="T:System.Int32" /> that contains the number of bytes to read.
+            </param>
+        <summary>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> that receives the read data.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ReadBytes">
+      <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, long length);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="stream" Type="System.IO.Stream" RefType="this" />
+        <Parameter Name="length" Type="System.Int64" />
+      </Parameters>
+      <Docs>
+        <param name="stream">
+            A <see cref="T:System.IO.Stream" /> that contains the data to read.
+            </param>
+        <param name="length">
+            A <see cref="T:System.Int64" /> that contains the number of bytes to read.
+            </param>
+        <summary>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> that receives the read data.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ReadBytes">
+      <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, long length, int bufferLength);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length, int32 bufferLength) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="stream" Type="System.IO.Stream" RefType="this" />
+        <Parameter Name="length" Type="System.Int64" />
+        <Parameter Name="bufferLength" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <param name="stream">
+            A <see cref="T:System.IO.Stream" /> that contains the data to read.
+            </param>
+        <param name="length">
+            A <see cref="T:System.Int64" /> that contains the number of bytes to read.
+            </param>
+        <param name="bufferLength">
+            An <see cref="T:System.Int32" /> that contains the buffer size in bytes of each internal read.
+            </param>
+        <summary>
+            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> that receives the read data.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SubArray&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static T[] SubArray&lt;T&gt; (this T[] array, int startIndex, int length);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig !!T[] SubArray&lt;T&gt;(!!T[] array, int32 startIndex, int32 length) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>T[]</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T" />
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="array" Type="T[]" RefType="this" />
+        <Parameter Name="startIndex" Type="System.Int32" />
+        <Parameter Name="length" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of elements in the <paramref name="array" />.
+            </typeparam>
+        <param name="array">
+            An array of T that contains the data to retrieve a sub-array.
+            </param>
+        <param name="startIndex">
+            An <see cref="T:System.Int32" /> that contains the zero-based starting position of a sub-array in the <paramref name="array" />.
+            </param>
+        <param name="length">
+            An <see cref="T:System.Int32" /> that contains the number of elements to retrieve a sub-array.
+            </param>
+        <summary>
+            Retrieves a sub-array from the specified <paramref name="array" />. A sub-array starts at the specified element position.
+            </summary>
+        <returns>
+            An array of T that receives a sub-array, or an empty array of T if any problems with the parameters.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this int n, Action act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.Int32" RefType="this" />
+        <Parameter Name="act" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            </param>
+        <summary>
+            Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this int n, Action&lt;ulong&gt; act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.Int32" RefType="this" />
+        <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </param>
+        <summary>
+            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this long n, Action act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.Int64" RefType="this" />
+        <Parameter Name="act" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            </param>
+        <summary>
+            Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this long n, Action&lt;ulong&gt; act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.Int64" RefType="this" />
+        <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </param>
+        <summary>
+            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this uint n, Action act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.UInt32" RefType="this" />
+        <Parameter Name="act" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            </param>
+        <summary>
+            Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this uint n, Action&lt;ulong&gt; act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.UInt32" RefType="this" />
+        <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </param>
+        <summary>
+            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this ulong n, Action act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int64 n, class System.Action act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.UInt64" RefType="this" />
+        <Parameter Name="act" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            </param>
+        <summary>
+            Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Times">
+      <MemberSignature Language="C#" Value="public static void Times (this ulong n, Action&lt;ulong&gt; act);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int64 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="n" Type="System.UInt64" RefType="this" />
+        <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="n">
+            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            </param>
+        <param name="act">
+            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            </param>
+        <summary>
+            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="To&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static T To&lt;T&gt; (this byte[] src, WebSocketSharp.ByteOrder srcOrder) where T : struct;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig !!T To&lt;struct .ctor (class System.ValueType) T&gt;(unsigned int8[] src, valuetype WebSocketSharp.ByteOrder srcOrder) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>T</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T">
+          <Constraints>
+            <ParameterAttribute>DefaultConstructorConstraint</ParameterAttribute>
+            <ParameterAttribute>NotNullableValueTypeConstraint</ParameterAttribute>
+            <BaseTypeName>System.ValueType</BaseTypeName>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="src" Type="System.Byte[]" RefType="this" />
+        <Parameter Name="srcOrder" Type="WebSocketSharp.ByteOrder" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of the return value. The T must be a value type.
+            </typeparam>
+        <param name="src">
+            An array of <see cref="T:System.Byte" /> to convert.
+            </param>
+        <param name="srcOrder">
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            </param>
+        <summary>
+            Converts the specified array of <see cref="T:System.Byte" /> to the specified type data.
+            </summary>
+        <returns>
+            A T converted from the <paramref name="src" />, or a default value of T
+            if the <paramref name="src" /> is an empty array of <see cref="T:System.Byte" />
+            or if the types of T aren't the <see cref="T:System.Boolean" />, <see cref="T:System.Char" />, <see cref="T:System.Double" />,
+            <see cref="T:System.Single" />, <see cref="T:System.Int32" />, <see cref="T:System.Int64" />, <see cref="T:System.Int16" />,
+            <see cref="T:System.UInt32" />, <see cref="T:System.UInt64" />, <see cref="T:System.UInt16" />.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="ToBytes&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static byte[] ToBytes&lt;T&gt; (this T value, WebSocketSharp.ByteOrder order) where T : struct;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToBytes&lt;struct .ctor (class System.ValueType) T&gt;(!!T value, valuetype WebSocketSharp.ByteOrder order) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T">
+          <Constraints>
+            <ParameterAttribute>DefaultConstructorConstraint</ParameterAttribute>
+            <ParameterAttribute>NotNullableValueTypeConstraint</ParameterAttribute>
+            <BaseTypeName>System.ValueType</BaseTypeName>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="value" Type="T" RefType="this" />
+        <Parameter Name="order" Type="WebSocketSharp.ByteOrder" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of the <paramref name="value" />. The T must be a value type.
+            </typeparam>
+        <param name="value">
+            A T to convert.
+            </param>
+        <param name="order">
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the return.
+            </param>
+        <summary>
+            Converts the specified data to an array of <see cref="T:System.Byte" />.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> converted from the <paramref name="value" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ToHostOrder">
+      <MemberSignature Language="C#" Value="public static byte[] ToHostOrder (this byte[] src, WebSocketSharp.ByteOrder srcOrder);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToHostOrder(unsigned int8[] src, valuetype WebSocketSharp.ByteOrder srcOrder) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Byte[]</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="src" Type="System.Byte[]" RefType="this" />
+        <Parameter Name="srcOrder" Type="WebSocketSharp.ByteOrder" />
+      </Parameters>
+      <Docs>
+        <param name="src">
+            An array of <see cref="T:System.Byte" /> to convert.
+            </param>
+        <param name="srcOrder">
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            </param>
+        <summary>
+            Converts the order of the specified array of <see cref="T:System.Byte" /> to the host byte order.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> converted from the <paramref name="src" />.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="ToString&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static string ToString&lt;T&gt; (this T[] array, string separator);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string ToString&lt;T&gt;(!!T[] array, string separator) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T" />
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="array" Type="T[]" RefType="this" />
+        <Parameter Name="separator" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">
+            The type of elements in the <paramref name="array" />.
+            </typeparam>
+        <param name="array">
+            An array of T to convert.
+            </param>
+        <param name="separator">
+            A <see cref="T:System.String" /> that contains a separator string.
+            </param>
+        <summary>
+            Converts the specified array to a <see cref="T:System.String" /> concatenated the specified separator string
+            between each element of this array.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> converted from the <paramref name="array" /> parameter, or a <see cref="F:System.String.Empty" />
+            if the length of the <paramref name="array" /> is zero.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="array" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="ToUri">
+      <MemberSignature Language="C#" Value="public static Uri ToUri (this string uriString);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class System.Uri ToUri(string uriString) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Uri</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uriString" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="uriString">
+            A <see cref="T:System.String" /> to convert.
+            </param>
+        <summary>
+            Converts the specified <see cref="T:System.String" /> to a <see cref="T:System.Uri" /> object.
+            </summary>
+        <returns>
+            A <see cref="T:System.Uri" /> converted from the <paramref name="uriString" /> parameter, or <see langword="null" />
+            if the <paramref name="uriString" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryCreateWebSocketUri">
+      <MemberSignature Language="C#" Value="public static bool TryCreateWebSocketUri (this string uriString, out Uri result, out string message);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool TryCreateWebSocketUri(string uriString, class System.Uri result, string message) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uriString" Type="System.String" RefType="this" />
+        <Parameter Name="result" Type="System.Uri&amp;" RefType="out" />
+        <Parameter Name="message" Type="System.String&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="uriString">
+            A <see cref="T:System.String" /> that contains a WebSocket URI.
+            </param>
+        <param name="result">
+            When this method returns, contains a created WebSocket <see cref="T:System.Uri" /> if the <paramref name="uriString" /> parameter is valid WebSocket URI; otherwise, <see langword="null" />.
+            </param>
+        <param name="message">
+            When this method returns, contains a error message <see cref="T:System.String" /> if the <paramref name="uriString" /> parameter is invalid WebSocket URI; otherwise, <c>String.Empty</c>.
+            </param>
+        <summary>
+            Tries to create a new WebSocket <see cref="T:System.Uri" /> using the specified <paramref name="uriString" />.
+            </summary>
+        <returns>
+          <c>true</c> if the WebSocket <see cref="T:System.Uri" /> was successfully created; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="uriString" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="UrlDecode">
+      <MemberSignature Language="C#" Value="public static string UrlDecode (this string s);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlDecode(string s) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="s" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="s">
+            A <see cref="T:System.String" /> to decode.
+            </param>
+        <summary>
+            URL-decodes the specified <see cref="T:System.String" />.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that receives a decoded string, or the <paramref name="s" /> parameter
+            if the <paramref name="s" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="UrlEncode">
+      <MemberSignature Language="C#" Value="public static string UrlEncode (this string s);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig string UrlEncode(string s) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="s" Type="System.String" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="s">
+            A <see cref="T:System.String" /> to encode.
+            </param>
+        <summary>
+            URL-encodes the specified <see cref="T:System.String" />.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that receives a encoded string, or the <paramref name="s" /> parameter
+            if the <paramref name="s" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="WriteContent">
+      <MemberSignature Language="C#" Value="public static void WriteContent (this WebSocketSharp.Net.HttpListenerResponse response, byte[] content);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void WriteContent(class WebSocketSharp.Net.HttpListenerResponse response, unsigned int8[] content) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="response" Type="WebSocketSharp.Net.HttpListenerResponse" RefType="this" />
+        <Parameter Name="content" Type="System.Byte[]" />
+      </Parameters>
+      <Docs>
+        <param name="response">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains a network stream to write a content data.
+            </param>
+        <param name="content">
+            An array of <see cref="T:System.Byte" /> that contains a content data to write.
+            </param>
+        <summary>
+            Writes the specified content data using the specified <see cref="T:WebSocketSharp.Net.HttpListenerResponse" />.
+            </summary>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+            Is thrown when the <paramref name="response" /> parameter passed to a method is invalid because it is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

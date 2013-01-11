@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WsFrame.cs
  *
  * The MIT License

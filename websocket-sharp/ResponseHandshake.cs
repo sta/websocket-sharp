@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * ResponseHandshake.cs
  *
  * The MIT License
@@ -33,7 +33,7 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp {
 
-  public class ResponseHandshake : Handshake
+  internal class ResponseHandshake : Handshake
   {
     #region Constructor
 

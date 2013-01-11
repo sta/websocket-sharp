@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * TcpListenerWebSocketContext.cs
  *
  * The MIT License

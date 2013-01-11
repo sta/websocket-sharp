@@ -1,0 +1,123 @@
+<Type Name="Opcode" FullName="WebSocketSharp.Frame.Opcode">
+  <TypeSignature Language="C#" Value="public enum Opcode" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed Opcode extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Attributes>
+    <Attribute>
+      <AttributeName>System.Flags</AttributeName>
+    </Attribute>
+  </Attributes>
+  <Docs>
+    <summary>
+            Contains the values of the opcodes that denotes the frame type of the WebSocket frame.
+            </summary>
+    <remarks>
+            The <b>Opcode</b> enumeration contains the values of the opcodes defined in
+            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+            </remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="BINARY">
+      <MemberSignature Language="C#" Value="BINARY" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode BINARY = unsigned int8(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 2. Indicates a binary frame.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="CLOSE">
+      <MemberSignature Language="C#" Value="CLOSE" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode CLOSE = unsigned int8(8)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 8. Indicates a connection close frame.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="CONT">
+      <MemberSignature Language="C#" Value="CONT" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode CONT = unsigned int8(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 0. Indicates a continuation frame.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PING">
+      <MemberSignature Language="C#" Value="PING" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode PING = unsigned int8(9)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 9. Indicates a ping frame.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="PONG">
+      <MemberSignature Language="C#" Value="PONG" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode PONG = unsigned int8(10)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 10. Indicates a pong frame.
+            </summary>
+      </Docs>
+    </Member>
+    <Member MemberName="TEXT">
+      <MemberSignature Language="C#" Value="TEXT" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.Opcode TEXT = unsigned int8(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Frame.Opcode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Equivalent to numeric value 1. Indicates a text frame.
+            </summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

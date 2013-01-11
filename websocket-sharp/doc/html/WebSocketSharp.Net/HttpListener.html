@@ -1,0 +1,854 @@
+<html>
+  <head>
+    <title>WebSocketSharp.Net.HttpListener</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      a { text-decoration: none }
+
+      div.SideBar {
+        padding-left: 1em;
+        padding-right: 1em;
+        right: 0;
+        float: right;
+        border: thin solid black;
+        background-color: #f2f2f2;
+      }
+    
+      .CollectionTitle { font-weight: bold }
+      .PageTitle { font-size: 150%; font-weight: bold }
+
+      .Summary { }
+      .Signature { }          
+      .Remarks { }
+      .Members { }
+      .Copyright { }
+      
+      .Section { font-size: 125%; font-weight: bold }
+      p.Summary {
+        margin-left: 1em;
+      }
+      .SectionBox { margin-left: 2em }
+      .NamespaceName { font-size: 105%; font-weight: bold }
+      .NamespaceSumary { }
+      .MemberName { font-size: 115%; font-weight: bold; margin-top: 1em }
+      .Subsection { font-size: 105%; font-weight: bold }
+      .SubsectionBox { margin-left: 2em; margin-bottom: 1em }
+
+      .CodeExampleTable { background-color: #f5f5dd; border: thin solid black; padding: .25em; }
+      
+      .TypesListing {
+        border-collapse: collapse;
+      }
+
+      td {
+        vertical-align: top;
+      }
+      th {
+        text-align: left;
+      }
+
+      .TypesListing td { 
+        margin: 0px;  
+        padding: .25em;
+        border: solid gray 1px;
+      }
+
+      .TypesListing th { 
+        margin: 0px;  
+        padding: .25em;
+        background-color: #f2f2f2;
+        border: solid gray 1px;
+      }
+
+      div.Footer {
+        border-top: 1px solid gray;
+        margin-top: 1.5em;
+        padding-top: 0.6em;
+        text-align: center;
+        color: gray;
+      }
+
+      span.NotEntered /* Documentation for this section has not yet been entered */ {
+        font-style: italic;
+        color: red;	
+      }
+
+      div.Header {
+        background: #B0C4DE;
+        border: double;
+        border-color: white;
+        border-width: 7px;
+        padding: 0.5em;
+      }
+
+      div.Header * {
+        font-size: smaller;
+      }
+
+      div.Note {
+      }
+
+      i.ParamRef {
+      }
+
+      i.subtitle {
+      }
+
+      ul.TypeMembersIndex {
+        text-align: left;
+        background: #F8F8F8;
+      }
+
+      ul.TypeMembersIndex li {
+        display: inline;
+        margin:  0.5em;
+      }
+
+      table.HeaderTable {
+      }
+
+      table.SignatureTable {
+      }
+
+      table.Documentation, table.Enumeration, table.TypeDocumentation {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      table.Documentation tr th, table.TypeMembers tr th, table.Enumeration tr th, table.TypeDocumentation tr th {
+        background: whitesmoke;
+        padding: 0.8em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: bottom;
+      }
+
+      table.Documentation tr td, table.TypeMembers tr td, table.Enumeration tr td, table.TypeDocumentation tr td {
+        padding: 0.5em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      table.TypeMembers {
+        border: 1px solid #C0C0C0;
+        width: 100%;
+      }
+
+      table.TypeMembers tr td {
+        background: #F8F8F8;
+        border: white;
+      }
+
+      table.Documentation {
+      }
+
+      table.TypeMembers {
+      }
+
+      div.CodeExample {
+        width: 100%;
+        border: 1px solid #DDDDDD;
+        background-color: #F8F8F8;
+      }
+
+      div.CodeExample p {
+        margin: 0.5em;
+        border-bottom: 1px solid #DDDDDD;
+      }
+
+      div.CodeExample div {
+        margin: 0.5em;
+      }
+
+      h4 {
+        margin-bottom: 0;
+      }
+
+      div.Signature {
+        border: 1px solid #C0C0C0;
+        background: #F2F2F2;
+        padding: 1em;
+      }
+    </style>
+    <script type="text/JavaScript">
+      function toggle_display (block) {
+        var w = document.getElementById (block);
+        var t = document.getElementById (block + ":toggle");
+        if (w.style.display == "none") {
+          w.style.display = "block";
+          t.innerHTML = "⊟";
+        } else {
+          w.style.display = "none";
+          t.innerHTML = "⊞";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="CollectionTitle">
+      <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp.Net Namespace</a></div>
+    <div class="SideBar">
+      <p>
+        <a href="#T:WebSocketSharp.Net.HttpListener">Overview</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Net.HttpListener:Signature">Signature</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Net.HttpListener:Docs">Remarks</a>
+      </p>
+      <p>
+        <a href="#Members">Members</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Net.HttpListener:Members">Member Details</a>
+      </p>
+    </div>
+    <h1 class="PageTitle" id="T:WebSocketSharp.Net.HttpListener">HttpListener  Class</h1>
+    <p class="Summary" id="T:WebSocketSharp.Net.HttpListener:Summary">
+      <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+    </p>
+    <div id="T:WebSocketSharp.Net.HttpListener:Signature">
+      <h2>Syntax</h2>
+      <div class="Signature">public sealed class  <b>HttpListener</b> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IDisposable">IDisposable</a></div>
+    </div>
+    <div class="Remarks" id="T:WebSocketSharp.Net.HttpListener:Docs">
+      <h2 class="Section">Remarks</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Net.HttpListener:Docs:Remarks">
+        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+      </div>
+      <h2 class="Section">Requirements</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Net.HttpListener:Docs:Version Information">
+        <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+      <h2 class="Section" id="Members">Members</h2>
+      <div class="SectionBox" id="_Members">
+        <p>
+								See Also: Inherited members from
+								<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>.
+							</p>
+        <h2 class="Section">Public Constructors</h2>
+        <div class="SectionBox" id="Public Constructors">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Net.HttpListener">HttpListener</a>
+                    </b>()</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Properties</h2>
+        <div class="SectionBox" id="Public Properties">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes">AuthenticationSchemes</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp.Net/AuthenticationSchemes.html">AuthenticationSchemes</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate">AuthenticationSchemeSelectorDelegate</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp.Net/AuthenticationSchemeSelector.html">AuthenticationSchemeSelector</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions">IgnoreWriteExceptions</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.IsListening">IsListening</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div>static </div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.IsSupported">IsSupported</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.Prefixes">Prefixes</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp.Net/HttpListenerPrefixCollection.html">HttpListenerPrefixCollection</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.Realm">Realm</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication">UnsafeConnectionNtlmAuthentication</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Methods</h2>
+        <div class="SectionBox" id="Public Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.Abort">Abort</a>
+                  </b>()<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)">BeginGetContext</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.AsyncCallback">AsyncCallback</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IAsyncResult">IAsyncResult</a></nobr><blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.Close">Close</a>
+                  </b>()<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult)">EndGetContext</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IAsyncResult">IAsyncResult</a>)<nobr> : <a href="../WebSocketSharp.Net/HttpListenerContext.html">HttpListenerContext</a></nobr><blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.GetContext">GetContext</a>
+                  </b>()<nobr> : <a href="../WebSocketSharp.Net/HttpListenerContext.html">HttpListenerContext</a></nobr><blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.Start">Start</a>
+                  </b>()<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Net.HttpListener.Stop">Stop</a>
+                  </b>()<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Explicitly Implemented Interface Members</h2>
+        <div class="SectionBox" id="Explicitly Implemented Interface Members">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <a href="#M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose">
+                    <b>IDisposable.Dispose</b>
+                  </a>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Extension Methods</h2>
+        <div class="SectionBox" id="Extension Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Members" id="T:WebSocketSharp.Net.HttpListener:Members">
+      <h2 class="Section" id="MemberDetails">Member Details</h2>
+      <div class="SectionBox" id="_MemberDetails">
+        <h3 id="C:WebSocketSharp.Net.HttpListener">HttpListener Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Net.HttpListener:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>HttpListener</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Net.HttpListener:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Net.HttpListener:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.Abort">Abort Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.Abort:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Abort</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Abort:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Abort:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes">AuthenticationSchemes Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp.Net/AuthenticationSchemes.html">AuthenticationSchemes</a> <b>AuthenticationSchemes</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate">AuthenticationSchemeSelectorDelegate Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp.Net/AuthenticationSchemeSelector.html">AuthenticationSchemeSelector</a> <b>AuthenticationSchemeSelectorDelegate</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)">BeginGetContext Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IAsyncResult">IAsyncResult</a> <b>BeginGetContext</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.AsyncCallback">AsyncCallback</a> callback, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Object">object</a> state)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object):Parameters">
+            <dl>
+              <dt>
+                <i>callback</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+              <dt>
+                <i>state</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object):Returns">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.Close">Close Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.Close:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Close:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Close:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult)">EndGetContext Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp.Net/HttpListenerContext.html">HttpListenerContext</a> <b>EndGetContext</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.IAsyncResult">IAsyncResult</a> asyncResult)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult):Parameters">
+            <dl>
+              <dt>
+                <i>asyncResult</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult):Returns">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.GetContext">GetContext Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.GetContext:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp.Net/HttpListenerContext.html">HttpListenerContext</a> <b>GetContext</b> ()</div>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.GetContext:Returns">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.GetContext:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.GetContext:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions">IgnoreWriteExceptions Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IgnoreWriteExceptions</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.IsListening">IsListening Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.IsListening:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsListening</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.IsListening:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IsListening:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IsListening:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.IsSupported">IsSupported Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.IsSupported:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsSupported</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.IsSupported:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IsSupported:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IsSupported:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.Prefixes">Prefixes Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.Prefixes:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp.Net/HttpListenerPrefixCollection.html">HttpListenerPrefixCollection</a> <b>Prefixes</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.Realm">Realm Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.Realm:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Realm</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.Start">Start Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.Start:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Start</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Start:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Start:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.Stop">Stop Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.Stop:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Stop:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Stop:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose">System.IDisposable.Dispose Method</h3>
+        <blockquote id="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">
+            <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>System.IDisposable.Dispose</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication">UnsafeConnectionNtlmAuthentication Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>UnsafeConnectionNtlmAuthentication</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+      </div>
+    </div>
+    <hr size="1" />
+    <div class="Copyright">
+    </div>
+  </body>
+</html>

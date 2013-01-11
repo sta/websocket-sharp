@@ -1,0 +1,925 @@
+<html>
+  <head>
+    <title>WebSocketSharp.Server.WebSocketServer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      a { text-decoration: none }
+
+      div.SideBar {
+        padding-left: 1em;
+        padding-right: 1em;
+        right: 0;
+        float: right;
+        border: thin solid black;
+        background-color: #f2f2f2;
+      }
+    
+      .CollectionTitle { font-weight: bold }
+      .PageTitle { font-size: 150%; font-weight: bold }
+
+      .Summary { }
+      .Signature { }          
+      .Remarks { }
+      .Members { }
+      .Copyright { }
+      
+      .Section { font-size: 125%; font-weight: bold }
+      p.Summary {
+        margin-left: 1em;
+      }
+      .SectionBox { margin-left: 2em }
+      .NamespaceName { font-size: 105%; font-weight: bold }
+      .NamespaceSumary { }
+      .MemberName { font-size: 115%; font-weight: bold; margin-top: 1em }
+      .Subsection { font-size: 105%; font-weight: bold }
+      .SubsectionBox { margin-left: 2em; margin-bottom: 1em }
+
+      .CodeExampleTable { background-color: #f5f5dd; border: thin solid black; padding: .25em; }
+      
+      .TypesListing {
+        border-collapse: collapse;
+      }
+
+      td {
+        vertical-align: top;
+      }
+      th {
+        text-align: left;
+      }
+
+      .TypesListing td { 
+        margin: 0px;  
+        padding: .25em;
+        border: solid gray 1px;
+      }
+
+      .TypesListing th { 
+        margin: 0px;  
+        padding: .25em;
+        background-color: #f2f2f2;
+        border: solid gray 1px;
+      }
+
+      div.Footer {
+        border-top: 1px solid gray;
+        margin-top: 1.5em;
+        padding-top: 0.6em;
+        text-align: center;
+        color: gray;
+      }
+
+      span.NotEntered /* Documentation for this section has not yet been entered */ {
+        font-style: italic;
+        color: red;	
+      }
+
+      div.Header {
+        background: #B0C4DE;
+        border: double;
+        border-color: white;
+        border-width: 7px;
+        padding: 0.5em;
+      }
+
+      div.Header * {
+        font-size: smaller;
+      }
+
+      div.Note {
+      }
+
+      i.ParamRef {
+      }
+
+      i.subtitle {
+      }
+
+      ul.TypeMembersIndex {
+        text-align: left;
+        background: #F8F8F8;
+      }
+
+      ul.TypeMembersIndex li {
+        display: inline;
+        margin:  0.5em;
+      }
+
+      table.HeaderTable {
+      }
+
+      table.SignatureTable {
+      }
+
+      table.Documentation, table.Enumeration, table.TypeDocumentation {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      table.Documentation tr th, table.TypeMembers tr th, table.Enumeration tr th, table.TypeDocumentation tr th {
+        background: whitesmoke;
+        padding: 0.8em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: bottom;
+      }
+
+      table.Documentation tr td, table.TypeMembers tr td, table.Enumeration tr td, table.TypeDocumentation tr td {
+        padding: 0.5em;
+        border: 1px solid gray;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      table.TypeMembers {
+        border: 1px solid #C0C0C0;
+        width: 100%;
+      }
+
+      table.TypeMembers tr td {
+        background: #F8F8F8;
+        border: white;
+      }
+
+      table.Documentation {
+      }
+
+      table.TypeMembers {
+      }
+
+      div.CodeExample {
+        width: 100%;
+        border: 1px solid #DDDDDD;
+        background-color: #F8F8F8;
+      }
+
+      div.CodeExample p {
+        margin: 0.5em;
+        border-bottom: 1px solid #DDDDDD;
+      }
+
+      div.CodeExample div {
+        margin: 0.5em;
+      }
+
+      h4 {
+        margin-bottom: 0;
+      }
+
+      div.Signature {
+        border: 1px solid #C0C0C0;
+        background: #F2F2F2;
+        padding: 1em;
+      }
+    </style>
+    <script type="text/JavaScript">
+      function toggle_display (block) {
+        var w = document.getElementById (block);
+        var t = document.getElementById (block + ":toggle");
+        if (w.style.display == "none") {
+          w.style.display = "block";
+          t.innerHTML = "⊟";
+        } else {
+          w.style.display = "none";
+          t.innerHTML = "⊞";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="CollectionTitle">
+      <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp.Server Namespace</a></div>
+    <div class="SideBar">
+      <p>
+        <a href="#T:WebSocketSharp.Server.WebSocketServer">Overview</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Server.WebSocketServer:Signature">Signature</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Server.WebSocketServer:Docs">Remarks</a>
+      </p>
+      <p>
+        <a href="#Members">Members</a>
+      </p>
+      <p>
+        <a href="#T:WebSocketSharp.Server.WebSocketServer:Members">Member Details</a>
+      </p>
+    </div>
+    <h1 class="PageTitle" id="T:WebSocketSharp.Server.WebSocketServer">WebSocketServer  Class</h1>
+    <p class="Summary" id="T:WebSocketSharp.Server.WebSocketServer:Summary">
+      <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+    </p>
+    <div id="T:WebSocketSharp.Server.WebSocketServer:Signature">
+      <h2>Syntax</h2>
+      <div class="Signature">public class  <b>WebSocketServer</b> : <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a></div>
+    </div>
+    <div class="Remarks" id="T:WebSocketSharp.Server.WebSocketServer:Docs">
+      <h2 class="Section">Remarks</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Server.WebSocketServer:Docs:Remarks">
+        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+      </div>
+      <h2 class="Section">Requirements</h2>
+      <div class="SectionBox" id="T:WebSocketSharp.Server.WebSocketServer:Docs:Version Information">
+        <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+      <h2 class="Section" id="Members">Members</h2>
+      <div class="SectionBox" id="_Members">
+        <p>
+								See Also: Inherited members from
+								<a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.
+							</p>
+        <h2 class="Section">Public Constructors</h2>
+        <div class="SectionBox" id="Public Constructors">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer">WebSocketServer</a>
+                    </b>()</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer(System.Int32)">WebSocketServer</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer(System.String)">WebSocketServer</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean)">WebSocketServer</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32)">WebSocketServer</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>)</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <b>
+                      <a href="#C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean)">WebSocketServer</a>
+                    </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)</div>
+                </td>
+                <td>
+                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Properties</h2>
+        <div class="SectionBox" id="Public Properties">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#P:WebSocketSharp.Server.WebSocketServerBase.Address">Address</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>
+                  </i>. 
+            Gets the local IP address on which to listen for incoming connection attempts.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#P:WebSocketSharp.Server.WebSocketServerBase.IsSecure">IsSecure</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. 
+            Gets a value indicating whether this server is secure.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#P:WebSocketSharp.Server.WebSocketServerBase.IsSelfHost">IsSelfHost</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. 
+            Gets a value indicating whether this server is self host.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#P:WebSocketSharp.Server.WebSocketServerBase.Port">Port</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a>
+                  </i>. 
+            Gets the port on which to listen for incoming connection attempts.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Server.WebSocketServer.ServicePath">ServicePath</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.Server.WebSocketServer.Sweeped">Sweeped</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
+                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Protected Properties</h2>
+        <div class="SectionBox" id="Protected Properties">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#P:WebSocketSharp.Server.WebSocketServerBase.BaseUri">BaseUri</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>
+                  </i>. 
+            Gets or sets the WebSocket URL on which to listen for incoming connection attempts.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Methods</h2>
+        <div class="SectionBox" id="Public Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">AddService&lt;T&gt;</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String)">Broadcast</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#M:WebSocketSharp.Server.WebSocketServerBase.Start">Start</a>
+                  </b>()<blockquote>
+            Starts to receive the WebSocket connection requests.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>override </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Server.WebSocketServer.Stop">Stop</a>
+                  </b>()<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#M:WebSocketSharp.Server.WebSocketServerBase.Stop">Stop</a>
+                  </b>()<blockquote>
+            Stops receiving the WebSocket connection requests.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Protected Methods</h2>
+        <div class="SectionBox" id="Protected Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>override </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient)">AcceptWebSocket</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a>)<blockquote><span class="NotEntered">Documentation for this section has not yet been entered.</span></blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>abstract </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#M:WebSocketSharp.Server.WebSocketServerBase.AcceptWebSocket(System.Net.Sockets.TcpClient)">AcceptWebSocket</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a>)<blockquote>
+            Accepts the WebSocket connection.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#M:WebSocketSharp.Server.WebSocketServerBase.Error(System.String)">Error</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
+            Occurs the <a href="../WebSocketSharp.Server/WebSocketServerBase.html#E:WebSocketSharp.Server.WebSocketServerBase.OnError">WebSocketServerBase.OnError</a> event with the specified <i>message</i>.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Public Events</h2>
+        <div class="SectionBox" id="Public Events">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Server/WebSocketServerBase.html#E:WebSocketSharp.Server.WebSocketServerBase.OnError">OnError</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when this server gets an error.
+             (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <h2 class="Section">Extension Methods</h2>
+        <div class="SectionBox" id="Extension Methods">
+          <div class="SubsectionBox">
+            <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
+                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified object is <tt>null</tt>.
+            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Members" id="T:WebSocketSharp.Server.WebSocketServer:Members">
+      <h2 class="Section" id="MemberDetails">Member Details</h2>
+      <div class="SectionBox" id="_MemberDetails">
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer(System.Int32)">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer(System.Int32):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> port)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>port</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer(System.String)">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer(System.String):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> url)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>url</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean)">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> port, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean):Parameters">
+            <dl>
+              <dt>
+                <i>port</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+              <dt>
+                <i>secure</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Int32,System.Boolean):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32)">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> address, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> port)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32):Parameters">
+            <dl>
+              <dt>
+                <i>address</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+              <dt>
+                <i>port</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean)">WebSocketServer Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public  <b>WebSocketServer</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> address, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int32">int</a> port, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean):Parameters">
+            <dl>
+              <dt>
+                <i>address</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+              <dt>
+                <i>port</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+              <dt>
+                <i>secure</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="C:WebSocketSharp.Server.WebSocketServer(System.Net.IPAddress,System.Int32,System.Boolean):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient)">AcceptWebSocket Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">protected override <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AcceptWebSocket</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a> client)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient):Parameters">
+            <dl>
+              <dt>
+                <i>client</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">AddService&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AddService&lt;T&gt;</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> absPath)<br /> where T : <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a>, new()</div>
+          <h4 class="Subsection">Type Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Type Parameters">
+            <dl>
+              <dt>
+                <i>T</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>absPath</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String)">Broadcast Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String):member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Broadcast</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String):Parameters">
+            <dl>
+              <dt>
+                <i>data</i>
+              </dt>
+              <dd>
+                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Server.WebSocketServer.ServicePath">ServicePath Property</h3>
+        <blockquote id="P:WebSocketSharp.Server.WebSocketServer.ServicePath:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a> <b>ServicePath</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServer.ServicePath:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.ServicePath:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.ServicePath:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Server.WebSocketServer.Stop">Stop Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.Stop:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public override <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> ()</div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.Stop:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.Stop:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.Server.WebSocketServer.Sweeped">Sweeped Property</h3>
+        <blockquote id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:member">
+          <p class="Summary">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Value">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.36581</div>
+          <hr size="1" />
+        </blockquote>
+      </div>
+    </div>
+    <hr size="1" />
+    <div class="Copyright">
+    </div>
+  </body>
+</html>

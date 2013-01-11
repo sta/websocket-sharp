@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * SessionManager.cs
  *
  * The MIT License

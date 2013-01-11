@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WsStream.cs
  *
  * The MIT License

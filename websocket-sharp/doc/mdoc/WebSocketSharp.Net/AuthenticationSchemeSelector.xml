@@ -1,0 +1,23 @@
+<Type Name="AuthenticationSchemeSelector" FullName="WebSocketSharp.Net.AuthenticationSchemeSelector">
+  <TypeSignature Language="C#" Value="public delegate WebSocketSharp.Net.AuthenticationSchemes AuthenticationSchemeSelector(HttpListenerRequest httpRequest);" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed AuthenticationSchemeSelector extends System.MulticastDelegate" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyVersion>1.0.2.36581</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Delegate</BaseTypeName>
+  </Base>
+  <Parameters>
+    <Parameter Name="httpRequest" Type="WebSocketSharp.Net.HttpListenerRequest" />
+  </Parameters>
+  <ReturnValue>
+    <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
+  </ReturnValue>
+  <Docs>
+    <param name="httpRequest">To be added.</param>
+    <summary>To be added.</summary>
+    <returns>To be added.</returns>
+    <remarks>To be added.</remarks>
+  </Docs>
+</Type>

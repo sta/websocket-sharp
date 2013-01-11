@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# @(#) doc.sh ver.0.0.1 2013.01.11
+#
+# Usage:
+#   doc.sh
+#
+# Description:
+#   Creating documentation for websocket-sharp.
+#
+###########################################################################
+
+SRC_DIR="../bin/Release_Ubuntu"
+XML="${SRC_DIR}/websocket-sharp.xml"
+DLL="${SRC_DIR}/websocket-sharp.dll"
+
+DOC_DIR="."
+MDOC_DIR="${DOC_DIR}/mdoc"
+HTML_DIR="${DOC_DIR}/html"
+
+createDir() {
+  if [ -d $1 ]; then
+    rm -fr $1/*
+  else
+    mkdir -p $1
+  fi
+}
+
+set -e
+createDir ${MDOC_DIR}
+createDir ${HTML_DIR}
+mdoc update -i ${XML} -o ${MDOC_DIR}/ ${DLL}
+mdoc export-html -o ${HTML_DIR}/ ${MDOC_DIR}/

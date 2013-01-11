@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * WsReceivedTooBigMessageException.cs
  *
  * The MIT License

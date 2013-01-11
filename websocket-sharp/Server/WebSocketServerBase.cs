@@ -1,10 +1,10 @@
 #region MIT License
-/**
+/*
  * WebSocketServerBase.cs
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,12 @@ using System.Threading;
 
 namespace WebSocketSharp.Server {
 
+  /// <summary>
+  /// Provides the basic functions of the server that receives the WebSocket connection requests.
+  /// </summary>
+  /// <remarks>
+  /// The WebSocketServerBase class is an abstract class.
+  /// </remarks>
   public abstract class WebSocketServerBase {
 
     #region Fields
@@ -50,11 +56,27 @@ namespace WebSocketSharp.Server {
 
     #region Constructors
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class.
+    /// </summary>
     protected WebSocketServerBase()
     {
       _isSelfHost = false;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class that listens for incoming connection attempts
+    /// on the specified WebSocket URL.
+    /// </summary>
+    /// <param name="url">
+    /// A <see cref="string"/> that contains a WebSocket URL.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="url"/> is invalid.
+    /// </exception>
     protected WebSocketServerBase(string url)
     {
       if (url.IsNull())
@@ -68,6 +90,36 @@ namespace WebSocketSharp.Server {
       init(uri);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class that listens for incoming connection attempts
+    /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <param name="address">
+    /// An <see cref="IPAddress"/> that contains a local IP address.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="absPath">
+    /// A <see cref="string"/> that contains a absolute path.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Either <paramref name="address"/> or <paramref name="absPath"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <para>
+    /// <paramref name="absPath"/> is invalid.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </para>
+    /// </exception>
     protected WebSocketServerBase(IPAddress address, int port, string absPath, bool secure)
     {
       if (address.IsNull())
@@ -102,6 +154,12 @@ namespace WebSocketSharp.Server {
 
     #region Protected Property
 
+    /// <summary>
+    /// Gets or sets the WebSocket URL on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Uri"/> that contains a WebSocket URL.
+    /// </value>
     protected Uri BaseUri
     {
       get {
@@ -117,24 +175,48 @@ namespace WebSocketSharp.Server {
 
     #region Public Properties
 
+    /// <summary>
+    /// Gets the local IP address on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// A <see cref="IPAddress"/> that contains a local IP address.
+    /// </value>
     public IPAddress Address {
       get {
         return _address;
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this server is secure.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this server is secure; otherwise, <c>false</c>.
+    /// </value>
     public bool IsSecure {
       get {
         return _isSecure;
       }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this server is self host.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this server is self host; otherwise, <c>false</c>.
+    /// </value>
     public bool IsSelfHost {
       get {
         return _isSelfHost;
       }
     }
-    
+
+    /// <summary>
+    /// Gets the port on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains a port number.
+    /// </value>
     public int Port {
       get {
         return _port;
@@ -143,8 +225,11 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Events
+    #region Event
 
+    /// <summary>
+    /// Occurs when this server gets an error.
+    /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 
     #endregion
@@ -249,8 +334,20 @@ namespace WebSocketSharp.Server {
 
     #region Protected Methods
 
+    /// <summary>
+    /// Accepts the WebSocket connection.
+    /// </summary>
+    /// <param name="client">
+    /// A <see cref="TcpClient"/> that contains the WebSocket connection.
+    /// </param>
     protected abstract void AcceptWebSocket(TcpClient client);
 
+    /// <summary>
+    /// Occurs the <see cref="WebSocketServerBase.OnError"/> event with the specified <paramref name="message"/>.
+    /// </summary>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains an error message.
+    /// </param>
     protected virtual void Error(string message)
     {
       onError(message);
@@ -260,6 +357,9 @@ namespace WebSocketSharp.Server {
 
     #region Public Methods
 
+    /// <summary>
+    /// Starts to receive the WebSocket connection requests.
+    /// </summary>
     public virtual void Start()
     {
       if (!_isSelfHost)
@@ -269,6 +369,9 @@ namespace WebSocketSharp.Server {
       startAcceptClientThread();
     }
 
+    /// <summary>
+    /// Stops receiving the WebSocket connection requests.
+    /// </summary>
     public virtual void Stop()
     {
       if (!_isSelfHost)

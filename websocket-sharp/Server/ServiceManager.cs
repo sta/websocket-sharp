@@ -1,5 +1,5 @@
 #region MIT License
-/**
+/*
  * ServiceManager.cs
  *
  * The MIT License
