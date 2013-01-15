@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebSocketSharp.Frame {
+namespace WebSocketSharp {
 
-  public class WsFrame : IEnumerable<byte>
+  internal class WsFrame : IEnumerable<byte>
   {
     #region Field
 

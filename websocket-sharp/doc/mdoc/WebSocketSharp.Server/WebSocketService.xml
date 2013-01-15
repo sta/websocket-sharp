@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract beforefieldinit WebSocketService extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -19,7 +19,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -32,7 +32,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Bind(class WebSocketSharp.WebSocket socket, class WebSocketSharp.Server.SessionManager sessions) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -53,7 +53,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string ID" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -69,7 +69,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsBound" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -85,7 +85,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void OnClose(object sender, class WebSocketSharp.CloseEventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -106,7 +106,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void OnError(object sender, class WebSocketSharp.ErrorEventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -127,7 +127,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void OnMessage(object sender, class WebSocketSharp.MessageEventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -148,7 +148,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void OnOpen(object sender, class System.EventArgs e) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -169,7 +169,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool Ping() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -186,7 +186,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool Ping(string message) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -206,7 +206,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.Collections.Generic.Dictionary`2&lt;string, bool&gt; PingAround() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.Dictionary&lt;System.String,System.Boolean&gt;</ReturnType>
@@ -223,7 +223,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class System.Collections.Generic.Dictionary`2&lt;string, bool&gt; PingAround(string message) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.Dictionary&lt;System.String,System.Boolean&gt;</ReturnType>
@@ -243,7 +243,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool PingTo(string id) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -263,7 +263,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance bool PingTo(string id, string message) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -285,7 +285,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Publish(unsigned int8[] data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -304,7 +304,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Publish(string data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -323,7 +323,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection QueryString" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
@@ -339,7 +339,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Send(unsigned int8[] data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -358,7 +358,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Send(string data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -377,7 +377,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendTo(string id, unsigned int8[] data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -398,7 +398,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SendTo(string id, string data) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -419,7 +419,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Server.SessionManager Sessions" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Server.SessionManager</ReturnType>
@@ -435,7 +435,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -451,7 +451,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -467,7 +467,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop(unsigned int16 code, string reason) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -484,17 +484,17 @@
       </Docs>
     </Member>
     <Member MemberName="Stop">
-      <MemberSignature Language="C#" Value="public void Stop (WebSocketSharp.Frame.CloseStatusCode code, string reason);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop(valuetype WebSocketSharp.Frame.CloseStatusCode code, string reason) cil managed" />
+      <MemberSignature Language="C#" Value="public void Stop (WebSocketSharp.CloseStatusCode code, string reason);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop(valuetype WebSocketSharp.CloseStatusCode code, string reason) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="code" Type="WebSocketSharp.Frame.CloseStatusCode" />
+        <Parameter Name="code" Type="WebSocketSharp.CloseStatusCode" />
         <Parameter Name="reason" Type="System.String" />
       </Parameters>
       <Docs>

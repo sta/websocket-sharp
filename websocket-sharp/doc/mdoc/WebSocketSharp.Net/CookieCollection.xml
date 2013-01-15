@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable beforefieldinit CookieCollection extends System.Object implements class System.Collections.ICollection, class System.Collections.IEnumerable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -23,7 +23,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -36,7 +36,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(class WebSocketSharp.Net.Cookie cookie) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -55,7 +55,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(class WebSocketSharp.Net.CookieCollection cookies) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -74,7 +74,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void CopyTo(class System.Array array, int32 index) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -95,7 +95,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void CopyTo(class WebSocketSharp.Net.Cookie[] array, int32 index) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -116,7 +116,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -132,7 +132,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Collections.IEnumerator GetEnumerator() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.IEnumerator</ReturnType>
@@ -149,7 +149,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsReadOnly" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -165,7 +165,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance bool IsSynchronized" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -181,7 +181,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.Cookie Item(int32)" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.Cookie</ReturnType>
@@ -201,7 +201,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.Cookie Item(string)" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.Cookie</ReturnType>
@@ -221,7 +221,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance object SyncRoot" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Object</ReturnType>

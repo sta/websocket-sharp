@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,12 +30,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
-using WebSocketSharp.Frame;
 
 namespace WebSocketSharp.Server {
 
-  public abstract class WebSocketService
-  {
+  public abstract class WebSocketService {
+
     #region Private Fields
 
     private SessionManager _sessions;

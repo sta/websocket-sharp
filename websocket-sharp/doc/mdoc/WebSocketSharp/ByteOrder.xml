@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed ByteOrder extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -20,7 +20,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.ByteOrder BIG = unsigned int8(1)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.ByteOrder</ReturnType>
@@ -36,7 +36,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.ByteOrder LITTLE = unsigned int8(0)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.ByteOrder</ReturnType>

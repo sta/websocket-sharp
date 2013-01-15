@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpVersion extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -19,7 +19,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -32,7 +32,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static initonly class System.Version Version10" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Version</ReturnType>
@@ -47,7 +47,7 @@
       <MemberSignature Language="ILAsm" Value=".field public static initonly class System.Version Version11" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Version</ReturnType>

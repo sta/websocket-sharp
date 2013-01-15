@@ -3,7 +3,7 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable WebHeaderCollection extends System.Collections.Specialized.NameValueCollection implements class System.Runtime.Serialization.ISerializable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Collections.Specialized.NameValueCollection</BaseTypeName>
@@ -28,7 +28,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <Parameters />
       <Docs>
@@ -41,7 +41,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Constructor</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <Parameters>
         <Parameter Name="serializationInfo" Type="System.Runtime.Serialization.SerializationInfo" />
@@ -59,7 +59,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(string header) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -78,7 +78,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(valuetype System.Net.HttpRequestHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -99,7 +99,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(valuetype System.Net.HttpResponseHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -120,7 +120,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Add(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -141,7 +141,7 @@
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig instance void AddWithoutValidate(string headerName, string headerValue) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -162,7 +162,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string[] AllKeys" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -178,7 +178,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Clear() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -194,7 +194,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
@@ -210,7 +210,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string Get(int32 index) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -230,7 +230,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string Get(string name) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -250,7 +250,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance class System.Collections.IEnumerator GetEnumerator() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.IEnumerator</ReturnType>
@@ -267,7 +267,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string GetKey(int32 index) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -287,7 +287,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void GetObjectData(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -308,7 +308,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string[] GetValues(int32 index) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -328,7 +328,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string[] GetValues(string header) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
@@ -348,7 +348,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsRestricted(string headerName) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -368,7 +368,7 @@
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsRestricted(string headerName, bool response) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
@@ -390,7 +390,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string Item(valuetype System.Net.HttpRequestHeader)" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -410,7 +410,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance string Item(valuetype System.Net.HttpResponseHeader)" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
@@ -430,7 +430,7 @@
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameObjectCollectionBase/KeysCollection Keys" />
       <MemberType>Property</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameObjectCollectionBase+KeysCollection</ReturnType>
@@ -446,7 +446,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void OnDeserialization(object sender) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -465,7 +465,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Remove(valuetype System.Net.HttpRequestHeader header) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -484,7 +484,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Remove(valuetype System.Net.HttpResponseHeader header) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -503,7 +503,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Remove(string name) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -522,7 +522,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(valuetype System.Net.HttpRequestHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -543,7 +543,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(valuetype System.Net.HttpResponseHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -564,7 +564,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Set(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -585,7 +585,7 @@
       <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void System.Runtime.Serialization.ISerializable.GetObjectData(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -606,7 +606,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] ToByteArray() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
@@ -623,7 +623,7 @@
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string ToString() cil managed" />
       <MemberType>Method</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>

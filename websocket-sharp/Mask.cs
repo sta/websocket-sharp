@@ -1,10 +1,10 @@
 #region MIT License
 /*
- * Fin.cs
+ * Mask.cs
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,29 +28,11 @@
 
 using System;
 
-namespace WebSocketSharp.Frame {
+namespace WebSocketSharp {
 
-  /// <summary>
-  /// Contains the values of the FIN bit in the WebSocket data frame.
-  /// </summary>
-  /// <remarks>
-  /// <para>
-  /// The <b>Fin</b> enumeration contains the values of the <b>FIN</b> bit defined in
-  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
-  /// </para>
-  /// <para>
-  /// The <b>FIN</b> bit indicates whether a WebSocket frame is the final fragment in a message.
-  /// </para>
-  /// </remarks>
-  public enum Fin : byte
+  internal enum Mask : byte
   {
-    /// <summary>
-    /// Equivalent to numeric value 0. Indicates that more frames follow.
-    /// </summary>
-    MORE  = 0x0,
-    /// <summary>
-    /// Equivalent to numeric value 1. Indicates a final frame.
-    /// </summary>
-    FINAL = 0x1
+    UNMASK = 0x0,
+    MASK   = 0x1
   }
 }

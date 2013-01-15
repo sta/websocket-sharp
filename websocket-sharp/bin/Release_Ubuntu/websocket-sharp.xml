@@ -669,7 +669,7 @@
             Gets the type of received data.
             </summary>
             <value>
-            One of the <see cref="T:WebSocketSharp.Frame.Opcode" /> that indicates the type of received data.
+            One of the <see cref="!:WebSocketSharp.Frame.Opcode" /> that indicates the type of received data.
             </value>
         </member>
         <member name="T:WebSocketSharp.CloseEventArgs">
@@ -719,207 +719,6 @@
         <member name="F:WebSocketSharp.ByteOrder.BIG">
             <summary>
             Indicates a Big-endian.
-            </summary>
-        </member>
-        <member name="T:WebSocketSharp.Frame.CloseStatusCode">
-            <summary>
-            Contains the values of the status codes for the WebSocket connection closure.
-            </summary>
-            <remarks>
-                <para>
-            The <b>CloseStatusCode</b> enumeration contains the values of the status codes for the WebSocket connection closure
-            defined in <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</a> for the WebSocket protocol.
-            </para>
-                <para>
-            "<b>Reserved value</b>" must not be set as a status code in a close control frame by an endpoint.
-            It is designated for use in applications expecting a status code to indicate that connection
-            was closed due to a system grounds.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.NORMAL">
-            <summary>
-            Equivalent to close status 1000. Indicates a normal closure.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.AWAY">
-            <summary>
-            Equivalent to close status 1001. Indicates that an endpoint is "going away".
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.PROTOCOL_ERROR">
-            <summary>
-            Equivalent to close status 1002. Indicates that an endpoint is terminating the connection
-            due to a protocol error.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.INCORRECT_DATA">
-            <summary>
-            Equivalent to close status 1003. Indicates that an endpoint is terminating the connection
-            because it has received a type of data it cannot accept.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.UNDEFINED">
-            <summary>
-            Equivalent to close status 1004. Still undefined. Reserved value.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.NO_STATUS_CODE">
-            <summary>
-            Equivalent to close status 1005. Indicates that no status code was actually present. Reserved value.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.ABNORMAL">
-            <summary>
-            Equivalent to close status 1006. Indicates that the connection was closed abnormally. Reserved value.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.INCONSISTENT_DATA">
-            <summary>
-            Equivalent to close status 1007. Indicates that an endpoint is terminating the connection
-            because it has received data within a message that was not consistent with the type of the message.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.POLICY_VIOLATION">
-            <summary>
-            Equivalent to close status 1008. Indicates that an endpoint is terminating the connection
-            because it has received a message that violates its policy.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.TOO_BIG">
-            <summary>
-            Equivalent to close status 1009. Indicates that an endpoint is terminating the connection
-            because it has received a message that is too big for it to process.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.IGNORE_EXTENSION">
-            <summary>
-            Equivalent to close status 1010. Indicates that an endpoint (client) is terminating the connection
-            because it has expected the server to negotiate one or more extension, but the server didn't return
-            them in the response message of the WebSocket handshake.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.SERVER_ERROR">
-            <summary>
-            Equivalent to close status 1011. Indicates that a server is terminating the connection because it encountered
-            an unexpected condition that prevented it from fulfilling the request.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.CloseStatusCode.TLS_HANDSHAKE_FAILURE">
-            <summary>
-            Equivalent to close status 1015. Indicates that the connection was closed due to a failure to perform
-            a TLS handshake. Reserved value.
-            </summary>
-        </member>
-        <member name="T:WebSocketSharp.Frame.Fin">
-            <summary>
-            Contains the values of the FIN bit in the WebSocket data frame.
-            </summary>
-            <remarks>
-                <para>
-            The <b>Fin</b> enumeration contains the values of the <b>FIN</b> bit defined in
-            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
-            </para>
-                <para>
-            The <b>FIN</b> bit indicates whether a WebSocket frame is the final fragment in a message.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Fin.MORE">
-            <summary>
-            Equivalent to numeric value 0. Indicates that more frames follow.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Fin.FINAL">
-            <summary>
-            Equivalent to numeric value 1. Indicates a final frame.
-            </summary>
-        </member>
-        <member name="T:WebSocketSharp.Frame.Mask">
-            <summary>
-            Contains the values of the MASK bit in the WebSocket data frame.
-            </summary>
-            <remarks>
-                <para>
-            The <b>Mask</b> enumeration contains the values of the <b>MASK</b> bit defined in
-            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
-            </para>
-                <para>
-            The <b>MASK</b> bit indicates whether the payload data in a WebSocket frame is masked.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Mask.UNMASK">
-            <summary>
-            Equivalent to numeric value 0. Indicates that the payload data in a frame is not masked, no masking key in this frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Mask.MASK">
-            <summary>
-            Equivalent to numeric value 1. Indicates that the payload data in a frame is masked, a masking key is present in this frame.
-            </summary>
-        </member>
-        <member name="T:WebSocketSharp.Frame.Opcode">
-            <summary>
-            Contains the values of the opcodes that denotes the frame type of the WebSocket frame.
-            </summary>
-            <remarks>
-            The <b>Opcode</b> enumeration contains the values of the opcodes defined in
-            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
-            </remarks>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.CONT">
-            <summary>
-            Equivalent to numeric value 0. Indicates a continuation frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.TEXT">
-            <summary>
-            Equivalent to numeric value 1. Indicates a text frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.BINARY">
-            <summary>
-            Equivalent to numeric value 2. Indicates a binary frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.CLOSE">
-            <summary>
-            Equivalent to numeric value 8. Indicates a connection close frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.PING">
-            <summary>
-            Equivalent to numeric value 9. Indicates a ping frame.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Opcode.PONG">
-            <summary>
-            Equivalent to numeric value 10. Indicates a pong frame.
-            </summary>
-        </member>
-        <member name="T:WebSocketSharp.Frame.Rsv">
-            <summary>
-            Contains the values of the reserved bit in the WebSocket data frame.
-            </summary>
-            <remarks>
-                <para>
-            The <b>Rsv</b> enumeration contains the values of the reserved bit (<b>RSV1, RSV2, RSV3</b>) defined in
-            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
-            </para>
-                <para>
-            The reserved bit must be zero unless an extension is negotiated that defines meanings for non-zero values.
-            </para>
-            </remarks>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Rsv.OFF">
-            <summary>
-            Equivalent to numeric value 0.
-            </summary>
-        </member>
-        <member name="F:WebSocketSharp.Frame.Rsv.ON">
-            <summary>
-            Equivalent to numeric value 1.
             </summary>
         </member>
         <member name="T:WebSocketSharp.ErrorEventArgs">
@@ -1066,12 +865,12 @@
             Closes the connection and releases all associated resources after sends a Close control frame.
             </summary>
         </member>
-        <member name="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode)">
+        <member name="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode)">
             <summary>
             Closes the connection and releases all associated resources after sends a Close control frame.
             </summary>
             <param name="code">
-            A <see cref="T:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Close(System.UInt16)">
@@ -1082,12 +881,12 @@
             A <see cref="T:System.UInt16" /> that contains a status code indicating a reason for closure.
             </param>
         </member>
-        <member name="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.Frame.CloseStatusCode,System.String)">
+        <member name="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">
             <summary>
             Closes the connection and releases all associated resources after sends a Close control frame.
             </summary>
             <param name="code">
-            A <see cref="T:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
             <param name="reason">
             A <see cref="T:System.String" /> that contains a reason for closure.
@@ -1394,6 +1193,135 @@
         <member name="M:WebSocketSharp.Server.IServiceHost.Stop">
             <summary>
             Stops the WebSocket service host.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.CloseStatusCode">
+            <summary>
+            Contains the values of the status codes for the WebSocket connection closure.
+            </summary>
+            <remarks>
+                <para>
+            The <b>CloseStatusCode</b> enumeration contains the values of the status codes for the WebSocket connection closure
+            defined in <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</a> for the WebSocket protocol.
+            </para>
+                <para>
+            "<b>Reserved value</b>" must not be set as a status code in a close control frame by an endpoint.
+            It is designated for use in applications expecting a status code to indicate that connection
+            was closed due to a system grounds.
+            </para>
+            </remarks>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.NORMAL">
+            <summary>
+            Equivalent to close status 1000. Indicates a normal closure.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.AWAY">
+            <summary>
+            Equivalent to close status 1001. Indicates that an endpoint is "going away".
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.PROTOCOL_ERROR">
+            <summary>
+            Equivalent to close status 1002. Indicates that an endpoint is terminating the connection
+            due to a protocol error.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.INCORRECT_DATA">
+            <summary>
+            Equivalent to close status 1003. Indicates that an endpoint is terminating the connection
+            because it has received a type of data it cannot accept.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.UNDEFINED">
+            <summary>
+            Equivalent to close status 1004. Still undefined. Reserved value.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.NO_STATUS_CODE">
+            <summary>
+            Equivalent to close status 1005. Indicates that no status code was actually present. Reserved value.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.ABNORMAL">
+            <summary>
+            Equivalent to close status 1006. Indicates that the connection was closed abnormally. Reserved value.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.INCONSISTENT_DATA">
+            <summary>
+            Equivalent to close status 1007. Indicates that an endpoint is terminating the connection
+            because it has received data within a message that was not consistent with the type of the message.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.POLICY_VIOLATION">
+            <summary>
+            Equivalent to close status 1008. Indicates that an endpoint is terminating the connection
+            because it has received a message that violates its policy.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.TOO_BIG">
+            <summary>
+            Equivalent to close status 1009. Indicates that an endpoint is terminating the connection
+            because it has received a message that is too big for it to process.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.IGNORE_EXTENSION">
+            <summary>
+            Equivalent to close status 1010. Indicates that an endpoint (client) is terminating the connection
+            because it has expected the server to negotiate one or more extension, but the server didn't return
+            them in the response message of the WebSocket handshake.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.SERVER_ERROR">
+            <summary>
+            Equivalent to close status 1011. Indicates that a server is terminating the connection because it encountered
+            an unexpected condition that prevented it from fulfilling the request.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CloseStatusCode.TLS_HANDSHAKE_FAILURE">
+            <summary>
+            Equivalent to close status 1015. Indicates that the connection was closed due to a failure to perform
+            a TLS handshake. Reserved value.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.Opcode">
+            <summary>
+            Contains the values of the opcodes that denotes the frame type of the WebSocket frame.
+            </summary>
+            <remarks>
+            The <b>Opcode</b> enumeration contains the values of the opcodes defined in
+            <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+            </remarks>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.CONT">
+            <summary>
+            Equivalent to numeric value 0. Indicates a continuation frame.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.TEXT">
+            <summary>
+            Equivalent to numeric value 1. Indicates a text frame.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.BINARY">
+            <summary>
+            Equivalent to numeric value 2. Indicates a binary frame.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.CLOSE">
+            <summary>
+            Equivalent to numeric value 8. Indicates a connection close frame.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.PING">
+            <summary>
+            Equivalent to numeric value 9. Indicates a ping frame.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Opcode.PONG">
+            <summary>
+            Equivalent to numeric value 10. Indicates a pong frame.
             </summary>
         </member>
     </members>

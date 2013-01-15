@@ -69,13 +69,6 @@
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="WsReceivedTooBigMessageException.cs" />
     <Compile Include="ByteOrder.cs" />
-    <Compile Include="Frame\WsFrame.cs" />
-    <Compile Include="Frame\CloseStatusCode.cs" />
-    <Compile Include="Frame\Fin.cs" />
-    <Compile Include="Frame\Mask.cs" />
-    <Compile Include="Frame\Opcode.cs" />
-    <Compile Include="Frame\PayloadData.cs" />
-    <Compile Include="Frame\Rsv.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
@@ -120,10 +113,16 @@
     <Compile Include="Server\SessionManager.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="Server\ServiceManager.cs" />
+    <Compile Include="CloseStatusCode.cs" />
+    <Compile Include="Fin.cs" />
+    <Compile Include="Mask.cs" />
+    <Compile Include="Opcode.cs" />
+    <Compile Include="PayloadData.cs" />
+    <Compile Include="Rsv.cs" />
+    <Compile Include="WsFrame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Frame\" />
     <Folder Include="Server\" />
     <Folder Include="Net\" />
     <Folder Include="Net\Sockets\" />

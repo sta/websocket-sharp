@@ -1,9 +1,9 @@
-<Type Name="CloseStatusCode" FullName="WebSocketSharp.Frame.CloseStatusCode">
+<Type Name="CloseStatusCode" FullName="WebSocketSharp.CloseStatusCode">
   <TypeSignature Language="C#" Value="public enum CloseStatusCode" />
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed CloseStatusCode extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -27,13 +27,13 @@
   <Members>
     <Member MemberName="ABNORMAL">
       <MemberSignature Language="C#" Value="ABNORMAL" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode ABNORMAL = unsigned int16(1006)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode ABNORMAL = unsigned int16(1006)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -43,13 +43,13 @@
     </Member>
     <Member MemberName="AWAY">
       <MemberSignature Language="C#" Value="AWAY" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode AWAY = unsigned int16(1001)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode AWAY = unsigned int16(1001)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -59,13 +59,13 @@
     </Member>
     <Member MemberName="IGNORE_EXTENSION">
       <MemberSignature Language="C#" Value="IGNORE_EXTENSION" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode IGNORE_EXTENSION = unsigned int16(1010)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode IGNORE_EXTENSION = unsigned int16(1010)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -77,13 +77,13 @@
     </Member>
     <Member MemberName="INCONSISTENT_DATA">
       <MemberSignature Language="C#" Value="INCONSISTENT_DATA" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode INCONSISTENT_DATA = unsigned int16(1007)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode INCONSISTENT_DATA = unsigned int16(1007)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -94,13 +94,13 @@
     </Member>
     <Member MemberName="INCORRECT_DATA">
       <MemberSignature Language="C#" Value="INCORRECT_DATA" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode INCORRECT_DATA = unsigned int16(1003)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode INCORRECT_DATA = unsigned int16(1003)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -111,13 +111,13 @@
     </Member>
     <Member MemberName="NO_STATUS_CODE">
       <MemberSignature Language="C#" Value="NO_STATUS_CODE" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode NO_STATUS_CODE = unsigned int16(1005)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode NO_STATUS_CODE = unsigned int16(1005)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -127,13 +127,13 @@
     </Member>
     <Member MemberName="NORMAL">
       <MemberSignature Language="C#" Value="NORMAL" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode NORMAL = unsigned int16(1000)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode NORMAL = unsigned int16(1000)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -143,13 +143,13 @@
     </Member>
     <Member MemberName="POLICY_VIOLATION">
       <MemberSignature Language="C#" Value="POLICY_VIOLATION" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode POLICY_VIOLATION = unsigned int16(1008)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode POLICY_VIOLATION = unsigned int16(1008)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -160,13 +160,13 @@
     </Member>
     <Member MemberName="PROTOCOL_ERROR">
       <MemberSignature Language="C#" Value="PROTOCOL_ERROR" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode PROTOCOL_ERROR = unsigned int16(1002)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode PROTOCOL_ERROR = unsigned int16(1002)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -177,13 +177,13 @@
     </Member>
     <Member MemberName="SERVER_ERROR">
       <MemberSignature Language="C#" Value="SERVER_ERROR" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode SERVER_ERROR = unsigned int16(1011)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode SERVER_ERROR = unsigned int16(1011)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -194,13 +194,13 @@
     </Member>
     <Member MemberName="TLS_HANDSHAKE_FAILURE">
       <MemberSignature Language="C#" Value="TLS_HANDSHAKE_FAILURE" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode TLS_HANDSHAKE_FAILURE = unsigned int16(1015)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode TLS_HANDSHAKE_FAILURE = unsigned int16(1015)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -211,13 +211,13 @@
     </Member>
     <Member MemberName="TOO_BIG">
       <MemberSignature Language="C#" Value="TOO_BIG" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode TOO_BIG = unsigned int16(1009)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode TOO_BIG = unsigned int16(1009)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -228,13 +228,13 @@
     </Member>
     <Member MemberName="UNDEFINED">
       <MemberSignature Language="C#" Value="UNDEFINED" />
-      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Frame.CloseStatusCode UNDEFINED = unsigned int16(1004)" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.CloseStatusCode UNDEFINED = unsigned int16(1004)" />
       <MemberType>Field</MemberType>
       <AssemblyInfo>
-        <AssemblyVersion>1.0.2.39341</AssemblyVersion>
+        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
       </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Frame.CloseStatusCode</ReturnType>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>

@@ -10,7 +10,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using WebSocketSharp;
-using WebSocketSharp.Frame;
 
 namespace Example1
 {

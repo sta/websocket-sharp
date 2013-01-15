@@ -12,10 +12,9 @@ Required namespaces.
 
 ```cs
 using WebSocketSharp;
-using WebSocketSharp.Frame;
 ```
 
-The `WebSocket` class exists in the `WebSocketSharp` namespace, the WebSocket frame resources (e.g. `WsFrame` class) exist in the `WebSocketSharp.Frame` namespace.
+The `WebSocket` class exists in the `WebSocketSharp` namespace.
 
 #### Step 2 ####
 
@@ -58,7 +57,7 @@ ws.OnMessage += (sender, e) =>
 };
 ```
 
-The `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Frame.Opcode`) contains the **Frame type** of the data frame, so you check it out and you determine which item you should operate.
+The `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Opcode`) indicates the **Frame type** of the WebSocket frame, so you check it out and you determine which item you should operate.
 
 ```cs
 switch (e.Type)
@@ -135,7 +134,7 @@ If you want to close the WebSocket connection explicitly, you can use the `Close
 
 The `Close` method is overloaded.
 
-The types of `code` are `WebSocketSharp.Frame.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
+The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
 
 In addition, the `Close()` and `Close(code)` methods exist.
 
