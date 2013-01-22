@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed HttpStatusCode extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -17,9 +16,6 @@
       <MemberSignature Language="C#" Value="Accepted" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Accepted = int32(202)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -31,9 +27,6 @@
       <MemberSignature Language="C#" Value="Ambiguous" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Ambiguous = int32(300)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -45,9 +38,6 @@
       <MemberSignature Language="C#" Value="BadGateway" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode BadGateway = int32(502)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -59,9 +49,6 @@
       <MemberSignature Language="C#" Value="BadRequest" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode BadRequest = int32(400)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -73,9 +60,6 @@
       <MemberSignature Language="C#" Value="Conflict" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Conflict = int32(409)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -87,9 +71,6 @@
       <MemberSignature Language="C#" Value="Continue" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Continue = int32(100)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -101,9 +82,6 @@
       <MemberSignature Language="C#" Value="Created" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Created = int32(201)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -115,9 +93,6 @@
       <MemberSignature Language="C#" Value="ExpectationFailed" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode ExpectationFailed = int32(417)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -129,9 +104,6 @@
       <MemberSignature Language="C#" Value="Forbidden" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Forbidden = int32(403)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -143,9 +115,6 @@
       <MemberSignature Language="C#" Value="Found" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Found = int32(302)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -157,9 +126,6 @@
       <MemberSignature Language="C#" Value="GatewayTimeout" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode GatewayTimeout = int32(504)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -171,9 +137,6 @@
       <MemberSignature Language="C#" Value="Gone" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Gone = int32(410)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -185,9 +148,6 @@
       <MemberSignature Language="C#" Value="HttpVersionNotSupported" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode HttpVersionNotSupported = int32(505)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -199,9 +159,6 @@
       <MemberSignature Language="C#" Value="InternalServerError" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode InternalServerError = int32(500)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -213,9 +170,6 @@
       <MemberSignature Language="C#" Value="LengthRequired" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode LengthRequired = int32(411)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -227,9 +181,6 @@
       <MemberSignature Language="C#" Value="MethodNotAllowed" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode MethodNotAllowed = int32(405)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -241,9 +192,6 @@
       <MemberSignature Language="C#" Value="Moved" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Moved = int32(301)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -255,9 +203,6 @@
       <MemberSignature Language="C#" Value="MovedPermanently" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode MovedPermanently = int32(301)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -269,9 +214,6 @@
       <MemberSignature Language="C#" Value="MultipleChoices" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode MultipleChoices = int32(300)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -283,9 +225,6 @@
       <MemberSignature Language="C#" Value="NoContent" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NoContent = int32(204)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -297,9 +236,6 @@
       <MemberSignature Language="C#" Value="NonAuthoritativeInformation" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NonAuthoritativeInformation = int32(203)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -311,9 +247,6 @@
       <MemberSignature Language="C#" Value="NotAcceptable" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NotAcceptable = int32(406)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -325,9 +258,6 @@
       <MemberSignature Language="C#" Value="NotFound" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NotFound = int32(404)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -339,9 +269,6 @@
       <MemberSignature Language="C#" Value="NotImplemented" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NotImplemented = int32(501)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -353,9 +280,6 @@
       <MemberSignature Language="C#" Value="NotModified" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode NotModified = int32(304)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -367,9 +291,6 @@
       <MemberSignature Language="C#" Value="OK" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode OK = int32(200)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -381,9 +302,6 @@
       <MemberSignature Language="C#" Value="PartialContent" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode PartialContent = int32(206)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -395,9 +313,6 @@
       <MemberSignature Language="C#" Value="PaymentRequired" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode PaymentRequired = int32(402)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -409,9 +324,6 @@
       <MemberSignature Language="C#" Value="PreconditionFailed" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode PreconditionFailed = int32(412)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -423,9 +335,6 @@
       <MemberSignature Language="C#" Value="ProxyAuthenticationRequired" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode ProxyAuthenticationRequired = int32(407)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -437,9 +346,6 @@
       <MemberSignature Language="C#" Value="Redirect" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Redirect = int32(302)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -451,9 +357,6 @@
       <MemberSignature Language="C#" Value="RedirectKeepVerb" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RedirectKeepVerb = int32(307)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -465,9 +368,6 @@
       <MemberSignature Language="C#" Value="RedirectMethod" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RedirectMethod = int32(303)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -479,9 +379,6 @@
       <MemberSignature Language="C#" Value="RequestedRangeNotSatisfiable" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RequestedRangeNotSatisfiable = int32(416)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -493,9 +390,6 @@
       <MemberSignature Language="C#" Value="RequestEntityTooLarge" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RequestEntityTooLarge = int32(413)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -507,9 +401,6 @@
       <MemberSignature Language="C#" Value="RequestTimeout" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RequestTimeout = int32(408)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -521,9 +412,6 @@
       <MemberSignature Language="C#" Value="RequestUriTooLong" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode RequestUriTooLong = int32(414)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -535,9 +423,6 @@
       <MemberSignature Language="C#" Value="ResetContent" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode ResetContent = int32(205)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -549,9 +434,6 @@
       <MemberSignature Language="C#" Value="SeeOther" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode SeeOther = int32(303)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -563,9 +445,6 @@
       <MemberSignature Language="C#" Value="ServiceUnavailable" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode ServiceUnavailable = int32(503)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -577,9 +456,6 @@
       <MemberSignature Language="C#" Value="SwitchingProtocols" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode SwitchingProtocols = int32(101)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -591,9 +467,6 @@
       <MemberSignature Language="C#" Value="TemporaryRedirect" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode TemporaryRedirect = int32(307)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -605,9 +478,6 @@
       <MemberSignature Language="C#" Value="Unauthorized" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Unauthorized = int32(401)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -619,9 +489,6 @@
       <MemberSignature Language="C#" Value="UnsupportedMediaType" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode UnsupportedMediaType = int32(415)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -633,9 +500,6 @@
       <MemberSignature Language="C#" Value="Unused" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode Unused = int32(306)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
@@ -647,9 +511,6 @@
       <MemberSignature Language="C#" Value="UseProxy" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.HttpStatusCode UseProxy = int32(305)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>

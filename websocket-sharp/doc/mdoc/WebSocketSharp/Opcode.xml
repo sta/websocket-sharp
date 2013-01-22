@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed Opcode extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -27,9 +26,6 @@
       <MemberSignature Language="C#" Value="BINARY" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode BINARY = unsigned int8(2)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>
@@ -43,9 +39,6 @@
       <MemberSignature Language="C#" Value="CLOSE" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode CLOSE = unsigned int8(8)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>
@@ -59,9 +52,6 @@
       <MemberSignature Language="C#" Value="CONT" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode CONT = unsigned int8(0)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>
@@ -75,9 +65,6 @@
       <MemberSignature Language="C#" Value="PING" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode PING = unsigned int8(9)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>
@@ -91,9 +78,6 @@
       <MemberSignature Language="C#" Value="PONG" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode PONG = unsigned int8(10)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>
@@ -107,9 +91,6 @@
       <MemberSignature Language="C#" Value="TEXT" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Opcode TEXT = unsigned int8(1)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>

@@ -42,7 +42,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
-using WebSocketSharp.Net.Sockets;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp {
 

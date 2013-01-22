@@ -308,7 +308,7 @@ Thx for translating to japanese.
 
 ## License ##
 
-Copyright &copy; 2010 - 2012 sta.blockhead
+Copyright &copy; 2010 - 2013 sta.blockhead
 
 Licensed under the **[MIT License]**.
 

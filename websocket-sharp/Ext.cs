@@ -6,17 +6,17 @@
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2010-2013 sta.blockhead
  *
  * System.Uri.cs
- * (C) 2001 Garrett Rooney
- * (C) 2003 Ian MacLean
- * (C) 2003 Ben Maurer
- * Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2009 Stephane Delcroix
+ *  (C) 2001 Garrett Rooney
+ *  (C) 2003 Ian MacLean
+ *  (C) 2003 Ben Maurer
+ *  Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
+ *  Copyright (c) 2009 Stephane Delcroix
  *
  * System.Net.HttpListenerResponse.cs
- * Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
+ *  Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using WebSocketSharp.Net;
-using WebSocketSharp.Net.Sockets;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp {
 
@@ -77,7 +77,7 @@ namespace WebSocketSharp {
     /// Accept a WebSocket connection by the <see cref="TcpListener"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext"/> that contains a WebSocket connection.
+    /// A <see cref="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext"/> that contains a WebSocket connection.
     /// </returns>
     /// <param name="client">
     /// A <see cref="TcpClient"/> that contains a TCP connection to accept a WebSocket connection from.

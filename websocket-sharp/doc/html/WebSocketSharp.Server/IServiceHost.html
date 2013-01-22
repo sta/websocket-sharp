@@ -219,7 +219,7 @@
       </div>
       <h2 class="Section">Requirements</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Server.IServiceHost:Docs:Version Information">
-        <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+        <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
       <h2 class="Section" id="Members">Members</h2>
       <div class="SectionBox" id="_Members">
         <h2 class="Section">Public Properties</h2>
@@ -240,7 +240,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Indicates whether the WebSocket service host closes the connection to a inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
             </td>
               </tr>
             </table>
@@ -259,7 +259,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">BindWebSocket</a>
                   </b>(<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>)<blockquote>
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -339,7 +339,7 @@
         <h3 id="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">BindWebSocket Method</h3>
         <blockquote id="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket):member">
           <p class="Summary">
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>BindWebSocket</b> (<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> socket)</div>
@@ -360,7 +360,7 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket):Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
         <h3 id="M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String)">Broadcast Method</h3>
@@ -387,7 +387,7 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String):Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
         <h3 id="M:WebSocketSharp.Server.IServiceHost.Start">Start Method</h3>
@@ -403,7 +403,7 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.IServiceHost.Start:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
         <h3 id="M:WebSocketSharp.Server.IServiceHost.Stop">Stop Method</h3>
@@ -419,19 +419,19 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.IServiceHost.Stop:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
         <h3 id="P:WebSocketSharp.Server.IServiceHost.Sweeped">Sweeped Property</h3>
         <blockquote id="P:WebSocketSharp.Server.IServiceHost.Sweeped:member">
           <p class="Summary">
-            Indicates whether the WebSocket service host closes the connection to a inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Value">
-            <tt>true</tt> if the WebSocket service host closes the connection to a inactive service client; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the WebSocket service host cleans up the inactive service client; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Remarks">
@@ -439,7 +439,7 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
       </div>

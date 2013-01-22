@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit CloseEventArgs extends WebSocketSharp.MessageEventArgs" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>WebSocketSharp.MessageEventArgs</BaseTypeName>
@@ -24,9 +23,6 @@
       <MemberSignature Language="C#" Value="public ushort Code { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int16 Code" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.UInt16</ReturnType>
       </ReturnValue>
@@ -44,9 +40,6 @@
       <MemberSignature Language="C#" Value="public string Reason { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Reason" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -64,9 +57,6 @@
       <MemberSignature Language="C#" Value="public bool WasClean { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool WasClean" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>

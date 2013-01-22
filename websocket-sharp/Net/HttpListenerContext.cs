@@ -1,12 +1,12 @@
 //
 // HttpListenerContext.cs
-//	Copied from System.Net.HttpListenerContext
+//	Copied from System.Net.HttpListenerContext.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,6 +34,7 @@ using System.IO;
 using System.Net;
 using System.Security.Principal;
 using System.Text;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Net {
 

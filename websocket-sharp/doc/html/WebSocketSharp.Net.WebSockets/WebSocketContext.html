@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>WebSocketSharp.Net.WebSocketContext</title>
+    <title>WebSocketSharp.Net.WebSockets.WebSocketContext</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
       a { text-decoration: none }
@@ -187,40 +187,40 @@
   </head>
   <body>
     <div class="CollectionTitle">
-      <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp.Net Namespace</a></div>
+      <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp.Net.WebSockets Namespace</a></div>
     <div class="SideBar">
       <p>
-        <a href="#T:WebSocketSharp.Net.WebSocketContext">Overview</a>
+        <a href="#T:WebSocketSharp.Net.WebSockets.WebSocketContext">Overview</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Net.WebSocketContext:Signature">Signature</a>
+        <a href="#T:WebSocketSharp.Net.WebSockets.WebSocketContext:Signature">Signature</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Net.WebSocketContext:Docs">Remarks</a>
+        <a href="#T:WebSocketSharp.Net.WebSockets.WebSocketContext:Docs">Remarks</a>
       </p>
       <p>
         <a href="#Members">Members</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Net.WebSocketContext:Members">Member Details</a>
+        <a href="#T:WebSocketSharp.Net.WebSockets.WebSocketContext:Members">Member Details</a>
       </p>
     </div>
-    <h1 class="PageTitle" id="T:WebSocketSharp.Net.WebSocketContext">WebSocketContext  Class</h1>
-    <p class="Summary" id="T:WebSocketSharp.Net.WebSocketContext:Summary">
-      <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-    </p>
-    <div id="T:WebSocketSharp.Net.WebSocketContext:Signature">
+    <h1 class="PageTitle" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext">WebSocketContext  Class</h1>
+    <p class="Summary" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Summary">
+            Provides access to the WebSocket connection request objects.
+            </p>
+    <div id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Signature">
       <h2>Syntax</h2>
       <div class="Signature">public abstract class  <b>WebSocketContext</b></div>
     </div>
-    <div class="Remarks" id="T:WebSocketSharp.Net.WebSocketContext:Docs">
+    <div class="Remarks" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Docs">
       <h2 class="Section">Remarks</h2>
-      <div class="SectionBox" id="T:WebSocketSharp.Net.WebSocketContext:Docs:Remarks">
-        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-      </div>
+      <div class="SectionBox" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Docs:Remarks">
+            The WebSocketContext class is an abstract class.
+            </div>
       <h2 class="Section">Requirements</h2>
-      <div class="SectionBox" id="T:WebSocketSharp.Net.WebSocketContext:Docs:Version Information">
-        <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+      <div class="SectionBox" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Docs:Version Information">
+        <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
       <h2 class="Section" id="Members">Members</h2>
       <div class="SectionBox" id="_Members">
         <p>
@@ -239,12 +239,12 @@
                 <td>
                   <div>
                     <b>
-                      <a href="#C:WebSocketSharp.Net.WebSocketContext">WebSocketContext</a>
+                      <a href="#C:WebSocketSharp.Net.WebSockets.WebSocketContext">WebSocketContext</a>
                     </b>()</div>
                 </td>
                 <td>
-                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-                </td>
+            Initializes a new instance of the <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> class.
+            </td>
               </tr>
             </table>
           </div>
@@ -257,145 +257,169 @@
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.CookieCollection">CookieCollection</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection">CookieCollection</a>
                   </b>
                 </td>
                 <td>
                   <i>
-                    <a href="../WebSocketSharp.Net/CookieCollection.html">CookieCollection</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                    <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a>
+                  </i>. 
+            Gets the cookies used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.Headers">Headers</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers">Headers</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated">IsAuthenticated</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated">IsAuthenticated</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets a value indicating whether the client is authenticated.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.IsLocal">IsLocal</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal">IsLocal</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets a value indicating whether the client connected from the local computer.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection">IsSecureConnection</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection">IsSecureConnection</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets a value indicating whether the WebSocket connection is secured.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.Origin">Origin</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin">Origin</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.RequestUri">RequestUri</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri">RequestUri</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the WebSocket URI requested by the client.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey">SecWebSocketKey</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey">SecWebSocketKey</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols">SecWebSocketProtocols</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols">SecWebSocketProtocols</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion">SecWebSocketVersion</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion">SecWebSocketVersion</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.User">User</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.User">User</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Security.Principal.IPrincipal">System.Security.Principal.IPrincipal</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the client information (identity, authentication information and security roles).
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>abstract </div></td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Net.WebSocketContext.WebSocket">WebSocket</a>
+                    <a href="#P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket">WebSocket</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </td>
               </tr>
             </table>
           </div>
@@ -432,263 +456,263 @@
         </div>
       </div>
     </div>
-    <div class="Members" id="T:WebSocketSharp.Net.WebSocketContext:Members">
+    <div class="Members" id="T:WebSocketSharp.Net.WebSockets.WebSocketContext:Members">
       <h2 class="Section" id="MemberDetails">Member Details</h2>
       <div class="SectionBox" id="_MemberDetails">
-        <h3 id="C:WebSocketSharp.Net.WebSocketContext">WebSocketContext Constructor</h3>
-        <blockquote id="C:WebSocketSharp.Net.WebSocketContext:member">
+        <h3 id="C:WebSocketSharp.Net.WebSockets.WebSocketContext">WebSocketContext Constructor</h3>
+        <blockquote id="C:WebSocketSharp.Net.WebSockets.WebSocketContext:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Initializes a new instance of the <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> class.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">protected  <b>WebSocketContext</b> ()</div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="C:WebSocketSharp.Net.WebSocketContext:Remarks">
+          <div class="SectionBox" id="C:WebSocketSharp.Net.WebSockets.WebSocketContext:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="C:WebSocketSharp.Net.WebSocketContext:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="C:WebSocketSharp.Net.WebSockets.WebSocketContext:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.CookieCollection">CookieCollection Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.CookieCollection:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection">CookieCollection Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the cookies used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
-          <div class="Signature">public abstract <a href="../WebSocketSharp.Net/CookieCollection.html">CookieCollection</a> <b>CookieCollection</b>  { get; }</div>
+          <div class="Signature">public abstract <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> <b>CookieCollection</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.CookieCollection:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection:Value">
+            A <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> that contains the cookies.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.CookieCollection:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.CookieCollection:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.Headers">Headers Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.Headers:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers">Headers Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> <b>Headers</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Headers:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Specialized.NameValueCollection">System.Collections.Specialized.NameValueCollection</a> that contains the HTTP headers.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Headers:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Headers:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated">IsAuthenticated Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated">IsAuthenticated Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets a value indicating whether the client is authenticated.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsAuthenticated</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated:Value">
+            <tt>true</tt> if the client is authenticated; otherwise, <tt>false</tt>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsAuthenticated:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.IsLocal">IsLocal Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.IsLocal:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal">IsLocal Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets a value indicating whether the client connected from the local computer.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsLocal</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsLocal:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal:Value">
+            <tt>true</tt> if the client connected from the local computer; otherwise, <tt>false</tt>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsLocal:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsLocal:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection">IsSecureConnection Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection">IsSecureConnection Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets a value indicating whether the WebSocket connection is secured.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsSecureConnection</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection:Value">
+            <tt>true</tt> if the WebSocket connection is secured; otherwise, <tt>false</tt>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.IsSecureConnection:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.Origin">Origin Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.Origin:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin">Origin Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Origin</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Origin:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the Origin header field.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Origin:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.Origin:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.RequestUri">RequestUri Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.RequestUri:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri">RequestUri Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the WebSocket URI requested by the client.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> <b>RequestUri</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.RequestUri:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> that contains the WebSocket URI.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.RequestUri:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.RequestUri:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey">SecWebSocketKey Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey">SecWebSocketKey Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>SecWebSocketKey</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the Sec-WebSocket-Key header field.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey:Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey:Remarks">
+            The SecWebSocketKey property provides a part of the information used by the server to prove that it received a valid WebSocket opening handshake.
+            </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketKey:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols">SecWebSocketProtocols Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols">SecWebSocketProtocols Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a> <b>SecWebSocketProtocols</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols:Value">
+            An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header field.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols:Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols:Remarks">
+            The SecWebSocketProtocols property indicates the subprotocols of the WebSocket connection.
+            </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketProtocols:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion">SecWebSocketVersion Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion">SecWebSocketVersion Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>SecWebSocketVersion</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion:Value">
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the Sec-WebSocket-Version header field.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion:Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion:Remarks">
+            The SecWebSocketVersion property indicates the WebSocket protocol version of the connection.
+            </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.SecWebSocketVersion:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.User">User Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.User:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User">User Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the client information (identity, authentication information and security roles).
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Security.Principal.IPrincipal">System.Security.Principal.IPrincipal</a> <b>User</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.User:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User:Value">
+            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Security.Principal.IPrincipal">System.Security.Principal.IPrincipal</a> that contains the client information.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.User:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.User:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Net.WebSocketContext.WebSocket">WebSocket Property</h3>
-        <blockquote id="P:WebSocketSharp.Net.WebSocketContext.WebSocket:member">
+        <h3 id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket">WebSocket Property</h3>
+        <blockquote id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public abstract <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> <b>WebSocket</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSocketContext.WebSocket:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket:Value">
+            A <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.WebSocket:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSocketContext.WebSocket:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)<br /><b>Assembly Versions: </b>1.0.2.27062</div>
+          <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Net.WebSockets<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
       </div>

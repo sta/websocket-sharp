@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,19 +38,21 @@ namespace WebSocketSharp.Server {
   public interface IServiceHost {
 
     /// <summary>
-    /// Indicates whether the WebSocket service host closes the connection to a inactive service client.
+    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host closes the connection to a inactive service client; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service host cleans up the inactive service client; otherwise, <c>false</c>.
     /// </value>
     bool Sweeped { get; set; }
+
     /// <summary>
-    /// Binds the specified <see cref="WebSocketSharp.WebSocket"/>.
+    /// Binds the specified <see cref="WebSocket"/> instance to the WebSocket service.
     /// </summary>
     /// <param name="socket">
     /// An <see cref="WebSocketSharp.WebSocket"/> to bind.
     /// </param>
     void BindWebSocket(WebSocket socket);
+
     /// <summary>
     /// Broadcasts the specified <see cref="string"/>.
     /// </summary>
@@ -58,10 +60,12 @@ namespace WebSocketSharp.Server {
     /// A <see cref="string"/> to broadcast.
     /// </param>
     void Broadcast(string data);
+
     /// <summary>
     /// Starts the WebSocket service host.
     /// </summary>
     void Start();
+
     /// <summary>
     /// Stops the WebSocket service host.
     /// </summary>

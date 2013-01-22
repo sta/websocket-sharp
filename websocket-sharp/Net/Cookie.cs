@@ -1,6 +1,6 @@
 //
 // Cookie.cs
-//	Copied from System.Net.Cookie
+//	Copied from System.Net.Cookie.cs
 //
 // Authors:
 //	Lawrence Pit (loz@cable.a2000.nl)
@@ -45,6 +45,12 @@ namespace WebSocketSharp.Net {
 	[Serializable]
 	public sealed class Cookie 
 	{
+		#region Fields
+
+		static char [] reservedCharsName = new char [] {' ', '=', ';', ',', '\n', '\r', '\t'};
+		static char [] portSeparators = new char [] {'"', ','};
+		static string tspecials = "()<>@,;:\\\"/[]?={} \t"; // from RFC 2965, 2068
+
 		string comment;
 		Uri commentUri;
 		bool discard;
@@ -59,10 +65,10 @@ namespace WebSocketSharp.Net {
 		DateTime timestamp;
 		string val;
 		int version;
-		
-		static char [] reservedCharsName = new char [] {' ', '=', ';', ',', '\n', '\r', '\t'};
-		static char [] portSeparators = new char [] {'"', ','};
-                static string tspecials = "()<>@,;:\\\"/[]?={} \t";   // from RFC 2965, 2068
+
+		#endregion
+
+		#region Constructors
 
 		public Cookie ()
 		{
@@ -94,6 +100,20 @@ namespace WebSocketSharp.Net {
 			Domain = domain;
 		}
 
+		#endregion
+
+		#region Internal Properties
+
+		internal bool ExactDomain { get; set; }
+
+		internal int [] Ports {
+			get { return ports; }
+		}
+
+		#endregion
+
+		#region Public Properties
+
 		public string Comment {
 			get { return comment; }
 			set { comment = value == null ? String.Empty : value; }
@@ -121,8 +141,6 @@ namespace WebSocketSharp.Net {
 				}
 			}
 		}
-
-		internal bool ExactDomain { get; set; }
 
 		public bool Expired {
 			get { 
@@ -157,7 +175,7 @@ namespace WebSocketSharp.Net {
 					name = String.Empty;
 					throw new CookieException ("Name contains invalid characters");
 				}
-					
+
 				name = value; 
 			}
 		}
@@ -184,7 +202,7 @@ namespace WebSocketSharp.Net {
 					ports [i] = Int32.MinValue;
 					if (values [i].Length == 0)
 						continue;
-					try {						
+					try {
 						ports [i] = Int32.Parse (values [i]);
 					} catch (Exception e) {
 						throw new CookieException("The 'Port'='" + value + "' part of the cookie is invalid. Invalid value: " + values [i], e);
@@ -192,10 +210,6 @@ namespace WebSocketSharp.Net {
 				}
 				Version = 1;
 			}
-		}
-
-		internal int [] Ports {
-			get { return ports; }
 		}
 
 		public bool Secure {
@@ -214,7 +228,7 @@ namespace WebSocketSharp.Net {
 					val = String.Empty;
 					return;
 				}
-				
+
 				// LAMESPEC: According to .Net specs the Value property should not accept 
 				// the semicolon and comma characters, yet it does. For now we'll follow
 				// the behaviour of MS.Net instead of the specs.
@@ -222,7 +236,7 @@ namespace WebSocketSharp.Net {
 				if (value.IndexOfAny(reservedCharsValue) != -1)
 					throw new CookieException("Invalid value. Value cannot contain semicolon or comma characters.");
 				*/
-				
+
 				val = value; 
 			}
 		}
@@ -237,16 +251,107 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		public override bool Equals (Object obj) 
+		#endregion
+
+		#region Private Methods
+
+		private static int hash (int i, int j, int k, int l, int m) 
 		{
-			System.Net.Cookie c = obj as System.Net.Cookie;
+			return i ^ (j << 13 | j >> 19) ^ (k << 26 | k >> 6) ^ (l << 7 | l >> 25) ^ (m << 20 | m >> 12);
+		}
+
+		bool IsToken (string value) 
+		{
+			int len = value.Length;
+			for (int i = 0; i < len; i++) {
+				char c = value [i];
+				if (c < 0x20 || c >= 0x7f || tspecials.IndexOf (c) != -1)
+					return false;
+			}
+			return true;
+		}
+
+		// See par 3.6 of RFC 2616
+		string QuotedString (string value)
+		{
+			if (version == 0 || IsToken (value))
+				return value;
+			else 
+				return "\"" + value.Replace("\"", "\\\"") + "\"";
+		}
+
+		#endregion
+
+		#region Internal Methods
+
+		internal string ToClientString ()
+		{
+			if (name.Length == 0) 
+				return String.Empty;
+
+			StringBuilder result = new StringBuilder (64);
+	
+			if (version > 0) 
+				result.Append ("Version=").Append (version).Append (";");
+
+			result.Append (name).Append ("=").Append (val);
+
+			if (path != null && path.Length != 0)
+				result.Append (";Path=").Append (QuotedString (path));
+
+			if (domain != null && domain.Length != 0)
+				result.Append (";Domain=").Append (QuotedString (domain));
+
+			if (port != null && port.Length != 0)
+				result.Append (";Port=").Append (port);
+
+			return result.ToString ();
+		}
+
+		internal string ToString (Uri uri)
+		{
+			if (name.Length == 0) 
+				return String.Empty;
+
+			StringBuilder result = new StringBuilder (64);
+	
+			if (version > 0)
+				result.Append ("$Version=").Append (version).Append ("; ");		
+
+			result.Append (name).Append ("=").Append (val);
+
+			if (version == 0)
+				return result.ToString ();
+
+			if (!String.IsNullOrEmpty (path))
+				result.Append ("; $Path=").Append (path);
+			else if (uri != null)
+				result.Append ("; $Path=/").Append (path);
+
+			bool append_domain = (uri == null) || (uri.Host != domain);
+			if (append_domain && !String.IsNullOrEmpty (domain))
+				result.Append ("; $Domain=").Append (domain);			
+
+			if (port != null && port.Length != 0)
+				result.Append ("; $Port=").Append (port);	
+
+			return result.ToString ();
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public override bool Equals (Object obj)
+		{
+			Cookie c = obj as Cookie;
 
 			return c != null &&
-			       String.Compare (this.name, c.Name, true, CultureInfo.InvariantCulture) == 0 &&
-			       String.Compare (this.val, c.Value, false, CultureInfo.InvariantCulture) == 0 &&
-			       String.Compare (this.Path, c.Path, false, CultureInfo.InvariantCulture) == 0 &&
-			       String.Compare (this.domain, c.Domain, true, CultureInfo.InvariantCulture) == 0 &&
-			       this.version == c.Version;
+				String.Compare (this.name, c.Name, true, CultureInfo.InvariantCulture) == 0 &&
+				String.Compare (this.val, c.Value, false, CultureInfo.InvariantCulture) == 0 &&
+				String.Compare (this.Path, c.Path, false, CultureInfo.InvariantCulture) == 0 &&
+				String.Compare (this.domain, c.Domain, true, CultureInfo.InvariantCulture) == 0 &&
+				this.version == c.Version;
 		}
 
 		public override int GetHashCode ()
@@ -259,11 +364,6 @@ namespace WebSocketSharp.Net {
 				version);
 		}
 
-		private static int hash (int i, int j, int k, int l, int m) 
-		{
-			return i ^ (j << 13 | j >> 19) ^ (k << 26 | k >> 6) ^ (l << 7 | l >> 25) ^ (m << 20 | m >> 12);
-		}
-
 		// returns a string that can be used to send a cookie to an Origin Server
 		// i.e., only used for clients
 		// see para 4.2.2 of RFC 2109 and para 3.3.4 of RFC 2965
@@ -273,78 +373,6 @@ namespace WebSocketSharp.Net {
 			return ToString (null);
 		}
 
-		internal string ToString (Uri uri)
-		{
-			if (name.Length == 0) 
-				return String.Empty;
-
-			StringBuilder result = new StringBuilder (64);
-	
-			if (version > 0)
-				result.Append ("$Version=").Append (version).Append ("; ");		
-				
-			result.Append (name).Append ("=").Append (val);
-			
-			if (version == 0)
-				return result.ToString ();
-
-			if (!String.IsNullOrEmpty (path))
-				result.Append ("; $Path=").Append (path);
-			else if (uri != null)
-				result.Append ("; $Path=/").Append (path);
-
-			bool append_domain = (uri == null) || (uri.Host != domain);
-			if (append_domain && !String.IsNullOrEmpty (domain))
-				result.Append ("; $Domain=").Append (domain);			
-	
-			if (port != null && port.Length != 0)
-				result.Append ("; $Port=").Append (port);	
-						
-			return result.ToString ();
-		}
-
-		internal string ToClientString () 
-		{
-			if (name.Length == 0) 
-				return String.Empty;
-
-			StringBuilder result = new StringBuilder (64);
-	
-			if (version > 0) 
-				result.Append ("Version=").Append (version).Append (";");
-				
-			result.Append (name).Append ("=").Append (val);
-
-			if (path != null && path.Length != 0)
-				result.Append (";Path=").Append (QuotedString (path));
-				
-			if (domain != null && domain.Length != 0)
-				result.Append (";Domain=").Append (QuotedString (domain));			
-	
-			if (port != null && port.Length != 0)
-				result.Append (";Port=").Append (port);	
-						
-			return result.ToString ();
-		}
-
-		// See par 3.6 of RFC 2616
-  	    	string QuotedString (string value)
-	    	{
-			if (version == 0 || IsToken (value))
-				return value;
-			else 
-				return "\"" + value.Replace("\"", "\\\"") + "\"";
-	    	}			    	    
-
-	    	bool IsToken (string value) 
-	    	{
-			int len = value.Length;
-			for (int i = 0; i < len; i++) {
-			    	char c = value [i];
-				if (c < 0x20 || c >= 0x7f || tspecials.IndexOf (c) != -1)
-			      		return false;
-			}
-			return true;
-	    	}	    
+		#endregion
 	}
 }

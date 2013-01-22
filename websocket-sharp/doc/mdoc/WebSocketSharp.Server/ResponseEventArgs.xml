@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit ResponseEventArgs extends System.EventArgs" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.EventArgs</BaseTypeName>
@@ -18,9 +17,6 @@
       <MemberSignature Language="C#" Value="public ResponseEventArgs (WebSocketSharp.Net.HttpListenerContext context);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class WebSocketSharp.Net.HttpListenerContext context) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="context" Type="WebSocketSharp.Net.HttpListenerContext" />
       </Parameters>
@@ -34,9 +30,6 @@
       <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerRequest Request { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerRequest Request" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerRequest</ReturnType>
       </ReturnValue>
@@ -50,9 +43,6 @@
       <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerResponse Response { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerResponse Response" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerResponse</ReturnType>
       </ReturnValue>

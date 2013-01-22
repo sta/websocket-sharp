@@ -14,7 +14,7 @@
             Accept a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
             </summary>
             <returns>
-            A <see cref="T:WebSocketSharp.Net.Sockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </returns>
             <param name="client">
             A <see cref="T:System.Net.Sockets.TcpClient" /> that contains a TCP connection to accept a WebSocket connection from.
@@ -995,6 +995,124 @@
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
             </param>
         </member>
+        <member name="T:WebSocketSharp.Server.WebSocketServer">
+            <summary>
+            Provides the functions of the server that receives the WebSocket connection requests.
+            </summary>
+            <remarks>
+            The WebSocketServer class provides multi WebSocket service.
+            </remarks>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor">
+            <summary>
+            Initializes a new instance of the WebSocketServer class.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="port" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified WebSocket URL.
+            </summary>
+            <param name="url">
+            A <see cref="T:System.String" /> that contains a WebSocket URL.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="port" /> and <paramref name="secure" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Net.IPAddress,System.Int32)">
+            <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="address" /> and <paramref name="port" />.
+            </summary>
+            <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="secure" />.
+            </summary>
+            <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketServer.ServicePath">
+            <summary>
+            Gets the service paths.
+            </summary>
+            <value>
+            An IEnumerable&lt;string&gt; that contains the service paths.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketServer.Sweeped">
+            <summary>
+            Gets or sets a value indicating whether the server cleans up the inactive client.
+            </summary>
+            <value>
+                <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient)">
+            <summary>
+            Accepts the WebSocket connection.
+            </summary>
+            <param name="client">
+            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">
+            <summary>
+            Adds the WebSocket service.
+            </summary>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            </param>
+            <typeparam name="T">
+            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </typeparam>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String)">
+            <summary>
+            Broadcasts the specified <see cref="T:System.String" />.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> to broadcast.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServer.Stop">
+            <summary>
+            Stops receiving the WebSocket connection requests.
+            </summary>
+        </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
             Decodes an HTML-encoded string and returns the decoded string.
@@ -1163,15 +1281,15 @@
         </member>
         <member name="P:WebSocketSharp.Server.IServiceHost.Sweeped">
             <summary>
-            Indicates whether the WebSocket service host closes the connection to a inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
             </summary>
             <value>
-                <c>true</c> if the WebSocket service host closes the connection to a inactive service client; otherwise, <c>false</c>.
+                <c>true</c> if the WebSocket service host cleans up the inactive service client; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">
             <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" />.
+            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> instance to the WebSocket service.
             </summary>
             <param name="socket">
             An <see cref="T:WebSocketSharp.WebSocket" /> to bind.
@@ -1193,6 +1311,160 @@
         <member name="M:WebSocketSharp.Server.IServiceHost.Stop">
             <summary>
             Stops the WebSocket service host.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.Server.WebSocketServiceHost`1">
+            <summary>
+            Provides the functions of the server that receives the WebSocket connection requests.
+            </summary>
+            <remarks>
+            The WebSocketServiceHost&lt;T&gt; class provides single WebSocket service.
+            </remarks>
+            <typeparam name="T">
+            The type of the WebSocket service that the server provides. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </typeparam>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="port" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified WebSocket URL.
+            </summary>
+            <param name="url">
+            A <see cref="T:System.String" /> that contains a WebSocket URL.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="port" /> and <paramref name="secure" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="port" /> and <paramref name="absPath" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Int32,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="port" />, <paramref name="absPath" /> and <paramref name="secure" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Net.IPAddress,System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="absPath" />.
+            </summary>
+            <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.#ctor(System.Net.IPAddress,System.Int32,System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+            on the specified <paramref name="address" />, <paramref name="port" />, <paramref name="absPath" /> and <paramref name="secure" />.
+            </summary>
+            <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped">
+            <summary>
+            Gets or sets a value indicating whether the server cleans up the inactive client.
+            </summary>
+            <value>
+                <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Uri">
+            <summary>
+            Gets the WebSocket URL on which to listen for incoming connection attempts.
+            </summary>
+            <value>
+            A <see cref="T:System.Uri" /> that contains a WebSocket URL.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket)">
+            <summary>
+            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> instance to the WebSocket service.
+            </summary>
+            <param name="socket">
+            A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(System.Net.Sockets.TcpClient)">
+            <summary>
+            Accepts the WebSocket connection.
+            </summary>
+            <param name="client">
+            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.Broadcast(System.String)">
+            <summary>
+            Broadcasts the specified <see cref="T:System.String" />.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> to broadcast.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.Broadping(System.String)">
+            <summary>
+            Pings with the specified <see cref="T:System.String" /> to all clients.
+            </summary>
+            <param name="message">
+            A <see cref="T:System.String" /> that contains a message.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.Stop">
+            <summary>
+            Stops receiving the WebSocket connection requests.
             </summary>
         </member>
         <member name="T:WebSocketSharp.CloseStatusCode">
@@ -1323,6 +1595,408 @@
             <summary>
             Equivalent to numeric value 10. Indicates a pong frame.
             </summary>
+        </member>
+        <member name="T:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext">
+            <summary>
+            Provides access to the WebSocket connection request objects received by the <see cref="T:WebSocketSharp.Net.HttpListener" /> class.
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.CookieCollection">
+            <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Headers">
+            <summary>
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the HTTP headers.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.IsAuthenticated">
+            <summary>
+            Gets a value indicating whether the client is authenticated.
+            </summary>
+            <value>
+                <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.IsLocal">
+            <summary>
+            Gets a value indicating whether the client connected from the local computer.
+            </summary>
+            <value>
+                <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.IsSecureConnection">
+            <summary>
+            Gets a value indicating whether the WebSocket connection is secured.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Origin">
+            <summary>
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Path">
+            <summary>
+            Gets the absolute path of the requested WebSocket URI.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.RequestUri">
+            <summary>
+            Gets the WebSocket URI requested by the client.
+            </summary>
+            <value>
+            A <see cref="T:System.Uri" /> that contains the WebSocket URI.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketKey">
+            <summary>
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketKey property provides a part of the information used by the server to prove that it received a valid WebSocket opening handshake.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Key header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketProtocols">
+            <summary>
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketProtocols property indicates the subprotocols of the WebSocket connection.
+            </remarks>
+            <value>
+            An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.SecWebSocketVersion">
+            <summary>
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketVersion property indicates the WebSocket protocol version of the connection.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Version header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.ServerEndPoint">
+            <summary>
+            Gets the server endpoint as an IP address and a port number.
+            </summary>
+            <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the server endpoint.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.User">
+            <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+            <value>
+            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.UserEndPoint">
+            <summary>
+            Gets the client endpoint as an IP address and a port number.
+            </summary>
+            <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the client endpoint.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.WebSocket">
+            <summary>
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.WebSocket" />.
+            </value>
+        </member>
+        <member name="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext">
+            <summary>
+            Provides access to the WebSocket connection request objects received by the <see cref="T:System.Net.Sockets.TcpListener" /> class.
+            </summary>
+            <remarks>
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.CookieCollection">
+            <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies.
+            </value>
+            <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.Headers">
+            <summary>
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the HTTP headers.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.IsAuthenticated">
+            <summary>
+            Gets a value indicating whether the client is authenticated.
+            </summary>
+            <value>
+                <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
+            </value>
+            <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.IsLocal">
+            <summary>
+            Gets a value indicating whether the client connected from the local computer.
+            </summary>
+            <value>
+                <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+            </value>
+            <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.IsSecureConnection">
+            <summary>
+            Gets a value indicating whether the WebSocket connection is secured.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.Origin">
+            <summary>
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.Path">
+            <summary>
+            Gets the absolute path of the requested WebSocket URI.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.RequestUri">
+            <summary>
+            Gets the WebSocket URI requested by the client.
+            </summary>
+            <value>
+            A <see cref="T:System.Uri" /> that contains the WebSocket URI.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.SecWebSocketKey">
+            <summary>
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketKey property provides a part of the information used by the server to prove that it received a valid WebSocket opening handshake.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Key header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.SecWebSocketProtocols">
+            <summary>
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketProtocols property indicates the subprotocols of the WebSocket connection.
+            </remarks>
+            <value>
+            An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.SecWebSocketVersion">
+            <summary>
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketVersion property indicates the WebSocket protocol version of the connection.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Version header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.ServerEndPoint">
+            <summary>
+            Gets the server endpoint as an IP address and a port number.
+            </summary>
+            <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the server endpoint.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.User">
+            <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+            <value>
+            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            </value>
+            <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.UserEndPoint">
+            <summary>
+            Gets the client endpoint as an IP address and a port number.
+            </summary>
+            <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the client endpoint.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.WebSocket">
+            <summary>
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.WebSocket" />.
+            </value>
+        </member>
+        <member name="T:WebSocketSharp.Net.WebSockets.WebSocketContext">
+            <summary>
+            Provides access to the WebSocket connection request objects.
+            </summary>
+            <remarks>
+            The WebSocketContext class is an abstract class.
+            </remarks>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebSockets.WebSocketContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> class.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.CookieCollection">
+            <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Headers">
+            <summary>
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the HTTP headers.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsAuthenticated">
+            <summary>
+            Gets a value indicating whether the client is authenticated.
+            </summary>
+            <value>
+                <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsLocal">
+            <summary>
+            Gets a value indicating whether the client connected from the local computer.
+            </summary>
+            <value>
+                <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsSecureConnection">
+            <summary>
+            Gets a value indicating whether the WebSocket connection is secured.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin">
+            <summary>
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri">
+            <summary>
+            Gets the WebSocket URI requested by the client.
+            </summary>
+            <value>
+            A <see cref="T:System.Uri" /> that contains the WebSocket URI.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketKey">
+            <summary>
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketKey property provides a part of the information used by the server to prove that it received a valid WebSocket opening handshake.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Key header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketProtocols">
+            <summary>
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketProtocols property indicates the subprotocols of the WebSocket connection.
+            </remarks>
+            <value>
+            An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.SecWebSocketVersion">
+            <summary>
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </summary>
+            <remarks>
+            The SecWebSocketVersion property indicates the WebSocket protocol version of the connection.
+            </remarks>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Version header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.User">
+            <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+            <value>
+            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket">
+            <summary>
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.WebSocket" />.
+            </value>
         </member>
     </members>
 </doc>

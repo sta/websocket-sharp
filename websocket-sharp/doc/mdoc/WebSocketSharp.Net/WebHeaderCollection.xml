@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable WebHeaderCollection extends System.Collections.Specialized.NameValueCollection implements class System.Runtime.Serialization.ISerializable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Collections.Specialized.NameValueCollection</BaseTypeName>
@@ -27,9 +26,6 @@
       <MemberSignature Language="C#" Value="public WebHeaderCollection ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters />
       <Docs>
         <summary>To be added.</summary>
@@ -40,9 +36,6 @@
       <MemberSignature Language="C#" Value="protected WebHeaderCollection (System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext);" />
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="serializationInfo" Type="System.Runtime.Serialization.SerializationInfo" />
         <Parameter Name="streamingContext" Type="System.Runtime.Serialization.StreamingContext" />
@@ -58,9 +51,6 @@
       <MemberSignature Language="C#" Value="public void Add (string header);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(string header) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -77,9 +67,6 @@
       <MemberSignature Language="C#" Value="public void Add (System.Net.HttpRequestHeader header, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(valuetype System.Net.HttpRequestHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -98,9 +85,6 @@
       <MemberSignature Language="C#" Value="public void Add (System.Net.HttpResponseHeader header, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Add(valuetype System.Net.HttpResponseHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -119,9 +103,6 @@
       <MemberSignature Language="C#" Value="public override void Add (string name, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Add(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -140,9 +121,6 @@
       <MemberSignature Language="C#" Value="protected void AddWithoutValidate (string headerName, string headerValue);" />
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig instance void AddWithoutValidate(string headerName, string headerValue) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -161,9 +139,6 @@
       <MemberSignature Language="C#" Value="public override string[] AllKeys { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string[] AllKeys" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
       </ReturnValue>
@@ -177,9 +152,6 @@
       <MemberSignature Language="C#" Value="public override void Clear ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Clear() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -193,9 +165,6 @@
       <MemberSignature Language="C#" Value="public override int Count { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance int32 Count" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
@@ -209,9 +178,6 @@
       <MemberSignature Language="C#" Value="public override string Get (int index);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string Get(int32 index) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -229,9 +195,6 @@
       <MemberSignature Language="C#" Value="public override string Get (string name);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string Get(string name) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -249,9 +212,6 @@
       <MemberSignature Language="C#" Value="public override System.Collections.IEnumerator GetEnumerator ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance class System.Collections.IEnumerator GetEnumerator() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.IEnumerator</ReturnType>
       </ReturnValue>
@@ -266,9 +226,6 @@
       <MemberSignature Language="C#" Value="public override string GetKey (int index);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string GetKey(int32 index) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -286,9 +243,6 @@
       <MemberSignature Language="C#" Value="public override void GetObjectData (System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void GetObjectData(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -307,9 +261,6 @@
       <MemberSignature Language="C#" Value="public override string[] GetValues (int index);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string[] GetValues(int32 index) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
       </ReturnValue>
@@ -327,9 +278,6 @@
       <MemberSignature Language="C#" Value="public override string[] GetValues (string header);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string[] GetValues(string header) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String[]</ReturnType>
       </ReturnValue>
@@ -347,9 +295,6 @@
       <MemberSignature Language="C#" Value="public static bool IsRestricted (string headerName);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsRestricted(string headerName) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
@@ -367,9 +312,6 @@
       <MemberSignature Language="C#" Value="public static bool IsRestricted (string headerName, bool response);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsRestricted(string headerName, bool response) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
@@ -389,9 +331,6 @@
       <MemberSignature Language="C#" Value="public string this[System.Net.HttpRequestHeader hrh] { get; set; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Item(valuetype System.Net.HttpRequestHeader)" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -409,9 +348,6 @@
       <MemberSignature Language="C#" Value="public string this[System.Net.HttpResponseHeader hrh] { get; set; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Item(valuetype System.Net.HttpResponseHeader)" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -429,9 +365,6 @@
       <MemberSignature Language="C#" Value="public override System.Collections.Specialized.NameObjectCollectionBase.KeysCollection Keys { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameObjectCollectionBase/KeysCollection Keys" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameObjectCollectionBase+KeysCollection</ReturnType>
       </ReturnValue>
@@ -445,9 +378,6 @@
       <MemberSignature Language="C#" Value="public override void OnDeserialization (object sender);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void OnDeserialization(object sender) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -464,9 +394,6 @@
       <MemberSignature Language="C#" Value="public void Remove (System.Net.HttpRequestHeader header);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Remove(valuetype System.Net.HttpRequestHeader header) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -483,9 +410,6 @@
       <MemberSignature Language="C#" Value="public void Remove (System.Net.HttpResponseHeader header);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Remove(valuetype System.Net.HttpResponseHeader header) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -502,9 +426,6 @@
       <MemberSignature Language="C#" Value="public override void Remove (string name);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Remove(string name) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -521,9 +442,6 @@
       <MemberSignature Language="C#" Value="public void Set (System.Net.HttpRequestHeader header, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(valuetype System.Net.HttpRequestHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -542,9 +460,6 @@
       <MemberSignature Language="C#" Value="public void Set (System.Net.HttpResponseHeader header, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Set(valuetype System.Net.HttpResponseHeader header, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -563,9 +478,6 @@
       <MemberSignature Language="C#" Value="public override void Set (string name, string value);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Set(string name, string value) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -584,9 +496,6 @@
       <MemberSignature Language="C#" Value="void ISerializable.GetObjectData (System.Runtime.Serialization.SerializationInfo serializationInfo, System.Runtime.Serialization.StreamingContext streamingContext);" />
       <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void System.Runtime.Serialization.ISerializable.GetObjectData(class System.Runtime.Serialization.SerializationInfo serializationInfo, valuetype System.Runtime.Serialization.StreamingContext streamingContext) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -605,9 +514,6 @@
       <MemberSignature Language="C#" Value="public byte[] ToByteArray ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] ToByteArray() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
       </ReturnValue>
@@ -622,9 +528,6 @@
       <MemberSignature Language="C#" Value="public override string ToString ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance string ToString() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>

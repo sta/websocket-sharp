@@ -93,7 +93,6 @@
     <Compile Include="Net\HttpListenerPrefixCollection.cs" />
     <Compile Include="Net\HttpListenerRequest.cs" />
     <Compile Include="Net\HttpListenerResponse.cs" />
-    <Compile Include="Net\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpUtility.cs" />
     <Compile Include="Net\ListenerAsyncResult.cs" />
@@ -101,12 +100,10 @@
     <Compile Include="Net\RequestStream.cs" />
     <Compile Include="Net\ResponseStream.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
-    <Compile Include="Net\WebSocketContext.cs" />
     <Compile Include="Server\HttpServer.cs" />
     <Compile Include="Server\ResponseEventArgs.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
-    <Compile Include="Net\Sockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Server\WebSocketServerBase.cs" />
     <Compile Include="Net\Security\SslStream.cs" />
     <Compile Include="Server\IServiceHost.cs" />
@@ -120,12 +117,15 @@
     <Compile Include="PayloadData.cs" />
     <Compile Include="Rsv.cs" />
     <Compile Include="WsFrame.cs" />
+    <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
+    <Compile Include="Net\WebSockets\WebSocketContext.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Server\" />
     <Folder Include="Net\" />
-    <Folder Include="Net\Sockets\" />
     <Folder Include="Net\Security\" />
+    <Folder Include="Net\WebSockets\" />
   </ItemGroup>
 </Project>

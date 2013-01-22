@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed AuthenticationSchemes extends System.Enum" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
@@ -22,9 +21,6 @@
       <MemberSignature Language="C#" Value="Anonymous" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes Anonymous = int32(32768)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -36,9 +32,6 @@
       <MemberSignature Language="C#" Value="Basic" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes Basic = int32(8)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -50,9 +43,6 @@
       <MemberSignature Language="C#" Value="Digest" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes Digest = int32(1)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -64,9 +54,6 @@
       <MemberSignature Language="C#" Value="IntegratedWindowsAuthentication" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes IntegratedWindowsAuthentication = int32(6)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -78,9 +65,6 @@
       <MemberSignature Language="C#" Value="Negotiate" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes Negotiate = int32(2)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -92,9 +76,6 @@
       <MemberSignature Language="C#" Value="None" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes None = int32(0)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
@@ -106,9 +87,6 @@
       <MemberSignature Language="C#" Value="Ntlm" />
       <MemberSignature Language="ILAsm" Value=".field public static literal valuetype WebSocketSharp.Net.AuthenticationSchemes Ntlm = int32(4)" />
       <MemberType>Field</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>

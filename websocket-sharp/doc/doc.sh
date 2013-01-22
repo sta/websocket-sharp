@@ -19,9 +19,7 @@ MDOC_DIR="${DOC_DIR}/mdoc"
 HTML_DIR="${DOC_DIR}/html"
 
 createDir() {
-  if [ -d $1 ]; then
-    rm -fr $1/*
-  else
+  if [ ! -d $1 ]; then
     mkdir -p $1
   fi
 }
@@ -29,5 +27,5 @@ createDir() {
 set -e
 createDir ${MDOC_DIR}
 createDir ${HTML_DIR}
-mdoc update -i ${XML} -o ${MDOC_DIR}/ ${DLL}
+mdoc update -fno-assembly-versions -i ${XML} -o ${MDOC_DIR}/ ${DLL}
 mdoc export-html -o ${HTML_DIR}/ ${MDOC_DIR}/

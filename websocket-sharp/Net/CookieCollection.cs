@@ -1,6 +1,6 @@
 //
 // CookieCollection.cs
-//	Copied from System.Net.CookieCollection
+//	Copied from System.Net.CookieCollection.cs
 //
 // Authors:
 //	Lawrence Pit (loz@cable.a2000.nl)
@@ -56,69 +56,66 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		static CookieCollectionComparer Comparer = new CookieCollectionComparer ();
+		#region Fields
 
+		static CookieCollectionComparer Comparer = new CookieCollectionComparer ();
 		List<Cookie> list = new List<Cookie> ();
+
+		#endregion
+
+		#region Internal Property
 
 		internal IList<Cookie> List {
 			get { return list; }
 		}
+
+		#endregion
+
+		#region Public Properties
+
 		// ICollection
 		public int Count {
 			get { return list.Count; }
 		}
-
-		public bool IsSynchronized {
-			get { return false; }
-		}
-
-		public Object SyncRoot {
-			get { return this; }
-		}
-
-		public void CopyTo (Array array, int index)
-		{
-			(list as IList).CopyTo (array, index);
-		}
-
-		public void CopyTo (Cookie [] array, int index)
-		{
-			list.CopyTo (array, index);
-		}
-
-		// IEnumerable
-		public IEnumerator GetEnumerator ()
-		{
-			return list.GetEnumerator ();
-		}
-
-		// This
 
 		// LAMESPEC: So how is one supposed to create a writable CookieCollection 
 		// instance?? We simply ignore this property, as this collection is always
 		// writable.
 		public bool IsReadOnly {
 			get { return true; }
-		}		
-
-		public void Add (Cookie cookie) 
-		{
-			if (cookie == null)
-				throw new ArgumentNullException ("cookie");
-
-			int pos = SearchCookie (cookie);
-			if (pos == -1)
-				list.Add (cookie);
-			else
-				list [pos] = cookie;
 		}
 
-		internal void Sort ()
-		{
-			if (list.Count > 0)
-				list.Sort (Comparer);
+		public bool IsSynchronized {
+			get { return false; }
 		}
-		
+
+		public Cookie this [int index] {
+			get {
+				if (index < 0 || index >= list.Count)
+					throw new ArgumentOutOfRangeException ("index");
+
+				return list [index];
+			}
+		}
+
+		public Cookie this [string name] {
+			get {
+				foreach (Cookie c in list) {
+					if (0 == String.Compare (c.Name, name, true, CultureInfo.InvariantCulture))
+						return c;
+				}
+				return null;
+			}
+		}
+
+		public Object SyncRoot {
+			get { return this; }
+		}
+
+		#endregion
+
+		#region Private Method
+
 		int SearchCookie (Cookie cookie)
 		{
 			string name = cookie.Name;
@@ -145,6 +142,32 @@ namespace WebSocketSharp.Net {
 			return -1;
 		}
 
+		#endregion
+
+		#region Internal Method
+
+		internal void Sort ()
+		{
+			if (list.Count > 0)
+				list.Sort (Comparer);
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public void Add (Cookie cookie) 
+		{
+			if (cookie == null)
+				throw new ArgumentNullException ("cookie");
+
+			int pos = SearchCookie (cookie);
+			if (pos == -1)
+				list.Add (cookie);
+			else
+				list [pos] = cookie;
+		}
+
 		public void Add (CookieCollection cookies) 
 		{
 			if (cookies == null)
@@ -154,23 +177,21 @@ namespace WebSocketSharp.Net {
 				Add (c);
 		}
 
-		public Cookie this [int index] {
-			get {
-				if (index < 0 || index >= list.Count)
-					throw new ArgumentOutOfRangeException ("index");
-
-				return list [index];
-			}
+		public void CopyTo (Array array, int index)
+		{
+			(list as IList).CopyTo (array, index);
 		}
 
-		public Cookie this [string name] {
-			get {
-				foreach (Cookie c in list) {
-					if (0 == String.Compare (c.Name, name, true, CultureInfo.InvariantCulture))
-						return c;
-				}
-				return null;
-			}
+		public void CopyTo (Cookie [] array, int index)
+		{
+			list.CopyTo (array, index);
 		}
+
+		public IEnumerator GetEnumerator ()
+		{
+			return list.GetEnumerator ();
+		}
+
+		#endregion
 	}
 }

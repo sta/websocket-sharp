@@ -6,7 +6,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,15 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server {
 
+  /// <summary>
+  /// Provides the functions of the server that receives the WebSocket connection requests.
+  /// </summary>
+  /// <remarks>
+  /// The WebSocketServiceHost&lt;T&gt; class provides single WebSocket service.
+  /// </remarks>
+  /// <typeparam name="T">
+  /// The type of the WebSocket service that the server provides. The T must inherit the <see cref="WebSocketService"/> class.
+  /// </typeparam>
   public class WebSocketServiceHost<T> : WebSocketServerBase, IServiceHost
     where T : WebSocketService, new()
   {
@@ -55,37 +64,113 @@ namespace WebSocketSharp.Server {
 
     #region Public Constructors
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="port"/>.
+    /// </summary>
+    /// <param name='port'>
+    /// An <see cref="int"/> that contains a port number.
+    /// </param>
     public WebSocketServiceHost(int port)
       : this(port, "/")
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified WebSocket URL.
+    /// </summary>
+    /// <param name="url">
+    /// A <see cref="string"/> that contains a WebSocket URL.
+    /// </param>
     public WebSocketServiceHost(string url)
       : base(url)
     {
       init();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="port"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+    /// </param>
     public WebSocketServiceHost(int port, bool secure)
       : this(port, "/", secure)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="port"/> and <paramref name="absPath"/>.
+    /// </summary>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="absPath">
+    /// A <see cref="string"/> that contains an absolute path.
+    /// </param>
     public WebSocketServiceHost(int port, string absPath)
       : this(System.Net.IPAddress.Any, port, absPath)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="absPath">
+    /// A <see cref="string"/> that contains an absolute path.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+    /// </param>
     public WebSocketServiceHost(int port, string absPath, bool secure)
       : this(System.Net.IPAddress.Any, port, absPath, secure)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="address"/>, <paramref name="port"/> and <paramref name="absPath"/>.
+    /// </summary>
+    /// <param name="address">
+    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="absPath">
+    /// A <see cref="string"/> that contains an absolute path.
+    /// </param>
     public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath)
       : this(address, port, absPath, port == 443 ? true : false)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for incoming connection attempts
+    /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <param name="address">
+    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="absPath">
+    /// A <see cref="string"/> that contains an absolute path.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+    /// </param>
     public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath, bool secure)
       : base(address, port, absPath, secure)
     {
@@ -96,6 +181,12 @@ namespace WebSocketSharp.Server {
 
     #region Properties
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the server cleans up the inactive client.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+    /// </value>
     public bool Sweeped {
       get {
         return _sessions.Sweeped;
@@ -106,6 +197,12 @@ namespace WebSocketSharp.Server {
       }
     }
 
+    /// <summary>
+    /// Gets the WebSocket URL on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Uri"/> that contains a WebSocket URL.
+    /// </value>
     public Uri Uri {
       get {
         return BaseUri;
@@ -127,8 +224,31 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
+    #region Explicit Interface Implementation
+
+    /// <summary>
+    /// Binds the specified <see cref="WebSocket"/> instance to the WebSocket service.
+    /// </summary>
+    /// <param name="socket">
+    /// A <see cref="WebSocket"/> to bind.
+    /// </param>
+    void IServiceHost.BindWebSocket(WebSocket socket)
+    {
+      T service = new T();
+      service.Bind(socket, _sessions);
+      service.Start();
+    }
+
+    #endregion
+
     #region Protected Method
 
+    /// <summary>
+    /// Accepts the WebSocket connection.
+    /// </summary>
+    /// <param name="client">
+    /// A <see cref="TcpClient"/> that contains the TCP connection.
+    /// </param>
     protected override void AcceptWebSocket(TcpClient client)
     {
       var context = client.AcceptWebSocket(IsSecure);
@@ -143,30 +263,38 @@ namespace WebSocketSharp.Server {
       if (Uri.IsAbsoluteUri)
         socket.Url = Uri;
 
-      BindWebSocket(socket);
+      ((IServiceHost)this).BindWebSocket(socket);
     }
 
     #endregion
 
     #region Public Methods
 
-    public void BindWebSocket(WebSocket socket)
-    {
-      T service = new T();
-      service.Bind(socket, _sessions);
-      service.Start();
-    }
-
+    /// <summary>
+    /// Broadcasts the specified <see cref="string"/>.
+    /// </summary>
+    /// <param name="data">
+    /// A <see cref="string"/> to broadcast.
+    /// </param>
     public void Broadcast(string data)
     {
       _sessions.Broadcast(data);
     }
 
+    /// <summary>
+    /// Pings with the specified <see cref="string"/> to all clients.
+    /// </summary>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains a message.
+    /// </param>
     public Dictionary<string, bool> Broadping(string message)
     {
       return _sessions.Broadping(message);
     }
 
+    /// <summary>
+    /// Stops receiving the WebSocket connection requests.
+    /// </summary>
     public override void Stop()
     {
       base.Stop();

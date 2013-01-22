@@ -1,48 +1,54 @@
-<Type Name="HttpListenerWebSocketContext" FullName="WebSocketSharp.Net.HttpListenerWebSocketContext">
-  <TypeSignature Language="C#" Value="public class HttpListenerWebSocketContext : WebSocketSharp.Net.WebSocketContext" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpListenerWebSocketContext extends WebSocketSharp.Net.WebSocketContext" />
+<Type Name="TcpListenerWebSocketContext" FullName="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext">
+  <TypeSignature Language="C#" Value="public class TcpListenerWebSocketContext : WebSocketSharp.Net.WebSockets.WebSocketContext" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit TcpListenerWebSocketContext extends WebSocketSharp.Net.WebSockets.WebSocketContext" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
-    <BaseTypeName>WebSocketSharp.Net.WebSocketContext</BaseTypeName>
+    <BaseTypeName>WebSocketSharp.Net.WebSockets.WebSocketContext</BaseTypeName>
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides access to the WebSocket connection request objects received by the <see cref="T:System.Net.Sockets.TcpListener" /> class.
+            </summary>
+    <remarks />
   </Docs>
   <Members>
     <Member MemberName="CookieCollection">
       <MemberSignature Language="C#" Value="public override WebSocketSharp.Net.CookieCollection CookieCollection { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.CookieCollection CookieCollection" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Headers">
       <MemberSignature Language="C#" Value="public override System.Collections.Specialized.NameValueCollection Headers { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection Headers" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP headers used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the HTTP headers.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -50,47 +56,56 @@
       <MemberSignature Language="C#" Value="public override bool IsAuthenticated { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool IsAuthenticated" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the client is authenticated.
+            </summary>
+        <value>
+          <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="IsLocal">
       <MemberSignature Language="C#" Value="public override bool IsLocal { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool IsLocal" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the client connected from the local computer.
+            </summary>
+        <value>
+          <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="IsSecureConnection">
       <MemberSignature Language="C#" Value="public override bool IsSecureConnection { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool IsSecureConnection" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the WebSocket connection is secured.
+            </summary>
+        <value>
+          <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -98,15 +113,16 @@
       <MemberSignature Language="C#" Value="public override string Origin { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Origin" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the value of the Origin header field used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -114,15 +130,16 @@
       <MemberSignature Language="C#" Value="public virtual string Path { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Path" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the absolute path of the requested WebSocket URI.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -130,15 +147,16 @@
       <MemberSignature Language="C#" Value="public override Uri RequestUri { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Uri RequestUri" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Uri</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the WebSocket URI requested by the client.
+            </summary>
+        <value>
+            A <see cref="T:System.Uri" /> that contains the WebSocket URI.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -146,63 +164,73 @@
       <MemberSignature Language="C#" Value="public override string SecWebSocketKey { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string SecWebSocketKey" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <summary>
+            Gets the value of the Sec-WebSocket-Key header field used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Key header field.
+            </value>
+        <remarks>
+            The SecWebSocketKey property provides a part of the information used by the server to prove that it received a valid WebSocket opening handshake.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="SecWebSocketProtocols">
       <MemberSignature Language="C#" Value="public override System.Collections.Generic.IEnumerable&lt;string&gt; SecWebSocketProtocols { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; SecWebSocketProtocols" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <summary>
+            Gets the values of the Sec-WebSocket-Protocol header field used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header field.
+            </value>
+        <remarks>
+            The SecWebSocketProtocols property indicates the subprotocols of the WebSocket connection.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="SecWebSocketVersion">
       <MemberSignature Language="C#" Value="public override string SecWebSocketVersion { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string SecWebSocketVersion" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <summary>
+            Gets the value of the Sec-WebSocket-Version header field used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Sec-WebSocket-Version header field.
+            </value>
+        <remarks>
+            The SecWebSocketVersion property indicates the WebSocket protocol version of the connection.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="ServerEndPoint">
       <MemberSignature Language="C#" Value="public virtual System.Net.IPEndPoint ServerEndPoint { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint ServerEndPoint" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.IPEndPoint</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the server endpoint as an IP address and a port number.
+            </summary>
+        <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the server endpoint.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -210,31 +238,36 @@
       <MemberSignature Language="C#" Value="public override System.Security.Principal.IPrincipal User { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Security.Principal.IPrincipal User" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Security.Principal.IPrincipal</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+        <value>
+            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.NotImplementedException">
+            This property is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="UserEndPoint">
       <MemberSignature Language="C#" Value="public virtual System.Net.IPEndPoint UserEndPoint { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Net.IPEndPoint UserEndPoint" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Net.IPEndPoint</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the client endpoint as an IP address and a port number.
+            </summary>
+        <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the client endpoint.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -242,15 +275,16 @@
       <MemberSignature Language="C#" Value="public override WebSocketSharp.WebSocket WebSocket { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.WebSocket WebSocket" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.WebSocket</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the WebSocket instance used for two-way communication between client and server.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.WebSocket" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

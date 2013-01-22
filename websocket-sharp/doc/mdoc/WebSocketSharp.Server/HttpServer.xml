@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit HttpServer extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -18,9 +17,6 @@
       <MemberSignature Language="C#" Value="public HttpServer ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters />
       <Docs>
         <summary>To be added.</summary>
@@ -31,9 +27,6 @@
       <MemberSignature Language="C#" Value="public HttpServer (int port);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 port) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="port" Type="System.Int32" />
       </Parameters>
@@ -47,9 +40,6 @@
       <MemberSignature Language="C#" Value="public void AddService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -75,9 +65,6 @@
       <MemberSignature Language="C#" Value="public byte[] GetFile (string path);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance unsigned int8[] GetFile(string path) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
       </ReturnValue>
@@ -95,9 +82,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnConnect;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnConnect" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -110,9 +94,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnDelete;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnDelete" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -125,9 +106,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt; OnError;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.ErrorEventArgs&gt; OnError" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -140,9 +118,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnGet;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnGet" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -155,9 +130,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnHead;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnHead" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -170,9 +142,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnOptions;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnOptions" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -185,9 +154,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPatch;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPatch" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -200,9 +166,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPost;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPost" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -215,9 +178,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPut;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPut" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -230,9 +190,6 @@
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnTrace;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnTrace" />
       <MemberType>Event</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
@@ -245,9 +202,6 @@
       <MemberSignature Language="C#" Value="public int Port { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance int32 Port" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
@@ -261,9 +215,6 @@
       <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePath { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePath" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
       </ReturnValue>
@@ -277,9 +228,6 @@
       <MemberSignature Language="C#" Value="public void Start ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Start() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -293,9 +241,6 @@
       <MemberSignature Language="C#" Value="public void Stop ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Stop() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -309,9 +254,6 @@
       <MemberSignature Language="C#" Value="public bool Sweeped { get; set; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool Sweeped" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>

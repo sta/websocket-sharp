@@ -3,27 +3,29 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WebSocketServer extends WebSocketSharp.Server.WebSocketServerBase" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>WebSocketSharp.Server.WebSocketServerBase</BaseTypeName>
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides the functions of the server that receives the WebSocket connection requests.
+            </summary>
+    <remarks>
+            The WebSocketServer class provides multi WebSocket service.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName=".ctor">
       <MemberSignature Language="C#" Value="public WebSocketServer ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor() cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the WebSocketServer class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -31,15 +33,17 @@
       <MemberSignature Language="C#" Value="public WebSocketServer (int port);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 port) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="port" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="port">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="port" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -47,15 +51,17 @@
       <MemberSignature Language="C#" Value="public WebSocketServer (string url);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(string url) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="url" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="url">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="url">
+            A <see cref="T:System.String" /> that contains a WebSocket URL.
+            </param>
+        <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified WebSocket URL.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -63,17 +69,21 @@
       <MemberSignature Language="C#" Value="public WebSocketServer (int port, bool secure);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(int32 port, bool secure) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="port" Type="System.Int32" />
         <Parameter Name="secure" Type="System.Boolean" />
       </Parameters>
       <Docs>
-        <param name="port">To be added.</param>
-        <param name="secure">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="port" /> and <paramref name="secure" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -81,17 +91,21 @@
       <MemberSignature Language="C#" Value="public WebSocketServer (System.Net.IPAddress address, int port);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Net.IPAddress address, int32 port) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="address" Type="System.Net.IPAddress" />
         <Parameter Name="port" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="address">To be added.</param>
-        <param name="port">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+        <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="address" /> and <paramref name="port" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -99,19 +113,25 @@
       <MemberSignature Language="C#" Value="public WebSocketServer (System.Net.IPAddress address, int port, bool secure);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class System.Net.IPAddress address, int32 port, bool secure) cil managed" />
       <MemberType>Constructor</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <Parameters>
         <Parameter Name="address" Type="System.Net.IPAddress" />
         <Parameter Name="port" Type="System.Int32" />
         <Parameter Name="secure" Type="System.Boolean" />
       </Parameters>
       <Docs>
-        <param name="address">To be added.</param>
-        <param name="port">To be added.</param>
-        <param name="secure">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="address">
+            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            </param>
+        <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+            </param>
+        <summary>
+            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="secure" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -119,9 +139,6 @@
       <MemberSignature Language="C#" Value="protected override void AcceptWebSocket (System.Net.Sockets.TcpClient client);" />
       <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void AcceptWebSocket(class System.Net.Sockets.TcpClient client) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -129,8 +146,12 @@
         <Parameter Name="client" Type="System.Net.Sockets.TcpClient" />
       </Parameters>
       <Docs>
-        <param name="client">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="client">
+            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+            </param>
+        <summary>
+            Accepts the WebSocket connection.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -138,9 +159,6 @@
       <MemberSignature Language="C#" Value="public void AddService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -156,9 +174,15 @@
         <Parameter Name="absPath" Type="System.String" />
       </Parameters>
       <Docs>
-        <typeparam name="T">To be added.</typeparam>
-        <param name="absPath">To be added.</param>
-        <summary>To be added.</summary>
+        <typeparam name="T">
+            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </typeparam>
+        <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            </param>
+        <summary>
+            Adds the WebSocket service.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -166,9 +190,6 @@
       <MemberSignature Language="C#" Value="public void Broadcast (string data);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Broadcast(string data) cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
@@ -176,8 +197,12 @@
         <Parameter Name="data" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="data">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="data">
+            A <see cref="T:System.String" /> to broadcast.
+            </param>
+        <summary>
+            Broadcasts the specified <see cref="T:System.String" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -185,15 +210,16 @@
       <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePath { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePath" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the service paths.
+            </summary>
+        <value>
+            An IEnumerable&lt;string&gt; that contains the service paths.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -201,15 +227,14 @@
       <MemberSignature Language="C#" Value="public override void Stop ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance void Stop() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Stops receiving the WebSocket connection requests.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -217,15 +242,16 @@
       <MemberSignature Language="C#" Value="public bool Sweeped { get; set; }" />
       <MemberSignature Language="ILAsm" Value=".property instance bool Sweeped" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the server cleans up the inactive client.
+            </summary>
+        <value>
+          <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

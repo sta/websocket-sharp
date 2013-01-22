@@ -28,7 +28,7 @@ namespace Example2
         wssv.Uri, wssv.Address, wssv.Port);
        */
 
-      /// Multi services server
+      // Multi services server
       var wssv = new WebSocketServer(4649);
       //var wssv = new WebSocketServer("ws://localhost:4649");
       //wssv.Sweeped = false; // Stop the Sweep inactive session Timer.
@@ -43,6 +43,7 @@ namespace Example2
       foreach (var path in wssv.ServicePath)
         Console.WriteLine("  {0}", path);
       Console.WriteLine();
+       
 
       Console.WriteLine("Press any key to stop server...");
       Console.ReadLine();

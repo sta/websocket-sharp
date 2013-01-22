@@ -1,6 +1,6 @@
 <Namespace Name="WebSocketSharp.Net">
   <Docs>
     <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <remarks>The WebSocketSharp.Net namespace provides some modified classes in the System.Net namespace (e.g. <see cref="T:System.Net.HttpListenerContext"/>) to accept the WebSocket connection request.</remarks>
   </Docs>
 </Namespace>

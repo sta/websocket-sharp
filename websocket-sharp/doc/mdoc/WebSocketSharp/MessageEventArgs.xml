@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit MessageEventArgs extends System.EventArgs" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.EventArgs</BaseTypeName>
@@ -24,9 +23,6 @@
       <MemberSignature Language="C#" Value="public string Data { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Data" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
@@ -44,9 +40,6 @@
       <MemberSignature Language="C#" Value="public byte[] RawData { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance unsigned int8[] RawData" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>
       </ReturnValue>
@@ -64,9 +57,6 @@
       <MemberSignature Language="C#" Value="public WebSocketSharp.Opcode Type { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.Opcode Type" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Opcode</ReturnType>
       </ReturnValue>

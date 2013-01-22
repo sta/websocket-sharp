@@ -3,7 +3,6 @@
   <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed beforefieldinit HttpListenerContext extends System.Object" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
-    <AssemblyVersion>1.0.2.27062</AssemblyVersion>
   </AssemblyInfo>
   <Base>
     <BaseTypeName>System.Object</BaseTypeName>
@@ -15,14 +14,11 @@
   </Docs>
   <Members>
     <Member MemberName="AcceptWebSocket">
-      <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerWebSocketContext AcceptWebSocket ();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class WebSocketSharp.Net.HttpListenerWebSocketContext AcceptWebSocket() cil managed" />
+      <MemberSignature Language="C#" Value="public WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext AcceptWebSocket ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance class WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext AcceptWebSocket() cil managed" />
       <MemberType>Method</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Net.HttpListenerWebSocketContext</ReturnType>
+        <ReturnType>WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext</ReturnType>
       </ReturnValue>
       <Parameters />
       <Docs>
@@ -35,9 +31,6 @@
       <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerRequest Request { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerRequest Request" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerRequest</ReturnType>
       </ReturnValue>
@@ -51,9 +44,6 @@
       <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerResponse Response { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerResponse Response" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.HttpListenerResponse</ReturnType>
       </ReturnValue>
@@ -67,9 +57,6 @@
       <MemberSignature Language="C#" Value="public System.Security.Principal.IPrincipal User { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Security.Principal.IPrincipal User" />
       <MemberType>Property</MemberType>
-      <AssemblyInfo>
-        <AssemblyVersion>1.0.2.27062</AssemblyVersion>
-      </AssemblyInfo>
       <ReturnValue>
         <ReturnType>System.Security.Principal.IPrincipal</ReturnType>
       </ReturnValue>
