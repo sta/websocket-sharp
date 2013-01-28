@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,12 +40,12 @@ namespace WebSocketSharp.Server {
 
     #region Fields
 
-    private Thread         _acceptRequestThread;
-    private bool           _isWindows;
-    private HttpListener   _listener;
-    private int            _port;
-    private string         _rootPath;
-    private ServiceManager _services;
+    private Thread             _acceptRequestThread;
+    private bool               _isWindows;
+    private HttpListener       _listener;
+    private int                _port;
+    private string             _rootPath;
+    private ServiceHostManager _svcHosts;
 
     #endregion
 
@@ -70,19 +70,19 @@ namespace WebSocketSharp.Server {
       get { return _port; }
     }
 
-    public IEnumerable<string> ServicePath {
+    public IEnumerable<string> ServicePaths {
       get {
-        return _services.Path;
+        return _svcHosts.Paths;
       }
     }
 
     public bool Sweeped {
       get {
-        return _services.Sweeped;
+        return _svcHosts.Sweeped;
       }
 
       set {
-        _services.Sweeped = value;
+        _svcHosts.Sweeped = value;
       }
     }
 
@@ -136,7 +136,7 @@ namespace WebSocketSharp.Server {
     {
       _isWindows = false;
       _listener  = new HttpListener();
-      _services  = new ServiceManager();
+      _svcHosts  = new ServiceHostManager();
 
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
@@ -278,7 +278,7 @@ namespace WebSocketSharp.Server {
       var path      = wsContext.Path.UrlDecode();
 
       IServiceHost svcHost;
-      if (!_services.TryGetServiceHost(path, out svcHost))
+      if (!_svcHosts.TryGetServiceHost(path, out svcHost))
       {
         res.StatusCode = (int)HttpStatusCode.NotImplemented;
         return false;
@@ -307,7 +307,7 @@ namespace WebSocketSharp.Server {
       if (!Sweeped)
         svcHost.Sweeped = Sweeped;
 
-      _services.Add(absPath, svcHost);
+      _svcHosts.Add(absPath, svcHost);
     }
 
     public byte[] GetFile(string path)
@@ -332,7 +332,7 @@ namespace WebSocketSharp.Server {
     {
       _listener.Close();
       _acceptRequestThread.Join(5 * 1000);
-      _services.Stop();
+      _svcHosts.Stop();
     }
 
     #endregion

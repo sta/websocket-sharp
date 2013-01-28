@@ -28,7 +28,7 @@ namespace Example3
 
       _httpsv.Start();
       Console.WriteLine("HTTP Server listening on port: {0} service path:", _httpsv.Port);
-      foreach (var path in _httpsv.ServicePath)
+      foreach (var path in _httpsv.ServicePaths)
         Console.WriteLine("  {0}", path);
       Console.WriteLine();
 

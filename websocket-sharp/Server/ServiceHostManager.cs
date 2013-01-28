@@ -1,10 +1,10 @@
 #region MIT License
 /*
- * ServiceManager.cs
+ * ServiceHostManager.cs
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,20 +31,20 @@ using System.Collections.Generic;
 
 namespace WebSocketSharp.Server {
 
-  public class ServiceManager {
+  internal class ServiceHostManager {
   
-    #region Field
+    #region Fields
 
-    private Dictionary<string, IServiceHost> _services;
+    private Dictionary<string, IServiceHost> _svcHosts;
     private bool                             _sweeped;
 
     #endregion
 
     #region Constructor
 
-    public ServiceManager()
+    public ServiceHostManager()
     {
-      _services = new Dictionary<string, IServiceHost>();
+      _svcHosts = new Dictionary<string, IServiceHost>();
       _sweeped  = true;
     }
 
@@ -54,9 +54,21 @@ namespace WebSocketSharp.Server {
 
     public int Count {
       get {
-        return _services.Count;
+        return _svcHosts.Count;
       }
     } 
+
+    public IEnumerable<string> Paths {
+      get {
+        return _svcHosts.Keys;
+      }
+    }
+
+    public IEnumerable<IServiceHost> ServiceHosts {
+      get {
+        return _svcHosts.Values;
+      }
+    }
 
     public bool Sweeped {
       get {
@@ -67,21 +79,9 @@ namespace WebSocketSharp.Server {
         if (_sweeped ^ value)
         {
           _sweeped = value;
-          foreach (var svcHost in _services.Values)
+          foreach (var svcHost in _svcHosts.Values)
             svcHost.Sweeped = value;
         }
-      }
-    }
-
-    public IEnumerable<string> Path {
-      get {
-        return _services.Keys;
-      }
-    }
-
-    public IEnumerable<IServiceHost> ServiceHost {
-      get {
-        return _services.Values;
       }
     }
 
@@ -91,25 +91,26 @@ namespace WebSocketSharp.Server {
 
     public void Add(string absPath, IServiceHost svcHost)
     {
-      _services.Add(absPath.UrlDecode(), svcHost);
+      _svcHosts.Add(absPath.UrlDecode(), svcHost);
     }
 
     public void Broadcast(string data)
     {
-      foreach (var svcHost in _services.Values)
+      foreach (var svcHost in _svcHosts.Values)
         svcHost.Broadcast(data);
     }
 
     public void Stop()
     {
-      foreach (var svcHost in _services.Values)
+      foreach (var svcHost in _svcHosts.Values)
         svcHost.Stop();
-      _services.Clear();
+
+      _svcHosts.Clear();
     }
 
     public bool TryGetServiceHost(string absPath, out IServiceHost svcHost)
     {
-      return _services.TryGetValue(absPath, out svcHost);
+      return _svcHosts.TryGetValue(absPath, out svcHost);
     }
 
     #endregion

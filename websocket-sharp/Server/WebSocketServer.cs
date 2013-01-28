@@ -46,7 +46,7 @@ namespace WebSocketSharp.Server {
   {
     #region Field
 
-    private ServiceManager _services;
+    private ServiceHostManager _svcHosts;
 
     #endregion
 
@@ -155,7 +155,7 @@ namespace WebSocketSharp.Server {
         var url = BaseUri.IsAbsoluteUri
                 ? BaseUri.ToString().TrimEnd('/')
                 : String.Empty;
-        foreach (var path in _services.Path)
+        foreach (var path in _svcHosts.Paths)
           yield return url + path;
       }
     }
@@ -168,11 +168,11 @@ namespace WebSocketSharp.Server {
     /// </value>
     public bool Sweeped {
       get {
-        return _services.Sweeped;
+        return _svcHosts.Sweeped;
       }
 
       set {
-        _services.Sweeped = value;
+        _svcHosts.Sweeped = value;
       }
     }
 
@@ -182,7 +182,7 @@ namespace WebSocketSharp.Server {
 
     private void init()
     {
-      _services = new ServiceManager();
+      _svcHosts = new ServiceHostManager();
     }
 
     #endregion
@@ -201,7 +201,7 @@ namespace WebSocketSharp.Server {
       var path   = context.Path.UrlDecode();
 
       IServiceHost svcHost;
-      if (!_services.TryGetServiceHost(path, out svcHost))
+      if (!_svcHosts.TryGetServiceHost(path, out svcHost))
       {
         socket.Close(HttpStatusCode.NotImplemented);
         return;
@@ -243,7 +243,7 @@ namespace WebSocketSharp.Server {
       if (!Sweeped)
         svcHost.Sweeped = Sweeped;
 
-      _services.Add(absPath, svcHost);
+      _svcHosts.Add(absPath, svcHost);
     }
 
     /// <summary>
@@ -254,7 +254,7 @@ namespace WebSocketSharp.Server {
     /// </param>
     public void Broadcast(string data)
     {
-      _services.Broadcast(data);
+      _svcHosts.Broadcast(data);
     }
 
     /// <summary>
@@ -263,7 +263,7 @@ namespace WebSocketSharp.Server {
     public override void Stop()
     {
       base.Stop();
-      _services.Stop();
+      _svcHosts.Stop();
     }
 
     #endregion

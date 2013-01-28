@@ -211,9 +211,9 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="ServicePath">
-      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePath { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePath" />
+    <Member MemberName="ServicePaths">
+      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePaths { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePaths" />
       <MemberType>Property</MemberType>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
