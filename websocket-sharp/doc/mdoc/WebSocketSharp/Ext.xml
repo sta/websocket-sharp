@@ -16,32 +16,63 @@
   </Docs>
   <Members>
     <Member MemberName="AcceptWebSocket">
-      <MemberSignature Language="C#" Value="public static WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext AcceptWebSocket (this System.Net.Sockets.TcpClient client, bool secure);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext AcceptWebSocket(class System.Net.Sockets.TcpClient client, bool secure) cil managed" />
+      <MemberSignature Language="C#" Value="public static WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext AcceptWebSocket (this System.Net.Sockets.TcpListener listener, bool secure);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext AcceptWebSocket(class System.Net.Sockets.TcpListener listener, bool secure) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="client" Type="System.Net.Sockets.TcpClient" RefType="this" />
+        <Parameter Name="listener" Type="System.Net.Sockets.TcpListener" RefType="this" />
         <Parameter Name="secure" Type="System.Boolean" />
       </Parameters>
       <Docs>
-        <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains a TCP connection to accept a WebSocket connection from.
+        <param name="listener">
+            A <see cref="T:System.Net.Sockets.TcpListener" /> that provides a TCP connection to accept a WebSocket connection.
             </param>
         <param name="secure">
             A <see cref="T:System.Boolean" /> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
             </param>
         <summary>
-            Accept a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
+            Accepts a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
             </summary>
         <returns>
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </returns>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="client" /> parameter passed to a method is invalid because it is <see langword="null" />.
+          <paramref name="listener" /> is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
+    <Member MemberName="AcceptWebSocketAsync">
+      <MemberSignature Language="C#" Value="public static void AcceptWebSocketAsync (this System.Net.Sockets.TcpListener listener, bool secure, Action&lt;WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext&gt; completed);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig void AcceptWebSocketAsync(class System.Net.Sockets.TcpListener listener, bool secure, class System.Action`1&lt;class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext&gt; completed) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="listener" Type="System.Net.Sockets.TcpListener" RefType="this" />
+        <Parameter Name="secure" Type="System.Boolean" />
+        <Parameter Name="completed" Type="System.Action&lt;WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="listener">
+            A <see cref="T:System.Net.Sockets.TcpListener" /> that provides a TCP connection to accept a WebSocket connection.
+            </param>
+        <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
+            </param>
+        <param name="completed">
+            An Action&lt;TcpListenerWebSocketContext&gt; delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+        <summary>
+            Accepts a WebSocket connection asynchronously by the <see cref="T:System.Net.Sockets.TcpListener" />.
+            </summary>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="listener" /> is <see langword="null" />.
             </exception>
       </Docs>
     </Member>

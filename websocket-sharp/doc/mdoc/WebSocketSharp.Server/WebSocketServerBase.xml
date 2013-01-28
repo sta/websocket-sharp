@@ -65,13 +65,13 @@
       </Parameters>
       <Docs>
         <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
             </param>
         <param name="absPath">
-            A <see cref="T:System.String" /> that contains a absolute path.
+            A <see cref="T:System.String" /> that contains an absolute path.
             </param>
         <param name="secure">
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
@@ -98,21 +98,21 @@
       </Docs>
     </Member>
     <Member MemberName="AcceptWebSocket">
-      <MemberSignature Language="C#" Value="protected abstract void AcceptWebSocket (System.Net.Sockets.TcpClient client);" />
-      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void AcceptWebSocket(class System.Net.Sockets.TcpClient client) cil managed" />
+      <MemberSignature Language="C#" Value="protected abstract void AcceptWebSocket (WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance void AcceptWebSocket(class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="client" Type="System.Net.Sockets.TcpClient" />
+        <Parameter Name="context" Type="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" />
       </Parameters>
       <Docs>
-        <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the WebSocket connection.
+        <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -126,10 +126,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the local IP address on which to listen for incoming connection attempts.
+            Gets the IP address on which to listen for incoming connection attempts.
             </summary>
         <value>
-            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -166,7 +166,7 @@
             A <see cref="T:System.String" /> that contains an error message.
             </param>
         <summary>
-            Occurs the <see cref="E:WebSocketSharp.Server.WebSocketServerBase.OnError" /> event with the specified <paramref name="message" />.
+            Occurs the <see cref="E:WebSocketSharp.Server.WebSocketServerBase.OnError" /> event with the specified <see cref="T:System.String" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -180,10 +180,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether this server is secure.
+            Gets a value indicating whether this server provides secure connection.
             </summary>
         <value>
-          <c>true</c> if this server is secure; otherwise, <c>false</c>.
+          <c>true</c> if this server provides secure connection; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

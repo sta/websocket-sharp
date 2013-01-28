@@ -150,7 +150,7 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
         <summary>
             Closes the connection and releases all associated resources after sends a Close control frame.
@@ -195,7 +195,7 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
         <param name="reason">
             A <see cref="T:System.String" /> that contains a reason for closure.
@@ -435,7 +435,7 @@
       </Parameters>
       <Docs>
         <param name="data">
-            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <summary>
             Sends a binary data using the connection.
@@ -455,7 +455,7 @@
       </Parameters>
       <Docs>
         <param name="file">
-            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
+            A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
         <summary>
             Sends a binary data using the connection.
@@ -475,7 +475,7 @@
       </Parameters>
       <Docs>
         <param name="data">
-            A <see cref="T:System.String" /> that contains the text data to be sent.
+            A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <summary>
             Sends a text data using the connection.
@@ -496,7 +496,7 @@
       </Parameters>
       <Docs>
         <param name="data">
-            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <param name="completed">
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
@@ -520,7 +520,7 @@
       </Parameters>
       <Docs>
         <param name="file">
-            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
+            A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
         <param name="completed">
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
@@ -544,7 +544,7 @@
       </Parameters>
       <Docs>
         <param name="data">
-            A <see cref="T:System.String" /> that contains the text data to be sent.
+            A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <param name="completed">
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.

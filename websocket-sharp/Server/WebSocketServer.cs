@@ -40,7 +40,7 @@ namespace WebSocketSharp.Server {
   /// Provides the functions of the server that receives the WebSocket connection requests.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServer class provides multi WebSocket service.
+  /// The WebSocketServer class provides the multi WebSocket service.
   /// </remarks>
   public class WebSocketServer : WebSocketServerBase
   {
@@ -53,7 +53,7 @@ namespace WebSocketSharp.Server {
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
     /// </summary>
     public WebSocketServer()
       : this(80)
@@ -61,7 +61,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for incoming connection attempts
     /// on the specified <paramref name="port"/>.
     /// </summary>
     /// <param name="port">
@@ -73,7 +73,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for incoming connection attempts
     /// on the specified WebSocket URL.
     /// </summary>
     /// <param name="url">
@@ -92,7 +92,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for incoming connection attempts
     /// on the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="port">
@@ -107,11 +107,11 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for incoming connection attempts
     /// on the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
     /// <param name="address">
-    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -122,11 +122,11 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for incoming connection attempts
     /// on the specified <paramref name="address"/>, <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -145,12 +145,12 @@ namespace WebSocketSharp.Server {
     #region Properties
 
     /// <summary>
-    /// Gets the service paths.
+    /// Gets the paths associated with the each WebSocket services.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the service paths.
+    /// An IEnumerable&lt;string&gt; that contains the paths.
     /// </value>
-    public IEnumerable<string> ServicePath {
+    public IEnumerable<string> ServicePaths {
       get {
         var url = BaseUri.IsAbsoluteUri
                 ? BaseUri.ToString().TrimEnd('/')
@@ -190,16 +190,15 @@ namespace WebSocketSharp.Server {
     #region Protected Method
 
     /// <summary>
-    /// Accepts the WebSocket connection.
+    /// Accepts a WebSocket connection.
     /// </summary>
-    /// <param name="client">
-    /// A <see cref="TcpClient"/> that contains the TCP connection.
+    /// <param name="context">
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
     /// </param>
-    protected override void AcceptWebSocket(TcpClient client)
+    protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var context = client.AcceptWebSocket(IsSecure);
-      var socket  = context.WebSocket;
-      var path    = context.Path.UrlDecode();
+      var socket = context.WebSocket;
+      var path   = context.Path.UrlDecode();
 
       IServiceHost svcHost;
       if (!_services.TryGetServiceHost(path, out svcHost))
@@ -219,13 +218,13 @@ namespace WebSocketSharp.Server {
     #region Public Methods
 
     /// <summary>
-    /// Adds the WebSocket service.
+    /// Adds a WebSocket service.
     /// </summary>
     /// <param name="absPath">
-    /// A <see cref="string"/> that contains an absolute path associated with the WebSocket service.
+    /// A <see cref="string"/> that contains an absolute path associated with a WebSocket service.
     /// </param>
     /// <typeparam name="T">
-    /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
+    /// The type of a WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
     /// </typeparam>
     public void AddService<T>(string absPath)
       where T : WebSocketService, new()
@@ -248,7 +247,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/>.
+    /// Broadcasts the specified <see cref="string"/> to all clients.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.

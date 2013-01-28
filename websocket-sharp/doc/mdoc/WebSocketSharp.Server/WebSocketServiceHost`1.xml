@@ -28,7 +28,7 @@
             Provides the functions of the server that receives the WebSocket connection requests.
             </summary>
     <remarks>
-            The WebSocketServiceHost&lt;T&gt; class provides single WebSocket service.
+            The WebSocketServiceHost&lt;T&gt; class provides the single WebSocket service.
             </remarks>
   </Docs>
   <Members>
@@ -149,7 +149,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -176,7 +176,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -195,21 +195,21 @@
       </Docs>
     </Member>
     <Member MemberName="AcceptWebSocket">
-      <MemberSignature Language="C#" Value="protected override void AcceptWebSocket (System.Net.Sockets.TcpClient client);" />
-      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void AcceptWebSocket(class System.Net.Sockets.TcpClient client) cil managed" />
+      <MemberSignature Language="C#" Value="protected override void AcceptWebSocket (WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void AcceptWebSocket(class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="client" Type="System.Net.Sockets.TcpClient" />
+        <Parameter Name="context" Type="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" />
       </Parameters>
       <Docs>
-        <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+        <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -229,7 +229,7 @@
             A <see cref="T:System.String" /> to broadcast.
             </param>
         <summary>
-            Broadcasts the specified <see cref="T:System.String" />.
+            Broadcasts the specified <see cref="T:System.String" /> to all clients.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -251,7 +251,10 @@
         <summary>
             Pings with the specified <see cref="T:System.String" /> to all clients.
             </summary>
-        <returns>To be added.</returns>
+        <returns>
+            A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
+            indicating whether the server received a Pong in a time.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

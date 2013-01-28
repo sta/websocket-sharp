@@ -13,7 +13,7 @@
             Provides the functions of the server that receives the WebSocket connection requests.
             </summary>
     <remarks>
-            The WebSocketServer class provides multi WebSocket service.
+            The WebSocketServer class provides the multi WebSocket service.
             </remarks>
   </Docs>
   <Members>
@@ -24,7 +24,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Initializes a new instance of the WebSocketServer class.
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -41,7 +41,7 @@
             An <see cref="T:System.Int32" /> that contains a port number.
             </param>
         <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="port" />.
             </summary>
         <remarks>To be added.</remarks>
@@ -59,7 +59,7 @@
             A <see cref="T:System.String" /> that contains a WebSocket URL.
             </param>
         <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified WebSocket URL.
             </summary>
         <remarks>To be added.</remarks>
@@ -81,7 +81,7 @@
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
             </param>
         <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="port" /> and <paramref name="secure" />.
             </summary>
         <remarks>To be added.</remarks>
@@ -97,13 +97,13 @@
       </Parameters>
       <Docs>
         <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
             </param>
         <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="address" /> and <paramref name="port" />.
             </summary>
         <remarks>To be added.</remarks>
@@ -120,7 +120,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -129,28 +129,28 @@
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
             </param>
         <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="secure" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="AcceptWebSocket">
-      <MemberSignature Language="C#" Value="protected override void AcceptWebSocket (System.Net.Sockets.TcpClient client);" />
-      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void AcceptWebSocket(class System.Net.Sockets.TcpClient client) cil managed" />
+      <MemberSignature Language="C#" Value="protected override void AcceptWebSocket (WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig virtual instance void AcceptWebSocket(class WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext context) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="client" Type="System.Net.Sockets.TcpClient" />
+        <Parameter Name="context" Type="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" />
       </Parameters>
       <Docs>
-        <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+        <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -175,13 +175,13 @@
       </Parameters>
       <Docs>
         <typeparam name="T">
-            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            The type of a WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
             </typeparam>
         <param name="absPath">
-            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            A <see cref="T:System.String" /> that contains an absolute path associated with a WebSocket service.
             </param>
         <summary>
-            Adds the WebSocket service.
+            Adds a WebSocket service.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -201,24 +201,24 @@
             A <see cref="T:System.String" /> to broadcast.
             </param>
         <summary>
-            Broadcasts the specified <see cref="T:System.String" />.
+            Broadcasts the specified <see cref="T:System.String" /> to all clients.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="ServicePath">
-      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePath { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePath" />
+    <Member MemberName="ServicePaths">
+      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;string&gt; ServicePaths { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;string&gt; ServicePaths" />
       <MemberType>Property</MemberType>
       <ReturnValue>
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the service paths.
+            Gets the paths associated with the each WebSocket services.
             </summary>
         <value>
-            An IEnumerable&lt;string&gt; that contains the service paths.
+            An IEnumerable&lt;string&gt; that contains the paths.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

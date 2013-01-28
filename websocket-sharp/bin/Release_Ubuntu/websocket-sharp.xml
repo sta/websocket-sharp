@@ -9,21 +9,38 @@
             Provides a set of static methods for the websocket-sharp.
             </summary>
         </member>
-        <member name="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean)">
+        <member name="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean)">
             <summary>
-            Accept a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
+            Accepts a WebSocket connection by the <see cref="T:System.Net.Sockets.TcpListener" />.
             </summary>
             <returns>
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </returns>
-            <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains a TCP connection to accept a WebSocket connection from.
+            <param name="listener">
+            A <see cref="T:System.Net.Sockets.TcpListener" /> that provides a TCP connection to accept a WebSocket connection.
             </param>
             <param name="secure">
             A <see cref="T:System.Boolean" /> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
             </param>
             <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="client" /> parameter passed to a method is invalid because it is <see langword="null" />.
+                <paramref name="listener" /> is <see langword="null" />.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext})">
+            <summary>
+            Accepts a WebSocket connection asynchronously by the <see cref="T:System.Net.Sockets.TcpListener" />.
+            </summary>
+            <param name="listener">
+            A <see cref="T:System.Net.Sockets.TcpListener" /> that provides a TCP connection to accept a WebSocket connection.
+            </param>
+            <param name="secure">
+            A <see cref="T:System.Boolean" /> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
+            </param>
+            <param name="completed">
+            An Action&lt;TcpListenerWebSocketContext&gt; delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="listener" /> is <see langword="null" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs)">
@@ -792,14 +809,9 @@
                 <paramref name="url" /> is not valid WebSocket URL.
             </exception>
         </member>
-        <member name="E:WebSocketSharp.WebSocket.OnOpen">
+        <member name="E:WebSocketSharp.WebSocket.OnClose">
             <summary>
-            Occurs when the WebSocket connection has been established.
-            </summary>
-        </member>
-        <member name="E:WebSocketSharp.WebSocket.OnMessage">
-            <summary>
-            Occurs when the WebSocket receives a data frame.
+            Occurs when the WebSocket receives a Close frame or the Close method is called.
             </summary>
         </member>
         <member name="E:WebSocketSharp.WebSocket.OnError">
@@ -807,9 +819,14 @@
             Occurs when the WebSocket gets an error.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.WebSocket.OnClose">
+        <member name="E:WebSocketSharp.WebSocket.OnMessage">
             <summary>
-            Occurs when the WebSocket receives a Close frame or the Close method is called.
+            Occurs when the WebSocket receives a data frame.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.WebSocket.OnOpen">
+            <summary>
+            Occurs when the WebSocket connection has been established.
             </summary>
         </member>
         <member name="P:WebSocketSharp.WebSocket.Extensions">
@@ -870,7 +887,7 @@
             Closes the connection and releases all associated resources after sends a Close control frame.
             </summary>
             <param name="code">
-            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Close(System.UInt16)">
@@ -886,7 +903,7 @@
             Closes the connection and releases all associated resources after sends a Close control frame.
             </summary>
             <param name="code">
-            A <see cref="!:WebSocketSharp.Frame.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
             </param>
             <param name="reason">
             A <see cref="T:System.String" /> that contains a reason for closure.
@@ -938,20 +955,20 @@
                 <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="M:WebSocketSharp.WebSocket.Send(System.String)">
-            <summary>
-            Sends a text data using the connection.
-            </summary>
-            <param name="data">
-            A <see cref="T:System.String" /> that contains the text data to be sent.
-            </param>
-        </member>
         <member name="M:WebSocketSharp.WebSocket.Send(System.Byte[])">
             <summary>
             Sends a binary data using the connection.
             </summary>
             <param name="data">
-            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.WebSocket.Send(System.String)">
+            <summary>
+            Sends a text data using the connection.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Send(System.IO.FileInfo)">
@@ -959,18 +976,7 @@
             Sends a binary data using the connection.
             </summary>
             <param name="file">
-            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
-            </param>
-        </member>
-        <member name="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action)">
-            <summary>
-            Sends a text data asynchronously using the connection.
-            </summary>
-            <param name="data">
-            A <see cref="T:System.String" /> that contains the text data to be sent.
-            </param>
-            <param name="completed">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
         </member>
         <member name="M:WebSocketSharp.WebSocket.SendAsync(System.Byte[],System.Action)">
@@ -978,7 +984,18 @@
             Sends a binary data asynchronously using the connection.
             </summary>
             <param name="data">
-            An array of <see cref="T:System.Byte" /> that contains the binary data to be sent.
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
+            </param>
+            <param name="completed">
+            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action)">
+            <summary>
+            Sends a text data asynchronously using the connection.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> that contains a text data to send.
             </param>
             <param name="completed">
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
@@ -989,7 +1006,7 @@
             Sends a binary data asynchronously using the connection.
             </summary>
             <param name="file">
-            A <see cref="T:System.IO.FileInfo" /> that contains the binary data to be sent.
+            A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
             <param name="completed">
             An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
@@ -1000,17 +1017,17 @@
             Provides the functions of the server that receives the WebSocket connection requests.
             </summary>
             <remarks>
-            The WebSocketServer class provides multi WebSocket service.
+            The WebSocketServer class provides the multi WebSocket service.
             </remarks>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor">
             <summary>
-            Initializes a new instance of the WebSocketServer class.
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class.
             </summary>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Int32)">
             <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="port" />.
             </summary>
             <param name="port">
@@ -1019,7 +1036,7 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified WebSocket URL.
             </summary>
             <param name="url">
@@ -1028,7 +1045,7 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Int32,System.Boolean)">
             <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="port" /> and <paramref name="secure" />.
             </summary>
             <param name="port">
@@ -1040,11 +1057,11 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Net.IPAddress,System.Int32)">
             <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="address" /> and <paramref name="port" />.
             </summary>
             <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
             <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -1052,11 +1069,11 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.#ctor(System.Net.IPAddress,System.Int32,System.Boolean)">
             <summary>
-            Initializes a new instance of the WebSocketServer class that listens for incoming connection attempts
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketServer" /> class that listens for incoming connection attempts
             on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="secure" />.
             </summary>
             <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
             <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -1065,12 +1082,12 @@
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
             </param>
         </member>
-        <member name="P:WebSocketSharp.Server.WebSocketServer.ServicePath">
+        <member name="P:WebSocketSharp.Server.WebSocketServer.ServicePaths">
             <summary>
-            Gets the service paths.
+            Gets the paths associated with the each WebSocket services.
             </summary>
             <value>
-            An IEnumerable&lt;string&gt; that contains the service paths.
+            An IEnumerable&lt;string&gt; that contains the paths.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServer.Sweeped">
@@ -1081,28 +1098,28 @@
                 <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
             </value>
         </member>
-        <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(System.Net.Sockets.TcpClient)">
+        <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
-            <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+            <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">
             <summary>
-            Adds the WebSocket service.
+            Adds a WebSocket service.
             </summary>
             <param name="absPath">
-            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            A <see cref="T:System.String" /> that contains an absolute path associated with a WebSocket service.
             </param>
             <typeparam name="T">
-            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            The type of a WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
             </typeparam>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.Broadcast(System.String)">
             <summary>
-            Broadcasts the specified <see cref="T:System.String" />.
+            Broadcasts the specified <see cref="T:System.String" /> to all clients.
             </summary>
             <param name="data">
             A <see cref="T:System.String" /> to broadcast.
@@ -1112,6 +1129,244 @@
             <summary>
             Stops receiving the WebSocket connection requests.
             </summary>
+        </member>
+        <member name="T:WebSocketSharp.Server.WebSocketService">
+            <summary>
+            Provides the basic functions of the WebSocket service.
+            </summary>
+            <remarks>
+            The WebSocketService class is an abstract class.
+            </remarks>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketService.QueryString">
+            <summary>
+            Gets the HTTP query string variables used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the query string variables.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketService.Sessions">
+            <summary>
+            Gets the sessions to the WebSocket service.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Server.SessionManager" /> that contains the sessions to the WebSocket service.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketService.ID">
+            <summary>
+            Gets the ID of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a ID.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.WebSocketService.IsBound">
+            <summary>
+            Gets a value indicating whether a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance is bound to a <see cref="T:WebSocketSharp.WebSocket" />.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocketService is bound to a WebSocket; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.OnClose(WebSocketSharp.CloseEventArgs)">
+            <summary>
+            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> receives a Close frame or the Stop method is called.
+            </summary>
+            <param name="e">
+            A <see cref="T:WebSocketSharp.CloseEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnClose" /> event.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.OnError(WebSocketSharp.ErrorEventArgs)">
+            <summary>
+            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> gets an error.
+            </summary>
+            <param name="e">
+            An <see cref="T:WebSocketSharp.ErrorEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.OnMessage(WebSocketSharp.MessageEventArgs)">
+            <summary>
+            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> receives a data frame.
+            </summary>
+            <param name="e">
+            A <see cref="T:WebSocketSharp.MessageEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnMessage" /> event.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.OnOpen">
+            <summary>
+            Occurs when the WebSocket connection has been established.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager)">
+            <summary>
+            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> and <see cref="T:WebSocketSharp.Server.SessionManager" />
+            to a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <param name="socket">
+            A <see cref="T:WebSocketSharp.WebSocket" /> to bind to the WebSocketService.
+            </param>
+            <param name="sessions">
+            A <see cref="T:WebSocketSharp.Server.SessionManager" /> to bind to the WebSocketService.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.Byte[])">
+            <summary>
+            Broadcasts the specified array of <see cref="T:System.Byte" /> to all clients of the WebSocket service.
+            </summary>
+            <param name="data">
+            An array of <see cref="T:System.Byte" /> to broadcast.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.String)">
+            <summary>
+            Broadcasts the specified <see cref="T:System.String" /> to all clients of the WebSocket service.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> to broadcast.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Broadping">
+            <summary>
+            Pings to all clients of the WebSocket service.
+            </summary>
+            <returns>
+            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
+            indicating whether the WebSocket service received a Pong in a time.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Broadping(System.String)">
+            <summary>
+            Pings with the specified <see cref="T:System.String" /> to all clients of the WebSocket service.
+            </summary>
+            <returns>
+            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
+            indicating whether the WebSocket service received a Pong in a time.
+            </returns>
+            <param name="message">
+            A <see cref="T:System.String" /> that contains a message.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Ping">
+            <summary>
+            Pings to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <returns>
+                <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Ping(System.String)">
+            <summary>
+            Pings with the specified <see cref="T:System.String" /> to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <returns>
+                <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+            </returns>
+            <param name="message">
+            A <see cref="T:System.String" /> that contains a message.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String)">
+            <summary>
+            Pings to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            </summary>
+            <returns>
+                <c>true</c> if the WebSocket service receives a Pong in a time; otherwise, <c>false</c>.
+            </returns>
+            <param name="id">
+            A <see cref="T:System.String" /> that contains a ID that represents the destination for the Ping.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String)">
+            <summary>
+            Pings with the specified <see cref="T:System.String" /> to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
+            associated with the specified ID.
+            </summary>
+            <returns>
+                <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+            </returns>
+            <param name="id">
+            A <see cref="T:System.String" /> that contains a ID that represents the destination for the Ping.
+            </param>
+            <param name="message">
+            A <see cref="T:System.String" /> that contains a message.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Send(System.Byte[])">
+            <summary>
+            Sends a binary data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <param name="data">
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Send(System.String)">
+            <summary>
+            Sends a text data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+            <param name="data">
+            A <see cref="T:System.String" /> that contains a text data to send.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.Byte[])">
+            <summary>
+            Sends a binary data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            </summary>
+            <param name="id">
+            A <see cref="T:System.String" /> that contains a ID that represents the destination for the data.
+            </param>
+            <param name="data">
+            An array of <see cref="T:System.Byte" /> that contains a binary data to send.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.String)">
+            <summary>
+            Sends a text data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            </summary>
+            <param name="id">
+            A <see cref="T:System.String" /> that contains a ID that represents the destination for the data.
+            </param>
+            <param name="data">
+            A <see cref="T:System.String" /> that contains a text data to send.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Start">
+            <summary>
+            Starts a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Stop">
+            <summary>
+            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Stop(WebSocketSharp.CloseStatusCode,System.String)">
+            <summary>
+            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:WebSocketSharp.CloseStatusCode" /> and <see cref="T:System.String" />.
+            </summary>
+            <param name="code">
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that contains a status code indicating the reason for stop.
+            </param>
+            <param name="reason">
+            A <see cref="T:System.String" /> that contains a reason for stop.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.Stop(System.UInt16,System.String)">
+            <summary>
+            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:System.UInt16" /> and <see cref="T:System.String" />.
+            </summary>
+            <param name="code">
+            A <see cref="T:System.UInt16" /> that contains a status code indicating the reason for stop.
+            </param>
+            <param name="reason">
+            A <see cref="T:System.String" /> that contains a reason for stop.
+            </param>
         </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
@@ -1175,13 +1430,13 @@
             on the specified <paramref name="address" />, <paramref name="port" />, <paramref name="absPath" /> and <paramref name="secure" />.
             </summary>
             <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
             <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
             </param>
             <param name="absPath">
-            A <see cref="T:System.String" /> that contains a absolute path.
+            A <see cref="T:System.String" /> that contains an absolute path.
             </param>
             <param name="secure">
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
@@ -1216,18 +1471,18 @@
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServerBase.Address">
             <summary>
-            Gets the local IP address on which to listen for incoming connection attempts.
+            Gets the IP address on which to listen for incoming connection attempts.
             </summary>
             <value>
-            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServerBase.IsSecure">
             <summary>
-            Gets a value indicating whether this server is secure.
+            Gets a value indicating whether this server provides secure connection.
             </summary>
             <value>
-                <c>true</c> if this server is secure; otherwise, <c>false</c>.
+                <c>true</c> if this server provides secure connection; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServerBase.IsSelfHost">
@@ -1246,17 +1501,17 @@
             An <see cref="T:System.Int32" /> that contains a port number.
             </value>
         </member>
-        <member name="M:WebSocketSharp.Server.WebSocketServerBase.AcceptWebSocket(System.Net.Sockets.TcpClient)">
+        <member name="M:WebSocketSharp.Server.WebSocketServerBase.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
-            <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the WebSocket connection.
+            <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServerBase.Error(System.String)">
             <summary>
-            Occurs the <see cref="E:WebSocketSharp.Server.WebSocketServerBase.OnError" /> event with the specified <paramref name="message" />.
+            Occurs the <see cref="E:WebSocketSharp.Server.WebSocketServerBase.OnError" /> event with the specified <see cref="T:System.String" />.
             </summary>
             <param name="message">
             A <see cref="T:System.String" /> that contains an error message.
@@ -1318,7 +1573,7 @@
             Provides the functions of the server that receives the WebSocket connection requests.
             </summary>
             <remarks>
-            The WebSocketServiceHost&lt;T&gt; class provides single WebSocket service.
+            The WebSocketServiceHost&lt;T&gt; class provides the single WebSocket service.
             </remarks>
             <typeparam name="T">
             The type of the WebSocket service that the server provides. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
@@ -1387,7 +1642,7 @@
             on the specified <paramref name="address" />, <paramref name="port" /> and <paramref name="absPath" />.
             </summary>
             <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
             <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -1402,7 +1657,7 @@
             on the specified <paramref name="address" />, <paramref name="port" />, <paramref name="absPath" /> and <paramref name="secure" />.
             </summary>
             <param name="address">
-            An <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
             </param>
             <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -1438,17 +1693,17 @@
             A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(System.Net.Sockets.TcpClient)">
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts the WebSocket connection.
+            Accepts a WebSocket connection.
             </summary>
-            <param name="client">
-            A <see cref="T:System.Net.Sockets.TcpClient" /> that contains the TCP connection.
+            <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
             </param>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.Broadcast(System.String)">
             <summary>
-            Broadcasts the specified <see cref="T:System.String" />.
+            Broadcasts the specified <see cref="T:System.String" /> to all clients.
             </summary>
             <param name="data">
             A <see cref="T:System.String" /> to broadcast.
@@ -1458,6 +1713,10 @@
             <summary>
             Pings with the specified <see cref="T:System.String" /> to all clients.
             </summary>
+            <returns>
+            A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
+            indicating whether the server received a Pong in a time.
+            </returns>
             <param name="message">
             A <see cref="T:System.String" /> that contains a message.
             </param>

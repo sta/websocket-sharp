@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server {
 
@@ -44,7 +45,7 @@ namespace WebSocketSharp.Server {
 
     #region Fields
 
-    private Thread      _acceptClientThread;
+    private Thread      _receiveRequestThread;
     private IPAddress   _address;
     private bool        _isSecure;
     private bool        _isSelfHost;
@@ -57,7 +58,7 @@ namespace WebSocketSharp.Server {
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class.
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class.
     /// </summary>
     protected WebSocketServerBase()
     {
@@ -65,7 +66,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class that listens for incoming connection attempts
     /// on the specified WebSocket URL.
     /// </summary>
     /// <param name="url">
@@ -91,17 +92,17 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.Server.WebSocketServerBase"/> class that listens for incoming connection attempts
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class that listens for incoming connection attempts
     /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// An <see cref="IPAddress"/> that contains a local IP address.
+    /// A <see cref="IPAddress"/> that contains an IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
     /// </param>
     /// <param name="absPath">
-    /// A <see cref="string"/> that contains a absolute path.
+    /// A <see cref="string"/> that contains an absolute path.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
@@ -176,10 +177,10 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
-    /// Gets the local IP address on which to listen for incoming connection attempts.
+    /// Gets the IP address on which to listen for incoming connection attempts.
     /// </summary>
     /// <value>
-    /// A <see cref="IPAddress"/> that contains a local IP address.
+    /// A <see cref="IPAddress"/> that contains an IP address.
     /// </value>
     public IPAddress Address {
       get {
@@ -188,10 +189,10 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets a value indicating whether this server is secure.
+    /// Gets a value indicating whether this server provides secure connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if this server is secure; otherwise, <c>false</c>.
+    /// <c>true</c> if this server provides secure connection; otherwise, <c>false</c>.
     /// </value>
     public bool IsSecure {
       get {
@@ -236,35 +237,13 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
-    private void acceptClient()
+    private void acceptWebSocketAsync(TcpListenerWebSocketContext context)
     {
-      while (true)
+      WaitCallback callback = (state) =>
       {
         try
         {
-          var client = _tcpListener.AcceptTcpClient();
-          acceptSocketAsync(client);
-        }
-        catch (SocketException)
-        {
-          // TcpListener has been stopped.
-          break;
-        }
-        catch (Exception ex)
-        {
-          onError(ex.Message);
-          break;
-        }
-      }
-    }
-
-    private void acceptSocketAsync(TcpClient client)
-    {
-      WaitCallback acceptSocketCb = (state) =>
-      {
-        try
-        {
-          AcceptWebSocket(client);
+          AcceptWebSocket(context);
         }
         catch (Exception ex)
         {
@@ -272,7 +251,7 @@ namespace WebSocketSharp.Server {
         }
       };
 
-      ThreadPool.QueueUserWorkItem(acceptSocketCb);
+      ThreadPool.QueueUserWorkItem(callback);
     }
 
     private void init()
@@ -308,11 +287,33 @@ namespace WebSocketSharp.Server {
       OnError.Emit(this, new ErrorEventArgs(message));
     }
 
-    private void startAcceptClientThread()
+    private void receiveRequest()
     {
-      _acceptClientThread = new Thread(new ThreadStart(acceptClient)); 
-      _acceptClientThread.IsBackground = true;
-      _acceptClientThread.Start();
+      while (true)
+      {
+        try
+        {
+          var context = _tcpListener.AcceptWebSocket(_isSecure);
+          acceptWebSocketAsync(context);
+        }
+        catch (SocketException)
+        {
+          // TcpListener has been stopped.
+          break;
+        }
+        catch (Exception ex)
+        {
+          onError(ex.Message);
+          break;
+        }
+      }
+    }
+
+    private void startReceiveRequestThread()
+    {
+      _receiveRequestThread = new Thread(new ThreadStart(receiveRequest)); 
+      _receiveRequestThread.IsBackground = true;
+      _receiveRequestThread.Start();
     }
 
     private bool tryCreateUri(string uriString, out Uri result, out string message)
@@ -335,15 +336,15 @@ namespace WebSocketSharp.Server {
     #region Protected Methods
 
     /// <summary>
-    /// Accepts the WebSocket connection.
+    /// Accepts a WebSocket connection.
     /// </summary>
-    /// <param name="client">
-    /// A <see cref="TcpClient"/> that contains the WebSocket connection.
+    /// <param name="context">
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
     /// </param>
-    protected abstract void AcceptWebSocket(TcpClient client);
+    protected abstract void AcceptWebSocket(TcpListenerWebSocketContext context);
 
     /// <summary>
-    /// Occurs the <see cref="WebSocketServerBase.OnError"/> event with the specified <paramref name="message"/>.
+    /// Occurs the <see cref="WebSocketServerBase.OnError"/> event with the specified <see cref="string"/>.
     /// </summary>
     /// <param name="message">
     /// A <see cref="string"/> that contains an error message.
@@ -366,7 +367,7 @@ namespace WebSocketSharp.Server {
         return;
 
       _tcpListener.Start();
-      startAcceptClientThread();
+      startReceiveRequestThread();
     }
 
     /// <summary>
@@ -378,7 +379,7 @@ namespace WebSocketSharp.Server {
         return;
 
       _tcpListener.Stop();
-      _acceptClientThread.Join(5 * 1000);
+      _receiveRequestThread.Join(5 * 1000);
     }
 
     #endregion

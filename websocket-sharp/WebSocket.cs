@@ -303,14 +303,9 @@ namespace WebSocketSharp {
     #region Events
 
     /// <summary>
-    /// Occurs when the WebSocket connection has been established.
+    /// Occurs when the WebSocket receives a Close frame or the Close method is called.
     /// </summary>
-    public event EventHandler OnOpen;
-
-    /// <summary>
-    /// Occurs when the WebSocket receives a data frame.
-    /// </summary>
-    public event EventHandler<MessageEventArgs> OnMessage;
+    public event EventHandler<CloseEventArgs> OnClose;
 
     /// <summary>
     /// Occurs when the WebSocket gets an error.
@@ -318,9 +313,14 @@ namespace WebSocketSharp {
     public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
-    /// Occurs when the WebSocket receives a Close frame or the Close method is called.
+    /// Occurs when the WebSocket receives a data frame.
     /// </summary>
-    public event EventHandler<CloseEventArgs> OnClose;
+    public event EventHandler<MessageEventArgs> OnMessage;
+
+    /// <summary>
+    /// Occurs when the WebSocket connection has been established.
+    /// </summary>
+    public event EventHandler OnOpen;
 
     #endregion
 
@@ -1140,7 +1140,7 @@ namespace WebSocketSharp {
     /// Closes the connection and releases all associated resources after sends a Close control frame.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/> that contains a status code indicating a reason for closure.
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating a reason for closure.
     /// </param>
     public void Close(CloseStatusCode code)
     {
@@ -1162,7 +1162,7 @@ namespace WebSocketSharp {
     /// Closes the connection and releases all associated resources after sends a Close control frame.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="WebSocketSharp.Frame.CloseStatusCode"/> that contains a status code indicating a reason for closure.
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating a reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that contains a reason for closure.
@@ -1269,10 +1269,27 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Sends a binary data using the connection.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    public void Send(byte[] data)
+    {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
+      send(Opcode.BINARY, data);
+    }
+
+    /// <summary>
     /// Sends a text data using the connection.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that contains the text data to be sent.
+    /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     public void Send(string data)
     {
@@ -1289,25 +1306,8 @@ namespace WebSocketSharp {
     /// <summary>
     /// Sends a binary data using the connection.
     /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to be sent.
-    /// </param>
-    public void Send(byte[] data)
-    {
-      if (data.IsNull())
-      {
-        onError("'data' must not be null.");
-        return;
-      }
-
-      send(Opcode.BINARY, data);
-    }
-
-    /// <summary>
-    /// Sends a binary data using the connection.
-    /// </summary>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> that contains the binary data to be sent.
+    /// A <see cref="FileInfo"/> that contains a binary data to send.
     /// </param>
     public void Send(FileInfo file)
     {
@@ -1324,10 +1324,30 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Sends a binary data asynchronously using the connection.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// </param>
+    public void SendAsync(byte[] data, Action completed)
+    {
+      if (data.IsNull())
+      {
+        onError("'data' must not be null.");
+        return;
+      }
+
+      sendAsync(Opcode.BINARY, data, completed);
+    }
+
+    /// <summary>
     /// Sends a text data asynchronously using the connection.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that contains the text data to be sent.
+    /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="completed">
     /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
@@ -1347,28 +1367,8 @@ namespace WebSocketSharp {
     /// <summary>
     /// Sends a binary data asynchronously using the connection.
     /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to be sent.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
-    /// </param>
-    public void SendAsync(byte[] data, Action completed)
-    {
-      if (data.IsNull())
-      {
-        onError("'data' must not be null.");
-        return;
-      }
-
-      sendAsync(Opcode.BINARY, data, completed);
-    }
-
-    /// <summary>
-    /// Sends a binary data asynchronously using the connection.
-    /// </summary>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> that contains the binary data to be sent.
+    /// A <see cref="FileInfo"/> that contains a binary data to send.
     /// </param>
     /// <param name="completed">
     /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.

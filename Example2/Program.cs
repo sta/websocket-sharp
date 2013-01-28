@@ -40,7 +40,7 @@ namespace Example2
       wssv.Start();
       Console.WriteLine(
         "WebSocket Server listening on port: {0} service path:", wssv.Port);
-      foreach (var path in wssv.ServicePath)
+      foreach (var path in wssv.ServicePaths)
         Console.WriteLine("  {0}", path);
       Console.WriteLine();
        

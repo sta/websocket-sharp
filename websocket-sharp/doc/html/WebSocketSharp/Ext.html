@@ -237,9 +237,20 @@
                 </td>
                 <td colspan="2">
                   <b>
-                    <a href="#M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean)">AcceptWebSocket</a>
-                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)<nobr> : <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a></nobr><blockquote>
-            Accept a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+                    <a href="#M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean)">AcceptWebSocket</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)<nobr> : <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a></nobr><blockquote>
+            Accepts a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext})">AcceptWebSocketAsync</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext&gt;</a>)<blockquote>
+            Accepts a WebSocket connection asynchronously by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -704,21 +715,21 @@
     <div class="Members" id="T:WebSocketSharp.Ext:Members">
       <h2 class="Section" id="MemberDetails">Member Details</h2>
       <div class="SectionBox" id="_MemberDetails">
-        <h3 id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean)">AcceptWebSocket Method</h3>
-        <blockquote id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):member">
+        <h3 id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean)">AcceptWebSocket Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):member">
           <p class="Summary">
-            Accept a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+            Accepts a WebSocket connection by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public static <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> <b>AcceptWebSocket</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a> client, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure)</div>
+          <div class="Signature">public static <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> <b>AcceptWebSocket</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a> listener, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure)</div>
           <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Parameters">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):Parameters">
             <dl>
               <dt>
-                <i>client</i>
+                <i>listener</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpClient">System.Net.Sockets.TcpClient</a> that contains a TCP connection to accept a WebSocket connection from.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a> that provides a TCP connection to accept a WebSocket connection.
             </dd>
               <dt>
                 <i>secure</i>
@@ -729,11 +740,11 @@
             </dl>
           </blockquote>
           <h4 class="Subsection">Returns</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Returns">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):Returns">
             A <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> that contains a WebSocket connection.
             </blockquote>
           <h4 class="Subsection">Exceptions</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Exceptions">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):Exceptions">
             <table class="TypeDocumentation">
               <tr>
                 <th>Type</th>
@@ -744,17 +755,73 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
                 </td>
                 <td>
-            Is thrown when the <i>client</i> parameter passed to a method is invalid because it is <tt>null</tt>.
+                  <i>listener</i> is <tt>null</tt>.
             </td>
               </tr>
             </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Remarks">
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpClient,System.Boolean):Version Information">
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocket(System.Net.Sockets.TcpListener,System.Boolean):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext})">AcceptWebSocketAsync Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext}):member">
+          <p class="Summary">
+            Accepts a WebSocket connection asynchronously by the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a>.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AcceptWebSocketAsync</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a> listener, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> secure, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action`1">Action&lt;WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext&gt;</a> completed)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext}):Parameters">
+            <dl>
+              <dt>
+                <i>listener</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.Sockets.TcpListener">System.Net.Sockets.TcpListener</a> that provides a TCP connection to accept a WebSocket connection.
+            </dd>
+              <dt>
+                <i>secure</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> that indicates a secure connection or not. (<tt>true</tt> indicates a secure connection.)
+            </dd>
+              <dt>
+                <i>completed</i>
+              </dt>
+              <dd>
+            An Action&lt;TcpListenerWebSocketContext&gt; delegate that contains the method(s) that is called when an asynchronous operation completes.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext}):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>listener</i> is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext}):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext}):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

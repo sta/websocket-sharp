@@ -23,22 +23,22 @@ namespace Example3 {
       return Interlocked.Increment(ref _num);
     }
 
-    protected override void OnOpen(object sender, EventArgs e)
+    protected override void OnOpen()
     {
       _name = getName();
     }
 
-    protected override void OnMessage(object sender, MessageEventArgs e)
+    protected override void OnMessage(MessageEventArgs e)
     {
       
       var msg = String.Format("{0}: {1}", _name, e.Data);
-      Publish(msg);
+      Broadcast(msg);
     }
 
-    protected override void OnClose(object sender, CloseEventArgs e)
+    protected override void OnClose(CloseEventArgs e)
     {
       var msg = String.Format("{0} got logged off...", _name);
-      Publish(msg);
+      Broadcast(msg);
     }
   }
 }

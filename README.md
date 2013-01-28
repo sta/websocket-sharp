@@ -8,7 +8,7 @@
 
 #### Step 1 ####
 
-Required namespaces.
+Required namespace.
 
 ```cs
 using WebSocketSharp;
@@ -163,7 +163,7 @@ using WebSocketSharp.Server;
 
 public class Echo : WebSocketService
 {
-  protected override void OnMessage(object sender, MessageEventArgs e)
+  protected override void OnMessage(MessageEventArgs e)
   {
     Send(e.Data);
   }
@@ -179,9 +179,9 @@ using WebSocketSharp.Server;
 
 public class Chat : WebSocketService
 {
-  protected override void OnMessage(object sender, MessageEventArgs e)
+  protected override void OnMessage(MessageEventArgs e)
   {
-    Publish(e.Data);
+    Broadcast(e.Data);
   }
 }
 ```

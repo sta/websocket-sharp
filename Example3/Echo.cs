@@ -6,7 +6,7 @@ namespace Example3 {
 
   public class Echo : WebSocketService
   {
-    protected override void OnMessage(object sender, MessageEventArgs e)
+    protected override void OnMessage(MessageEventArgs e)
     {
       var msg = QueryString.Exists("name")
               ? String.Format("'{0}' returns to {1}", e.Data, QueryString["name"])

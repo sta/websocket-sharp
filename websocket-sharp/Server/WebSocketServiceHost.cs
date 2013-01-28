@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using WebSocketSharp.Net;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server {
 
@@ -39,7 +40,7 @@ namespace WebSocketSharp.Server {
   /// Provides the functions of the server that receives the WebSocket connection requests.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServiceHost&lt;T&gt; class provides single WebSocket service.
+  /// The WebSocketServiceHost&lt;T&gt; class provides the single WebSocket service.
   /// </remarks>
   /// <typeparam name="T">
   /// The type of the WebSocket service that the server provides. The T must inherit the <see cref="WebSocketService"/> class.
@@ -142,7 +143,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/> and <paramref name="absPath"/>.
     /// </summary>
     /// <param name="address">
-    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -160,7 +161,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// An <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -244,16 +245,15 @@ namespace WebSocketSharp.Server {
     #region Protected Method
 
     /// <summary>
-    /// Accepts the WebSocket connection.
+    /// Accepts a WebSocket connection.
     /// </summary>
-    /// <param name="client">
-    /// A <see cref="TcpClient"/> that contains the TCP connection.
+    /// <param name="context">
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
     /// </param>
-    protected override void AcceptWebSocket(TcpClient client)
+    protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var context = client.AcceptWebSocket(IsSecure);
-      var socket  = context.WebSocket;
-      var path    = context.Path.UrlDecode();
+      var socket = context.WebSocket;
+      var path   = context.Path.UrlDecode();
       if (path != Uri.GetAbsolutePath().UrlDecode())
       {
         socket.Close(HttpStatusCode.NotImplemented);
@@ -271,7 +271,7 @@ namespace WebSocketSharp.Server {
     #region Public Methods
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/>.
+    /// Broadcasts the specified <see cref="string"/> to all clients.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
@@ -284,6 +284,10 @@ namespace WebSocketSharp.Server {
     /// <summary>
     /// Pings with the specified <see cref="string"/> to all clients.
     /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
+    /// indicating whether the server received a Pong in a time.
+    /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message.
     /// </param>

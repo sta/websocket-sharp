@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# @(#) doc.sh ver.0.0.1 2013.01.11
+# @(#) doc.sh ver.0.0.2 2013.01.24
 #
 # Usage:
 #   doc.sh
@@ -27,5 +27,5 @@ createDir() {
 set -e
 createDir ${MDOC_DIR}
 createDir ${HTML_DIR}
-mdoc update -fno-assembly-versions -i ${XML} -o ${MDOC_DIR}/ ${DLL}
+mdoc update --delete -fno-assembly-versions -i ${XML} -o ${MDOC_DIR}/ ${DLL}
 mdoc export-html -o ${HTML_DIR}/ ${MDOC_DIR}/
