@@ -72,7 +72,7 @@ namespace WebSocketSharp {
     {
       Fin         = fin;
       Opcode      = opcode;
-      Masked      = payloadData.Length != 0 ? mask : Mask.UNMASK;
+      Masked      = mask;
       PayloadData = payloadData;
 
       init();
