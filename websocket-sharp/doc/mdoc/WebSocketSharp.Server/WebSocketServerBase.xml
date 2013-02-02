@@ -65,7 +65,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -109,7 +109,7 @@
       </Parameters>
       <Docs>
         <param name="context">
-            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
             </param>
         <summary>
             Accepts a WebSocket connection.
@@ -126,10 +126,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the IP address on which to listen for incoming connection attempts.
+            Gets the local IP address on which to listen for incoming connection attempts.
             </summary>
         <value>
-            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -180,10 +180,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether this server provides secure connection.
+            Gets a value indicating whether the server provides secure connection.
             </summary>
         <value>
-          <c>true</c> if this server provides secure connection; otherwise, <c>false</c>.
+          <c>true</c> if the server provides secure connection; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -197,10 +197,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether this server is self host.
+            Gets a value indicating whether the server is self host.
             </summary>
         <value>
-          <c>true</c> if this server is self host; otherwise, <c>false</c>.
+          <c>true</c> if the server is self host; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

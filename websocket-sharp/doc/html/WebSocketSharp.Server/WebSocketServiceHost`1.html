@@ -431,7 +431,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets or sets a value indicating whether the server cleans up the inactive client.
+            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
             </td>
               </tr>
               <tr valign="top">
@@ -618,7 +618,7 @@
                   </a>
                 </td>
                 <td>
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
             </td>
               </tr>
             </table>
@@ -838,7 +838,7 @@
                 <i>address</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains an IP address.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains a local IP address.
             </dd>
               <dt>
                 <i>port</i>
@@ -878,7 +878,7 @@
                 <i>address</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains an IP address.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains a local IP address.
             </dd>
               <dt>
                 <i>port</i>
@@ -923,7 +923,7 @@
                 <i>context</i>
               </dt>
               <dd>
-            A <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> that contains a WebSocket connection.
+            A <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> that contains the WebSocket connection request objects.
             </dd>
             </dl>
           </blockquote>
@@ -983,8 +983,8 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.Broadping(System.String):Returns">
-            A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
-            indicating whether the server received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of session IDs and values
+            indicating whether the server received the Pongs from each clients in a time.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.Broadping(System.String):Remarks">
@@ -1014,13 +1014,13 @@
         <h3 id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped">Sweeped Property</h3>
         <blockquote id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:member">
           <p class="Summary">
-            Gets or sets a value indicating whether the server cleans up the inactive client.
+            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Value">
-            <tt>true</tt> if the server cleans up the inactive client; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the server cleans up the inactive clients every 60 seconds; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Remarks">
@@ -1054,7 +1054,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket)">WebSocketSharp.Server.IServiceHost.BindWebSocket Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket):member">
           <p class="Summary">
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">

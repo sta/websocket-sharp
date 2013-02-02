@@ -1,6 +1,6 @@
 <Namespace Name="WebSocketSharp.Net.WebSockets">
   <Docs>
     <summary>To be added.</summary>
-    <remarks>The WebSocketSharp.Net.WebSockets namespace provides access to the WebSocket connection request objects sent from the client to the server.</remarks>
+    <remarks>The WebSocketSharp.Net.WebSockets namespace contains classes to access to the WebSocket connection request objects.</remarks>
   </Docs>
 </Namespace>

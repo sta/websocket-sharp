@@ -111,7 +111,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -126,7 +126,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -145,10 +145,10 @@ namespace WebSocketSharp.Server {
     #region Properties
 
     /// <summary>
-    /// Gets the paths associated with the each WebSocket services.
+    /// Gets the collection of paths associated with the every WebSocket services that the server provides.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the paths.
+    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
     /// </value>
     public IEnumerable<string> ServicePaths {
       get {
@@ -161,10 +161,10 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive client.
+    /// Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+    /// <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
     /// </value>
     public bool Sweeped {
       get {
@@ -193,7 +193,7 @@ namespace WebSocketSharp.Server {
     /// Accepts a WebSocket connection.
     /// </summary>
     /// <param name="context">
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
@@ -221,10 +221,10 @@ namespace WebSocketSharp.Server {
     /// Adds a WebSocket service.
     /// </summary>
     /// <param name="absPath">
-    /// A <see cref="string"/> that contains an absolute path associated with a WebSocket service.
+    /// A <see cref="string"/> that contains an absolute path associated with the WebSocket service.
     /// </param>
     /// <typeparam name="T">
-    /// The type of a WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
+    /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
     /// </typeparam>
     public void AddService<T>(string absPath)
       where T : WebSocketService, new()

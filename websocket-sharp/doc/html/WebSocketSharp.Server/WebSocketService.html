@@ -264,7 +264,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
                   </i>. 
-            Gets the ID of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Gets the ID of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </td>
               </tr>
               <tr valign="top">
@@ -278,7 +278,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance is bound to a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
+            Gets a value indicating whether the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance is bound to a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
             </td>
               </tr>
             </table>
@@ -311,7 +311,7 @@
                 </td>
                 <td>
                   <i>
-                    <a href="../WebSocketSharp.Server/SessionManager.html">SessionManager</a>
+                    <a href="../WebSocketSharp.Server/WebSocketServiceManager.html">WebSocketServiceManager</a>
                   </i>. 
             Gets the sessions to the WebSocket service.
             </td>
@@ -330,22 +330,10 @@
                 </td>
                 <td colspan="2">
                   <b>
-                    <a href="#M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager)">Bind</a>
-                  </b>(<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>, <a href="../WebSocketSharp.Server/SessionManager.html">SessionManager</a>)<blockquote>
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> and <a href="../WebSocketSharp.Server/SessionManager.html">WebSocketSharp.Server.SessionManager</a>
-            to a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>
-                  </div>
-                </td>
-                <td colspan="2">
-                  <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Broadcast(System.Byte[])">Broadcast</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[])<blockquote>
-            Broadcasts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to all clients of the WebSocket service.
+            Broadcasts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -357,7 +345,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Broadcast(System.String)">Broadcast</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all clients of the WebSocket service.
+            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -369,7 +358,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Broadping">Broadping</a>
                   </b>()<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.Dictionary`2">Dictionary&lt;string, bool&gt;</a></nobr><blockquote>
-            Pings to all clients of the WebSocket service.
+            Pings to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -381,7 +371,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Broadping(System.String)">Broadping</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.Dictionary`2">Dictionary&lt;string, bool&gt;</a></nobr><blockquote>
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all clients of the WebSocket service.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -393,7 +384,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Ping">Ping</a>
                   </b>()<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Pings to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -405,7 +396,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Ping(System.String)">Ping</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -417,7 +408,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.PingTo(System.String)">PingTo</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Pings to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -429,8 +421,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String)">PingTo</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
-            associated with the specified ID.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -442,7 +434,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Send(System.Byte[])">Send</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[])<blockquote>
-            Sends a binary data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Sends a binary data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -454,7 +446,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Send(System.String)">Send</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Sends a text data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Sends a text data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -466,7 +458,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.Byte[])">SendTo</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[])<blockquote>
-            Sends a binary data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Sends a binary data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -478,7 +471,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.String)">SendTo</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Sends a text data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Sends a text data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -490,7 +484,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Start">Start</a>
                   </b>()<blockquote>
-            Starts a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Starts the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -502,7 +496,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Stop">Stop</a>
                   </b>()<blockquote>
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -514,7 +508,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Stop(System.UInt16,System.String)">Stop</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -526,7 +520,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.Stop(WebSocketSharp.CloseStatusCode,System.String)">Stop</a>
                   </b>(<a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
             </blockquote></td>
               </tr>
             </table>
@@ -545,7 +539,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.OnClose(WebSocketSharp.CloseEventArgs)">OnClose</a>
                   </b>(<a href="../WebSocketSharp/CloseEventArgs.html">WebSocketSharp.CloseEventArgs</a>)<blockquote>
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Close frame or the Stop method is called.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Close frame or the Stop method is called.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -557,7 +551,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.OnError(WebSocketSharp.ErrorEventArgs)">OnError</a>
                   </b>(<a href="../WebSocketSharp/ErrorEventArgs.html">WebSocketSharp.ErrorEventArgs</a>)<blockquote>
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> gets an error.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> gets an error.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -569,7 +563,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketService.OnMessage(WebSocketSharp.MessageEventArgs)">OnMessage</a>
                   </b>(<a href="../WebSocketSharp/MessageEventArgs.html">WebSocketSharp.MessageEventArgs</a>)<blockquote>
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a data frame.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a data frame.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -638,44 +632,11 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager)">Bind Method</h3>
-        <blockquote id="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager):member">
-          <p class="Summary">
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> and <a href="../WebSocketSharp.Server/SessionManager.html">WebSocketSharp.Server.SessionManager</a>
-            to a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
-            </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Bind</b> (<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> socket, <a href="../WebSocketSharp.Server/SessionManager.html">SessionManager</a> sessions)</div>
-          <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager):Parameters">
-            <dl>
-              <dt>
-                <i>socket</i>
-              </dt>
-              <dd>
-            A <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to bind to the WebSocketService.
-            </dd>
-              <dt>
-                <i>sessions</i>
-              </dt>
-              <dd>
-            A <a href="../WebSocketSharp.Server/SessionManager.html">WebSocketSharp.Server.SessionManager</a> to bind to the WebSocketService.
-            </dd>
-            </dl>
-          </blockquote>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Bind(WebSocketSharp.WebSocket,WebSocketSharp.Server.SessionManager):Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.Byte[])">Broadcast Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.Byte[]):member">
           <p class="Summary">
-            Broadcasts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to all clients of the WebSocket service.
+            Broadcasts the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Broadcast</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] data)</div>
@@ -702,7 +663,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.String)">Broadcast Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.String):member">
           <p class="Summary">
-            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all clients of the WebSocket service.
+            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Broadcast</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
@@ -729,14 +691,15 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Broadping">Broadping Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Broadping:member">
           <p class="Summary">
-            Pings to all clients of the WebSocket service.
+            Pings to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.Dictionary`2">Dictionary&lt;string, bool&gt;</a> <b>Broadping</b> ()</div>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.Broadping:Returns">
-            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
-            indicating whether the WebSocket service received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values
+            indicating whether each <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances received a Pong in a time.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Broadping:Remarks">
@@ -750,7 +713,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Broadping(System.String)">Broadping Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Broadping(System.String):member">
           <p class="Summary">
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all clients of the WebSocket service.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the clients of every <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances
+            in the <a href="../WebSocketSharp.Server/WebSocketService.html#P:WebSocketSharp.Server.WebSocketService.Sessions">WebSocketService.Sessions</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.Dictionary`2">Dictionary&lt;string, bool&gt;</a> <b>Broadping</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
@@ -767,8 +731,8 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.Broadping(System.String):Returns">
-            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
-            indicating whether the WebSocket service received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values
+            indicating whether each <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instances received a Pong in a time.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Broadping(System.String):Remarks">
@@ -782,13 +746,13 @@
         <h3 id="P:WebSocketSharp.Server.WebSocketService.ID">ID Property</h3>
         <blockquote id="P:WebSocketSharp.Server.WebSocketService.ID:member">
           <p class="Summary">
-            Gets the ID of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Gets the ID of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>ID</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketService.ID:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a ID.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an ID.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketService.ID:Remarks">
@@ -802,13 +766,13 @@
         <h3 id="P:WebSocketSharp.Server.WebSocketService.IsBound">IsBound Property</h3>
         <blockquote id="P:WebSocketSharp.Server.WebSocketService.IsBound:member">
           <p class="Summary">
-            Gets a value indicating whether a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance is bound to a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
+            Gets a value indicating whether the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance is bound to a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsBound</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketService.IsBound:Value">
-            <tt>true</tt> if the WebSocketService is bound to a WebSocket; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance is bound to a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketService.IsBound:Remarks">
@@ -822,7 +786,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.OnClose(WebSocketSharp.CloseEventArgs)">OnClose Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.OnClose(WebSocketSharp.CloseEventArgs):member">
           <p class="Summary">
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Close frame or the Stop method is called.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Close frame or the Stop method is called.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">protected virtual <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>OnClose</b> (<a href="../WebSocketSharp/CloseEventArgs.html">WebSocketSharp.CloseEventArgs</a> e)</div>
@@ -849,7 +813,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.OnError(WebSocketSharp.ErrorEventArgs)">OnError Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.OnError(WebSocketSharp.ErrorEventArgs):member">
           <p class="Summary">
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> gets an error.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> gets an error.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">protected virtual <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>OnError</b> (<a href="../WebSocketSharp/ErrorEventArgs.html">WebSocketSharp.ErrorEventArgs</a> e)</div>
@@ -876,7 +840,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.OnMessage(WebSocketSharp.MessageEventArgs)">OnMessage Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.OnMessage(WebSocketSharp.MessageEventArgs):member">
           <p class="Summary">
-            Occurs when a inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a data frame.
+            Occurs when the inner <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a data frame.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">protected virtual <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>OnMessage</b> (<a href="../WebSocketSharp/MessageEventArgs.html">WebSocketSharp.MessageEventArgs</a> e)</div>
@@ -919,13 +883,13 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Ping">Ping Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Ping:member">
           <p class="Summary">
-            Pings to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Pings to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> ()</div>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.Ping:Returns">
-            <tt>true</tt> if the WebSocketService receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Ping:Remarks">
@@ -939,7 +903,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Ping(System.String)">Ping Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Ping(System.String):member">
           <p class="Summary">
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
@@ -956,7 +920,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.Ping(System.String):Returns">
-            <tt>true</tt> if the WebSocketService receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.Ping(System.String):Remarks">
@@ -970,7 +934,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String)">PingTo Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String):member">
           <p class="Summary">
-            Pings to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Pings to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>PingTo</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> id)</div>
@@ -981,13 +946,13 @@
                 <i>id</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a ID that represents the destination for the Ping.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an ID that represents the destination for the Ping.
             </dd>
             </dl>
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String):Returns">
-            <tt>true</tt> if the WebSocket service receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String):Remarks">
@@ -1001,8 +966,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String)">PingTo Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String):member">
           <p class="Summary">
-            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
-            associated with the specified ID.
+            Pings with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>PingTo</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> id, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
@@ -1013,7 +978,7 @@
                 <i>id</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a ID that represents the destination for the Ping.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an ID that represents the destination for the Ping.
             </dd>
               <dt>
                 <i>message</i>
@@ -1025,7 +990,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String):Returns">
-            <tt>true</tt> if the WebSocketService receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String):Remarks">
@@ -1059,7 +1024,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Send(System.Byte[])">Send Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Send(System.Byte[]):member">
           <p class="Summary">
-            Sends a binary data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Sends a binary data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Send</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] data)</div>
@@ -1086,7 +1051,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Send(System.String)">Send Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Send(System.String):member">
           <p class="Summary">
-            Sends a text data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Sends a text data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Send</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
@@ -1113,7 +1078,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.Byte[])">SendTo Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.Byte[]):member">
           <p class="Summary">
-            Sends a binary data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Sends a binary data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SendTo</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> id, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Byte">byte</a>[] data)</div>
@@ -1124,7 +1090,7 @@
                 <i>id</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a ID that represents the destination for the data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an ID that represents the destination for the data.
             </dd>
               <dt>
                 <i>data</i>
@@ -1146,7 +1112,8 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.String)">SendTo Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.SendTo(System.String,System.String):member">
           <p class="Summary">
-            Sends a text data to the client of a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance associated with the specified ID.
+            Sends a text data to the client of the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance
+            associated with the specified <i>id</i>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SendTo</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> id, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
@@ -1157,7 +1124,7 @@
                 <i>id</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a ID that represents the destination for the data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an ID that represents the destination for the data.
             </dd>
               <dt>
                 <i>data</i>
@@ -1182,10 +1149,10 @@
             Gets the sessions to the WebSocket service.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">protected <a href="../WebSocketSharp.Server/SessionManager.html">SessionManager</a> <b>Sessions</b>  { get; }</div>
+          <div class="Signature">protected <a href="../WebSocketSharp.Server/WebSocketServiceManager.html">WebSocketServiceManager</a> <b>Sessions</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketService.Sessions:Value">
-            A <a href="../WebSocketSharp.Server/SessionManager.html">WebSocketSharp.Server.SessionManager</a> that contains the sessions to the WebSocket service.
+            A <a href="../WebSocketSharp.Server/WebSocketServiceManager.html">WebSocketSharp.Server.WebSocketServiceManager</a> that contains the sessions to the WebSocket service.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketService.Sessions:Remarks">
@@ -1199,7 +1166,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Start">Start Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Start:member">
           <p class="Summary">
-            Starts a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Starts the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Start</b> ()</div>
@@ -1215,7 +1182,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Stop">Stop Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Stop:member">
           <p class="Summary">
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> ()</div>
@@ -1231,7 +1198,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Stop(System.UInt16,System.String)">Stop Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Stop(System.UInt16,System.String):member">
           <p class="Summary">
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
@@ -1264,7 +1231,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketService.Stop(WebSocketSharp.CloseStatusCode,System.String)">Stop Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketService.Stop(WebSocketSharp.CloseStatusCode,System.String):member">
           <p class="Summary">
-            Stops a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Stops the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance with the specified <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> and <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> (<a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>

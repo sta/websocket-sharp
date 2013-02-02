@@ -1,6 +1,6 @@
 <Namespace Name="WebSocketSharp.Server">
   <Docs>
     <summary>To be added.</summary>
-    <remarks>The WebSocketSharp.Server namespace provides the functions of the server that receives the WebSocket connection requests.</remarks>
+    <remarks>The WebSocketSharp.Server namespace contains classes to implement the server that receives the WebSocket connection requests.</remarks>
   </Docs>
 </Namespace>

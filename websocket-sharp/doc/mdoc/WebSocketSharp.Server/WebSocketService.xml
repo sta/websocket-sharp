@@ -29,31 +29,6 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="Bind">
-      <MemberSignature Language="C#" Value="public void Bind (WebSocketSharp.WebSocket socket, WebSocketSharp.Server.SessionManager sessions);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Bind(class WebSocketSharp.WebSocket socket, class WebSocketSharp.Server.SessionManager sessions) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Void</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="socket" Type="WebSocketSharp.WebSocket" />
-        <Parameter Name="sessions" Type="WebSocketSharp.Server.SessionManager" />
-      </Parameters>
-      <Docs>
-        <param name="socket">
-            A <see cref="T:WebSocketSharp.WebSocket" /> to bind to the WebSocketService.
-            </param>
-        <param name="sessions">
-            A <see cref="T:WebSocketSharp.Server.SessionManager" /> to bind to the WebSocketService.
-            </param>
-        <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> and <see cref="T:WebSocketSharp.Server.SessionManager" />
-            to a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
-            </summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="Broadcast">
       <MemberSignature Language="C#" Value="public void Broadcast (byte[] data);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void Broadcast(unsigned int8[] data) cil managed" />
@@ -69,7 +44,8 @@
             An array of <see cref="T:System.Byte" /> to broadcast.
             </param>
         <summary>
-            Broadcasts the specified array of <see cref="T:System.Byte" /> to all clients of the WebSocket service.
+            Broadcasts the specified array of <see cref="T:System.Byte" /> to the clients of every <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances
+            in the <see cref="P:WebSocketSharp.Server.WebSocketService.Sessions" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -89,7 +65,8 @@
             A <see cref="T:System.String" /> to broadcast.
             </param>
         <summary>
-            Broadcasts the specified <see cref="T:System.String" /> to all clients of the WebSocket service.
+            Broadcasts the specified <see cref="T:System.String" /> to the clients of every <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances
+            in the <see cref="P:WebSocketSharp.Server.WebSocketService.Sessions" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -104,11 +81,12 @@
       <Parameters />
       <Docs>
         <summary>
-            Pings to all clients of the WebSocket service.
+            Pings to the clients of every <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances
+            in the <see cref="P:WebSocketSharp.Server.WebSocketService.Sessions" />.
             </summary>
         <returns>
-            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
-            indicating whether the WebSocket service received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values
+            indicating whether each <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances received a Pong in a time.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -128,11 +106,12 @@
             A <see cref="T:System.String" /> that contains a message.
             </param>
         <summary>
-            Pings with the specified <see cref="T:System.String" /> to all clients of the WebSocket service.
+            Pings with the specified <see cref="T:System.String" /> to the clients of every <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances
+            in the <see cref="P:WebSocketSharp.Server.WebSocketService.Sessions" />.
             </summary>
         <returns>
-            A Dictionary&lt;string, bool&gt; that contains the collection of the ID and value
-            indicating whether the WebSocket service received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values
+            indicating whether each <see cref="T:WebSocketSharp.Server.WebSocketService" /> instances received a Pong in a time.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -146,10 +125,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the ID of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Gets the ID of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <value>
-            A <see cref="T:System.String" /> that contains a ID.
+            A <see cref="T:System.String" /> that contains an ID.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -163,10 +142,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance is bound to a <see cref="T:WebSocketSharp.WebSocket" />.
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance is bound to a <see cref="T:WebSocketSharp.WebSocket" />.
             </summary>
         <value>
-          <c>true</c> if the WebSocketService is bound to a WebSocket; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance is bound to a <see cref="T:WebSocketSharp.WebSocket" />; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -186,7 +165,7 @@
             A <see cref="T:WebSocketSharp.CloseEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnClose" /> event.
             </param>
         <summary>
-            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> receives a Close frame or the Stop method is called.
+            Occurs when the inner <see cref="T:WebSocketSharp.WebSocket" /> receives a Close frame or the Stop method is called.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -206,7 +185,7 @@
             An <see cref="T:WebSocketSharp.ErrorEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event.
             </param>
         <summary>
-            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> gets an error.
+            Occurs when the inner <see cref="T:WebSocketSharp.WebSocket" /> gets an error.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -226,7 +205,7 @@
             A <see cref="T:WebSocketSharp.MessageEventArgs" /> that contains the event data associated with a <see cref="E:WebSocketSharp.WebSocket.OnMessage" /> event.
             </param>
         <summary>
-            Occurs when a inner <see cref="T:WebSocketSharp.WebSocket" /> receives a data frame.
+            Occurs when the inner <see cref="T:WebSocketSharp.WebSocket" /> receives a data frame.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -256,10 +235,10 @@
       <Parameters />
       <Docs>
         <summary>
-            Pings to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Pings to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <returns>
-          <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -279,10 +258,10 @@
             A <see cref="T:System.String" /> that contains a message.
             </param>
         <summary>
-            Pings with the specified <see cref="T:System.String" /> to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Pings with the specified <see cref="T:System.String" /> to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <returns>
-          <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -299,13 +278,14 @@
       </Parameters>
       <Docs>
         <param name="id">
-            A <see cref="T:System.String" /> that contains a ID that represents the destination for the Ping.
+            A <see cref="T:System.String" /> that contains an ID that represents the destination for the Ping.
             </param>
         <summary>
-            Pings to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            Pings to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
+            associated with the specified <paramref name="id" />.
             </summary>
         <returns>
-          <c>true</c> if the WebSocket service receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -323,17 +303,17 @@
       </Parameters>
       <Docs>
         <param name="id">
-            A <see cref="T:System.String" /> that contains a ID that represents the destination for the Ping.
+            A <see cref="T:System.String" /> that contains an ID that represents the destination for the Ping.
             </param>
         <param name="message">
             A <see cref="T:System.String" /> that contains a message.
             </param>
         <summary>
-            Pings with the specified <see cref="T:System.String" /> to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
-            associated with the specified ID.
+            Pings with the specified <see cref="T:System.String" /> to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
+            associated with the specified <paramref name="id" />.
             </summary>
         <returns>
-          <c>true</c> if the WebSocketService receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -370,7 +350,7 @@
             An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <summary>
-            Sends a binary data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Sends a binary data to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -390,7 +370,7 @@
             A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <summary>
-            Sends a text data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Sends a text data to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -408,13 +388,14 @@
       </Parameters>
       <Docs>
         <param name="id">
-            A <see cref="T:System.String" /> that contains a ID that represents the destination for the data.
+            A <see cref="T:System.String" /> that contains an ID that represents the destination for the data.
             </param>
         <param name="data">
             An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <summary>
-            Sends a binary data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            Sends a binary data to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
+            associated with the specified <paramref name="id" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -432,30 +413,31 @@
       </Parameters>
       <Docs>
         <param name="id">
-            A <see cref="T:System.String" /> that contains a ID that represents the destination for the data.
+            A <see cref="T:System.String" /> that contains an ID that represents the destination for the data.
             </param>
         <param name="data">
             A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <summary>
-            Sends a text data to the client of a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance associated with the specified ID.
+            Sends a text data to the client of the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance
+            associated with the specified <paramref name="id" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="Sessions">
-      <MemberSignature Language="C#" Value="protected WebSocketSharp.Server.SessionManager Sessions { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Server.SessionManager Sessions" />
+      <MemberSignature Language="C#" Value="protected WebSocketSharp.Server.WebSocketServiceManager Sessions { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Server.WebSocketServiceManager Sessions" />
       <MemberType>Property</MemberType>
       <ReturnValue>
-        <ReturnType>WebSocketSharp.Server.SessionManager</ReturnType>
+        <ReturnType>WebSocketSharp.Server.WebSocketServiceManager</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
             Gets the sessions to the WebSocket service.
             </summary>
         <value>
-            A <see cref="T:WebSocketSharp.Server.SessionManager" /> that contains the sessions to the WebSocket service.
+            A <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> that contains the sessions to the WebSocket service.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -470,7 +452,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Starts a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Starts the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -485,7 +467,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
+            Stops the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -509,7 +491,7 @@
             A <see cref="T:System.String" /> that contains a reason for stop.
             </param>
         <summary>
-            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:System.UInt16" /> and <see cref="T:System.String" />.
+            Stops the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:System.UInt16" /> and <see cref="T:System.String" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -533,7 +515,7 @@
             A <see cref="T:System.String" /> that contains a reason for stop.
             </param>
         <summary>
-            Stops a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:WebSocketSharp.CloseStatusCode" /> and <see cref="T:System.String" />.
+            Stops the <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance with the specified <see cref="T:WebSocketSharp.CloseStatusCode" /> and <see cref="T:System.String" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

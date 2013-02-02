@@ -38,23 +38,23 @@ namespace WebSocketSharp.Server {
   public interface IServiceHost {
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
+    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive service client; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
     /// </value>
     bool Sweeped { get; set; }
 
     /// <summary>
-    /// Binds the specified <see cref="WebSocket"/> instance to the WebSocket service.
+    /// Binds the specified <see cref="WebSocket"/> to the WebSocket service instance.
     /// </summary>
     /// <param name="socket">
-    /// An <see cref="WebSocketSharp.WebSocket"/> to bind.
+    /// A <see cref="WebSocketSharp.WebSocket"/> to bind.
     /// </param>
     void BindWebSocket(WebSocket socket);
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/>.
+    /// Broadcasts the specified <see cref="string"/> to all service clients.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.

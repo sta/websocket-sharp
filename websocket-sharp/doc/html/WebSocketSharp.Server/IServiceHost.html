@@ -240,7 +240,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
             </td>
               </tr>
             </table>
@@ -259,7 +259,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">BindWebSocket</a>
                   </b>(<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a>)<blockquote>
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -271,7 +271,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String)">Broadcast</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all service clients.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -339,7 +339,7 @@
         <h3 id="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">BindWebSocket Method</h3>
         <blockquote id="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket):member">
           <p class="Summary">
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance to the WebSocket service.
+            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>BindWebSocket</b> (<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> socket)</div>
@@ -350,7 +350,7 @@
                 <i>socket</i>
               </dt>
               <dd>
-            An <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to bind.
+            A <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to bind.
             </dd>
             </dl>
           </blockquote>
@@ -366,7 +366,7 @@
         <h3 id="M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String)">Broadcast Method</h3>
         <blockquote id="M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String):member">
           <p class="Summary">
-            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>.
+            Broadcasts the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to all service clients.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Broadcast</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> data)</div>
@@ -425,13 +425,13 @@
         <h3 id="P:WebSocketSharp.Server.IServiceHost.Sweeped">Sweeped Property</h3>
         <blockquote id="P:WebSocketSharp.Server.IServiceHost.Sweeped:member">
           <p class="Summary">
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Value">
-            <tt>true</tt> if the WebSocket service host cleans up the inactive service client; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Remarks">

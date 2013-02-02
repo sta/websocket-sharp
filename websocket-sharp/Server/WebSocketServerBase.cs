@@ -96,7 +96,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="IPAddress"/> that contains an IP address.
+    /// A <see cref="IPAddress"/> that contains a local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -177,10 +177,10 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
-    /// Gets the IP address on which to listen for incoming connection attempts.
+    /// Gets the local IP address on which to listen for incoming connection attempts.
     /// </summary>
     /// <value>
-    /// A <see cref="IPAddress"/> that contains an IP address.
+    /// A <see cref="IPAddress"/> that contains a local IP address.
     /// </value>
     public IPAddress Address {
       get {
@@ -189,10 +189,10 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets a value indicating whether this server provides secure connection.
+    /// Gets a value indicating whether the server provides secure connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if this server provides secure connection; otherwise, <c>false</c>.
+    /// <c>true</c> if the server provides secure connection; otherwise, <c>false</c>.
     /// </value>
     public bool IsSecure {
       get {
@@ -201,10 +201,10 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets a value indicating whether this server is self host.
+    /// Gets a value indicating whether the server is self host.
     /// </summary>
     /// <value>
-    /// <c>true</c> if this server is self host; otherwise, <c>false</c>.
+    /// <c>true</c> if the server is self host; otherwise, <c>false</c>.
     /// </value>
     public bool IsSelfHost {
       get {
@@ -339,7 +339,7 @@ namespace WebSocketSharp.Server {
     /// Accepts a WebSocket connection.
     /// </summary>
     /// <param name="context">
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected abstract void AcceptWebSocket(TcpListenerWebSocketContext context);
 

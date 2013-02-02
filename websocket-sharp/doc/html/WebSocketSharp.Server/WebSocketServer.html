@@ -344,7 +344,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>
                   </i>. 
-            Gets the IP address on which to listen for incoming connection attempts.
+            Gets the local IP address on which to listen for incoming connection attempts.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -358,7 +358,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether this server provides secure connection.
+            Gets a value indicating whether the server provides secure connection.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -372,7 +372,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether this server is self host.
+            Gets a value indicating whether the server is self host.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -400,7 +400,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a>
                   </i>. 
-            Gets the paths associated with the each WebSocket services.
+            Gets the collection of paths associated with the every WebSocket services that the server provides.
             </td>
               </tr>
               <tr valign="top">
@@ -417,7 +417,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets or sets a value indicating whether the server cleans up the inactive client.
+            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
             </td>
               </tr>
             </table>
@@ -731,7 +731,7 @@
                 <i>address</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains an IP address.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains a local IP address.
             </dd>
               <dt>
                 <i>port</i>
@@ -765,7 +765,7 @@
                 <i>address</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains an IP address.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> that contains a local IP address.
             </dd>
               <dt>
                 <i>port</i>
@@ -804,7 +804,7 @@
                 <i>context</i>
               </dt>
               <dd>
-            A <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> that contains a WebSocket connection.
+            A <a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> that contains the WebSocket connection request objects.
             </dd>
             </dl>
           </blockquote>
@@ -831,7 +831,7 @@
                 <i>T</i>
               </dt>
               <dd>
-            The type of a WebSocket service. The T must inherit the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> class.
+            The type of the WebSocket service. The T must inherit the <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> class.
             </dd>
             </dl>
           </blockquote>
@@ -842,7 +842,7 @@
                 <i>absPath</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an absolute path associated with a WebSocket service.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains an absolute path associated with the WebSocket service.
             </dd>
             </dl>
           </blockquote>
@@ -885,13 +885,13 @@
         <h3 id="P:WebSocketSharp.Server.WebSocketServer.ServicePaths">ServicePaths Property</h3>
         <blockquote id="P:WebSocketSharp.Server.WebSocketServer.ServicePaths:member">
           <p class="Summary">
-            Gets the paths associated with the each WebSocket services.
+            Gets the collection of paths associated with the every WebSocket services that the server provides.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;string&gt;</a> <b>ServicePaths</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServer.ServicePaths:Value">
-            An IEnumerable&lt;string&gt; that contains the paths.
+            An IEnumerable&lt;string&gt; that contains the collection of paths.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.ServicePaths:Remarks">
@@ -921,13 +921,13 @@
         <h3 id="P:WebSocketSharp.Server.WebSocketServer.Sweeped">Sweeped Property</h3>
         <blockquote id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:member">
           <p class="Summary">
-            Gets or sets a value indicating whether the server cleans up the inactive client.
+            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Value">
-            <tt>true</tt> if the server cleans up the inactive client; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the server cleans up the inactive clients every 60 seconds; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Remarks">

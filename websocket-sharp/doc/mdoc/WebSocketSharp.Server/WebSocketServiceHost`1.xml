@@ -149,7 +149,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -176,7 +176,7 @@
       </Parameters>
       <Docs>
         <param name="address">
-            A <see cref="T:System.Net.IPAddress" /> that contains an IP address.
+            A <see cref="T:System.Net.IPAddress" /> that contains a local IP address.
             </param>
         <param name="port">
             An <see cref="T:System.Int32" /> that contains a port number.
@@ -206,7 +206,7 @@
       </Parameters>
       <Docs>
         <param name="context">
-            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains a WebSocket connection.
+            A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
             </param>
         <summary>
             Accepts a WebSocket connection.
@@ -252,8 +252,8 @@
             Pings with the specified <see cref="T:System.String" /> to all clients.
             </summary>
         <returns>
-            A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
-            indicating whether the server received a Pong in a time.
+            A Dictionary&lt;string, bool&gt; that contains the collection of session IDs and values
+            indicating whether the server received the Pongs from each clients in a time.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -282,10 +282,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets or sets a value indicating whether the server cleans up the inactive client.
+            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
             </summary>
         <value>
-          <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+          <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -322,7 +322,7 @@
             A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
             </param>
         <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> instance to the WebSocket service.
+            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> to the WebSocket service instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

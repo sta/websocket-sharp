@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("websocket-sharp")]
-[assembly: AssemblyDescription("A C# implementation of WebSocket protocol client & server")]
+[assembly: AssemblyDescription("A C# implementation of the WebSocket protocol client & server")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("websocket-sharp.dll")]
@@ -24,4 +24,3 @@ using System.Runtime.CompilerServices;
 
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
-

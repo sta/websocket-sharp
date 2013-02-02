@@ -50,7 +50,7 @@ namespace WebSocketSharp.Server {
   {
     #region Field
 
-    private SessionManager _sessions;
+    private WebSocketServiceManager _sessions;
 
     #endregion
 
@@ -143,7 +143,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/> and <paramref name="absPath"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -161,7 +161,7 @@ namespace WebSocketSharp.Server {
     /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains an IP address.
+    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
@@ -183,10 +183,10 @@ namespace WebSocketSharp.Server {
     #region Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive client.
+    /// Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive client; otherwise, <c>false</c>.
+    /// <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
     /// </value>
     public bool Sweeped {
       get {
@@ -220,7 +220,7 @@ namespace WebSocketSharp.Server {
 
     private void init()
     {
-      _sessions = new SessionManager();
+      _sessions = new WebSocketServiceManager();
     }
 
     #endregion
@@ -228,7 +228,7 @@ namespace WebSocketSharp.Server {
     #region Explicit Interface Implementation
 
     /// <summary>
-    /// Binds the specified <see cref="WebSocket"/> instance to the WebSocket service.
+    /// Binds the specified <see cref="WebSocket"/> to the WebSocket service instance.
     /// </summary>
     /// <param name="socket">
     /// A <see cref="WebSocket"/> to bind.
@@ -248,7 +248,7 @@ namespace WebSocketSharp.Server {
     /// Accepts a WebSocket connection.
     /// </summary>
     /// <param name="context">
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
+    /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
@@ -285,8 +285,8 @@ namespace WebSocketSharp.Server {
     /// Pings with the specified <see cref="string"/> to all clients.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of the session ID and value
-    /// indicating whether the server received a Pong in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of session IDs and values
+    /// indicating whether the server received the Pongs from each clients in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message.

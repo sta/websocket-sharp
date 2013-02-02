@@ -107,7 +107,6 @@
     <Compile Include="Server\WebSocketServerBase.cs" />
     <Compile Include="Net\Security\SslStream.cs" />
     <Compile Include="Server\IServiceHost.cs" />
-    <Compile Include="Server\SessionManager.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="CloseStatusCode.cs" />
     <Compile Include="Fin.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
     <Compile Include="Server\ServiceHostManager.cs" />
+    <Compile Include="Server\WebSocketServiceManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

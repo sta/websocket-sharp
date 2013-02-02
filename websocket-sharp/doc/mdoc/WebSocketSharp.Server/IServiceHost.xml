@@ -24,10 +24,10 @@
       </Parameters>
       <Docs>
         <param name="socket">
-            An <see cref="T:WebSocketSharp.WebSocket" /> to bind.
+            A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
             </param>
         <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> instance to the WebSocket service.
+            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> to the WebSocket service instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -47,7 +47,7 @@
             A <see cref="T:System.String" /> to broadcast.
             </param>
         <summary>
-            Broadcasts the specified <see cref="T:System.String" />.
+            Broadcasts the specified <see cref="T:System.String" /> to all service clients.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -91,10 +91,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service client.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
             </summary>
         <value>
-          <c>true</c> if the WebSocket service host cleans up the inactive service client; otherwise, <c>false</c>.
+          <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
