@@ -187,6 +187,7 @@ namespace WebSocketSharp.Server {
     /// </summary>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+    /// The default value is <c>true</c>.
     /// </value>
     public bool Sweeped {
       get {

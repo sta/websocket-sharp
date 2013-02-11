@@ -9,7 +9,9 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
+    <summary>
+            Provides the HTTP version numbers.
+            </summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
@@ -19,7 +21,9 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpVersion" /> class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -31,7 +35,9 @@
         <ReturnType>System.Version</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Provides a <see cref="T:System.Version" /> instance for HTTP 1.0.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -43,7 +49,9 @@
         <ReturnType>System.Version</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Provides a <see cref="T:System.Version" /> instance for HTTP 1.1.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

@@ -270,13 +270,13 @@
       </Parameters>
       <Docs>
         <param name="code">
-            One of <see cref="T:WebSocketSharp.Net.HttpStatusCode" /> values that contains the HTTP status code.
+            One of <see cref="T:WebSocketSharp.Net.HttpStatusCode" /> values that contains an HTTP status code.
             </param>
         <summary>
-            Gets the description of the HTTP status code using the specified code.
+            Gets the description of the HTTP status code using the specified <see cref="T:WebSocketSharp.Net.HttpStatusCode" />.
             </summary>
         <returns>
-            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            A <see cref="T:System.String" /> that contains the description of the HTTP status code.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -347,13 +347,13 @@
       </Parameters>
       <Docs>
         <param name="code">
-            An <see cref="T:System.Int32" /> that contains the HTTP status code.
+            An <see cref="T:System.Int32" /> that contains an HTTP status code.
             </param>
         <summary>
-            Gets the description of the HTTP status code using the specified code.
+            Gets the description of the HTTP status code using the specified <see cref="T:System.Int32" />.
             </summary>
         <returns>
-            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            A <see cref="T:System.String" /> that contains the description of the HTTP status code.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>

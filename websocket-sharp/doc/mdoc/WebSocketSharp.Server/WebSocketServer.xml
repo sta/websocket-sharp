@@ -155,9 +155,9 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="AddService&lt;T&gt;">
-      <MemberSignature Language="C#" Value="public void AddService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
+    <Member MemberName="AddWebSocketService&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public void AddWebSocketService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddWebSocketService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -181,7 +181,7 @@
             A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
             </param>
         <summary>
-            Adds a WebSocket service.
+            Adds the specified type WebSocket service.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -251,6 +251,7 @@
             </summary>
         <value>
           <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+            The default value is <c>true</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

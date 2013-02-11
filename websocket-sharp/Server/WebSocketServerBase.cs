@@ -229,7 +229,7 @@ namespace WebSocketSharp.Server {
     #region Event
 
     /// <summary>
-    /// Occurs when this server gets an error.
+    /// Occurs when the server gets an error.
     /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 

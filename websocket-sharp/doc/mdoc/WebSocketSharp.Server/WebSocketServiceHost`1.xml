@@ -286,6 +286,7 @@
             </summary>
         <value>
           <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+            The default value is <c>true</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

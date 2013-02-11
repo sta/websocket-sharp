@@ -32,10 +32,10 @@ namespace Example2
       var wssv = new WebSocketServer(4649);
       //var wssv = new WebSocketServer("ws://localhost:4649");
       //wssv.Sweeped = false; // Stop the Sweep inactive session Timer.
-      wssv.AddService<Echo>("/Echo");
-      wssv.AddService<Chat>("/Chat");
-      //wssv.AddService<Echo>("/エコー");
-      //wssv.AddService<Chat>("/チャット");
+      wssv.AddWebSocketService<Echo>("/Echo");
+      wssv.AddWebSocketService<Chat>("/Chat");
+      //wssv.AddWebSocketService<Echo>("/エコー");
+      //wssv.AddWebSocketService<Chat>("/チャット");
 
       wssv.Start();
       Console.WriteLine(

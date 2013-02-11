@@ -207,8 +207,8 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Net.HttpStatusCode">HttpStatusCode  Enum</h1>
     <p class="Summary" id="T:WebSocketSharp.Net.HttpStatusCode:Summary">
-      <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-    </p>
+            Contains the values of the HTTP status codes.
+            </p>
     <div id="T:WebSocketSharp.Net.HttpStatusCode:Signature">
       <h2>Syntax</h2>
       <div class="Signature">public enum <b>HttpStatusCode</b></div>
@@ -216,8 +216,9 @@
     <div class="Remarks" id="T:WebSocketSharp.Net.HttpStatusCode:Docs">
       <h2 class="Section">Remarks</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Net.HttpStatusCode:Docs:Remarks">
-        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-      </div>
+            The HttpStatusCode enumeration contains the values of the HTTP status codes defined in
+            RFC 2616 for HTTP 1.1.
+            </div>
       <h2 class="Section">Members</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Net.HttpStatusCode:Docs:Members">
         <table class="Enumeration">
@@ -230,7 +231,8 @@
               <b>Accepted</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 202. Indicates that the client's request has been accepted for processing,
+            but the processing has not been completed.
             </td>
           </tr>
           <tr valign="top">
@@ -238,7 +240,13 @@
               <b>Ambiguous</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </p>
+              <p>
+            Ambiguous is a synonym for MultipleChoices.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -246,7 +254,8 @@
               <b>BadGateway</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 502. Indicates that a gateway or proxy server received an invalid response
+            from the upstream server.
             </td>
           </tr>
           <tr valign="top">
@@ -254,7 +263,8 @@
               <b>BadRequest</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 400. Indicates that the client's request could not be understood
+            by the server due to malformed syntax.
             </td>
           </tr>
           <tr valign="top">
@@ -262,7 +272,8 @@
               <b>Conflict</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 409. Indicates that the client's request could not be completed
+            due to a conflict on the server.
             </td>
           </tr>
           <tr valign="top">
@@ -270,7 +281,7 @@
               <b>Continue</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 100. Indicates that the client should continue with its request.
             </td>
           </tr>
           <tr valign="top">
@@ -278,7 +289,8 @@
               <b>Created</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 201. Indicates that the client's request has been fulfilled
+            and resulted in a new resource being created.
             </td>
           </tr>
           <tr valign="top">
@@ -286,7 +298,8 @@
               <b>ExpectationFailed</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 417. Indicates that the expectation given in an Expect request header field
+            could not be met by the server.
             </td>
           </tr>
           <tr valign="top">
@@ -294,7 +307,8 @@
               <b>Forbidden</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 403. Indicates that the server understood the client's request
+            but is refusing to fulfill it.
             </td>
           </tr>
           <tr valign="top">
@@ -302,7 +316,13 @@
               <b>Found</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </p>
+              <p>
+            Found is a synonym for Redirect.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -310,7 +330,8 @@
               <b>GatewayTimeout</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 504. Indicates that a gateway or proxy server did not receive a timely response
+            from the upstream server or some other auxiliary server.
             </td>
           </tr>
           <tr valign="top">
@@ -318,7 +339,8 @@
               <b>Gone</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 410. Indicates that the requested resource is no longer available
+            at the server and no forwarding address is known.
             </td>
           </tr>
           <tr valign="top">
@@ -326,7 +348,8 @@
               <b>HttpVersionNotSupported</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 505. Indicates that the server does not support the HTTP version
+            used in the client's request.
             </td>
           </tr>
           <tr valign="top">
@@ -334,7 +357,8 @@
               <b>InternalServerError</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 500. Indicates that the server encountered an unexpected condition
+            which prevented it from fulfilling the client's request.
             </td>
           </tr>
           <tr valign="top">
@@ -342,7 +366,8 @@
               <b>LengthRequired</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 411. Indicates that the server refuses to accept the client's request
+            without a defined Content-Length.
             </td>
           </tr>
           <tr valign="top">
@@ -350,7 +375,8 @@
               <b>MethodNotAllowed</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 405. Indicates that the method specified in the request line
+            is not allowed for the resource identified by the request URI.
             </td>
           </tr>
           <tr valign="top">
@@ -358,7 +384,13 @@
               <b>Moved</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </p>
+              <p>
+            Moved is a synonym for MovedPermanently.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -366,7 +398,13 @@
               <b>MovedPermanently</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </p>
+              <p>
+            MovedPermanently is a synonym for Moved.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -374,7 +412,13 @@
               <b>MultipleChoices</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </p>
+              <p>
+            MultipleChoices is a synonym for Ambiguous.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -382,7 +426,8 @@
               <b>NoContent</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 204. Indicates that the server has fulfilled the client's request
+            but does not need to return an entity-body.
             </td>
           </tr>
           <tr valign="top">
@@ -390,7 +435,7 @@
               <b>NonAuthoritativeInformation</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 203. Indicates that the returned metainformation is from a local or a third-party copy instead of the origin server.
             </td>
           </tr>
           <tr valign="top">
@@ -398,7 +443,8 @@
               <b>NotAcceptable</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 406. Indicates that the server does not have the appropriate resource
+            to respond to the accept headers in the client's request.
             </td>
           </tr>
           <tr valign="top">
@@ -406,7 +452,8 @@
               <b>NotFound</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 404. Indicates that the server has not found anything
+            matching the request URI.
             </td>
           </tr>
           <tr valign="top">
@@ -414,7 +461,8 @@
               <b>NotImplemented</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 501. Indicates that the server does not support the functionality
+            required to fulfill the client's request.
             </td>
           </tr>
           <tr valign="top">
@@ -422,7 +470,8 @@
               <b>NotModified</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 304. Indicates that the client has performed a conditional GET request
+            and access is allowed, but the document has not been modified.
             </td>
           </tr>
           <tr valign="top">
@@ -430,7 +479,7 @@
               <b>OK</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 200. Indicates that the client's request has succeeded.
             </td>
           </tr>
           <tr valign="top">
@@ -438,7 +487,7 @@
               <b>PartialContent</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 206. Indicates that the server has fulfilled the partial GET request for the resource.
             </td>
           </tr>
           <tr valign="top">
@@ -446,7 +495,7 @@
               <b>PaymentRequired</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 402. This code is reserved for future use.
             </td>
           </tr>
           <tr valign="top">
@@ -454,7 +503,8 @@
               <b>PreconditionFailed</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 412. Indicates that the precondition given in one or more of the request header fields
+            evaluated to false when it was tested on the server.
             </td>
           </tr>
           <tr valign="top">
@@ -462,7 +512,7 @@
               <b>ProxyAuthenticationRequired</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 407. Indicates that the client must first authenticate itself with the proxy.
             </td>
           </tr>
           <tr valign="top">
@@ -470,7 +520,13 @@
               <b>Redirect</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </p>
+              <p>
+            Redirect is a synonym for Found.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -478,7 +534,13 @@
               <b>RedirectKeepVerb</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </p>
+              <p>
+            RedirectKeepVerb is a synonym for TemporaryRedirect.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -486,7 +548,13 @@
               <b>RedirectMethod</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </p>
+              <p>
+            RedirectMethod is a synonym for SeeOther.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -494,7 +562,8 @@
               <b>RequestedRangeNotSatisfiable</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 416. Indicates that none of the range specifier values in a Range request header field
+            overlap the current extent of the selected resource.
             </td>
           </tr>
           <tr valign="top">
@@ -502,7 +571,8 @@
               <b>RequestEntityTooLarge</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 413. Indicates that the client's request entity is larger
+            than the server is willing or able to process.
             </td>
           </tr>
           <tr valign="top">
@@ -510,7 +580,8 @@
               <b>RequestTimeout</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 408. Indicates that the client did not produce a request
+            within the time that the server was prepared to wait.
             </td>
           </tr>
           <tr valign="top">
@@ -518,7 +589,8 @@
               <b>RequestUriTooLong</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 414. Indicates that the request URI is longer
+            than the server is willing to interpret.
             </td>
           </tr>
           <tr valign="top">
@@ -526,7 +598,8 @@
               <b>ResetContent</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 205. Indicates that the server has fulfilled the client's request
+            and the user agent should reset the document view which caused the request to be sent.
             </td>
           </tr>
           <tr valign="top">
@@ -534,7 +607,13 @@
               <b>SeeOther</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </p>
+              <p>
+            SeeOther is a synonym for RedirectMethod.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -542,7 +621,8 @@
               <b>ServiceUnavailable</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 503. Indicates that the server is currently unable to handle the client's request
+            due to a temporary overloading or maintenance of the server.
             </td>
           </tr>
           <tr valign="top">
@@ -550,7 +630,7 @@
               <b>SwitchingProtocols</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 101. Indicates that the server is switching the HTTP version or protocol on the connection.
             </td>
           </tr>
           <tr valign="top">
@@ -558,7 +638,13 @@
               <b>TemporaryRedirect</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+              <p>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </p>
+              <p>
+            TemporaryRedirect is a synonym for RedirectKeepVerb.
+            </p>
             </td>
           </tr>
           <tr valign="top">
@@ -566,7 +652,7 @@
               <b>Unauthorized</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 401. Indicates that the client's request requires user authentication.
             </td>
           </tr>
           <tr valign="top">
@@ -574,7 +660,8 @@
               <b>UnsupportedMediaType</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 415. Indicates that the entity of the client's request is in a format
+            not supported by the requested resource for the requested method.
             </td>
           </tr>
           <tr valign="top">
@@ -582,7 +669,8 @@
               <b>Unused</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 306. This code was used in a previous version of the specification,
+            is no longer used, and is reserved for future use.
             </td>
           </tr>
           <tr valign="top">
@@ -590,7 +678,8 @@
               <b>UseProxy</b>
             </td>
             <td>
-              <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            Equivalent to status code 305. Indicates that the requested resource must be accessed
+            through the proxy given by the Location field.
             </td>
           </tr>
         </table>

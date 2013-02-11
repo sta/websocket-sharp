@@ -278,13 +278,13 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the description of the HTTP status code using the specified code.
+    /// Gets the description of the HTTP status code using the specified <see cref="WebSocketSharp.Net.HttpStatusCode"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that contains the description of the <paramref name="code"/>.
+    /// A <see cref="string"/> that contains the description of the HTTP status code.
     /// </returns>
     /// <param name="code">
-    /// One of <see cref="WebSocketSharp.Net.HttpStatusCode"/> values that contains the HTTP status code.
+    /// One of <see cref="WebSocketSharp.Net.HttpStatusCode"/> values that contains an HTTP status code.
     /// </param>
     public static string GetDescription(this HttpStatusCode code)
     {
@@ -339,13 +339,13 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the description of the HTTP status code using the specified code.
+    /// Gets the description of the HTTP status code using the specified <see cref="int"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that contains the description of the <paramref name="code"/>.
+    /// A <see cref="string"/> that contains the description of the HTTP status code.
     /// </returns>
     /// <param name="code">
-    /// An <see cref="int"/> that contains the HTTP status code.
+    /// An <see cref="int"/> that contains an HTTP status code.
     /// </param>
     public static string GetStatusDescription(this int code)
     {

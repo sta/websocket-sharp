@@ -139,13 +139,13 @@
         </member>
         <member name="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode)">
             <summary>
-            Gets the description of the HTTP status code using the specified code.
+            Gets the description of the HTTP status code using the specified <see cref="T:WebSocketSharp.Net.HttpStatusCode" />.
             </summary>
             <returns>
-            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            A <see cref="T:System.String" /> that contains the description of the HTTP status code.
             </returns>
             <param name="code">
-            One of <see cref="T:WebSocketSharp.Net.HttpStatusCode" /> values that contains the HTTP status code.
+            One of <see cref="T:WebSocketSharp.Net.HttpStatusCode" /> values that contains an HTTP status code.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.GetName(System.String,System.String)">
@@ -178,13 +178,13 @@
         </member>
         <member name="M:WebSocketSharp.Ext.GetStatusDescription(System.Int32)">
             <summary>
-            Gets the description of the HTTP status code using the specified code.
+            Gets the description of the HTTP status code using the specified <see cref="T:System.Int32" />.
             </summary>
             <returns>
-            A <see cref="T:System.String" /> that contains the description of the <paramref name="code" />.
+            A <see cref="T:System.String" /> that contains the description of the HTTP status code.
             </returns>
             <param name="code">
-            An <see cref="T:System.Int32" /> that contains the HTTP status code.
+            An <see cref="T:System.Int32" /> that contains an HTTP status code.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.GetValue(System.String,System.String)">
@@ -1096,6 +1096,7 @@
             </summary>
             <value>
                 <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+            The default value is <c>true</c>.
             </value>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
@@ -1106,9 +1107,9 @@
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">
+        <member name="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String)">
             <summary>
-            Adds a WebSocket service.
+            Adds the specified type WebSocket service.
             </summary>
             <param name="absPath">
             A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
@@ -1391,6 +1392,524 @@
             <param name="s">The string to encode.</param>
             <param name="output">The TextWriter output stream containing the encoded string.</param>
         </member>
+        <member name="T:WebSocketSharp.Server.HttpServer">
+            <summary>
+            Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+            </summary>
+            <remarks>
+                <para>
+            The HttpServer class provides the multi WebSocket service.
+            </para>
+                <para>
+                    <para>
+            The HttpServer class needs the application configuration file to configure the server root path.
+            </para>
+                    <code lang="xml">
+            &lt;?xml version="1.0" encoding="utf-8"?&gt;
+            &lt;configuration&gt;
+            &lt;appSettings&gt;
+            &lt;add key="RootPath" value="./Public" /&gt;
+            &lt;/appSettings&gt;
+            &lt;/configuration&gt;
+            </code>
+                </para>
+            </remarks>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class that listens for incoming requests
+            on port 80.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class that listens for incoming requests
+            on the specified <paramref name="port" />.
+            </summary>
+            <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnError">
+            <summary>
+            Occurs when the server gets an error.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect">
+            <summary>
+            Occurs when the server receives an HTTP CONNECT request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete">
+            <summary>
+            Occurs when the server receives an HTTP DELETE request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToGet">
+            <summary>
+            Occurs when the server receives an HTTP GET request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToHead">
+            <summary>
+            Occurs when the server receives an HTTP HEAD request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions">
+            <summary>
+            Occurs when the server receives an HTTP OPTIONS request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch">
+            <summary>
+            Occurs when the server receives an HTTP PATCH request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPost">
+            <summary>
+            Occurs when the server receives an HTTP POST request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPut">
+            <summary>
+            Occurs when the server receives an HTTP PUT request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace">
+            <summary>
+            Occurs when the server receives an HTTP TRACE request.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Server.HttpServer.Port">
+            <summary>
+            Gets the port on which to listen for incoming requests.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.HttpServer.ServicePaths">
+            <summary>
+            Gets the collection of paths associated with the every WebSocket services that the server provides.
+            </summary>
+            <value>
+            An IEnumerable&lt;string&gt; that contains the collection of paths.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.HttpServer.Sweeped">
+            <summary>
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service instances periodically.
+            </summary>
+            <value>
+                <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <c>false</c>. The default value is <c>true</c>.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.AddWebSocketService``1(System.String)">
+            <summary>
+            Adds the specified type WebSocket service.
+            </summary>
+            <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            </param>
+            <typeparam name="T">
+            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </typeparam>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.GetFile(System.String)">
+            <summary>
+            Gets the contents of the specified file.
+            </summary>
+            <returns>
+            An array of <see cref="T:System.Byte" /> that contains the contents of the file.
+            </returns>
+            <param name="path">
+            A <see cref="T:System.String" /> that contains a virtual path to the file to get.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.Start">
+            <summary>
+            Starts to receive incoming requests.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.HttpServer.Stop">
+            <summary>
+            Stops receiving incoming requests.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.Server.ResponseEventArgs">
+            <summary>
+            Contains the event data associated with the response events of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class.
+            </summary>
+            <remarks>
+            A response event occurs when a <see cref="T:WebSocketSharp.Server.HttpServer" /> instance receives an HTTP request.
+            If you want to get the HTTP request objects, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Request" /> property.
+            If you want to get the HTTP response objects to send, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Response" /> property.
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Server.ResponseEventArgs.Request">
+            <summary>
+            Gets the HTTP request objects sent from a client.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.ResponseEventArgs.Response">
+            <summary>
+            Gets the HTTP response objects to send to the client in response to the client's request.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
+            </value>
+        </member>
+        <member name="T:WebSocketSharp.Net.HttpVersion">
+            <summary>
+            Provides the HTTP version numbers.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpVersion.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpVersion" /> class.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpVersion.Version10">
+            <summary>
+            Provides a <see cref="T:System.Version" /> instance for HTTP 1.0.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpVersion.Version11">
+            <summary>
+            Provides a <see cref="T:System.Version" /> instance for HTTP 1.1.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.Net.HttpStatusCode">
+            <summary>
+            Contains the values of the HTTP status codes.
+            </summary>
+            <remarks>
+            The HttpStatusCode enumeration contains the values of the HTTP status codes defined in
+            <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see> for HTTP 1.1.
+            </remarks>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Continue">
+            <summary>
+            Equivalent to status code 100. Indicates that the client should continue with its request.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.SwitchingProtocols">
+            <summary>
+            Equivalent to status code 101. Indicates that the server is switching the HTTP version or protocol on the connection.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.OK">
+            <summary>
+            Equivalent to status code 200. Indicates that the client's request has succeeded.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Created">
+            <summary>
+            Equivalent to status code 201. Indicates that the client's request has been fulfilled
+            and resulted in a new resource being created.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Accepted">
+            <summary>
+            Equivalent to status code 202. Indicates that the client's request has been accepted for processing,
+            but the processing has not been completed.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NonAuthoritativeInformation">
+            <summary>
+            Equivalent to status code 203. Indicates that the returned metainformation is from a local or a third-party copy instead of the origin server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NoContent">
+            <summary>
+            Equivalent to status code 204. Indicates that the server has fulfilled the client's request
+            but does not need to return an entity-body.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.ResetContent">
+            <summary>
+            Equivalent to status code 205. Indicates that the server has fulfilled the client's request
+            and the user agent should reset the document view which caused the request to be sent.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.PartialContent">
+            <summary>
+            Equivalent to status code 206. Indicates that the server has fulfilled the partial GET request for the resource.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.MultipleChoices">
+            <summary>
+                <para>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </para>
+                <para>
+            MultipleChoices is a synonym for Ambiguous.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Ambiguous">
+            <summary>
+                <para>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </para>
+                <para>
+            Ambiguous is a synonym for MultipleChoices.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.MovedPermanently">
+            <summary>
+                <para>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </para>
+                <para>
+            MovedPermanently is a synonym for Moved.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Moved">
+            <summary>
+                <para>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </para>
+                <para>
+            Moved is a synonym for MovedPermanently.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Found">
+            <summary>
+                <para>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+                <para>
+            Found is a synonym for Redirect.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Redirect">
+            <summary>
+                <para>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+                <para>
+            Redirect is a synonym for Found.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.SeeOther">
+            <summary>
+                <para>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </para>
+                <para>
+            SeeOther is a synonym for RedirectMethod.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RedirectMethod">
+            <summary>
+                <para>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </para>
+                <para>
+            RedirectMethod is a synonym for SeeOther.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NotModified">
+            <summary>
+            Equivalent to status code 304. Indicates that the client has performed a conditional GET request
+            and access is allowed, but the document has not been modified.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.UseProxy">
+            <summary>
+            Equivalent to status code 305. Indicates that the requested resource must be accessed
+            through the proxy given by the Location field.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Unused">
+            <summary>
+            Equivalent to status code 306. This code was used in a previous version of the specification,
+            is no longer used, and is reserved for future use.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.TemporaryRedirect">
+            <summary>
+                <para>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+                <para>
+            TemporaryRedirect is a synonym for RedirectKeepVerb.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RedirectKeepVerb">
+            <summary>
+                <para>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+                <para>
+            RedirectKeepVerb is a synonym for TemporaryRedirect.
+            </para>
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.BadRequest">
+            <summary>
+            Equivalent to status code 400. Indicates that the client's request could not be understood
+            by the server due to malformed syntax.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Unauthorized">
+            <summary>
+            Equivalent to status code 401. Indicates that the client's request requires user authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.PaymentRequired">
+            <summary>
+            Equivalent to status code 402. This code is reserved for future use.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Forbidden">
+            <summary>
+            Equivalent to status code 403. Indicates that the server understood the client's request
+            but is refusing to fulfill it.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NotFound">
+            <summary>
+            Equivalent to status code 404. Indicates that the server has not found anything
+            matching the request URI.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.MethodNotAllowed">
+            <summary>
+            Equivalent to status code 405. Indicates that the method specified in the request line
+            is not allowed for the resource identified by the request URI.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NotAcceptable">
+            <summary>
+            Equivalent to status code 406. Indicates that the server does not have the appropriate resource
+            to respond to the accept headers in the client's request.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.ProxyAuthenticationRequired">
+            <summary>
+            Equivalent to status code 407. Indicates that the client must first authenticate itself with the proxy.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RequestTimeout">
+            <summary>
+            Equivalent to status code 408. Indicates that the client did not produce a request
+            within the time that the server was prepared to wait.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Conflict">
+            <summary>
+            Equivalent to status code 409. Indicates that the client's request could not be completed
+            due to a conflict on the server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.Gone">
+            <summary>
+            Equivalent to status code 410. Indicates that the requested resource is no longer available
+            at the server and no forwarding address is known.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.LengthRequired">
+            <summary>
+            Equivalent to status code 411. Indicates that the server refuses to accept the client's request
+            without a defined Content-Length.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.PreconditionFailed">
+            <summary>
+            Equivalent to status code 412. Indicates that the precondition given in one or more of the request header fields
+            evaluated to false when it was tested on the server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RequestEntityTooLarge">
+            <summary>
+            Equivalent to status code 413. Indicates that the client's request entity is larger
+            than the server is willing or able to process.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RequestUriTooLong">
+            <summary>
+            Equivalent to status code 414. Indicates that the request URI is longer
+            than the server is willing to interpret.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.UnsupportedMediaType">
+            <summary>
+            Equivalent to status code 415. Indicates that the entity of the client's request is in a format
+            not supported by the requested resource for the requested method.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.RequestedRangeNotSatisfiable">
+            <summary>
+            Equivalent to status code 416. Indicates that none of the range specifier values in a Range request header field
+            overlap the current extent of the selected resource.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.ExpectationFailed">
+            <summary>
+            Equivalent to status code 417. Indicates that the expectation given in an Expect request header field
+            could not be met by the server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.InternalServerError">
+            <summary>
+            Equivalent to status code 500. Indicates that the server encountered an unexpected condition
+            which prevented it from fulfilling the client's request.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.NotImplemented">
+            <summary>
+            Equivalent to status code 501. Indicates that the server does not support the functionality
+            required to fulfill the client's request.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.BadGateway">
+            <summary>
+            Equivalent to status code 502. Indicates that a gateway or proxy server received an invalid response
+            from the upstream server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.ServiceUnavailable">
+            <summary>
+            Equivalent to status code 503. Indicates that the server is currently unable to handle the client's request
+            due to a temporary overloading or maintenance of the server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.GatewayTimeout">
+            <summary>
+            Equivalent to status code 504. Indicates that a gateway or proxy server did not receive a timely response
+            from the upstream server or some other auxiliary server.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.HttpStatusCode.HttpVersionNotSupported">
+            <summary>
+            Equivalent to status code 505. Indicates that the server does not support the HTTP version
+            used in the client's request.
+            </summary>
+        </member>
         <member name="T:WebSocketSharp.Server.WebSocketServerBase">
             <summary>
             Provides the basic functions of the server that receives the WebSocket connection requests.
@@ -1453,7 +1972,7 @@
         </member>
         <member name="E:WebSocketSharp.Server.WebSocketServerBase.OnError">
             <summary>
-            Occurs when this server gets an error.
+            Occurs when the server gets an error.
             </summary>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServerBase.BaseUri">
@@ -1670,6 +2189,7 @@
             </summary>
             <value>
                 <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+            The default value is <c>true</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Uri">

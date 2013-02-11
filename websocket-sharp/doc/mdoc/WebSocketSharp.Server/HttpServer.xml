@@ -9,8 +9,35 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+            </summary>
+    <remarks>
+      <para>
+            The HttpServer class provides the multi WebSocket service.
+            </para>
+      <para>
+        <para>
+            The HttpServer class needs the application configuration file to configure the server root path.
+            </para>
+        <code lang="xml">
+            &lt;?xml version="1.0" encoding="utf-8"?&gt;
+            &lt;configuration&gt;
+            &lt;appSettings&gt;
+            &lt;add key="RootPath" value="./Public" /&gt;
+            &lt;/appSettings&gt;
+            &lt;/configuration&gt;
+            </code>
+      </para>
+    </remarks>
+    <code>
+            &lt;?xml version="1.0" encoding="utf-8"?&gt;
+            &lt;configuration&gt;
+            &lt;appSettings&gt;
+            &lt;add key="RootPath" value="../../Public" /&gt;
+            &lt;/appSettings&gt;
+            &lt;/configuration&gt;
+            </code>
   </Docs>
   <Members>
     <Member MemberName=".ctor">
@@ -19,7 +46,10 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class that listens for incoming requests
+            on port 80.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -31,14 +61,19 @@
         <Parameter Name="port" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="port">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="port">
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class that listens for incoming requests
+            on the specified <paramref name="port" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="AddService&lt;T&gt;">
-      <MemberSignature Language="C#" Value="public void AddService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
+    <Member MemberName="AddWebSocketService&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public void AddWebSocketService&lt;T&gt; (string absPath) where T : WebSocketSharp.Server.WebSocketServicenew();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void AddWebSocketService&lt;.ctor (class WebSocketSharp.Server.WebSocketService) T&gt;(string absPath) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
@@ -55,9 +90,15 @@
         <Parameter Name="absPath" Type="System.String" />
       </Parameters>
       <Docs>
-        <typeparam name="T">To be added.</typeparam>
-        <param name="absPath">To be added.</param>
-        <summary>To be added.</summary>
+        <typeparam name="T">
+            The type of the WebSocket service. The T must inherit the <see cref="T:WebSocketSharp.Server.WebSocketService" /> class.
+            </typeparam>
+        <param name="absPath">
+            A <see cref="T:System.String" /> that contains an absolute path associated with the WebSocket service.
+            </param>
+        <summary>
+            Adds the specified type WebSocket service.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -72,33 +113,15 @@
         <Parameter Name="path" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="path">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="OnConnect">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnConnect;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnConnect" />
-      <MemberType>Event</MemberType>
-      <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="OnDelete">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnDelete;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnDelete" />
-      <MemberType>Event</MemberType>
-      <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>To be added.</summary>
+        <param name="path">
+            A <see cref="T:System.String" /> that contains a virtual path to the file to get.
+            </param>
+        <summary>
+            Gets the contents of the specified file.
+            </summary>
+        <returns>
+            An array of <see cref="T:System.Byte" /> that contains the contents of the file.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -110,91 +133,135 @@
         <ReturnType>System.EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server gets an error.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnGet">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnGet;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnGet" />
+    <Member MemberName="OnResponseToConnect">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToConnect;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToConnect" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP CONNECT request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnHead">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnHead;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnHead" />
+    <Member MemberName="OnResponseToDelete">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToDelete;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToDelete" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP DELETE request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnOptions">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnOptions;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnOptions" />
+    <Member MemberName="OnResponseToGet">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToGet;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToGet" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP GET request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnPatch">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPatch;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPatch" />
+    <Member MemberName="OnResponseToHead">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToHead;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToHead" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP HEAD request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnPost">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPost;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPost" />
+    <Member MemberName="OnResponseToOptions">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToOptions;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToOptions" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP OPTIONS request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnPut">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnPut;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnPut" />
+    <Member MemberName="OnResponseToPatch">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPatch;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPatch" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP PATCH request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnTrace">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnTrace;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnTrace" />
+    <Member MemberName="OnResponseToPost">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPost;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPost" />
       <MemberType>Event</MemberType>
       <ReturnValue>
         <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Occurs when the server receives an HTTP POST request.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnResponseToPut">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPut;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPut" />
+      <MemberType>Event</MemberType>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the server receives an HTTP PUT request.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnResponseToTrace">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToTrace;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToTrace" />
+      <MemberType>Event</MemberType>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the server receives an HTTP TRACE request.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -206,8 +273,12 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the port on which to listen for incoming requests.
+            </summary>
+        <value>
+            An <see cref="T:System.Int32" /> that contains a port number.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -219,8 +290,12 @@
         <ReturnType>System.Collections.Generic.IEnumerable&lt;System.String&gt;</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the collection of paths associated with the every WebSocket services that the server provides.
+            </summary>
+        <value>
+            An IEnumerable&lt;string&gt; that contains the collection of paths.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -233,7 +308,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Starts to receive incoming requests.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -246,7 +323,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Stops receiving incoming requests.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -258,8 +337,13 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service instances periodically.
+            </summary>
+        <value>
+          <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <c>false</c>. The default value is <c>true</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

@@ -202,11 +202,11 @@ Creating a instance of the `WebSocketServer` class if you want the multi WebSock
 
 ```cs
 var wssv = new WebSocketServer(4649);
-wssv.AddService<Echo>("/Echo");
-wssv.AddService<Chat>("/Chat");
+wssv.AddWebSocketService<Echo>("/Echo");
+wssv.AddWebSocketService<Chat>("/Chat");
 ```
 
-You can add to your `WebSocketServer` any WebSocket service and a matching path to that service by using the `WebSocketServer.AddService<T>` method.
+You can add to your `WebSocketServer` any WebSocket service and a matching path to that service by using the `WebSocketServer.AddWebSocketService<T>` method.
 
 The type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
@@ -256,11 +256,11 @@ wssv.Stop();
 
 I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket request.
 
-You can add to your `HttpServer` any WebSocket service and a matching path to that service by using the `HttpServer.AddService<T>` method.
+You can add to your `HttpServer` any WebSocket service and a matching path to that service by using the `HttpServer.AddWebSocketService<T>` method.
 
 ```cs
 var httpsv = new HttpServer(4649);
-httpsv.AddService<Echo>("/");
+httpsv.AddWebSocketService<Echo>("/");
 ```
 
 For more information, please refer to the [Example3].

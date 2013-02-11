@@ -165,6 +165,7 @@ namespace WebSocketSharp.Server {
     /// </summary>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
+    /// The default value is <c>true</c>.
     /// </value>
     public bool Sweeped {
       get {
@@ -218,7 +219,7 @@ namespace WebSocketSharp.Server {
     #region Public Methods
 
     /// <summary>
-    /// Adds a WebSocket service.
+    /// Adds the specified type WebSocket service.
     /// </summary>
     /// <param name="absPath">
     /// A <see cref="string"/> that contains an absolute path associated with the WebSocket service.
@@ -226,7 +227,7 @@ namespace WebSocketSharp.Server {
     /// <typeparam name="T">
     /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
     /// </typeparam>
-    public void AddService<T>(string absPath)
+    public void AddWebSocketService<T>(string absPath)
       where T : WebSocketService, new()
     {
       string msg;

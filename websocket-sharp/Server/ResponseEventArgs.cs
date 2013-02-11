@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,15 +31,44 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server {
 
+  /// <summary>
+  /// Contains the event data associated with the response events of the <see cref="HttpServer"/> class.
+  /// </summary>
+  /// <remarks>
+  /// A response event occurs when a <see cref="HttpServer"/> instance receives an HTTP request.
+  /// If you want to get the HTTP request objects, you should access the <see cref="ResponseEventArgs.Request"/> property.
+  /// If you want to get the HTTP response objects to send, you should access the <see cref="ResponseEventArgs.Response"/> property.
+  /// </remarks>
   public class ResponseEventArgs : EventArgs
   {
-    public HttpListenerRequest  Request  { get; private set; }
-    public HttpListenerResponse Response { get; private set; }
+    #region Constructor
 
-    public ResponseEventArgs(HttpListenerContext context)
+    internal ResponseEventArgs(HttpListenerContext context)
     {
       Request  = context.Request;
       Response = context.Response;
     }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the HTTP request objects sent from a client.
+    /// </summary>
+    /// <value>
+    /// A <see cref="HttpListenerRequest"/> that contains the HTTP request objects.
+    /// </value>
+    public HttpListenerRequest Request { get; private set; }
+
+    /// <summary>
+    /// Gets the HTTP response objects to send to the client in response to the client's request.
+    /// </summary>
+    /// <value>
+    /// A <see cref="HttpListenerResponse"/> that contains the HTTP response objects.
+    /// </value>
+    public HttpListenerResponse Response { get; private set; }
+
+    #endregion
   }
 }

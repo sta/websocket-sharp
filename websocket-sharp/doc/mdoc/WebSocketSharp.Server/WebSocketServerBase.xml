@@ -214,7 +214,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Occurs when this server gets an error.
+            Occurs when the server gets an error.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

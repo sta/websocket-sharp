@@ -1,6 +1,6 @@
 //
 // HttpVersion.cs
-//	Copied from System.Net.HttpVersion
+//	Copied from System.Net.HttpVersion.cs
 //
 // Author:
 //	Lawrence Pit (loz@cable.a2000.nl)
@@ -29,14 +29,24 @@ using System;
 
 namespace WebSocketSharp.Net {
 
-	// <remarks>
-	// </remarks>
+	/// <summary>
+	/// Provides the HTTP version numbers.
+	/// </summary>
 	public class HttpVersion {
 
+		/// <summary>
+		/// Provides a <see cref="Version"/> instance for HTTP 1.0.
+		/// </summary>
 		public static readonly Version Version10 = new Version (1, 0);
+
+		/// <summary>
+		/// Provides a <see cref="Version"/> instance for HTTP 1.1.
+		/// </summary>
 		public static readonly Version Version11 = new Version (1, 1);
-		
-		// pretty useless..
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HttpVersion"/> class.
+		/// </summary>
 		public HttpVersion () {}
 	}
 }

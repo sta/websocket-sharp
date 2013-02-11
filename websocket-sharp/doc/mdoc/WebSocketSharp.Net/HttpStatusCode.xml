@@ -8,8 +8,13 @@
     <BaseTypeName>System.Enum</BaseTypeName>
   </Base>
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Contains the values of the HTTP status codes.
+            </summary>
+    <remarks>
+            The HttpStatusCode enumeration contains the values of the HTTP status codes defined in
+            <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see> for HTTP 1.1.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName="Accepted">
@@ -20,7 +25,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 202. Indicates that the client's request has been accepted for processing,
+            but the processing has not been completed.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Ambiguous">
@@ -31,7 +39,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </para>
+          <para>
+            Ambiguous is a synonym for MultipleChoices.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="BadGateway">
@@ -42,7 +58,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 502. Indicates that a gateway or proxy server received an invalid response
+            from the upstream server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="BadRequest">
@@ -53,7 +72,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 400. Indicates that the client's request could not be understood
+            by the server due to malformed syntax.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Conflict">
@@ -64,7 +86,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 409. Indicates that the client's request could not be completed
+            due to a conflict on the server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Continue">
@@ -75,7 +100,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 100. Indicates that the client should continue with its request.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Created">
@@ -86,7 +113,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 201. Indicates that the client's request has been fulfilled
+            and resulted in a new resource being created.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="ExpectationFailed">
@@ -97,7 +127,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 417. Indicates that the expectation given in an Expect request header field
+            could not be met by the server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Forbidden">
@@ -108,7 +141,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 403. Indicates that the server understood the client's request
+            but is refusing to fulfill it.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Found">
@@ -119,7 +155,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+          <para>
+            Found is a synonym for Redirect.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="GatewayTimeout">
@@ -130,7 +174,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 504. Indicates that a gateway or proxy server did not receive a timely response
+            from the upstream server or some other auxiliary server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Gone">
@@ -141,7 +188,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 410. Indicates that the requested resource is no longer available
+            at the server and no forwarding address is known.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="HttpVersionNotSupported">
@@ -152,7 +202,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 505. Indicates that the server does not support the HTTP version
+            used in the client's request.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="InternalServerError">
@@ -163,7 +216,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 500. Indicates that the server encountered an unexpected condition
+            which prevented it from fulfilling the client's request.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="LengthRequired">
@@ -174,7 +230,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 411. Indicates that the server refuses to accept the client's request
+            without a defined Content-Length.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="MethodNotAllowed">
@@ -185,7 +244,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 405. Indicates that the method specified in the request line
+            is not allowed for the resource identified by the request URI.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Moved">
@@ -196,7 +258,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </para>
+          <para>
+            Moved is a synonym for MovedPermanently.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="MovedPermanently">
@@ -207,7 +277,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 301. Indicates that the requested resource has been assigned a new permanent URI
+            and any future references to this resource should use one of the returned URIs.
+            </para>
+          <para>
+            MovedPermanently is a synonym for Moved.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="MultipleChoices">
@@ -218,7 +296,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 300. Indicates that the requested resource corresponds to
+            any one of multiple representations.
+            </para>
+          <para>
+            MultipleChoices is a synonym for Ambiguous.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="NoContent">
@@ -229,7 +315,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 204. Indicates that the server has fulfilled the client's request
+            but does not need to return an entity-body.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="NonAuthoritativeInformation">
@@ -240,7 +329,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 203. Indicates that the returned metainformation is from a local or a third-party copy instead of the origin server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="NotAcceptable">
@@ -251,7 +342,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 406. Indicates that the server does not have the appropriate resource
+            to respond to the accept headers in the client's request.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="NotFound">
@@ -262,7 +356,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 404. Indicates that the server has not found anything
+            matching the request URI.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="NotImplemented">
@@ -273,7 +370,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 501. Indicates that the server does not support the functionality
+            required to fulfill the client's request.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="NotModified">
@@ -284,7 +384,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 304. Indicates that the client has performed a conditional GET request
+            and access is allowed, but the document has not been modified.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="OK">
@@ -295,7 +398,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 200. Indicates that the client's request has succeeded.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="PartialContent">
@@ -306,7 +411,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 206. Indicates that the server has fulfilled the partial GET request for the resource.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="PaymentRequired">
@@ -317,7 +424,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 402. This code is reserved for future use.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="PreconditionFailed">
@@ -328,7 +437,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 412. Indicates that the precondition given in one or more of the request header fields
+            evaluated to false when it was tested on the server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="ProxyAuthenticationRequired">
@@ -339,7 +451,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 407. Indicates that the client must first authenticate itself with the proxy.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Redirect">
@@ -350,7 +464,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 302. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+          <para>
+            Redirect is a synonym for Found.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="RedirectKeepVerb">
@@ -361,7 +483,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+          <para>
+            RedirectKeepVerb is a synonym for TemporaryRedirect.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="RedirectMethod">
@@ -372,7 +502,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </para>
+          <para>
+            RedirectMethod is a synonym for SeeOther.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="RequestedRangeNotSatisfiable">
@@ -383,7 +521,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 416. Indicates that none of the range specifier values in a Range request header field
+            overlap the current extent of the selected resource.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="RequestEntityTooLarge">
@@ -394,7 +535,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 413. Indicates that the client's request entity is larger
+            than the server is willing or able to process.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="RequestTimeout">
@@ -405,7 +549,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 408. Indicates that the client did not produce a request
+            within the time that the server was prepared to wait.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="RequestUriTooLong">
@@ -416,7 +563,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 414. Indicates that the request URI is longer
+            than the server is willing to interpret.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="ResetContent">
@@ -427,7 +577,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 205. Indicates that the server has fulfilled the client's request
+            and the user agent should reset the document view which caused the request to be sent.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="SeeOther">
@@ -438,7 +591,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 303. Indicates that the response to the request can be found
+            under a different URI and should be retrieved using a GET method on that resource.
+            </para>
+          <para>
+            SeeOther is a synonym for RedirectMethod.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="ServiceUnavailable">
@@ -449,7 +610,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 503. Indicates that the server is currently unable to handle the client's request
+            due to a temporary overloading or maintenance of the server.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="SwitchingProtocols">
@@ -460,7 +624,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 101. Indicates that the server is switching the HTTP version or protocol on the connection.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="TemporaryRedirect">
@@ -471,7 +637,15 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+          <para>
+            Equivalent to status code 307. Indicates that the requested resource is located temporarily
+            under a different URI.
+            </para>
+          <para>
+            TemporaryRedirect is a synonym for RedirectKeepVerb.
+            </para>
+        </summary>
       </Docs>
     </Member>
     <Member MemberName="Unauthorized">
@@ -482,7 +656,9 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 401. Indicates that the client's request requires user authentication.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="UnsupportedMediaType">
@@ -493,7 +669,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 415. Indicates that the entity of the client's request is in a format
+            not supported by the requested resource for the requested method.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Unused">
@@ -504,7 +683,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 306. This code was used in a previous version of the specification,
+            is no longer used, and is reserved for future use.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="UseProxy">
@@ -515,7 +697,10 @@
         <ReturnType>WebSocketSharp.Net.HttpStatusCode</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Equivalent to status code 305. Indicates that the requested resource must be accessed
+            through the proxy given by the Location field.
+            </summary>
       </Docs>
     </Member>
   </Members>

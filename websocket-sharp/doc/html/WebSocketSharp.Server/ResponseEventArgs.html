@@ -207,8 +207,8 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Server.ResponseEventArgs">ResponseEventArgs  Class</h1>
     <p class="Summary" id="T:WebSocketSharp.Server.ResponseEventArgs:Summary">
-      <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-    </p>
+            Contains the event data associated with the response events of the <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a> class.
+            </p>
     <div id="T:WebSocketSharp.Server.ResponseEventArgs:Signature">
       <h2>Syntax</h2>
       <div class="Signature">public class  <b>ResponseEventArgs</b> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a></div>
@@ -216,8 +216,10 @@
     <div class="Remarks" id="T:WebSocketSharp.Server.ResponseEventArgs:Docs">
       <h2 class="Section">Remarks</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Server.ResponseEventArgs:Docs:Remarks">
-        <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-      </div>
+            A response event occurs when a <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a> instance receives an HTTP request.
+            If you want to get the HTTP request objects, you should access the <a href="../WebSocketSharp.Server/ResponseEventArgs.html#P:WebSocketSharp.Server.ResponseEventArgs.Request">ResponseEventArgs.Request</a> property.
+            If you want to get the HTTP response objects to send, you should access the <a href="../WebSocketSharp.Server/ResponseEventArgs.html#P:WebSocketSharp.Server.ResponseEventArgs.Response">ResponseEventArgs.Response</a> property.
+            </div>
       <h2 class="Section">Requirements</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Server.ResponseEventArgs:Docs:Version Information">
         <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
@@ -227,28 +229,6 @@
 								See Also: Inherited members from
 								<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventArgs">EventArgs</a>.
 							</p>
-        <h2 class="Section">Public Constructors</h2>
-        <div class="SectionBox" id="Public Constructors">
-          <div class="SubsectionBox">
-            <table class="TypeMembers">
-              <tr valign="top">
-                <td>
-                  <div>
-                  </div>
-                </td>
-                <td>
-                  <div>
-                    <b>
-                      <a href="#C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext)">ResponseEventArgs</a>
-                    </b>(<a href="../WebSocketSharp.Net/HttpListenerContext.html">WebSocketSharp.Net.HttpListenerContext</a>)</div>
-                </td>
-                <td>
-                  <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
         <h2 class="Section">Public Properties</h2>
         <div class="SectionBox" id="Public Properties">
           <div class="SubsectionBox">
@@ -263,7 +243,9 @@
                 <td>
                   <i>
                     <a href="../WebSocketSharp.Net/HttpListenerRequest.html">WebSocketSharp.Net.HttpListenerRequest</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the HTTP request objects sent from a client.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div></div></td>
@@ -275,7 +257,9 @@
                 <td>
                   <i>
                     <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets the HTTP response objects to send to the client in response to the client's request.
+            </td>
               </tr>
             </table>
           </div>
@@ -315,44 +299,17 @@
     <div class="Members" id="T:WebSocketSharp.Server.ResponseEventArgs:Members">
       <h2 class="Section" id="MemberDetails">Member Details</h2>
       <div class="SectionBox" id="_MemberDetails">
-        <h3 id="C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext)">ResponseEventArgs Constructor</h3>
-        <blockquote id="C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext):member">
-          <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public  <b>ResponseEventArgs</b> (<a href="../WebSocketSharp.Net/HttpListenerContext.html">WebSocketSharp.Net.HttpListenerContext</a> context)</div>
-          <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext):Parameters">
-            <dl>
-              <dt>
-                <i>context</i>
-              </dt>
-              <dd>
-                <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-              </dd>
-            </dl>
-          </blockquote>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="C:WebSocketSharp.Server.ResponseEventArgs(WebSocketSharp.Net.HttpListenerContext):Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
         <h3 id="P:WebSocketSharp.Server.ResponseEventArgs.Request">Request Property</h3>
         <blockquote id="P:WebSocketSharp.Server.ResponseEventArgs.Request:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the HTTP request objects sent from a client.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="../WebSocketSharp.Net/HttpListenerRequest.html">WebSocketSharp.Net.HttpListenerRequest</a> <b>Request</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.ResponseEventArgs.Request:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+            A <a href="../WebSocketSharp.Net/HttpListenerRequest.html">WebSocketSharp.Net.HttpListenerRequest</a> that contains the HTTP request objects.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.ResponseEventArgs.Request:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -365,14 +322,14 @@
         <h3 id="P:WebSocketSharp.Server.ResponseEventArgs.Response">Response Property</h3>
         <blockquote id="P:WebSocketSharp.Server.ResponseEventArgs.Response:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets the HTTP response objects to send to the client in response to the client's request.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a> <b>Response</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.ResponseEventArgs.Response:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+            A <a href="../WebSocketSharp.Net/HttpListenerResponse.html">WebSocketSharp.Net.HttpListenerResponse</a> that contains the HTTP response objects.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.ResponseEventArgs.Response:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>

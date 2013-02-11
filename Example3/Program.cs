@@ -12,13 +12,13 @@ namespace Example3
     public static void Main(string[] args)
     {
       _httpsv = new HttpServer(4649);
-      //_httpsv.Sweeped = false; // Stop the Sweep inactive session Timer.
-      _httpsv.AddService<Echo>("/Echo");
-      _httpsv.AddService<Chat>("/Chat");
+      //_httpsv.Sweeped = false;
+      _httpsv.AddWebSocketService<Echo>("/Echo");
+      _httpsv.AddWebSocketService<Chat>("/Chat");
 
-      _httpsv.OnGet += (sender, e) =>
+      _httpsv.OnResponseToGet += (sender, e) =>
       {
-        onGet(e.Request, e.Response);
+        onResponseToGet(e);
       };
 
       _httpsv.OnError += (sender, e) =>
@@ -46,9 +46,11 @@ namespace Example3
       return _httpsv.GetFile(path);
     }
 
-    private static void onGet(HttpListenerRequest request, HttpListenerResponse response)
+    private static void onResponseToGet(ResponseEventArgs eventArgs)
     {
-      var content = getContent(request.RawUrl);
+      var request  = eventArgs.Request;
+      var response = eventArgs.Response;
+      var content  = getContent(request.RawUrl);
       if (content != null)
       {
         response.WriteContent(content);

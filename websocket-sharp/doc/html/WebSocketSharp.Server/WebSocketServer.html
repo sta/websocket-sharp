@@ -458,9 +458,9 @@
                 </td>
                 <td colspan="2">
                   <b>
-                    <a href="#M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">AddService&lt;T&gt;</a>
+                    <a href="#M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String)">AddWebSocketService&lt;T&gt;</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Adds a WebSocket service.
+            Adds the specified type WebSocket service.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -569,7 +569,7 @@
                   </b>
                 </td>
                 <td>
-            Occurs when this server gets an error.
+            Occurs when the server gets an error.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
             </table>
@@ -817,15 +817,15 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String)">AddService&lt;T&gt; Generic Method</h3>
-        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):member">
+        <h3 id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String)">AddWebSocketService&lt;T&gt; Generic Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String):member">
           <p class="Summary">
-            Adds a WebSocket service.
+            Adds the specified type WebSocket service.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AddService&lt;T&gt;</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> absPath)<br /> where T : <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a>, new()</div>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AddWebSocketService&lt;T&gt;</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> absPath)<br /> where T : <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a>, new()</div>
           <h4 class="Subsection">Type Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Type Parameters">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String):Type Parameters">
             <dl>
               <dt>
                 <i>T</i>
@@ -836,7 +836,7 @@
             </dl>
           </blockquote>
           <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Parameters">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String):Parameters">
             <dl>
               <dt>
                 <i>absPath</i>
@@ -847,11 +847,11 @@
             </dl>
           </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Remarks">
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddService``1(System.String):Version Information">
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServer.AddWebSocketService``1(System.String):Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
@@ -928,6 +928,7 @@
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Value">
             <tt>true</tt> if the server cleans up the inactive clients every 60 seconds; otherwise, <tt>false</tt>.
+            The default value is <tt>true</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServer.Sweeped:Remarks">

@@ -9,23 +9,16 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Contains the event data associated with the response events of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class.
+            </summary>
+    <remarks>
+            A response event occurs when a <see cref="T:WebSocketSharp.Server.HttpServer" /> instance receives an HTTP request.
+            If you want to get the HTTP request objects, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Request" /> property.
+            If you want to get the HTTP response objects to send, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Response" /> property.
+            </remarks>
   </Docs>
   <Members>
-    <Member MemberName=".ctor">
-      <MemberSignature Language="C#" Value="public ResponseEventArgs (WebSocketSharp.Net.HttpListenerContext context);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(class WebSocketSharp.Net.HttpListenerContext context) cil managed" />
-      <MemberType>Constructor</MemberType>
-      <Parameters>
-        <Parameter Name="context" Type="WebSocketSharp.Net.HttpListenerContext" />
-      </Parameters>
-      <Docs>
-        <param name="context">To be added.</param>
-        <summary>To be added.</summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="Request">
       <MemberSignature Language="C#" Value="public WebSocketSharp.Net.HttpListenerRequest Request { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.Net.HttpListenerRequest Request" />
@@ -34,8 +27,12 @@
         <ReturnType>WebSocketSharp.Net.HttpListenerRequest</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP request objects sent from a client.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -47,8 +44,12 @@
         <ReturnType>WebSocketSharp.Net.HttpListenerResponse</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP response objects to send to the client in response to the client's request.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

@@ -372,7 +372,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>
                   </i>. 
-            Gets the IP address on which to listen for incoming connection attempts.
+            Gets the local IP address on which to listen for incoming connection attempts.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -386,7 +386,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether this server provides secure connection.
+            Gets a value indicating whether the server provides secure connection.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -400,7 +400,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether this server is self host.
+            Gets a value indicating whether the server is self host.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -597,7 +597,7 @@
                   </b>
                 </td>
                 <td>
-            Occurs when this server gets an error.
+            Occurs when the server gets an error.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</td>
               </tr>
             </table>
@@ -1021,6 +1021,7 @@
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Value">
             <tt>true</tt> if the server cleans up the inactive clients every 60 seconds; otherwise, <tt>false</tt>.
+            The default value is <tt>true</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Remarks">
