@@ -1,6 +1,6 @@
 //
 // AuthenticationSchemeSelector.cs
-//	Copied from System.Net.AuthenticationSchemeSelector
+//	Copied from System.Net.AuthenticationSchemeSelector.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier <gonzalo@novell.com>
@@ -31,5 +31,14 @@ using System;
 
 namespace WebSocketSharp.Net {
 
+	/// <summary>
+	/// Selects the authentication scheme for a <see cref="HttpListener"/> instance.
+	/// </summary>
+	/// <returns>
+	/// One of the <see cref="AuthenticationSchemes"/> values that indicates the scheme used to authenticate the specified client request.
+	/// </returns>
+	/// <param name="httpRequest">
+	/// A <see cref="HttpListenerRequest"/> that contains a client request information.
+	/// </param>
 	public delegate AuthenticationSchemes AuthenticationSchemeSelector (HttpListenerRequest httpRequest);
 }

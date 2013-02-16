@@ -1,6 +1,6 @@
 //
 // ListenerAsyncResult.cs
-//	Copied from System.Net.ListenerAsyncResult
+//	Copied from System.Net.ListenerAsyncResult.cs
 //
 // Authors:
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)
@@ -35,7 +35,13 @@ namespace WebSocketSharp.Net {
 
 	class ListenerAsyncResult : IAsyncResult
 	{
+		#region Private Static Field
+
 		static WaitCallback InvokeCB = new WaitCallback (InvokeCallback);
+
+		#endregion
+
+		#region Private Fields
 
 		AsyncCallback       cb;
 		bool                completed;
@@ -47,8 +53,16 @@ namespace WebSocketSharp.Net {
 		object              state;
 		bool                synch;
 
+		#endregion
+
+		#region Internal Fields
+
 		internal bool EndCalled;
 		internal bool InGet;
+
+		#endregion
+
+		#region Constructor
 
 		public ListenerAsyncResult (AsyncCallback cb, object state)
 		{
@@ -57,10 +71,15 @@ namespace WebSocketSharp.Net {
 			this.locker = new object();
 		}
 
+		#endregion
+
+		#region Properties
+
 		public object AsyncState {
 			get {
 				if (forward != null)
 					return forward.AsyncState;
+
 				return state;
 			}
 		}
@@ -74,7 +93,7 @@ namespace WebSocketSharp.Net {
 					if (handle == null)
 						handle = new ManualResetEvent (completed);
 				}
-				
+
 				return handle;
 			}
 		}
@@ -83,9 +102,9 @@ namespace WebSocketSharp.Net {
 			get {
 				if (forward != null)
 					return forward.CompletedSynchronously;
+
 				return synch;
 			}
-
 		}
 
 		public bool IsCompleted {
@@ -99,6 +118,10 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		#endregion
+
+		#region Private Method
+
 		static void InvokeCallback (object o)
 		{
 			ListenerAsyncResult ares = (ListenerAsyncResult) o;
@@ -106,11 +129,16 @@ namespace WebSocketSharp.Net {
 				InvokeCallback (ares.forward);
 				return;
 			}
+
 			try {
 				ares.cb (ares);
 			} catch {
 			}
 		}
+
+		#endregion
+
+		#region Internal Methods
 
 		internal void Complete (Exception exc)
 		{
@@ -118,9 +146,11 @@ namespace WebSocketSharp.Net {
 				forward.Complete (exc);
 				return;
 			}
+
 			exception = exc;
 			if (InGet && (exc is ObjectDisposedException))
 				exception = new HttpListenerException (500, "Listener closed");
+
 			lock (locker) {
 				completed = true;
 				if (handle != null)
@@ -142,6 +172,7 @@ namespace WebSocketSharp.Net {
 				forward.Complete (context, synch);
 				return;
 			}
+
 			this.synch = synch;
 			this.context = context;
 			lock (locker) {
@@ -156,10 +187,12 @@ namespace WebSocketSharp.Net {
 						if (handle != null)
 							forward.handle = handle;
 					}
+
 					ListenerAsyncResult next = forward;
 					for (int i = 0; next.forward != null; i++) {
 						if (i > 20)
 							Complete (new HttpListenerException (400, "Too many authentication errors"));
+
 						next = next.forward;
 					}
 				} else {
@@ -177,10 +210,13 @@ namespace WebSocketSharp.Net {
 		{
 			if (forward != null)
 				return forward.GetContext ();
+
 			if (exception != null)
 				throw exception;
 
 			return context;
 		}
+
+		#endregion
 	}
 }

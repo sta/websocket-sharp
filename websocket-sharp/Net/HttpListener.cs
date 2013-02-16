@@ -1,12 +1,12 @@
 //
 // HttpListener.cs
-//	Copied from System.Net.HttpListener
+//	Copied from System.Net.HttpListener.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,12 +31,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 
 // TODO: logging
 namespace WebSocketSharp.Net {
 
+	/// <summary>
+	/// Provides a simple, programmatically controlled HTTP listener.
+	/// </summary>
 	public sealed class HttpListener : IDisposable {
 
 		#region Fields
@@ -58,6 +60,9 @@ namespace WebSocketSharp.Net {
 
 		#region Constructor
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="HttpListener"/> class.
+		/// </summary>
 		public HttpListener ()
 		{
 			prefixes     = new HttpListenerPrefixCollection (this);
@@ -72,8 +77,15 @@ namespace WebSocketSharp.Net {
 
 		#region Properties
 
-		// TODO: Digest, NTLM and Negotiate require ControlPrincipal
+		/// <summary>
+		/// Gets or sets the scheme used to authenticate the clients.
+		/// </summary>
+		/// <value>
+		/// One of the <see cref="AuthenticationSchemes"/> values that indicates the scheme used to
+		/// authenticate the clients. The default value is <see cref="AuthenticationSchemes.Anonymous"/>.
+		/// </value>
 		public AuthenticationSchemes AuthenticationSchemes {
+		// TODO: Digest, NTLM and Negotiate require ControlPrincipal
 			get { return auth_schemes; }
 			set {
 				CheckDisposed ();
@@ -81,6 +93,13 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets the delegate called to determine the scheme used to authenticate clients.
+		/// </summary>
+		/// <value>
+		/// A <see cref="AuthenticationSchemeSelector"/> delegate that invokes the method(s) used to select
+		/// an authentication scheme. The default value is <see langword="null"/>.
+		/// </value>
 		public AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate {
 			get { return auth_selector; }
 			set {
@@ -97,14 +116,32 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the <see cref="HttpListener"/> has been started.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the <see cref="HttpListener"/> has been started; otherwise, <c>false</c>.
+		/// </value>
 		public bool IsListening {
 			get { return listening; }
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the <see cref="HttpListener"/> can be used with the current operating system.
+		/// </summary>
+		/// <value>
+		/// <c>true</c>.
+		/// </value>
 		public static bool IsSupported {
 			get { return true; }
 		}
 
+		/// <summary>
+		/// Gets the URI prefixes handled by the <see cref="HttpListener"/>.
+		/// </summary>
+		/// <value>
+		/// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
+		/// </value>
 		public HttpListenerPrefixCollection Prefixes {
 			get {
 				CheckDisposed ();
@@ -112,8 +149,14 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		// TODO: Use this
+		/// <summary>
+		/// Gets or sets the name of the realm associated with the <see cref="HttpListener"/>.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the name of the realm.
+		/// </value>
 		public string Realm {
+		// TODO: Use this
 			get { return realm; }
 			set {
 				CheckDisposed ();
@@ -121,8 +164,8 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		// TODO: Support for NTLM needs some loving.
 		public bool UnsafeConnectionNtlmAuthentication {
+		// TODO: Support for NTLM needs some loving.
 			get { return unsafe_ntlm_auth; }
 			set {
 				CheckDisposed ();
@@ -191,15 +234,6 @@ namespace WebSocketSharp.Net {
 			return context;
 		}
 
-		void IDisposable.Dispose ()
-		{
-			if (disposed)
-				return;
-
-			Close (true); //TODO: Should we force here or not?
-			disposed = true;
-		}
-
 		#endregion
 
 		#region Internal Methods
@@ -230,6 +264,7 @@ namespace WebSocketSharp.Net {
 					wait_queue.RemoveAt (0);
 				}
 			}
+
 			if (ares != null)
 				ares.Complete (context);
 		}
@@ -251,6 +286,7 @@ namespace WebSocketSharp.Net {
 		{
 			lock (((ICollection)registry).SyncRoot)
 				registry.Remove (context);
+
 			lock (((ICollection)ctx_queue).SyncRoot) {
 				int idx = ctx_queue.IndexOf (context);
 				if (idx >= 0)
@@ -260,20 +296,61 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
+		#region Explicit Interface Implementation
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="HttpListener"/>.
+		/// </summary>
+		void IDisposable.Dispose ()
+		{
+			if (disposed)
+				return;
+
+			Close (true); // TODO: Should we force here or not?
+			disposed = true;
+		}
+
+		#endregion
+
 		#region Public Methods
 
+		/// <summary>
+		/// Shuts down the <see cref="HttpListener"/> immediately.
+		/// </summary>
 		public void Abort ()
 		{
 			if (disposed)
 				return;
 
 			if (!listening) {
+				disposed = true;
 				return;
 			}
 
 			Close (true);
+			disposed = true;
 		}
 
+		/// <summary>
+		/// Begins getting an incoming request information asynchronously.
+		/// </summary>
+		/// <remarks>
+		/// This asynchronous operation must be completed by calling the <see cref="EndGetContext"/> method.
+		/// Typically, the method is invoked by the <paramref name="callback"/> delegate.
+		/// </remarks>
+		/// <returns>
+		/// An <see cref="IAsyncResult"/> that contains the status of the asynchronous operation.
+		/// </returns>
+		/// <param name="callback">
+		/// An <see cref="AsyncCallback"/> delegate that references the method(s)
+		/// called when the asynchronous operation completes.
+		/// </param>
+		/// <param name="state">
+		/// An <see cref="object"/> that contains a user defined object to pass to the <paramref name="callback"/> delegate.
+		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The <see cref="HttpListener"/> has not been started or is stopped currently.
+		/// </exception>
 		public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
 		{
 			CheckDisposed ();
@@ -298,6 +375,9 @@ namespace WebSocketSharp.Net {
 			return ares;
 		}
 
+		/// <summary>
+		/// Shuts down the <see cref="HttpListener"/>.
+		/// </summary>
 		public void Close ()
 		{
 			if (disposed)
@@ -308,10 +388,31 @@ namespace WebSocketSharp.Net {
 				return;
 			}
 
-			Close (true);
+			Close (false);
 			disposed = true;
 		}
 
+		/// <summary>
+		/// Ends an asynchronous operation to get an incoming request information.
+		/// </summary>
+		/// <remarks>
+		/// This method completes an asynchronous operation started by calling the <see cref="BeginGetContext"/> method.
+		/// </remarks>
+		/// <returns>
+		/// A <see cref="HttpListenerContext"/> that contains a client's request information.
+		/// </returns>
+		/// <param name="asyncResult">
+		/// An <see cref="IAsyncResult"/> obtained by calling the <see cref="BeginGetContext"/> method.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="asyncResult"/> is <see langword="null"/>.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// <paramref name="asyncResult"/> was not obtained by calling the <see cref="BeginGetContext"/> method.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The EndGetContext method was already called for the specified <paramref name="asyncResult"/>.
+		/// </exception>
 		public HttpListenerContext EndGetContext (IAsyncResult asyncResult)
 		{
 			CheckDisposed ();
@@ -321,8 +422,9 @@ namespace WebSocketSharp.Net {
 			ListenerAsyncResult ares = asyncResult as ListenerAsyncResult;
 			if (ares == null)
 				throw new ArgumentException ("Wrong IAsyncResult.", "asyncResult");
+
 			if (ares.EndCalled)
-				throw new ArgumentException ("Cannot reuse this IAsyncResult");
+				throw new InvalidOperationException ("Cannot reuse this IAsyncResult.");
 			ares.EndCalled = true;
 
 			if (!ares.IsCompleted)
@@ -339,6 +441,19 @@ namespace WebSocketSharp.Net {
 			return context; // This will throw on error.
 		}
 
+		/// <summary>
+		/// Gets an incoming request information.
+		/// </summary>
+		/// <remarks>
+		/// This method waits for an incoming request and returns the request information
+		/// when received the request.
+		/// </remarks>
+		/// <returns>
+		/// A <see cref="HttpListenerContext"/> that contains a client's request information.
+		/// </returns>
+		/// <exception cref="InvalidOperationException">
+		/// The <see cref="HttpListener"/> does not have any URI prefixes to listen on.
+		/// </exception>
 		public HttpListenerContext GetContext ()
 		{
 			// The prefixes are not checked when using the async interface!?
@@ -350,6 +465,9 @@ namespace WebSocketSharp.Net {
 			return EndGetContext (ares);
 		}
 
+		/// <summary>
+		/// Starts to receive incoming requests.
+		/// </summary>
 		public void Start ()
 		{
 			CheckDisposed ();
@@ -360,11 +478,17 @@ namespace WebSocketSharp.Net {
 			listening = true;
 		}
 
+		/// <summary>
+		/// Stops receiving incoming requests.
+		/// </summary>
 		public void Stop ()
 		{
 			CheckDisposed ();
+			if (!listening)
+				return;
+
+			EndPointManager.RemoveListener (this);
 			listening = false;
-			Close (false);
 		}
 
 		#endregion

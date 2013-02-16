@@ -13,7 +13,9 @@
     </Interface>
   </Interfaces>
   <Docs>
-    <summary>To be added.</summary>
+    <summary>
+            Provides a simple, programmatically controlled HTTP listener.
+            </summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
@@ -23,7 +25,9 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListener" /> class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -36,7 +40,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Shuts down the <see cref="T:WebSocketSharp.Net.HttpListener" /> immediately.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -48,8 +54,13 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the scheme used to authenticate the clients.
+            </summary>
+        <value>
+            One of the <see cref="T:WebSocketSharp.Net.AuthenticationSchemes" /> values that indicates the scheme used to
+            authenticate the clients. The default value is <see cref="F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -61,8 +72,13 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemeSelector</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the delegate called to determine the scheme used to authenticate clients.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.AuthenticationSchemeSelector" /> delegate that invokes the method(s) used to select
+            an authentication scheme. The default value is <see langword="null" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -78,11 +94,26 @@
         <Parameter Name="state" Type="System.Object" />
       </Parameters>
       <Docs>
-        <param name="callback">To be added.</param>
-        <param name="state">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <param name="callback">
+            An <see cref="T:System.AsyncCallback" /> delegate that references the method(s)
+            called when the asynchronous operation completes.
+            </param>
+        <param name="state">
+            An <see cref="T:System.Object" /> that contains a user defined object to pass to the <paramref name="callback" /> delegate.
+            </param>
+        <summary>
+            Begins getting an incoming request information asynchronously.
+            </summary>
+        <returns>
+            An <see cref="T:System.IAsyncResult" /> that contains the status of the asynchronous operation.
+            </returns>
+        <remarks>
+            This asynchronous operation must be completed by calling the <see cref="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult)" /> method.
+            Typically, the method is invoked by the <paramref name="callback" /> delegate.
+            </remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Close">
@@ -94,7 +125,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Shuts down the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -109,10 +142,27 @@
         <Parameter Name="asyncResult" Type="System.IAsyncResult" />
       </Parameters>
       <Docs>
-        <param name="asyncResult">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <param name="asyncResult">
+            An <see cref="T:System.IAsyncResult" /> obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </param>
+        <summary>
+            Ends an asynchronous operation to get an incoming request information.
+            </summary>
+        <returns>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerContext" /> that contains a client's request information.
+            </returns>
+        <remarks>
+            This method completes an asynchronous operation started by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="asyncResult" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="asyncResult" /> was not obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The EndGetContext method was already called for the specified <paramref name="asyncResult" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="GetContext">
@@ -124,9 +174,19 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <summary>
+            Gets an incoming request information.
+            </summary>
+        <returns>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerContext" /> that contains a client's request information.
+            </returns>
+        <remarks>
+            This method waits for an incoming request and returns the request information
+            when received the request.
+            </remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> does not have any URI prefixes to listen on.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="IgnoreWriteExceptions">
@@ -150,8 +210,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> has been started.
+            </summary>
+        <value>
+          <c>true</c> if the <see cref="T:WebSocketSharp.Net.HttpListener" /> has been started; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -163,8 +227,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> can be used with the current operating system.
+            </summary>
+        <value>
+          <c>true</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -176,8 +244,12 @@
         <ReturnType>WebSocketSharp.Net.HttpListenerPrefixCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the URI prefixes handled by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> that contains the URI prefixes.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -189,8 +261,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the name of the realm associated with the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the name of the realm.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -203,7 +279,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Starts to receive incoming requests.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -216,7 +294,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Stops receiving incoming requests.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -229,7 +309,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Releases all resource used by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

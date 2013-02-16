@@ -1,6 +1,6 @@
 //
 // EndPointListener.cs
-//	Copied from System.Net.EndPointListener
+//	Copied from System.Net.EndPointListener.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)

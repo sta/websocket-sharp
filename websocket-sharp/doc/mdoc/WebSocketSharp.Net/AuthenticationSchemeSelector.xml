@@ -14,9 +14,15 @@
     <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
   </ReturnValue>
   <Docs>
-    <param name="httpRequest">To be added.</param>
-    <summary>To be added.</summary>
-    <returns>To be added.</returns>
+    <param name="httpRequest">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains a client request information.
+            </param>
+    <summary>
+            Selects the authentication scheme for a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            </summary>
+    <returns>
+            One of the <see cref="T:WebSocketSharp.Net.AuthenticationSchemes" /> values that indicates the scheme used to authenticate the specified client request.
+            </returns>
     <remarks>To be added.</remarks>
   </Docs>
 </Type>

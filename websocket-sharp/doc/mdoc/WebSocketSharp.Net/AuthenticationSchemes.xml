@@ -13,7 +13,9 @@
     </Attribute>
   </Attributes>
   <Docs>
-    <summary>To be added.</summary>
+    <summary>
+            Contains the values of the schemes for authentication.
+            </summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
@@ -25,7 +27,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates anonymous authentication.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Basic">
@@ -36,7 +40,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates basic authentication.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Digest">
@@ -47,7 +53,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates digest authentication.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="IntegratedWindowsAuthentication">
@@ -58,7 +66,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates Windows authentication.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Negotiate">
@@ -69,7 +79,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates negotiating with the client to determine the authentication scheme.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="None">
@@ -80,7 +92,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates that no authentication is allowed.
+            </summary>
       </Docs>
     </Member>
     <Member MemberName="Ntlm">
@@ -91,7 +105,9 @@
         <ReturnType>WebSocketSharp.Net.AuthenticationSchemes</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Indicates NTLM authentication.
+            </summary>
       </Docs>
     </Member>
   </Members>

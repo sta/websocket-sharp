@@ -1364,6 +1364,202 @@
             A <see cref="T:System.String" /> that contains a reason for stop.
             </param>
         </member>
+        <member name="T:WebSocketSharp.Net.AuthenticationSchemeSelector">
+            <summary>
+            Selects the authentication scheme for a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            </summary>
+            <returns>
+            One of the <see cref="T:WebSocketSharp.Net.AuthenticationSchemes" /> values that indicates the scheme used to authenticate the specified client request.
+            </returns>
+            <param name="httpRequest">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains a client request information.
+            </param>
+        </member>
+        <member name="T:WebSocketSharp.Net.AuthenticationSchemes">
+            <summary>
+            Contains the values of the schemes for authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.None">
+            <summary>
+            Indicates that no authentication is allowed.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.Digest">
+            <summary>
+            Indicates digest authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.Negotiate">
+            <summary>
+            Indicates negotiating with the client to determine the authentication scheme.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.Ntlm">
+            <summary>
+            Indicates NTLM authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.IntegratedWindowsAuthentication">
+            <summary>
+            Indicates Windows authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.Basic">
+            <summary>
+            Indicates basic authentication.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous">
+            <summary>
+            Indicates anonymous authentication.
+            </summary>
+        </member>
+        <member name="T:WebSocketSharp.Net.HttpListener">
+            <summary>
+            Provides a simple, programmatically controlled HTTP listener.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListener" /> class.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes">
+            <summary>
+            Gets or sets the scheme used to authenticate the clients.
+            </summary>
+            <value>
+            One of the <see cref="T:WebSocketSharp.Net.AuthenticationSchemes" /> values that indicates the scheme used to
+            authenticate the clients. The default value is <see cref="F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous" />.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate">
+            <summary>
+            Gets or sets the delegate called to determine the scheme used to authenticate clients.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.AuthenticationSchemeSelector" /> delegate that invokes the method(s) used to select
+            an authentication scheme. The default value is <see langword="null" />.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.IsListening">
+            <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> has been started.
+            </summary>
+            <value>
+                <c>true</c> if the <see cref="T:WebSocketSharp.Net.HttpListener" /> has been started; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.IsSupported">
+            <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> can be used with the current operating system.
+            </summary>
+            <value>
+                <c>true</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.Prefixes">
+            <summary>
+            Gets the URI prefixes handled by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> that contains the URI prefixes.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.Realm">
+            <summary>
+            Gets or sets the name of the realm associated with the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the name of the realm.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose">
+            <summary>
+            Releases all resource used by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.Abort">
+            <summary>
+            Shuts down the <see cref="T:WebSocketSharp.Net.HttpListener" /> immediately.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)">
+            <summary>
+            Begins getting an incoming request information asynchronously.
+            </summary>
+            <remarks>
+            This asynchronous operation must be completed by calling the <see cref="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult)" /> method.
+            Typically, the method is invoked by the <paramref name="callback" /> delegate.
+            </remarks>
+            <returns>
+            An <see cref="T:System.IAsyncResult" /> that contains the status of the asynchronous operation.
+            </returns>
+            <param name="callback">
+            An <see cref="T:System.AsyncCallback" /> delegate that references the method(s)
+            called when the asynchronous operation completes.
+            </param>
+            <param name="state">
+            An <see cref="T:System.Object" /> that contains a user defined object to pass to the <paramref name="callback" /> delegate.
+            </param>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.Close">
+            <summary>
+            Shuts down the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.EndGetContext(System.IAsyncResult)">
+            <summary>
+            Ends an asynchronous operation to get an incoming request information.
+            </summary>
+            <remarks>
+            This method completes an asynchronous operation started by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </remarks>
+            <returns>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerContext" /> that contains a client's request information.
+            </returns>
+            <param name="asyncResult">
+            An <see cref="T:System.IAsyncResult" /> obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="asyncResult" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="asyncResult" /> was not obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The EndGetContext method was already called for the specified <paramref name="asyncResult" />.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.GetContext">
+            <summary>
+            Gets an incoming request information.
+            </summary>
+            <remarks>
+            This method waits for an incoming request and returns the request information
+            when received the request.
+            </remarks>
+            <returns>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerContext" /> that contains a client's request information.
+            </returns>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> does not have any URI prefixes to listen on.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.Start">
+            <summary>
+            Starts to receive incoming requests.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListener.Stop">
+            <summary>
+            Stops receiving incoming requests.
+            </summary>
+        </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
             Decodes an HTML-encoded string and returns the decoded string.
