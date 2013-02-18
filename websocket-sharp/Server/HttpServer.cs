@@ -37,7 +37,7 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server {
 
   /// <summary>
-  /// Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+  /// Provides a simple HTTP server that allows to accept the WebSocket connection requests.
   /// </summary>
   /// <remarks>
   /// <para>
@@ -142,54 +142,54 @@ namespace WebSocketSharp.Server {
     #region Events
 
     /// <summary>
+    /// Occurs when the server receives an HTTP CONNECT request.
+    /// </summary>
+    public event EventHandler<HttpRequestEventArgs> OnConnect;
+
+    /// <summary>
+    /// Occurs when the server receives an HTTP DELETE request.
+    /// </summary>
+    public event EventHandler<HttpRequestEventArgs> OnDelete;
+
+    /// <summary>
     /// Occurs when the server gets an error.
     /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
-    /// Occurs when the server receives an HTTP CONNECT request.
-    /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToConnect;
-
-    /// <summary>
-    /// Occurs when the server receives an HTTP DELETE request.
-    /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToDelete;
-
-    /// <summary>
     /// Occurs when the server receives an HTTP GET request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToGet;
+    public event EventHandler<HttpRequestEventArgs> OnGet;
 
     /// <summary>
     /// Occurs when the server receives an HTTP HEAD request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToHead;
+    public event EventHandler<HttpRequestEventArgs> OnHead;
 
     /// <summary>
     /// Occurs when the server receives an HTTP OPTIONS request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToOptions;
+    public event EventHandler<HttpRequestEventArgs> OnOptions;
 
     /// <summary>
     /// Occurs when the server receives an HTTP PATCH request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToPatch;
+    public event EventHandler<HttpRequestEventArgs> OnPatch;
 
     /// <summary>
     /// Occurs when the server receives an HTTP POST request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToPost;
+    public event EventHandler<HttpRequestEventArgs> OnPost;
 
     /// <summary>
     /// Occurs when the server receives an HTTP PUT request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToPut;
+    public event EventHandler<HttpRequestEventArgs> OnPut;
 
     /// <summary>
     /// Occurs when the server receives an HTTP TRACE request.
     /// </summary>
-    public event EventHandler<ResponseEventArgs> OnResponseToTrace;
+    public event EventHandler<HttpRequestEventArgs> OnTrace;
 
     #endregion
 
@@ -217,17 +217,6 @@ namespace WebSocketSharp.Server {
       configureFromConfigFile();
     }
 
-    private bool isUpgrade(HttpListenerRequest request, string value)
-    {
-      if (!request.Headers.Exists("Upgrade", value))
-        return false;
-
-      if (!request.Headers.Exists("Connection", "Upgrade"))
-        return false;
-
-      return true;
-    }
-
     private void onError(string message)
     {
       #if DEBUG
@@ -238,6 +227,99 @@ namespace WebSocketSharp.Server {
       OnError.Emit(this, new ErrorEventArgs(message));
     }
 
+    private void onRequest(HttpListenerContext context)
+    {
+      var req = context.Request;
+      var res = context.Response;
+      var eventArgs = new HttpRequestEventArgs(context);
+
+      if (req.HttpMethod == "GET" && !OnGet.IsNull())
+      {
+        OnGet(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "HEAD" && !OnHead.IsNull())
+      {
+        OnHead(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "POST" && !OnPost.IsNull())
+      {
+        OnPost(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "PUT" && !OnPut.IsNull())
+      {
+        OnPut(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "DELETE" && !OnDelete.IsNull())
+      {
+        OnDelete(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "OPTIONS" && !OnOptions.IsNull())
+      {
+        OnOptions(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "TRACE" && !OnTrace.IsNull())
+      {
+        OnTrace(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "CONNECT" && !OnConnect.IsNull())
+      {
+        OnConnect(this, eventArgs);
+        return;
+      }
+
+      if (req.HttpMethod == "PATCH" && !OnPatch.IsNull())
+      {
+        OnPatch(this, eventArgs);
+        return;
+      }
+
+      res.StatusCode = (int)HttpStatusCode.NotImplemented;
+    }
+
+    private void processRequestAsync(HttpListenerContext context)
+    {
+      WaitCallback callback = (state) =>
+      {
+        var req = context.Request;
+        var res = context.Response;
+
+        try
+        {
+          if (req.IsUpgradeTo("websocket"))
+          {
+            if (upgradeToWebSocket(context))
+              return;
+          }
+          else
+          {
+            onRequest(context);
+          }
+
+          res.Close();
+        }
+        catch (Exception ex)
+        {
+          onError(ex.Message);
+        }
+      };
+
+      ThreadPool.QueueUserWorkItem(callback);
+    }
+
     private void receiveRequest()
     {
       while (true)
@@ -245,7 +327,7 @@ namespace WebSocketSharp.Server {
         try
         {
           var context = _listener.GetContext();
-          respondAsync(context);
+          processRequestAsync(context);
         }
         catch (HttpListenerException)
         {
@@ -258,99 +340,6 @@ namespace WebSocketSharp.Server {
           break;
         }
       }
-    }
-
-    private void respond(HttpListenerContext context)
-    {
-      var req = context.Request;
-      var res = context.Response;
-      var eventArgs = new ResponseEventArgs(context);
-
-      if (req.HttpMethod == "GET" && !OnResponseToGet.IsNull())
-      {
-        OnResponseToGet(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "HEAD" && !OnResponseToHead.IsNull())
-      {
-        OnResponseToHead(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "POST" && !OnResponseToPost.IsNull())
-      {
-        OnResponseToPost(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "PUT" && !OnResponseToPut.IsNull())
-      {
-        OnResponseToPut(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "DELETE" && !OnResponseToDelete.IsNull())
-      {
-        OnResponseToDelete(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "OPTIONS" && !OnResponseToOptions.IsNull())
-      {
-        OnResponseToOptions(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "TRACE" && !OnResponseToTrace.IsNull())
-      {
-        OnResponseToTrace(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "CONNECT" && !OnResponseToConnect.IsNull())
-      {
-        OnResponseToConnect(this, eventArgs);
-        return;
-      }
-
-      if (req.HttpMethod == "PATCH" && !OnResponseToPatch.IsNull())
-      {
-        OnResponseToPatch(this, eventArgs);
-        return;
-      }
-
-      res.StatusCode = (int)HttpStatusCode.NotImplemented;
-    }
-
-    private void respondAsync(HttpListenerContext context)
-    {
-      WaitCallback callback = (state) =>
-      {
-        var req = context.Request;
-        var res = context.Response;
-
-        try
-        {
-          if (isUpgrade(req, "websocket"))
-          {
-            if (upgradeToWebSocket(context))
-              return;
-          }
-          else
-          {
-            respond(context);
-          }
-
-          res.Close();
-        }
-        catch (Exception ex)
-        {
-          onError(ex.Message);
-        }
-      };
-
-      ThreadPool.QueueUserWorkItem(callback);
     }
 
     private void startReceiveRequestThread()
@@ -430,7 +419,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Starts to receive incoming requests.
+    /// Starts the <see cref="HttpServer"/>.
     /// </summary>
     public void Start()
     {
@@ -439,7 +428,7 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Stops receiving incoming requests.
+    /// Shuts down the <see cref="HttpServer"/>.
     /// </summary>
     public void Stop()
     {

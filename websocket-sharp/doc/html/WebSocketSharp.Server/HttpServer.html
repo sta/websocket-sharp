@@ -207,7 +207,7 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Server.HttpServer">HttpServer  Class</h1>
     <p class="Summary" id="T:WebSocketSharp.Server.HttpServer:Summary">
-            Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+            Provides a simple HTTP server that allows to accept the WebSocket connection requests.
             </p>
     <div id="T:WebSocketSharp.Server.HttpServer:Signature">
       <h2>Syntax</h2>
@@ -383,7 +383,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.HttpServer.Start">Start</a>
                   </b>()<blockquote>
-            Starts to receive incoming requests.
+            Starts the <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -395,7 +395,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.HttpServer.Stop">Stop</a>
                   </b>()<blockquote>
-            Stops receiving incoming requests.
+            Shuts down the <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a>.
             </blockquote></td>
               </tr>
             </table>
@@ -405,6 +405,34 @@
         <div class="SectionBox" id="Public Events">
           <div class="SubsectionBox">
             <table class="TypeMembers">
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnConnect">OnConnect</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the server receives an HTTP CONNECT request.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnDelete">OnDelete</a>
+                  </b>
+                </td>
+                <td>
+            Occurs when the server receives an HTTP DELETE request.
+            </td>
+              </tr>
               <tr valign="top">
                 <td>
                   <div>
@@ -426,35 +454,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToConnect">OnResponseToConnect</a>
-                  </b>
-                </td>
-                <td>
-            Occurs when the server receives an HTTP CONNECT request.
-            </td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>
-                  </div>
-                </td>
-                <td>
-                  <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToDelete">OnResponseToDelete</a>
-                  </b>
-                </td>
-                <td>
-            Occurs when the server receives an HTTP DELETE request.
-            </td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>
-                  </div>
-                </td>
-                <td>
-                  <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToGet">OnResponseToGet</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnGet">OnGet</a>
                   </b>
                 </td>
                 <td>
@@ -468,7 +468,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToHead">OnResponseToHead</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnHead">OnHead</a>
                   </b>
                 </td>
                 <td>
@@ -482,7 +482,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToOptions">OnResponseToOptions</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnOptions">OnOptions</a>
                   </b>
                 </td>
                 <td>
@@ -496,7 +496,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToPatch">OnResponseToPatch</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnPatch">OnPatch</a>
                   </b>
                 </td>
                 <td>
@@ -510,7 +510,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToPost">OnResponseToPost</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnPost">OnPost</a>
                   </b>
                 </td>
                 <td>
@@ -524,7 +524,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToPut">OnResponseToPut</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnPut">OnPut</a>
                   </b>
                 </td>
                 <td>
@@ -538,7 +538,7 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#E:WebSocketSharp.Server.HttpServer.OnResponseToTrace">OnResponseToTrace</a>
+                    <a href="#E:WebSocketSharp.Server.HttpServer.OnTrace">OnTrace</a>
                   </b>
                 </td>
                 <td>
@@ -697,6 +697,38 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnConnect">OnConnect Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnConnect:member">
+          <p class="Summary">
+            Occurs when the server receives an HTTP CONNECT request.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnConnect</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnConnect:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnConnect:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnDelete">OnDelete Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnDelete:member">
+          <p class="Summary">
+            Occurs when the server receives an HTTP DELETE request.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnDelete</b> </div>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnDelete:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnDelete:Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
         <h3 id="E:WebSocketSharp.Server.HttpServer.OnError">OnError Event</h3>
         <blockquote id="E:WebSocketSharp.Server.HttpServer.OnError:member">
           <p class="Summary">
@@ -713,147 +745,115 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect">OnResponseToConnect Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect:member">
-          <p class="Summary">
-            Occurs when the server receives an HTTP CONNECT request.
-            </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToConnect</b> </div>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect:Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete">OnResponseToDelete Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete:member">
-          <p class="Summary">
-            Occurs when the server receives an HTTP DELETE request.
-            </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToDelete</b> </div>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete:Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete:Version Information">
-            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToGet">OnResponseToGet Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToGet:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnGet">OnGet Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnGet:member">
           <p class="Summary">
             Occurs when the server receives an HTTP GET request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToGet</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnGet</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToGet:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnGet:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToGet:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnGet:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToHead">OnResponseToHead Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToHead:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnHead">OnHead Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnHead:member">
           <p class="Summary">
             Occurs when the server receives an HTTP HEAD request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToHead</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnHead</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToHead:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnHead:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToHead:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnHead:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions">OnResponseToOptions Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnOptions">OnOptions Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnOptions:member">
           <p class="Summary">
             Occurs when the server receives an HTTP OPTIONS request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToOptions</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnOptions</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnOptions:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnOptions:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch">OnResponseToPatch Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnPatch">OnPatch Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnPatch:member">
           <p class="Summary">
             Occurs when the server receives an HTTP PATCH request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToPatch</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnPatch</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPatch:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPatch:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToPost">OnResponseToPost Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToPost:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnPost">OnPost Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnPost:member">
           <p class="Summary">
             Occurs when the server receives an HTTP POST request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToPost</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnPost</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPost:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPost:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPost:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPost:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToPut">OnResponseToPut Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToPut:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnPut">OnPut Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnPut:member">
           <p class="Summary">
             Occurs when the server receives an HTTP PUT request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToPut</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnPut</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPut:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPut:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToPut:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnPut:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace">OnResponseToTrace Event</h3>
-        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace:member">
+        <h3 id="E:WebSocketSharp.Server.HttpServer.OnTrace">OnTrace Event</h3>
+        <blockquote id="E:WebSocketSharp.Server.HttpServer.OnTrace:member">
           <p class="Summary">
             Occurs when the server receives an HTTP TRACE request.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;ResponseEventArgs&gt;</a> <b>OnResponseToTrace</b> </div>
+          <div class="Signature">public event <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.EventHandler`1">EventHandler&lt;HttpRequestEventArgs&gt;</a> <b>OnTrace</b> </div>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace:Remarks">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnTrace:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace:Version Information">
+          <div class="SectionBox" id="E:WebSocketSharp.Server.HttpServer.OnTrace:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
@@ -900,7 +900,7 @@
         <h3 id="M:WebSocketSharp.Server.HttpServer.Start">Start Method</h3>
         <blockquote id="M:WebSocketSharp.Server.HttpServer.Start:member">
           <p class="Summary">
-            Starts to receive incoming requests.
+            Starts the <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Start</b> ()</div>
@@ -916,7 +916,7 @@
         <h3 id="M:WebSocketSharp.Server.HttpServer.Stop">Stop Method</h3>
         <blockquote id="M:WebSocketSharp.Server.HttpServer.Stop:member">
           <p class="Summary">
-            Stops receiving incoming requests.
+            Shuts down the <a href="../WebSocketSharp.Server/HttpServer.html">WebSocketSharp.Server.HttpServer</a>.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> ()</div>

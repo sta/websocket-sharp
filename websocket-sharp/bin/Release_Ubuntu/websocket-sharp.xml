@@ -277,6 +277,36 @@
             A <see cref="T:System.String" /> to test.
             </param>
         </member>
+        <member name="M:WebSocketSharp.Ext.IsUpgradeTo(WebSocketSharp.Net.HttpListenerRequest,System.String)">
+            <summary>
+            Determines whether the specified <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> is the HTTP Upgrade request
+            to switch to the specified <paramref name="protocol" />.
+            </summary>
+            <returns>
+                <c>true</c> if the specified <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> is the HTTP Upgrade request
+            to switch to the specified <paramref name="protocol" />; otherwise, <c>false</c>.
+            </returns>
+            <param name="request">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains an HTTP request information.
+            </param>
+            <param name="protocol">
+            A <see cref="T:System.String" /> that contains a protocol name.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <para>
+                    <paramref name="request" /> is <see langword="null" />.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="protocol" /> is <see langword="null" />.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="protocol" /> is <see cref="F:System.String.Empty" />.
+            </exception>
+        </member>
         <member name="M:WebSocketSharp.Ext.IsValidAbsolutePath(System.String,System.String@)">
             <summary>
             Determines whether the specified <see cref="T:System.String" /> is valid absolute path.
@@ -1590,7 +1620,7 @@
         </member>
         <member name="T:WebSocketSharp.Server.HttpServer">
             <summary>
-            Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+            Provides a simple HTTP server that allows to accept the WebSocket connection requests.
             </summary>
             <remarks>
                 <para>
@@ -1626,52 +1656,52 @@
             An <see cref="T:System.Int32" /> that contains a port number.
             </param>
         </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnConnect">
+            <summary>
+            Occurs when the server receives an HTTP CONNECT request.
+            </summary>
+        </member>
+        <member name="E:WebSocketSharp.Server.HttpServer.OnDelete">
+            <summary>
+            Occurs when the server receives an HTTP DELETE request.
+            </summary>
+        </member>
         <member name="E:WebSocketSharp.Server.HttpServer.OnError">
             <summary>
             Occurs when the server gets an error.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToConnect">
-            <summary>
-            Occurs when the server receives an HTTP CONNECT request.
-            </summary>
-        </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToDelete">
-            <summary>
-            Occurs when the server receives an HTTP DELETE request.
-            </summary>
-        </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToGet">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnGet">
             <summary>
             Occurs when the server receives an HTTP GET request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToHead">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnHead">
             <summary>
             Occurs when the server receives an HTTP HEAD request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToOptions">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnOptions">
             <summary>
             Occurs when the server receives an HTTP OPTIONS request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPatch">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnPatch">
             <summary>
             Occurs when the server receives an HTTP PATCH request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPost">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnPost">
             <summary>
             Occurs when the server receives an HTTP POST request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToPut">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnPut">
             <summary>
             Occurs when the server receives an HTTP PUT request.
             </summary>
         </member>
-        <member name="E:WebSocketSharp.Server.HttpServer.OnResponseToTrace">
+        <member name="E:WebSocketSharp.Server.HttpServer.OnTrace">
             <summary>
             Occurs when the server receives an HTTP TRACE request.
             </summary>
@@ -1725,39 +1755,13 @@
         </member>
         <member name="M:WebSocketSharp.Server.HttpServer.Start">
             <summary>
-            Starts to receive incoming requests.
+            Starts the <see cref="T:WebSocketSharp.Server.HttpServer" />.
             </summary>
         </member>
         <member name="M:WebSocketSharp.Server.HttpServer.Stop">
             <summary>
-            Stops receiving incoming requests.
+            Shuts down the <see cref="T:WebSocketSharp.Server.HttpServer" />.
             </summary>
-        </member>
-        <member name="T:WebSocketSharp.Server.ResponseEventArgs">
-            <summary>
-            Contains the event data associated with the response events of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class.
-            </summary>
-            <remarks>
-            A response event occurs when a <see cref="T:WebSocketSharp.Server.HttpServer" /> instance receives an HTTP request.
-            If you want to get the HTTP request objects, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Request" /> property.
-            If you want to get the HTTP response objects to send, you should access the <see cref="P:WebSocketSharp.Server.ResponseEventArgs.Response" /> property.
-            </remarks>
-        </member>
-        <member name="P:WebSocketSharp.Server.ResponseEventArgs.Request">
-            <summary>
-            Gets the HTTP request objects sent from a client.
-            </summary>
-            <value>
-            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
-            </value>
-        </member>
-        <member name="P:WebSocketSharp.Server.ResponseEventArgs.Response">
-            <summary>
-            Gets the HTTP response objects to send to the client in response to the client's request.
-            </summary>
-            <value>
-            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
-            </value>
         </member>
         <member name="T:WebSocketSharp.Net.HttpVersion">
             <summary>
@@ -3069,6 +3073,32 @@
             <param name="service">
             When this method returns, contains the <see cref="T:WebSocketSharp.Server.WebSocketService" /> with the specified <paramref name="id" />, if the <paramref name="id" /> is found; otherwise, <see langword="null" />.
             </param>
+        </member>
+        <member name="T:WebSocketSharp.Server.HttpRequestEventArgs">
+            <summary>
+            Contains the event data associated with the HTTP request events of the <see cref="T:WebSocketSharp.Server.HttpServer" /> class.
+            </summary>
+            <remarks>
+            An HTTP request event occurs when a <see cref="T:WebSocketSharp.Server.HttpServer" /> instance receives an HTTP request.
+            If you want to get the HTTP request objects, you should access the <see cref="!:ResponseEventArgs.Request" /> property.
+            If you want to get the HTTP response objects to send, you should access the <see cref="!:ResponseEventArgs.Response" /> property.
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Server.HttpRequestEventArgs.Request">
+            <summary>
+            Gets the HTTP request objects sent from a client.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Server.HttpRequestEventArgs.Response">
+            <summary>
+            Gets the HTTP response objects to send to the client in response to the client's request.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
+            </value>
         </member>
     </members>
 </doc>

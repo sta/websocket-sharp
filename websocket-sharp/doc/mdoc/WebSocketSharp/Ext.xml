@@ -548,6 +548,49 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="IsUpgradeTo">
+      <MemberSignature Language="C#" Value="public static bool IsUpgradeTo (this WebSocketSharp.Net.HttpListenerRequest request, string protocol);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsUpgradeTo(class WebSocketSharp.Net.HttpListenerRequest request, string protocol) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="request" Type="WebSocketSharp.Net.HttpListenerRequest" RefType="this" />
+        <Parameter Name="protocol" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="request">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains an HTTP request information.
+            </param>
+        <param name="protocol">
+            A <see cref="T:System.String" /> that contains a protocol name.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> is the HTTP Upgrade request
+            to switch to the specified <paramref name="protocol" />.
+            </summary>
+        <returns>
+          <c>true</c> if the specified <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> is the HTTP Upgrade request
+            to switch to the specified <paramref name="protocol" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <para>
+            <paramref name="request" /> is <see langword="null" />.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="protocol" /> is <see langword="null" />.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="protocol" /> is <see cref="F:System.String.Empty" />.
+            </exception>
+      </Docs>
+    </Member>
     <Member MemberName="IsValidAbsolutePath">
       <MemberSignature Language="C#" Value="public static bool IsValidAbsolutePath (this string absPath, out string message);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsValidAbsolutePath(string absPath, string message) cil managed" />

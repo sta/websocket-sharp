@@ -10,7 +10,7 @@
   <Interfaces />
   <Docs>
     <summary>
-            Provides the functions of a simple HTTP server that allows to accept the WebSocket connection requests.
+            Provides a simple HTTP server that allows to accept the WebSocket connection requests.
             </summary>
     <remarks>
       <para>
@@ -125,6 +125,34 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="OnConnect">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnConnect;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnConnect" />
+      <MemberType>Event</MemberType>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the server receives an HTTP CONNECT request.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="OnDelete">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnDelete;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnDelete" />
+      <MemberType>Event</MemberType>
+      <ReturnValue>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Occurs when the server receives an HTTP DELETE request.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="OnError">
       <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.ErrorEventArgs&gt; OnError;" />
       <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.ErrorEventArgs&gt; OnError" />
@@ -139,40 +167,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToConnect">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToConnect;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToConnect" />
+    <Member MemberName="OnGet">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnGet;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnGet" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>
-            Occurs when the server receives an HTTP CONNECT request.
-            </summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="OnResponseToDelete">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToDelete;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToDelete" />
-      <MemberType>Event</MemberType>
-      <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
-      </ReturnValue>
-      <Docs>
-        <summary>
-            Occurs when the server receives an HTTP DELETE request.
-            </summary>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="OnResponseToGet">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToGet;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToGet" />
-      <MemberType>Event</MemberType>
-      <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -181,12 +181,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToHead">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToHead;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToHead" />
+    <Member MemberName="OnHead">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnHead;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnHead" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -195,12 +195,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToOptions">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToOptions;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToOptions" />
+    <Member MemberName="OnOptions">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnOptions;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnOptions" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -209,12 +209,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToPatch">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPatch;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPatch" />
+    <Member MemberName="OnPatch">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPatch;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPatch" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -223,12 +223,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToPost">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPost;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPost" />
+    <Member MemberName="OnPost">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPost;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPost" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -237,12 +237,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToPut">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPut;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToPut" />
+    <Member MemberName="OnPut">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPut;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnPut" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -251,12 +251,12 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="OnResponseToTrace">
-      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToTrace;" />
-      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.ResponseEventArgs&gt; OnResponseToTrace" />
+    <Member MemberName="OnTrace">
+      <MemberSignature Language="C#" Value="public event EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt; OnTrace;" />
+      <MemberSignature Language="ILAsm" Value=".event class System.EventHandler`1&lt;class WebSocketSharp.Server.HttpRequestEventArgs&gt; OnTrace" />
       <MemberType>Event</MemberType>
       <ReturnValue>
-        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.ResponseEventArgs&gt;</ReturnType>
+        <ReturnType>System.EventHandler&lt;WebSocketSharp.Server.HttpRequestEventArgs&gt;</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
@@ -309,7 +309,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Starts to receive incoming requests.
+            Starts the <see cref="T:WebSocketSharp.Server.HttpServer" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -324,7 +324,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Stops receiving incoming requests.
+            Shuts down the <see cref="T:WebSocketSharp.Server.HttpServer" />.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

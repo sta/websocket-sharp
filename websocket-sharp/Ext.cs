@@ -561,6 +561,54 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="HttpListenerRequest"/> is the HTTP Upgrade request
+    /// to switch to the specified <paramref name="protocol"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the specified <see cref="HttpListenerRequest"/> is the HTTP Upgrade request
+    /// to switch to the specified <paramref name="protocol"/>; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="request">
+    /// A <see cref="HttpListenerRequest"/> that contains an HTTP request information.
+    /// </param>
+    /// <param name="protocol">
+    /// A <see cref="string"/> that contains a protocol name.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <para>
+    /// <paramref name="request"/> is <see langword="null"/>.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// <paramref name="protocol"/> is <see langword="null"/>.
+    /// </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="protocol"/> is <see cref="String.Empty"/>.
+    /// </exception>
+    public static bool IsUpgradeTo(this HttpListenerRequest request, string protocol)
+    {
+      if (request.IsNull())
+        throw new ArgumentNullException("request");
+
+      if (protocol.IsNull())
+        throw new ArgumentNullException("protocol");
+
+      if (protocol.IsEmpty())
+        throw new ArgumentException("Must not be empty.", "protocol");
+
+      if (!request.Headers.Exists("Upgrade", protocol))
+        return false;
+
+      if (!request.Headers.Exists("Connection", "Upgrade"))
+        return false;
+
+      return true;
+    }
+
+    /// <summary>
     /// Determines whether the specified <see cref="string"/> is valid absolute path.
     /// </summary>
     /// <returns>

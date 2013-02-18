@@ -16,9 +16,9 @@ namespace Example3
       _httpsv.AddWebSocketService<Echo>("/Echo");
       _httpsv.AddWebSocketService<Chat>("/Chat");
 
-      _httpsv.OnResponseToGet += (sender, e) =>
+      _httpsv.OnGet += (sender, e) =>
       {
-        onResponseToGet(e);
+        onGet(e);
       };
 
       _httpsv.OnError += (sender, e) =>
@@ -46,7 +46,7 @@ namespace Example3
       return _httpsv.GetFile(path);
     }
 
-    private static void onResponseToGet(ResponseEventArgs eventArgs)
+    private static void onGet(HttpRequestEventArgs eventArgs)
     {
       var request  = eventArgs.Request;
       var response = eventArgs.Response;
