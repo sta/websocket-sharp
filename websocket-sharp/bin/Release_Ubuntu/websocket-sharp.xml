@@ -1590,6 +1590,99 @@
             Stops receiving incoming requests.
             </summary>
         </member>
+        <member name="T:WebSocketSharp.Net.HttpListenerContext">
+            <summary>
+            Provides access to the HTTP request and response objects used by the <see cref="T:WebSocketSharp.Net.HttpListener" /> class.
+            </summary>
+            <remarks>
+            The HttpListenerContext class cannot be inherited.
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerContext.Request">
+            <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request from a client.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerContext.Response">
+            <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response to send to
+            the client in response to the client's request.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerContext.User">
+            <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+            <value>
+            A <see cref="T:System.Security.Principal.IPrincipal" /> contains the client information.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerContext.AcceptWebSocket">
+            <summary>
+            Accepts a WebSocket connection by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+            <returns>
+            A <see cref="T:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext" /> that contains a WebSocket connection.
+            </returns>
+        </member>
+        <member name="T:WebSocketSharp.Net.HttpListenerException">
+            <summary>
+            The exception that is thrown when an error occurs processing an HTTP request.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerException.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            with the specified <paramref name="errorCode" />.
+            </summary>
+            <param name="errorCode">
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerException.#ctor(System.Int32,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            with the specified <paramref name="errorCode" /> and <paramref name="message" />.
+            </summary>
+            <param name="errorCode">
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </param>
+            <param name="message">
+            A <see cref="T:System.String" /> that describes the error.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" /> classes.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that contains the information required to deserialize
+            the new <see cref="T:WebSocketSharp.Net.HttpListenerException" /> object.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" />.
+            </param>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerException.ErrorCode">
+            <summary>
+            Gets a value that represents the error that occurred.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </value>
+        </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
             Decodes an HTML-encoded string and returns the decoded string.
@@ -2687,7 +2780,7 @@
             Gets the client information (identity, authentication information and security roles).
             </summary>
             <value>
-            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            A <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.UserEndPoint">
@@ -2832,7 +2925,7 @@
             Gets the client information (identity, authentication information and security roles).
             </summary>
             <value>
-            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            A <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
             </value>
             <exception cref="T:System.NotImplementedException">
             This property is not implemented.
@@ -2961,7 +3054,7 @@
             Gets the client information (identity, authentication information and security roles).
             </summary>
             <value>
-            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            A <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.WebSocket">

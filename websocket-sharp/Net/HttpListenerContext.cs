@@ -31,13 +31,18 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-using System.Net;
 using System.Security.Principal;
 using System.Text;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Net {
 
+	/// <summary>
+	/// Provides access to the HTTP request and response objects used by the <see cref="HttpListener"/> class.
+	/// </summary>
+	/// <remarks>
+	/// The HttpListenerContext class cannot be inherited.
+	/// </remarks>
 	public sealed class HttpListenerContext {
 
 		#region Private Fields
@@ -93,14 +98,33 @@ namespace WebSocketSharp.Net {
 
 		#region Public Properties
 
+		/// <summary>
+		/// Gets the <see cref="HttpListenerRequest"/> that contains the HTTP request from a client.
+		/// </summary>
+		/// <value>
+		/// A <see cref="HttpListenerRequest"/> that contains the HTTP request objects.
+		/// </value>
 		public HttpListenerRequest Request {
 			get { return request; }
 		}
 
+		/// <summary>
+		/// Gets the <see cref="HttpListenerResponse"/> that contains the HTTP response to send to
+		/// the client in response to the client's request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="HttpListenerResponse"/> that contains the HTTP response objects.
+		/// </value>
 		public HttpListenerResponse Response {
 			get { return response; }
 		}
 
+		/// <summary>
+		/// Gets the client information (identity, authentication information and security roles).
+		/// </summary>
+		/// <value>
+		/// A <see cref="IPrincipal"/> contains the client information.
+		/// </value>
 		public IPrincipal User {
 			get { return user; }
 		}
@@ -125,7 +149,7 @@ namespace WebSocketSharp.Net {
 			}
 			// TODO: throw if malformed -> 400 bad request
 		}
-	
+
 		internal IPrincipal ParseBasicAuthentication (string authData)
 		{
 			try {
@@ -135,29 +159,29 @@ namespace WebSocketSharp.Net {
 				string password   = null;
 				int    pos        = -1;
 				string authString = Encoding.Default.GetString (Convert.FromBase64String (authData));
-	
+
 				// The format is DOMAIN\username:password
 				// Domain is optional
 
 				pos = authString.IndexOf (':');
-	
+
 				// parse the password off the end
 				password = authString.Substring (pos+1);
-				
+
 				// discard the password
 				authString = authString.Substring (0, pos);
-	
+
 				// check if there is a domain
 				pos = authString.IndexOf ('\\');
-	
+
 				if (pos > 0) {
 					//domain = authString.Substring (0, pos);
 					user = authString.Substring (pos);
 				} else {
 					user = authString;
 				}
-	
-				HttpListenerBasicIdentity identity = new HttpListenerBasicIdentity (user, password);
+
+				var identity = new System.Net.HttpListenerBasicIdentity (user, password);
 				// TODO: What are the roles MS sets
 				return new GenericPrincipal (identity, new string [0]);
 			} catch (Exception) {
@@ -170,6 +194,12 @@ namespace WebSocketSharp.Net {
 
 		#region Public Method
 
+		/// <summary>
+		/// Accepts a WebSocket connection by the <see cref="HttpListener"/>.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="HttpListenerWebSocketContext"/> that contains a WebSocket connection.
+		/// </returns>
 		public HttpListenerWebSocketContext AcceptWebSocket ()
 		{
 			return new HttpListenerWebSocketContext (this);

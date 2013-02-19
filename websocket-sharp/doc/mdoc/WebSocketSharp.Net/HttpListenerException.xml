@@ -9,7 +9,9 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
+    <summary>
+            The exception that is thrown when an error occurs processing an HTTP request.
+            </summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
@@ -19,7 +21,9 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -31,8 +35,13 @@
         <Parameter Name="errorCode" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="errorCode">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="errorCode">
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            with the specified <paramref name="errorCode" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -45,9 +54,16 @@
         <Parameter Name="message" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="errorCode">To be added.</param>
-        <param name="message">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="errorCode">
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </param>
+        <param name="message">
+            A <see cref="T:System.String" /> that describes the error.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            with the specified <paramref name="errorCode" /> and <paramref name="message" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -60,9 +76,17 @@
         <Parameter Name="streamingContext" Type="System.Runtime.Serialization.StreamingContext" />
       </Parameters>
       <Docs>
-        <param name="serializationInfo">To be added.</param>
-        <param name="streamingContext">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that contains the information required to deserialize
+            the new <see cref="T:WebSocketSharp.Net.HttpListenerException" /> object.
+            </param>
+        <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" />.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.HttpListenerException" /> class
+            from the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" /> classes.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -74,8 +98,12 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value that represents the error that occurred.
+            </summary>
+        <value>
+            An <see cref="T:System.Int32" /> that contains an error code.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

@@ -217,7 +217,7 @@
             Gets the client information (identity, authentication information and security roles).
             </summary>
         <value>
-            An <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
+            A <see cref="T:System.Security.Principal.IPrincipal" /> that contains the client information.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

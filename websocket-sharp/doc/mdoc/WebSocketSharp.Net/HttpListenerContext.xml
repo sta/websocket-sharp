@@ -9,8 +9,12 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides access to the HTTP request and response objects used by the <see cref="T:WebSocketSharp.Net.HttpListener" /> class.
+            </summary>
+    <remarks>
+            The HttpListenerContext class cannot be inherited.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName="AcceptWebSocket">
@@ -22,8 +26,12 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
+        <summary>
+            Accepts a WebSocket connection by the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        <returns>
+            A <see cref="T:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext" /> that contains a WebSocket connection.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -35,8 +43,12 @@
         <ReturnType>WebSocketSharp.Net.HttpListenerRequest</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request from a client.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerRequest" /> that contains the HTTP request objects.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -48,8 +60,13 @@
         <ReturnType>WebSocketSharp.Net.HttpListenerResponse</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response to send to
+            the client in response to the client's request.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -61,8 +78,12 @@
         <ReturnType>System.Security.Principal.IPrincipal</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the client information (identity, authentication information and security roles).
+            </summary>
+        <value>
+            A <see cref="T:System.Security.Principal.IPrincipal" /> contains the client information.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

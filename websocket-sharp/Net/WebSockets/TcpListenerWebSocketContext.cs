@@ -248,7 +248,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// Gets the client information (identity, authentication information and security roles).
     /// </summary>
     /// <value>
-    /// An <see cref="IPrincipal"/> that contains the client information.
+    /// A <see cref="IPrincipal"/> that contains the client information.
     /// </value>
     /// <exception cref="NotImplementedException">
     /// This property is not implemented.
