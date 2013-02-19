@@ -177,48 +177,67 @@ namespace WebSocketSharp.Net {
 
 		#region Private Methods
 
-		void Cleanup (bool close_existing)
+		void Cleanup (bool force)
 		{
 			lock (((ICollection)registry).SyncRoot) {
-				if (close_existing) {
-					// Need to copy this since closing will call UnregisterContext
-					ICollection keys = registry.Keys;
-					var all = new HttpListenerContext [keys.Count];
-					keys.CopyTo (all, 0);
-					registry.Clear ();
-					for (int i = all.Length - 1; i >= 0; i--)
-						all [i].Connection.Close (true);
+				if (!force)
+					SendServiceUnavailable ();
+
+				CleanupContextRegistry ();
+				CleanupConnections ();
+				CleanupWaitQueue ();
+			}
+		}
+
+		void CleanupConnections ()
+		{
+			lock (((ICollection)connections).SyncRoot) {
+				if (connections.Count == 0)
+					return;
+
+				// Need to copy this since closing will call RemoveConnection
+				ICollection keys = connections.Keys;
+				var conns = new HttpConnection [keys.Count];
+				keys.CopyTo (conns, 0);
+				connections.Clear ();
+				for (int i = conns.Length - 1; i >= 0; i--)
+					conns [i].Close (true);
+			}
+		}
+
+		void CleanupContextRegistry ()
+		{
+			lock (((ICollection)registry).SyncRoot) {
+				if (registry.Count == 0)
+					return;
+
+				// Need to copy this since closing will call UnregisterContext
+				ICollection keys = registry.Keys;
+				var all = new HttpListenerContext [keys.Count];
+				keys.CopyTo (all, 0);
+				registry.Clear ();
+				for (int i = all.Length - 1; i >= 0; i--)
+					all [i].Connection.Close (true);
+			}
+		}
+
+		void CleanupWaitQueue ()
+		{
+			lock (((ICollection)wait_queue).SyncRoot) {
+				if (wait_queue.Count == 0)
+					return;
+
+				var exc = new ObjectDisposedException (GetType ().ToString ());
+				foreach (var ares in wait_queue) {
+					ares.Complete (exc);
 				}
 
-				lock (((ICollection)connections).SyncRoot) {
-					ICollection keys = connections.Keys;
-					var conns = new HttpConnection [keys.Count];
-					keys.CopyTo (conns, 0);
-					connections.Clear ();
-					for (int i = conns.Length - 1; i >= 0; i--)
-						conns [i].Close (true);
-				}
-
-				lock (((ICollection)ctx_queue).SyncRoot) {
-					var ctxs = ctx_queue.ToArray ();
-					ctx_queue.Clear ();
-					for (int i = ctxs.Length - 1; i >= 0; i--)
-						ctxs [i].Connection.Close (true);
-				}
-
-				lock (((ICollection)wait_queue).SyncRoot) {
-					Exception exc = new ObjectDisposedException ("listener");
-					foreach (ListenerAsyncResult ares in wait_queue) {
-						ares.Complete (exc);
-					}
-					wait_queue.Clear ();
-				}
+				wait_queue.Clear ();
 			}
 		}
 
 		void Close (bool force)
 		{
-			CheckDisposed ();
 			EndPointManager.RemoveListener (this);
 			Cleanup (force);
 		}
@@ -232,6 +251,22 @@ namespace WebSocketSharp.Net {
 			var context = ctx_queue [0];
 			ctx_queue.RemoveAt (0);
 			return context;
+		}
+
+		void SendServiceUnavailable ()
+		{
+			lock (((ICollection)ctx_queue).SyncRoot) {
+				if (ctx_queue.Count == 0)
+					return;
+
+				var ctxs = ctx_queue.ToArray ();
+				ctx_queue.Clear ();
+				foreach (var ctx in ctxs) {
+					var res = ctx.Response;
+					res.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
+					res.Close();
+				}
+			}
 		}
 
 		#endregion
@@ -322,11 +357,6 @@ namespace WebSocketSharp.Net {
 			if (disposed)
 				return;
 
-			if (!listening) {
-				disposed = true;
-				return;
-			}
-
 			Close (true);
 			disposed = true;
 		}
@@ -382,11 +412,6 @@ namespace WebSocketSharp.Net {
 		{
 			if (disposed)
 				return;
-
-			if (!listening) {
-				disposed = true;
-				return;
-			}
 
 			Close (false);
 			disposed = true;
@@ -487,8 +512,9 @@ namespace WebSocketSharp.Net {
 			if (!listening)
 				return;
 
-			EndPointManager.RemoveListener (this);
 			listening = false;
+			EndPointManager.RemoveListener (this);
+			SendServiceUnavailable ();
 		}
 
 		#endregion

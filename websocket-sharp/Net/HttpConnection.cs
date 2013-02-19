@@ -1,6 +1,6 @@
 //
 // HttpConnection.cs
-//	Copied from System.Net.HttpConnection
+//	Copied from System.Net.HttpConnection.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
@@ -222,10 +222,12 @@ namespace WebSocketSharp.Net {
 			} catch {
 				if (ms != null && ms.Length > 0)
 					SendError ();
+
 				if (sock != null) {
 					CloseSocket ();
 					Unbind ();
 				}
+
 				return;
 			}
 
@@ -252,6 +254,7 @@ namespace WebSocketSharp.Net {
 					Close (true);
 					return;
 				}
+
 				HttpListener listener = context.Listener;
 				if (last_listener != listener) {
 					RemoveConnection ();
@@ -263,6 +266,7 @@ namespace WebSocketSharp.Net {
 				listener.RegisterContext (context);
 				return;
 			}
+
 			stream.BeginRead (buffer, 0, BufferSize, onread_cb, this);
 		}
 
@@ -340,6 +344,7 @@ namespace WebSocketSharp.Net {
 		{
 			if (current_line == null)
 				current_line = new StringBuilder ();
+
 			int last = offset + len;
 			used = 0;
 			for (int i = offset; i < last && line_state != LineState.LF; i++) {
@@ -396,15 +401,6 @@ namespace WebSocketSharp.Net {
 				force_close |= !context.Request.KeepAlive;
 				if (!force_close)
 					force_close = (context.Response.Headers ["connection"] == "close");
-				/*
-				if (!force_close) {
-//					bool conn_close = (status_code == 400 || status_code == 408 || status_code == 411 ||
-//							status_code == 413 || status_code == 414 || status_code == 500 ||
-//							status_code == 503);
-
-					force_close |= (context.Request.ProtocolVersion <= HttpVersion.Version10);
-				}
-				*/
 
 				if (!force_close && context.Request.FlushInput ()) {
 					if (chunked && context.Response.ForceCloseChunked == false) {
@@ -433,6 +429,7 @@ namespace WebSocketSharp.Net {
 					if (s != null)
 						s.Close ();
 				}
+
 				Unbind ();
 				RemoveConnection ();
 				return;
@@ -447,9 +444,11 @@ namespace WebSocketSharp.Net {
 		{
 			if (buffer == null)
 				buffer = new byte [BufferSize];
+
 			try {
 				if (reuses == 1)
 					s_timeout = 15000;
+
 				timer.Change (s_timeout, Timeout.Infinite);
 				stream.BeginRead (buffer, 0, BufferSize, onread_cb, this);
 			} catch {
@@ -478,6 +477,7 @@ namespace WebSocketSharp.Net {
 					i_stream = new RequestStream (stream, buffer, position, length - position, contentlength);
 				}
 			}
+
 			return i_stream;
 		}
 
@@ -489,6 +489,7 @@ namespace WebSocketSharp.Net {
 				bool ign = (listener == null) ? true : listener.IgnoreWriteExceptions;
 				o_stream = new ResponseStream (stream, context.Response, ign);
 			}
+
 			return o_stream;
 		}
 

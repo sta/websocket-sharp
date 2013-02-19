@@ -459,6 +459,7 @@ namespace WebSocketSharp.Net {
 					IAsyncResult ares = InputStream.BeginRead (bytes, 0, length, null, null);
 					if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne (100))
 						return false;
+
 					if (InputStream.EndRead (ares) <= 0)
 						return true;
 				} catch {

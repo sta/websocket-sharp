@@ -166,7 +166,7 @@ namespace WebSocketSharp.Net {
 
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
-					
+
 				keep_alive = value;
 			}
 		}
@@ -175,10 +175,11 @@ namespace WebSocketSharp.Net {
 			get {
 				if (output_stream == null)
 					output_stream = context.Connection.GetResponseStream ();
+
 				return output_stream;
 			}
 		}
-		
+
 		public Version ProtocolVersion {
 			get { return version; }
 			set {
@@ -209,7 +210,7 @@ namespace WebSocketSharp.Net {
 
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
-					
+
 				location = value;
 			}
 		}
@@ -222,7 +223,7 @@ namespace WebSocketSharp.Net {
 
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
-					
+
 				chunked = value;
 			}
 		}
@@ -259,11 +260,6 @@ namespace WebSocketSharp.Net {
 		{
 			disposed = true;
 			context.Connection.Close (force);
-		}
-
-		void IDisposable.Dispose ()
-		{
-			Close (true); // TODO: Abort or Close?
 		}
 
 		bool FindCookie (Cookie cookie)
@@ -396,6 +392,15 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
+		#region Explicit Interface Implementation
+
+		void IDisposable.Dispose ()
+		{
+			Close (true); // TODO: Abort or Close?
+		}
+
+		#endregion
+
 		#region Public Methods
 
 		public void Abort ()
@@ -413,7 +418,7 @@ namespace WebSocketSharp.Net {
 
 			if (name == "")
 				throw new ArgumentException ("'name' cannot be empty", "name");
-			
+
 			// TODO: check for forbidden headers and invalid characters
 			if (value.Length > 65535)
 				throw new ArgumentOutOfRangeException ("value");
@@ -425,7 +430,7 @@ namespace WebSocketSharp.Net {
 		{
 			if (cookie == null)
 				throw new ArgumentNullException ("cookie");
-			
+
 			Cookies.Add (cookie);
 		}
 
@@ -436,7 +441,7 @@ namespace WebSocketSharp.Net {
 
 			if (name == "")
 				throw new ArgumentException ("'name' cannot be empty", "name");
-			
+
 			if (value.Length > 65535)
 				throw new ArgumentOutOfRangeException ("value");
 
