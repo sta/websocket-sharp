@@ -1,6 +1,6 @@
 //
 // HttpStreamAsyncResult.cs
-//	Copied from System.Net.HttpStreamAsyncResult
+//	Copied from System.Net.HttpStreamAsyncResult.cs
 //
 // Authors:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
@@ -28,16 +28,21 @@
 //
 
 using System;
-using System.Net;
 using System.Threading;
 
 namespace WebSocketSharp.Net {
 
-	class HttpStreamAsyncResult : IAsyncResult
-	{
+	class HttpStreamAsyncResult : IAsyncResult {
+
+		#region Private Fields
+
 		bool             completed;
 		ManualResetEvent handle;
 		object           locker = new object ();
+
+		#endregion
+
+		#region Internal Fields
 
 		internal AsyncCallback Callback;
 		internal int           Count;
@@ -45,7 +50,11 @@ namespace WebSocketSharp.Net {
 		internal Exception     Error;
 		internal int           Offset;
 		internal object        State;
-		internal int           SynchRead;
+		internal int           SyncRead;
+
+		#endregion
+
+		#region Properties
 
 		public object AsyncState {
 			get { return State; }
@@ -63,7 +72,7 @@ namespace WebSocketSharp.Net {
 		}
 
 		public bool CompletedSynchronously {
-			get { return (SynchRead == Count); }
+			get { return (SyncRead == Count); }
 		}
 
 		public bool IsCompleted {
@@ -73,6 +82,10 @@ namespace WebSocketSharp.Net {
 				}
 			}
 		}
+
+		#endregion
+
+		#region Public Methods
 
 		public void Complete ()
 		{
@@ -94,5 +107,7 @@ namespace WebSocketSharp.Net {
 			Error = e;
 			Complete ();
 		}
+
+		#endregion
 	}
 }

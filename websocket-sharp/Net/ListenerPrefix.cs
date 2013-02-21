@@ -1,6 +1,6 @@
 //
 // ListenerPrefix.cs
-//	Copied from System.ListenerPrefix
+//	Copied from System.ListenerPrefix.cs
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
@@ -35,20 +35,35 @@ namespace WebSocketSharp.Net {
 
 	sealed class ListenerPrefix {
 
-		IPAddress []        addresses;
-		string              host;
-		string              original;
-		string              path;
-		ushort              port;
-		bool                secure;
+		#region Private Fields
+
+		IPAddress [] addresses;
+		string       host;
+		string       original;
+		string       path;
+		ushort       port;
+		bool         secure;
+
+		#endregion
+
+		#region Public Field
 
 		public HttpListener Listener;
 
+		#endregion
+
+		#region Constructor
+
+		// Must be called after calling ListenerPrefix.CheckUri.
 		public ListenerPrefix (string prefix)
 		{
 			original = prefix;
 			Parse (prefix);
 		}
+
+		#endregion
+
+		#region Properties
 
 		public IPAddress [] Addresses {
 			get { return addresses; }
@@ -71,19 +86,18 @@ namespace WebSocketSharp.Net {
 			get { return secure; }
 		}
 
+		#endregion
+
+		#region Private Method
+
 		void Parse (string uri)
 		{
-			int default_port = (uri.StartsWith ("http://")) ? 80 : -1;
-			if (default_port == -1) {
-				default_port = (uri.StartsWith ("https://")) ? 443 : -1;
+			int default_port = (uri.StartsWith ("http://")) ? 80 : 443;
+			if (default_port == 443)
 				secure = true;
-			}
 
 			int length = uri.Length;
 			int start_host = uri.IndexOf (':') + 3;
-			if (start_host >= length)
-				throw new ArgumentException ("No host specified.");
-
 			int colon = uri.IndexOf (':', start_host, length - start_host);
 			int root;
 			if (colon > 0) {
@@ -95,15 +109,21 @@ namespace WebSocketSharp.Net {
 				root = uri.IndexOf ('/', start_host, length - start_host);
 				host = uri.Substring (start_host, root - start_host);
 				path = uri.Substring (root);
+				port = (ushort) default_port;
 			}
+
 			if (path.Length != 1)
 				path = path.Substring (0, path.Length - 1);
 		}
 
+		#endregion
+
+		#region public Methods
+
 		public static void CheckUri (string uri)
 		{
 			if (uri == null)
-				throw new ArgumentNullException ("uriPrefix");
+				throw new ArgumentNullException ("uri");
 
 			int default_port = (uri.StartsWith ("http://")) ? 80 : -1;
 			if (default_port == -1)
@@ -140,13 +160,13 @@ namespace WebSocketSharp.Net {
 			}
 
 			if (uri [uri.Length - 1] != '/')
-				throw new ArgumentException ("The prefix must end with '/'");
+				throw new ArgumentException ("The prefix must end with '/'.");
 		}
 
 		// Equals and GetHashCode are required to detect duplicates in HttpListenerPrefixCollection.
 		public override bool Equals (object o)
 		{
-			ListenerPrefix other = o as ListenerPrefix;
+			var other = o as ListenerPrefix;
 			if (other == null)
 				return false;
 
@@ -162,5 +182,7 @@ namespace WebSocketSharp.Net {
 		{
 			return original;
 		}
+
+		#endregion
 	}
 }

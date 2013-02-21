@@ -1,6 +1,6 @@
 //
 // ChunkedInputStream.cs
-//	Copied from System.Net.ChunkedInputStream
+//	Copied from System.Net.ChunkedInputStream.cs
 //
 // Authors:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
@@ -25,21 +25,15 @@
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
 
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace WebSocketSharp.Net {
 
-	class ChunkedInputStream : RequestStream
-	{
-		HttpListenerContext context;
-		ChunkStream         decoder;
-		bool                disposed;
-		bool                no_more_data;
+	class ChunkedInputStream : RequestStream {
 
 		class ReadBufferState {
 
@@ -60,6 +54,17 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		#region Fields
+
+		HttpListenerContext context;
+		ChunkStream         decoder;
+		bool                disposed;
+		bool                no_more_data;
+
+		#endregion
+
+		#region Constructor
+
 		public ChunkedInputStream (
 			HttpListenerContext context, Stream stream, byte [] buffer, int offset, int length)
 			: base (stream, buffer, offset, length)
@@ -69,15 +74,23 @@ namespace WebSocketSharp.Net {
 			decoder = new ChunkStream (coll);
 		}
 
+		#endregion
+
+		#region Property
+
 		public ChunkStream Decoder {
 			get { return decoder; }
 			set { decoder = value; }
 		}
 
+		#endregion
+
+		#region Private Method
+
 		void OnRead (IAsyncResult base_ares)
 		{
-			ReadBufferState rb = (ReadBufferState) base_ares.AsyncState;
-			HttpStreamAsyncResult ares = rb.Ares;
+			var rb = (ReadBufferState) base_ares.AsyncState;
+			var ares = rb.Ares;
 			try {
 				int nread = base.EndRead (base_ares);
 				decoder.Write (ares.Buffer, ares.Offset, nread);
@@ -90,6 +103,7 @@ namespace WebSocketSharp.Net {
 					ares.Complete ();
 					return;
 				}
+
 				ares.Offset = 0;
 				ares.Count = Math.Min (8192, decoder.ChunkLeft + 6);
 				base.BeginRead (ares.Buffer, ares.Offset, ares.Count, OnRead, rb);
@@ -98,6 +112,10 @@ namespace WebSocketSharp.Net {
 				ares.Complete (e);
 			}
 		}
+
+		#endregion
+
+		#region Public Methods
 
 		public override IAsyncResult BeginRead (
 			byte [] buffer, int offset, int count, AsyncCallback cback, object state)
@@ -110,18 +128,19 @@ namespace WebSocketSharp.Net {
 
 			int len = buffer.Length;
 			if (offset < 0 || offset > len)
-				throw new ArgumentOutOfRangeException ("offset exceeds the size of buffer");
+				throw new ArgumentOutOfRangeException ("'offset' exceeds the size of buffer.");
 
 			if (count < 0 || offset > len - count)
-				throw new ArgumentOutOfRangeException ("offset+size exceeds the size of buffer");
+				throw new ArgumentOutOfRangeException ("'offset' + 'count' exceeds the size of buffer.");
 
-			HttpStreamAsyncResult ares = new HttpStreamAsyncResult ();
+			var ares = new HttpStreamAsyncResult ();
 			ares.Callback = cback;
 			ares.State = state;
 			if (no_more_data) {
 				ares.Complete ();
 				return ares;
 			}
+
 			int nread = decoder.Read (buffer, offset, count);
 			offset += nread;
 			count -= nread;
@@ -131,16 +150,18 @@ namespace WebSocketSharp.Net {
 				ares.Complete ();
 				return ares;
 			}
+
 			if (!decoder.WantMore) {
 				no_more_data = nread == 0;
 				ares.Count = nread;
 				ares.Complete ();
 				return ares;
 			}
+
 			ares.Buffer = new byte [8192];
 			ares.Offset = 0;
 			ares.Count = 8192;
-			ReadBufferState rb = new ReadBufferState (buffer, offset, count, ares);
+			var rb = new ReadBufferState (buffer, offset, count, ares);
 			rb.InitialCount += nread;
 			base.BeginRead (ares.Buffer, ares.Offset, ares.Count, OnRead, rb);
 			return ares;
@@ -159,23 +180,25 @@ namespace WebSocketSharp.Net {
 			if (disposed)
 				throw new ObjectDisposedException (GetType ().ToString ());
 
-			HttpStreamAsyncResult my_ares = ares as HttpStreamAsyncResult;
 			if (ares == null)
-				throw new ArgumentException ("Invalid IAsyncResult", "ares");
+				throw new ArgumentException ("Invalid IAsyncResult.", "ares");
 
 			if (!ares.IsCompleted)
 				ares.AsyncWaitHandle.WaitOne ();
 
-			if (my_ares.Error != null)
+			var ares_ = ares as HttpStreamAsyncResult;
+			if (ares_.Error != null)
 				throw new HttpListenerException (400, "I/O operation aborted.");
 
-			return my_ares.Count;
+			return ares_.Count;
 		}
 
 		public override int Read ([In,Out] byte [] buffer, int offset, int count)
 		{
-			IAsyncResult ares = BeginRead (buffer, offset, count, null, null);
+			var ares = BeginRead (buffer, offset, count, null, null);
 			return EndRead (ares);
 		}
+
+		#endregion
 	}
 }

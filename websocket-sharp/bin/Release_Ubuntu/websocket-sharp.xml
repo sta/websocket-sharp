@@ -1683,6 +1683,140 @@
             An <see cref="T:System.Int32" /> that contains an error code.
             </value>
         </member>
+        <member name="T:WebSocketSharp.Net.HttpListenerPrefixCollection">
+            <summary>
+            Provides the collection used to store the URI prefixes for the <see cref="T:WebSocketSharp.Net.HttpListener" />.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerPrefixCollection.Count">
+            <summary>
+            Gets the number of prefixes contained in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <value>
+            A <see cref="T:System.Int32" /> that contains the number of prefixes.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerPrefixCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether access to the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is read-only.
+            </summary>
+            <value>
+            Always returns <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerPrefixCollection.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is synchronized.
+            </summary>
+            <value>
+            Always returns <c>false</c>.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an object that can be used to iterate through the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <returns>
+            An object that implements the <see cref="T:System.Collections.IEnumerator" /> interface and provides access to
+            the URI prefix strings in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.Add(System.String)">
+            <summary>
+            Adds the specified <paramref name="uriPrefix" /> to the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <param name="uriPrefix">
+            A <see cref="T:System.String" /> that contains a URI prefix to add.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="uriPrefix" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.Clear">
+            <summary>
+            Removes all URI prefixes from the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.Contains(System.String)">
+            <summary>
+            Returns a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> contains
+            the specified <paramref name="uriPrefix" />.
+            </summary>
+            <returns>
+                <c>true</c> if the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> contains the specified <paramref name="uriPrefix" />;
+            otherwise, <c>false</c>.
+            </returns>
+            <param name="uriPrefix">
+            A <see cref="T:System.String" /> that contains a URI prefix to test.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="uriPrefix" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the contents of the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> to the specified <see cref="T:System.Array" />.
+            </summary>
+            <param name="array">
+            An <see cref="T:System.Array" /> that receives the URI prefix strings in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </param>
+            <param name="offset">
+            An <see cref="T:System.Int32" /> that contains the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.CopyTo(System.String[],System.Int32)">
+            <summary>
+            Copies the contents of the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> to the specified array of <see cref="T:System.String" />.
+            </summary>
+            <param name="array">
+            An array of <see cref="T:System.String" /> that receives the URI prefix strings in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </param>
+            <param name="offset">
+            An <see cref="T:System.Int32" /> that contains the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.GetEnumerator">
+            <summary>
+            Gets an object that can be used to iterate through the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <returns>
+            An object that implements the IEnumerator&lt;string&gt; interface and provides access to
+            the URI prefix strings in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerPrefixCollection.Remove(System.String)">
+            <summary>
+            Removes the specified <paramref name="uriPrefix" /> from the list of prefixes in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />.
+            </summary>
+            <returns>
+                <c>true</c> if the <paramref name="uriPrefix" /> was found in the <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" />
+            and removed; otherwise, <c>false</c>.
+            </returns>
+            <param name="uriPrefix">
+            A <see cref="T:System.String" /> that contains a URI prefix to remove.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="uriPrefix" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
+            </exception>
+        </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
             Decodes an HTML-encoded string and returns the decoded string.
