@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -55,24 +55,16 @@ namespace WebSocketSharp {
     #region Properties
 
     public bool IsWebSocketResponse {
-
       get {
-        if (ProtocolVersion != HttpVersion.Version11)
-          return false;
-
-        if (StatusCode != "101")
-          return false;
-
-        if (!HeaderExists("Upgrade", "websocket"))
-          return false;
-
-        if (!HeaderExists("Connection", "Upgrade"))
-          return false;
-
-        if (!HeaderExists("Sec-WebSocket-Accept"))
-          return false;
-
-        return true;
+        return ProtocolVersion != HttpVersion.Version11
+               ? false
+               : StatusCode != "101"
+                 ? false
+                 : !HeaderExists("Upgrade", "websocket")
+                   ? false
+                   : !HeaderExists("Connection", "Upgrade")
+                     ? false
+                     : HeaderExists("Sec-WebSocket-Accept");
       }
     }
 
@@ -117,14 +109,11 @@ namespace WebSocketSharp {
     public override string ToString()
     {
       var buffer = new StringBuilder();
-
       buffer.AppendFormat("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, _crlf);
-
       foreach (string key in Headers.AllKeys)
         buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
 
       buffer.Append(_crlf);
-
       return buffer.ToString();
     }
 

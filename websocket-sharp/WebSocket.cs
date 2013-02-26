@@ -308,13 +308,13 @@ namespace WebSocketSharp {
     #region Private Methods
 
     // As Server
-    private void acceptHandshake()
+    private bool acceptHandshake()
     {
       if (!receiveOpeningHandshake())
-        return;
+        return false;
 
       sendResponseHandshake();
-      onOpen();
+      return true;
     }
 
     private bool canSendAsCloseFrame(PayloadData data)
@@ -406,7 +406,9 @@ namespace WebSocketSharp {
     {
       var args  = new CloseEventArgs(data);
       var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
-      send(frame);
+      if (send(frame))
+        args.WasClean = true;
+
       onClose(args);
     }
 
@@ -473,7 +475,9 @@ namespace WebSocketSharp {
       var host = _uri.DnsSafeHost;
       var port = _uri.Port > 0
                ? _uri.Port
-               : _isSecure ? 443 : 80;
+               : _isSecure
+                 ? 443
+                 : 80;
 
       _tcpClient = new TcpClient(host, port);
       _wsStream  = WsStream.CreateClientStream(_tcpClient, host, _isSecure);
@@ -534,19 +538,10 @@ namespace WebSocketSharp {
     }
 
     // As Client
-    private void doHandshake()
+    private bool doHandshake()
     {
-      var res = sendOpeningHandshake();
-
-      string msg;
-      if (!isValidResponse(res, out msg))
-      {
-        onError(msg);
-        close(CloseStatusCode.ABNORMAL, msg);
-        return;
-      }
-
-      onOpen();
+      createClientStream();
+      return sendOpeningHandshake();
     }
 
     // As Server
@@ -621,35 +616,13 @@ namespace WebSocketSharp {
     }
 
     // As Client
-    private bool isValidResponse(ResponseHandshake response, out string message)
+    private bool isValidResponse(ResponseHandshake response)
     {
-      if (!response.IsWebSocketResponse)
-      {
-        message = "Invalid WebSocket response.";
-        return false;
-      }
-
-      if (!response.HeaderExists("Sec-WebSocket-Accept", createResponseKey()))
-      {
-        message = "Invalid Sec-WebSocket-Accept.";
-        return false;
-      }
-
-      if ( response.HeaderExists("Sec-WebSocket-Version") &&
-          !response.HeaderExists("Sec-WebSocket-Version", _version))
-      {
-        message = "Unsupported Sec-WebSocket-Version.";
-        return false;
-      }
-
-      if (response.HeaderExists("Sec-WebSocket-Protocol"))
-        _protocol = response.Headers["Sec-WebSocket-Protocol"];
-
-      if (response.HeaderExists("Sec-WebSocket-Extensions"))
-        _extensions = response.Headers["Sec-WebSocket-Extensions"];
-
-      message = String.Empty;
-      return true;
+      return !response.IsWebSocketResponse
+             ? false
+             : !response.HeaderExists("Sec-WebSocket-Accept", createResponseKey())
+               ? false
+               : !response.HeaderExists("Sec-WebSocket-Version") || response.HeaderExists("Sec-WebSocket-Version", _version);
     }
 
     private void onClose(CloseEventArgs eventArgs)
@@ -658,8 +631,8 @@ namespace WebSocketSharp {
         if (!_exitMessageLoop.IsNull())
           _exitMessageLoop.WaitOne(5 * 1000);
 
-      if (closeResources())
-        eventArgs.WasClean = true;
+      if (!closeResources())
+        eventArgs.WasClean = false;
 
       OnClose.Emit(this, eventArgs);
     }
@@ -1011,19 +984,34 @@ namespace WebSocketSharp {
     }
 
     // As Client
-    private ResponseHandshake sendOpeningHandshake()
+    private bool sendOpeningHandshake()
     {
       var req = createOpeningHandshake();
-      sendOpeningHandshake(req);
+      sendRequestHandshake(req);
 
-      return receiveResponseHandshake();
+      var res = receiveResponseHandshake();
+      if (!isValidResponse(res))
+      {
+        var msg = "Invalid response to the WebSocket connection request.";
+        onError(msg);
+        close(CloseStatusCode.ABNORMAL, msg);
+        return false;
+      }
+
+      if (res.HeaderExists("Sec-WebSocket-Protocol"))
+        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+
+      if (res.HeaderExists("Sec-WebSocket-Extensions"))
+        _extensions = res.Headers["Sec-WebSocket-Extensions"];
+
+      return true;
     }
 
     // As Client
-    private void sendOpeningHandshake(RequestHandshake request)
+    private void sendRequestHandshake(RequestHandshake request)
     {
       #if DEBUG
-      Console.WriteLine("WS: Info@sendOpeningHandshake: Opening handshake from client:\n");
+      Console.WriteLine("WS: Info@sendRequestHandshake: Request handshake from client:\n");
       Console.WriteLine(request.ToString());
       #endif
       writeHandshake(request);
@@ -1173,7 +1161,7 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Establishes a connection.
+    /// Establishes a WebSocket connection.
     /// </summary>
     public void Connect()
     {
@@ -1183,23 +1171,23 @@ namespace WebSocketSharp {
         return;
       }
 
+      Func<bool> connect = () =>
+      {
+        return _isClient
+               ? doHandshake()
+               : acceptHandshake();
+      };
+
       try
       {
-        // As client
-        if (_isClient)
-        {
-          createClientStream();
-          doHandshake();
-          return;
-        }
-
-        // As server
-        acceptHandshake();
+        if (connect())
+          onOpen();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        onError(ex.Message);
-        close(CloseStatusCode.ABNORMAL, "An exception has occured.");
+        var msg = "An exception has occured.";
+        onError(msg);
+        close(CloseStatusCode.ABNORMAL, msg);
       }
     }
 
