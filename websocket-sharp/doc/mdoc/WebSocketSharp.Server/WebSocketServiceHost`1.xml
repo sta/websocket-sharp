@@ -209,7 +209,7 @@
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
             </param>
         <summary>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -309,21 +309,21 @@
       </Docs>
     </Member>
     <Member MemberName="WebSocketSharp.Server.IServiceHost.BindWebSocket">
-      <MemberSignature Language="C#" Value="void IServiceHost.BindWebSocket (WebSocketSharp.WebSocket socket);" />
-      <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void WebSocketSharp.Server.IServiceHost.BindWebSocket(class WebSocketSharp.WebSocket socket) cil managed" />
+      <MemberSignature Language="C#" Value="void IServiceHost.BindWebSocket (WebSocketSharp.Net.WebSockets.WebSocketContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void WebSocketSharp.Server.IServiceHost.BindWebSocket(class WebSocketSharp.Net.WebSockets.WebSocketContext context) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Void</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="socket" Type="WebSocketSharp.WebSocket" />
+        <Parameter Name="context" Type="WebSocketSharp.Net.WebSockets.WebSocketContext" />
       </Parameters>
       <Docs>
-        <param name="socket">
-            A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
+        <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> that contains the WebSocket connection request objects to bind.
             </param>
         <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> to the WebSocket service instance.
+            Binds the specified <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> to a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

@@ -64,24 +64,22 @@ namespace WebSocketSharp {
 
     #region Private Fields
 
-    private string                _base64key;
-    private HttpListenerContext   _httpContext;
-    private WebSocketContext      _context;
-    private System.Net.IPEndPoint _endPoint;
-    private string                _extensions;
-    private AutoResetEvent        _exitMessageLoop;
-    private Object                _forClose;
-    private Object                _forSend;
-    private bool                  _isClient;
-    private bool                  _isSecure;
-    private string                _protocol;
-    private string                _protocols;
-    private NameValueCollection   _queryString;
-    private volatile WsState      _readyState;
-    private AutoResetEvent        _receivePong;
-    private TcpClient             _tcpClient;
-    private Uri                   _uri;
-    private WsStream              _wsStream;
+    private string           _base64key;
+    private Action           _closeContext;
+    private WebSocketContext _context;
+    private string           _extensions;
+    private AutoResetEvent   _exitMessageLoop;
+    private Object           _forClose;
+    private Object           _forSend;
+    private bool             _isClient;
+    private bool             _isSecure;
+    private string           _protocol;
+    private string           _protocols;
+    private volatile WsState _readyState;
+    private AutoResetEvent   _receivePong;
+    private TcpClient        _tcpClient;
+    private Uri              _uri;
+    private WsStream         _wsStream;
 
     #endregion
 
@@ -103,25 +101,17 @@ namespace WebSocketSharp {
     internal WebSocket(HttpListenerWebSocketContext context)
       : this()
     {
-      _uri         = context.Path.ToUri();
-      _context     = context;
-      _httpContext = context.BaseContext;
-      _wsStream    = context.Stream;
-      _endPoint    = context.ServerEndPoint;
-      _isClient    = false;
-      _isSecure    = context.IsSecureConnection;
+      _wsStream     = context.Stream;
+      _closeContext = () => context.Close();
+      init(context);
     }
 
     internal WebSocket(TcpListenerWebSocketContext context)
       : this()
     {
-      _uri       = context.Path.ToUri();
-      _context   = context;
-      _tcpClient = context.Client;
-      _wsStream  = context.Stream;
-      _endPoint  = context.ServerEndPoint;
-      _isClient  = false;
-      _isSecure  = context.IsSecureConnection;
+      _wsStream     = context.Stream;
+      _closeContext = () => context.Close();
+      init(context);
     }
 
     #endregion
@@ -207,16 +197,6 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Internal Property
-
-    internal NameValueCollection QueryString {
-      get {
-        return _queryString;
-      }
-    }
-
-    #endregion
-
     #region Public Properties
 
     /// <summary>
@@ -292,6 +272,7 @@ namespace WebSocketSharp {
       get {
         return _uri;
       }
+
       internal set {
         if (_readyState == WsState.CONNECTING && !_isClient)
           _uri = value;
@@ -329,15 +310,8 @@ namespace WebSocketSharp {
     // As Server
     private void acceptHandshake()
     {
-      var req = receiveOpeningHandshake();
-
-      string msg;
-      if (!isValidRequest(req, out msg))
-      {
-        onError(msg);
-        close(CloseStatusCode.ABNORMAL, msg);
+      if (!receiveOpeningHandshake())
         return;
-      }
 
       sendResponseHandshake();
       onOpen();
@@ -363,7 +337,7 @@ namespace WebSocketSharp {
         return;
 
       sendResponseHandshake(code);
-      closeConnection();
+      closeResources();
     }
 
     private void close(PayloadData data)
@@ -428,30 +402,24 @@ namespace WebSocketSharp {
       close(payloadData);
     }
 
-    private bool closeConnection()
+    private void closeHandshake(PayloadData data)
+    {
+      var args  = new CloseEventArgs(data);
+      var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
+      send(frame);
+      onClose(args);
+    }
+
+    private bool closeResources()
     {
       _readyState = WsState.CLOSED;
 
       try
       {
-        if (!_httpContext.IsNull())
-        {
-          _httpContext.Response.Close();
-          _wsStream    = null;
-          _httpContext = null;
-        }
-
-        if (!_wsStream.IsNull())
-        {
-          _wsStream.Dispose();
-          _wsStream = null;
-        }
-
-        if (!_tcpClient.IsNull())
-        {
-          _tcpClient.Close();
-          _tcpClient = null;
-        }
+        if (_isClient)
+          closeResourcesAsClient();
+        else
+          closeResourcesAsServer();
 
         return true;
       }
@@ -462,12 +430,31 @@ namespace WebSocketSharp {
       }
     }
 
-    private void closeHandshake(PayloadData data)
+    // As Client
+    private void closeResourcesAsClient()
     {
-      var args  = new CloseEventArgs(data);
-      var frame = createFrame(Fin.FINAL, Opcode.CLOSE, data);
-      send(frame);
-      onClose(args);
+      if (!_wsStream.IsNull())
+      {
+        _wsStream.Dispose();
+        _wsStream = null;
+      }
+
+      if (!_tcpClient.IsNull())
+      {
+        _tcpClient.Close();
+        _tcpClient = null;
+      }
+    }
+
+    // As Server
+    private void closeResourcesAsServer()
+    {
+      if (!_context.IsNull() && !_closeContext.IsNull())
+      {
+        _closeContext();
+        _wsStream = null;
+        _context  = null;
+      }
     }
 
     // As Client
@@ -539,9 +526,9 @@ namespace WebSocketSharp {
     private string createResponseKey()
     {
       SHA1 sha1 = new SHA1CryptoServiceProvider();
-      var  sb   = new StringBuilder(_base64key);
+      var sb = new StringBuilder(_base64key);
       sb.Append(_guid);
-      var  src  = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+      var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
 
       return Convert.ToBase64String(src);
     }
@@ -560,6 +547,16 @@ namespace WebSocketSharp {
       }
 
       onOpen();
+    }
+
+    // As Server
+    private void init(WebSocketContext context)
+    {
+      _context  = context;
+      _isSecure = context.IsSecureConnection;
+
+      _uri      = "/".ToUri();
+      _isClient = false;
     }
 
     private bool isValidCloseStatusCode(ushort code, out string message)
@@ -594,65 +591,33 @@ namespace WebSocketSharp {
     }
 
     // As Server
-    private bool isValidRequest(RequestHandshake request, out string message)
+    private bool isValidRequest()
     {
-      if (!request.IsWebSocketRequest)
-      {
-        message = "Invalid WebSocket request.";
-        return false;
-      }
-
-      if (_uri.IsAbsoluteUri && !isValidRequestHost(request.Headers["Host"], out message))
-        return false;
-
-      if (!request.HeaderExists("Sec-WebSocket-Version", _version))
-      {
-        message = "Unsupported Sec-WebSocket-Version.";
-        return false;
-      }
-
-      _base64key = request.Headers["Sec-WebSocket-Key"];
-
-      if (request.HeaderExists("Sec-WebSocket-Protocol"))
-        _protocols = request.Headers["Sec-WebSocket-Protocol"];
-
-      if (request.HeaderExists("Sec-WebSocket-Extensions"))
-        _extensions = request.Headers["Sec-WebSocket-Extensions"];
-
-      _queryString = request.QueryString;
-
-      message = String.Empty;
-      return true;
+      return !_context.IsValid
+             ? false
+             : !isValidRequestHostHeader()
+               ? false
+               : _context.Headers.Exists("Sec-WebSocket-Version", _version);
     }
 
     // As Server
-    private bool isValidRequestHost(string value, out string message)
+    private bool isValidRequestHostHeader()
     {
-      var host    = _uri.DnsSafeHost;
-      var type    = Uri.CheckHostName(host);
-      var address = _endPoint.Address;
-      var port    = _endPoint.Port;
+      var authority = _context.Headers["Host"];
+      if (authority.IsNullOrEmpty() || !_uri.IsAbsoluteUri)
+        return true;
 
-      var expectedHost1 = host;
-      var expectedHost2 = type == UriHostNameType.Dns
-                        ? address.ToString()
-                        : System.Net.Dns.GetHostEntry(address).HostName;
+      var i = authority.IndexOf(':');
+      var host = i > 0
+               ? authority.Substring(0, i)
+               : authority;
+      var type = Uri.CheckHostName(host);
 
-      if (port != 80)
-      {
-        expectedHost1 += ":" + port;
-        expectedHost2 += ":" + port;
-      }
-
-      if (expectedHost1.NotEqual(value, false) &&
-          expectedHost2.NotEqual(value, false))
-      {
-        message = "Invalid Host.";
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
+      return type != UriHostNameType.Dns
+             ? true
+             : Uri.CheckHostName(_uri.DnsSafeHost) != UriHostNameType.Dns
+               ? true
+               : host == _uri.DnsSafeHost;
     }
 
     // As Client
@@ -693,7 +658,7 @@ namespace WebSocketSharp {
         if (!_exitMessageLoop.IsNull())
           _exitMessageLoop.WaitOne(5 * 1000);
 
-      if (closeConnection())
+      if (closeResources())
         eventArgs.WasClean = true;
 
       OnClose.Emit(this, eventArgs);
@@ -879,14 +844,28 @@ namespace WebSocketSharp {
     }
 
     // As Server
-    private RequestHandshake receiveOpeningHandshake()
+    private bool receiveOpeningHandshake()
     {
-      var req = RequestHandshake.Parse(_context);
       #if DEBUG
+      var req = RequestHandshake.Parse(_context);
       Console.WriteLine("WS: Info@receiveOpeningHandshake: Opening handshake from client:\n");
       Console.WriteLine(req.ToString());
       #endif
-      return req;
+      if (!isValidRequest())
+      {
+        onError("Invalid WebSocket connection request.");
+        close(HttpStatusCode.BadRequest);
+        return false;
+      }
+
+      _base64key = _context.SecWebSocketKey;
+      if (_context.Headers.Exists("Sec-WebSocket-Protocol"))
+        _protocols = _context.Headers["Sec-WebSocket-Protocol"];
+
+      if (_context.Headers.Exists("Sec-WebSocket-Extensions"))
+        _extensions = _context.Headers["Sec-WebSocket-Extensions"];
+
+      return true;
     }
 
     // As Client

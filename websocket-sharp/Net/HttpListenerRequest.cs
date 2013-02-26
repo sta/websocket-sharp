@@ -153,43 +153,46 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		// TODO: Always returns false
 		public bool IsAuthenticated {
+			// TODO: Always returns false
 			get { return false; }
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the request is sent from the local computer.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the request is sent from the local computer; otherwise, <c>false</c>.
+		/// </value>
 		public bool IsLocal {
-			get { return IPAddress.IsLoopback (RemoteEndPoint.Address); }
+			get { return RemoteEndPoint.Address.IsLocal(); }
 		}
 
 		public bool IsSecureConnection {
 			get { return context.Connection.IsSecure; } 
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the request is a WebSocket connection request.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+		/// </value>
 		public bool IsWebSocketRequest {
 			get {
-				if (method != "GET")
-					return false;
-
-				if (version != HttpVersion.Version11)
-					return false;
-
-				if (!headers.Exists("Upgrade", "websocket"))
-					return false;
-
-				if (!headers.Exists("Connection", "Upgrade"))
-					return false;
-
-				if (!headers.Exists("Host"))
-					return false;
-
-				if (!headers.Exists("Sec-WebSocket-Key"))
-					return false;
-
-				if (!headers.Exists("Sec-WebSocket-Version"))
-					return false;
-
-				return true;
+				return method != "GET"
+					? false
+					: version != HttpVersion.Version11
+						? false
+						: !headers.Exists("Upgrade", "websocket")
+							? false
+							: !headers.Exists("Connection", "Upgrade")
+								? false
+								: !headers.Exists("Host")
+									? false
+									: !headers.Exists("Sec-WebSocket-Key")
+										? false
+										: headers.Exists("Sec-WebSocket-Version");
 			}
 		}
 

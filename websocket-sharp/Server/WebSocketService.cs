@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server {
 
@@ -43,8 +44,9 @@ namespace WebSocketSharp.Server {
 
     #region Private Fields
 
+    private WebSocketContext        _context;
     private WebSocketServiceManager _sessions;
-    private WebSocket               _socket;
+    private WebSocket               _websocket;
 
     #endregion
 
@@ -64,26 +66,30 @@ namespace WebSocketSharp.Server {
     #region Protected Properties
 
     /// <summary>
-    /// Gets the HTTP query string variables used in the WebSocket opening handshake.
+    /// Gets the collection of query string variables used in the WebSocket opening handshake.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables.
     /// </value>
     protected NameValueCollection QueryString {
       get {
-        return IsBound ? _socket.QueryString : null;
+        return IsBound
+               ? _context.QueryString
+               : null;
       }
     }
 
     /// <summary>
-    /// Gets the sessions to the WebSocket service.
+    /// Gets the sessions to the <see cref="WebSocketService"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceManager"/> that contains the sessions to the WebSocket service.
+    /// A <see cref="WebSocketServiceManager"/> that contains the sessions to the the <see cref="WebSocketService"/>.
     /// </value>
     protected WebSocketServiceManager Sessions {
       get {
-        return IsBound ? _sessions : null;
+        return IsBound
+               ? _sessions
+               : null;
       }
     }
 
@@ -137,30 +143,31 @@ namespace WebSocketSharp.Server {
 
     #region Internal Methods
 
-    internal void Bind(WebSocket socket, WebSocketServiceManager sessions)
+    internal void Bind(WebSocketContext context, WebSocketServiceManager sessions)
     {
       if (IsBound)
         return;
 
-      _socket   = socket;
-      _sessions = sessions;
+      _context   = context;
+      _sessions  = sessions;
+      _websocket = context.WebSocket;
 
-      _socket.OnOpen    += onOpen;
-      _socket.OnMessage += onMessage;
-      _socket.OnError   += onError;
-      _socket.OnClose   += onClose;
+      _websocket.OnOpen    += onOpen;
+      _websocket.OnMessage += onMessage;
+      _websocket.OnError   += onError;
+      _websocket.OnClose   += onClose;
 
       IsBound = true;
     }
 
     internal void SendAsync(byte[] data, Action completed)
     {
-      _socket.SendAsync(data, completed);
+      _websocket.SendAsync(data, completed);
     }
 
     internal void SendAsync(string data, Action completed)
     {
-      _socket.SendAsync(data, completed);
+      _websocket.SendAsync(data, completed);
     }
 
     #endregion
@@ -288,7 +295,7 @@ namespace WebSocketSharp.Server {
     public bool Ping(string message)
     {
       return IsBound
-             ? _socket.Ping(message)
+             ? _websocket.Ping(message)
              : false;
     }
 
@@ -340,7 +347,7 @@ namespace WebSocketSharp.Server {
     public void Send(byte[] data)
     {
       if (IsBound)
-        _socket.Send(data);
+        _websocket.Send(data);
     }
 
     /// <summary>
@@ -352,7 +359,7 @@ namespace WebSocketSharp.Server {
     public void Send(string data)
     {
       if (IsBound)
-        _socket.Send(data);
+        _websocket.Send(data);
     }
 
     /// <summary>
@@ -401,7 +408,7 @@ namespace WebSocketSharp.Server {
     public void Start()
     {
       if (IsBound)
-        _socket.Connect();
+        _websocket.Connect();
     }
 
     /// <summary>
@@ -412,7 +419,7 @@ namespace WebSocketSharp.Server {
       if (!IsBound)
         return;
 
-      _socket.Close();
+      _websocket.Close();
     }
 
     /// <summary>
@@ -429,7 +436,7 @@ namespace WebSocketSharp.Server {
       if (!IsBound)
         return;
 
-      _socket.Close(code, reason);
+      _websocket.Close(code, reason);
     }
 
     /// <summary>

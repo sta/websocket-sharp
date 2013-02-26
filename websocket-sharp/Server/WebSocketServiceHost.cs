@@ -229,15 +229,15 @@ namespace WebSocketSharp.Server {
     #region Explicit Interface Implementation
 
     /// <summary>
-    /// Binds the specified <see cref="WebSocket"/> to the WebSocket service instance.
+    /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
     /// </summary>
-    /// <param name="socket">
-    /// A <see cref="WebSocket"/> to bind.
+    /// <param name="context">
+    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
     /// </param>
-    void IServiceHost.BindWebSocket(WebSocket socket)
+    void IServiceHost.BindWebSocket(WebSocketContext context)
     {
       T service = new T();
-      service.Bind(socket, _sessions);
+      service.Bind(context, _sessions);
       service.Start();
     }
 
@@ -246,25 +246,25 @@ namespace WebSocketSharp.Server {
     #region Protected Method
 
     /// <summary>
-    /// Accepts a WebSocket connection.
+    /// Accepts a WebSocket connection request.
     /// </summary>
     /// <param name="context">
     /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var socket = context.WebSocket;
-      var path   = context.Path.UrlDecode();
+      var websocket = context.WebSocket;
+      var path      = context.Path.UrlDecode();
       if (path != Uri.GetAbsolutePath().UrlDecode())
       {
-        socket.Close(HttpStatusCode.NotImplemented);
+        websocket.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
       if (Uri.IsAbsoluteUri)
-        socket.Url = Uri;
+        websocket.Url = Uri;
 
-      ((IServiceHost)this).BindWebSocket(socket);
+      ((IServiceHost)this).BindWebSocket(context);
     }
 
     #endregion

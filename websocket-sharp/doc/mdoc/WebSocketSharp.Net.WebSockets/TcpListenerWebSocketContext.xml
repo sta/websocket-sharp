@@ -109,6 +109,23 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="IsValid">
+      <MemberSignature Language="C#" Value="public override bool IsValid { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool IsValid" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets a value indicating whether the WebSocket connection request is valid.
+            </summary>
+        <value>
+          <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Origin">
       <MemberSignature Language="C#" Value="public override string Origin { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Origin" />
@@ -139,6 +156,23 @@
             </summary>
         <value>
             A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="QueryString">
+      <MemberSignature Language="C#" Value="public override System.Collections.Specialized.NameValueCollection QueryString { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection QueryString" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the collection of query string variables used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

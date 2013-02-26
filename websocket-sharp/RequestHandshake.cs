@@ -68,30 +68,20 @@ namespace WebSocketSharp {
     public string HttpMethod { get; private set; }
 
     public bool IsWebSocketRequest {
-
       get {
-        if (HttpMethod != "GET")
-          return false;
-
-        if (ProtocolVersion != HttpVersion.Version11)
-          return false;
-
-        if (!HeaderExists("Upgrade", "websocket"))
-          return false;
-
-        if (!HeaderExists("Connection", "Upgrade"))
-          return false;
-
-        if (!HeaderExists("Host"))
-          return false;
-
-        if (!HeaderExists("Sec-WebSocket-Key"))
-          return false;
-
-        if (!HeaderExists("Sec-WebSocket-Version"))
-          return false;
-
-        return true;
+        return HttpMethod != "GET"
+               ? false
+               : ProtocolVersion != HttpVersion.Version11
+                 ? false
+                 : !HeaderExists("Upgrade", "websocket")
+                   ? false
+                   : !HeaderExists("Connection", "Upgrade")
+                     ? false
+                     : !HeaderExists("Host")
+                       ? false
+                       : !HeaderExists("Sec-WebSocket-Key")
+                         ? false
+                         : HeaderExists("Sec-WebSocket-Version");
       }
     }
 
@@ -125,10 +115,9 @@ namespace WebSocketSharp {
 
     public string RawUrl {
       get {
-        if (RequestUri.IsAbsoluteUri)
-          return RequestUri.PathAndQuery;
-
-        return RequestUri.OriginalString;
+        return RequestUri.IsAbsoluteUri
+               ? RequestUri.PathAndQuery
+               : RequestUri.OriginalString;
       }
     }
 

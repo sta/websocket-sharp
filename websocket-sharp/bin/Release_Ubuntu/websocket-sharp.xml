@@ -223,6 +223,20 @@
             A <see cref="T:WebSocketSharp.ByteOrder" /> to test.
             </param>
         </member>
+        <member name="M:WebSocketSharp.Ext.IsLocal(System.Net.IPAddress)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Net.IPAddress" /> represents a local IP address.
+            </summary>
+            <returns>
+                <c>true</c> if <paramref name="address" /> represents a local IP address; otherwise, <c>false</c>.
+            </returns>
+            <param name="address">
+            A <see cref="T:System.Net.IPAddress" /> to test.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="address" /> is <see langword="null" />.
+            </exception>
+        </member>
         <member name="M:WebSocketSharp.Ext.IsNull``1(``0)">
             <summary>
             Determines whether the specified object is <see langword="null" />.
@@ -1131,7 +1145,7 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </summary>
             <param name="context">
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
@@ -1176,18 +1190,18 @@
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketService.QueryString">
             <summary>
-            Gets the HTTP query string variables used in the WebSocket opening handshake.
+            Gets the collection of query string variables used in the WebSocket opening handshake.
             </summary>
             <value>
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the query string variables.
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketService.Sessions">
             <summary>
-            Gets the sessions to the WebSocket service.
+            Gets the sessions to the <see cref="T:WebSocketSharp.Server.WebSocketService" />.
             </summary>
             <value>
-            A <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> that contains the sessions to the WebSocket service.
+            A <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> that contains the sessions to the the <see cref="T:WebSocketSharp.Server.WebSocketService" />.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketService.ID">
@@ -1817,6 +1831,22 @@
             The <see cref="T:WebSocketSharp.Net.HttpListener" /> associated with this <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> is closed.
             </exception>
         </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerRequest.IsLocal">
+            <summary>
+            Gets a value indicating whether the request is sent from the local computer.
+            </summary>
+            <value>
+                <c>true</c> if the request is sent from the local computer; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerRequest.IsWebSocketRequest">
+            <summary>
+            Gets a value indicating whether the request is a WebSocket connection request.
+            </summary>
+            <value>
+                <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
             <summary>
             Decodes an HTML-encoded string and returns the decoded string.
@@ -2444,7 +2474,7 @@
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServerBase.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </summary>
             <param name="context">
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
@@ -2470,7 +2500,7 @@
         </member>
         <member name="T:WebSocketSharp.Server.IServiceHost">
             <summary>
-            Exposes the methods and property for the WebSocket service host.
+            Exposes the methods and property for the host that provides a <see cref="T:WebSocketSharp.Server.WebSocketService" />.
             </summary>
             <remarks>
             </remarks>
@@ -2483,12 +2513,12 @@
                 <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
             </value>
         </member>
-        <member name="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.WebSocket)">
+        <member name="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext)">
             <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> to the WebSocket service instance.
+            Binds the specified <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> to a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
-            <param name="socket">
-            A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
+            <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> that contains the WebSocket connection request objects to bind.
             </param>
         </member>
         <member name="M:WebSocketSharp.Server.IServiceHost.Broadcast(System.String)">
@@ -2627,17 +2657,17 @@
             A <see cref="T:System.Uri" /> that contains a WebSocket URL.
             </value>
         </member>
-        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket)">
+        <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext)">
             <summary>
-            Binds the specified <see cref="T:WebSocketSharp.WebSocket" /> to the WebSocket service instance.
+            Binds the specified <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> to a <see cref="T:WebSocketSharp.Server.WebSocketService" /> instance.
             </summary>
-            <param name="socket">
-            A <see cref="T:WebSocketSharp.WebSocket" /> to bind.
+            <param name="context">
+            A <see cref="T:WebSocketSharp.Net.WebSockets.WebSocketContext" /> that contains the WebSocket connection request objects to bind.
             </param>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
             <summary>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </summary>
             <param name="context">
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
@@ -2844,6 +2874,14 @@
                 <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.IsValid">
+            <summary>
+            Gets a value indicating whether the WebSocket connection request is valid.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Origin">
             <summary>
             Gets the value of the Origin header field used in the WebSocket opening handshake.
@@ -2858,6 +2896,14 @@
             </summary>
             <value>
             A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.QueryString">
+            <summary>
+            Gets the collection of query string variables used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.RequestUri">
@@ -2977,9 +3023,6 @@
             <value>
                 <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
             </value>
-            <exception cref="T:System.NotImplementedException">
-            This property is not implemented.
-            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.IsSecureConnection">
             <summary>
@@ -2987,6 +3030,14 @@
             </summary>
             <value>
                 <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.IsValid">
+            <summary>
+            Gets a value indicating whether the WebSocket connection request is valid.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.Origin">
@@ -3003,6 +3054,14 @@
             </summary>
             <value>
             A <see cref="T:System.String" /> that contains the absolute path.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.QueryString">
+            <summary>
+            Gets the collection of query string variables used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.RequestUri">
@@ -3134,12 +3193,28 @@
                 <c>true</c> if the WebSocket connection is secured; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.IsValid">
+            <summary>
+            Gets a value indicating whether the WebSocket connection request is valid.
+            </summary>
+            <value>
+                <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Origin">
             <summary>
             Gets the value of the Origin header field used in the WebSocket opening handshake.
             </summary>
             <value>
             A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.QueryString">
+            <summary>
+            Gets the collection of query string variables used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.RequestUri">

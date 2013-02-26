@@ -191,27 +191,27 @@ namespace WebSocketSharp.Server {
     #region Protected Method
 
     /// <summary>
-    /// Accepts a WebSocket connection.
+    /// Accepts a WebSocket connection request.
     /// </summary>
     /// <param name="context">
     /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var socket = context.WebSocket;
-      var path   = context.Path.UrlDecode();
+      var websocket = context.WebSocket;
+      var path      = context.Path.UrlDecode();
 
       IServiceHost svcHost;
       if (!_svcHosts.TryGetServiceHost(path, out svcHost))
       {
-        socket.Close(HttpStatusCode.NotImplemented);
+        websocket.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
       if (BaseUri.IsAbsoluteUri)
-        socket.Url = new Uri(BaseUri, path);
+        websocket.Url = new Uri(BaseUri, path);
 
-      svcHost.BindWebSocket(socket);
+      svcHost.BindWebSocket(context);
     }
 
     #endregion

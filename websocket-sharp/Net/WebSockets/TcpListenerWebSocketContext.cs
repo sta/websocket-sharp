@@ -43,38 +43,32 @@ namespace WebSocketSharp.Net.WebSockets {
   {
     #region Fields
 
-    private TcpClient        _client;
+    private TcpClient        _tcpClient;
     private bool             _isSecure;
     private RequestHandshake _request;
-    private WebSocket        _socket;
-    private WsStream         _stream;
+    private WebSocket        _websocket;
+    private WsStream         _wsStream;
 
     #endregion
 
     #region Constructor
 
-    internal TcpListenerWebSocketContext(TcpClient client, bool secure)
+    internal TcpListenerWebSocketContext(TcpClient tcpClient, bool secure)
     {
-      _client   = client;
-      _isSecure = secure;
-      _stream   = WsStream.CreateServerStream(client, secure);
-      _request  = RequestHandshake.Parse(_stream.ReadHandshake());
-      _socket   = new WebSocket(this);
+      _tcpClient = tcpClient;
+      _isSecure  = secure;
+      _wsStream  = WsStream.CreateServerStream(tcpClient, secure);
+      _request   = RequestHandshake.Parse(_wsStream.ReadHandshake());
+      _websocket = new WebSocket(this);
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal TcpClient Client {
-      get {
-        return _client;
-      }
-    }
-
     internal WsStream Stream {
       get {
-        return _stream;
+        return _wsStream;
       }
     }
 
@@ -130,12 +124,9 @@ namespace WebSocketSharp.Net.WebSockets {
     /// <value>
     /// <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
     /// </value>
-    /// <exception cref="NotImplementedException">
-    /// This property is not implemented.
-    /// </exception>
     public override bool IsLocal {
       get {
-        throw new NotImplementedException();
+        return UserEndPoint.Address.IsLocal();
       }
     }
 
@@ -148,6 +139,22 @@ namespace WebSocketSharp.Net.WebSockets {
     public override bool IsSecureConnection {
       get {
         return _isSecure;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the WebSocket connection request is valid.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+    /// </value>
+    public override bool IsValid {
+      get {
+        return !_request.IsWebSocketRequest
+               ? false
+               : SecWebSocketKey.IsNullOrEmpty()
+                 ? false
+                 : !SecWebSocketVersion.IsNullOrEmpty();
       }
     }
 
@@ -172,6 +179,18 @@ namespace WebSocketSharp.Net.WebSockets {
     public virtual string Path {
       get {
         return _request.RequestUri.GetAbsolutePath();
+      }
+    }
+
+    /// <summary>
+    /// Gets the collection of query string variables used in the WebSocket opening handshake.
+    /// </summary>
+    /// <value>
+    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables.
+    /// </value>
+    public override NameValueCollection QueryString {
+      get {
+        return _request.QueryString;
       }
     }
 
@@ -240,7 +259,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint ServerEndPoint {
       get {
-        return (System.Net.IPEndPoint)_client.Client.LocalEndPoint;
+        return (System.Net.IPEndPoint)_tcpClient.Client.LocalEndPoint;
       }
     }
 
@@ -267,7 +286,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint UserEndPoint {
       get {
-        return (System.Net.IPEndPoint)_client.Client.RemoteEndPoint;
+        return (System.Net.IPEndPoint)_tcpClient.Client.RemoteEndPoint;
       }
     }
 
@@ -279,8 +298,18 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override WebSocket WebSocket {
       get {
-        return _socket;
+        return _websocket;
       }
+    }
+
+    #endregion
+
+    #region Internal Method
+
+    internal void Close()
+    {
+      _wsStream.Close();
+      _tcpClient.Close();
     }
 
     #endregion

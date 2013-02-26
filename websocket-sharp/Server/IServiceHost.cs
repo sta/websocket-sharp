@@ -27,11 +27,12 @@
 #endregion
 
 using System;
+using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server {
 
   /// <summary>
-  /// Exposes the methods and property for the WebSocket service host.
+  /// Exposes the methods and property for the host that provides a <see cref="WebSocketService"/>.
   /// </summary>
   /// <remarks>
   /// </remarks>
@@ -46,12 +47,12 @@ namespace WebSocketSharp.Server {
     bool Sweeped { get; set; }
 
     /// <summary>
-    /// Binds the specified <see cref="WebSocket"/> to the WebSocket service instance.
+    /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
     /// </summary>
-    /// <param name="socket">
-    /// A <see cref="WebSocketSharp.WebSocket"/> to bind.
+    /// <param name="context">
+    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
     /// </param>
-    void BindWebSocket(WebSocket socket);
+    void BindWebSocket(WebSocketContext context);
 
     /// <summary>
     /// Broadcasts the specified <see cref="string"/> to all service clients.

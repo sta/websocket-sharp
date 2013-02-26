@@ -150,7 +150,7 @@
             A <see cref="T:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext" /> that contains the WebSocket connection request objects.
             </param>
         <summary>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

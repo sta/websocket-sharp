@@ -95,12 +95,28 @@ namespace WebSocketSharp.Net.WebSockets {
     public abstract bool IsSecureConnection { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the WebSocket connection request is valid.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+    /// </value>
+    public abstract bool IsValid { get; }
+
+    /// <summary>
     /// Gets the value of the Origin header field used in the WebSocket opening handshake.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that contains the value of the Origin header field.
     /// </value>
     public abstract string Origin { get; }
+
+    /// <summary>
+    /// Gets the collection of query string variables used in the WebSocket opening handshake.
+    /// </summary>
+    /// <value>
+    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables.
+    /// </value>
+    public abstract NameValueCollection QueryString { get; }
 
     /// <summary>
     /// Gets the WebSocket URI requested by the client.

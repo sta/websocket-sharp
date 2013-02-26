@@ -353,7 +353,6 @@ namespace WebSocketSharp.Server {
     {
       var res       = context.Response;
       var wsContext = context.AcceptWebSocket();
-      var socket    = wsContext.WebSocket;
       var path      = wsContext.Path.UrlDecode();
 
       IServiceHost svcHost;
@@ -363,7 +362,7 @@ namespace WebSocketSharp.Server {
         return false;
       }
 
-      svcHost.BindWebSocket(socket);
+      svcHost.BindWebSocket(wsContext);
       return true;
     }
 

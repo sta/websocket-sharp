@@ -459,6 +459,35 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="System.Net.IPAddress"/> represents a local IP address.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="address"/> represents a local IP address; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="address">
+    /// A <see cref="System.Net.IPAddress"/> to test.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    public static bool IsLocal(this System.Net.IPAddress address)
+    {
+      if (address.IsNull())
+        throw new ArgumentNullException("address");
+
+      if (System.Net.IPAddress.IsLoopback(address))
+        return true;
+
+      var host  = System.Net.Dns.GetHostName();
+      var addrs = System.Net.Dns.GetHostAddresses(host);
+      foreach (var addr in addrs)
+        if (address.Equals(addr))
+          return true;
+
+      return false;
+    }
+
+    /// <summary>
     /// Determines whether the specified object is <see langword="null"/>.
     /// </summary>
     /// <returns>

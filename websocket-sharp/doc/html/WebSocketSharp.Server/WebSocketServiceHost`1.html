@@ -553,7 +553,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">AcceptWebSocket</a>
                   </b>(<a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a>)<blockquote>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -564,7 +564,7 @@
                   <b>
                     <a href="../WebSocketSharp.Server/WebSocketServerBase.html#M:WebSocketSharp.Server.WebSocketServerBase.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">AcceptWebSocket</a>
                   </b>(<a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a>)<blockquote>
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
              (<i>Inherited from <a href="../WebSocketSharp.Server/WebSocketServerBase.html">WebSocketServerBase</a>.</i>)</blockquote></td>
               </tr>
               <tr valign="top">
@@ -613,12 +613,12 @@
                   </div>
                 </td>
                 <td>
-                  <a href="#M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket)">
+                  <a href="#M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext)">
                     <b>WebSocketSharp.Server.IServiceHost.BindWebSocket</b>
                   </a>
                 </td>
                 <td>
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
+            Binds the specified <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> to a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </td>
               </tr>
             </table>
@@ -912,7 +912,7 @@
         <h3 id="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">AcceptWebSocket Method</h3>
         <blockquote id="M:WebSocketSharp.Server.WebSocketServiceHost`1.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext):member">
           <p class="Summary">
-            Accepts a WebSocket connection.
+            Accepts a WebSocket connection request.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">protected override <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>AcceptWebSocket</b> (<a href="../WebSocketSharp.Net.WebSockets/TcpListenerWebSocketContext.html">WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext</a> context)</div>
@@ -1052,31 +1052,31 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket)">WebSocketSharp.Server.IServiceHost.BindWebSocket Method</h3>
-        <blockquote id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket):member">
+        <h3 id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext)">WebSocketSharp.Server.IServiceHost.BindWebSocket Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext):member">
           <p class="Summary">
-            Binds the specified <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to the WebSocket service instance.
+            Binds the specified <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> to a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">
-            <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>WebSocketSharp.Server.IServiceHost.BindWebSocket</b> (<a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> socket)</div>
+            <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>WebSocketSharp.Server.IServiceHost.BindWebSocket</b> (<a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> context)</div>
           <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket):Parameters">
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext):Parameters">
             <dl>
               <dt>
-                <i>socket</i>
+                <i>context</i>
               </dt>
               <dd>
-            A <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> to bind.
+            A <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> that contains the WebSocket connection request objects to bind.
             </dd>
             </dl>
           </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket):Remarks">
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.WebSocket):Version Information">
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketServiceHost`1.WebSocketSharp#Server#IServiceHost#BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext):Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

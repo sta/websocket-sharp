@@ -431,6 +431,32 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="IsLocal">
+      <MemberSignature Language="C#" Value="public static bool IsLocal (this System.Net.IPAddress address);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsLocal(class System.Net.IPAddress address) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="address" Type="System.Net.IPAddress" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="address">
+            A <see cref="T:System.Net.IPAddress" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.Net.IPAddress" /> represents a local IP address.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="address" /> represents a local IP address; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="address" /> is <see langword="null" />.
+            </exception>
+      </Docs>
+    </Member>
     <Member MemberName="IsNull&lt;T&gt;">
       <MemberSignature Language="C#" Value="public static bool IsNull&lt;T&gt; (this T obj) where T : class;" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNull&lt;class T&gt;(!!T obj) cil managed" />

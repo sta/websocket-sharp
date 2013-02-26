@@ -372,7 +372,9 @@
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets a value indicating whether the request is sent from the local computer.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div></div></td>
@@ -396,7 +398,9 @@
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets a value indicating whether the request is a WebSocket connection request.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div></div></td>
@@ -618,6 +622,18 @@
                   </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified object is <tt>null</tt>.
             And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsUpgradeTo(WebSocketSharp.Net.HttpListenerRequest,System.String)">IsUpgradeTo</a>
+                  </b>(<i>this</i> <a href="../WebSocketSharp.Net/HttpListenerRequest.html">HttpListenerRequest</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="../WebSocketSharp.Net/HttpListenerRequest.html">WebSocketSharp.Net.HttpListenerRequest</a> is the HTTP Upgrade request
+            to switch to the specified <i>protocol</i>.
             </blockquote></td>
               </tr>
             </table>
@@ -939,14 +955,14 @@
         <h3 id="P:WebSocketSharp.Net.HttpListenerRequest.IsLocal">IsLocal Property</h3>
         <blockquote id="P:WebSocketSharp.Net.HttpListenerRequest.IsLocal:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets a value indicating whether the request is sent from the local computer.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsLocal</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.IsLocal:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+            <tt>true</tt> if the request is sent from the local computer; otherwise, <tt>false</tt>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.IsLocal:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -979,14 +995,14 @@
         <h3 id="P:WebSocketSharp.Net.HttpListenerRequest.IsWebSocketRequest">IsWebSocketRequest Property</h3>
         <blockquote id="P:WebSocketSharp.Net.HttpListenerRequest.IsWebSocketRequest:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets a value indicating whether the request is a WebSocket connection request.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsWebSocketRequest</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.IsWebSocketRequest:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </blockquote>
+            <tt>true</tt> if the request is a WebSocket connection request; otherwise, <tt>false</tt>.
+            </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.IsWebSocketRequest:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>

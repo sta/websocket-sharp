@@ -336,7 +336,7 @@ namespace WebSocketSharp.Server {
     #region Protected Methods
 
     /// <summary>
-    /// Accepts a WebSocket connection.
+    /// Accepts a WebSocket connection request.
     /// </summary>
     /// <param name="context">
     /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.

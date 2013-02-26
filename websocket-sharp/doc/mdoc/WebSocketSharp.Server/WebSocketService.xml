@@ -327,10 +327,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the HTTP query string variables used in the WebSocket opening handshake.
+            Gets the collection of query string variables used in the WebSocket opening handshake.
             </summary>
         <value>
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the query string variables.
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -434,10 +434,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the sessions to the WebSocket service.
+            Gets the sessions to the <see cref="T:WebSocketSharp.Server.WebSocketService" />.
             </summary>
         <value>
-            A <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> that contains the sessions to the WebSocket service.
+            A <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> that contains the sessions to the the <see cref="T:WebSocketSharp.Server.WebSocketService" />.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
