@@ -56,7 +56,7 @@ namespace WebSocketSharp {
 
     public bool IsWebSocketResponse {
       get {
-        return ProtocolVersion != HttpVersion.Version11
+        return ProtocolVersion < HttpVersion.Version11
                ? false
                : StatusCode != "101"
                  ? false

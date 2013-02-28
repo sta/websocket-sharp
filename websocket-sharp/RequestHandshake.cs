@@ -71,7 +71,7 @@ namespace WebSocketSharp {
       get {
         return HttpMethod != "GET"
                ? false
-               : ProtocolVersion != HttpVersion.Version11
+               : ProtocolVersion < HttpVersion.Version11
                  ? false
                  : !HeaderExists("Upgrade", "websocket")
                    ? false

@@ -216,7 +216,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Establishes a connection.
+            Establishes a WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

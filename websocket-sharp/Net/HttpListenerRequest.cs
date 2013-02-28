@@ -6,7 +6,7 @@
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -39,6 +39,12 @@ using System.Text;
 
 namespace WebSocketSharp.Net {
 
+	/// <summary>
+	/// Provides access to the HTTP request objects sent to a <see cref="HttpListener"/> instance.
+	/// </summary>
+	/// <remarks>
+	/// The HttpListenerRequest class cannot be inherited.
+	/// </remarks>
 	public sealed class HttpListenerRequest {
 
 		#region Private Static Fields
@@ -86,12 +92,25 @@ namespace WebSocketSharp.Net {
 
 		#region Properties
 
+		/// <summary>
+		/// Gets the media types which are acceptable for the response.
+		/// </summary>
+		/// <value>
+		/// An array of <see cref="string"/> that contains the media type names in the Accept request-header field
+		/// or <see langword="null"/> if the request did not include an Accept header.
+		/// </value>
 		public string [] AcceptTypes {
 			get { return accept_types; }
 		}
 
-		// TODO: Always returns 0
+		/// <summary>
+		/// Gets an error code that identifies a problem with the client's certificate.
+		/// </summary>
+		/// <value>
+		/// Always returns <c>0</c>.
+		/// </value>
 		public int ClientCertificateError {
+			// TODO: Always returns 0
 			get {
 /*				
 				if (no_get_certificate)
@@ -103,7 +122,14 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets the encoding that can be used with the entity body data included in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Encoding"/> that contains the encoding that can be used with entity body data.
+		/// </value>
 		public Encoding ContentEncoding {
+			// TODO: Always returns Encoding.Default
 			get {
 				if (content_encoding == null)
 					content_encoding = Encoding.Default;
@@ -111,14 +137,33 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets the size of the entity body data included in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="long"/> that contains the value of the Content-Length entity-header field.
+		/// <c>-1</c> if the size is not known.
+		/// </value>
 		public long ContentLength64 {
 			get { return content_length; }
 		}
 
+		/// <summary>
+		/// Gets the media type of the entity body included in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the value of the Content-Type entity-header field.
+		/// </value>
 		public string ContentType {
 			get { return headers ["content-type"]; }
 		}
 
+		/// <summary>
+		/// Gets the cookies included in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="CookieCollection"/> that contains the cookies included in the request.
+		/// </value>
 		public CookieCollection Cookies {
 			get {
 				// TODO: check if the collection is read-only
@@ -128,18 +173,42 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the request has the entity body.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the request has the entity body; otherwise, <c>false</c>.
+		/// </value>
 		public bool HasEntityBody {
 			get { return (content_length > 0 || is_chunked); }
 		}
 
+		/// <summary>
+		/// Gets the HTTP headers used in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="NameValueCollection"/> that contains the HTTP headers used in the request.
+		/// </value>
 		public NameValueCollection Headers {
 			get { return headers; }
 		}
 
+		/// <summary>
+		/// Gets the HTTP method used in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the HTTP method used in the request.
+		/// </value>
 		public string HttpMethod {
 			get { return method; }
 		}
 
+		/// <summary>
+		/// Gets a <see cref="Stream"/> that contains the entity body data included in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Stream"/> that contains the entity body data included in the request.
+		/// </value>
 		public Stream InputStream {
 			get {
 				if (input_stream == null) {
@@ -153,6 +222,12 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the client that sent the request is authenticated.
+		/// </summary>
+		/// <value>
+		/// Always returns <c>false</c>.
+		/// </value>
 		public bool IsAuthenticated {
 			// TODO: Always returns false
 			get { return false; }
@@ -168,6 +243,12 @@ namespace WebSocketSharp.Net {
 			get { return RemoteEndPoint.Address.IsLocal(); }
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the HTTP connection is secured using the SSL protocol.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the HTTP connection is secured; otherwise, <c>false</c>.
+		/// </value>
 		public bool IsSecureConnection {
 			get { return context.Connection.IsSecure; } 
 		}
@@ -182,7 +263,7 @@ namespace WebSocketSharp.Net {
 			get {
 				return method != "GET"
 					? false
-					: version != HttpVersion.Version11
+					: version < HttpVersion.Version11
 						? false
 						: !headers.Exists("Upgrade", "websocket")
 							? false
@@ -196,6 +277,12 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets a value indicating whether the client requests a persistent connection.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the client requests a persistent connection; otherwise, <c>false</c>.
+		/// </value>
 		public bool KeepAlive {
 			get {
 				if (ka_set)
@@ -219,51 +306,123 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
+		/// <summary>
+		/// Gets the server endpoint as an IP address and a port number.
+		/// </summary>
+		/// <value>
+		/// A <see cref="IPEndPoint"/> that contains the server endpoint.
+		/// </value>
 		public IPEndPoint LocalEndPoint {
 			get { return context.Connection.LocalEndPoint; }
 		}
 
+		/// <summary>
+		/// Gets the HTTP version used in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Version"/> that contains the HTTP version used in the request.
+		/// </value>
 		public Version ProtocolVersion {
 			get { return version; }
 		}
 
+		/// <summary>
+		/// Gets the collection of query string variables used in the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="NameValueCollection"/> that contains the collection of query string variables used in the request.
+		/// </value>
 		public NameValueCollection QueryString {
 			get { return query_string; }
 		}
 
+		/// <summary>
+		/// Gets the raw URL (without the scheme, host and port) requested by the client.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the raw URL requested by the client.
+		/// </value>
 		public string RawUrl {
 			get { return raw_url; }
 		}
 
+		/// <summary>
+		/// Gets the client endpoint as an IP address and a port number.
+		/// </summary>
+		/// <value>
+		/// A <see cref="IPEndPoint"/> that contains the client endpoint.
+		/// </value>
 		public IPEndPoint RemoteEndPoint {
 			get { return context.Connection.RemoteEndPoint; }
 		}
 
-		// TODO: Always returns Guid.Empty
+		/// <summary>
+		/// Gets the identifier of a request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Guid"/> that contains the identifier of a request.
+		/// </value>
 		public Guid RequestTraceIdentifier {
+			// TODO: Always returns Guid.Empty
 			get { return Guid.Empty; }
 		}
 
+		/// <summary>
+		/// Gets the URL requested by the client.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Uri"/> that contains the URL requested by the client.
+		/// </value>
 		public Uri Url {
 			get { return url; }
 		}
 
+		/// <summary>
+		/// Gets the URL of the resource from which the requested URL was obtained.
+		/// </summary>
+		/// <value>
+		/// A <see cref="Uri"/> that contains the value of the Referer request-header field.
+		/// </value>
 		public Uri UrlReferrer {
 			get { return referrer; }
 		}
 
+		/// <summary>
+		/// Gets the information about the user agent originating the request.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the value of the User-Agent request-header field.
+		/// </value>
 		public string UserAgent {
 			get { return headers ["user-agent"]; }
 		}
 
+		/// <summary>
+		/// Gets the server endpoint as an IP address and a port number.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the server endpoint.
+		/// </value>
 		public string UserHostAddress {
 			get { return LocalEndPoint.ToString (); }
 		}
 
+		/// <summary>
+		/// Gets the internet host name and port number (if present) of the resource being requested.
+		/// </summary>
+		/// <value>
+		/// A <see cref="string"/> that contains the value of the Host request-header field.
+		/// </value>
 		public string UserHostName {
 			get { return headers ["host"]; }
 		}
 
+		/// <summary>
+		/// Gets the natural languages that are preferred as a response to the request.
+		/// </summary>
+		/// <value>
+		/// An array of <see cref="string"/> that contains the natural language names in the Accept-Language request-header field.
+		/// </value>
 		public string [] UserLanguages {
 			get { return user_languages; }
 		}
@@ -290,7 +449,6 @@ namespace WebSocketSharp.Net {
 				} else {
 					string key = HttpUtility.UrlDecode (kv.Substring (0, pos));
 					string val = HttpUtility.UrlDecode (kv.Substring (pos + 1));
-					
 					query_string.Add (key, val);
 				}
 			}
@@ -404,7 +562,7 @@ namespace WebSocketSharp.Net {
 
 			if (raw_uri != null)
 				host = raw_uri.Host;
-	
+
 			int colon = host.IndexOf (':');
 			if (colon >= 0)
 				host = host.Substring (0, colon);
@@ -510,7 +668,8 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		internal static string Unquote (String str) {
+		internal static string Unquote (String str)
+		{
 			int start = str.IndexOf ('\"');
 			int end = str.LastIndexOf ('\"');
 			if (start >= 0 && end >=0)
@@ -522,27 +681,66 @@ namespace WebSocketSharp.Net {
 
 		#region Public Methods
 
-		// TODO: Always returns null
+		/// <summary>
+		/// Begins getting the client's X.509 v.3 certificate asynchronously.
+		/// </summary>
+		/// <remarks>
+		/// This asynchronous operation must be completed by calling the <see cref="EndGetClientCertificate"/> method.
+		/// Typically, the method is invoked by the <paramref name="requestCallback"/> delegate.
+		/// </remarks>
+		/// <returns>
+		/// An <see cref="IAsyncResult"/> that contains the status of the asynchronous operation.
+		/// </returns>
+		/// <param name="requestCallback">
+		/// An <see cref="AsyncCallback"/> delegate that references the method(s)
+		/// called when the asynchronous operation completes.
+		/// </param>
+		/// <param name="state">
+		/// An <see cref="object"/> that contains a user defined object to pass to the <paramref name="requestCallback"/> delegate.
+		/// </param>
+		/// <exception cref="NotImplementedException">
+		/// This method is not implemented.
+		/// </exception>
 		public IAsyncResult BeginGetClientCertificate (AsyncCallback requestCallback, Object state)
 		{
-			return null;
+			// TODO: Not Implemented.
+			throw new NotImplementedException ();
 		}
 
-		// TODO: Always returns null
+		/// <summary>
+		/// Ends an asynchronous operation to get the client's X.509 v.3 certificate.
+		/// </summary>
+		/// <remarks>
+		/// This method completes an asynchronous operation started by calling the <see cref="BeginGetClientCertificate"/> method.
+		/// </remarks>
+		/// <returns>
+		/// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
+		/// </returns>
+		/// <param name="asyncResult">
+		/// An <see cref="IAsyncResult"/> obtained by calling the <see cref="BeginGetClientCertificate"/> method.
+		/// </param>
+		/// <exception cref="NotImplementedException">
+		/// This method is not implemented.
+		/// </exception>
 		public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
 		{
-			// set no_client_certificate once done.
-
-			return null;
+			// TODO: Not Implemented.
+			throw new NotImplementedException ();
 		}
 
-		// TODO: Always returns null
+		/// <summary>
+		/// Gets the client's X.509 v.3 certificate.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
+		/// </returns>
+		/// <exception cref="NotImplementedException">
+		/// This method is not implemented.
+		/// </exception>
 		public X509Certificate2 GetClientCertificate ()
 		{
-			// set no_client_certificate once done.
-
-			// InvalidOp if call in progress.
-			return null;
+			// TODO: Not Implemented.
+			throw new NotImplementedException ();
 		}
 
 		#endregion

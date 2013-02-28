@@ -459,6 +459,13 @@ namespace WebSocketSharp {
       }
     }
 
+    private bool connect()
+    {
+      return _isClient
+             ? doHandshake()
+             : acceptHandshake();
+    }
+
     // As Client
     private string createBase64Key()
     {
@@ -1170,13 +1177,6 @@ namespace WebSocketSharp {
         Console.WriteLine("WS: Info@Connect: The WebSocket connection has been established already.");
         return;
       }
-
-      Func<bool> connect = () =>
-      {
-        return _isClient
-               ? doHandshake()
-               : acceptHandshake();
-      };
 
       try
       {

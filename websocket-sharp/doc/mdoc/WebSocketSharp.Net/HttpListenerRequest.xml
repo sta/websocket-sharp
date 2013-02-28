@@ -9,8 +9,12 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides access to the HTTP request objects sent to a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            </summary>
+    <remarks>
+            The HttpListenerRequest class cannot be inherited.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName="AcceptTypes">
@@ -21,8 +25,13 @@
         <ReturnType>System.String[]</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the media types which are acceptable for the response.
+            </summary>
+        <value>
+            An array of <see cref="T:System.String" /> that contains the media type names in the Accept request-header field
+            or <see langword="null" /> if the request did not include an Accept header.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -38,11 +47,26 @@
         <Parameter Name="state" Type="System.Object" />
       </Parameters>
       <Docs>
-        <param name="requestCallback">To be added.</param>
-        <param name="state">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <param name="requestCallback">
+            An <see cref="T:System.AsyncCallback" /> delegate that references the method(s)
+            called when the asynchronous operation completes.
+            </param>
+        <param name="state">
+            An <see cref="T:System.Object" /> that contains a user defined object to pass to the <paramref name="requestCallback" /> delegate.
+            </param>
+        <summary>
+            Begins getting the client's X.509 v.3 certificate asynchronously.
+            </summary>
+        <returns>
+            An <see cref="T:System.IAsyncResult" /> that contains the status of the asynchronous operation.
+            </returns>
+        <remarks>
+            This asynchronous operation must be completed by calling the <see cref="M:WebSocketSharp.Net.HttpListenerRequest.EndGetClientCertificate(System.IAsyncResult)" /> method.
+            Typically, the method is invoked by the <paramref name="requestCallback" /> delegate.
+            </remarks>
+        <exception cref="T:System.NotImplementedException">
+            This method is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ClientCertificateError">
@@ -53,8 +77,12 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets an error code that identifies a problem with the client's certificate.
+            </summary>
+        <value>
+            Always returns <c>0</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -66,8 +94,12 @@
         <ReturnType>System.Text.Encoding</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the encoding that can be used with the entity body data included in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with entity body data.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -79,8 +111,13 @@
         <ReturnType>System.Int64</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the size of the entity body data included in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.Int64" /> that contains the value of the Content-Length entity-header field.
+            <c>-1</c> if the size is not known.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -92,8 +129,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the media type of the entity body included in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Content-Type entity-header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -105,8 +146,12 @@
         <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the cookies included in the request.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies included in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -121,10 +166,21 @@
         <Parameter Name="asyncResult" Type="System.IAsyncResult" />
       </Parameters>
       <Docs>
-        <param name="asyncResult">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <param name="asyncResult">
+            An <see cref="T:System.IAsyncResult" /> obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)" /> method.
+            </param>
+        <summary>
+            Ends an asynchronous operation to get the client's X.509 v.3 certificate.
+            </summary>
+        <returns>
+            A <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> that contains the client's X.509 v.3 certificate.
+            </returns>
+        <remarks>
+            This method completes an asynchronous operation started by calling the <see cref="M:WebSocketSharp.Net.HttpListenerRequest.BeginGetClientCertificate(System.AsyncCallback,System.Object)" /> method.
+            </remarks>
+        <exception cref="T:System.NotImplementedException">
+            This method is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="GetClientCertificate">
@@ -136,9 +192,16 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
+        <summary>
+            Gets the client's X.509 v.3 certificate.
+            </summary>
+        <returns>
+            A <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> that contains the client's X.509 v.3 certificate.
+            </returns>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.NotImplementedException">
+            This method is not implemented.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="HasEntityBody">
@@ -149,8 +212,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the request has the entity body.
+            </summary>
+        <value>
+          <c>true</c> if the request has the entity body; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -162,8 +229,12 @@
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP headers used in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the HTTP headers used in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -175,8 +246,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP method used in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the HTTP method used in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -188,8 +263,12 @@
         <ReturnType>System.IO.Stream</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a <see cref="T:System.IO.Stream" /> that contains the entity body data included in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.IO.Stream" /> that contains the entity body data included in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -201,8 +280,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the client that sent the request is authenticated.
+            </summary>
+        <value>
+            Always returns <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -231,8 +314,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the HTTP connection is secured using the SSL protocol.
+            </summary>
+        <value>
+          <c>true</c> if the HTTP connection is secured; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -261,8 +348,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the client requests a persistent connection.
+            </summary>
+        <value>
+          <c>true</c> if the client requests a persistent connection; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -274,8 +365,12 @@
         <ReturnType>System.Net.IPEndPoint</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the server endpoint as an IP address and a port number.
+            </summary>
+        <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the server endpoint.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -287,8 +382,12 @@
         <ReturnType>System.Version</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the HTTP version used in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.Version" /> that contains the HTTP version used in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -300,8 +399,12 @@
         <ReturnType>System.Collections.Specialized.NameValueCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the collection of query string variables used in the request.
+            </summary>
+        <value>
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the collection of query string variables used in the request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -313,8 +416,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the raw URL (without the scheme, host and port) requested by the client.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the raw URL requested by the client.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -326,8 +433,12 @@
         <ReturnType>System.Net.IPEndPoint</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the client endpoint as an IP address and a port number.
+            </summary>
+        <value>
+            A <see cref="T:System.Net.IPEndPoint" /> that contains the client endpoint.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -339,8 +450,12 @@
         <ReturnType>System.Guid</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the identifier of a request.
+            </summary>
+        <value>
+            A <see cref="T:System.Guid" /> that contains the identifier of a request.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -352,8 +467,12 @@
         <ReturnType>System.Uri</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the URL requested by the client.
+            </summary>
+        <value>
+            A <see cref="T:System.Uri" /> that contains the URL requested by the client.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -365,8 +484,12 @@
         <ReturnType>System.Uri</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the URL of the resource from which the requested URL was obtained.
+            </summary>
+        <value>
+            A <see cref="T:System.Uri" /> that contains the value of the Referer request-header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -378,8 +501,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the information about the user agent originating the request.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the User-Agent request-header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -391,8 +518,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the server endpoint as an IP address and a port number.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the server endpoint.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -404,8 +535,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the internet host name and port number (if present) of the resource being requested.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Host request-header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -417,8 +552,12 @@
         <ReturnType>System.String[]</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the natural languages that are preferred as a response to the request.
+            </summary>
+        <value>
+            An array of <see cref="T:System.String" /> that contains the natural language names in the Accept-Language request-header field.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
