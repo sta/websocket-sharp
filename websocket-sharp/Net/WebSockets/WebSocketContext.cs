@@ -111,6 +111,14 @@ namespace WebSocketSharp.Net.WebSockets {
     public abstract string Origin { get; }
 
     /// <summary>
+    /// Gets the absolute path of the requested WebSocket URI.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the absolute path of the requested WebSocket URI.
+    /// </value>
+    public abstract string Path { get; }
+
+    /// <summary>
     /// Gets the collection of query string variables used in the WebSocket opening handshake.
     /// </summary>
     /// <value>

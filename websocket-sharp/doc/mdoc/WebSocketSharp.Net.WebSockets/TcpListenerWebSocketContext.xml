@@ -144,7 +144,7 @@
       </Docs>
     </Member>
     <Member MemberName="Path">
-      <MemberSignature Language="C#" Value="public virtual string Path { get; }" />
+      <MemberSignature Language="C#" Value="public override string Path { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance string Path" />
       <MemberType>Property</MemberType>
       <ReturnValue>
@@ -155,7 +155,7 @@
             Gets the absolute path of the requested WebSocket URI.
             </summary>
         <value>
-            A <see cref="T:System.String" /> that contains the absolute path.
+            A <see cref="T:System.String" /> that contains the absolute path of the requested WebSocket URI.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

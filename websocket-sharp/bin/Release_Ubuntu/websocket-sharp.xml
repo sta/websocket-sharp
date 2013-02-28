@@ -3155,7 +3155,7 @@
             Gets the absolute path of the requested WebSocket URI.
             </summary>
             <value>
-            A <see cref="T:System.String" /> that contains the absolute path.
+            A <see cref="T:System.String" /> that contains the absolute path of the requested WebSocket URI.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.QueryString">
@@ -3313,7 +3313,7 @@
             Gets the absolute path of the requested WebSocket URI.
             </summary>
             <value>
-            A <see cref="T:System.String" /> that contains the absolute path.
+            A <see cref="T:System.String" /> that contains the absolute path of the requested WebSocket URI.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.QueryString">
@@ -3467,6 +3467,14 @@
             </summary>
             <value>
             A <see cref="T:System.String" /> that contains the value of the Origin header field.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.Path">
+            <summary>
+            Gets the absolute path of the requested WebSocket URI.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the absolute path of the requested WebSocket URI.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.WebSocketContext.QueryString">

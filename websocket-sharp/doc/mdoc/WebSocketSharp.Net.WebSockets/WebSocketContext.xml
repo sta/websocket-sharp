@@ -148,6 +148,23 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="Path">
+      <MemberSignature Language="C#" Value="public abstract string Path { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Path" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the absolute path of the requested WebSocket URI.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the absolute path of the requested WebSocket URI.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="QueryString">
       <MemberSignature Language="C#" Value="public abstract System.Collections.Specialized.NameValueCollection QueryString { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection QueryString" />

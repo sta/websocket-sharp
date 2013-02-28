@@ -427,7 +427,7 @@
              (<i>Inherited from <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketContext</a>.</i>)</td>
               </tr>
               <tr valign="top">
-                <td>[read-only]<div></div></td>
+                <td>[read-only]<div>override </div></td>
                 <td>
                   <b>
                     <a href="#P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Path">Path</a>
@@ -439,6 +439,20 @@
                   </i>. 
             Gets the absolute path of the requested WebSocket URI.
             </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div>abstract </div></td>
+                <td>
+                  <b>
+                    <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html#P:WebSocketSharp.Net.WebSockets.WebSocketContext.Path">Path</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
+                  </i>. 
+            Gets the absolute path of the requested WebSocket URI.
+             (<i>Inherited from <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketContext</a>.</i>)</td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div>override </div></td>
@@ -848,10 +862,10 @@
             Gets the absolute path of the requested WebSocket URI.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public virtual <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Path</b>  { get; }</div>
+          <div class="Signature">public override <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Path</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Path:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the absolute path.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the absolute path of the requested WebSocket URI.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext.Path:Remarks">

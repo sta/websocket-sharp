@@ -555,9 +555,8 @@ namespace WebSocketSharp {
     private void init(WebSocketContext context)
     {
       _context  = context;
+      _uri      = context.Path.ToUri();
       _isSecure = context.IsSecureConnection;
-
-      _uri      = "/".ToUri();
       _isClient = false;
     }
 

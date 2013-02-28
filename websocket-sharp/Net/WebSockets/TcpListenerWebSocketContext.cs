@@ -174,9 +174,9 @@ namespace WebSocketSharp.Net.WebSockets {
     /// Gets the absolute path of the requested WebSocket URI.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the absolute path.
+    /// A <see cref="string"/> that contains the absolute path of the requested WebSocket URI.
     /// </value>
-    public virtual string Path {
+    public override string Path {
       get {
         return _request.RequestUri.GetAbsolutePath();
       }
