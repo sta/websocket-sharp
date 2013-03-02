@@ -37,7 +37,7 @@
       </Parameters>
       <Docs>
         <param name="url">
-            A <see cref="T:System.String" /> that contains the WebSocket URL.
+            A <see cref="T:System.String" /> that contains a WebSocket URL.
             </param>
         <param name="protocols">
             An array of <see cref="T:System.String" /> that contains the WebSocket subprotocols if any.
@@ -45,7 +45,7 @@
         <summary>
             Initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class with the specified WebSocket URL and subprotocols.
             </summary>
-        <remarks>To be added.</remarks>
+        <remarks />
         <exception cref="T:System.ArgumentNullException">
           <paramref name="url" /> is <see langword="null" />.
             </exception>
@@ -74,27 +74,31 @@
       </Parameters>
       <Docs>
         <param name="url">
-            A <see cref="T:System.String" /> that contains the WebSocket URL.
+            A <see cref="T:System.String" /> that contains a WebSocket URL.
             </param>
         <param name="onOpen">
-            An OnOpen event handler.
+            An <see cref="E:WebSocketSharp.WebSocket.OnOpen" /> event handler.
             </param>
         <param name="onMessage">
-            An OnMessage event handler.
+            An <see cref="E:WebSocketSharp.WebSocket.OnMessage" /> event handler.
             </param>
         <param name="onError">
-            An OnError event handler.
+            An <see cref="E:WebSocketSharp.WebSocket.OnError" /> event handler.
             </param>
         <param name="onClose">
-            An OnClose event handler.
+            An <see cref="E:WebSocketSharp.WebSocket.OnClose" /> event handler.
             </param>
         <param name="protocols">
             An array of <see cref="T:System.String" /> that contains the WebSocket subprotocols if any.
             </param>
         <summary>
-            Initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+            Initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class with the specified WebSocket URL,
+            OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
             </summary>
-        <remarks>To be added.</remarks>
+        <remarks>
+            This constructor initializes a new instance of the <see cref="T:WebSocketSharp.WebSocket" /> class and
+            establishes a WebSocket connection.
+            </remarks>
         <exception cref="T:System.ArgumentNullException">
           <paramref name="url" /> is <see langword="null" />.
             </exception>
@@ -113,7 +117,7 @@
       <Parameters />
       <Docs>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection and releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -130,10 +134,11 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:System.UInt16" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:System.UInt16" /> that contains a status code indicating the reason for closure.
             </param>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection with the specified <paramref name="code" />
+            and releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -150,10 +155,12 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that contains a status code
+            indicating the reason for closure.
             </param>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection with the specified <paramref name="code" />
+            and releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -171,13 +178,14 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:System.UInt16" /> that contains a status code indicating a reason for closure.
+            A <see cref="T:System.UInt16" /> that contains a status code indicating the reason for closure.
             </param>
         <param name="reason">
-            A <see cref="T:System.String" /> that contains a reason for closure.
+            A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />,
+            and releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -195,13 +203,15 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:WebSocketSharp.CloseStatusCode" /> that contains a status code indicating a reason for closure.
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that contains a status code
+            indicating the reason for closure.
             </param>
         <param name="reason">
-            A <see cref="T:System.String" /> that contains a reason for closure.
+            A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />,
+            and releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -231,13 +241,10 @@
       <Parameters />
       <Docs>
         <summary>
-            Closes the connection and releases all associated resources after sends a Close control frame.
+            Closes the WebSocket connection and releases all associated resources.
             </summary>
         <remarks>
-            Call <see cref="M:WebSocketSharp.WebSocket.Dispose" /> when you are finished using the <see cref="T:WebSocketSharp.WebSocket" />. The
-            <see cref="M:WebSocketSharp.WebSocket.Dispose" /> method leaves the <see cref="T:WebSocketSharp.WebSocket" /> in an unusable state. After
-            calling <see cref="M:WebSocketSharp.WebSocket.Dispose" />, you must release all references to the <see cref="T:WebSocketSharp.WebSocket" /> so
-            the garbage collector can reclaim the memory that the <see cref="T:WebSocketSharp.WebSocket" /> was occupying.
+            This method closes the WebSocket connection with the <see cref="F:WebSocketSharp.CloseStatusCode.AWAY" />.
             </remarks>
       </Docs>
     </Member>
@@ -301,7 +308,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Occurs when the WebSocket receives a Close frame or the Close method is called.
+            Occurs when the <see cref="T:WebSocketSharp.WebSocket" /> receives a Close frame or the Close method is called.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -315,7 +322,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Occurs when the WebSocket gets an error.
+            Occurs when the <see cref="T:WebSocketSharp.WebSocket" /> gets an error.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -329,7 +336,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Occurs when the WebSocket receives a data frame.
+            Occurs when the <see cref="T:WebSocketSharp.WebSocket" /> receives a data frame.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -358,10 +365,10 @@
       <Parameters />
       <Docs>
         <summary>
-            Sends a Ping frame using the connection.
+            Pings using the WebSocket connection.
             </summary>
         <returns>
-          <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -378,13 +385,13 @@
       </Parameters>
       <Docs>
         <param name="message">
-            A <see cref="T:System.String" /> that contains the message to be sent.
+            A <see cref="T:System.String" /> that contains a message.
             </param>
         <summary>
-            Sends a Ping frame with a message using the connection.
+            Pings with the specified <paramref name="message" /> using the WebSocket connection.
             </summary>
         <returns>
-          <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+          <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -438,7 +445,7 @@
             An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <summary>
-            Sends a binary data using the connection.
+            Sends a binary <paramref name="data" /> using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -458,7 +465,7 @@
             A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
         <summary>
-            Sends a binary data using the connection.
+            Sends a binary data using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -478,7 +485,7 @@
             A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <summary>
-            Sends a text data using the connection.
+            Sends a text <paramref name="data" /> using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -499,10 +506,11 @@
             An array of <see cref="T:System.Byte" /> that contains a binary data to send.
             </param>
         <param name="completed">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            An <see cref="T:System.Action" /> delegate that references the method(s) called when
+            the asynchronous operation completes.
             </param>
         <summary>
-            Sends a binary data asynchronously using the connection.
+            Sends a binary <paramref name="data" /> asynchronously using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -523,10 +531,11 @@
             A <see cref="T:System.IO.FileInfo" /> that contains a binary data to send.
             </param>
         <param name="completed">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            An <see cref="T:System.Action" /> delegate that references the method(s) called when
+            the asynchronous operation completes.
             </param>
         <summary>
-            Sends a binary data asynchronously using the connection.
+            Sends a binary data asynchronously using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -547,10 +556,11 @@
             A <see cref="T:System.String" /> that contains a text data to send.
             </param>
         <param name="completed">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) that is called when an asynchronous operation completes.
+            An <see cref="T:System.Action" /> delegate that references the method(s) called when
+            the asynchronous operation completes.
             </param>
         <summary>
-            Sends a text data asynchronously using the connection.
+            Sends a text <paramref name="data" /> asynchronously using the WebSocket connection.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

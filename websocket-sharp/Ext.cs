@@ -1221,11 +1221,11 @@ namespace WebSocketSharp {
     /// </exception>
     public static bool TryCreateWebSocketUri(this string uriString, out Uri result, out string message)
     {
-      if (uriString == null)
+      if (uriString.IsNull())
         throw new ArgumentNullException("uriString");
 
       result = null;
-      if (uriString == String.Empty)
+      if (uriString.IsEmpty())
       {
         message = "Must not be empty.";
         return false;
@@ -1262,6 +1262,14 @@ namespace WebSocketSharp {
             "Invalid pair of scheme and port: {0}, {1}", scheme, port);
           return false;
         }
+      }
+      else
+      {
+        port = scheme == "ws"
+             ? 80
+             : 443;
+        var url = String.Format("{0}://{1}:{2}{3}", scheme, uri.Host, port, uri.PathAndQuery);
+        uri = url.ToUri();
       }
 
       result  = uri;

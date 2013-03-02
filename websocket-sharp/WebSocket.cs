@@ -65,18 +65,18 @@ namespace WebSocketSharp {
     #region Private Fields
 
     private string           _base64key;
+    private bool             _client;
     private Action           _closeContext;
     private WebSocketContext _context;
     private string           _extensions;
     private AutoResetEvent   _exitMessageLoop;
     private Object           _forClose;
     private Object           _forSend;
-    private bool             _isClient;
-    private bool             _isSecure;
     private string           _protocol;
     private string           _protocols;
     private volatile WsState _readyState;
     private AutoResetEvent   _receivePong;
+    private bool             _secure;
     private TcpClient        _tcpClient;
     private Uri              _uri;
     private WsStream         _wsStream;
@@ -119,10 +119,13 @@ namespace WebSocketSharp {
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL and subprotocols.
     /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that contains the WebSocket URL.
+    /// A <see cref="string"/> that contains a WebSocket URL.
     /// </param>
     /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
@@ -141,33 +144,40 @@ namespace WebSocketSharp {
 
       Uri    uri;
       string msg;
-      if (!tryCreateUri(url, out uri, out msg))
+      if (!url.TryCreateWebSocketUri(out uri, out msg))
         throw new ArgumentException(msg, "url");
 
       _uri       = uri;
       _protocols = protocols.ToString(", ");
       _base64key = createBase64Key();
-      _isClient  = true;
-      _isSecure  = uri.Scheme == "wss" ? true : false;
+      _client    = true;
+      _secure    = uri.Scheme == "wss"
+                 ? true
+                 : false;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.WebSocket"/> class with the specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL,
+    /// OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
     /// </summary>
+    /// <remarks>
+    /// This constructor initializes a new instance of the <see cref="WebSocket"/> class and
+    /// establishes a WebSocket connection.
+    /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that contains the WebSocket URL.
+    /// A <see cref="string"/> that contains a WebSocket URL.
     /// </param>
     /// <param name="onOpen">
-    /// An OnOpen event handler.
+    /// An <see cref="OnOpen"/> event handler.
     /// </param>
     /// <param name="onMessage">
-    /// An OnMessage event handler.
+    /// An <see cref="OnMessage"/> event handler.
     /// </param>
     /// <param name="onError">
-    /// An OnError event handler.
+    /// An <see cref="OnError"/> event handler.
     /// </param>
     /// <param name="onClose">
-    /// An OnClose event handler.
+    /// An <see cref="OnClose"/> event handler.
     /// </param>
     /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
@@ -234,7 +244,7 @@ namespace WebSocketSharp {
     /// </value>
     public bool IsSecure {
       get {
-        return _isSecure;
+        return _secure;
       }
     }
 
@@ -274,7 +284,7 @@ namespace WebSocketSharp {
       }
 
       internal set {
-        if (_readyState == WsState.CONNECTING && !_isClient)
+        if (_readyState == WsState.CONNECTING && !_client)
           _uri = value;
       }
     }
@@ -284,17 +294,17 @@ namespace WebSocketSharp {
     #region Events
 
     /// <summary>
-    /// Occurs when the WebSocket receives a Close frame or the Close method is called.
+    /// Occurs when the <see cref="WebSocket"/> receives a Close frame or the Close method is called.
     /// </summary>
     public event EventHandler<CloseEventArgs> OnClose;
 
     /// <summary>
-    /// Occurs when the WebSocket gets an error.
+    /// Occurs when the <see cref="WebSocket"/> gets an error.
     /// </summary>
     public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
-    /// Occurs when the WebSocket receives a data frame.
+    /// Occurs when the <see cref="WebSocket"/> receives a data frame.
     /// </summary>
     public event EventHandler<MessageEventArgs> OnMessage;
 
@@ -333,7 +343,7 @@ namespace WebSocketSharp {
 
     private void close(HttpStatusCode code)
     {
-      if (_readyState != WsState.CONNECTING || _isClient)
+      if (_readyState != WsState.CONNECTING || _client)
         return;
 
       sendResponseHandshake(code);
@@ -353,7 +363,7 @@ namespace WebSocketSharp {
           return;
 
         // Whether the closing handshake as server is started before the connection has been established ?
-        if (_readyState == WsState.CONNECTING && !_isClient)
+        if (_readyState == WsState.CONNECTING && !_client)
         {
           sendResponseHandshake(HttpStatusCode.BadRequest);
           onClose(new CloseEventArgs(data));
@@ -418,7 +428,7 @@ namespace WebSocketSharp {
 
       try
       {
-        if (_isClient)
+        if (_client)
           closeResourcesAsClient();
         else
           closeResourcesAsServer();
@@ -461,7 +471,7 @@ namespace WebSocketSharp {
 
     private bool connect()
     {
-      return _isClient
+      return _client
              ? doHandshake()
              : acceptHandshake();
     }
@@ -476,23 +486,9 @@ namespace WebSocketSharp {
       return Convert.ToBase64String(src);
     }
 
-    // As Client
-    private void createClientStream()
-    {
-      var host = _uri.DnsSafeHost;
-      var port = _uri.Port > 0
-               ? _uri.Port
-               : _isSecure
-                 ? 443
-                 : 80;
-
-      _tcpClient = new TcpClient(host, port);
-      _wsStream  = WsStream.CreateClientStream(_tcpClient, host, _isSecure);
-    }
-
     private WsFrame createFrame(Fin fin, Opcode opcode, PayloadData payloadData)
     {
-      return _isClient
+      return _client
              ? new WsFrame(fin, opcode, payloadData)
              : new WsFrame(fin, opcode, Mask.UNMASK, payloadData);
     }
@@ -501,10 +497,9 @@ namespace WebSocketSharp {
     private RequestHandshake createOpeningHandshake()
     {
       var path = _uri.PathAndQuery;
-      var host = _uri.DnsSafeHost;
-      var port = ((System.Net.IPEndPoint)_tcpClient.Client.RemoteEndPoint).Port;
-      if (port != 80)
-        host += ":" + port;
+      var host = _uri.Port == 80
+               ? _uri.DnsSafeHost
+               : _uri.Authority;
 
       var req = new RequestHandshake(path);
       req.AddHeader("Host", host);
@@ -547,17 +542,17 @@ namespace WebSocketSharp {
     // As Client
     private bool doHandshake()
     {
-      createClientStream();
-      return sendOpeningHandshake();
+      sendOpeningHandshake();
+      return receiveResponseHandshake();
     }
 
     // As Server
     private void init(WebSocketContext context)
     {
-      _context  = context;
-      _uri      = context.Path.ToUri();
-      _isSecure = context.IsSecureConnection;
-      _isClient = false;
+      _context = context;
+      _uri     = context.Path.ToUri();
+      _secure  = context.IsSecureConnection;
+      _client  = false;
     }
 
     private bool isValidCloseStatusCode(ushort code, out string message)
@@ -848,14 +843,28 @@ namespace WebSocketSharp {
     }
 
     // As Client
-    private ResponseHandshake receiveResponseHandshake()
+    private bool receiveResponseHandshake()
     {
       var res = ResponseHandshake.Parse(readHandshake());
       #if DEBUG
       Console.WriteLine("WS: Info@receiveResponseHandshake: Response handshake from server:\n");
       Console.WriteLine(res.ToString());
       #endif
-      return res;
+      if (!isValidResponse(res))
+      {
+        var msg = "Invalid response to the WebSocket connection request.";
+        onError(msg);
+        close(CloseStatusCode.ABNORMAL, msg);
+        return false;
+      }
+
+      if (res.HeaderExists("Sec-WebSocket-Protocol"))
+        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+
+      if (res.HeaderExists("Sec-WebSocket-Extensions"))
+        _extensions = res.Headers["Sec-WebSocket-Extensions"];
+
+      return true;
     }
 
     private bool send(WsFrame frame)
@@ -990,27 +999,11 @@ namespace WebSocketSharp {
     }
 
     // As Client
-    private bool sendOpeningHandshake()
+    private void sendOpeningHandshake()
     {
+      setClientStream();
       var req = createOpeningHandshake();
       sendRequestHandshake(req);
-
-      var res = receiveResponseHandshake();
-      if (!isValidResponse(res))
-      {
-        var msg = "Invalid response to the WebSocket connection request.";
-        onError(msg);
-        close(CloseStatusCode.ABNORMAL, msg);
-        return false;
-      }
-
-      if (res.HeaderExists("Sec-WebSocket-Protocol"))
-        _protocol = res.Headers["Sec-WebSocket-Protocol"];
-
-      if (res.HeaderExists("Sec-WebSocket-Extensions"))
-        _extensions = res.Headers["Sec-WebSocket-Extensions"];
-
-      return true;
     }
 
     // As Client
@@ -1047,6 +1040,15 @@ namespace WebSocketSharp {
       writeHandshake(response);
     }
 
+    // As Client
+    private void setClientStream()
+    {
+      var host = _uri.DnsSafeHost;
+      var port = _uri.Port;
+      _tcpClient = new TcpClient(host, port);
+      _wsStream = WsStream.CreateClientStream(_tcpClient, host, _secure);
+    }
+
     private void startMessageLoop()
     {
       _exitMessageLoop = new AutoResetEvent(false);
@@ -1076,11 +1078,6 @@ namespace WebSocketSharp {
       _wsStream.ReadFrameAsync(completed);
     }
 
-    private bool tryCreateUri(string uriString, out Uri result, out string message)
-    {
-      return uriString.TryCreateWebSocketUri(out result, out message);
-    }
-
     private void writeHandshake(Handshake handshake)
     {
       _wsStream.WriteHandshake(handshake);
@@ -1101,7 +1098,7 @@ namespace WebSocketSharp {
     #region Public Methods
 
     /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
+    /// Closes the WebSocket connection and releases all associated resources.
     /// </summary>
     public void Close()
     {
@@ -1110,21 +1107,11 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/>
+    /// and releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="CloseStatusCode"/> that contains a status code indicating a reason for closure.
-    /// </param>
-    public void Close(CloseStatusCode code)
-    {
-      Close(code, String.Empty);
-    }
-
-    /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating a reason for closure.
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
     /// </param>
     public void Close(ushort code)
     {
@@ -1132,27 +1119,27 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/>
+    /// and releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="CloseStatusCode"/> that contains a status code indicating a reason for closure.
+    /// One of the <see cref="CloseStatusCode"/> values that contains a status code
+    /// indicating the reason for closure.
     /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains a reason for closure.
-    /// </param>
-    public void Close(CloseStatusCode code, string reason)
+    public void Close(CloseStatusCode code)
     {
-      Close((ushort)code, reason);
+      Close(code, String.Empty);
     }
 
     /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>,
+    /// and releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating a reason for closure.
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains a reason for closure.
+    /// A <see cref="string"/> that contains the reason for closure.
     /// </param>
     public void Close(ushort code, string reason)
     {
@@ -1164,6 +1151,22 @@ namespace WebSocketSharp {
       }
 
       close(code, reason);
+    }
+
+    /// <summary>
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>,
+    /// and releases all associated resources.
+    /// </summary>
+    /// <param name="code">
+    /// One of the <see cref="CloseStatusCode"/> values that contains a status code
+    /// indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    public void Close(CloseStatusCode code, string reason)
+    {
+      Close((ushort)code, reason);
     }
 
     /// <summary>
@@ -1191,13 +1194,10 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the connection and releases all associated resources after sends a Close control frame.
+    /// Closes the WebSocket connection and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// Call <see cref="Dispose"/> when you are finished using the <see cref="WebSocketSharp.WebSocket"/>. The
-    /// <see cref="Dispose"/> method leaves the <see cref="WebSocketSharp.WebSocket"/> in an unusable state. After
-    /// calling <see cref="Dispose"/>, you must release all references to the <see cref="WebSocketSharp.WebSocket"/> so
-    /// the garbage collector can reclaim the memory that the <see cref="WebSocketSharp.WebSocket"/> was occupying.
+    /// This method closes the WebSocket connection with the <see cref="CloseStatusCode.AWAY"/>.
     /// </remarks>
     public void Dispose()
     {
@@ -1205,10 +1205,10 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Ping frame using the connection.
+    /// Pings using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping()
     {
@@ -1216,26 +1216,26 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a Ping frame with a message using the connection.
+    /// Pings with the specified <paramref name="message"/> using the WebSocket connection.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that contains the message to be sent.
+    /// A <see cref="string"/> that contains a message.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the WebSocket receives a Pong frame in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping(string message)
     {
       if (message.IsNull())
         message = String.Empty;
 
-      return _isClient
+      return _client
              ? ping(message, 5 * 1000)
              : ping(message, 1 * 1000);
     }
 
     /// <summary>
-    /// Sends a binary data using the connection.
+    /// Sends a binary <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
@@ -1252,7 +1252,7 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a text data using the connection.
+    /// Sends a text <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
@@ -1270,7 +1270,7 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a binary data using the connection.
+    /// Sends a binary data using the WebSocket connection.
     /// </summary>
     /// <param name="file">
     /// A <see cref="FileInfo"/> that contains a binary data to send.
@@ -1290,13 +1290,14 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a binary data asynchronously using the connection.
+    /// Sends a binary <paramref name="data"/> asynchronously using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// An <see cref="Action"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
     /// </param>
     public void SendAsync(byte[] data, Action completed)
     {
@@ -1310,13 +1311,14 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a text data asynchronously using the connection.
+    /// Sends a text <paramref name="data"/> asynchronously using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// An <see cref="Action"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
     /// </param>
     public void SendAsync(string data, Action completed)
     {
@@ -1331,13 +1333,14 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Sends a binary data asynchronously using the connection.
+    /// Sends a binary data asynchronously using the WebSocket connection.
     /// </summary>
     /// <param name="file">
     /// A <see cref="FileInfo"/> that contains a binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that contains the method(s) that is called when an asynchronous operation completes.
+    /// An <see cref="Action"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
     /// </param>
     public void SendAsync(FileInfo file, Action completed)
     {
