@@ -36,16 +36,16 @@ namespace WebSocketSharp {
   /// </summary>
   /// <remarks>
   /// The <see cref="WebSocket.OnClose"/> event occurs when the WebSocket receives a close control frame or
-  /// the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access the <see cref="CloseEventArgs.Code"/> or
-  /// <see cref="CloseEventArgs.Reason"/> properties.
+  /// the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access
+  /// the <see cref="CloseEventArgs.Code"/> or <see cref="CloseEventArgs.Reason"/> properties.
   /// </remarks>
   public class CloseEventArgs : MessageEventArgs
   {
     #region Fields
 
+    private bool   _clean;
     private ushort _code;
     private string _reason;
-    private bool   _wasClean;
 
     #endregion
 
@@ -54,18 +54,9 @@ namespace WebSocketSharp {
     internal CloseEventArgs(PayloadData data)
       : base(Opcode.CLOSE, data)
     {
-      _code     = (ushort)CloseStatusCode.NO_STATUS_CODE;
-      _reason   = String.Empty;
-      _wasClean = false;
-
-      if (data.Length >= 2)
-        _code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
-
-      if (data.Length > 2)
-      {
-        var buffer = data.ToBytes().SubArray(2, (int)(data.Length - 2));
-        _reason = Encoding.UTF8.GetString(buffer);
-      }
+      _code   = getCodeFrom(data);
+      _reason = getReasonFrom(data);
+      _clean  = false;
     }
 
     #endregion
@@ -97,19 +88,39 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Indicates whether the connection closed cleanly or not.
+    /// Indicates whether the WebSocket connection closed cleanly.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection closed cleanly; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket connection closed cleanly; otherwise, <c>false</c>.
     /// </value>
     public bool WasClean {
       get {
-        return _wasClean;
+        return _clean;
       }
 
       internal set {
-        _wasClean = value;
+        _clean = value;
       }
+    }
+
+    #endregion
+
+    #region Private Method
+
+    private ushort getCodeFrom(PayloadData data)
+    {
+      return data.Length >= 2
+             ? data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG)
+             : (ushort)CloseStatusCode.NO_STATUS_CODE;
+    }
+
+    private string getReasonFrom(PayloadData data)
+    {
+      if (data.Length <= 2)
+        return String.Empty;
+
+      var buffer = data.ToBytes().SubArray(2, (int)(data.Length - 2));
+      return Encoding.UTF8.GetString(buffer);
     }
 
     #endregion
