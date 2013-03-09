@@ -64,22 +64,23 @@ namespace WebSocketSharp {
 
     #region Private Fields
 
-    private string           _base64key;
-    private bool             _client;
-    private Action           _closeContext;
-    private WebSocketContext _context;
-    private string           _extensions;
-    private AutoResetEvent   _exitMessageLoop;
-    private Object           _forClose;
-    private Object           _forSend;
-    private string           _protocol;
-    private string           _protocols;
-    private volatile WsState _readyState;
-    private AutoResetEvent   _receivePong;
-    private bool             _secure;
-    private TcpClient        _tcpClient;
-    private Uri              _uri;
-    private WsStream         _wsStream;
+    private string              _base64key;
+    private bool                _client;
+    private Action              _closeContext;
+    private WebSocketContext    _context;
+    private string              _extensions;
+    private AutoResetEvent      _exitMessageLoop;
+    private Object              _forClose;
+    private Object              _forSend;
+    private string              _protocol;
+    private string              _protocols;
+    private volatile WsState    _readyState;
+    private AutoResetEvent      _receivePong;
+    private bool                _secure;
+    private TcpClient           _tcpClient;
+    private Uri                 _uri;
+    private WebHeaderCollection _headers;
+    private WsStream            _wsStream;
 
     #endregion
 
@@ -92,6 +93,7 @@ namespace WebSocketSharp {
       _forSend    = new Object();
       _protocol   = String.Empty;
       _readyState = WsState.CONNECTING;
+      _headers    = new WebHeaderCollection();
     }
 
     #endregion
@@ -288,6 +290,12 @@ namespace WebSocketSharp {
           _uri = value;
       }
     }
+
+	public WebHeaderCollection Headers {
+      get {
+        return _headers;
+      }
+	}
 
     #endregion
 
@@ -578,6 +586,7 @@ namespace WebSocketSharp {
       if (!_protocols.IsNullOrEmpty())
         req.AddHeader("Sec-WebSocket-Protocol", _protocols);
       req.AddHeader("Sec-WebSocket-Version", _version);
+      req.AddHeaders(_headers);
 
       return req;
     }
@@ -587,6 +596,7 @@ namespace WebSocketSharp {
     {
       var res = new ResponseHandshake();
       res.AddHeader("Sec-WebSocket-Accept", createResponseKey());
+      res.AddHeaders(_headers);
 
       return res;
     }
@@ -596,6 +606,7 @@ namespace WebSocketSharp {
     {
       var res = ResponseHandshake.CreateCloseResponse(code);
       res.AddHeader("Sec-WebSocket-Version", _version);
+      res.AddHeaders(_headers);
 
       return res;
     }
