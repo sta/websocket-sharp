@@ -341,6 +341,77 @@ namespace WebSocketSharp {
       return true;
     }
 
+    private bool checkCloseStatusCodeIsValid(ushort code, out string message)
+    {
+      if (code < 1000)
+      {
+        message = "Close status codes in the range 0-999 are not used: " + code;
+        return false;
+      }
+
+      if (code > 4999)
+      {
+        message = "Out of reserved close status code range: " + code;
+        return false;
+      }
+
+      message = String.Empty;
+      return true;
+    }
+
+    private bool checkFrameIsValid(WsFrame frame)
+    {
+      if (frame.IsNull())
+      {
+        var msg = "The WebSocket frame can not be read from the network stream.";
+        close(CloseStatusCode.ABNORMAL, msg);
+
+        return false;
+      }
+
+      return true;
+    }
+
+    // As Server
+    private bool checkRequestIsValid()
+    {
+      return !_context.IsValid
+             ? false
+             : !checkRequestHostHeaderIsValid()
+               ? false
+               : _context.Headers.Exists("Sec-WebSocket-Version", _version);
+    }
+
+    // As Server
+    private bool checkRequestHostHeaderIsValid()
+    {
+      var authority = _context.Headers["Host"];
+      if (authority.IsNullOrEmpty() || !_uri.IsAbsoluteUri)
+        return true;
+
+      var i = authority.IndexOf(':');
+      var host = i > 0
+               ? authority.Substring(0, i)
+               : authority;
+      var type = Uri.CheckHostName(host);
+
+      return type != UriHostNameType.Dns
+             ? true
+             : Uri.CheckHostName(_uri.DnsSafeHost) != UriHostNameType.Dns
+               ? true
+               : host == _uri.DnsSafeHost;
+    }
+
+    // As Client
+    private bool checkResponseIsValid(ResponseHandshake response)
+    {
+      return !response.IsWebSocketResponse
+             ? false
+             : !response.HeaderExists("Sec-WebSocket-Accept", createResponseKey())
+               ? false
+               : !response.HeaderExists("Sec-WebSocket-Version") || response.HeaderExists("Sec-WebSocket-Version", _version);
+    }
+
     private void close(HttpStatusCode code)
     {
       if (_readyState != WsState.CONNECTING || _client)
@@ -555,77 +626,6 @@ namespace WebSocketSharp {
       _client  = false;
     }
 
-    private bool isValidCloseStatusCode(ushort code, out string message)
-    {
-      if (code < 1000)
-      {
-        message = "Close status codes in the range 0-999 are not used: " + code;
-        return false;
-      }
-
-      if (code > 4999)
-      {
-        message = "Out of reserved close status code range: " + code;
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
-    }
-
-    private bool isValidFrame(WsFrame frame)
-    {
-      if (frame.IsNull())
-      {
-        var msg = "The WebSocket frame can not be read from the network stream.";
-        close(CloseStatusCode.ABNORMAL, msg);
-
-        return false;
-      }
-
-      return true;
-    }
-
-    // As Server
-    private bool isValidRequest()
-    {
-      return !_context.IsValid
-             ? false
-             : !isValidRequestHostHeader()
-               ? false
-               : _context.Headers.Exists("Sec-WebSocket-Version", _version);
-    }
-
-    // As Server
-    private bool isValidRequestHostHeader()
-    {
-      var authority = _context.Headers["Host"];
-      if (authority.IsNullOrEmpty() || !_uri.IsAbsoluteUri)
-        return true;
-
-      var i = authority.IndexOf(':');
-      var host = i > 0
-               ? authority.Substring(0, i)
-               : authority;
-      var type = Uri.CheckHostName(host);
-
-      return type != UriHostNameType.Dns
-             ? true
-             : Uri.CheckHostName(_uri.DnsSafeHost) != UriHostNameType.Dns
-               ? true
-               : host == _uri.DnsSafeHost;
-    }
-
-    // As Client
-    private bool isValidResponse(ResponseHandshake response)
-    {
-      return !response.IsWebSocketResponse
-             ? false
-             : !response.HeaderExists("Sec-WebSocket-Accept", createResponseKey())
-               ? false
-               : !response.HeaderExists("Sec-WebSocket-Version") || response.HeaderExists("Sec-WebSocket-Version", _version);
-    }
-
     private void onClose(CloseEventArgs eventArgs)
     {
       if (!Thread.CurrentThread.IsBackground)
@@ -692,7 +692,7 @@ namespace WebSocketSharp {
     private WsFrame readFrame()
     {
       var frame = _wsStream.ReadFrame();
-      return isValidFrame(frame) ? frame : null;
+      return checkFrameIsValid(frame) ? frame : null;
     }
 
     private string[] readHandshake()
@@ -702,7 +702,7 @@ namespace WebSocketSharp {
 
     private MessageEventArgs receive(WsFrame frame)
     {
-      if (!isValidFrame(frame))
+      if (!checkFrameIsValid(frame))
         return null;
 
       if ((frame.Fin == Fin.FINAL && frame.Opcode == Opcode.CONT) ||
@@ -825,7 +825,7 @@ namespace WebSocketSharp {
       Console.WriteLine("WS: Info@receiveOpeningHandshake: Opening handshake from client:\n");
       Console.WriteLine(req.ToString());
       #endif
-      if (!isValidRequest())
+      if (!checkRequestIsValid())
       {
         onError("Invalid WebSocket connection request.");
         close(HttpStatusCode.BadRequest);
@@ -850,7 +850,7 @@ namespace WebSocketSharp {
       Console.WriteLine("WS: Info@receiveResponseHandshake: Response handshake from server:\n");
       Console.WriteLine(res.ToString());
       #endif
-      if (!isValidResponse(res))
+      if (!checkResponseIsValid(res))
       {
         var msg = "Invalid response to the WebSocket connection request.";
         onError(msg);
@@ -1144,7 +1144,7 @@ namespace WebSocketSharp {
     public void Close(ushort code, string reason)
     {
       string msg;
-      if (!isValidCloseStatusCode(code, out msg))
+      if (!checkCloseStatusCodeIsValid(code, out msg))
       {
         onError(msg);
         return;
