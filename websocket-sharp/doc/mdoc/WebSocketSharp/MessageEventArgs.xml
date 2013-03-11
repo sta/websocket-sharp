@@ -31,7 +31,7 @@
             Gets the received data as a <see cref="T:System.String" />.
             </summary>
         <value>
-            A <see cref="T:System.String" /> that contains a received data.
+            A <see cref="T:System.String" /> that contains the received data.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -48,7 +48,7 @@
             Gets the received data as an array of <see cref="T:System.Byte" />.
             </summary>
         <value>
-            An array of <see cref="T:System.Byte" /> that contains a received data.
+            An array of <see cref="T:System.Byte" /> that contains the received data.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -62,10 +62,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the type of received data.
+            Gets the type of the received data.
             </summary>
         <value>
-            One of the <see cref="!:WebSocketSharp.Frame.Opcode" /> that indicates the type of received data.
+            One of the <see cref="T:WebSocketSharp.Opcode" /> values that indicates the type of the received data.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

@@ -43,6 +43,21 @@
                 <paramref name="listener" /> is <see langword="null" />.
             </exception>
         </member>
+        <member name="M:WebSocketSharp.Ext.Contains(System.String,System.Char[])">
+            <summary>
+            Determines whether the specified <see cref="T:System.String" /> contains any of characters
+            in the specified array of <see cref="T:System.Char" />.
+            </summary>
+            <returns>
+                <c>true</c> if <paramref name="str" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
+            </returns>
+            <param name="str">
+            A <see cref="T:System.String" /> to test.
+            </param>
+            <param name="chars">
+            An array of <see cref="T:System.Char" /> that contains characters to find.
+            </param>
+        </member>
         <member name="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs)">
             <summary>
             Emit the specified <see cref="T:System.EventHandler" /> delegate if is not <see langword="null" />.
@@ -206,10 +221,24 @@
             Determines whether the specified <see cref="T:System.String" /> is a <see cref="F:System.String.Empty" />.
             </summary>
             <returns>
-                <c>true</c> if the <paramref name="value" /> parameter is a <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+                <c>true</c> if <paramref name="value" /> is <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
             </returns>
             <param name="value">
             A <see cref="T:System.String" /> to test.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Ext.IsEnclosedIn(System.String,System.Char)">
+            <summary>
+            Determines whether the specified <see cref="T:System.String" /> is enclosed in the specified <see cref="T:System.Char" />.
+            </summary>
+            <returns>
+                <c>true</c> if <paramref name="str" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
+            </returns>
+            <param name="str">
+            A <see cref="T:System.String" /> to test.
+            </param>
+            <param name="c">
+            A <see cref="T:System.Char" /> that contains character to find.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.IsHostOrder(WebSocketSharp.ByteOrder)">
@@ -714,7 +743,7 @@
             Gets the received data as a <see cref="T:System.String" />.
             </summary>
             <value>
-            A <see cref="T:System.String" /> that contains a received data.
+            A <see cref="T:System.String" /> that contains the received data.
             </value>
         </member>
         <member name="P:WebSocketSharp.MessageEventArgs.RawData">
@@ -722,15 +751,15 @@
             Gets the received data as an array of <see cref="T:System.Byte" />.
             </summary>
             <value>
-            An array of <see cref="T:System.Byte" /> that contains a received data.
+            An array of <see cref="T:System.Byte" /> that contains the received data.
             </value>
         </member>
         <member name="P:WebSocketSharp.MessageEventArgs.Type">
             <summary>
-            Gets the type of received data.
+            Gets the type of the received data.
             </summary>
             <value>
-            One of the <see cref="!:WebSocketSharp.Frame.Opcode" /> that indicates the type of received data.
+            One of the <see cref="T:WebSocketSharp.Opcode" /> values that indicates the type of the received data.
             </value>
         </member>
         <member name="T:WebSocketSharp.CloseEventArgs">
@@ -739,8 +768,8 @@
             </summary>
             <remarks>
             The <see cref="E:WebSocketSharp.WebSocket.OnClose" /> event occurs when the WebSocket receives a close control frame or
-            the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access the <see cref="P:WebSocketSharp.CloseEventArgs.Code" /> or
-            <see cref="P:WebSocketSharp.CloseEventArgs.Reason" /> properties.
+            the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access
+            the <see cref="P:WebSocketSharp.CloseEventArgs.Code" /> or <see cref="P:WebSocketSharp.CloseEventArgs.Reason" /> properties.
             </remarks>
         </member>
         <member name="P:WebSocketSharp.CloseEventArgs.Code">
@@ -761,10 +790,10 @@
         </member>
         <member name="P:WebSocketSharp.CloseEventArgs.WasClean">
             <summary>
-            Indicates whether the connection closed cleanly or not.
+            Indicates whether the WebSocket connection closed cleanly.
             </summary>
             <value>
-                <c>true</c> if the connection closed cleanly; otherwise, <c>false</c>.
+                <c>true</c> if the WebSocket connection closed cleanly; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="T:WebSocketSharp.ByteOrder">
@@ -1472,6 +1501,491 @@
             Indicates anonymous authentication.
             </summary>
         </member>
+        <member name="T:WebSocketSharp.Net.Cookie">
+            <summary>
+            Provides a set of properties and methods to use to manage the HTTP Cookie.
+            </summary>
+            <remarks>
+            The Cookie class cannot be inherited.
+            </remarks>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" /> and <paramref name="value" />.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+            <exception cref="T:WebSocketSharp.Net.CookieException">
+                <para>
+                    <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="name" /> contains an invalid character.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> is <see langword="null" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" />, <paramref name="value" /> and <paramref name="path" />.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+            <param name="path">
+            A <see cref="T:System.String" /> that contains the value of the Path attribute of the cookie.
+            </param>
+            <exception cref="T:WebSocketSharp.Net.CookieException">
+                <para>
+                    <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="name" /> contains an invalid character.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> is <see langword="null" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.#ctor(System.String,System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" />, <paramref name="value" />,
+            <paramref name="path" /> and <paramref name="domain" />.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+            <param name="path">
+            A <see cref="T:System.String" /> that contains the value of the Path attribute of the cookie.
+            </param>
+            <param name="domain">
+            A <see cref="T:System.String" /> that contains the value of the Domain attribute of the cookie.
+            </param>
+            <exception cref="T:WebSocketSharp.Net.CookieException">
+                <para>
+                    <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="name" /> contains an invalid character.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> is <see langword="null" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+                    <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Comment">
+            <summary>
+            Gets or sets the value of the Comment attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a comment to document intended use of the cookie.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.CommentUri">
+            <summary>
+            Gets or sets the value of the CommentURL attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.Uri" /> that contains a URI that provides the comment
+            to document intended use of the cookie.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Discard">
+            <summary>
+            Gets or sets a value indicating whether the client discards the cookie unconditionally
+            when the client terminates.
+            </summary>
+            <value>
+                <c>true</c> if the client discards the cookie unconditionally when the client terminates;
+            otherwise, <c>false</c>. The default is <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Domain">
+            <summary>
+            Gets or sets the value of the Domain attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a URI for which the cookie is valid.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Expired">
+            <summary>
+            Gets or sets a value indicating whether the cookie has expired.
+            </summary>
+            <value>
+                <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Expires">
+            <summary>
+            Gets or sets the value of the Expires attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.DateTime" /> that contains the date and time at which the cookie expires.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.HttpOnly">
+            <summary>
+            Gets or sets a value indicating non-HTTP APIs can access the cookie.
+            </summary>
+            <value>
+                <c>true</c> if non-HTTP APIs can not access the cookie; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Name">
+            <summary>
+            Gets or sets the Name of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </value>
+            <exception cref="T:WebSocketSharp.Net.CookieException">
+                <para>
+            The value specified for a set operation is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+                <para>
+            - or -
+            </para>
+                <para>
+            The value specified for a set operation contains an invalid character.
+            </para>
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Path">
+            <summary>
+            Gets or sets the value of the Path attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a subset of URI on the origin server
+            to which the cookie applies.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Port">
+            <summary>
+            Gets or sets the value of the Port attribute of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a list of the TCP ports to which the cookie applies.
+            </value>
+            <exception cref="T:WebSocketSharp.Net.CookieException">
+            The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Secure">
+            <summary>
+            Gets or sets a value indicating whether the security level of the cookie is secure.
+            </summary>
+            <remarks>
+            When this property is <c>true</c>, the cookie may be included in the HTTP request
+            only if the request is transmitted over the HTTPS.
+            </remarks>
+            <value>
+                <c>true</c> if the security level of the cookie is secure; otherwise, <c>false</c>.
+            The default is <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.TimeStamp">
+            <summary>
+            Gets the time when the cookie was issued.
+            </summary>
+            <value>
+            A <see cref="T:System.DateTime" /> that contains the time when the cookie was issued.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Value">
+            <summary>
+            Gets or sets the Value of the cookie.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.Cookie.Version">
+            <summary>
+            Gets or sets the value of the Version attribute of the cookie.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that contains the version of the HTTP state management
+            to which the cookie conforms.
+            </value>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The value specified for a set operation is less than zero.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </summary>
+            <param name="comparand">
+            An <see cref="T:System.Object" /> to compare with the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </param>
+            <returns>
+                <c>true</c> if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:WebSocketSharp.Net.Cookie" />;
+            otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.GetHashCode">
+            <summary>
+            Serves as a hash function for a <see cref="T:WebSocketSharp.Net.Cookie" /> object.
+            </summary>
+            <returns>
+            An <see cref="T:System.Int32" /> that contains a hash code for this instance.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.Cookie.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </summary>
+            <remarks>
+            This method returns a <see cref="T:System.String" /> to use to send an HTTP Cookie to an origin server.
+            </remarks>
+            <returns>
+            A <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </returns>
+        </member>
+        <member name="T:WebSocketSharp.Net.CookieCollection">
+            <summary>
+            Provides a collection container for instances of the <see cref="T:WebSocketSharp.Net.Cookie" /> class.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> class.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.Item(System.Int32)">
+            <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
+            <param name="index">
+            An <see cref="T:System.Int32" /> that is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            </param>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="index" /> is less than zero or <paramref name="index" /> is greater than or
+            equal to <see cref="P:WebSocketSharp.Net.CookieCollection.Count" />.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.Item(System.String)">
+            <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
+            <param name="name">
+            A <see cref="T:System.String" /> that is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="name" /> is <see langword="null" />.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.Count">
+            <summary>
+            Gets the number of cookies contained in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that indicates the number of cookies contained in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.IsReadOnly">
+            <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is read-only.
+            </summary>
+            <value>
+                <c>true</c> if the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is read-only; otherwise, <c>false</c>.
+            The default is <c>true</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.IsSynchronized">
+            <summary>
+            Gets a value indicating whether access to the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is thread safe.
+            </summary>
+            <value>
+                <c>true</c> if access to the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is thread safe; otherwise, <c>false</c>.
+            The default is <c>false</c>.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.CookieCollection.SyncRoot">
+            <summary>
+            Gets an object to use to synchronize access to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <value>
+            An <see cref="T:System.Object" /> to use to synchronize access to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.Add(WebSocketSharp.Net.Cookie)">
+            <summary>
+            Add the specified <see cref="T:WebSocketSharp.Net.Cookie" /> to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to add to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.Add(WebSocketSharp.Net.CookieCollection)">
+            <summary>
+            Add the elements of the specified <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the current <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <param name="cookies">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> to add to the current <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="cookies" /> is <see langword="null" />.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the specified <see cref="T:System.Array" />,
+            starting at the specified <paramref name="index" /> in the <paramref name="array" />.
+            </summary>
+            <param name="array">
+            An <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+            <param name="index">
+            An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="array" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="index" /> is less than zero.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.CopyTo(WebSocketSharp.Net.Cookie[],System.Int32)">
+            <summary>
+            Copies the elements of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the specified array of <see cref="T:WebSocketSharp.Net.Cookie" />,
+            starting at the specified <paramref name="index" /> in the <paramref name="array" />.
+            </summary>
+            <param name="array">
+            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+            <param name="index">
+            An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="array" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+                <paramref name="index" /> is less than zero.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieCollection.GetEnumerator">
+            <summary>
+            Gets the enumerator to use to iterate through the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+            <returns>
+            An instance of an implementation of the <see cref="T:System.Collections.IEnumerator" /> interface
+            to use to iterate through the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </returns>
+        </member>
+        <member name="T:WebSocketSharp.Net.CookieException">
+            <summary>
+            The exception that is thrown when a <see cref="T:WebSocketSharp.Net.Cookie" /> gets an error.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.CookieException" /> class
+            with the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the contextual information about the source or destination.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.CookieException" /> class.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieException.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.CookieException" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.CookieException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.CookieException" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
+            </param>
+        </member>
         <member name="T:WebSocketSharp.Net.HttpListener">
             <summary>
             Provides a simple, programmatically controlled HTTP listener.
@@ -1846,7 +2360,7 @@
         </member>
         <member name="T:WebSocketSharp.Net.HttpListenerRequest">
             <summary>
-            Provides access to the HTTP request objects sent to a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            Provides access to a request to a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
             </summary>
             <remarks>
             The HttpListenerRequest class cannot be inherited.
@@ -1874,7 +2388,7 @@
             Gets the encoding that can be used with the entity body data included in the request.
             </summary>
             <value>
-            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with entity body data.
+            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with the entity body data.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.HttpListenerRequest.ContentLength64">
@@ -1883,7 +2397,7 @@
             </summary>
             <value>
             A <see cref="T:System.Int64" /> that contains the value of the Content-Length entity-header field.
-            <c>-1</c> if the size is not known.
+            The value is a number of bytes in the entity body data. <c>-1</c> if the size is not known.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.HttpListenerRequest.ContentType">
@@ -2118,6 +2632,298 @@
             </returns>
             <exception cref="T:System.NotImplementedException">
             This method is not implemented.
+            </exception>
+        </member>
+        <member name="T:WebSocketSharp.Net.HttpListenerResponse">
+            <summary>
+            Provides access to a response to a request being processed by a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            </summary>
+            <remarks>
+            The HttpListenerResponse class cannot be inherited.
+            </remarks>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.ContentEncoding">
+            <summary>
+            Gets or sets the encoding that can be used with the entity body data included in the response.
+            </summary>
+            <value>
+            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with the entity body data.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.ContentLength64">
+            <summary>
+            Gets or sets the size of the entity body data included in the response.
+            </summary>
+            <value>
+            A <see cref="T:System.Int64" /> that contains the value of the Content-Length entity-header field.
+            The value is a number of bytes in the entity body data.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The value specified for a set operation is less than zero.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.ContentType">
+            <summary>
+            Gets or sets the media type of the entity body included in the response.
+            </summary>
+            <value>
+            The type of the content.
+            A <see cref="T:System.String" /> that contains the value of the Content-Type entity-header field.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The value specified for a set operation is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The value specified for a set operation is a <see cref="F:System.String.Empty" />.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.Cookies">
+            <summary>
+            Gets or sets the cookies returned with the response.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies returned with the response.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.Headers">
+            <summary>
+            Gets or sets the HTTP headers returned to the client.
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> that contains the HTTP headers returned to the client.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.KeepAlive">
+            <summary>
+            Gets or sets a value indicating whether the server requests a persistent connection.
+            </summary>
+            <value>
+                <c>true</c> if the server requests a persistent connection; otherwise, <c>false</c>.
+            The default is <c>true</c>.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.OutputStream">
+            <summary>
+            Gets a <see cref="T:System.IO.Stream" /> to use to write the entity body data.
+            </summary>
+            <value>
+            A <see cref="T:System.IO.Stream" /> to use to write the entity body data.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.ProtocolVersion">
+            <summary>
+            Gets or sets the HTTP version used in the response.
+            </summary>
+            <value>
+            A <see cref="T:System.Version" /> that contains the HTTP version used in the response.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The value specified for a set operation is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The value specified for a set operation does not have its <see cref="P:System.Version.Major">Major</see> property set to 1 or
+            does not have its <see cref="P:System.Version.Minor">Minor</see> property set to either 0 or 1.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.RedirectLocation">
+            <summary>
+            Gets or sets the URL to which the client is redirected to locate a requested resource.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the Location response-header field.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The value specified for a set operation is a <see cref="F:System.String.Empty" />.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.SendChunked">
+            <summary>
+            Gets or sets a value indicating whether the response uses the chunked transfer encoding.
+            </summary>
+            <value>
+                <c>true</c> if the response uses the chunked transfer encoding; otherwise, <c>false</c>.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.StatusCode">
+            <summary>
+            Gets or sets the HTTP status code returned to the client.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that indicates the HTTP status code for the response to the request.
+            The default is <see cref="F:WebSocketSharp.Net.HttpStatusCode.OK" />.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+            <exception cref="T:System.Net.ProtocolViolationException">
+            The value specified for a set operation is invalid. Valid values are between 100 and 999.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListenerResponse.StatusDescription">
+            <summary>
+            Gets or sets a description of the HTTP status code returned to the client.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains a description of the HTTP status code returned to the client.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.System#IDisposable#Dispose">
+            <summary>
+            Releases all resource used by the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" />.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.Abort">
+            <summary>
+            Closes the connection to the client without sending a response.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.AddHeader(System.String,System.String)">
+            <summary>
+            Adds the specified HTTP header <paramref name="name" /> and <paramref name="value" /> to
+            the headers for this response.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the HTTP header to add.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the HTTP header to add.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65,535 characters.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.AppendCookie(WebSocketSharp.Net.Cookie)">
+            <summary>
+            Adds the specified <see cref="T:WebSocketSharp.Net.Cookie" /> to the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> sent with the response.
+            </summary>
+            <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to add to the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" />.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.AppendHeader(System.String,System.String)">
+            <summary>
+            Appends a <paramref name="value" /> to the specified HTTP header sent with the response.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the HTTP header to append <paramref name="value" /> to.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value to append to the HTTP header.
+            </param>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65,535 characters.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.Close">
+            <summary>
+            Sends the response to the client and releases the resources associated with
+            the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> instance.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.Close(System.Byte[],System.Boolean)">
+            <summary>
+            Sends the response with the specified array of <see cref="T:System.Byte" /> to the client and
+            releases the resources associated with the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> instance.
+            </summary>
+            <param name="responseEntity">
+            An array of <see cref="T:System.Byte" /> that contains the response entity body data.
+            </param>
+            <param name="willBlock">
+                <c>true</c> if this method blocks execution while flushing the stream to the client; otherwise, <c>false</c>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="responseEntity" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.CopyFrom(WebSocketSharp.Net.HttpListenerResponse)">
+            <summary>
+            Copies properties from the specified <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> to this response.
+            </summary>
+            <param name="templateResponse">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> to copy.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.Redirect(System.String)">
+            <summary>
+            Configures the response to redirect the client's request to the specified <paramref name="url" />.
+            </summary>
+            <param name="url">
+            A <see cref="T:System.String" /> that contains a URL to redirect the client's request to.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.HttpListenerResponse.SetCookie(WebSocketSharp.Net.Cookie)">
+            <summary>
+            Adds or updates a <see cref="T:WebSocketSharp.Net.Cookie" /> in the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> sent with the response.
+            </summary>
+            <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to set.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="cookie" /> already exists in the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> and
+            could not be replaced.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.HttpUtility.HtmlDecode(System.String)">
@@ -3663,8 +4469,8 @@
             </summary>
             <remarks>
             An HTTP request event occurs when a <see cref="T:WebSocketSharp.Server.HttpServer" /> instance receives an HTTP request.
-            If you want to get the HTTP request objects, you should access the <see cref="!:ResponseEventArgs.Request" /> property.
-            If you want to get the HTTP response objects to send, you should access the <see cref="!:ResponseEventArgs.Response" /> property.
+            If you want to get the HTTP request objects, you should access the <see cref="P:WebSocketSharp.Server.HttpRequestEventArgs.Request" /> property.
+            If you want to get the HTTP response objects to send, you should access the <see cref="P:WebSocketSharp.Server.HttpRequestEventArgs.Response" /> property.
             </remarks>
         </member>
         <member name="P:WebSocketSharp.Server.HttpRequestEventArgs.Request">

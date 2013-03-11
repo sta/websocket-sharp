@@ -36,8 +36,8 @@ namespace WebSocketSharp.Server {
   /// </summary>
   /// <remarks>
   /// An HTTP request event occurs when a <see cref="HttpServer"/> instance receives an HTTP request.
-  /// If you want to get the HTTP request objects, you should access the <see cref="ResponseEventArgs.Request"/> property.
-  /// If you want to get the HTTP response objects to send, you should access the <see cref="ResponseEventArgs.Response"/> property.
+  /// If you want to get the HTTP request objects, you should access the <see cref="Request"/> property.
+  /// If you want to get the HTTP response objects to send, you should access the <see cref="Response"/> property.
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
   {

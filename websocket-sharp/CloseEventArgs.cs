@@ -105,7 +105,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Private Method
+    #region Private Methods
 
     private ushort getCodeFrom(PayloadData data)
     {

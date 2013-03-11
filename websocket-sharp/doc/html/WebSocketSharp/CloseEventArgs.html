@@ -217,8 +217,8 @@
       <h2 class="Section">Remarks</h2>
       <div class="SectionBox" id="T:WebSocketSharp.CloseEventArgs:Docs:Remarks">
             The <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnClose">WebSocket.OnClose</a> event occurs when the WebSocket receives a close control frame or
-            the <tt>WebSocket.Close</tt> method is called. If you want to get the reason for closure, you should access the <a href="../WebSocketSharp/CloseEventArgs.html#P:WebSocketSharp.CloseEventArgs.Code">CloseEventArgs.Code</a> or
-            <a href="../WebSocketSharp/CloseEventArgs.html#P:WebSocketSharp.CloseEventArgs.Reason">CloseEventArgs.Reason</a> properties.
+            the <tt>WebSocket.Close</tt> method is called. If you want to get the reason for closure, you should access
+            the <a href="../WebSocketSharp/CloseEventArgs.html#P:WebSocketSharp.CloseEventArgs.Code">CloseEventArgs.Code</a> or <a href="../WebSocketSharp/CloseEventArgs.html#P:WebSocketSharp.CloseEventArgs.Reason">CloseEventArgs.Reason</a> properties.
             </div>
       <h2 class="Section">Requirements</h2>
       <div class="SectionBox" id="T:WebSocketSharp.CloseEventArgs:Docs:Version Information">
@@ -299,7 +299,7 @@
                   <i>
                     <a href="../WebSocketSharp/Opcode.html">Opcode</a>
                   </i>. 
-            Gets the type of received data.
+            Gets the type of the received data.
              (<i>Inherited from <a href="../WebSocketSharp/MessageEventArgs.html">MessageEventArgs</a>.</i>)</td>
               </tr>
               <tr valign="top">
@@ -313,7 +313,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Indicates whether the connection closed cleanly or not.
+            Indicates whether the WebSocket connection closed cleanly.
             </td>
               </tr>
             </table>
@@ -397,13 +397,13 @@
         <h3 id="P:WebSocketSharp.CloseEventArgs.WasClean">WasClean Property</h3>
         <blockquote id="P:WebSocketSharp.CloseEventArgs.WasClean:member">
           <p class="Summary">
-            Indicates whether the connection closed cleanly or not.
+            Indicates whether the WebSocket connection closed cleanly.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>WasClean</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.CloseEventArgs.WasClean:Value">
-            <tt>true</tt> if the connection closed cleanly; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the WebSocket connection closed cleanly; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.CloseEventArgs.WasClean:Remarks">

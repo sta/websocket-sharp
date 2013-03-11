@@ -13,7 +13,9 @@
     </Interface>
   </Interfaces>
   <Docs>
-    <summary>To be added.</summary>
+    <summary>
+            Provides a collection container for instances of the <see cref="T:WebSocketSharp.Net.Cookie" /> class.
+            </summary>
     <remarks>To be added.</remarks>
   </Docs>
   <Members>
@@ -23,7 +25,9 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -38,9 +42,16 @@
         <Parameter Name="cookie" Type="WebSocketSharp.Net.Cookie" />
       </Parameters>
       <Docs>
-        <param name="cookie">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to add to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+        <summary>
+            Add the specified <see cref="T:WebSocketSharp.Net.Cookie" /> to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Add">
@@ -54,9 +65,16 @@
         <Parameter Name="cookies" Type="WebSocketSharp.Net.CookieCollection" />
       </Parameters>
       <Docs>
-        <param name="cookies">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="cookies">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> to add to the current <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+        <summary>
+            Add the elements of the specified <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the current <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="cookies" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="CopyTo">
@@ -71,10 +89,23 @@
         <Parameter Name="index" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="array">To be added.</param>
-        <param name="index">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="array">
+            An <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+        <param name="index">
+            An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+        <summary>
+            Copies the elements of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the specified <see cref="T:System.Array" />,
+            starting at the specified <paramref name="index" /> in the <paramref name="array" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="array" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+          <paramref name="index" /> is less than zero.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="CopyTo">
@@ -89,10 +120,23 @@
         <Parameter Name="index" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="array">To be added.</param>
-        <param name="index">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="array">
+            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </param>
+        <param name="index">
+            An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
+            </param>
+        <summary>
+            Copies the elements of the <see cref="T:WebSocketSharp.Net.CookieCollection" /> to the specified array of <see cref="T:WebSocketSharp.Net.Cookie" />,
+            starting at the specified <paramref name="index" /> in the <paramref name="array" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="array" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+          <paramref name="index" /> is less than zero.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Count">
@@ -103,8 +147,12 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the number of cookies contained in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+        <value>
+            An <see cref="T:System.Int32" /> that indicates the number of cookies contained in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -117,8 +165,13 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
+        <summary>
+            Gets the enumerator to use to iterate through the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+        <returns>
+            An instance of an implementation of the <see cref="T:System.Collections.IEnumerator" /> interface
+            to use to iterate through the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -130,8 +183,13 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is read-only.
+            </summary>
+        <value>
+          <c>true</c> if the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is read-only; otherwise, <c>false</c>.
+            The default is <c>true</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -143,8 +201,13 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a value indicating whether access to the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is thread safe.
+            </summary>
+        <value>
+          <c>true</c> if access to the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is thread safe; otherwise, <c>false</c>.
+            The default is <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -159,10 +222,20 @@
         <Parameter Name="index" Type="System.Int32" />
       </Parameters>
       <Docs>
-        <param name="index">To be added.</param>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <param name="index">
+            An <see cref="T:System.Int32" /> that is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            </param>
+        <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+          <paramref name="index" /> is less than zero or <paramref name="index" /> is greater than or
+            equal to <see cref="P:WebSocketSharp.Net.CookieCollection.Count" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Item">
@@ -176,10 +249,19 @@
         <Parameter Name="name" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <param name="name">
+            A <see cref="T:System.String" /> that is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            </param>
+        <summary>
+            Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="name" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="SyncRoot">
@@ -190,8 +272,12 @@
         <ReturnType>System.Object</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets an object to use to synchronize access to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </summary>
+        <value>
+            An <see cref="T:System.Object" /> to use to synchronize access to the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

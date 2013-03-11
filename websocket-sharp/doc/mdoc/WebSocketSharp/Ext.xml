@@ -76,6 +76,40 @@
             </exception>
       </Docs>
     </Member>
+    <Member MemberName="Contains">
+      <MemberSignature Language="C#" Value="public static bool Contains (this string str, char[] chars);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string str, char[] chars) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="str" Type="System.String" RefType="this" />
+        <Parameter Name="chars" Type="System.Char[]">
+          <Attributes>
+            <Attribute>
+              <AttributeName>System.ParamArray</AttributeName>
+            </Attribute>
+          </Attributes>
+        </Parameter>
+      </Parameters>
+      <Docs>
+        <param name="str">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <param name="chars">
+            An array of <see cref="T:System.Char" /> that contains characters to find.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> contains any of characters
+            in the specified array of <see cref="T:System.Char" />.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="str" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Emit">
       <MemberSignature Language="C#" Value="public static void Emit (this EventHandler eventHandler, object sender, EventArgs e);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Emit(class System.EventHandler eventHandler, object sender, class System.EventArgs e) cil managed" />
@@ -403,7 +437,34 @@
             Determines whether the specified <see cref="T:System.String" /> is a <see cref="F:System.String.Empty" />.
             </summary>
         <returns>
-          <c>true</c> if the <paramref name="value" /> parameter is a <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+          <c>true</c> if <paramref name="value" /> is <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="IsEnclosedIn">
+      <MemberSignature Language="C#" Value="public static bool IsEnclosedIn (this string str, char c);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEnclosedIn(string str, char c) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="str" Type="System.String" RefType="this" />
+        <Parameter Name="c" Type="System.Char" />
+      </Parameters>
+      <Docs>
+        <param name="str">
+            A <see cref="T:System.String" /> to test.
+            </param>
+        <param name="c">
+            A <see cref="T:System.Char" /> that contains character to find.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.String" /> is enclosed in the specified <see cref="T:System.Char" />.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="str" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>

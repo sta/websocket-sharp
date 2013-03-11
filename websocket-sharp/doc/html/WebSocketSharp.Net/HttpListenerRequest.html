@@ -207,7 +207,7 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Net.HttpListenerRequest">HttpListenerRequest  Class</h1>
     <p class="Summary" id="T:WebSocketSharp.Net.HttpListenerRequest:Summary">
-            Provides access to the HTTP request objects sent to a <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> instance.
+            Provides access to a request to a <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> instance.
             </p>
     <div id="T:WebSocketSharp.Net.HttpListenerRequest:Signature">
       <h2>Syntax</h2>
@@ -806,7 +806,7 @@
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Text.Encoding">System.Text.Encoding</a> <b>ContentEncoding</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.ContentEncoding:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Text.Encoding">System.Text.Encoding</a> that contains the encoding that can be used with entity body data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Text.Encoding">System.Text.Encoding</a> that contains the encoding that can be used with the entity body data.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.ContentEncoding:Remarks">
@@ -827,7 +827,7 @@
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.ContentLength64:Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Int64">long</a> that contains the value of the Content-Length entity-header field.
-            <tt>-1</tt> if the size is not known.
+            The value is a number of bytes in the entity body data. <tt>-1</tt> if the size is not known.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListenerRequest.ContentLength64:Remarks">

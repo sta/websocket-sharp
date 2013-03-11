@@ -64,7 +64,7 @@ namespace WebSocketSharp {
     /// Gets the received data as a <see cref="string"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains a received data.
+    /// A <see cref="string"/> that contains the received data.
     /// </value>
     public string Data {
       get {
@@ -80,7 +80,7 @@ namespace WebSocketSharp {
     /// Gets the received data as an array of <see cref="byte"/>.
     /// </summary>
     /// <value>
-    /// An array of <see cref="byte"/> that contains a received data.
+    /// An array of <see cref="byte"/> that contains the received data.
     /// </value>
     public byte[] RawData {
       get {
@@ -89,10 +89,10 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the type of received data.
+    /// Gets the type of the received data.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Frame.Opcode"/> that indicates the type of received data.
+    /// One of the <see cref="Opcode"/> values that indicates the type of the received data.
     /// </value>
     public Opcode Type {
       get {

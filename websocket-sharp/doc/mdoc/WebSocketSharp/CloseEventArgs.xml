@@ -14,8 +14,8 @@
             </summary>
     <remarks>
             The <see cref="E:WebSocketSharp.WebSocket.OnClose" /> event occurs when the WebSocket receives a close control frame or
-            the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access the <see cref="P:WebSocketSharp.CloseEventArgs.Code" /> or
-            <see cref="P:WebSocketSharp.CloseEventArgs.Reason" /> properties.
+            the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access
+            the <see cref="P:WebSocketSharp.CloseEventArgs.Code" /> or <see cref="P:WebSocketSharp.CloseEventArgs.Reason" /> properties.
             </remarks>
   </Docs>
   <Members>
@@ -62,10 +62,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Indicates whether the connection closed cleanly or not.
+            Indicates whether the WebSocket connection closed cleanly.
             </summary>
         <value>
-          <c>true</c> if the connection closed cleanly; otherwise, <c>false</c>.
+          <c>true</c> if the WebSocket connection closed cleanly; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

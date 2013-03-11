@@ -40,7 +40,7 @@ using System.Text;
 namespace WebSocketSharp.Net {
 
 	/// <summary>
-	/// Provides access to the HTTP request objects sent to a <see cref="HttpListener"/> instance.
+	/// Provides access to a request to a <see cref="HttpListener"/> instance.
 	/// </summary>
 	/// <remarks>
 	/// The HttpListenerRequest class cannot be inherited.
@@ -84,8 +84,8 @@ namespace WebSocketSharp.Net {
 		internal HttpListenerRequest (HttpListenerContext context)
 		{
 			this.context = context;
-			headers      = new WebHeaderCollection ();
-			version      = HttpVersion.Version10;
+			headers = new WebHeaderCollection ();
+			version = HttpVersion.Version10;
 		}
 
 		#endregion
@@ -126,7 +126,7 @@ namespace WebSocketSharp.Net {
 		/// Gets the encoding that can be used with the entity body data included in the request.
 		/// </summary>
 		/// <value>
-		/// A <see cref="Encoding"/> that contains the encoding that can be used with entity body data.
+		/// A <see cref="Encoding"/> that contains the encoding that can be used with the entity body data.
 		/// </value>
 		public Encoding ContentEncoding {
 			// TODO: Always returns Encoding.Default
@@ -142,7 +142,7 @@ namespace WebSocketSharp.Net {
 		/// </summary>
 		/// <value>
 		/// A <see cref="long"/> that contains the value of the Content-Length entity-header field.
-		/// <c>-1</c> if the size is not known.
+		/// The value is a number of bytes in the entity body data. <c>-1</c> if the size is not known.
 		/// </value>
 		public long ContentLength64 {
 			get { return content_length; }

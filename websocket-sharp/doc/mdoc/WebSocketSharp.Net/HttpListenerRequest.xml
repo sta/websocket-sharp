@@ -10,7 +10,7 @@
   <Interfaces />
   <Docs>
     <summary>
-            Provides access to the HTTP request objects sent to a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            Provides access to a request to a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
             </summary>
     <remarks>
             The HttpListenerRequest class cannot be inherited.
@@ -98,7 +98,7 @@
             Gets the encoding that can be used with the entity body data included in the request.
             </summary>
         <value>
-            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with entity body data.
+            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with the entity body data.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -116,7 +116,7 @@
             </summary>
         <value>
             A <see cref="T:System.Int64" /> that contains the value of the Content-Length entity-header field.
-            <c>-1</c> if the size is not known.
+            The value is a number of bytes in the entity body data. <c>-1</c> if the size is not known.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

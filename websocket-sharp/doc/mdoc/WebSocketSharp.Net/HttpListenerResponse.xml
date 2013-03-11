@@ -13,8 +13,12 @@
     </Interface>
   </Interfaces>
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides access to a response to a request being processed by a <see cref="T:WebSocketSharp.Net.HttpListener" /> instance.
+            </summary>
+    <remarks>
+            The HttpListenerResponse class cannot be inherited.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName="Abort">
@@ -26,7 +30,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Closes the connection to the client without sending a response.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -42,10 +48,23 @@
         <Parameter Name="value" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <param name="value">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the HTTP header to add.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the HTTP header to add.
+            </param>
+        <summary>
+            Adds the specified HTTP header <paramref name="name" /> and <paramref name="value" /> to
+            the headers for this response.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65,535 characters.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="AppendCookie">
@@ -59,9 +78,16 @@
         <Parameter Name="cookie" Type="WebSocketSharp.Net.Cookie" />
       </Parameters>
       <Docs>
-        <param name="cookie">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to add to the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" />.
+            </param>
+        <summary>
+            Adds the specified <see cref="T:WebSocketSharp.Net.Cookie" /> to the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> sent with the response.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="AppendHeader">
@@ -76,10 +102,22 @@
         <Parameter Name="value" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <param name="value">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the HTTP header to append <paramref name="value" /> to.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the value to append to the HTTP header.
+            </param>
+        <summary>
+            Appends a <paramref name="value" /> to the specified HTTP header sent with the response.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65,535 characters.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Close">
@@ -91,7 +129,10 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Sends the response to the client and releases the resources associated with
+            the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> instance.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -107,10 +148,23 @@
         <Parameter Name="willBlock" Type="System.Boolean" />
       </Parameters>
       <Docs>
-        <param name="responseEntity">To be added.</param>
-        <param name="willBlock">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="responseEntity">
+            An array of <see cref="T:System.Byte" /> that contains the response entity body data.
+            </param>
+        <param name="willBlock">
+          <c>true</c> if this method blocks execution while flushing the stream to the client; otherwise, <c>false</c>.
+            </param>
+        <summary>
+            Sends the response with the specified array of <see cref="T:System.Byte" /> to the client and
+            releases the resources associated with the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> instance.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="responseEntity" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ContentEncoding">
@@ -121,9 +175,19 @@
         <ReturnType>System.Text.Encoding</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the encoding that can be used with the entity body data included in the response.
+            </summary>
+        <value>
+            A <see cref="T:System.Text.Encoding" /> that contains the encoding that can be used with the entity body data.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ContentLength64">
@@ -134,9 +198,23 @@
         <ReturnType>System.Int64</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the size of the entity body data included in the response.
+            </summary>
+        <value>
+            A <see cref="T:System.Int64" /> that contains the value of the Content-Length entity-header field.
+            The value is a number of bytes in the entity body data.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The value specified for a set operation is less than zero.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ContentType">
@@ -147,9 +225,26 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the media type of the entity body included in the response.
+            </summary>
+        <value>
+            The type of the content.
+            A <see cref="T:System.String" /> that contains the value of the Content-Type entity-header field.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        <exception cref="T:System.ArgumentNullException">
+            The value specified for a set operation is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+            The value specified for a set operation is a <see cref="F:System.String.Empty" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Cookies">
@@ -160,8 +255,12 @@
         <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the cookies returned with the response.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies returned with the response.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -176,8 +275,12 @@
         <Parameter Name="templateResponse" Type="WebSocketSharp.Net.HttpListenerResponse" />
       </Parameters>
       <Docs>
-        <param name="templateResponse">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="templateResponse">
+            A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> to copy.
+            </param>
+        <summary>
+            Copies properties from the specified <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> to this response.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -189,8 +292,12 @@
         <ReturnType>WebSocketSharp.Net.WebHeaderCollection</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the HTTP headers returned to the client.
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> that contains the HTTP headers returned to the client.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -202,9 +309,20 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the server requests a persistent connection.
+            </summary>
+        <value>
+          <c>true</c> if the server requests a persistent connection; otherwise, <c>false</c>.
+            The default is <c>true</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="OutputStream">
@@ -215,9 +333,16 @@
         <ReturnType>System.IO.Stream</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets a <see cref="T:System.IO.Stream" /> to use to write the entity body data.
+            </summary>
+        <value>
+            A <see cref="T:System.IO.Stream" /> to use to write the entity body data.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ProtocolVersion">
@@ -228,9 +353,26 @@
         <ReturnType>System.Version</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the HTTP version used in the response.
+            </summary>
+        <value>
+            A <see cref="T:System.Version" /> that contains the HTTP version used in the response.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        <exception cref="T:System.ArgumentNullException">
+            The value specified for a set operation is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+            The value specified for a set operation does not have its <see cref="P:System.Version.Major">Major</see> property set to 1 or
+            does not have its <see cref="P:System.Version.Minor">Minor</see> property set to either 0 or 1.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Redirect">
@@ -244,8 +386,12 @@
         <Parameter Name="url" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="url">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="url">
+            A <see cref="T:System.String" /> that contains a URL to redirect the client's request to.
+            </param>
+        <summary>
+            Configures the response to redirect the client's request to the specified <paramref name="url" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -257,9 +403,22 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the URL to which the client is redirected to locate a requested resource.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the value of the Location response-header field.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+            The value specified for a set operation is a <see cref="F:System.String.Empty" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="SendChunked">
@@ -270,9 +429,19 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the response uses the chunked transfer encoding.
+            </summary>
+        <value>
+          <c>true</c> if the response uses the chunked transfer encoding; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="SetCookie">
@@ -286,9 +455,20 @@
         <Parameter Name="cookie" Type="WebSocketSharp.Net.Cookie" />
       </Parameters>
       <Docs>
-        <param name="cookie">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> to set.
+            </param>
+        <summary>
+            Adds or updates a <see cref="T:WebSocketSharp.Net.Cookie" /> in the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> sent with the response.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="cookie" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="cookie" /> already exists in the <see cref="P:WebSocketSharp.Net.HttpListenerResponse.Cookies" /> and
+            could not be replaced.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="StatusCode">
@@ -299,9 +479,23 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the HTTP status code returned to the client.
+            </summary>
+        <value>
+            An <see cref="T:System.Int32" /> that indicates the HTTP status code for the response to the request.
+            The default is <see cref="F:WebSocketSharp.Net.HttpStatusCode.OK" />.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object is closed.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The response has been sent already.
+            </exception>
+        <exception cref="T:System.Net.ProtocolViolationException">
+            The value specified for a set operation is invalid. Valid values are between 100 and 999.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="StatusDescription">
@@ -312,8 +506,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a description of the HTTP status code returned to the client.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains a description of the HTTP status code returned to the client.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -326,7 +524,9 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Releases all resource used by the <see cref="T:WebSocketSharp.Net.HttpListenerResponse" />.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>

@@ -55,6 +55,12 @@ namespace WebSocketSharp {
   /// </summary>
   public static class Ext {
 
+    #region Field
+
+    private const string _tspecials = "()<>@,;:\\\"/[]?={} \t";
+
+    #endregion
+
     #region Private Methods
 
     private static void times(this ulong n, Action act)
@@ -67,6 +73,21 @@ namespace WebSocketSharp {
     {
       for (ulong i = 0; i < n; i++)
         act(i);
+    }
+
+    #endregion
+
+    #region Internal Method
+
+    internal static bool IsToken(this string value)
+    {
+      foreach (char c in value)
+      {
+        if (c < 0x20 || c >= 0x7f || _tspecials.Contains (c))
+          return false;
+      }
+
+      return true;
     }
 
     #endregion
@@ -125,6 +146,28 @@ namespace WebSocketSharp {
       };
 
       listener.BeginAcceptTcpClient(callback, null);
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="string"/> contains any of characters
+    /// in the specified array of <see cref="char"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="str"/> contains any of <paramref name="chars"/>; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="str">
+    /// A <see cref="string"/> to test.
+    /// </param>
+    /// <param name="chars">
+    /// An array of <see cref="char"/> that contains characters to find.
+    /// </param>
+    public static bool Contains(this string str, params char[] chars)
+    {
+      return str.IsNullOrEmpty()
+             ? false
+             : chars.Length == 0
+               ? true
+               : str.IndexOfAny(chars) != -1;
     }
 
     /// <summary>
@@ -432,7 +475,7 @@ namespace WebSocketSharp {
     /// Determines whether the specified <see cref="string"/> is a <see cref="String.Empty"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <paramref name="value"/> parameter is a <see cref="String.Empty"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is <see cref="String.Empty"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
@@ -440,6 +483,25 @@ namespace WebSocketSharp {
     public static bool IsEmpty(this string value)
     {
       return value == String.Empty ? true : false;
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="string"/> is enclosed in the specified <see cref="char"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="str"/> is enclosed in <paramref name="c"/>; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="str">
+    /// A <see cref="string"/> to test.
+    /// </param>
+    /// <param name="c">
+    /// A <see cref="char"/> that contains character to find.
+    /// </param>
+    public static bool IsEnclosedIn(this string str, char c)
+    {
+      return str.IsNullOrEmpty()
+             ? false
+             : str[0] == c && str[str.Length - 1] == c;
     }
 
     /// <summary>

@@ -9,8 +9,12 @@
   </Base>
   <Interfaces />
   <Docs>
-    <summary>To be added.</summary>
-    <remarks>To be added.</remarks>
+    <summary>
+            Provides a set of properties and methods to use to manage the HTTP Cookie.
+            </summary>
+    <remarks>
+            The Cookie class cannot be inherited.
+            </remarks>
   </Docs>
   <Members>
     <Member MemberName=".ctor">
@@ -19,7 +23,9 @@
       <MemberType>Constructor</MemberType>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class.
+            </summary>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -32,10 +38,41 @@
         <Parameter Name="value" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <param name="value">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" /> and <paramref name="value" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+          <para>
+            <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="name" /> contains an invalid character.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> is <see langword="null" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -48,11 +85,44 @@
         <Parameter Name="path" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <param name="value">To be added.</param>
-        <param name="path">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+        <param name="path">
+            A <see cref="T:System.String" /> that contains the value of the Path attribute of the cookie.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" />, <paramref name="value" /> and <paramref name="path" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+          <para>
+            <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="name" /> contains an invalid character.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> is <see langword="null" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName=".ctor">
@@ -66,12 +136,48 @@
         <Parameter Name="domain" Type="System.String" />
       </Parameters>
       <Docs>
-        <param name="name">To be added.</param>
-        <param name="value">To be added.</param>
-        <param name="path">To be added.</param>
-        <param name="domain">To be added.</param>
-        <summary>To be added.</summary>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </param>
+        <param name="path">
+            A <see cref="T:System.String" /> that contains the value of the Path attribute of the cookie.
+            </param>
+        <param name="domain">
+            A <see cref="T:System.String" /> that contains the value of the Domain attribute of the cookie.
+            </param>
+        <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.Cookie" /> class
+            with the specified <paramref name="name" />, <paramref name="value" />,
+            <paramref name="path" /> and <paramref name="domain" />.
+            </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+          <para>
+            <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="name" /> contains an invalid character.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> is <see langword="null" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            <paramref name="value" /> contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName="Comment">
@@ -82,8 +188,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Comment attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains a comment to document intended use of the cookie.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -95,8 +205,13 @@
         <ReturnType>System.Uri</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the CommentURL attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.Uri" /> that contains a URI that provides the comment
+            to document intended use of the cookie.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -108,8 +223,14 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the client discards the cookie unconditionally
+            when the client terminates.
+            </summary>
+        <value>
+          <c>true</c> if the client discards the cookie unconditionally when the client terminates;
+            otherwise, <c>false</c>. The default is <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -121,25 +242,36 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Domain attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains a URI for which the cookie is valid.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="Equals">
-      <MemberSignature Language="C#" Value="public override bool Equals (object obj);" />
-      <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance bool Equals(object obj) cil managed" />
+      <MemberSignature Language="C#" Value="public override bool Equals (object comparand);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig virtual instance bool Equals(object comparand) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="obj" Type="System.Object" />
+        <Parameter Name="comparand" Type="System.Object" />
       </Parameters>
       <Docs>
-        <param name="obj">To be added.</param>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
+        <param name="comparand">
+            An <see cref="T:System.Object" /> to compare with the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </summary>
+        <returns>
+          <c>true</c> if the specified <see cref="T:System.Object" /> is equal to the current <see cref="T:WebSocketSharp.Net.Cookie" />;
+            otherwise, <c>false</c>.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -151,8 +283,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the cookie has expired.
+            </summary>
+        <value>
+          <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -164,8 +300,12 @@
         <ReturnType>System.DateTime</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Expires attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.DateTime" /> that contains the date and time at which the cookie expires.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -178,8 +318,12 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
+        <summary>
+            Serves as a hash function for a <see cref="T:WebSocketSharp.Net.Cookie" /> object.
+            </summary>
+        <returns>
+            An <see cref="T:System.Int32" /> that contains a hash code for this instance.
+            </returns>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -191,8 +335,12 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating non-HTTP APIs can access the cookie.
+            </summary>
+        <value>
+          <c>true</c> if non-HTTP APIs can not access the cookie; otherwise, <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -204,9 +352,24 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the Name of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the Name of the cookie.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+          <para>
+            The value specified for a set operation is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            The value specified for a set operation contains an invalid character.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName="Path">
@@ -217,8 +380,13 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Path attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains a subset of URI on the origin server
+            to which the cookie applies.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -230,9 +398,16 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Port attribute of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains a list of the TCP ports to which the cookie applies.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+            The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Secure">
@@ -243,9 +418,17 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
-        <remarks>To be added.</remarks>
+        <summary>
+            Gets or sets a value indicating whether the security level of the cookie is secure.
+            </summary>
+        <value>
+          <c>true</c> if the security level of the cookie is secure; otherwise, <c>false</c>.
+            The default is <c>false</c>.
+            </value>
+        <remarks>
+            When this property is <c>true</c>, the cookie may be included in the HTTP request
+            only if the request is transmitted over the HTTPS.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="TimeStamp">
@@ -256,8 +439,12 @@
         <ReturnType>System.DateTime</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets the time when the cookie was issued.
+            </summary>
+        <value>
+            A <see cref="T:System.DateTime" /> that contains the time when the cookie was issued.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -270,9 +457,15 @@
       </ReturnValue>
       <Parameters />
       <Docs>
-        <summary>To be added.</summary>
-        <returns>To be added.</returns>
-        <remarks>To be added.</remarks>
+        <summary>
+            Returns a <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </summary>
+        <returns>
+            A <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.Cookie" />.
+            </returns>
+        <remarks>
+            This method returns a <see cref="T:System.String" /> to use to send an HTTP Cookie to an origin server.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="Value">
@@ -283,8 +476,12 @@
         <ReturnType>System.String</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the Value of the cookie.
+            </summary>
+        <value>
+            A <see cref="T:System.String" /> that contains the Value of the cookie.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -296,9 +493,17 @@
         <ReturnType>System.Int32</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets the value of the Version attribute of the cookie.
+            </summary>
+        <value>
+            An <see cref="T:System.Int32" /> that contains the version of the HTTP state management
+            to which the cookie conforms.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The value specified for a set operation is less than zero.
+            </exception>
       </Docs>
     </Member>
   </Members>
