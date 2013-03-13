@@ -65,6 +65,11 @@ namespace WebSocketSharp {
       Headers.Add(name, value);
     }
 
+    public void AddHeaders(WebHeaderCollection headers)
+    {
+      Headers.Add(headers);
+    }
+
     public string[] GetHeaderValues(string name)
     {
       return Headers.GetValues(name);
