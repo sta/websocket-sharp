@@ -79,6 +79,29 @@ namespace WebSocketSharp {
 
     #region Internal Method
 
+    internal static bool IsText(this string value)
+    {
+      int len = value.Length;
+      for (int i = 0; i < len; i++)
+      {
+        char c = value[i];
+        if (c < 0x20 && !"\r\n\t".Contains(c))
+          return false;
+
+        if (c == 0x7f)
+          return false;
+
+        if (c == '\n' && ++i < len)
+        {
+          c = value[i];
+          if (!" \t".Contains(c))
+            return false;
+        }
+      }
+
+      return true;
+    }
+
     internal static bool IsToken(this string value)
     {
       foreach (char c in value)

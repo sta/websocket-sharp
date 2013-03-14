@@ -2954,6 +2954,403 @@
             <param name="s">The string to encode.</param>
             <param name="output">The TextWriter output stream containing the encoded string.</param>
         </member>
+        <member name="T:WebSocketSharp.Net.WebHeaderCollection">
+            <summary>
+            Provides a collection of the HTTP headers associated with a request or response.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> class
+            with the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the contextual information about the source or destination.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> class.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpRequestHeader)">
+            <summary>
+            Gets or sets the specified request <paramref name="header" /> in the collection.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the specified request <paramref name="header" />.
+            </value>
+            <param name="header">
+            A <see cref="T:System.Net.HttpRequestHeader" /> that contains a request header name.
+            </param>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpResponseHeader)">
+            <summary>
+            Gets or sets the specified response <paramref name="header" /> in the collection.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the value of the specified response <paramref name="header" />.
+            </value>
+            <param name="header">
+            A <see cref="T:System.Net.HttpResponseHeader" /> that contains a response header name.
+            </param>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebHeaderCollection.AllKeys">
+            <summary>
+            Gets all header names in the collection.
+            </summary>
+            <value>
+            An array of <see cref="T:System.String" /> that contains all header names in the collection.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebHeaderCollection.Count">
+            <summary>
+            Gets the number of headers in the collection.
+            </summary>
+            <value>
+            An <see cref="T:System.Int32" /> that indicates the number of headers in the collection.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.Net.WebHeaderCollection.Keys">
+            <summary>
+            Gets a collection of header names in the collection.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.Specialized.NameObjectCollectionBase.KeysCollection" /> that contains a collection of header names in the collection.
+            </value>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.AddWithoutValidate(System.String,System.String)">
+            <summary>
+            Adds a header to the collection without checking whether the header is on the restricted header list.
+            </summary>
+            <param name="headerName">
+            A <see cref="T:System.String" /> that contains the name of the header to add.
+            </param>
+            <param name="headerValue">
+            A <see cref="T:System.String" /> that contains the value of the header to add.
+            </param>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="headerName" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or
+            contains invalid characters.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="headerValue" /> contains invalid characters.
+            </para>
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.String)">
+            <summary>
+            Adds the specified <paramref name="header" /> to the collection.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.String" /> that contains a header with the name and value separated by a colon (:).
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="header" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="header" /> does not contain a colon.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpRequestHeader,System.String)">
+            <summary>
+            Adds the specified request <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpRequestHeader" /> that contains the name of the request header to add.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to add.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpResponseHeader,System.String)">
+            <summary>
+            Adds the specified response <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpResponseHeader" /> that contains the name of the response header to add.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to add.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.String,System.String)">
+            <summary>
+            Adds a header with the specified <paramref name="name" /> and <paramref name="value" /> to the collection.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the header to add.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to add.
+            </param>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="name" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="name" /> is a restricted header that must be set with a property setting.
+            </para>
+                <para>
+            -or-
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Clear">
+            <summary>
+            Removes all headers from the collection.
+            </summary>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Get(System.Int32)">
+            <summary>
+            Get the value of the header with the specified <paramref name="index" /> in the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that receives the value of the header.
+            </returns>
+            <param name="index">
+            An <see cref="T:System.Int32" /> that is the zero-based index of the header to get.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Get(System.String)">
+            <summary>
+            Get the value of the header with the specified <paramref name="name" /> in the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that receives the value of the header.
+            <see langword="null" /> if there is no header with <paramref name="name" /> in the collection.
+            </returns>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the header to get.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetEnumerator">
+            <summary>
+            Gets the enumerator to use to iterate through the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </summary>
+            <returns>
+            An instance of an implementation of the <see cref="T:System.Collections.IEnumerator" /> interface
+            to use to iterate through the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetKey(System.Int32)">
+            <summary>
+            Get the header name at the specified <paramref name="index" /> position in the collection.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that receives the header name.
+            </returns>
+            <param name="index">
+            An <see cref="T:System.Int32" /> is the zero-based index of the key to get from the collection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetValues(System.String)">
+            <summary>
+            Gets an array of header values stored in the specified <paramref name="header" /> name.
+            </summary>
+            <returns>
+            An array of <see cref="T:System.String" /> that receives the header values.
+            </returns>
+            <param name="header">
+            A <see cref="T:System.String" /> that contains a header name.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetValues(System.Int32)">
+            <summary>
+            Gets an array of header values stored in the specified <paramref name="index" /> position of the header collection.
+            </summary>
+            <returns>
+            An array of <see cref="T:System.String" /> that receives the header values.
+            </returns>
+            <param name="index">
+            An <see cref="T:System.Int32" /> is the zero-based index of the header in the collection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </summary>
+            <param name="serializationInfo">
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            </param>
+            <param name="streamingContext">
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.IsRestricted(System.String)">
+            <summary>
+            Determines whether the specified header can be set for the request.
+            </summary>
+            <returns>
+                <c>true</c> if the header is restricted; otherwise, <c>false</c>.
+            </returns>
+            <param name="headerName">
+            A <see cref="T:System.String" /> that contains the name of the header to test.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="headerName" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="headerName" /> contains invalid characters.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.IsRestricted(System.String,System.Boolean)">
+            <summary>
+            Determines whether the specified header can be set for the request or the response.
+            </summary>
+            <returns>
+                <c>true</c> if the header is restricted; otherwise, <c>false</c>.
+            </returns>
+            <param name="headerName">
+            A <see cref="T:System.String" /> that contains the name of the header to test.
+            </param>
+            <param name="response">
+                <c>true</c> if does the test for the response; for the request, <c>false</c>.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="headerName" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="headerName" /> contains invalid characters.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.OnDeserialization(System.Object)">
+            <summary>
+            Implements the <see cref="T:System.Runtime.Serialization.ISerializable" /> interface and raises the deserialization event
+            when the deserialization is complete.
+            </summary>
+            <param name="sender">
+            An <see cref="T:System.Object" /> that contains the source of the deserialization event.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpRequestHeader)">
+            <summary>
+            Removes the specified header from the collection.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpRequestHeader" /> to remove from the collection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpResponseHeader)">
+            <summary>
+            Removes the specified header from the collection.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpResponseHeader" /> to remove from the collection.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.String)">
+            <summary>
+            Removes the specified header from the collection.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the header to remove from the collection.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="name" /> contains invalid characters.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="name" /> is a restricted header name.
+            </para>
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpRequestHeader,System.String)">
+            <summary>
+            Sets the specified header to the specified value.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpRequestHeader" /> to set.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to set.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpResponseHeader,System.String)">
+            <summary>
+            Sets the specified header to the specified value.
+            </summary>
+            <param name="header">
+            A <see cref="T:System.Net.HttpResponseHeader" /> to set.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to set.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.String,System.String)">
+            <summary>
+            Sets the specified header to the specified value.
+            </summary>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the name of the header to set.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the header to set.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="name" /> or <paramref name="value" /> contain invalid characters.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="name" /> is a restricted header name.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.ToByteArray">
+            <summary>
+            Converts the current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> to an array of <see cref="T:System.Byte" />.
+            </summary>
+            <returns>
+            An array of <see cref="T:System.Byte" /> that receives the converted current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </returns>
+        </member>
+        <member name="M:WebSocketSharp.Net.WebHeaderCollection.ToString">
+            <summary>
+            Returns a <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </summary>
+            <returns>
+            A <see cref="T:System.String" /> that represents the current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            </returns>
+        </member>
         <member name="T:WebSocketSharp.Server.HttpServer">
             <summary>
             Provides a simple HTTP server that allows to accept the WebSocket connection requests.
