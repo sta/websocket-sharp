@@ -6,6 +6,7 @@
 //	Lawrence Pit (loz@cable.a2000.nl)
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)
 //	Miguel de Icaza (miguel@novell.com)
+//	sta (sta.blockhead@gmail.com)
 //
 // Copyright (c) 2003 Ximian, Inc. (http://www.ximian.com)
 // Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
@@ -35,6 +36,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -48,15 +50,14 @@ namespace WebSocketSharp.Net {
 	/// </summary>
 	[Serializable]
 	[ComVisible (true)]
-	public class WebHeaderCollection : NameValueCollection, ISerializable
-	{
+	public class WebHeaderCollection : NameValueCollection, ISerializable {
+
 		#region Fields
 
-		private static readonly Dictionary<string, bool> multiValue;
-		private static readonly Dictionary<string, bool> restricted;
-		private static readonly Dictionary<string, bool> restricted_response;
+		static readonly Dictionary<string, HttpHeaderInfo> headers;
 
-		private bool internallyCreated = false;
+		bool           internallyCreated;
+		HttpHeaderType state;
 
 		#endregion
 
@@ -64,64 +65,195 @@ namespace WebSocketSharp.Net {
 
 		static WebHeaderCollection () 
 		{
-			// the list of restricted header names as defined 
-			// by the ms.net spec
-			restricted = new Dictionary<string, bool> (StringComparer.InvariantCultureIgnoreCase);
-			restricted.Add ("accept", true);
-			restricted.Add ("connection", true);
-			restricted.Add ("content-length", true);
-			restricted.Add ("content-type", true);
-			restricted.Add ("date", true);
-			restricted.Add ("expect", true);
-			restricted.Add ("host", true);
-			restricted.Add ("if-modified-since", true);
-			restricted.Add ("range", true);
-			restricted.Add ("referer", true);
-			restricted.Add ("transfer-encoding", true);
-			restricted.Add ("user-agent", true);
-			restricted.Add ("proxy-connection", true);
-
-			//
-			restricted_response = new Dictionary<string, bool> (StringComparer.InvariantCultureIgnoreCase);
-			restricted_response.Add ("Content-Length", true);
-			restricted_response.Add ("Transfer-Encoding", true);
-			restricted_response.Add ("WWW-Authenticate", true);
-
-			// see par 14 of RFC 2068 to see which header names
-			// accept multiple values each separated by a comma
-			multiValue = new Dictionary<string, bool> (StringComparer.InvariantCultureIgnoreCase);
-			multiValue.Add ("accept", true);
-			multiValue.Add ("accept-charset", true);
-			multiValue.Add ("accept-encoding", true);
-			multiValue.Add ("accept-language", true);
-			multiValue.Add ("accept-ranges", true);
-			multiValue.Add ("allow", true);
-			multiValue.Add ("authorization", true);
-			multiValue.Add ("cache-control", true);
-			multiValue.Add ("connection", true);
-			multiValue.Add ("content-encoding", true);
-			multiValue.Add ("content-language", true);
-			multiValue.Add ("expect", true);
-			multiValue.Add ("if-match", true);
-			multiValue.Add ("if-none-match", true);
-			multiValue.Add ("proxy-authenticate", true);
-			multiValue.Add ("public", true);
-			multiValue.Add ("range", true);
-			multiValue.Add ("transfer-encoding", true);
-			multiValue.Add ("upgrade", true);
-			multiValue.Add ("vary", true);
-			multiValue.Add ("via", true);
-			multiValue.Add ("warning", true);
-			multiValue.Add ("www-authenticate", true);
-
-			// Extra
-			multiValue.Add ("set-cookie", true);
-			multiValue.Add ("set-cookie2", true);
+			headers = new Dictionary<string, HttpHeaderInfo> (StringComparer.InvariantCultureIgnoreCase)
+			{
+				{ "Accept", new HttpHeaderInfo () {
+					Name = "Accept",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } },
+				{ "AcceptCharset", new HttpHeaderInfo () {
+					Name = "Accept-Charset",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "AcceptEncoding", new HttpHeaderInfo () {
+					Name = "Accept-Encoding",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "AcceptLanguage", new HttpHeaderInfo () {
+					Name = "Accept-language",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "AcceptRanges", new HttpHeaderInfo () {
+					Name = "Accept-Ranges",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Age", new HttpHeaderInfo () {
+					Name = "Age",
+					Type = HttpHeaderType.Response } },
+				{ "Allow", new HttpHeaderInfo () {
+					Name = "Allow",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Authorization", new HttpHeaderInfo () {
+					Name = "Authorization",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "CacheControl", new HttpHeaderInfo () {
+					Name = "Cache-Control",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Connection", new HttpHeaderInfo () {
+					Name = "Connection",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } },
+				{ "ContentEncoding", new HttpHeaderInfo () {
+					Name = "Content-Encoding",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "ContentLanguage", new HttpHeaderInfo () {
+					Name = "Content-Language",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "ContentLength", new HttpHeaderInfo () {
+					Name = "Content-Length",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted } },
+				{ "ContentLocation", new HttpHeaderInfo () {
+					Name = "Content-Location",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "ContentMd5", new HttpHeaderInfo () {
+					Name = "Content-MD5",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "ContentRange", new HttpHeaderInfo () {
+					Name = "Content-Range",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "ContentType", new HttpHeaderInfo () {
+					Name = "Content-Type",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted } },
+				{ "Cookie", new HttpHeaderInfo () {
+					Name = "Cookie",
+					Type = HttpHeaderType.Request } },
+				{ "Cookie2", new HttpHeaderInfo () {
+					Name = "Cookie2",
+					Type = HttpHeaderType.Request } },
+				{ "Date", new HttpHeaderInfo () {
+					Name = "Date",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted } },
+				{ "Expect", new HttpHeaderInfo () {
+					Name = "Expect",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } },
+				{ "Expires", new HttpHeaderInfo () {
+					Name = "Expires",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "ETag", new HttpHeaderInfo () {
+					Name = "ETag",
+					Type = HttpHeaderType.Response } },
+				{ "From", new HttpHeaderInfo () {
+					Name = "From",
+					Type = HttpHeaderType.Request } },
+				{ "Host", new HttpHeaderInfo () {
+					Name = "Host",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted } },
+				{ "IfMatch", new HttpHeaderInfo () {
+					Name = "If-Match",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "IfModifiedSince", new HttpHeaderInfo () {
+					Name = "If-Modified-Since",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted } },
+				{ "IfNoneMatch", new HttpHeaderInfo () {
+					Name = "If-None-Match",
+					Type = HttpHeaderType.Request | HttpHeaderType.MultiValue } },
+				{ "IfRange", new HttpHeaderInfo () {
+					Name = "If-Range",
+					Type = HttpHeaderType.Request } },
+				{ "IfUnmodifiedSince", new HttpHeaderInfo () {
+					Name = "If-Unmodified-Since",
+					Type = HttpHeaderType.Request } },
+				{ "KeepAlive", new HttpHeaderInfo () {
+					Name = "Keep-Alive",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "LastModified", new HttpHeaderInfo () {
+					Name = "Last-Modified",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "Location", new HttpHeaderInfo () {
+					Name = "Location",
+					Type = HttpHeaderType.Response } },
+				{ "MaxForwards", new HttpHeaderInfo () {
+					Name = "Max-Forwards",
+					Type = HttpHeaderType.Request } },
+				{ "Pragma", new HttpHeaderInfo () {
+					Name = "Pragma",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "ProxyConnection", new HttpHeaderInfo () {
+					Name = "Proxy-Connection",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted } },
+				{ "ProxyAuthenticate", new HttpHeaderInfo () {
+					Name = "Proxy-Authenticate",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "ProxyAuthorization", new HttpHeaderInfo () {
+					Name = "Proxy-Authorization",
+					Type = HttpHeaderType.Request } },
+				{ "Public", new HttpHeaderInfo () {
+					Name = "Public",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Range", new HttpHeaderInfo () {
+					Name = "Range",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } },
+				{ "Referer", new HttpHeaderInfo () {
+					Name = "Referer",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted } },
+				{ "RetryAfter", new HttpHeaderInfo () {
+					Name = "Retry-After",
+					Type = HttpHeaderType.Response } },
+				{ "SecWebSocketAccept", new HttpHeaderInfo () {
+					Name = "Sec-WebSocket-Accept",
+					Type = HttpHeaderType.Response | HttpHeaderType.Restricted } },
+				{ "SecWebSocketExtensions", new HttpHeaderInfo () {
+					Name = "Sec-WebSocket-Extensions",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValueInRequest } },
+				{ "SecWebSocketKey", new HttpHeaderInfo () {
+					Name = "Sec-WebSocket-Key",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted } },
+				{ "SecWebSocketProtocol", new HttpHeaderInfo () {
+					Name = "Sec-WebSocket-Protocol",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValueInRequest } },
+				{ "SecWebSocketVersion", new HttpHeaderInfo () {
+					Name = "Sec-WebSocket-Version",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValueInResponse } },
+				{ "Server", new HttpHeaderInfo () {
+					Name = "Server",
+					Type = HttpHeaderType.Response } },
+				{ "SetCookie", new HttpHeaderInfo () {
+					Name = "Set-Cookie",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "SetCookie2", new HttpHeaderInfo () {
+					Name = "Set-Cookie2",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Te", new HttpHeaderInfo () {
+					Name = "TE",
+					Type = HttpHeaderType.Request } },
+				{ "Trailer", new HttpHeaderInfo () {
+					Name = "Trailer",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response } },
+				{ "TransferEncoding", new HttpHeaderInfo () {
+					Name = "Transfer-Encoding",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } },
+				{ "Translate", new HttpHeaderInfo () {
+					Name = "Translate",
+					Type = HttpHeaderType.Request } },
+				{ "Upgrade", new HttpHeaderInfo () {
+					Name = "Upgrade",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "UserAgent", new HttpHeaderInfo () {
+					Name = "User-Agent",
+					Type = HttpHeaderType.Request | HttpHeaderType.Restricted } },
+				{ "Vary", new HttpHeaderInfo () {
+					Name = "Vary",
+					Type = HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Via", new HttpHeaderInfo () {
+					Name = "Via",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "Warning", new HttpHeaderInfo () {
+					Name = "Warning",
+					Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue } },
+				{ "WwwAuthenticate", new HttpHeaderInfo () {
+					Name = "WWW-Authenticate",
+					Type = HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValue } }
+			};
 		}
 
 		internal WebHeaderCollection (bool internallyCreated)
 		{
 			this.internallyCreated = internallyCreated;
+			state = HttpHeaderType.Undefined;
 		}
 
 		/// <summary>
@@ -129,27 +261,35 @@ namespace WebSocketSharp.Net {
 		/// with the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
 		/// </summary>
 		/// <param name="serializationInfo">
-		/// A <see cref="SerializationInfo"/> that holds the serialized object data.
+		/// A <see cref="SerializationInfo"/> that contains the data to need to serialize the <see cref="WebHeaderCollection"/> object.
 		/// </param>
 		/// <param name="streamingContext">
-		/// A <see cref="StreamingContext"/> that contains the contextual information about the source or destination.
+		/// A <see cref="StreamingContext"/> that contains the source of the serialized stream associated with the new <see cref="WebHeaderCollection"/>.
 		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="serializationInfo"/> is <see langword="null"/>.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// An element with the specified name is not found in <paramref name="serializationInfo"/>.
+		/// </exception>
 		protected WebHeaderCollection (
 			SerializationInfo serializationInfo, StreamingContext streamingContext)
 		{
-			int count;
+			if (serializationInfo.IsNull ())
+				throw new ArgumentNullException ("serializationInfo");
+
 			try {
-				count = serializationInfo.GetInt32("Count");
-				for (int i = 0; i < count; i++)
-					this.Add (
+				internallyCreated = serializationInfo.GetBoolean ("InternallyCreated");
+				state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
+
+				int count = serializationInfo.GetInt32 ("Count");
+				count.Times (i => {
+					base.Add (
 						serializationInfo.GetString (i.ToString ()),
 						serializationInfo.GetString ((count + i).ToString ()));
-			} catch (SerializationException) {
-				count = serializationInfo.GetInt32("count");
-				for (int i = 0; i < count; i++)
-					this.Add (
-						serializationInfo.GetString ("k" + i),
-						serializationInfo.GetString ("v" + i));
+				});
+			} catch (SerializationException ex) {
+				throw new ArgumentException (ex.Message, "serializationInfo", ex);
 			}
 		}
 
@@ -158,6 +298,8 @@ namespace WebSocketSharp.Net {
 		/// </summary>
 		public WebHeaderCollection ()
 		{
+			internallyCreated = false;
+			state = HttpHeaderType.Undefined;
 		}
 
 		#endregion
@@ -197,17 +339,32 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains the value of the specified request <paramref name="header"/>.
 		/// </value>
 		/// <param name="header">
-		/// A <see cref="HttpRequestHeader"/> that contains a request header name.
+		/// A <see cref="HttpRequestHeader"/> that indicates a request header.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpRequestHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public string this [HttpRequestHeader header]
 		{
 			get {
-				return Get (RequestHeaderToString (header));
+				return Get (Convert (header));
 			}
 
 			set {
-				// TODO: Support to throw InvalidOperationException.
-
 				Add (header, value);
 			}
 		}
@@ -219,17 +376,32 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains the value of the specified response <paramref name="header"/>.
 		/// </value>
 		/// <param name="header">
-		/// A <see cref="HttpResponseHeader"/> that contains a response header name.
+		/// A <see cref="HttpResponseHeader"/> that indicates a response header.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpResponseHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public string this [HttpResponseHeader header]
 		{
 			get {
-				return Get (ResponseHeaderToString (header));
+				return Get (Convert (header));
 			}
 
 			set {
-				// TODO: Support to throw InvalidOperationException.
-
 				Add (header, value);
 			}
 		}
@@ -251,162 +423,163 @@ namespace WebSocketSharp.Net {
 
 		#region Private Methods
 
-		static string RequestHeaderToString (HttpRequestHeader value)
+		void Add (string name, string value, bool ignoreRestricted)
 		{
-			switch (value){
-			case HttpRequestHeader.CacheControl:
-				return "Cache-Control";
-			case HttpRequestHeader.Connection:
-				return "Connection";
-			case HttpRequestHeader.Date:
-				return "Date";
-			case HttpRequestHeader.KeepAlive:
-				return "Keep-Alive";
-			case HttpRequestHeader.Pragma:
-				return "Pragma";
-			case HttpRequestHeader.Trailer:
-				return "Trailer";
-			case HttpRequestHeader.TransferEncoding:
-				return "Transfer-Encoding";
-			case HttpRequestHeader.Upgrade:
-				return "Upgrade";
-			case HttpRequestHeader.Via:
-				return "Via";
-			case HttpRequestHeader.Warning:
-				return "Warning";
-			case HttpRequestHeader.Allow:
-				return "Allow";
-			case HttpRequestHeader.ContentLength:
-				return "Content-Length";
-			case HttpRequestHeader.ContentType:
-				return "Content-Type";
-			case HttpRequestHeader.ContentEncoding:
-				return "Content-Encoding";
-			case HttpRequestHeader.ContentLanguage:
-				return "Content-Language";
-			case HttpRequestHeader.ContentLocation:
-				return "Content-Location";
-			case HttpRequestHeader.ContentMd5:
-				return "Content-MD5";
-			case HttpRequestHeader.ContentRange:
-				return "Content-Range";
-			case HttpRequestHeader.Expires:
-				return "Expires";
-			case HttpRequestHeader.LastModified:
-				return "Last-Modified";
-			case HttpRequestHeader.Accept:
-				return "Accept";
-			case HttpRequestHeader.AcceptCharset:
-				return "Accept-Charset";
-			case HttpRequestHeader.AcceptEncoding:
-				return "Accept-Encoding";
-			case HttpRequestHeader.AcceptLanguage:
-				return "accept-language";
-			case HttpRequestHeader.Authorization:
-				return "Authorization";
-			case HttpRequestHeader.Cookie:
-				return "Cookie";
-			case HttpRequestHeader.Expect:
-				return "Expect";
-			case HttpRequestHeader.From:
-				return "From";
-			case HttpRequestHeader.Host:
-				return "Host";
-			case HttpRequestHeader.IfMatch:
-				return "If-Match";
-			case HttpRequestHeader.IfModifiedSince:
-				return "If-Modified-Since";
-			case HttpRequestHeader.IfNoneMatch:
-				return "If-None-Match";
-			case HttpRequestHeader.IfRange:
-				return "If-Range";
-			case HttpRequestHeader.IfUnmodifiedSince:
-				return "If-Unmodified-Since";
-			case HttpRequestHeader.MaxForwards:
-				return "Max-Forwards";
-			case HttpRequestHeader.ProxyAuthorization:
-				return "Proxy-Authorization";
-			case HttpRequestHeader.Referer:
-				return "Referer";
-			case HttpRequestHeader.Range:
-				return "Range";
-			case HttpRequestHeader.Te:
-				return "TE";
-			case HttpRequestHeader.Translate:
-				return "Translate";
-			case HttpRequestHeader.UserAgent:
-				return "User-Agent";
-			default:
-				throw new InvalidOperationException ();
-			}
+			name = Trim (name);
+			CheckName (name);
+
+			Action <string, string> add;
+			if (ignoreRestricted)
+				add = AddWithoutCheckingNameAndRestricted;
+			else
+				add = AddWithoutCheckingName;
+
+			DoWithCheckingState (add, name, value);
 		}
 
-		static string ResponseHeaderToString (HttpResponseHeader value)
+		void AddWithoutCheckingName (string name, string value)
 		{
-			switch (value){
-			case HttpResponseHeader.CacheControl:
-				return "Cache-Control";
-			case HttpResponseHeader.Connection:
-				return "Connection";
-			case HttpResponseHeader.Date:
-				return "Date";
-			case HttpResponseHeader.KeepAlive:
-				return "Keep-Alive";
-			case HttpResponseHeader.Pragma:
-				return "Pragma";
-			case HttpResponseHeader.Trailer:
-				return "Trailer";
-			case HttpResponseHeader.TransferEncoding:
-				return "Transfer-Encoding";
-			case HttpResponseHeader.Upgrade:
-				return "Upgrade";
-			case HttpResponseHeader.Via:
-				return "Via";
-			case HttpResponseHeader.Warning:
-				return "Warning";
-			case HttpResponseHeader.Allow:
-				return "Allow";
-			case HttpResponseHeader.ContentLength:
-				return "Content-Length";
-			case HttpResponseHeader.ContentType:
-				return "Content-Type";
-			case HttpResponseHeader.ContentEncoding:
-				return "Content-Encoding";
-			case HttpResponseHeader.ContentLanguage:
-				return "Content-Language";
-			case HttpResponseHeader.ContentLocation:
-				return "Content-Location";
-			case HttpResponseHeader.ContentMd5:
-				return "Content-MD5";
-			case HttpResponseHeader.ContentRange:
-				return "Content-Range";
-			case HttpResponseHeader.Expires:
-				return "Expires";
-			case HttpResponseHeader.LastModified:
-				return "Last-Modified";
-			case HttpResponseHeader.AcceptRanges:
-				return "Accept-Ranges";
-			case HttpResponseHeader.Age:
-				return "Age";
-			case HttpResponseHeader.ETag:
-				return "ETag";
-			case HttpResponseHeader.Location:
-				return "Location";
-			case HttpResponseHeader.ProxyAuthenticate:
-				return "Proxy-Authenticate";
-			case HttpResponseHeader.RetryAfter:
-				return "Retry-After";
-			case HttpResponseHeader.Server:
-				return "Server";
-			case HttpResponseHeader.SetCookie:
-				return "Set-Cookie";
-			case HttpResponseHeader.Vary:
-				return "Vary";
-			case HttpResponseHeader.WwwAuthenticate:
-				return "WWW-Authenticate";
-			default:
-				throw new InvalidOperationException ();
+			CheckRestricted (name);
+			AddWithoutCheckingNameAndRestricted (name, value);
+		}
+
+		void AddWithoutCheckingNameAndRestricted (string name, string value)
+		{
+			value = Trim (value);
+			CheckValue (value);
+			base.Add (name, value);
+		}
+
+		static int CheckColonSeparated (string header)
+		{
+			int i = header.IndexOf (':');
+			if (i == -1)
+				throw new ArgumentException ("No colon found.", "header");
+
+			return i;
+		}
+
+		static void CheckName (string name)
+		{
+			if (name.IsEmpty ())
+				throw new ArgumentNullException ("name");
+
+			if (!IsHeaderName (name))
+				throw new ArgumentException ("Contains invalid characters.", "name");
+		}
+
+		void CheckRestricted (string name)
+		{
+			if (!internallyCreated && ContainsInRestricted (name, true))
+				throw new ArgumentException ("This header must be modified with the appropiate property.");
+		}
+
+		void CheckState (bool response)
+		{
+			if (state == HttpHeaderType.Undefined)
+				return;
+
+			if (response && state == HttpHeaderType.Request)
+				throw new InvalidOperationException ("This collection has already been used to store the request headers.");
+
+			if (!response && state == HttpHeaderType.Response)
+				throw new InvalidOperationException ("This collection has already been used to store the response headers.");
+		}
+
+		void CheckState (HttpHeaderInfo info)
+		{
+			if (info.IsRequest && !info.IsResponse)
+				CheckState (false);
+
+			if (!info.IsRequest && info.IsResponse)
+				CheckState (true);
+		}
+
+		static void CheckValue (string value)
+		{
+			if (value.Length > 65535)
+				throw new ArgumentOutOfRangeException ("value", "The length must not be greater than 65535.");
+
+			if (!IsHeaderValue (value))
+				throw new ArgumentException ("Contains invalid characters.", "value");
+		}
+
+		static string Convert (HttpRequestHeader header)
+		{
+			return Convert (header.ToString ());
+		}
+
+		static string Convert (HttpResponseHeader header)
+		{
+			return Convert (header.ToString ());
+		}
+
+		static string Convert (string header)
+		{
+			HttpHeaderInfo info;
+			return headers.TryGetValue (header, out info)
+			       ? info.Name
+			       : String.Empty;
+		}
+
+		static bool ContainsInRestricted (string name, bool response)
+		{
+			HttpHeaderInfo info;
+			return TryGetHeaderInfo (name, out info)
+			       ? info.IsRestricted (response)
+			       : false;
+		}
+
+		void DoWithCheckingState (Action <string, string> act, string name, string value)
+		{
+			HttpHeaderInfo info;
+			if (TryGetHeaderInfo (name, out info))
+			{
+				CheckState (info);
+				act (name, value);
+				SetState (info);
+				return;
 			}
+
+			act (name, value);
+		}
+
+		static HttpHeaderInfo GetHeaderInfo (string name)
+		{
+			return (from HttpHeaderInfo info in headers.Values
+			        where info.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase)
+			        select info).FirstOrDefault ();
+		}
+
+		void RemoveWithoutCheckingName (string name)
+		{
+			CheckRestricted (name);
+			base.Remove (name);
+		}
+
+		void SetState (bool response)
+		{
+			if (state == HttpHeaderType.Undefined)
+				state = response
+				        ? HttpHeaderType.Response
+				        : HttpHeaderType.Request;
+		}
+
+		void SetState (HttpHeaderInfo info)
+		{
+			if (info.IsRequest && !info.IsResponse)
+				SetState (false);
+
+			if (!info.IsRequest && info.IsResponse)
+				SetState (true);
+		}
+
+		void SetWithoutCheckingName (string name, string value)
+		{
+			CheckRestricted (name);
+			value = Trim (value);
+			CheckValue (value);
+			base.Set (name, value);
 		}
 
 		static string Trim (string value)
@@ -414,6 +587,14 @@ namespace WebSocketSharp.Net {
 			return value.IsNullOrEmpty ()
 			       ? String.Empty
 			       : value.Trim ();
+		}
+
+		static bool TryGetHeaderInfo (string name, out HttpHeaderInfo info)
+		{
+			info = GetHeaderInfo (name);
+			return info.IsNull ()
+			       ? false
+			       : true;
 		}
 
 		#endregion
@@ -432,74 +613,53 @@ namespace WebSocketSharp.Net {
 			return value.IsText ();
 		}
 
-		internal static bool IsMultiValue (string headerName)
+		internal static bool IsMultiValue (string headerName, bool response)
 		{
-			return headerName.IsNullOrEmpty ()
-			       ? false
-			       : multiValue.ContainsKey (headerName);
-		}
+			if (headerName.IsNullOrEmpty ())
+				return false;
 
-		internal string ToStringMultiValue ()
-		{
-			var sb = new StringBuilder();
-			int count = base.Count;
-			for (int i = 0; i < count ; i++) {
-				string key = GetKey (i);
-				if (IsMultiValue (key)) {
-					foreach (string v in GetValues (i)) {
-						sb.Append (key)
-						  .Append (": ")
-						  .Append (v)
-						  .Append ("\r\n");
-					}
-				} else {
-					sb.Append (key)
-					  .Append (": ")
-					  .Append (Get (i))
-					  .Append ("\r\n");
-				}
-			}
-
-			return sb.Append("\r\n").ToString();
-		}
-
-		// With this we don't check for invalid characters in header. See bug #55994.
-		internal void SetInternal (string header)
-		{
-			int pos = header.IndexOf (':');
-			if (pos == -1)
-				throw new ArgumentException ("No colon found", "header");
-
-			SetInternal (header.Substring (0, pos), header.Substring (pos + 1));
-		}
-
-		internal void RemoveAndAdd (string name, string value)
-		{
-			value = Trim (value);
-			base.Remove (name);
-			base.Set (name, value);
+			HttpHeaderInfo info;
+			return TryGetHeaderInfo (headerName, out info)
+			       ? info.IsMultiValue (response)
+			       : false;
 		}
 
 		internal void RemoveInternal (string name)
 		{
-			if (name.IsNull ())
-				throw new ArgumentNullException ("name");
-
 			base.Remove (name);
 		}
 
-		internal void SetInternal (string name, string value)
+		internal void SetInternal (string header, bool response)
+		{
+			int pos = CheckColonSeparated (header);
+			SetInternal (header.Substring (0, pos), header.Substring (pos + 1), response);
+		}
+
+		internal void SetInternal (string name, string value, bool response)
 		{
 			value = Trim (value);
-			if (!IsHeaderValue (value))
-				throw new ArgumentException ("Invalid header value.");
+			CheckValue (value);
 
-			if (IsMultiValue (name)) {
+			if (IsMultiValue (name, response))
 				base.Add (name, value);
-			} else {
-				base.Remove (name);
+			else
 				base.Set (name, value);
-			}
+		}
+
+		internal string ToStringMultiValue (bool response)
+		{
+			var sb = new StringBuilder ();
+			Count.Times (i => {
+				string key = GetKey (i);
+				if (IsMultiValue (key, response)) {
+					foreach (string value in GetValues (i))
+						sb.AppendFormat ("{0}: {1}\r\n", key, value);
+				} else {
+					sb.AppendFormat ("{0}: {1}\r\n", key, Get (i));
+				}
+			});
+
+			return sb.Append ("\r\n").ToString ();
 		}
 
 		#endregion
@@ -507,14 +667,18 @@ namespace WebSocketSharp.Net {
 		#region Explicit Interface Implementation
 
 		/// <summary>
-		/// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize the <see cref="WebHeaderCollection"/>.
+		/// Populates the specified <see cref="SerializationInfo"/> with the data to need to
+		/// serialize the <see cref="WebHeaderCollection"/> object.
 		/// </summary>
 		/// <param name="serializationInfo">
-		/// A <see cref="SerializationInfo"/> that holds the serialized object data.
+		/// A <see cref="SerializationInfo"/> that holds the data to need to serialize the <see cref="WebHeaderCollection"/> object.
 		/// </param>
 		/// <param name="streamingContext">
 		/// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
 		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="serializationInfo"/> is <see langword="null"/>.
+		/// </exception>
 		[SecurityPermission (SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter, SerializationFormatter = true)]
 		void ISerializable.GetObjectData (
 			SerializationInfo serializationInfo, StreamingContext streamingContext)
@@ -535,29 +699,21 @@ namespace WebSocketSharp.Net {
 		/// <param name="headerValue">
 		/// A <see cref="string"/> that contains the value of the header to add.
 		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="headerName"/> is <see langword="null"/> or <see cref="String.Empty"/>.
+		/// </exception>
 		/// <exception cref="ArgumentException">
-		///   <para>
-		///   <paramref name="headerName"/> is <see langword="null"/>, <see cref="String.Empty"/>, or
-		///   contains invalid characters.
-		///   </para>
-		///   <para>
-		///   -or-
-		///   </para>
-		///   <para>
-		///   <paramref name="headerValue"/> contains invalid characters.
-		///   </para>
+		/// <paramref name="headerName"/> or <paramref name="headerValue"/> contains invalid characters.
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="headerValue"/> is greater than 65535.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow the <paramref name="headerName"/>.
 		/// </exception>
 		protected void AddWithoutValidate (string headerName, string headerValue)
 		{
-			var name = Trim (headerName);
-			if (!IsHeaderName (name))
-				throw new ArgumentException ("Invalid header name: " + name, "headerName");
-
-			var value = Trim (headerValue);
-			if (!IsHeaderValue (value))
-				throw new ArgumentException ("Invalid header value: " + value, "headerValue");
-
-			base.Add (name, value);
+			Add (headerName, headerValue, true);
 		}
 
 		#endregion
@@ -571,20 +727,38 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains a header with the name and value separated by a colon (:).
 		/// </param>
 		/// <exception cref="ArgumentNullException">
-		/// <paramref name="header"/> is <see langword="null"/> or a <see cref="String.Empty"/>.
+		/// <paramref name="header"/> is <see langword="null"/>, <see cref="String.Empty"/>, or
+		/// the name part of <paramref name="header"/> is <see cref="String.Empty"/>.
 		/// </exception>
 		/// <exception cref="ArgumentException">
-		/// <paramref name="header"/> does not contain a colon.
+		///   <para>
+		///   <paramref name="header"/> does not contain a colon.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   The name or value part of <paramref name="header"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of the value part of <paramref name="header"/> is greater than 65535.
+		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow the <paramref name="header"/>.
 		/// </exception>
 		public void Add (string header)
 		{
 			if (header.IsNullOrEmpty ())
 				throw new ArgumentNullException ("header");
 
-			int pos = header.IndexOf (':');
-			if (pos == -1)
-				throw new ArgumentException ("No colon found", "header");
-
+			int pos = CheckColonSeparated (header);
 			Add (header.Substring (0, pos), header.Substring (pos + 1));
 		}
 
@@ -592,28 +766,66 @@ namespace WebSocketSharp.Net {
 		/// Adds the specified request <paramref name="header"/> with the specified <paramref name="value"/> to the collection.
 		/// </summary>
 		/// <param name="header">
-		/// A <see cref="HttpRequestHeader"/> that contains the name of the request header to add.
+		/// A <see cref="HttpRequestHeader"/> is a request header to add.
 		/// </param>
 		/// <param name="value">
 		/// A <see cref="string"/> that contains the value of the header to add.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpRequestHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public void Add (HttpRequestHeader header, string value)
 		{
-			Add (RequestHeaderToString (header), value);
+			CheckState (false);
+			AddWithoutCheckingName (Convert (header), value);
+			SetState (false);
 		}
 
 		/// <summary>
 		/// Adds the specified response <paramref name="header"/> with the specified <paramref name="value"/> to the collection.
 		/// </summary>
 		/// <param name="header">
-		/// A <see cref="HttpResponseHeader"/> that contains the name of the response header to add.
+		/// A <see cref="HttpResponseHeader"/> is a response header to add.
 		/// </param>
 		/// <param name="value">
 		/// A <see cref="string"/> that contains the value of the header to add.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpResponseHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public void Add (HttpResponseHeader header, string value)
 		{
-			Add (ResponseHeaderToString (header), value);
+			CheckState (true);
+			AddWithoutCheckingName (Convert (header), value);
+			SetState (true);
 		}
 
 		/// <summary>
@@ -625,32 +837,29 @@ namespace WebSocketSharp.Net {
 		/// <param name="value">
 		/// A <see cref="string"/> that contains the value of the header to add.
 		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="name"/> is <see langword="null"/> or <see cref="String.Empty"/>.
+		/// </exception>
 		/// <exception cref="ArgumentException">
 		///   <para>
-		///   <paramref name="name"/> is <see langword="null"/> or a <see cref="String.Empty"/>.
+		///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
 		///   </para>
 		///   <para>
 		///   -or-
 		///   </para>
 		///   <para>
-		///   <paramref name="name"/> is a restricted header that must be set with a property setting.
-		///   </para>
-		///   <para>
-		///   -or-
+		///   <paramref name="name"/> is a restricted header name.
 		///   </para>
 		/// </exception>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// The length of <paramref name="value"/> is greater than 65535.
 		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow the header <paramref name="name"/>.
+		/// </exception>
 		public override void Add (string name, string value)
 		{
-			if (internallyCreated && IsRestricted (name))
-				throw new ArgumentException ("This header must be modified with the appropiate property.");
-
-			if (value.Length > 65535)
-				throw new ArgumentOutOfRangeException ("value", "The length must not be greater than 65535.");
-
-			AddWithoutValidate (name, value);
+			Add (name, value, false);
 		}
 
 		/// <summary>
@@ -659,6 +868,7 @@ namespace WebSocketSharp.Net {
 		public override void Clear ()
 		{
 			base.Clear ();
+			state = HttpHeaderType.Undefined;
 		}
 
 		/// <summary>
@@ -751,24 +961,34 @@ namespace WebSocketSharp.Net {
 		}
 
 		/// <summary>
-		/// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize the <see cref="WebHeaderCollection"/>.
+		/// Populates the specified <see cref="SerializationInfo"/> with the data to need to
+		/// serialize the <see cref="WebHeaderCollection"/> object.
 		/// </summary>
 		/// <param name="serializationInfo">
-		/// A <see cref="SerializationInfo"/> that holds the serialized object data.
+		/// A <see cref="SerializationInfo"/> that holds the data to need to serialize the <see cref="WebHeaderCollection"/> object.
 		/// </param>
 		/// <param name="streamingContext">
 		/// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
 		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="serializationInfo"/> is <see langword="null"/>.
+		/// </exception>
 		[SecurityPermission (SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 		public override void GetObjectData (
 			SerializationInfo serializationInfo, StreamingContext streamingContext)
 		{
-			int count = base.Count;
+			if (serializationInfo.IsNull ())
+				throw new ArgumentNullException ("serializationInfo");
+
+			serializationInfo.AddValue ("InternallyCreated", internallyCreated);
+			serializationInfo.AddValue ("State", (int) state);
+
+			int count = Count;
 			serializationInfo.AddValue ("Count", count);
-			for (int i = 0; i < count; i++) {
+			count.Times (i => {
 				serializationInfo.AddValue (i.ToString (), GetKey (i));
 				serializationInfo.AddValue ((count + i).ToString (), Get (i));
-			}
+			});
 		}
 
 		/// <summary>
@@ -811,16 +1031,9 @@ namespace WebSocketSharp.Net {
 		/// </exception>
 		public static bool IsRestricted (string headerName, bool response)
 		{
-			if (headerName.IsNullOrEmpty ())
-				throw new ArgumentNullException ("headerName", "Must not be null or empty.");
-
-			var name = headerName.Trim ();
-			if (!IsHeaderName (name))
-				throw new ArgumentException ("Invalid character in header.");
-
-			return response
-			       ? restricted_response.ContainsKey (name)
-			       : restricted.ContainsKey (name);
+			var name = Trim (headerName);
+			CheckName (name);
+			return ContainsInRestricted (name, response);
 		}
 
 		/// <summary>
@@ -840,11 +1053,16 @@ namespace WebSocketSharp.Net {
 		/// <param name="header">
 		/// A <see cref="HttpRequestHeader"/> to remove from the collection.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpRequestHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// <paramref name="header"/> is a restricted header.
+		/// </exception>
 		public void Remove (HttpRequestHeader header)
 		{
-			// TODO: Support to throw InvalidOperationException.
-
-			Remove (RequestHeaderToString (header));
+			CheckState (false);
+			RemoveWithoutCheckingName (Convert (header));
 		}
 
 		/// <summary>
@@ -853,11 +1071,16 @@ namespace WebSocketSharp.Net {
 		/// <param name="header">
 		/// A <see cref="HttpResponseHeader"/> to remove from the collection.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpResponseHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// <paramref name="header"/> is a restricted header.
+		/// </exception>
 		public void Remove (HttpResponseHeader header)
 		{
-			// TODO: Support to throw InvalidOperationException.
-
-			Remove (ResponseHeaderToString (header));
+			CheckState (true);
+			RemoveWithoutCheckingName (Convert (header));
 		}
 
 		/// <summary>
@@ -880,19 +1103,19 @@ namespace WebSocketSharp.Net {
 		///   <paramref name="name"/> is a restricted header name.
 		///   </para>
 		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow the header <paramref name="name"/>.
+		/// </exception>
 		public override void Remove (string name)
 		{
-			if (name.IsNullOrEmpty ())
-				throw new ArgumentNullException ("name");
+			name = Trim (name);
+			CheckName (name);
 
-			name = name.Trim ();
-			if (!IsHeaderName (name))
-				throw new ArgumentException ("Invalid characters in header.");
+			HttpHeaderInfo info;
+			if (TryGetHeaderInfo (name, out info))
+				CheckState (info);
 
-			if (internallyCreated && IsRestricted (name))
-				throw new ArgumentException ("Restricted header.");
-
-			base.Remove (name);
+			RemoveWithoutCheckingName (name);
 		}
 
 		/// <summary>
@@ -904,11 +1127,28 @@ namespace WebSocketSharp.Net {
 		/// <param name="value">
 		/// A <see cref="string"/> that contains the value of the header to set.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpRequestHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public void Set (HttpRequestHeader header, string value)
 		{
-			// TODO: Support to throw InvalidOperationException.
-
-			Set (RequestHeaderToString (header), value);
+			CheckState (false);
+			SetWithoutCheckingName (Convert (header), value);
+			SetState (false);
 		}
 
 		/// <summary>
@@ -920,11 +1160,28 @@ namespace WebSocketSharp.Net {
 		/// <param name="value">
 		/// A <see cref="string"/> that contains the value of the header to set.
 		/// </param>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow any of <see cref="HttpResponseHeader"/> values.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		///   <para>
+		///   <paramref name="header"/> is a restricted header.
+		///   </para>
+		///   <para>
+		///   -or-
+		///   </para>
+		///   <para>
+		///   <paramref name="value"/> contains invalid characters.
+		///   </para>
+		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException">
+		/// The length of <paramref name="value"/> is greater than 65535.
+		/// </exception>
 		public void Set (HttpResponseHeader header, string value)
 		{
-			// TODO: Support to throw InvalidOperationException.
-
-			Set (ResponseHeaderToString (header), value);
+			CheckState (true);
+			SetWithoutCheckingName (Convert (header), value);
+			SetState (true);
 		}
 
 		/// <summary>
@@ -953,26 +1210,14 @@ namespace WebSocketSharp.Net {
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// The length of <paramref name="value"/> is greater than 65535.
 		/// </exception>
+		/// <exception cref="InvalidOperationException">
+		/// The current <see cref="WebHeaderCollection"/> instance does not allow the header <paramref name="name"/>.
+		/// </exception>
 		public override void Set (string name, string value)
 		{
-			if (name.IsNullOrEmpty ())
-				throw new ArgumentNullException ("name");
-
-			name = name.Trim ();
-			if (!IsHeaderName (name))
-				throw new ArgumentException ("Invalid header name.");
-
-			if (internallyCreated && IsRestricted (name))
-				throw new ArgumentException ("Restricted header.");
-
-			value = Trim (value);
-			if (value.Length > 65535)
-				throw new ArgumentOutOfRangeException ("value", "The length must not be greater than 65535.");
-
-			if (!IsHeaderValue (value))
-				throw new ArgumentException ("Invalid header value.");
-
-			base.Set (name, value);
+			name = Trim (name);
+			CheckName (name);
+			DoWithCheckingState (SetWithoutCheckingName, name, value);
 		}
 
 		/// <summary>
@@ -995,13 +1240,11 @@ namespace WebSocketSharp.Net {
 		public override string ToString ()
 		{
 			var sb = new StringBuilder();
-			for (int i = 0; i < Count ; i++)
-				sb.Append (GetKey (i))
-				  .Append (": ")
-				  .Append (Get (i))
-				  .Append ("\r\n");
+			Count.Times (i => {
+				sb.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i));
+			});
 
-			return sb.Append("\r\n").ToString();
+			return sb.Append ("\r\n").ToString ();
 		}
 
 		#endregion

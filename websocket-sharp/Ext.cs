@@ -69,12 +69,6 @@ namespace WebSocketSharp {
         act();
     }
 
-    private static void times(this ulong n, Action<ulong> act)
-    {
-      for (ulong i = 0; i < n; i++)
-        act(i);
-    }
-
     #endregion
 
     #region Internal Method
@@ -945,10 +939,10 @@ namespace WebSocketSharp {
     /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// An <see cref="int"/> that contains the number of times to execute.
+    /// An <see cref="int"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <see cref="Action"/> delegate that contains the method(s) to execute.
+    /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
     public static void Times(this int n, Action act)
     {
@@ -960,10 +954,10 @@ namespace WebSocketSharp {
     /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// A <see cref="long"/> that contains the number of times to execute.
+    /// A <see cref="long"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <see cref="Action"/> delegate that contains the method(s) to execute.
+    /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
     public static void Times(this long n, Action act)
     {
@@ -975,10 +969,10 @@ namespace WebSocketSharp {
     /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// A <see cref="uint"/> that contains the number of times to execute.
+    /// A <see cref="uint"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <see cref="Action"/> delegate that contains the method(s) to execute.
+    /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
     public static void Times(this uint n, Action act)
     {
@@ -990,10 +984,10 @@ namespace WebSocketSharp {
     /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// A <see cref="ulong"/> that contains the number of times to execute.
+    /// A <see cref="ulong"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <see cref="Action"/> delegate that contains the method(s) to execute.
+    /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
     public static void Times(this ulong n, Action act)
     {
@@ -1002,67 +996,71 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n"/> times.
+    /// Executes the specified <b>Action&lt;int&gt;</b> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// An <see cref="int"/> that contains the number of times to execute.
+    /// An <see cref="int"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-    /// A <see cref="ulong"/> parameter to pass to this method(s) contains the zero-based count of iteration.
+    /// An <b>Action&lt;int&gt;</b> delegate that references the method(s) to execute.
+    /// An <see cref="int"/> parameter to pass to the method(s) is the zero-based count of iteration.
     /// </param>
-    public static void Times(this int n, Action<ulong> act)
+    public static void Times(this int n, Action<int> act)
     {
       if (n > 0 && !act.IsNull())
-        ((ulong)n).times(act);
+        for (int i = 0; i < n; i++)
+          act(i);
+    }
+
+    /// <summary>
+    /// Executes the specified <b>Action&lt;long&gt;</b> delegate <paramref name="n"/> times.
+    /// </summary>
+    /// <param name="n">
+    /// A <see cref="long"/> is the number of times to execute.
+    /// </param>
+    /// <param name="act">
+    /// An <b>Action&lt;long&gt;</b> delegate that references the method(s) to execute.
+    /// A <see cref="long"/> parameter to pass to the method(s) is the zero-based count of iteration.
+    /// </param>
+    public static void Times(this long n, Action<long> act)
+    {
+      if (n > 0 && !act.IsNull())
+        for (long i = 0; i < n; i++)
+          act(i);
+    }
+
+    /// <summary>
+    /// Executes the specified <b>Action&lt;uint&gt;</b> delegate <paramref name="n"/> times.
+    /// </summary>
+    /// <param name="n">
+    /// A <see cref="uint"/> is the number of times to execute.
+    /// </param>
+    /// <param name="act">
+    /// An <b>Action&lt;uint&gt;</b> delegate that references the method(s) to execute.
+    /// A <see cref="uint"/> parameter to pass to the method(s) is the zero-based count of iteration.
+    /// </param>
+    public static void Times(this uint n, Action<uint> act)
+    {
+      if (n > 0 && !act.IsNull())
+        for (uint i = 0; i < n; i++)
+          act(i);
     }
 
     /// <summary>
     /// Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n"/> times.
     /// </summary>
     /// <param name="n">
-    /// A <see cref="long"/> that contains the number of times to execute.
+    /// A <see cref="ulong"/> is the number of times to execute.
     /// </param>
     /// <param name="act">
-    /// An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-    /// A <see cref="ulong"/> parameter to pass to this method(s) contains the zero-based count of iteration.
-    /// </param>
-    public static void Times(this long n, Action<ulong> act)
-    {
-      if (n > 0 && !act.IsNull())
-        ((ulong)n).times(act);
-    }
-
-    /// <summary>
-    /// Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n"/> times.
-    /// </summary>
-    /// <param name="n">
-    /// A <see cref="uint"/> that contains the number of times to execute.
-    /// </param>
-    /// <param name="act">
-    /// An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-    /// A <see cref="ulong"/> parameter to pass to this method(s) contains the zero-based count of iteration.
-    /// </param>
-    public static void Times(this uint n, Action<ulong> act)
-    {
-      if (n > 0 && !act.IsNull())
-        ((ulong)n).times(act);
-    }
-
-    /// <summary>
-    /// Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n"/> times.
-    /// </summary>
-    /// <param name="n">
-    /// A <see cref="ulong"/> that contains the number of times to execute.
-    /// </param>
-    /// <param name="act">
-    /// An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-    /// A <see cref="ulong"/> parameter to pass to this method(s) contains the zero-based count of iteration.
+    /// An <b>Action&lt;ulong&gt;</b> delegate that references the method(s) to execute.
+    /// A <see cref="ulong"/> parameter to pass to this method(s) is the zero-based count of iteration.
     /// </param>
     public static void Times(this ulong n, Action<ulong> act)
     {
       if (n > 0 && !act.IsNull())
-        n.times(act);
+        for (ulong i = 0; i < n; i++)
+          act(i);
     }
 
     /// <summary>

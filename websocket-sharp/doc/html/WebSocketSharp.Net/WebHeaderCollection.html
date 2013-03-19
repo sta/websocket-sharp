@@ -472,7 +472,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">GetObjectData</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a>)<blockquote>
-            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data needed to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a>.
+            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data to need to
+            serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -661,7 +662,8 @@
                   </a>
                 </td>
                 <td>
-            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data needed to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a>.
+            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data to need to
+            serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </td>
               </tr>
             </table>
@@ -755,15 +757,40 @@
                 <i>serializationInfo</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that holds the serialized object data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that contains the data to need to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </dd>
               <dt>
                 <i>streamingContext</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a> that contains the contextual information about the source or destination.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a> that contains the source of the serialized stream associated with the new <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a>.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="C:WebSocketSharp.Net.WebHeaderCollection(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>serializationInfo</i> is <tt>null</tt>.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+            An element with the specified name is not found in <i>serializationInfo</i>.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="C:WebSocketSharp.Net.WebHeaderCollection(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Remarks">
@@ -804,7 +831,8 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
                 </td>
                 <td>
-                  <i>header</i> is <tt>null</tt> or a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+                  <i>header</i> is <tt>null</tt>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>, or
+            the name part of <i>header</i> is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
             </td>
               </tr>
               <tr valign="top">
@@ -812,7 +840,37 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
                 </td>
                 <td>
-                  <i>header</i> does not contain a colon.
+                  <p>
+                    <i>header</i> does not contain a colon.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+            The name or value part of <i>header</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of the value part of <i>header</i> is greater than 65535.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow the <i>header</i>.
             </td>
               </tr>
             </table>
@@ -840,7 +898,7 @@
                 <i>header</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> that contains the name of the request header to add.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> is a request header to add.
             </dd>
               <dt>
                 <i>value</i>
@@ -849,6 +907,47 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the header to add.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpRequestHeader,System.String):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpRequestHeader,System.String):Remarks">
@@ -873,7 +972,7 @@
                 <i>header</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> that contains the name of the response header to add.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> is a response header to add.
             </dd>
               <dt>
                 <i>value</i>
@@ -882,6 +981,47 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the header to add.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpResponseHeader,System.String):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpResponseHeader,System.String):Remarks">
@@ -929,16 +1069,13 @@
                 </td>
                 <td>
                   <p>
-                    <i>name</i> is <tt>null</tt> or a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+                    <i>name</i> or <i>value</i> contains invalid characters.
             </p>
                   <p>
             -or-
             </p>
                   <p>
-                    <i>name</i> is a restricted header that must be set with a property setting.
-            </p>
-                  <p>
-            -or-
+                    <i>name</i> is a restricted header name.
             </p>
                 </td>
               </tr>
@@ -948,6 +1085,22 @@
                 </td>
                 <td>
             The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>name</i> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow the header <i>name</i>.
             </td>
               </tr>
             </table>
@@ -997,17 +1150,32 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
                 </td>
                 <td>
-                  <p>
-                    <i>headerName</i> is <tt>null</tt>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>, or
-            contains invalid characters.
-            </p>
-                  <p>
-            -or-
-            </p>
-                  <p>
-                    <i>headerValue</i> contains invalid characters.
-            </p>
+                  <i>headerName</i> or <i>headerValue</i> contains invalid characters.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
                 </td>
+                <td>
+                  <i>headerName</i> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>headerValue</i> is greater than 65535.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow the <i>headerName</i>.
+            </td>
               </tr>
             </table>
           </blockquote>
@@ -1194,7 +1362,8 @@
         <h3 id="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">GetObjectData Method</h3>
         <blockquote id="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):member">
           <p class="Summary">
-            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data needed to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a>.
+            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data to need to
+            serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public override <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>GetObjectData</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> serializationInfo, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a> streamingContext)</div>
@@ -1205,7 +1374,7 @@
                 <i>serializationInfo</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that holds the serialized object data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that holds the data to need to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </dd>
               <dt>
                 <i>streamingContext</i>
@@ -1214,6 +1383,23 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a> that specifies the destination for the serialization.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>serializationInfo</i> is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Remarks">
@@ -1421,7 +1607,7 @@
                 <i>header</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> that contains a request header name.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> that indicates a request header.
             </dd>
             </dl>
           </blockquote>
@@ -1429,6 +1615,47 @@
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpRequestHeader):Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the specified request <i>header</i>.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpRequestHeader):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpRequestHeader):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -1455,7 +1682,7 @@
                 <i>header</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> that contains a response header name.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> that indicates a response header.
             </dd>
             </dl>
           </blockquote>
@@ -1463,6 +1690,47 @@
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpResponseHeader):Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the specified response <i>header</i>.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpResponseHeader):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpResponseHeader):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -1538,6 +1806,31 @@
             </dd>
             </dl>
           </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpRequestHeader):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <i>header</i> is a restricted header.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpRequestHeader):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -1564,6 +1857,31 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> to remove from the collection.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpResponseHeader):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <i>header</i> is a restricted header.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpResponseHeader):Remarks">
@@ -1623,6 +1941,14 @@
             </p>
                 </td>
               </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow the header <i>name</i>.
+            </td>
+              </tr>
             </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
@@ -1658,6 +1984,47 @@
             </dd>
             </dl>
           </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpRequestHeader,System.String):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpRequestHeader">System.Net.HttpRequestHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpRequestHeader,System.String):Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -1690,6 +2057,47 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the header to set.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpResponseHeader,System.String):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow any of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.HttpResponseHeader">System.Net.HttpResponseHeader</a> values.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentException">ArgumentException</a>
+                </td>
+                <td>
+                  <p>
+                    <i>header</i> is a restricted header.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+                    <i>value</i> contains invalid characters.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
+                </td>
+                <td>
+            The length of <i>value</i> is greater than 65535.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpResponseHeader,System.String):Remarks">
@@ -1763,6 +2171,14 @@
             The length of <i>value</i> is greater than 65535.
             </td>
               </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
+                </td>
+                <td>
+            The current <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> instance does not allow the header <i>name</i>.
+            </td>
+              </tr>
             </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
@@ -1777,7 +2193,8 @@
         <h3 id="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">System.Runtime.Serialization.ISerializable.GetObjectData Method</h3>
         <blockquote id="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):member">
           <p class="Summary">
-            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data needed to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a>.
+            Populates the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> with the data to need to
+            serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">
@@ -1789,7 +2206,7 @@
                 <i>serializationInfo</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that holds the serialized object data.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.SerializationInfo">System.Runtime.Serialization.SerializationInfo</a> that holds the data to need to serialize the <a href="../WebSocketSharp.Net/WebHeaderCollection.html">WebSocketSharp.Net.WebHeaderCollection</a> object.
             </dd>
               <dt>
                 <i>streamingContext</i>
@@ -1798,6 +2215,23 @@
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Runtime.Serialization.StreamingContext">System.Runtime.Serialization.StreamingContext</a> that specifies the destination for the serialization.
             </dd>
             </dl>
+          </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentNullException">ArgumentNullException</a>
+                </td>
+                <td>
+                  <i>serializationInfo</i> is <tt>null</tt>.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext):Remarks">

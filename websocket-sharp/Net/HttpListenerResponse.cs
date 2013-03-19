@@ -483,18 +483,18 @@ namespace WebSocketSharp.Net {
 			if (content_type != null) {
 				if (content_encoding != null && content_type.IndexOf ("charset=", StringComparison.Ordinal) == -1) {
 					string enc_name = content_encoding.WebName;
-					headers.SetInternal ("Content-Type", content_type + "; charset=" + enc_name);
+					headers.SetInternal ("Content-Type", content_type + "; charset=" + enc_name, true);
 				} else {
-					headers.SetInternal ("Content-Type", content_type);
+					headers.SetInternal ("Content-Type", content_type, true);
 				}
 			}
 
 			if (headers ["Server"] == null)
-				headers.SetInternal ("Server", "WebSocketSharp-HTTPAPI/1.0");
+				headers.SetInternal ("Server", "WebSocketSharp-HTTPAPI/1.0", true);
 
 			CultureInfo inv = CultureInfo.InvariantCulture;
 			if (headers ["Date"] == null)
-				headers.SetInternal ("Date", DateTime.UtcNow.ToString ("r", inv));
+				headers.SetInternal ("Date", DateTime.UtcNow.ToString ("r", inv), true);
 
 			if (!chunked) {
 				if (!cl_set && closing) {
@@ -503,7 +503,7 @@ namespace WebSocketSharp.Net {
 				}
 
 				if (cl_set)
-					headers.SetInternal ("Content-Length", content_length.ToString (inv));
+					headers.SetInternal ("Content-Length", content_length.ToString (inv), true);
 			}
 
 			Version v = context.Request.ProtocolVersion;
@@ -528,39 +528,39 @@ namespace WebSocketSharp.Net {
 
 			// They sent both KeepAlive: true and Connection: close!?
 			if (!keep_alive || conn_close) {
-				headers.SetInternal ("Connection", "close");
+				headers.SetInternal ("Connection", "close", true);
 				conn_close = true;
 			}
 
 			if (chunked)
-				headers.SetInternal ("Transfer-Encoding", "chunked");
+				headers.SetInternal ("Transfer-Encoding", "chunked", true);
 
 			int reuses = context.Connection.Reuses;
 			if (reuses >= 100) {
 				force_close_chunked = true;
 				if (!conn_close) {
-					headers.SetInternal ("Connection", "close");
+					headers.SetInternal ("Connection", "close", true);
 					conn_close = true;
 				}
 			}
 
 			if (!conn_close) {
-				headers.SetInternal ("Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses));
+				headers.SetInternal ("Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 				if (context.Request.ProtocolVersion <= HttpVersion.Version10)
-					headers.SetInternal ("Connection", "keep-alive");
+					headers.SetInternal ("Connection", "keep-alive", true);
 			}
 
 			if (location != null)
-				headers.SetInternal ("Location", location);
+				headers.SetInternal ("Location", location, true);
 
 			if (cookies != null) {
 				foreach (Cookie cookie in cookies)
-					headers.SetInternal ("Set-Cookie", cookie.ToClientString ());
+					headers.SetInternal ("Set-Cookie", cookie.ToClientString (), true);
 			}
 
 			StreamWriter writer = new StreamWriter (ms, encoding, 256);
 			writer.Write ("HTTP/{0} {1} {2}\r\n", version, status_code, status_description);
-			string headers_str = headers.ToStringMultiValue ();
+			string headers_str = headers.ToStringMultiValue (true);
 			writer.Write (headers_str);
 			writer.Flush ();
 			int preamble = (encoding.CodePage == 65001) ? 3 : encoding.GetPreamble ().Length;

@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="websocket-sharp" Version="1.0.2.28338">
+    <Assembly Name="websocket-sharp" Version="1.0.2.35266">
       <AssemblyPublicKey>[00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 11 00 00 00 29 17 fb 89 fe c3 91 f7 2b cb 8b e2 61 d2 3f 05 93 6d 65 a8 9e 63 72 a6 f5 d5 2c f2 9d 20 fa 0b c0 70 6a f6 88 7e 8b 90 3f 39 f5 76 c8 48 e0 bb 7b b2 7b ed d3 10 a7 1a 0f 70 98 0f 7f f4 4b 53 09 d2 a5 ef 36 c3 56 b4 aa f0 91 72 63 25 07 89 e0 93 3e 3f 2e f2 b9 73 0e 12 15 5d 43 56 c3 f4 70 a5 89 fe f7 f6 ac 3e 77 c2 d8 d0 84 91 f4 0c d1 f3 8e dc c3 c3 b8 38 3d 0c bf 17 de 20 78 c1 ]</AssemblyPublicKey>
       <Attributes>
         <Attribute>
@@ -1004,10 +1004,10 @@
         </Parameters>
         <Docs>
           <param name="n">
-            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            An <see cref="T:System.Int32" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
           <summary>
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
@@ -1021,29 +1021,29 @@
         <Target Type="T:System.Int32" />
       </Targets>
       <Member MemberName="Times">
-        <MemberSignature Language="C#" Value="public static void Times (this int n, Action&lt;ulong&gt; act);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+        <MemberSignature Language="C#" Value="public static void Times (this int n, Action&lt;int&gt; act);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int32 n, class System.Action`1&lt;int32&gt; act) cil managed" />
         <MemberType>ExtensionMethod</MemberType>
         <ReturnValue>
           <ReturnType>System.Void</ReturnType>
         </ReturnValue>
         <Parameters>
           <Parameter Name="n" Type="System.Int32" RefType="this" />
-          <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+          <Parameter Name="act" Type="System.Action&lt;System.Int32&gt;" />
         </Parameters>
         <Docs>
           <param name="n">
-            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            An <see cref="T:System.Int32" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;int&gt;</b> delegate that references the method(s) to execute.
+            An <see cref="T:System.Int32" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
           <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;int&gt;</b> delegate <paramref name="n" /> times.
             </summary>
         </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64})" />
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.Int32})" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
@@ -1063,10 +1063,10 @@
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            A <see cref="T:System.Int64" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
           <summary>
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
@@ -1080,29 +1080,29 @@
         <Target Type="T:System.Int64" />
       </Targets>
       <Member MemberName="Times">
-        <MemberSignature Language="C#" Value="public static void Times (this long n, Action&lt;ulong&gt; act);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+        <MemberSignature Language="C#" Value="public static void Times (this long n, Action&lt;long&gt; act);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(int64 n, class System.Action`1&lt;int64&gt; act) cil managed" />
         <MemberType>ExtensionMethod</MemberType>
         <ReturnValue>
           <ReturnType>System.Void</ReturnType>
         </ReturnValue>
         <Parameters>
           <Parameter Name="n" Type="System.Int64" RefType="this" />
-          <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+          <Parameter Name="act" Type="System.Action&lt;System.Int64&gt;" />
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            A <see cref="T:System.Int64" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;long&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.Int64" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
           <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;long&gt;</b> delegate <paramref name="n" /> times.
             </summary>
         </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64})" />
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.Int64})" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
@@ -1122,10 +1122,10 @@
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt32" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
           <summary>
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
@@ -1139,29 +1139,29 @@
         <Target Type="T:System.UInt32" />
       </Targets>
       <Member MemberName="Times">
-        <MemberSignature Language="C#" Value="public static void Times (this uint n, Action&lt;ulong&gt; act);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action`1&lt;unsigned int64&gt; act) cil managed" />
+        <MemberSignature Language="C#" Value="public static void Times (this uint n, Action&lt;uint&gt; act);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig void Times(unsigned int32 n, class System.Action`1&lt;unsigned int32&gt; act) cil managed" />
         <MemberType>ExtensionMethod</MemberType>
         <ReturnValue>
           <ReturnType>System.Void</ReturnType>
         </ReturnValue>
         <Parameters>
           <Parameter Name="n" Type="System.UInt32" RefType="this" />
-          <Parameter Name="act" Type="System.Action&lt;System.UInt64&gt;" />
+          <Parameter Name="act" Type="System.Action&lt;System.UInt32&gt;" />
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt32" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;uint&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.UInt32" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
           <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;uint&gt;</b> delegate <paramref name="n" /> times.
             </summary>
         </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64})" />
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt32})" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
@@ -1181,10 +1181,10 @@
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt64" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
           <summary>
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
@@ -1210,11 +1210,11 @@
         </Parameters>
         <Docs>
           <param name="n">
-            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt64" /> is the number of times to execute.
             </param>
           <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;ulong&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) is the zero-based count of iteration.
             </param>
           <summary>
             Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.

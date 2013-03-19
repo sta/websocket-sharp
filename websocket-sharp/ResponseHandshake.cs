@@ -96,7 +96,7 @@ namespace WebSocketSharp {
 
       var headers = new WebHeaderCollection();
       for (int i = 1; i < response.Length; i++)
-        headers.Add(response[i]);
+        headers.SetInternal (response[i], true);
 
       return new ResponseHandshake {
         Headers         = headers,

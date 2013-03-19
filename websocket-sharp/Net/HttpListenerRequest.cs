@@ -112,7 +112,7 @@ namespace WebSocketSharp.Net {
 		public int ClientCertificateError {
 			// TODO: Always returns 0
 			get {
-/*				
+/*
 				if (no_get_certificate)
 					throw new InvalidOperationException (
 						"Call GetClientCertificate() before calling this method.");
@@ -470,7 +470,7 @@ namespace WebSocketSharp.Net {
 			string name = header.Substring (0, colon).Trim ();
 			string val = header.Substring (colon + 1).Trim ();
 			string lower = name.ToLower (CultureInfo.InvariantCulture);
-			headers.SetInternal (name, val);
+			headers.SetInternal (name, val, false);
 			switch (lower) {
 				case "accept-language":
 					user_languages = val.Split (','); // yes, only split with a ','

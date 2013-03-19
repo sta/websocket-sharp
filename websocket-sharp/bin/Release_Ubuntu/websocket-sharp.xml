@@ -462,10 +462,10 @@
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            An <see cref="T:System.Int32" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.Times(System.Int64,System.Action)">
@@ -473,10 +473,10 @@
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            A <see cref="T:System.Int64" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action)">
@@ -484,10 +484,10 @@
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt32" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action)">
@@ -495,46 +495,46 @@
             Executes the specified <see cref="T:System.Action" /> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt64" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) to execute.
+            An <see cref="T:System.Action" /> delegate that references the method(s) to execute.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.UInt64})">
+        <member name="M:WebSocketSharp.Ext.Times(System.Int32,System.Action{System.Int32})">
             <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;int&gt;</b> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            An <see cref="T:System.Int32" /> that contains the number of times to execute.
+            An <see cref="T:System.Int32" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;int&gt;</b> delegate that references the method(s) to execute.
+            An <see cref="T:System.Int32" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.UInt64})">
+        <member name="M:WebSocketSharp.Ext.Times(System.Int64,System.Action{System.Int64})">
             <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;long&gt;</b> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.Int64" /> that contains the number of times to execute.
+            A <see cref="T:System.Int64" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;long&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.Int64" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt64})">
+        <member name="M:WebSocketSharp.Ext.Times(System.UInt32,System.Action{System.UInt32})">
             <summary>
-            Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
+            Executes the specified <b>Action&lt;uint&gt;</b> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.UInt32" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt32" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;uint&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.UInt32" /> parameter to pass to the method(s) is the zero-based count of iteration.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.Times(System.UInt64,System.Action{System.UInt64})">
@@ -542,11 +542,11 @@
             Executes the specified <b>Action&lt;ulong&gt;</b> delegate <paramref name="n" /> times.
             </summary>
             <param name="n">
-            A <see cref="T:System.UInt64" /> that contains the number of times to execute.
+            A <see cref="T:System.UInt64" /> is the number of times to execute.
             </param>
             <param name="act">
-            An <b>Action&lt;ulong&gt;</b> delegate that contains the method(s) to execute.
-            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) contains the zero-based count of iteration.
+            An <b>Action&lt;ulong&gt;</b> delegate that references the method(s) to execute.
+            A <see cref="T:System.UInt64" /> parameter to pass to this method(s) is the zero-based count of iteration.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.To``1(System.Byte[],WebSocketSharp.ByteOrder)">
@@ -2965,11 +2965,17 @@
             with the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" />.
             </summary>
             <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that contains the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
             <param name="streamingContext">
-            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the contextual information about the source or destination.
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the source of the serialized stream associated with the new <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            An element with the specified name is not found in <paramref name="serializationInfo" />.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.#ctor">
             <summary>
@@ -2984,8 +2990,25 @@
             A <see cref="T:System.String" /> that contains the value of the specified request <paramref name="header" />.
             </value>
             <param name="header">
-            A <see cref="T:System.Net.HttpRequestHeader" /> that contains a request header name.
+            A <see cref="T:System.Net.HttpRequestHeader" /> that indicates a request header.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.WebHeaderCollection.Item(System.Net.HttpResponseHeader)">
             <summary>
@@ -2995,8 +3018,25 @@
             A <see cref="T:System.String" /> that contains the value of the specified response <paramref name="header" />.
             </value>
             <param name="header">
-            A <see cref="T:System.Net.HttpResponseHeader" /> that contains a response header name.
+            A <see cref="T:System.Net.HttpResponseHeader" /> that indicates a response header.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.WebHeaderCollection.AllKeys">
             <summary>
@@ -3024,14 +3064,18 @@
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.System#Runtime#Serialization#ISerializable#GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data to need to
+            serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </summary>
             <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
             <param name="streamingContext">
             A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.AddWithoutValidate(System.String,System.String)">
             <summary>
@@ -3043,17 +3087,17 @@
             <param name="headerValue">
             A <see cref="T:System.String" /> that contains the value of the header to add.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="headerName" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
             <exception cref="T:System.ArgumentException">
-                <para>
-                    <paramref name="headerName" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or
-            contains invalid characters.
-            </para>
-                <para>
-            -or-
-            </para>
-                <para>
-                    <paramref name="headerValue" /> contains invalid characters.
-            </para>
+                <paramref name="headerName" /> or <paramref name="headerValue" /> contains invalid characters.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="headerValue" /> is greater than 65535.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the <paramref name="headerName" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.String)">
@@ -3064,10 +3108,31 @@
             A <see cref="T:System.String" /> that contains a header with the name and value separated by a colon (:).
             </param>
             <exception cref="T:System.ArgumentNullException">
-                <paramref name="header" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+                <paramref name="header" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or
+            the name part of <paramref name="header" /> is <see cref="F:System.String.Empty" />.
             </exception>
             <exception cref="T:System.ArgumentException">
-                <paramref name="header" /> does not contain a colon.
+                <para>
+                    <paramref name="header" /> does not contain a colon.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+            The name or value part of <paramref name="header" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of the value part of <paramref name="header" /> is greater than 65535.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the <paramref name="header" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpRequestHeader,System.String)">
@@ -3075,22 +3140,56 @@
             Adds the specified request <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
             </summary>
             <param name="header">
-            A <see cref="T:System.Net.HttpRequestHeader" /> that contains the name of the request header to add.
+            A <see cref="T:System.Net.HttpRequestHeader" /> is a request header to add.
             </param>
             <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to add.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.Net.HttpResponseHeader,System.String)">
             <summary>
             Adds the specified response <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
             </summary>
             <param name="header">
-            A <see cref="T:System.Net.HttpResponseHeader" /> that contains the name of the response header to add.
+            A <see cref="T:System.Net.HttpResponseHeader" /> is a response header to add.
             </param>
             <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to add.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Add(System.String,System.String)">
             <summary>
@@ -3102,22 +3201,25 @@
             <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to add.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
             <exception cref="T:System.ArgumentException">
                 <para>
-                    <paramref name="name" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+                    <paramref name="name" /> or <paramref name="value" /> contains invalid characters.
             </para>
                 <para>
             -or-
             </para>
                 <para>
-                    <paramref name="name" /> is a restricted header that must be set with a property setting.
-            </para>
-                <para>
-            -or-
+                    <paramref name="name" /> is a restricted header name.
             </para>
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
             The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Clear">
@@ -3192,14 +3294,18 @@
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data to need to
+            serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </summary>
             <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
             <param name="streamingContext">
             A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
             </param>
+            <exception cref="T:System.ArgumentNullException">
+                <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.IsRestricted(System.String)">
             <summary>
@@ -3254,6 +3360,12 @@
             <param name="header">
             A <see cref="T:System.Net.HttpRequestHeader" /> to remove from the collection.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="header" /> is a restricted header.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.Net.HttpResponseHeader)">
             <summary>
@@ -3262,6 +3374,12 @@
             <param name="header">
             A <see cref="T:System.Net.HttpResponseHeader" /> to remove from the collection.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <paramref name="header" /> is a restricted header.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Remove(System.String)">
             <summary>
@@ -3284,6 +3402,9 @@
                     <paramref name="name" /> is a restricted header name.
             </para>
             </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpRequestHeader,System.String)">
             <summary>
@@ -3295,6 +3416,23 @@
             <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to set.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.Net.HttpResponseHeader,System.String)">
             <summary>
@@ -3306,6 +3444,23 @@
             <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to set.
             </param>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="header" /> is a restricted header.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+                    <paramref name="value" /> contains invalid characters.
+            </para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.Set(System.String,System.String)">
             <summary>
@@ -3333,6 +3488,9 @@
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
             The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.WebHeaderCollection.ToByteArray">

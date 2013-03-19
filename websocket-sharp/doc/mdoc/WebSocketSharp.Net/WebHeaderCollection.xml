@@ -46,16 +46,22 @@
       </Parameters>
       <Docs>
         <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that contains the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
         <param name="streamingContext">
-            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the contextual information about the source or destination.
+            A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that contains the source of the serialized stream associated with the new <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
             </param>
         <summary>
             Initializes a new instance of the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> class
             with the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> and <see cref="T:System.Runtime.Serialization.StreamingContext" />.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+            An element with the specified name is not found in <paramref name="serializationInfo" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Add">
@@ -77,10 +83,31 @@
             </summary>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentNullException">
-          <paramref name="header" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+          <paramref name="header" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or
+            the name part of <paramref name="header" /> is <see cref="F:System.String.Empty" />.
             </exception>
         <exception cref="T:System.ArgumentException">
-          <paramref name="header" /> does not contain a colon.
+          <para>
+            <paramref name="header" /> does not contain a colon.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            The name or value part of <paramref name="header" /> contains invalid characters.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of the value part of <paramref name="header" /> is greater than 65535.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the <paramref name="header" />.
             </exception>
       </Docs>
     </Member>
@@ -97,7 +124,7 @@
       </Parameters>
       <Docs>
         <param name="header">
-            A <see cref="T:System.Net.HttpRequestHeader" /> that contains the name of the request header to add.
+            A <see cref="T:System.Net.HttpRequestHeader" /> is a request header to add.
             </param>
         <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to add.
@@ -106,6 +133,23 @@
             Adds the specified request <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName="Add">
@@ -121,7 +165,7 @@
       </Parameters>
       <Docs>
         <param name="header">
-            A <see cref="T:System.Net.HttpResponseHeader" /> that contains the name of the response header to add.
+            A <see cref="T:System.Net.HttpResponseHeader" /> is a response header to add.
             </param>
         <param name="value">
             A <see cref="T:System.String" /> that contains the value of the header to add.
@@ -130,6 +174,23 @@
             Adds the specified response <paramref name="header" /> with the specified <paramref name="value" /> to the collection.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName="Add">
@@ -156,20 +217,23 @@
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentException">
           <para>
-            <paramref name="name" /> is <see langword="null" /> or a <see cref="F:System.String.Empty" />.
+            <paramref name="name" /> or <paramref name="value" /> contains invalid characters.
             </para>
           <para>
             -or-
             </para>
           <para>
-            <paramref name="name" /> is a restricted header that must be set with a property setting.
-            </para>
-          <para>
-            -or-
+            <paramref name="name" /> is a restricted header name.
             </para>
         </exception>
         <exception cref="T:System.ArgumentOutOfRangeException">
             The length of <paramref name="value" /> is greater than 65535.
+            </exception>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="name" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
             </exception>
       </Docs>
     </Member>
@@ -196,17 +260,17 @@
             </summary>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentException">
-          <para>
-            <paramref name="headerName" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or
-            contains invalid characters.
-            </para>
-          <para>
-            -or-
-            </para>
-          <para>
-            <paramref name="headerValue" /> contains invalid characters.
-            </para>
-        </exception>
+          <paramref name="headerName" /> or <paramref name="headerValue" /> contains invalid characters.
+            </exception>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="headerName" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="headerValue" /> is greater than 65535.
+            </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the <paramref name="headerName" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="AllKeys">
@@ -360,15 +424,19 @@
       </Parameters>
       <Docs>
         <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
         <param name="streamingContext">
             A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
             </param>
         <summary>
-            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data to need to
+            serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="GetValues">
@@ -491,7 +559,7 @@
       </Parameters>
       <Docs>
         <param name="header">
-            A <see cref="T:System.Net.HttpRequestHeader" /> that contains a request header name.
+            A <see cref="T:System.Net.HttpRequestHeader" /> that indicates a request header.
             </param>
         <summary>
             Gets or sets the specified request <paramref name="header" /> in the collection.
@@ -500,6 +568,23 @@
             A <see cref="T:System.String" /> that contains the value of the specified request <paramref name="header" />.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Item">
@@ -514,7 +599,7 @@
       </Parameters>
       <Docs>
         <param name="header">
-            A <see cref="T:System.Net.HttpResponseHeader" /> that contains a response header name.
+            A <see cref="T:System.Net.HttpResponseHeader" /> that indicates a response header.
             </param>
         <summary>
             Gets or sets the specified response <paramref name="header" /> in the collection.
@@ -523,6 +608,23 @@
             A <see cref="T:System.String" /> that contains the value of the specified response <paramref name="header" />.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Keys">
@@ -581,6 +683,12 @@
             Removes the specified header from the collection.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="header" /> is a restricted header.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Remove">
@@ -601,6 +709,12 @@
             Removes the specified header from the collection.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <paramref name="header" /> is a restricted header.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Remove">
@@ -635,6 +749,9 @@
             <paramref name="name" /> is a restricted header name.
             </para>
         </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Set">
@@ -659,6 +776,23 @@
             Sets the specified header to the specified value.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpRequestHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Set">
@@ -683,6 +817,23 @@
             Sets the specified header to the specified value.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow any of <see cref="T:System.Net.HttpResponseHeader" /> values.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="header" /> is a restricted header.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            <paramref name="value" /> contains invalid characters.
+            </para>
+        </exception>
+        <exception cref="T:System.ArgumentOutOfRangeException">
+            The length of <paramref name="value" /> is greater than 65535.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Set">
@@ -724,6 +875,9 @@
         <exception cref="T:System.ArgumentOutOfRangeException">
             The length of <paramref name="value" /> is greater than 65535.
             </exception>
+        <exception cref="T:System.InvalidOperationException">
+            The current <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> instance does not allow the header <paramref name="name" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="System.Runtime.Serialization.ISerializable.GetObjectData">
@@ -739,15 +893,19 @@
       </Parameters>
       <Docs>
         <param name="serializationInfo">
-            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the serialized object data.
+            A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> that holds the data to need to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </param>
         <param name="streamingContext">
             A <see cref="T:System.Runtime.Serialization.StreamingContext" /> that specifies the destination for the serialization.
             </param>
         <summary>
-            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data needed to serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" />.
+            Populates the specified <see cref="T:System.Runtime.Serialization.SerializationInfo" /> with the data to need to
+            serialize the <see cref="T:WebSocketSharp.Net.WebHeaderCollection" /> object.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ArgumentNullException">
+          <paramref name="serializationInfo" /> is <see langword="null" />.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="ToByteArray">

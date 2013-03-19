@@ -148,7 +148,7 @@ namespace WebSocketSharp {
 
       var headers = new WebHeaderCollection();
       for (int i = 1; i < request.Length; i++)
-        headers.Add(request[i]);
+        headers.SetInternal (request[i], false);
 
       return new RequestHandshake {
         Headers         = headers,
