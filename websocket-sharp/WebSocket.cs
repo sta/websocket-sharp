@@ -327,38 +327,6 @@ namespace WebSocketSharp {
       return true;
     }
 
-    private bool canSendAsCloseFrame(PayloadData data)
-    {
-      if (data.Length >= 2)
-      {
-        var code = data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
-        if (code == (ushort)CloseStatusCode.NO_STATUS_CODE ||
-            code == (ushort)CloseStatusCode.ABNORMAL       ||
-            code == (ushort)CloseStatusCode.TLS_HANDSHAKE_FAILURE)
-          return false;
-      }
-
-      return true;
-    }
-
-    private bool checkCloseStatusCodeIsValid(ushort code, out string message)
-    {
-      if (code < 1000)
-      {
-        message = "Close status codes in the range 0-999 are not used: " + code;
-        return false;
-      }
-
-      if (code > 4999)
-      {
-        message = "Out of reserved close status code range: " + code;
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
-    }
-
     private bool checkFrameIsValid(WsFrame frame)
     {
       if (frame.IsNull())
@@ -428,12 +396,12 @@ namespace WebSocketSharp {
       #endif
       lock(_forClose)
       {
-        // Whether the closing handshake has been started already ?
+        // Whether the closing handshake has been started already?
         if (_readyState == WsState.CLOSING ||
             _readyState == WsState.CLOSED)
           return;
 
-        // Whether the closing handshake as server is started before the connection has been established ?
+        // Whether the closing handshake on server is started before the connection has been established?
         if (_readyState == WsState.CONNECTING && !_client)
         {
           sendResponseHandshake(HttpStatusCode.BadRequest);
@@ -445,8 +413,8 @@ namespace WebSocketSharp {
         _readyState = WsState.CLOSING;
       }
 
-      // Whether a close status code that must not be set for send is used ?
-      if (!canSendAsCloseFrame(data))
+      // Whether a payload data contains the close status code which must not be set for send?
+      if (data.ContainsReservedCloseStatusCode)
       {
         onClose(new CloseEventArgs(data));
         return;
@@ -1107,11 +1075,15 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <paramref name="code"/>
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and
+    /// releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// Emits a <see cref="OnError"/> event if <paramref name="code"/> is not in the allowable range of
+    /// the WebSocket close status code, and do nothing any more.
+    /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// A <see cref="ushort"/> that indicates the status code for closure.
     /// </param>
     public void Close(ushort code)
     {
@@ -1119,12 +1091,11 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <paramref name="code"/>
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and
+    /// releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that contains a status code
-    /// indicating the reason for closure.
+    /// One of the <see cref="CloseStatusCode"/> values that indicates the status code for closure.
     /// </param>
     public void Close(CloseStatusCode code)
     {
@@ -1132,20 +1103,24 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>,
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>, and
+    /// releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// Emits a <see cref="OnError"/> event if <paramref name="code"/> is not in the allowable range of
+    /// the WebSocket close status code, and do nothing any more.
+    /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// A <see cref="ushort"/> that indicates the status code for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for closure.
     /// </param>
     public void Close(ushort code, string reason)
     {
-      string msg;
-      if (!checkCloseStatusCodeIsValid(code, out msg))
+      if (!code.IsCloseStatusCode())
       {
+        var msg = String.Format("Invalid close status code: {0}", code);
         onError(msg);
         return;
       }
@@ -1154,12 +1129,11 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>,
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <paramref name="code"/> and <paramref name="reason"/>, and
+    /// releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that contains a status code
-    /// indicating the reason for closure.
+    /// One of the <see cref="CloseStatusCode"/> values that indicates the status code for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for closure.

@@ -381,8 +381,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(System.UInt16)">Close</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i>
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -394,8 +394,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode)">Close</a>
                   </b>(<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i>
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -407,8 +407,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
+            releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -420,8 +420,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">Close</a>
                   </b>(<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
+            releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -805,8 +805,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(System.UInt16)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(System.UInt16):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i>
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code)</div>
@@ -817,14 +817,15 @@
                 <i>code</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that contains a status code indicating the reason for closure.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that indicates the status code for closure.
             </dd>
             </dl>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
+            Emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not in the allowable range of
+            the WebSocket close status code, and do nothing any more.
+            </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
@@ -833,8 +834,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i>
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a> code)</div>
@@ -845,8 +846,7 @@
                 <i>code</i>
               </dt>
               <dd>
-            One of the <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> values that contains a status code
-            indicating the reason for closure.
+            One of the <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> values that indicates the status code for closure.
             </dd>
             </dl>
           </blockquote>
@@ -862,8 +862,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
+            releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
@@ -874,7 +874,7 @@
                 <i>code</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that contains a status code indicating the reason for closure.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> that indicates the status code for closure.
             </dd>
               <dt>
                 <i>reason</i>
@@ -886,8 +886,9 @@
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
+            Emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not in the allowable range of
+            the WebSocket close status code, and do nothing any more.
+            </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
@@ -896,8 +897,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
+            releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
@@ -908,8 +909,7 @@
                 <i>code</i>
               </dt>
               <dd>
-            One of the <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> values that contains a status code
-            indicating the reason for closure.
+            One of the <a href="../WebSocketSharp/CloseStatusCode.html">WebSocketSharp.CloseStatusCode</a> values that indicates the status code for closure.
             </dd>
               <dt>
                 <i>reason</i>

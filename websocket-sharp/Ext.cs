@@ -489,6 +489,40 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="ushort"/> is in the allowable range of
+    /// the WebSocket close status code.
+    /// </summary>
+    /// <remarks>
+    /// Not allowable ranges are the followings.
+    ///   <list type="bullet">
+    ///     <item>
+    ///       <term>
+    ///       Numbers in the range 0-999 are not used.
+    ///       </term>
+    ///     </item>
+    ///     <item>
+    ///       <term>
+    ///       Numbers which are greater than 4999 are out of the reserved close status code ranges.
+    ///       </term>
+    ///     </item>
+    ///   </list>
+    /// </remarks>
+    /// <returns>
+    /// <c>true</c> if <paramref name="code"/> is in the allowable range of the WebSocket close status code; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="code">
+    /// A <see cref="ushort"/> to test.
+    /// </param>
+    public static bool IsCloseStatusCode(this ushort code)
+    {
+      return code < 1000
+             ? false
+             : code > 4999
+               ? false
+               : true;
+    }
+
+    /// <summary>
     /// Determines whether the specified <see cref="string"/> is a <see cref="String.Empty"/>.
     /// </summary>
     /// <returns>

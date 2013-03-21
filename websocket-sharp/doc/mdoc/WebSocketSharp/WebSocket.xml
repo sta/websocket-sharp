@@ -134,13 +134,16 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:System.UInt16" /> that contains a status code indicating the reason for closure.
+            A <see cref="T:System.UInt16" /> that indicates the status code for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" />
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            releases all associated resources.
             </summary>
-        <remarks>To be added.</remarks>
+        <remarks>
+            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
+            the WebSocket close status code, and do nothing any more.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="Close">
@@ -155,12 +158,11 @@
       </Parameters>
       <Docs>
         <param name="code">
-            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that contains a status code
-            indicating the reason for closure.
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the status code for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" />
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>
@@ -178,16 +180,19 @@
       </Parameters>
       <Docs>
         <param name="code">
-            A <see cref="T:System.UInt16" /> that contains a status code indicating the reason for closure.
+            A <see cref="T:System.UInt16" /> that indicates the status code for closure.
             </param>
         <param name="reason">
             A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
+            releases all associated resources.
             </summary>
-        <remarks>To be added.</remarks>
+        <remarks>
+            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
+            the WebSocket close status code, and do nothing any more.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="Close">
@@ -203,15 +208,14 @@
       </Parameters>
       <Docs>
         <param name="code">
-            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that contains a status code
-            indicating the reason for closure.
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the status code for closure.
             </param>
         <param name="reason">
             A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />,
-            and releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
+            releases all associated resources.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

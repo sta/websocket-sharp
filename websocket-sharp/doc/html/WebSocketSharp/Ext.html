@@ -393,6 +393,18 @@
                 </td>
                 <td colspan="2">
                   <b>
+                    <a href="#M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16)">IsCloseStatusCode</a>
+                  </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> is in the allowable range of
+            the WebSocket close status code.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>static </div>
+                </td>
+                <td colspan="2">
+                  <b>
                     <a href="#M:WebSocketSharp.Ext.IsEmpty(System.String)">IsEmpty</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
@@ -1340,6 +1352,42 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16)">IsCloseStatusCode Method</h3>
+        <blockquote id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16):member">
+          <p class="Summary">
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> is in the allowable range of
+            the WebSocket close status code.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsCloseStatusCode</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16):Parameters">
+            <dl>
+              <dt>
+                <i>code</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> to test.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16):Returns">
+            <tt>true</tt> if <i>code</i> is in the allowable range of the WebSocket close status code; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16):Remarks">
+            Not allowable ranges are the followings.
+            <ul><li>
+            Numbers in the range 0-999 are not used.
+            </li><li>
+            Numbers which are greater than 4999 are out of the reserved close status code ranges.
+            </li></ul></div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsCloseStatusCode(System.UInt16):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

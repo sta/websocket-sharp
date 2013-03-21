@@ -82,9 +82,30 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Properties
+    #region Internal Property
+
+    internal bool ContainsReservedCloseStatusCode {
+      get {
+        if (Length >= 2)
+        {
+          var code = ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
+          if (code == (ushort)CloseStatusCode.UNDEFINED ||
+              code == (ushort)CloseStatusCode.NO_STATUS_CODE ||
+              code == (ushort)CloseStatusCode.ABNORMAL ||
+              code == (ushort)CloseStatusCode.TLS_HANDSHAKE_FAILURE)
+            return true;
+        }
+
+        return false;
+      }
+    }
+
+    #endregion
+
+    #region Public Properties
 
     public byte[] ExtensionData   { get; private set; }
+
     public byte[] ApplicationData { get; private set; }
 
     public bool IsMasked { get; private set; }

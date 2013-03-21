@@ -419,6 +419,36 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="IsCloseStatusCode">
+      <MemberSignature Language="C#" Value="public static bool IsCloseStatusCode (this ushort code);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsCloseStatusCode(unsigned int16 code) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="code" Type="System.UInt16" RefType="this" />
+      </Parameters>
+      <Docs>
+        <param name="code">
+            A <see cref="T:System.UInt16" /> to test.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.UInt16" /> is in the allowable range of
+            the WebSocket close status code.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="code" /> is in the allowable range of the WebSocket close status code; otherwise, <c>false</c>.
+            </returns>
+        <remarks>
+            Not allowable ranges are the followings.
+            <list type="bullet"><item><term>
+            Numbers in the range 0-999 are not used.
+            </term></item><item><term>
+            Numbers which are greater than 4999 are out of the reserved close status code ranges.
+            </term></item></list></remarks>
+      </Docs>
+    </Member>
     <Member MemberName="IsEmpty">
       <MemberSignature Language="C#" Value="public static bool IsEmpty (this string value);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEmpty(string value) cil managed" />
