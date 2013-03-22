@@ -467,10 +467,10 @@ namespace WebSocketSharp.Net {
 
 		static string CheckName (string name)
 		{
-			name = Trim (name);
-			if (name.IsEmpty ())
+			if (name.IsNullOrEmpty ())
 				throw new ArgumentNullException ("name");
 
+			name = name.Trim ();
 			if (!IsHeaderName (name))
 				throw new ArgumentException ("Contains invalid characters.", "name");
 
@@ -497,10 +497,10 @@ namespace WebSocketSharp.Net {
 
 		static string CheckValue (string value)
 		{
-			value = Trim (value);
-			if (value.IsEmpty ())
-				return value;
+			if (value.IsNullOrEmpty ())
+				return String.Empty;
 
+			value = value.Trim ();
 			if (value.Length > 65535)
 				throw new ArgumentOutOfRangeException ("value", "The length must not be greater than 65535.");
 
@@ -510,20 +510,10 @@ namespace WebSocketSharp.Net {
 			return value;
 		}
 
-		static string Convert (HttpRequestHeader header)
-		{
-			return Convert (header.ToString ());
-		}
-
-		static string Convert (HttpResponseHeader header)
-		{
-			return Convert (header.ToString ());
-		}
-
-		static string Convert (string header)
+		static string Convert (string key)
 		{
 			HttpHeaderInfo info;
-			return headers.TryGetValue (header, out info)
+			return headers.TryGetValue (key, out info)
 			       ? info.Name
 			       : String.Empty;
 		}
@@ -589,13 +579,6 @@ namespace WebSocketSharp.Net {
 			DoWithoutCheckingName (base.Set, name, value);
 		}
 
-		static string Trim (string value)
-		{
-			return value.IsNullOrEmpty ()
-			       ? String.Empty
-			       : value.Trim ();
-		}
-
 		static bool TryGetHeaderInfo (string name, out HttpHeaderInfo info)
 		{
 			info = GetHeaderInfo (name);
@@ -607,6 +590,16 @@ namespace WebSocketSharp.Net {
 		#endregion
 
 		#region Internal Methods
+
+		internal static string Convert (HttpRequestHeader header)
+		{
+			return Convert (header.ToString ());
+		}
+
+		internal static string Convert (HttpResponseHeader header)
+		{
+			return Convert (header.ToString ());
+		}
 
 		internal static bool IsHeaderName (string name)
 		{
