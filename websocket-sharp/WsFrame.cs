@@ -93,15 +93,20 @@ namespace WebSocketSharp {
     public byte[]      MaskingKey    { get; private set; }
     public PayloadData PayloadData   { get; private set; }
 
-    public ulong Length
-    {
+    public bool IsData {
+      get {
+        Opcode data = Opcode.TEXT | Opcode.BINARY;
+        return (data & Opcode) == Opcode;
+      }
+    }
+
+    public ulong Length {
       get {
         return 2 + (ulong)(ExtPayloadLen.Length + MaskingKey.Length) + PayloadLength;
       }
     }
 
-    public ulong PayloadLength
-    {
+    public ulong PayloadLength {
       get {
         return PayloadData.Length;
       }

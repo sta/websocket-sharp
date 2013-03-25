@@ -137,14 +137,18 @@ namespace WebSocketSharp {
              .Split('\n');
     }
 
-    private void write(byte[] buffer, int offset, int count)
+    private bool write(byte[] data)
     {
-      _innerStream.Write(buffer, offset, count);
-    }
-
-    private void writeByte(byte value)
-    {
-      _innerStream.WriteByte(value);
+      lock (_forWrite)
+      {
+        try {
+          _innerStream.Write(data, 0, data.Length);
+          return true;
+        }
+        catch {
+          return false;
+        }
+      }
     }
 
     #endregion
@@ -245,40 +249,14 @@ namespace WebSocketSharp {
       }
     }
 
-    public bool WriteFrame(WsFrame frame)
+    public bool Write(WsFrame frame)
     {
-      lock (_forWrite)
-      {
-        try
-        {
-          var buffer = frame.ToBytes();
-          write(buffer, 0, buffer.Length);
-
-          return true;
-        }
-        catch
-        {
-          return false;
-        }
-      }
+      return write(frame.ToBytes());
     }
 
-    public bool WriteHandshake(Handshake handshake)
+    public bool Write(Handshake handshake)
     {
-      lock (_forWrite)
-      {
-        try
-        {
-          var buffer = handshake.ToBytes();
-          write(buffer, 0, buffer.Length);
-
-          return true;
-        }
-        catch
-        {
-          return false;
-        }
-      }
+      return write(handshake.ToBytes());
     }
 
     #endregion
