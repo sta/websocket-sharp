@@ -1,5 +1,6 @@
 using System;
 using WebSocketSharp;
+using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 
 namespace Example2 {
@@ -12,6 +13,17 @@ namespace Example2 {
               ? String.Format("'{0}' returns to {1}", e.Data, QueryString["name"])
               : e.Data;
       Send(msg);
+    }
+
+    protected override bool ProcessCookies(CookieCollection request, CookieCollection response)
+    {
+      foreach (Cookie cookie in request)
+      {
+        cookie.Expired = true;
+        response.Add(cookie);
+      }
+
+      return true;
     }
   }
 }

@@ -7,6 +7,7 @@
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)
 //	Daniel Nauck (dna@mono-project.de)
 //	Sebastien Pouliot (sebastien@ximian.com)
+//	sta (sta.blockhead@gmail.com)
 //
 // Copyright (c) 2004,2009 Novell, Inc (http://www.novell.com)
 // Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
@@ -241,6 +242,22 @@ namespace WebSocketSharp.Net {
 
 		internal bool ExactDomain { get; set; }
 
+		internal int MaxAge {
+			get {
+				if (expires == DateTime.MinValue || Expired)
+					return 0;
+
+				var tmp = expires.Kind == DateTimeKind.Local
+				        ? expires
+				        : expires.ToLocalTime ();
+
+				var span = tmp - DateTime.Now;
+				return span <= TimeSpan.Zero
+				       ? 0
+				       : (int) span.TotalSeconds;
+			}
+		}
+
 		internal int [] Ports {
 			get { return ports; }
 		}
@@ -308,16 +325,17 @@ namespace WebSocketSharp.Net {
 		/// Gets or sets a value indicating whether the cookie has expired.
 		/// </summary>
 		/// <value>
-		/// <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+		/// <c>true</c> if the cookie has expired; otherwise, <c>false</c>. The default is <c>false</c>.
 		/// </value>
 		public bool Expired {
 			get { 
 				return expires <= DateTime.Now && 
 				       expires != DateTime.MinValue;
 			}
-			set {  
-				if (value)
-					expires = DateTime.Now;
+			set {
+				expires = value
+				        ? DateTime.Now
+				        : DateTime.MinValue;
 			}
 		}
 
@@ -326,6 +344,7 @@ namespace WebSocketSharp.Net {
 		/// </summary>
 		/// <value>
 		/// A <see cref="DateTime"/> that contains the date and time at which the cookie expires.
+		/// The default is <see cref="DateTime.MinValue"/>.
 		/// </value>
 		public DateTime Expires {
 			get { return expires; }
@@ -390,7 +409,7 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains a list of the TCP ports to which the cookie applies.
 		/// </value>
 		/// <exception cref="CookieException">
-		/// The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+		/// The value specified for a set operation is not enclosed in double quotes or could not be parsed.
 		/// </exception>
 		public string Port {
 			get { return port; }
@@ -402,11 +421,13 @@ namespace WebSocketSharp.Net {
 				}
 
 				if (!value.IsEnclosedIn ('"'))
-					throw new CookieException ("The 'Port'='" + value + "' attribute of the cookie is invalid. Port must be enclosed in double quotes.");
+					throw new CookieException (String.Format (
+						"The 'Port={0}' attribute of the cookie is invalid. The value must be enclosed in double quotes.", value));
 
 				string error;
 				if (!TryCreatePorts (value, out ports, out error))
-					throw new CookieException ("The 'Port'='" + value + "' attribute of the cookie is invalid. Invalid value: " + error);
+					throw new CookieException (String.Format (
+						"The 'Port={0}' attribute of the cookie is invalid. Invalid value: {1}", value, error));
 
 				port = value;
 			}
@@ -472,13 +493,13 @@ namespace WebSocketSharp.Net {
 		/// to which the cookie conforms.
 		/// </value>
 		/// <exception cref="ArgumentOutOfRangeException">
-		/// The value specified for a set operation is less than zero.
+		/// The value specified for a set operation is not allowed. The value must be 0 or 1.
 		/// </exception>
 		public int Version {
 			get { return version; }
 			set { 
-				if (value < 0)
-					throw new ArgumentOutOfRangeException();
+				if (value < 0 || value > 1)
+					throw new ArgumentOutOfRangeException ("value", "Must be 0 or 1.");
 				else
 					version = value; 
 			}
@@ -536,6 +557,61 @@ namespace WebSocketSharp.Net {
 				return "\"" + value.Replace("\"", "\\\"") + "\"";
 		}
 
+		string ToResponseStringVersion0 ()
+		{
+			var result = new StringBuilder ();
+			result.AppendFormat ("{0}={1}", name, val);
+			if (expires != DateTime.MinValue)
+				result.AppendFormat ("; Expires={0}",
+					expires.ToUniversalTime ().ToString ("ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
+						CultureInfo.CreateSpecificCulture("en-US")));
+
+			if (!path.IsNullOrEmpty ())
+				result.AppendFormat ("; Path={0}", path);
+
+			if (!domain.IsNullOrEmpty ())
+				result.AppendFormat ("; Domain={0}", domain);
+
+			if (secure)
+				result.Append ("; Secure");
+
+			if (httpOnly)
+				result.Append ("; HttpOnly");
+
+			return result.ToString ();
+		}
+
+		string ToResponseStringVersion1 ()
+		{
+			var result = new StringBuilder ();
+			result.AppendFormat ("{0}={1}; Version={2}", name, val, version);
+			if (expires != DateTime.MinValue)
+				result.AppendFormat ("; Max-Age={0}", MaxAge);
+
+			if (!path.IsNullOrEmpty ())
+				result.AppendFormat ("; Path={0}", path);
+
+			if (!domain.IsNullOrEmpty ())
+				result.AppendFormat ("; Domain={0}", domain);
+
+			if (!port.IsNullOrEmpty ())
+				result.AppendFormat ("; Port={0}", port);
+
+			if (!comment.IsNullOrEmpty ())
+				result.AppendFormat ("; Comment={0}", comment.UrlEncode ());
+
+			if (!commentUri.IsNull ())
+				result.AppendFormat ("; CommentURL={0}", Quote (commentUri.OriginalString));
+
+			if (discard)
+				result.Append ("; Discard");
+
+			if (secure)
+				result.Append ("; Secure");
+
+			return result.ToString ();
+		}
+
 		static bool TryCreatePorts (string value, out int [] result, out string parseError)
 		{
 			var values = value.Trim ('"').Split (',');
@@ -562,58 +638,42 @@ namespace WebSocketSharp.Net {
 
 		#region Internal Methods
 
-		// From server to client
-		internal string ToClientString ()
-		{
-			if (name.IsEmpty ())
-				return String.Empty;
-
-			var result = new StringBuilder (64);
-			if (version > 0) 
-				result.Append ("Version=").Append (version).Append ("; ");
-
-			result.Append (name).Append ("=").Append (Quote (val));
-			if (!path.IsNullOrEmpty ())
-				result.Append ("; Path=").Append (path);
-
-			if (!domain.IsNullOrEmpty ())
-				result.Append ("; Domain=").Append (domain);
-
-			if (!port.IsNullOrEmpty ())
-				result.Append ("; Port=").Append (port);
-
-			return result.ToString ();
-		}
-
 		// From client to server
-		internal string ToString (Uri uri)
+		internal string ToRequestString (Uri uri)
 		{
 			if (name.IsEmpty ())
 				return String.Empty;
 
-			var result = new StringBuilder (64);
-			if (version > 0)
-				result.Append ("$Version=").Append (version).Append ("; ");
-
-			result.Append (name).Append ("=").Append (val);
 			if (version == 0)
-				return result.ToString ();
+				return String.Format ("{0}={1}", name, val);
 
+			var result = new StringBuilder ();
+			result.AppendFormat ("$Version={0}; {1}={2}", version, name, val);
 			if (!path.IsNullOrEmpty ())
-				result.Append ("; $Path=").Append (path);
+				result.AppendFormat ("; $Path={0}", path);
 			else if (!uri.IsNull ())
-				result.Append ("; $Path=").Append (uri.GetAbsolutePath ());
+				result.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
 			else
 				result.Append ("; $Path=/");
 
 			bool append_domain = uri.IsNull () || uri.Host != domain;
 			if (append_domain && !domain.IsNullOrEmpty ())
-				result.Append ("; $Domain=").Append (domain);
+				result.AppendFormat ("; $Domain={0}", domain);
 
 			if (!port.IsNullOrEmpty ())
-				result.Append ("; $Port=").Append (port);
+				result.AppendFormat ("; $Port={0}", port);
 
 			return result.ToString ();
+		}
+
+		// From server to client
+		internal string ToResponseString ()
+		{
+			return name.IsEmpty ()
+			       ? String.Empty
+			       : version == 0
+			         ? ToResponseStringVersion0 ()
+			         : ToResponseStringVersion1 ();
 		}
 
 		#endregion
@@ -634,11 +694,11 @@ namespace WebSocketSharp.Net {
 		{
 			var cookie = comparand as Cookie;
 			return !cookie.IsNull() &&
-				String.Compare (this.name, cookie.Name, true, CultureInfo.InvariantCulture) == 0 &&
-				String.Compare (this.val, cookie.Value, false, CultureInfo.InvariantCulture) == 0 &&
-				String.Compare (this.path, cookie.Path, false, CultureInfo.InvariantCulture) == 0 &&
-				String.Compare (this.domain, cookie.Domain, true, CultureInfo.InvariantCulture) == 0 &&
-				this.version == cookie.Version;
+				name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
+				val.Equals (cookie.Value, StringComparison.InvariantCulture) &&
+				path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
+				domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
+				version == cookie.Version;
 		}
 
 		/// <summary>
@@ -671,7 +731,7 @@ namespace WebSocketSharp.Net {
 			// i.e., only used for clients
 			// see para 4.2.2 of RFC 2109 and para 3.3.4 of RFC 2965
 			// see also bug #316017
-			return ToString (null);
+			return ToRequestString (null);
 		}
 
 		#endregion

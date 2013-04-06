@@ -235,6 +235,24 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="Cookies">
+      <MemberSignature Language="C#" Value="public System.Collections.Generic.IEnumerable&lt;WebSocketSharp.Net.Cookie&gt; Cookies { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Generic.IEnumerable`1&lt;class WebSocketSharp.Net.Cookie&gt; Cookies" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.IEnumerable&lt;WebSocketSharp.Net.Cookie&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+        <value>
+            An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which supports the iteration
+            over the collection of cookies.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Dispose">
       <MemberSignature Language="C#" Value="public void Dispose ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Dispose() cil managed" />
@@ -565,6 +583,26 @@
             </param>
         <summary>
             Sends a text <paramref name="data" /> asynchronously using the WebSocket connection.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetCookie">
+      <MemberSignature Language="C#" Value="public void SetCookie (WebSocketSharp.Net.Cookie cookie);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetCookie(class WebSocketSharp.Net.Cookie cookie) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="cookie" Type="WebSocketSharp.Net.Cookie" />
+      </Parameters>
+      <Docs>
+        <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> that contains an HTTP Cookie to set.
+            </param>
+        <summary>
+            Sets a <see cref="T:WebSocketSharp.Net.Cookie" /> used in the WebSocket opening handshake.
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

@@ -3,8 +3,10 @@ using Notifications;
 #endif
 using System;
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using WebSocketSharp;
+using WebSocketSharp.Net;
 
 namespace Example
 {
@@ -109,6 +111,8 @@ namespace Example
             "notification-message-im");
         };
 
+        //ws.SetCookie(new Cookie("nobita", "idiot"));
+        //ws.SetCookie(new Cookie("dora", "tanuki"));
         ws.Connect();
 
         Thread.Sleep(500);

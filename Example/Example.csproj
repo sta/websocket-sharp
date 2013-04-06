@@ -54,6 +54,7 @@
     <Reference Include="notify-sharp, Version=0.4.0.0, Culture=neutral, PublicKeyToken=2df29c54e245917a">
       <Package>notify-sharp</Package>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\websocket-sharp\websocket-sharp.csproj">

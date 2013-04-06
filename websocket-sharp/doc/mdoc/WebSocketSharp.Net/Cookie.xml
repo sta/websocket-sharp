@@ -287,7 +287,7 @@
             Gets or sets a value indicating whether the cookie has expired.
             </summary>
         <value>
-          <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+          <c>true</c> if the cookie has expired; otherwise, <c>false</c>. The default is <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -305,6 +305,7 @@
             </summary>
         <value>
             A <see cref="T:System.DateTime" /> that contains the date and time at which the cookie expires.
+            The default is <see cref="F:System.DateTime.MinValue" />.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -406,7 +407,7 @@
             </value>
         <remarks>To be added.</remarks>
         <exception cref="T:WebSocketSharp.Net.CookieException">
-            The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+            The value specified for a set operation is not enclosed in double quotes or could not be parsed.
             </exception>
       </Docs>
     </Member>
@@ -502,7 +503,7 @@
             </value>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentOutOfRangeException">
-            The value specified for a set operation is less than zero.
+            The value specified for a set operation is not allowed. The value must be 0 or 1.
             </exception>
       </Docs>
     </Member>

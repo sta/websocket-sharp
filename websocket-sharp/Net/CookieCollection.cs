@@ -5,7 +5,8 @@
 // Authors:
 //	Lawrence Pit (loz@cable.a2000.nl)
 //	Gonzalo Paniagua Javier (gonzalo@ximian.com)
-//	Sebastien Pouliot <sebastien@ximian.com>
+//	Sebastien Pouliot (sebastien@ximian.com)
+//	sta (sta.blockhead@gmail.com)
 //
 // Copyright (c) 2004,2009 Novell, Inc (http://www.novell.com)
 // Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
@@ -34,7 +35,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace WebSocketSharp.Net {
 
@@ -90,6 +93,16 @@ namespace WebSocketSharp.Net {
 			get { return list; }
 		}
 
+		internal IEnumerable<Cookie> Sorted {
+			get {
+				return from cookie in list
+				       orderby cookie.Version,
+				               cookie.Name,
+				               cookie.Path.Length descending
+				       select cookie;
+			}
+		}
+
 		#endregion
 
 		#region Public Properties
@@ -137,7 +150,7 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="Cookie"/> with the specified <paramref name="index"/> in the <see cref="CookieCollection"/>.
 		/// </value>
 		/// <param name="index">
-		/// An <see cref="int"/> that is the zero-based index of the <see cref="Cookie"/> to find.
+		/// An <see cref="int"/> is the zero-based index of the <see cref="Cookie"/> to find.
 		/// </param>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="index"/> is less than zero or <paramref name="index"/> is greater than or
@@ -159,7 +172,7 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="Cookie"/> with the specified <paramref name="name"/> in the <see cref="CookieCollection"/>.
 		/// </value>
 		/// <param name="name">
-		/// A <see cref="string"/> that is the name of the <see cref="Cookie"/> to find.
+		/// A <see cref="string"/> is the name of the <see cref="Cookie"/> to find.
 		/// </param>
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="name"/> is <see langword="null"/>.
@@ -170,7 +183,7 @@ namespace WebSocketSharp.Net {
 					throw new ArgumentNullException ("name");
 
 				foreach (var cookie in list) {
-					if (0 == String.Compare (cookie.Name, name, true, CultureInfo.InvariantCulture))
+					if (cookie.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
 						return cookie;
 				}
 
@@ -197,24 +210,179 @@ namespace WebSocketSharp.Net {
 
 		#region Private Method
 
+		static CookieCollection ParseRequest (string value)
+		{
+			var cookies = new CookieCollection ();
+
+			Cookie cookie = null;
+			int version = 0;
+			string [] pairs = value.Split (',', ';');
+			for (int i = 0; i < pairs.Length; i++)
+			{
+				string pair = pairs [i].Trim ();
+				if (pair.IsEmpty ())
+					continue;
+
+				if (pair.StartsWith ("$version", StringComparison.InvariantCultureIgnoreCase)) {
+					version = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+				}
+				else if (pair.StartsWith ("$path", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Path = pair.GetValueInternal ("=");
+				}
+				else if (pair.StartsWith ("$domain", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Domain = pair.GetValueInternal ("=");
+				}
+				else if (pair.StartsWith ("$port", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase) && !pair.EndsWith ("\"")) {
+						var buffer = new StringBuilder (pair);
+						string port;
+						while (i < pairs.Length - 1) {
+							port = pairs [++i].Trim ();
+							buffer.AppendFormat (", {0}", port);
+							if (port.EndsWith ("\""))
+								break;
+						}
+
+						pair = buffer.ToString ();
+					}
+
+					if (!cookie.IsNull ())
+						cookie.Port = pair.GetValueInternal ("=");
+				}
+				else {
+					if (!cookie.IsNull ())
+						cookies.Add (cookie);
+
+					cookie = new Cookie (pair.GetNameInternal ("="), pair.GetValueInternal ("="));
+					if (version != 0)
+						cookie.Version = version;
+				}
+			}
+
+			if (!cookie.IsNull ())
+				cookies.Add (cookie);
+
+			return cookies;
+		}
+
+		static CookieCollection ParseResponse (string value)
+		{
+			var cookies = new CookieCollection ();
+
+			Cookie cookie = null;
+			string [] pairs = value.Split (',', ';');
+			for (int i = 0; i < pairs.Length; i++)
+			{
+				string pair = pairs [i].Trim ();
+				if (pair.IsEmpty ())
+					continue;
+
+				if (pair.StartsWith ("version", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Version = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+				}
+				else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
+					var buffer = new StringBuilder (pair.GetValueInternal ("="));
+					if (i < pairs.Length - 1)
+						buffer.AppendFormat (", {0}", pairs [++i].Trim ());
+
+					DateTime expires;
+					if (!DateTime.TryParseExact (buffer.ToString (),
+						new string [] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
+						CultureInfo.CreateSpecificCulture("en-US"),
+						DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+						out expires))
+						expires = DateTime.Now;
+
+					if (!cookie.IsNull () && cookie.Expires == DateTime.MinValue)
+						cookie.Expires = expires.ToLocalTime ();
+				}
+				else if (pair.StartsWith ("max-age", StringComparison.InvariantCultureIgnoreCase)) {
+					int max = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+					var expires = DateTime.Now.AddSeconds ((double) max);
+					if (!cookie.IsNull ())
+						cookie.Expires = expires;
+				}
+				else if (pair.StartsWith ("path", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Path = pair.GetValueInternal ("=");
+				}
+				else if (pair.StartsWith ("domain", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Domain = pair.GetValueInternal ("=");
+				}
+				else if (pair.StartsWith ("port", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase) && !pair.EndsWith ("\"")) {
+						var buffer = new StringBuilder (pair);
+						string port;
+						while (i < pairs.Length - 1) {
+							port = pairs [++i].Trim ();
+							buffer.AppendFormat (", {0}", port);
+							if (port.EndsWith ("\""))
+								break;
+						}
+
+						pair = buffer.ToString ();
+					}
+
+					if (!cookie.IsNull ())
+						cookie.Port = pair.GetValueInternal ("=");
+				}
+				else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Comment = pair.GetValueInternal ("=").UrlDecode ();
+				}
+				else if (pair.StartsWith ("commenturl", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.CommentUri = pair.GetValueInternal ("=").Trim ('"').ToUri ();
+				}
+				else if (pair.StartsWith ("discard", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Discard = true;
+				}
+				else if (pair.StartsWith ("secure", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.Secure = true;
+				}
+				else if (pair.StartsWith ("httponly", StringComparison.InvariantCultureIgnoreCase)) {
+					if (!cookie.IsNull ())
+						cookie.HttpOnly = true;
+				}
+				else {
+					if (!cookie.IsNull ())
+						cookies.Add (cookie);
+
+					cookie = new Cookie (pair.GetNameInternal ("="), pair.GetValueInternal ("="));
+				}
+			}
+
+			if (!cookie.IsNull ())
+				cookies.Add (cookie);
+
+			return cookies;
+		}
+
 		int SearchCookie (Cookie cookie)
 		{
 			string name = cookie.Name;
-			string domain = cookie.Domain;
 			string path = cookie.Path;
+			string domain = cookie.Domain;
+			int version = cookie.Version;
 
 			for (int i = list.Count - 1; i >= 0; i--) {
 				Cookie c = list [i];
-				if (0 != String.Compare (name, c.Name, true, CultureInfo.InvariantCulture))
+				if (!c.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
 					continue;
 
-				if (0 != String.Compare (domain, c.Domain, true, CultureInfo.InvariantCulture))
+				if (!c.Path.Equals (path, StringComparison.InvariantCulture))
 					continue;
 
-				if (0 != String.Compare (path, c.Path, false, CultureInfo.InvariantCulture))
+				if (!c.Domain.Equals (domain, StringComparison.InvariantCultureIgnoreCase))
 					continue;
 
-				if (c.Version != cookie.Version)
+				if (c.Version != version)
 					continue;
 
 				return i;
@@ -226,6 +394,34 @@ namespace WebSocketSharp.Net {
 		#endregion
 
 		#region Internal Method
+
+		internal static CookieCollection Parse (string value, bool response)
+		{
+			return response
+			       ? ParseResponse (value)
+			       : ParseRequest (value);
+		}
+
+		internal void SetOrRemove (Cookie cookie)
+		{
+			int pos = SearchCookie (cookie);
+			if (pos == -1) {
+				if (!cookie.Expired)
+					list.Add (cookie);
+			}
+			else {
+				if (!cookie.Expired)
+					list [pos] = cookie;
+				else
+					list.RemoveAt (pos);
+			}
+		}
+
+		internal void SetOrRemove (CookieCollection cookies)
+		{
+			foreach (Cookie cookie in cookies)
+				SetOrRemove (cookie);
+		}
 
 		internal void Sort ()
 		{
@@ -281,7 +477,7 @@ namespace WebSocketSharp.Net {
 		/// starting at the specified <paramref name="index"/> in the <paramref name="array"/>.
 		/// </summary>
 		/// <param name="array">
-		/// An <see cref="Array"/> that is the destination of the elements copied from the <see cref="CookieCollection"/>.
+		/// An <see cref="Array"/> is the destination of the elements copied from the <see cref="CookieCollection"/>.
 		/// </param>
 		/// <param name="index">
 		/// An <see cref="int"/> that indicates the zero-based index in <paramref name="array"/> at which copying begins.
@@ -291,6 +487,22 @@ namespace WebSocketSharp.Net {
 		/// </exception>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="index"/> is less than zero.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// <para>
+		/// <paramref name="array"/> is multidimensional.
+		/// </para>
+		/// <para>
+		/// -or-
+		/// </para>
+		/// <para>
+		/// The number of elements in the <see cref="CookieCollection"/> is greater than the available space
+		/// from index to the end of the destination <paramref name="array"/>.
+		/// </para>
+		/// </exception>
+		/// <exception cref="InvalidCastException">
+		/// The elements in the <see cref="CookieCollection"/> cannot be cast automatically
+		/// to the type of the destination <paramref name="array"/>.
 		/// </exception>
 		public void CopyTo (Array array, int index)
 		{
@@ -300,7 +512,16 @@ namespace WebSocketSharp.Net {
 			if (index < 0)
 				throw new ArgumentOutOfRangeException ("index", "Must not be less than zero.");
 
-			// TODO: Support for ArgumentException and InvalidCastException.
+			if (array.Rank > 1)
+				throw new ArgumentException ("Must not be multidimensional.", "array");
+
+			if (array.Length - index < list.Count)
+				throw new ArgumentException (
+					"The number of elements in this collection is greater than the available space of the destination array.");
+
+			if (!array.GetType ().GetElementType ().IsAssignableFrom (typeof (Cookie)))
+				throw new InvalidCastException (
+					"The elements in this collection cannot be cast automatically to the type of the destination array.");
 
 			(list as IList).CopyTo (array, index);
 		}
@@ -310,7 +531,7 @@ namespace WebSocketSharp.Net {
 		/// starting at the specified <paramref name="index"/> in the <paramref name="array"/>.
 		/// </summary>
 		/// <param name="array">
-		/// An array of <see cref="Cookie"/> that is the destination of the elements copied from the <see cref="CookieCollection"/>.
+		/// An array of <see cref="Cookie"/> is the destination of the elements copied from the <see cref="CookieCollection"/>.
 		/// </param>
 		/// <param name="index">
 		/// An <see cref="int"/> that indicates the zero-based index in <paramref name="array"/> at which copying begins.
@@ -321,6 +542,10 @@ namespace WebSocketSharp.Net {
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="index"/> is less than zero.
 		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// The number of elements in the <see cref="CookieCollection"/> is greater than the available space
+		/// from index to the end of the destination <paramref name="array"/>.
+		/// </exception>
 		public void CopyTo (Cookie [] array, int index)
 		{
 			if (array.IsNull ())
@@ -329,7 +554,9 @@ namespace WebSocketSharp.Net {
 			if (index < 0)
 				throw new ArgumentOutOfRangeException ("index", "Must not be less than zero.");
 
-			// TODO: Support for ArgumentException.
+			if (array.Length - index < list.Count)
+				throw new ArgumentException (
+					"The number of elements in this collection is greater than the available space of the destination array.");
 
 			list.CopyTo (array, index);
 		}

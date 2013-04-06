@@ -54,6 +54,12 @@ namespace WebSocketSharp {
 
     #region Properties
 
+    public CookieCollection Cookies {
+      get {
+        return Headers.GetCookies(true);
+      }
+    }
+
     public bool IsWebSocketResponse {
       get {
         return ProtocolVersion < HttpVersion.Version11
@@ -96,7 +102,7 @@ namespace WebSocketSharp {
 
       var headers = new WebHeaderCollection();
       for (int i = 1; i < response.Length; i++)
-        headers.SetInternal (response[i], true);
+        headers.SetInternal(response[i], true);
 
       return new ResponseHandshake {
         Headers         = headers,
@@ -104,6 +110,15 @@ namespace WebSocketSharp {
         StatusCode      = statusLine[1],
         ProtocolVersion = new Version(statusLine[0].Substring(5))
       };
+    }
+
+    public void SetCookies(CookieCollection cookies)
+    {
+      if (cookies.IsNull() || cookies.Count == 0)
+        return;
+
+      foreach (var cookie in cookies.Sorted)
+        AddHeader("Set-Cookie", cookie.ToResponseString());
     }
 
     public override string ToString()

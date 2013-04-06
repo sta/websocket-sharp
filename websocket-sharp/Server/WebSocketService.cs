@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading;
+using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server {
@@ -148,8 +149,14 @@ namespace WebSocketSharp.Server {
       if (IsBound)
         return;
 
-      _context   = context;
-      _sessions  = sessions;
+      if (!ProcessCookies(context.CookieCollection, context.WebSocket.CookieCollection))
+      {
+        context.WebSocket.Close(HttpStatusCode.BadRequest);
+        return;
+      }
+
+      _context = context;
+      _sessions = sessions;
       _websocket = context.WebSocket;
 
       _websocket.OnOpen    += onOpen;
@@ -209,6 +216,23 @@ namespace WebSocketSharp.Server {
     /// </summary>
     protected virtual void OnOpen()
     {
+    }
+
+    /// <summary>
+    /// Processes the cookies used in the WebSocket opening handshake.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if processing the cookies is successfully; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="request">
+    /// A <see cref="CookieCollection"/> that contains a collection of the HTTP Cookies received from the client.
+    /// </param>
+    /// <param name="response">
+    /// A <see cref="CookieCollection"/> that contains a collection of the HTTP Cookies to send to the client.
+    /// </param>
+    protected virtual bool ProcessCookies(CookieCollection request, CookieCollection response)
+    {
+      return true;
     }
 
     #endregion

@@ -555,7 +555,7 @@ namespace WebSocketSharp.Net {
 
 			if (cookies != null) {
 				foreach (Cookie cookie in cookies)
-					headers.SetInternal ("Set-Cookie", cookie.ToClientString (), true);
+					headers.SetInternal ("Set-Cookie", cookie.ToResponseString (), true);
 			}
 
 			StreamWriter writer = new StreamWriter (ms, encoding, 256);

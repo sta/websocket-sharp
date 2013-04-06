@@ -991,7 +991,7 @@
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Expired</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.Cookie.Expired:Value">
-            <tt>true</tt> if the cookie has expired; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the cookie has expired; otherwise, <tt>false</tt>. The default is <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.Cookie.Expired:Remarks">
@@ -1012,6 +1012,7 @@
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.Cookie.Expires:Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.DateTime">DateTime</a> that contains the date and time at which the cookie expires.
+            The default is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.DateTime.MinValue">DateTime.MinValue</a>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.Cookie.Expires:Remarks">
@@ -1151,7 +1152,7 @@
                   <a href="../WebSocketSharp.Net/CookieException.html">WebSocketSharp.Net.CookieException</a>
                 </td>
                 <td>
-            The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+            The value specified for a set operation is not enclosed in double quotes or could not be parsed.
             </td>
               </tr>
             </table>
@@ -1271,7 +1272,7 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ArgumentOutOfRangeException">ArgumentOutOfRangeException</a>
                 </td>
                 <td>
-            The value specified for a set operation is less than zero.
+            The value specified for a set operation is not allowed. The value must be 0 or 1.
             </td>
               </tr>
             </table>

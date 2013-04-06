@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
@@ -64,6 +65,12 @@ namespace WebSocketSharp {
     #endregion
 
     #region Properties
+
+    public CookieCollection Cookies {
+      get {
+        return Headers.GetCookies(false);
+      }
+    }
 
     public string HttpMethod { get; private set; }
 
@@ -148,7 +155,7 @@ namespace WebSocketSharp {
 
       var headers = new WebHeaderCollection();
       for (int i = 1; i < request.Length; i++)
-        headers.SetInternal (request[i], false);
+        headers.SetInternal(request[i], false);
 
       return new RequestHandshake {
         Headers         = headers,
@@ -161,6 +168,20 @@ namespace WebSocketSharp {
     #endregion
 
     #region Public Method
+
+    public void SetCookies(CookieCollection cookies)
+    {
+      if (cookies.IsNull() || cookies.Count == 0)
+        return;
+
+      var sorted = cookies.Sorted.ToArray();
+      var header = new StringBuilder(sorted[0].ToString());
+      for (int i = 1; i < sorted.Length; i++)
+        if (!sorted[i].Expired)
+          header.AppendFormat("; {0}", sorted[i].ToString());
+
+      AddHeader("Cookie", header.ToString());
+    }
 
     public override string ToString()
     {

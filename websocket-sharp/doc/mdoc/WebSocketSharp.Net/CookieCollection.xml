@@ -90,7 +90,7 @@
       </Parameters>
       <Docs>
         <param name="array">
-            An <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            An <see cref="T:System.Array" /> is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </param>
         <param name="index">
             An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
@@ -105,6 +105,22 @@
             </exception>
         <exception cref="T:System.ArgumentOutOfRangeException">
           <paramref name="index" /> is less than zero.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+          <para>
+            <paramref name="array" /> is multidimensional.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            The number of elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is greater than the available space
+            from index to the end of the destination <paramref name="array" />.
+            </para>
+        </exception>
+        <exception cref="T:System.InvalidCastException">
+            The elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> cannot be cast automatically
+            to the type of the destination <paramref name="array" />.
             </exception>
       </Docs>
     </Member>
@@ -121,7 +137,7 @@
       </Parameters>
       <Docs>
         <param name="array">
-            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </param>
         <param name="index">
             An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
@@ -136,6 +152,10 @@
             </exception>
         <exception cref="T:System.ArgumentOutOfRangeException">
           <paramref name="index" /> is less than zero.
+            </exception>
+        <exception cref="T:System.ArgumentException">
+            The number of elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is greater than the available space
+            from index to the end of the destination <paramref name="array" />.
             </exception>
       </Docs>
     </Member>
@@ -223,7 +243,7 @@
       </Parameters>
       <Docs>
         <param name="index">
-            An <see cref="T:System.Int32" /> that is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            An <see cref="T:System.Int32" /> is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
             </param>
         <summary>
             Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
@@ -250,7 +270,7 @@
       </Parameters>
       <Docs>
         <param name="name">
-            A <see cref="T:System.String" /> that is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            A <see cref="T:System.String" /> is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
             </param>
         <summary>
             Gets the <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.

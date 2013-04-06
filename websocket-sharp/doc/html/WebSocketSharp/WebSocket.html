@@ -273,6 +273,20 @@
                 <td>[read-only]<div></div></td>
                 <td>
                   <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Cookies">Cookies</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;WebSocketSharp.Net.Cookie&gt;</a>
+                  </i>. 
+            Gets the cookies used in the WebSocket opening handshake.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
                     <a href="#P:WebSocketSharp.WebSocket.Extensions">Extensions</a>
                   </b>
                 </td>
@@ -542,6 +556,18 @@
                     <a href="#M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action)">SendAsync</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<blockquote>
             Sends a text <i>data</i> asynchronously using the WebSocket connection.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie)">SetCookie</a>
+                  </b>(<a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a>)<blockquote>
+            Sets a <a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a> used in the WebSocket opening handshake.
             </blockquote></td>
               </tr>
             </table>
@@ -941,6 +967,27 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Connect:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Cookies">Cookies Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Cookies:member">
+          <p class="Summary">
+            Gets the cookies used in the WebSocket opening handshake.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Collections.Generic.IEnumerable`1">IEnumerable&lt;WebSocketSharp.Net.Cookie&gt;</a> <b>Cookies</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Cookies:Value">
+            An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which supports the iteration
+            over the collection of cookies.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Cookies:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Cookies:Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
@@ -1355,6 +1402,33 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SendAsync(System.String,System.Action):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie)">SetCookie Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie):member">
+          <p class="Summary">
+            Sets a <a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a> used in the WebSocket opening handshake.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SetCookie</b> (<a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a> cookie)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie):Parameters">
+            <dl>
+              <dt>
+                <i>cookie</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a> that contains an HTTP Cookie to set.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

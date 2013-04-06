@@ -578,6 +578,18 @@
             Occurs when the WebSocket connection has been established.
             </blockquote></td>
               </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection)">ProcessCookies</a>
+                  </b>(<a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a>, <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+            Processes the cookies used in the WebSocket opening handshake.
+            </blockquote></td>
+              </tr>
             </table>
           </div>
         </div>
@@ -998,6 +1010,43 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.PingTo(System.String,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection)">ProcessCookies Method</h3>
+        <blockquote id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection):member">
+          <p class="Summary">
+            Processes the cookies used in the WebSocket opening handshake.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">protected virtual <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>ProcessCookies</b> (<a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> request, <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> response)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection):Parameters">
+            <dl>
+              <dt>
+                <i>request</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> that contains a collection of the HTTP Cookies received from the client.
+            </dd>
+              <dt>
+                <i>response</i>
+              </dt>
+              <dd>
+            A <a href="../WebSocketSharp.Net/CookieCollection.html">WebSocketSharp.Net.CookieCollection</a> that contains a collection of the HTTP Cookies to send to the client.
+            </dd>
+            </dl>
+          </blockquote>
+          <h4 class="Subsection">Returns</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection):Returns">
+            <tt>true</tt> if processing the cookies is successfully; otherwise, <tt>false</tt>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection):Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

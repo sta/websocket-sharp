@@ -43,6 +43,7 @@ namespace WebSocketSharp.Net.WebSockets {
   {
     #region Fields
 
+    private CookieCollection _cookies;
     private TcpClient        _tcpClient;
     private bool             _isSecure;
     private RequestHandshake _request;
@@ -80,14 +81,14 @@ namespace WebSocketSharp.Net.WebSockets {
     /// Gets the cookies used in the WebSocket opening handshake.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+    /// A <see cref="CookieCollection"/> that contains the cookies.
     /// </value>
-    /// <exception cref="NotImplementedException">
-    /// This property is not implemented.
-    /// </exception>
     public override CookieCollection CookieCollection {
       get {
-        throw new NotImplementedException();
+        if (_cookies.IsNull())
+          _cookies = _request.Cookies;
+
+        return _cookies;
       }
     }
 

@@ -292,6 +292,34 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="GetCookies">
+      <MemberSignature Language="C#" Value="public static WebSocketSharp.Net.CookieCollection GetCookies (this System.Collections.Specialized.NameValueCollection headers, bool response);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class WebSocketSharp.Net.CookieCollection GetCookies(class System.Collections.Specialized.NameValueCollection headers, bool response) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.Net.CookieCollection</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="headers" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+        <Parameter Name="response" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="headers">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains a collection of the HTTP Headers.
+            </param>
+        <param name="response">
+          <c>true</c> if gets from the response <paramref name="headers" />;
+            from the request <paramref name="headers" />, <c>false</c>.
+            </param>
+        <summary>
+            Gets the collection of cookies from the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
+            </summary>
+        <returns>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that receives a collection of the HTTP Cookies.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="GetDescription">
       <MemberSignature Language="C#" Value="public static string GetDescription (this WebSocketSharp.Net.HttpStatusCode code);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig string GetDescription(valuetype WebSocketSharp.Net.HttpStatusCode code) cil managed" />

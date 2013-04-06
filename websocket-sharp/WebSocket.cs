@@ -67,6 +67,7 @@ namespace WebSocketSharp {
     private string           _base64key;
     private bool             _client;
     private Action           _closeContext;
+    private CookieCollection _cookies;
     private WebSocketContext _context;
     private string           _extensions;
     private AutoResetEvent   _exitReceiving;
@@ -87,6 +88,7 @@ namespace WebSocketSharp {
 
     private WebSocket()
     {
+      _cookies    = new CookieCollection();
       _extensions = String.Empty;
       _forClose   = new Object();
       _forSend    = new Object();
@@ -206,7 +208,34 @@ namespace WebSocketSharp {
 
     #endregion
 
+    #region Internal Property
+
+    internal CookieCollection CookieCollection {
+      get {
+        return _cookies;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
+
+    /// <summary>
+    /// Gets the cookies used in the WebSocket opening handshake.
+    /// </summary>
+    /// <value>
+    /// An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which supports the iteration
+    /// over the collection of cookies.
+    /// </value>
+    public IEnumerable<Cookie> Cookies {
+      get {
+        lock (_cookies.SyncRoot)
+        {
+          return from Cookie cookie in _cookies
+                 select cookie;
+        }
+      }
+    }
 
     /// <summary>
     /// Gets the extensions selected by the server.
@@ -492,6 +521,8 @@ namespace WebSocketSharp {
       if (!_protocols.IsNullOrEmpty())
         req.AddHeader("Sec-WebSocket-Protocol", _protocols);
       req.AddHeader("Sec-WebSocket-Version", _version);
+      if (_cookies.Count > 0)
+        req.SetCookies(_cookies);
 
       return req;
     }
@@ -501,6 +532,8 @@ namespace WebSocketSharp {
     {
       var res = new ResponseHandshake();
       res.AddHeader("Sec-WebSocket-Accept", createResponseKey());
+      if (_cookies.Count > 0)
+        res.SetCookies(_cookies);
 
       return res;
     }
@@ -851,6 +884,9 @@ namespace WebSocketSharp {
 
       if (res.HeaderExists("Sec-WebSocket-Extensions"))
         _extensions = res.Headers["Sec-WebSocket-Extensions"];
+
+      if (res.Cookies.Count > 0)
+        _cookies.SetOrRemove(res.Cookies);
 
       return true;
     }
@@ -1351,6 +1387,32 @@ namespace WebSocketSharp {
       }
 
       sendAsync(Opcode.BINARY, file.OpenRead(), completed);
+    }
+
+    /// <summary>
+    /// Sets a <see cref="Cookie"/> used in the WebSocket opening handshake.
+    /// </summary>
+    /// <param name="cookie">
+    /// A <see cref="Cookie"/> that contains an HTTP Cookie to set.
+    /// </param>
+    public void SetCookie(Cookie cookie)
+    {
+      var msg = _readyState == WsState.OPEN
+              ? "The WebSocket connection has been established already."
+              : cookie.IsNull()
+                ? "'cookie' must not be null."
+                : String.Empty;
+
+      if (!msg.IsEmpty())
+      {
+        onError(msg);
+        return;
+      }
+
+      lock (_cookies.SyncRoot)
+      {
+        _cookies.SetOrRemove(cookie);
+      }
     }
 
     #endregion

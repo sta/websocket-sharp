@@ -73,6 +73,22 @@ namespace WebSocketSharp {
 
     #region Internal Method
 
+    internal static string GetNameInternal(this string nameAndValue, string separator)
+    {
+      int i = nameAndValue.IndexOf(separator);
+      return i > 0
+             ? nameAndValue.Substring(0, i).Trim()
+             : null;
+    }
+
+    internal static string GetValueInternal(this string nameAndValue, string separator)
+    {
+      int i = nameAndValue.IndexOf(separator);
+      return i >= 0 && i < nameAndValue.Length - 1
+             ? nameAndValue.Substring(i + 1).Trim()
+             : null;
+    }
+
     internal static bool IsText(this string value)
     {
       int len = value.Length;
@@ -100,7 +116,7 @@ namespace WebSocketSharp {
     {
       foreach (char c in value)
       {
-        if (c < 0x20 || c >= 0x7f || _tspecials.Contains (c))
+        if (c < 0x20 || c >= 0x7f || _tspecials.Contains(c))
           return false;
       }
 
@@ -338,6 +354,28 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Gets the collection of cookies from the specified <see cref="NameValueCollection"/>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="CookieCollection"/> that receives a collection of the HTTP Cookies.
+    /// </returns>
+    /// <param name="headers">
+    /// A <see cref="NameValueCollection"/> that contains a collection of the HTTP Headers.
+    /// </param>
+    /// <param name="response">
+    /// <c>true</c> if gets from the response <paramref name="headers"/>;
+    /// from the request <paramref name="headers"/>, <c>false</c>.
+    /// </param>
+    public static CookieCollection GetCookies(this NameValueCollection headers, bool response)
+    {
+      var name = response ? "Set-Cookie" : "Cookie";
+      if (headers.IsNull() || !headers.Exists(name))
+        return new CookieCollection();
+
+      return CookieCollection.Parse(headers[name], response);
+    }
+
+    /// <summary>
     /// Gets the description of the HTTP status code using the specified <see cref="WebSocketSharp.Net.HttpStatusCode"/>.
     /// </summary>
     /// <returns>
@@ -365,15 +403,8 @@ namespace WebSocketSharp {
     /// </param>
     public static string GetName(this string nameAndValue, string separator)
     {
-      if (nameAndValue.IsNullOrEmpty())
-        return null;
-
-      if (separator.IsNullOrEmpty())
-        return null;
-
-      var i = nameAndValue.IndexOf(separator);
-      return i > 0
-             ? nameAndValue.Substring(0, i).Trim()
+      return !nameAndValue.IsNullOrEmpty() && !separator.IsNullOrEmpty()
+             ? nameAndValue.GetNameInternal(separator)
              : null;
     }
 
@@ -476,15 +507,8 @@ namespace WebSocketSharp {
     /// </param>
     public static string GetValue(this string nameAndValue, string separator)
     {
-      if (nameAndValue.IsNullOrEmpty())
-        return null;
-
-      if (separator.IsNullOrEmpty())
-        return null;
-
-      var i = nameAndValue.IndexOf(separator);
-      return i >= 0 && i < nameAndValue.Length - 1
-             ? nameAndValue.Substring(i + 1).Trim()
+      return !nameAndValue.IsNullOrEmpty() && !separator.IsNullOrEmpty()
+             ? nameAndValue.GetValueInternal(separator)
              : null;
     }
 

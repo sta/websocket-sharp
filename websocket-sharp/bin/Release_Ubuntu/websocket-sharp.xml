@@ -152,6 +152,21 @@
             A <see cref="T:System.Uri" /> that contains the URI to get the absolute path from.
             </param>
         </member>
+        <member name="M:WebSocketSharp.Ext.GetCookies(System.Collections.Specialized.NameValueCollection,System.Boolean)">
+            <summary>
+            Gets the collection of cookies from the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
+            </summary>
+            <returns>
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that receives a collection of the HTTP Cookies.
+            </returns>
+            <param name="headers">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains a collection of the HTTP Headers.
+            </param>
+            <param name="response">
+                <c>true</c> if gets from the response <paramref name="headers" />;
+            from the request <paramref name="headers" />, <c>false</c>.
+            </param>
+        </member>
         <member name="M:WebSocketSharp.Ext.GetDescription(WebSocketSharp.Net.HttpStatusCode)">
             <summary>
             Gets the description of the HTTP status code using the specified <see cref="T:WebSocketSharp.Net.HttpStatusCode" />.
@@ -928,6 +943,15 @@
             Occurs when the WebSocket connection has been established.
             </summary>
         </member>
+        <member name="P:WebSocketSharp.WebSocket.Cookies">
+            <summary>
+            Gets the cookies used in the WebSocket opening handshake.
+            </summary>
+            <value>
+            An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which supports the iteration
+            over the collection of cookies.
+            </value>
+        </member>
         <member name="P:WebSocketSharp.WebSocket.Extensions">
             <summary>
             Gets the extensions selected by the server.
@@ -1123,6 +1147,14 @@
             the asynchronous operation completes.
             </param>
         </member>
+        <member name="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie)">
+            <summary>
+            Sets a <see cref="T:WebSocketSharp.Net.Cookie" /> used in the WebSocket opening handshake.
+            </summary>
+            <param name="cookie">
+            A <see cref="T:WebSocketSharp.Net.Cookie" /> that contains an HTTP Cookie to set.
+            </param>
+        </member>
         <member name="T:WebSocketSharp.Server.WebSocketServer">
             <summary>
             Provides the functions of the server that receives the WebSocket connection requests.
@@ -1315,6 +1347,20 @@
             <summary>
             Occurs when the WebSocket connection has been established.
             </summary>
+        </member>
+        <member name="M:WebSocketSharp.Server.WebSocketService.ProcessCookies(WebSocketSharp.Net.CookieCollection,WebSocketSharp.Net.CookieCollection)">
+            <summary>
+            Processes the cookies used in the WebSocket opening handshake.
+            </summary>
+            <returns>
+                <c>true</c> if processing the cookies is successfully; otherwise, <c>false</c>.
+            </returns>
+            <param name="request">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains a collection of the HTTP Cookies received from the client.
+            </param>
+            <param name="response">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains a collection of the HTTP Cookies to send to the client.
+            </param>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketService.Broadcast(System.Byte[])">
             <summary>
@@ -1697,7 +1743,7 @@
             Gets or sets a value indicating whether the cookie has expired.
             </summary>
             <value>
-                <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+                <c>true</c> if the cookie has expired; otherwise, <c>false</c>. The default is <c>false</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.Cookie.Expires">
@@ -1706,6 +1752,7 @@
             </summary>
             <value>
             A <see cref="T:System.DateTime" /> that contains the date and time at which the cookie expires.
+            The default is <see cref="F:System.DateTime.MinValue" />.
             </value>
         </member>
         <member name="P:WebSocketSharp.Net.Cookie.HttpOnly">
@@ -1752,7 +1799,7 @@
             A <see cref="T:System.String" /> that contains a list of the TCP ports to which the cookie applies.
             </value>
             <exception cref="T:WebSocketSharp.Net.CookieException">
-            The value specified for a set operation could not be parsed or is not enclosed in double quotes.
+            The value specified for a set operation is not enclosed in double quotes or could not be parsed.
             </exception>
         </member>
         <member name="P:WebSocketSharp.Net.Cookie.Secure">
@@ -1793,7 +1840,7 @@
             to which the cookie conforms.
             </value>
             <exception cref="T:System.ArgumentOutOfRangeException">
-            The value specified for a set operation is less than zero.
+            The value specified for a set operation is not allowed. The value must be 0 or 1.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.Cookie.Equals(System.Object)">
@@ -1845,7 +1892,7 @@
             A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="index" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </value>
             <param name="index">
-            An <see cref="T:System.Int32" /> that is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            An <see cref="T:System.Int32" /> is the zero-based index of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
             </param>
             <exception cref="T:System.ArgumentOutOfRangeException">
                 <paramref name="index" /> is less than zero or <paramref name="index" /> is greater than or
@@ -1860,7 +1907,7 @@
             A <see cref="T:WebSocketSharp.Net.Cookie" /> with the specified <paramref name="name" /> in the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </value>
             <param name="name">
-            A <see cref="T:System.String" /> that is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
+            A <see cref="T:System.String" /> is the name of the <see cref="T:WebSocketSharp.Net.Cookie" /> to find.
             </param>
             <exception cref="T:System.ArgumentNullException">
                 <paramref name="name" /> is <see langword="null" />.
@@ -1928,7 +1975,7 @@
             starting at the specified <paramref name="index" /> in the <paramref name="array" />.
             </summary>
             <param name="array">
-            An <see cref="T:System.Array" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            An <see cref="T:System.Array" /> is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </param>
             <param name="index">
             An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
@@ -1938,6 +1985,22 @@
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
                 <paramref name="index" /> is less than zero.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+                <para>
+                    <paramref name="array" /> is multidimensional.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+            The number of elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is greater than the available space
+            from index to the end of the destination <paramref name="array" />.
+            </para>
+            </exception>
+            <exception cref="T:System.InvalidCastException">
+            The elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> cannot be cast automatically
+            to the type of the destination <paramref name="array" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.CookieCollection.CopyTo(WebSocketSharp.Net.Cookie[],System.Int32)">
@@ -1946,7 +2009,7 @@
             starting at the specified <paramref name="index" /> in the <paramref name="array" />.
             </summary>
             <param name="array">
-            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> that is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
+            An array of <see cref="T:WebSocketSharp.Net.Cookie" /> is the destination of the elements copied from the <see cref="T:WebSocketSharp.Net.CookieCollection" />.
             </param>
             <param name="index">
             An <see cref="T:System.Int32" /> that indicates the zero-based index in <paramref name="array" /> at which copying begins.
@@ -1956,6 +2019,10 @@
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
                 <paramref name="index" /> is less than zero.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The number of elements in the <see cref="T:WebSocketSharp.Net.CookieCollection" /> is greater than the available space
+            from index to the end of the destination <paramref name="array" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.CookieCollection.GetEnumerator">
@@ -4652,9 +4719,6 @@
             <value>
             A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains the cookies.
             </value>
-            <exception cref="T:System.NotImplementedException">
-            This property is not implemented.
-            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext.Headers">
             <summary>

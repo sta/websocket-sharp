@@ -318,6 +318,33 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="ProcessCookies">
+      <MemberSignature Language="C#" Value="protected virtual bool ProcessCookies (WebSocketSharp.Net.CookieCollection request, WebSocketSharp.Net.CookieCollection response);" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance bool ProcessCookies(class WebSocketSharp.Net.CookieCollection request, class WebSocketSharp.Net.CookieCollection response) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="request" Type="WebSocketSharp.Net.CookieCollection" />
+        <Parameter Name="response" Type="WebSocketSharp.Net.CookieCollection" />
+      </Parameters>
+      <Docs>
+        <param name="request">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains a collection of the HTTP Cookies received from the client.
+            </param>
+        <param name="response">
+            A <see cref="T:WebSocketSharp.Net.CookieCollection" /> that contains a collection of the HTTP Cookies to send to the client.
+            </param>
+        <summary>
+            Processes the cookies used in the WebSocket opening handshake.
+            </summary>
+        <returns>
+          <c>true</c> if processing the cookies is successfully; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="QueryString">
       <MemberSignature Language="C#" Value="protected System.Collections.Specialized.NameValueCollection QueryString { get; }" />
       <MemberSignature Language="ILAsm" Value=".property instance class System.Collections.Specialized.NameValueCollection QueryString" />
