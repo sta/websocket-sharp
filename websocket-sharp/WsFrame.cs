@@ -330,10 +330,16 @@ namespace WebSocketSharp {
         WsFrame frame = null;
         try
         {
-          var readLen = stream.EndRead(ar);
-          frame = readLen == 2
-                  ? parse(header, stream, unmask)
-                  : null;
+          int readLen = stream.EndRead(ar);
+          if (readLen != 2)
+          {
+            if (readLen == 1)
+              header[1] = (byte)stream.ReadByte();
+            else
+              header = null;
+          }
+
+          frame = parse(header, stream, unmask);
         }
         catch (Exception ex)
         {
