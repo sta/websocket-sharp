@@ -313,17 +313,21 @@ namespace WebSocketSharp {
 
     public static void ParseAsync(Stream stream, Action<WsFrame> completed)
     {
-      ParseAsync(stream, true, completed);
+      ParseAsync(stream, true, completed, null);
     }
 
-    public static void ParseAsync(Stream stream, bool unmask, Action<WsFrame> completed)
+    public static void ParseAsync(Stream stream, Action<WsFrame> completed, Action<Exception> error)
     {
-      var headerLen = 2;
-      var header    = new byte[headerLen];
+      ParseAsync(stream, true, completed, error);
+    }
 
-      AsyncCallback callback = (ar) =>
+    public static void ParseAsync(
+      Stream stream, bool unmask, Action<WsFrame> completed, Action<Exception> error)
+    {
+      var header = new byte[2];
+      AsyncCallback callback = ar =>
       {
-        WsFrame frame;
+        WsFrame frame = null;
         try
         {
           var readLen = stream.EndRead(ar);
@@ -331,9 +335,10 @@ namespace WebSocketSharp {
                   ? parse(header, stream, unmask)
                   : null;
         }
-        catch
+        catch (Exception ex)
         {
-          frame = null;
+          if (!error.IsNull())
+            error(ex);
         }
         finally
         {
@@ -342,7 +347,7 @@ namespace WebSocketSharp {
         }
       };
 
-      stream.BeginRead(header, 0, headerLen, callback, null);
+      stream.BeginRead(header, 0, 2, callback, null);
     }
 
     public void Print()
