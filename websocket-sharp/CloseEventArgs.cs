@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * CloseEventArgs.cs
  *
@@ -49,7 +49,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
     internal CloseEventArgs(PayloadData data)
       : base(Opcode.CLOSE, data)
@@ -110,7 +110,7 @@ namespace WebSocketSharp {
     private ushort getCodeFrom(PayloadData data)
     {
       return data.Length >= 2
-             ? data.ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG)
+             ? data.ToByteArray().SubArray(0, 2).To<ushort>(ByteOrder.BIG)
              : (ushort)CloseStatusCode.NO_STATUS_CODE;
     }
 
@@ -119,7 +119,7 @@ namespace WebSocketSharp {
       if (data.Length <= 2)
         return String.Empty;
 
-      var buffer = data.ToBytes().SubArray(2, (int)(data.Length - 2));
+      var buffer = data.ToByteArray().SubArray(2, (int)(data.Length - 2));
       return Encoding.UTF8.GetString(buffer);
     }
 

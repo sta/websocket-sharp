@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * MessageEventArgs.cs
  *
@@ -48,7 +48,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Constructor
+    #region Constructors
 
     internal MessageEventArgs(Opcode type, PayloadData data)
     {
@@ -70,7 +70,7 @@ namespace WebSocketSharp {
       get {
         return ((Opcode.TEXT | Opcode.PING | Opcode.PONG) & _type) == _type
                ? _data.Length > 0
-                 ? Encoding.UTF8.GetString(_data.ToBytes())
+                 ? Encoding.UTF8.GetString(_data.ToByteArray())
                  : String.Empty
                : _type.ToString();
       }
@@ -84,7 +84,7 @@ namespace WebSocketSharp {
     /// </value>
     public byte[] RawData {
       get {
-        return _data.ToBytes();
+        return _data.ToByteArray();
       }
     }
 

@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * PayloadData.cs
  *
@@ -36,21 +36,26 @@ namespace WebSocketSharp {
 
   internal class PayloadData : IEnumerable<byte>
   {
-    #region Field
+    #region Fields
 
     public const ulong MaxLength = long.MaxValue;
 
     #endregion
 
-    #region Public Constructors
+    #region Constructors
 
-    public PayloadData(string appData)
-      : this(Encoding.UTF8.GetBytes(appData))
+    public PayloadData()
+      : this(new byte[]{})
     {
     }
 
     public PayloadData(byte[] appData)
       : this(new byte[]{}, appData)
+    {
+    }
+
+    public PayloadData(string appData)
+      : this(Encoding.UTF8.GetBytes(appData))
     {
     }
 
@@ -73,22 +78,23 @@ namespace WebSocketSharp {
         throw new ArgumentNullException("appData");
 
       if ((ulong)extData.LongLength + (ulong)appData.LongLength > MaxLength)
-        throw new ArgumentOutOfRangeException("Plus 'extData' length and 'appData' lenght must be less than MaxLength.");
+        throw new ArgumentOutOfRangeException(
+          "The length of 'extData' plus 'appData' must be less than MaxLength.");
 
-      ExtensionData   = extData;
+      ExtensionData = extData;
       ApplicationData = appData;
-      IsMasked        = masked;
+      IsMasked = masked;
     }
 
     #endregion
 
-    #region Internal Property
+    #region Internal Properties
 
     internal bool ContainsReservedCloseStatusCode {
       get {
         if (Length >= 2)
         {
-          var code = ToBytes().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
+          var code = ToByteArray().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
           if (code == (ushort)CloseStatusCode.UNDEFINED ||
               code == (ushort)CloseStatusCode.NO_STATUS_CODE ||
               code == (ushort)CloseStatusCode.ABNORMAL ||
@@ -104,9 +110,9 @@ namespace WebSocketSharp {
 
     #region Public Properties
 
-    public byte[] ExtensionData   { get; private set; }
-
     public byte[] ApplicationData { get; private set; }
+
+    public byte[] ExtensionData { get; private set; }
 
     public bool IsMasked { get; private set; }
 
@@ -120,12 +126,7 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
-    }
-
-    private void mask(byte[] src, byte[] key)
+    private static void mask(byte[] src, byte[] key)
     {
       for (long i = 0; i < src.LongLength; i++)
         src[i] = (byte)(src[i] ^ key[i % 4]);
@@ -150,7 +151,7 @@ namespace WebSocketSharp {
         throw new ArgumentNullException("maskingKey");
 
       if (maskingKey.Length != 4)
-        throw new ArgumentOutOfRangeException("maskingKey", "'maskingKey' length must be 4.");
+        throw new ArgumentOutOfRangeException("maskingKey", "The length must be 4.");
 
       if (ExtensionData.LongLength > 0)
         mask(ExtensionData, maskingKey);
@@ -161,7 +162,7 @@ namespace WebSocketSharp {
       IsMasked = !IsMasked;
     }
 
-    public byte[] ToBytes()
+    public byte[] ToByteArray()
     {
       return ExtensionData.LongLength > 0
              ? ExtensionData.Concat(ApplicationData).ToArray()
@@ -170,7 +171,16 @@ namespace WebSocketSharp {
 
     public override string ToString()
     {
-      return BitConverter.ToString(ToBytes());
+      return BitConverter.ToString(ToByteArray());
+    }
+
+    #endregion
+
+    #region Explicitly Implemented Interface Members
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
     }
 
     #endregion

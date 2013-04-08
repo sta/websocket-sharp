@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocket.cs
  *
@@ -84,7 +84,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Private Constructor
+    #region Private Constructors
 
     private WebSocket()
     {
@@ -208,7 +208,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Internal Property
+    #region Internal Properties
 
     internal CookieCollection CookieCollection {
       get {
@@ -759,7 +759,7 @@ namespace WebSocketSharp {
 
     private void processFragments(WsFrame first)
     {
-      var buffer = new List<byte>(first.PayloadData.ToBytes());
+      var buffer = new List<byte>(first.PayloadData.ToByteArray());
       while (true)
       {
         var frame = readFrame();
@@ -772,7 +772,7 @@ namespace WebSocketSharp {
           // MORE & CONT
           if (frame.Opcode == Opcode.CONT)
           {
-            buffer.AddRange(frame.PayloadData.ToBytes());
+            buffer.AddRange(frame.PayloadData.ToByteArray());
             continue;
           }
 
@@ -784,7 +784,7 @@ namespace WebSocketSharp {
         // FINAL & CONT
         if (frame.Opcode == Opcode.CONT)
         {
-          buffer.AddRange(frame.PayloadData.ToBytes());
+          buffer.AddRange(frame.PayloadData.ToByteArray());
           break;
         }
 

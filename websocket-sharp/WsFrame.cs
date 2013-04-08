@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WsFrame.cs
  *
@@ -36,13 +36,13 @@ namespace WebSocketSharp {
 
   internal class WsFrame : IEnumerable<byte>
   {
-    #region Field
+    #region Fields
 
     private const int _readBufferLen = 1024;
 
     #endregion
 
-    #region Private Constructor
+    #region Private Constructors
 
     private WsFrame()
     {
@@ -380,11 +380,11 @@ namespace WebSocketSharp {
           Masked == Mask.UNMASK &&
           PayloadLength > 0)
       {
-        payloadData = Encoding.UTF8.GetString(PayloadData.ToBytes());
+        payloadData = Encoding.UTF8.GetString(PayloadData.ToByteArray());
       }
       else
       {
-        payloadData = BitConverter.ToString(PayloadData.ToBytes());
+        payloadData = BitConverter.ToString(PayloadData.ToByteArray());
       }
 
       headerFmt = @"
@@ -491,7 +491,7 @@ namespace WebSocketSharp {
         buffer.AddRange(MaskingKey);
 
       if (PayloadLen > 0)
-        buffer.AddRange(PayloadData.ToBytes());
+        buffer.AddRange(PayloadData.ToByteArray());
 
       return buffer.ToArray();
     }
