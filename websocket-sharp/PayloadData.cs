@@ -36,13 +36,13 @@ namespace WebSocketSharp {
 
   internal class PayloadData : IEnumerable<byte>
   {
-    #region Fields
+    #region Public Fields
 
     public const ulong MaxLength = long.MaxValue;
 
     #endregion
 
-    #region Constructors
+    #region Public Constructors
 
     public PayloadData()
       : this(new byte[]{})
@@ -164,9 +164,7 @@ namespace WebSocketSharp {
 
     public byte[] ToByteArray()
     {
-      return ExtensionData.LongLength > 0
-             ? ExtensionData.Concat(ApplicationData).ToArray()
-             : ApplicationData;
+      return this.ToArray();
     }
 
     public override string ToString()
