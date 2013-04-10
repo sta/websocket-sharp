@@ -62,20 +62,20 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		#region Static Field
+		#region Private Static Fields
 
 		static CookieCollectionComparer Comparer = new CookieCollectionComparer ();
 
 		#endregion
 
-		#region Field
+		#region Private Fields
 
 		List<Cookie> list;
 		object       sync;
 
 		#endregion
 
-		#region Constructor
+		#region Public Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CookieCollection"/> class.
@@ -87,7 +87,7 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Internal Property
+		#region Internal Properties
 
 		internal IList<Cookie> List {
 			get { return list; }
@@ -182,7 +182,7 @@ namespace WebSocketSharp.Net {
 				if (name.IsNull ())
 					throw new ArgumentNullException ("name");
 
-				foreach (var cookie in list) {
+				foreach (var cookie in Sorted) {
 					if (cookie.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
 						return cookie;
 				}
@@ -208,7 +208,7 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Private Method
+		#region Private Methods
 
 		static CookieCollection ParseRequest (string value)
 		{
@@ -216,9 +216,8 @@ namespace WebSocketSharp.Net {
 
 			Cookie cookie = null;
 			int version = 0;
-			string [] pairs = value.Split (',', ';');
-			for (int i = 0; i < pairs.Length; i++)
-			{
+			string [] pairs = Split(value).ToArray();
+			for (int i = 0; i < pairs.Length; i++) {
 				string pair = pairs [i].Trim ();
 				if (pair.IsEmpty ())
 					continue;
@@ -235,27 +234,32 @@ namespace WebSocketSharp.Net {
 						cookie.Domain = pair.GetValueInternal ("=");
 				}
 				else if (pair.StartsWith ("$port", StringComparison.InvariantCultureIgnoreCase)) {
-					if (!pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase) && !pair.EndsWith ("\"")) {
-						var buffer = new StringBuilder (pair);
-						string port;
-						while (i < pairs.Length - 1) {
-							port = pairs [++i].Trim ();
-							buffer.AppendFormat (", {0}", port);
-							if (port.EndsWith ("\""))
-								break;
-						}
-
-						pair = buffer.ToString ();
-					}
+					var port = pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase)
+					         ? "\"\""
+					         : pair.GetValueInternal ("=");
 
 					if (!cookie.IsNull ())
-						cookie.Port = pair.GetValueInternal ("=");
+						cookie.Port = port;
 				}
 				else {
 					if (!cookie.IsNull ())
 						cookies.Add (cookie);
 
-					cookie = new Cookie (pair.GetNameInternal ("="), pair.GetValueInternal ("="));
+					string name;
+					string val = String.Empty;
+					int pos = pair.IndexOf ('=');
+					if (pos == -1) {
+						name = pair;
+					}
+					else if (pos == pair.Length - 1) {
+						name = pair.Substring (0, pos).TrimEnd (' ');
+					}
+					else {
+						name = pair.Substring (0, pos).TrimEnd (' ');
+						val = pair.Substring (pos + 1).TrimStart (' ');
+					}
+
+					cookie = new Cookie (name, val);
 					if (version != 0)
 						cookie.Version = version;
 				}
@@ -272,9 +276,8 @@ namespace WebSocketSharp.Net {
 			var cookies = new CookieCollection ();
 
 			Cookie cookie = null;
-			string [] pairs = value.Split (',', ';');
-			for (int i = 0; i < pairs.Length; i++)
-			{
+			string [] pairs = Split(value).ToArray();
+			for (int i = 0; i < pairs.Length; i++) {
 				string pair = pairs [i].Trim ();
 				if (pair.IsEmpty ())
 					continue;
@@ -284,7 +287,7 @@ namespace WebSocketSharp.Net {
 						cookie.Version = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
 				}
 				else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
-					var buffer = new StringBuilder (pair.GetValueInternal ("="));
+					var buffer = new StringBuilder (pair.GetValueInternal ("="), 32);
 					if (i < pairs.Length - 1)
 						buffer.AppendFormat (", {0}", pairs [++i].Trim ());
 
@@ -314,21 +317,12 @@ namespace WebSocketSharp.Net {
 						cookie.Domain = pair.GetValueInternal ("=");
 				}
 				else if (pair.StartsWith ("port", StringComparison.InvariantCultureIgnoreCase)) {
-					if (!pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase) && !pair.EndsWith ("\"")) {
-						var buffer = new StringBuilder (pair);
-						string port;
-						while (i < pairs.Length - 1) {
-							port = pairs [++i].Trim ();
-							buffer.AppendFormat (", {0}", port);
-							if (port.EndsWith ("\""))
-								break;
-						}
-
-						pair = buffer.ToString ();
-					}
+					var port = pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase)
+					         ? "\"\""
+					         : pair.GetValueInternal ("=");
 
 					if (!cookie.IsNull ())
-						cookie.Port = pair.GetValueInternal ("=");
+						cookie.Port = port;
 				}
 				else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
 					if (!cookie.IsNull ())
@@ -354,7 +348,21 @@ namespace WebSocketSharp.Net {
 					if (!cookie.IsNull ())
 						cookies.Add (cookie);
 
-					cookie = new Cookie (pair.GetNameInternal ("="), pair.GetValueInternal ("="));
+					string name;
+					string val = String.Empty;
+					int pos = pair.IndexOf ('=');
+					if (pos == -1) {
+						name = pair;
+					}
+					else if (pos == pair.Length - 1) {
+						name = pair.Substring (0, pos).TrimEnd (' ');
+					}
+					else {
+						name = pair.Substring (0, pos).TrimEnd (' ');
+						val = pair.Substring (pos + 1).TrimStart (' ');
+					}
+
+					cookie = new Cookie (name, val);
 				}
 			}
 
@@ -391,9 +399,33 @@ namespace WebSocketSharp.Net {
 			return -1;
 		}
 
+		static IEnumerable<string> Split (string value)
+		{
+			var buffer = new StringBuilder (64);
+			bool quoted = false;
+			foreach (char c in value) {
+				if (c == '"') {
+					quoted = !quoted;
+				}
+				else if (c == ',' || c == ';') {
+					if (!quoted) {
+						yield return buffer.ToString ();
+						buffer.Length = 0;
+						continue;
+					}
+				}
+				else {
+				}
+
+				buffer.Append (c);
+			}
+
+			yield return buffer.ToString ();
+		}
+
 		#endregion
 
-		#region Internal Method
+		#region Internal Methods
 
 		internal static CookieCollection Parse (string value, bool response)
 		{

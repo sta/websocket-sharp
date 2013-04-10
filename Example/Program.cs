@@ -111,7 +111,7 @@ namespace Example
             "notification-message-im");
         };
 
-        //ws.SetCookie(new Cookie("nobita", "idiot"));
+        //ws.SetCookie(new Cookie("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie(new Cookie("dora", "tanuki"));
         ws.Connect();
 

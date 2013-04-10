@@ -10,11 +10,19 @@
   <Interfaces />
   <Docs>
     <summary>
-            Provides a set of properties and methods to use to manage the HTTP Cookie.
+            Provides a set of properties and methods used to manage an HTTP Cookie.
             </summary>
     <remarks>
+      <para>
+            The Cookie class supports the following cookie formats:
+            <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>,
+            <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see> and
+            <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>.
+            </para>
+      <para>
             The Cookie class cannot be inherited.
-            </remarks>
+            </para>
+    </remarks>
   </Docs>
   <Members>
     <Member MemberName=".ctor">
@@ -484,6 +492,18 @@
             A <see cref="T:System.String" /> that contains the Value of the cookie.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:WebSocketSharp.Net.CookieException">
+          <para>
+            The value specified for a set operation is <see langword="null" />.
+            </para>
+          <para>
+            - or -
+            </para>
+          <para>
+            The value specified for a set operation contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </para>
+        </exception>
       </Docs>
     </Member>
     <Member MemberName="Version">

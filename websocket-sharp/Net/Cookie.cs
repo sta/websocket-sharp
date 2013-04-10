@@ -40,18 +40,21 @@ using System.Collections;
 namespace WebSocketSharp.Net {
 
 	/// <summary>
-	/// Provides a set of properties and methods to use to manage the HTTP Cookie.
+	/// Provides a set of properties and methods used to manage an HTTP Cookie.
 	/// </summary>
 	/// <remarks>
-	/// The Cookie class cannot be inherited.
+	///   <para>
+	///   The Cookie class supports the following cookie formats:
+	///   <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>,
+	///   <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see> and
+	///   <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>.
+	///   </para>
+	///   <para>
+	///   The Cookie class cannot be inherited.
+	///   </para>
 	/// </remarks>
 	[Serializable]
-	public sealed class Cookie 
-	{
-		// Supported cookie formats are:
-		// Netscape: http://home.netscape.com/newsref/std/cookie_spec.html
-		// RFC 2109: http://www.ietf.org/rfc/rfc2109.txt
-		// RFC 2965: http://www.ietf.org/rfc/rfc2965.txt
+	public sealed class Cookie {
 
 		#region Static Private Fields
 
@@ -79,7 +82,7 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Constructors
+		#region Public Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Cookie"/> class.
@@ -135,15 +138,8 @@ namespace WebSocketSharp.Net {
 		public Cookie (string name, string value)
 			: this ()
 		{
-			string msg;
-			if (!CanSetName (name, out msg))
-				throw new CookieException (msg);
-
-			if (!CanSetValue (value, out msg))
-				throw new CookieException (msg);
-
-			this.name = name;
-			this.val = value;
+			Name = name;
+			Value = value;
 		}
 
 		/// <summary>
@@ -465,23 +461,28 @@ namespace WebSocketSharp.Net {
 		/// <value>
 		/// A <see cref="string"/> that contains the Value of the cookie.
 		/// </value>
+		/// <exception cref="CookieException">
+		///   <para>
+		///   The value specified for a set operation is <see langword="null"/>.
+		///   </para>
+		///   <para>
+		///   - or -
+		///   </para>
+		///   <para>
+		///   The value specified for a set operation contains a string not enclosed in double quotes
+		///   that contains an invalid character.
+		///   </para>
+		/// </exception>
 		public string Value {
 			get { return val; }
-			set { 
-				if (value == null) {
-					val = String.Empty;
-					return;
-				}
+			set {
+				string msg;
+				if (!CanSetValue (value, out msg))
+					throw new CookieException (msg);
 
-				// LAMESPEC: According to .Net specs the Value property should not accept 
-				// the semicolon and comma characters, yet it does. For now we'll follow
-				// the behaviour of MS.Net instead of the specs.
-				/*
-				if (value.IndexOfAny(reservedCharsForValue) != -1)
-					throw new CookieException("Invalid value. Value cannot contain semicolon or comma characters.");
-				*/
-
-				val = value; 
+				val = value.IsEmpty ()
+				    ? "\"\""
+				    : value;
 			}
 		}
 
@@ -512,7 +513,7 @@ namespace WebSocketSharp.Net {
 		static bool CanSetName (string name, out string message)
 		{
 			if (name.IsNullOrEmpty ()) {
-				message = "Name can not be null or empty.";
+				message = "Name must not be null or empty.";
 				return false;
 			}
 
@@ -528,7 +529,7 @@ namespace WebSocketSharp.Net {
 		static bool CanSetValue (string value, out string message)
 		{
 			if (value.IsNull ()) {
-				message = "Value can not be null.";
+				message = "Value must not be null.";
 				return false;
 			}
 
@@ -548,7 +549,7 @@ namespace WebSocketSharp.Net {
 			return i ^ (j << 13 | j >> 19) ^ (k << 26 | k >> 6) ^ (l << 7 | l >> 25) ^ (m << 20 | m >> 12);
 		}
 
-		// See par 3.6 of RFC 2616
+		// See para 3.6 of RFC 2616
 		string Quote (string value)
 		{
 			if (version == 0 || value.IsToken ())
@@ -559,7 +560,7 @@ namespace WebSocketSharp.Net {
 
 		string ToResponseStringVersion0 ()
 		{
-			var result = new StringBuilder ();
+			var result = new StringBuilder (64);
 			result.AppendFormat ("{0}={1}", name, val);
 			if (expires != DateTime.MinValue)
 				result.AppendFormat ("; Expires={0}",
@@ -583,7 +584,7 @@ namespace WebSocketSharp.Net {
 
 		string ToResponseStringVersion1 ()
 		{
-			var result = new StringBuilder ();
+			var result = new StringBuilder (64);
 			result.AppendFormat ("{0}={1}; Version={2}", name, val, version);
 			if (expires != DateTime.MinValue)
 				result.AppendFormat ("; Max-Age={0}", MaxAge);
@@ -595,7 +596,10 @@ namespace WebSocketSharp.Net {
 				result.AppendFormat ("; Domain={0}", domain);
 
 			if (!port.IsNullOrEmpty ())
-				result.AppendFormat ("; Port={0}", port);
+				if (port == "\"\"")
+					result.Append ("; Port");
+				else
+					result.AppendFormat ("; Port={0}", port);
 
 			if (!comment.IsNullOrEmpty ())
 				result.AppendFormat ("; Comment={0}", comment.UrlEncode ());
@@ -647,7 +651,7 @@ namespace WebSocketSharp.Net {
 			if (version == 0)
 				return String.Format ("{0}={1}", name, val);
 
-			var result = new StringBuilder ();
+			var result = new StringBuilder (64);
 			result.AppendFormat ("$Version={0}; {1}={2}", version, name, val);
 			if (!path.IsNullOrEmpty ())
 				result.AppendFormat ("; $Path={0}", path);
@@ -661,7 +665,10 @@ namespace WebSocketSharp.Net {
 				result.AppendFormat ("; $Domain={0}", domain);
 
 			if (!port.IsNullOrEmpty ())
-				result.AppendFormat ("; $Port={0}", port);
+				if (port == "\"\"")
+					result.Append ("; $Port");
+				else
+					result.AppendFormat ("; $Port={0}", port);
 
 			return result.ToString ();
 		}

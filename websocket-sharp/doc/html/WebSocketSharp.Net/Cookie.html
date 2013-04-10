@@ -207,7 +207,7 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Net.Cookie">Cookie  Class</h1>
     <p class="Summary" id="T:WebSocketSharp.Net.Cookie:Summary">
-            Provides a set of properties and methods to use to manage the HTTP Cookie.
+            Provides a set of properties and methods used to manage an HTTP Cookie.
             </p>
     <div id="T:WebSocketSharp.Net.Cookie:Signature">
       <h2>Syntax</h2>
@@ -216,8 +216,16 @@
     <div class="Remarks" id="T:WebSocketSharp.Net.Cookie:Docs">
       <h2 class="Section">Remarks</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Net.Cookie:Docs:Remarks">
+        <p>
+            The Cookie class supports the following cookie formats:
+            Netscape specification,
+            RFC 2109 and
+            RFC 2965.
+            </p>
+        <p>
             The Cookie class cannot be inherited.
-            </div>
+            </p>
+      </div>
       <h2 class="Section">Requirements</h2>
       <div class="SectionBox" id="T:WebSocketSharp.Net.Cookie:Docs:Version Information">
         <b>Namespace: </b>WebSocketSharp.Net<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
@@ -1239,6 +1247,32 @@
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.Cookie.Value:Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the Value of the cookie.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.Cookie.Value:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="../WebSocketSharp.Net/CookieException.html">WebSocketSharp.Net.CookieException</a>
+                </td>
+                <td>
+                  <p>
+            The value specified for a set operation is <tt>null</tt>.
+            </p>
+                  <p>
+            - or -
+            </p>
+                  <p>
+            The value specified for a set operation contains a string not enclosed in double quotes
+            that contains an invalid character.
+            </p>
+                </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.Cookie.Value:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
