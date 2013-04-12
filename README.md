@@ -6,6 +6,32 @@
 
 ### WebSocket client ###
 
+```cs
+using System;
+using WebSocketSharp;
+
+namespace Example {
+
+  public class Program {
+
+    public static void Main(string[] args)
+    {
+      using (var ws = new WebSocket("ws://dragonsnest.far/Laputa"))
+      {
+        ws.OnMessage += (sender, e) =>
+        {
+          Console.WriteLine("Laputa says: {0}", e.Data);
+        };
+
+        ws.Connect();
+        ws.Send("BALUS");
+        Console.ReadKey(true);
+      }
+    }
+  }
+}
+```
+
 #### Step 1 ####
 
 Required namespace.
@@ -21,7 +47,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 Creating a instance of the `WebSocket` class.
 
 ```cs
-using (WebSocket ws = new WebSocket("ws://example.com"))
+using (var ws = new WebSocket("ws://example.com"))
 {
   ...
 }
@@ -139,6 +165,37 @@ The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type 
 In addition, the `Close()` and `Close(code)` methods exist.
 
 ### WebSocket server ###
+
+```cs
+using System;
+using WebSocketSharp;
+using WebSocketSharp.Server;
+
+namespace Example {
+
+  public class Laputa : WebSocketService
+  {
+    protected override void OnMessage(MessageEventArgs e)
+    {
+      var msg = e.Data.Equals("balus", StringComparison.InvariantCultureIgnoreCase)
+              ? "I've been balused already..."
+              : "I'm not available now.";
+      Send(msg);
+    }
+  }
+
+  public class Program {
+
+    public static void Main(string[] args)
+    {
+      var wssv = new WebSocketServiceHost<Laputa>("ws://dragonsnest.far/Laputa");
+      wssv.Start();
+      Console.ReadKey(true);
+      wssv.Stop();
+    }
+  }
+}
+```
 
 #### Step 1 ####
 
