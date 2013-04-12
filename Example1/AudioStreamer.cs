@@ -160,15 +160,15 @@ namespace Example1
       int  ch_num        = buffer_array.GetLength(0);
       int  buffer_length = buffer_array.GetLength(1);
 
-      msg.AddRange(user_id.ToBytes(ByteOrder.BIG));
+      msg.AddRange(user_id.ToByteArray(ByteOrder.BIG));
       msg.Add((byte)ch_num);
-      msg.AddRange(((uint)buffer_length).ToBytes(ByteOrder.BIG));
+      msg.AddRange(((uint)buffer_length).ToByteArray(ByteOrder.BIG));
 
       ch_num.Times(i =>
       {
         buffer_length.Times(j =>
         {
-          msg.AddRange(buffer_array[i, j].ToBytes(ByteOrder.BIG));
+          msg.AddRange(buffer_array[i, j].ToByteArray(ByteOrder.BIG));
         });
       });
 

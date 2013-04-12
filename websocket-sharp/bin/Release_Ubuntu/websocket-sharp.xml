@@ -607,7 +607,7 @@
             Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
             </exception>
         </member>
-        <member name="M:WebSocketSharp.Ext.ToBytes``1(``0,WebSocketSharp.ByteOrder)">
+        <member name="M:WebSocketSharp.Ext.ToByteArray``1(``0,WebSocketSharp.ByteOrder)">
             <summary>
             Converts the specified data to an array of <see cref="T:System.Byte" />.
             </summary>

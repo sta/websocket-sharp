@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WsStream.cs
  *
@@ -40,7 +40,7 @@ namespace WebSocketSharp {
 
   internal class WsStream : IDisposable
   {
-    #region Fields
+    #region Private Fields
 
     private Stream _innerStream;
     private bool   _isSecure;
@@ -49,7 +49,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Private Constructor
+    #region Private Constructors
 
     private WsStream()
     {
@@ -83,7 +83,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     public bool DataAvailable {
       get {
@@ -251,7 +251,7 @@ namespace WebSocketSharp {
 
     public bool Write(WsFrame frame)
     {
-      return write(frame.ToBytes());
+      return write(frame.ToByteArray());
     }
 
     public bool Write(Handshake handshake)

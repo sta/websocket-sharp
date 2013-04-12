@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * Ext.cs
  *  IsPredefinedScheme and MaybeUri methods derived from System.Uri.cs
@@ -55,7 +55,7 @@ namespace WebSocketSharp {
   /// </summary>
   public static class Ext {
 
-    #region Field
+    #region Private Const Fields
 
     private const string _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
@@ -71,7 +71,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Internal Method
+    #region Internal Methods
 
     internal static string GetNameInternal(this string nameAndValue, string separator)
     {
@@ -1202,7 +1202,7 @@ namespace WebSocketSharp {
     /// <typeparam name="T">
     /// The type of the <paramref name="value"/>. The T must be a value type.
     /// </typeparam>
-    public static byte[] ToBytes<T>(this T value, ByteOrder order)
+    public static byte[] ToByteArray<T>(this T value, ByteOrder order)
       where T : struct
     {
       var type = typeof(T);

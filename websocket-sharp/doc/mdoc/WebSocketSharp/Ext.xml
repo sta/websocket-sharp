@@ -1181,9 +1181,9 @@
             </exception>
       </Docs>
     </Member>
-    <Member MemberName="ToBytes&lt;T&gt;">
-      <MemberSignature Language="C#" Value="public static byte[] ToBytes&lt;T&gt; (this T value, WebSocketSharp.ByteOrder order) where T : struct;" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToBytes&lt;struct .ctor (class System.ValueType) T&gt;(!!T value, valuetype WebSocketSharp.ByteOrder order) cil managed" />
+    <Member MemberName="ToByteArray&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public static byte[] ToByteArray&lt;T&gt; (this T value, WebSocketSharp.ByteOrder order) where T : struct;" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ToByteArray&lt;struct .ctor (class System.ValueType) T&gt;(!!T value, valuetype WebSocketSharp.ByteOrder order) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Byte[]</ReturnType>

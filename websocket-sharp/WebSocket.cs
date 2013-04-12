@@ -408,7 +408,7 @@ namespace WebSocketSharp {
 
     private void close(ushort code, string reason)
     {
-      var data = new List<byte>(code.ToBytes(ByteOrder.BIG));
+      var data = new List<byte>(code.ToByteArray(ByteOrder.BIG));
       if (!reason.IsNullOrEmpty())
       {
         var buffer = Encoding.UTF8.GetBytes(reason);

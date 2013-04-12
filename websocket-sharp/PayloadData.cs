@@ -106,21 +106,21 @@ namespace WebSocketSharp {
       }
     }
 
-    #endregion
+    internal bool IsMasked { get; private set; }
 
-    #region Public Properties
-
-    public byte[] ApplicationData { get; private set; }
-
-    public byte[] ExtensionData { get; private set; }
-
-    public bool IsMasked { get; private set; }
-
-    public ulong Length {
+    internal ulong Length {
       get {
         return (ulong)(ExtensionData.LongLength + ApplicationData.LongLength);
       }
     }
+
+    #endregion
+
+    #region Public Properties
+
+    public byte[] ExtensionData { get; private set; }
+
+    public byte[] ApplicationData { get; private set; }
 
     #endregion
 
@@ -164,7 +164,9 @@ namespace WebSocketSharp {
 
     public byte[] ToByteArray()
     {
-      return this.ToArray();
+      return ExtensionData.LongLength > 0
+             ? this.ToArray()
+             : ApplicationData;
     }
 
     public override string ToString()
