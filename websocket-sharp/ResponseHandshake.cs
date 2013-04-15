@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * ResponseHandshake.cs
  *
@@ -35,7 +35,7 @@ namespace WebSocketSharp {
 
   internal class ResponseHandshake : Handshake
   {
-    #region Constructor
+    #region Public Constructors
 
     public ResponseHandshake()
       : this(HttpStatusCode.SwitchingProtocols)
@@ -47,12 +47,13 @@ namespace WebSocketSharp {
     public ResponseHandshake(HttpStatusCode code)
     {
       StatusCode = ((int)code).ToString();
-      Reason     = code.GetDescription();
+      Reason = code.GetDescription();
+      AddHeader("Server", "websocket-sharp/1.0");
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     public CookieCollection Cookies {
       get {
@@ -80,7 +81,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Methods
+    #region Public Methods
 
     public static ResponseHandshake CreateCloseResponse(HttpStatusCode code)
     {

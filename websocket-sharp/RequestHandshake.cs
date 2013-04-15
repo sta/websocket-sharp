@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * RequestHandshake.cs
  *
@@ -37,13 +37,13 @@ namespace WebSocketSharp {
 
   internal class RequestHandshake : Handshake
   {
-    #region Private Field
+    #region Private Fields
 
     private NameValueCollection _queryString;
 
     #endregion
 
-    #region Private Constructor
+    #region Private Constructors
 
     private RequestHandshake()
     {
@@ -51,20 +51,20 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Public Constructor
+    #region Public Constructors
 
     public RequestHandshake(string uriString)
     {
       HttpMethod = "GET";
       RequestUri = uriString.ToUri();
-
+      AddHeader("User-Agent", "websocket-sharp/1.0");
       AddHeader("Upgrade", "websocket");
       AddHeader("Connection", "Upgrade");
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     public CookieCollection Cookies {
       get {
@@ -132,17 +132,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Public Static Methods
-
-    public static RequestHandshake Parse(WebSocketContext context)
-    {
-      return new RequestHandshake {
-        Headers         = context.Headers,
-        HttpMethod      = "GET",
-        RequestUri      = context.RequestUri,
-        ProtocolVersion = HttpVersion.Version11
-      };
-    }
+    #region Public Methods
 
     public static RequestHandshake Parse(string[] request)
     {
@@ -165,9 +155,15 @@ namespace WebSocketSharp {
       };
     }
 
-    #endregion
-
-    #region Public Method
+    public static RequestHandshake Parse(WebSocketContext context)
+    {
+      return new RequestHandshake {
+        Headers         = context.Headers,
+        HttpMethod      = "GET",
+        RequestUri      = context.RequestUri,
+        ProtocolVersion = HttpVersion.Version11
+      };
+    }
 
     public void SetCookies(CookieCollection cookies)
     {
