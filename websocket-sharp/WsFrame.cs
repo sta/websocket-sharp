@@ -179,16 +179,16 @@ namespace WebSocketSharp {
  {0}+--------+--------+--------+--------+", spFmt);
       var footerFmt = String.Format(" {0}+--------+--------+--------+--------+", spFmt);
 
-      Func<string, Action<string, string, string, string>> linePrinter = lineNumberFmt =>
+      Func<Action<string, string, string, string>> linePrinter = () =>
       {
         long lineCount = 0;
-        string lineFmt = String.Format(" {0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|", lineNumberFmt);
+        var lineFmt = String.Format(" {0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|", countFmt);
         return (arg1, arg2, arg3, arg4) =>
         {
           Console.WriteLine(lineFmt, ++lineCount, arg1, arg2, arg3, arg4);
         };
       };
-      var printLine = linePrinter(countFmt);
+      var printLine = linePrinter();
 
       Console.WriteLine(headerFmt, String.Empty);
 
