@@ -402,10 +402,20 @@ namespace WebSocketSharp.Net {
 		static IEnumerable<string> Split (string value)
 		{
 			var buffer = new StringBuilder (64);
+			int len = value.Length;
 			bool quoted = false;
-			foreach (char c in value) {
+			bool escaped = false;
+			for (int i = 0; i < len; i++) {
+				char c = value [i];
 				if (c == '"') {
-					quoted = !quoted;
+					if (escaped)
+						escaped = !escaped;
+					else
+						quoted = !quoted;
+				}
+				else if (c == '\\') {
+					if (i < len - 1 && value [i + 1] == '"')
+						escaped = true;
 				}
 				else if (c == ',' || c == ';') {
 					if (!quoted) {
@@ -420,7 +430,8 @@ namespace WebSocketSharp.Net {
 				buffer.Append (c);
 			}
 
-			yield return buffer.ToString ();
+			if (buffer.Length > 0)
+				yield return buffer.ToString ();
 		}
 
 		#endregion
