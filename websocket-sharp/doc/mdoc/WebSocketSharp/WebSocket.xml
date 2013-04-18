@@ -17,7 +17,8 @@
             Implements the WebSocket interface.
             </summary>
     <remarks>
-            The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
+            The WebSocket class provides a set of methods and properties for two-way communication
+            using the WebSocket protocol (<see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>).
             </remarks>
   </Docs>
   <Members>
@@ -37,7 +38,7 @@
       </Parameters>
       <Docs>
         <param name="url">
-            A <see cref="T:System.String" /> that contains a WebSocket URL.
+            A <see cref="T:System.String" /> that contains a WebSocket URL to connect.
             </param>
         <param name="protocols">
             An array of <see cref="T:System.String" /> that contains the WebSocket subprotocols if any.
@@ -74,7 +75,7 @@
       </Parameters>
       <Docs>
         <param name="url">
-            A <see cref="T:System.String" /> that contains a WebSocket URL.
+            A <see cref="T:System.String" /> that contains a WebSocket URL to connect.
             </param>
         <param name="onOpen">
             An <see cref="E:WebSocketSharp.WebSocket.OnOpen" /> event handler.
@@ -282,7 +283,8 @@
             Gets the extensions selected by the server.
             </summary>
         <value>
-            A <see cref="T:System.String" /> that contains the extensions if any. By default, <c>String.Empty</c>. (Currently this will only ever be the <c>String.Empty</c>.)
+            A <see cref="T:System.String" /> that contains the extensions if any. The default is <see cref="F:System.String.Empty" />.
+            (Currently this will only ever be the <see cref="F:System.String.Empty" />.)
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -375,6 +377,31 @@
             Occurs when the WebSocket connection has been established.
             </summary>
         <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Origin">
+      <MemberSignature Language="C#" Value="public string Origin { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string Origin" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets or sets the value of the Origin header used in the WebSocket opening handshake.
+            </summary>
+        <value>
+          <para>
+            A <see cref="T:System.String" /> that contains the value of the <see href="http://tools.ietf.org/html/rfc6454#section-7">HTTP Origin header</see> to send.
+            The default is <see cref="F:System.String.Empty" />.
+            </para>
+          <para>
+            The value of the Origin header has the following syntax: <c>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</c></para>
+        </value>
+        <remarks>
+            A <see cref="T:WebSocketSharp.WebSocket" /> instance does not send the Origin header in the WebSocket opening handshake
+            if the value of this property is <see cref="F:System.String.Empty" />.
+            </remarks>
       </Docs>
     </Member>
     <Member MemberName="Ping">

@@ -216,7 +216,8 @@
     <div class="Remarks" id="T:WebSocketSharp.WebSocket:Docs">
       <h2 class="Section">Remarks</h2>
       <div class="SectionBox" id="T:WebSocketSharp.WebSocket:Docs:Remarks">
-            The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
+            The WebSocket class provides a set of methods and properties for two-way communication
+            using the WebSocket protocol (RFC 6455).
             </div>
       <h2 class="Section">Requirements</h2>
       <div class="SectionBox" id="T:WebSocketSharp.WebSocket:Docs:Version Information">
@@ -323,6 +324,23 @@
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
             Gets a value indicating whether a connection is secure.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Origin">Origin</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
+                  </i>. 
+            Gets or sets the value of the Origin header used in the WebSocket opening handshake.
             </td>
               </tr>
               <tr valign="top">
@@ -685,7 +703,7 @@
                 <i>url</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a WebSocket URL.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a WebSocket URL to connect.
             </dd>
               <dt>
                 <i>protocols</i>
@@ -743,7 +761,7 @@
                 <i>url</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a WebSocket URL.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a WebSocket URL to connect.
             </dd>
               <dt>
                 <i>onOpen</i>
@@ -1016,7 +1034,8 @@
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Extensions</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the extensions if any. By default, <tt>String.Empty</tt>. (Currently this will only ever be the <tt>String.Empty</tt>.)
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the extensions if any. The default is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            (Currently this will only ever be the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.)
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Remarks">
@@ -1128,6 +1147,32 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="E:WebSocketSharp.WebSocket.OnOpen:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Origin">Origin Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Origin:member">
+          <p class="Summary">
+            Gets or sets the value of the Origin header used in the WebSocket opening handshake.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Origin</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Origin:Value">
+            <p>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the value of the HTTP Origin header to send.
+            The default is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </p>
+            <p>
+            The value of the Origin header has the following syntax: <tt>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</tt></p>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Origin:Remarks">
+            A <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance does not send the Origin header in the WebSocket opening handshake
+            if the value of this property is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Origin:Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

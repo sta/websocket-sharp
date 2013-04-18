@@ -50,7 +50,8 @@ namespace WebSocketSharp {
   /// Implements the WebSocket interface.
   /// </summary>
   /// <remarks>
-  /// The WebSocket class provides methods and properties for two-way communication using the WebSocket protocol (RFC 6455).
+  /// The WebSocket class provides a set of methods and properties for two-way communication
+  /// using the WebSocket protocol (<see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>).
   /// </remarks>
   public class WebSocket : IDisposable
   {
@@ -73,6 +74,7 @@ namespace WebSocketSharp {
     private AutoResetEvent   _exitReceiving;
     private Object           _forClose;
     private Object           _forSend;
+    private string           _origin;
     private string           _protocol;
     private string           _protocols;
     private volatile WsState _readyState;
@@ -92,6 +94,7 @@ namespace WebSocketSharp {
       _extensions = String.Empty;
       _forClose   = new Object();
       _forSend    = new Object();
+      _origin     = String.Empty;
       _protocol   = String.Empty;
       _readyState = WsState.CONNECTING;
     }
@@ -123,11 +126,8 @@ namespace WebSocketSharp {
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL and subprotocols.
     /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL.
+    /// A <see cref="string"/> that contains a WebSocket URL to connect.
     /// </param>
     /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
@@ -166,7 +166,7 @@ namespace WebSocketSharp {
     /// establishes a WebSocket connection.
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL.
+    /// A <see cref="string"/> that contains a WebSocket URL to connect.
     /// </param>
     /// <param name="onOpen">
     /// An <see cref="OnOpen"/> event handler.
@@ -241,7 +241,8 @@ namespace WebSocketSharp {
     /// Gets the extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the extensions if any. By default, <c>String.Empty</c>. (Currently this will only ever be the <c>String.Empty</c>.)
+    /// A <see cref="string"/> that contains the extensions if any. The default is <see cref="String.Empty"/>.
+    /// (Currently this will only ever be the <see cref="String.Empty"/>.)
     /// </value>
     public string Extensions {
       get {
@@ -273,6 +274,47 @@ namespace WebSocketSharp {
     public bool IsSecure {
       get {
         return _secure;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the value of the Origin header used in the WebSocket opening handshake.
+    /// </summary>
+    /// <remarks>
+    /// A <see cref="WebSocket"/> instance does not send the Origin header in the WebSocket opening handshake
+    /// if the value of this property is <see cref="String.Empty"/>.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="string"/> that contains the value of the <see href="http://tools.ietf.org/html/rfc6454#section-7">HTTP Origin header</see> to send.
+    ///   The default is <see cref="String.Empty"/>.
+    ///   </para>
+    ///   <para>
+    ///   The value of the Origin header has the following syntax: <c>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</c>
+    ///   </para>
+    /// </value>
+    public string Origin {
+      get {
+        return _origin;
+      }
+
+      set {
+        var origin = value.ToUri();
+        var msg = _readyState == WsState.OPEN
+                ? "The WebSocket connection has been established already."
+                : !origin.IsNull() && (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
+                  ? "The syntax of value must be '<scheme>://<host>[:<port>]'."
+                  : String.Empty;
+
+        if (!msg.IsEmpty())
+        {
+          onError(msg);
+          return;
+        }
+
+        _origin = origin.IsNull()
+                ? String.Empty
+                : value.TrimEnd('/');
       }
     }
 
@@ -517,6 +559,8 @@ namespace WebSocketSharp {
 
       var req = new RequestHandshake(path);
       req.AddHeader("Host", host);
+      if (!_origin.IsEmpty())
+        req.AddHeader("Origin", _origin);
       req.AddHeader("Sec-WebSocket-Key", _base64key);
       if (!_protocols.IsNullOrEmpty())
         req.AddHeader("Sec-WebSocket-Protocol", _protocols);
