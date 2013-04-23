@@ -29,6 +29,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -126,10 +128,96 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
+    private static byte[] compress(byte[] value)
+    {
+      if (value.LongLength == 0)
+        //return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
+        return value;
+
+      using (var comp = new MemoryStream())
+      using (var ds = new DeflateStream(comp, CompressionMode.Compress, true))
+      {
+        ds.Write(value, 0, value.Length);
+        ds.Close(); // "BFINAL" set to 1.
+        comp.Close();
+
+        return comp.ToArray();
+      }
+    }
+
+    private static byte[] decompress(byte[] value)
+    {
+      if (value.LongLength == 0)
+        return value;
+
+      using (var decomp = new MemoryStream())
+      using (var comp = new MemoryStream(value))
+      using (var ds = new DeflateStream(comp, CompressionMode.Decompress, true))
+      {
+        int readLen = 0;
+        var buffer = new byte[256];
+        while (true)
+        {
+          readLen = ds.Read(buffer, 0, buffer.Length);
+          if (readLen == 0)
+            break;
+
+          decomp.Write(buffer, 0, readLen);
+        }
+
+        decomp.Close();
+        return decomp.ToArray();
+      }
+    }
+
     private static void mask(byte[] src, byte[] key)
     {
       for (long i = 0; i < src.LongLength; i++)
         src[i] = (byte)(src[i] ^ key[i % 4]);
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal bool Compress(CompressionMethod method)
+    {
+      try
+      {
+        if (ExtensionData.LongLength > 0)
+          return false;
+
+        if (method == CompressionMethod.DEFLATE)
+          ApplicationData = compress(ApplicationData);
+        else
+          return false;
+
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
+    internal bool Decompress(CompressionMethod method)
+    {
+      try
+      {
+        if (ApplicationData.LongLength == 0)
+          return true;
+
+        if (method == CompressionMethod.DEFLATE)
+          ApplicationData = decompress(ApplicationData);
+        else
+          return false;
+
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
     }
 
     #endregion

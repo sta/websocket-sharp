@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>WebSocketSharp.Opcode</title>
+    <title>WebSocketSharp.CompressionMethod</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <style>
       a { text-decoration: none }
@@ -190,97 +190,66 @@
       <a href="../index.html">websocket-sharp</a> : <a href="index.html">WebSocketSharp Namespace</a></div>
     <div class="SideBar">
       <p>
-        <a href="#T:WebSocketSharp.Opcode">Overview</a>
+        <a href="#T:WebSocketSharp.CompressionMethod">Overview</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Opcode:Signature">Signature</a>
+        <a href="#T:WebSocketSharp.CompressionMethod:Signature">Signature</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Opcode:Docs">Remarks</a>
+        <a href="#T:WebSocketSharp.CompressionMethod:Docs">Remarks</a>
       </p>
       <p>
         <a href="#Members">Members</a>
       </p>
       <p>
-        <a href="#T:WebSocketSharp.Opcode:Members">Member Details</a>
+        <a href="#T:WebSocketSharp.CompressionMethod:Members">Member Details</a>
       </p>
     </div>
-    <h1 class="PageTitle" id="T:WebSocketSharp.Opcode">Opcode  Enum</h1>
-    <p class="Summary" id="T:WebSocketSharp.Opcode:Summary">
-            Contains the values of the opcodes that denotes the frame type of the WebSocket frame.
+    <h1 class="PageTitle" id="T:WebSocketSharp.CompressionMethod">CompressionMethod  Enum</h1>
+    <p class="Summary" id="T:WebSocketSharp.CompressionMethod:Summary">
+            Contains the values of the compression methods used to compress the payload data of the WebSocket Data frame.
             </p>
-    <div id="T:WebSocketSharp.Opcode:Signature">
+    <div id="T:WebSocketSharp.CompressionMethod:Signature">
       <h2>Syntax</h2>
-      <div class="Signature">public enum <b>Opcode</b></div>
+      <div class="Signature">public enum <b>CompressionMethod</b></div>
     </div>
-    <div class="Remarks" id="T:WebSocketSharp.Opcode:Docs">
+    <div class="Remarks" id="T:WebSocketSharp.CompressionMethod:Docs">
       <h2 class="Section">Remarks</h2>
-      <div class="SectionBox" id="T:WebSocketSharp.Opcode:Docs:Remarks">
-            The Opcode enumeration contains the values of the opcodes defined in
-            RFC 6455 for the WebSocket protocol.
+      <div class="SectionBox" id="T:WebSocketSharp.CompressionMethod:Docs:Remarks">
+            The CompressionMethod enumeration contains the values of the compression methods defined in
+            WebSocket Per-message Compression
+            specification for a WebSocket extension.
             </div>
       <h2 class="Section">Members</h2>
-      <div class="SectionBox" id="T:WebSocketSharp.Opcode:Docs:Members">
+      <div class="SectionBox" id="T:WebSocketSharp.CompressionMethod:Docs:Members">
         <table class="Enumeration">
           <tr>
             <th>Member Name</th>
             <th>Description</th>
           </tr>
           <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.BINARY">
-              <b>BINARY</b>
+            <td id="F:WebSocketSharp.CompressionMethod.DEFLATE">
+              <b>DEFLATE</b>
             </td>
             <td>
-            Equivalent to numeric value 2. Indicates a binary frame.
+            Indicates using DEFLATE.
             </td>
           </tr>
           <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.CLOSE">
-              <b>CLOSE</b>
+            <td id="F:WebSocketSharp.CompressionMethod.NONE">
+              <b>NONE</b>
             </td>
             <td>
-            Equivalent to numeric value 8. Indicates a connection close frame.
-            </td>
-          </tr>
-          <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.CONT">
-              <b>CONT</b>
-            </td>
-            <td>
-            Equivalent to numeric value 0. Indicates a continuation frame.
-            </td>
-          </tr>
-          <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.PING">
-              <b>PING</b>
-            </td>
-            <td>
-            Equivalent to numeric value 9. Indicates a ping frame.
-            </td>
-          </tr>
-          <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.PONG">
-              <b>PONG</b>
-            </td>
-            <td>
-            Equivalent to numeric value 10. Indicates a pong frame.
-            </td>
-          </tr>
-          <tr valign="top">
-            <td id="F:WebSocketSharp.Opcode.TEXT">
-              <b>TEXT</b>
-            </td>
-            <td>
-            Equivalent to numeric value 1. Indicates a text frame.
+            Indicates non compression.
             </td>
           </tr>
         </table>
       </div>
       <h2 class="Section">Requirements</h2>
-      <div class="SectionBox" id="T:WebSocketSharp.Opcode:Docs:Version Information">
+      <div class="SectionBox" id="T:WebSocketSharp.CompressionMethod:Docs:Version Information">
         <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
     </div>
-    <div class="Members" id="T:WebSocketSharp.Opcode:Members">
+    <div class="Members" id="T:WebSocketSharp.CompressionMethod:Members">
     </div>
     <hr size="1" />
     <div class="Copyright">

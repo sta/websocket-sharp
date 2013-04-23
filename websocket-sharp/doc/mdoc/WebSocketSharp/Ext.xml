@@ -492,10 +492,10 @@
             A <see cref="T:System.String" /> to test.
             </param>
         <summary>
-            Determines whether the specified <see cref="T:System.String" /> is a <see cref="F:System.String.Empty" />.
+            Determines whether the specified <see cref="T:System.String" /> is empty.
             </summary>
         <returns>
-          <c>true</c> if <paramref name="value" /> is <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+          <c>true</c> if <paramref name="value" /> is empty; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -595,16 +595,16 @@
       </Parameters>
       <Docs>
         <typeparam name="T">
-            The type of the <paramref name="obj" /> parameter.
+            The type of <paramref name="obj" /> parameter.
             </typeparam>
         <param name="obj">
-            A <b>class</b> to test.
+            An <b>object</b> to test.
             </param>
         <summary>
             Determines whether the specified object is <see langword="null" />.
             </summary>
         <returns>
-          <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
+          <c>true</c> if <paramref name="obj" /> is <see langword="null" />; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -662,10 +662,10 @@
             A <see cref="T:System.String" /> to test.
             </param>
         <summary>
-            Determines whether the specified <see cref="T:System.String" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            Determines whether the specified <see cref="T:System.String" /> is <see langword="null" /> or empty.
             </summary>
         <returns>
-          <c>true</c> if the <paramref name="value" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+          <c>true</c> if the <paramref name="value" /> parameter is <see langword="null" /> or empty; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>

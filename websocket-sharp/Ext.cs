@@ -115,12 +115,58 @@ namespace WebSocketSharp {
     internal static bool IsToken(this string value)
     {
       foreach (char c in value)
-      {
         if (c < 0x20 || c >= 0x7f || _tspecials.Contains(c))
           return false;
-      }
 
       return true;
+    }
+
+    internal static string Quote(this string value)
+    {
+      return value.IsToken()
+             ? value
+             : String.Format("\"{0}\"", value.Replace("\"", "\\\""));
+    }
+
+    internal static IEnumerable<string> SplitHeaderValue(this string value, params char[] separator)
+    {
+      var separators = new string(separator);
+      var buffer = new StringBuilder(64);
+      int len = value.Length;
+      bool quoted = false;
+      bool escaped = false;
+      for (int i = 0; i < len; i++)
+      {
+        char c = value[i];
+        if (c == '"')
+        {
+          if (escaped)
+            escaped = !escaped;
+          else
+            quoted = !quoted;
+        }
+        else if (c == '\\')
+        {
+          if (i < len - 1 && value[i + 1] == '"')
+            escaped = true;
+        }
+        else if (separators.Contains(c))
+        {
+          if (!quoted)
+          {
+            yield return buffer.ToString();
+            buffer.Length = 0;
+            continue;
+          }
+        }
+        else {
+        }
+
+        buffer.Append(c);
+      }
+
+      if (buffer.Length > 0)
+        yield return buffer.ToString();
     }
 
     #endregion
@@ -547,17 +593,17 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is a <see cref="String.Empty"/>.
+    /// Determines whether the specified <see cref="string"/> is empty.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is <see cref="String.Empty"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is empty; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
     public static bool IsEmpty(this string value)
     {
-      return value == String.Empty ? true : false;
+      return value.Length == 0;
     }
 
     /// <summary>
@@ -628,18 +674,18 @@ namespace WebSocketSharp {
     /// Determines whether the specified object is <see langword="null"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <paramref name="obj"/> parameter is <see langword="null"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="obj"/> is <see langword="null"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="obj">
-    /// A <b>class</b> to test.
+    /// An <b>object</b> to test.
     /// </param>
     /// <typeparam name="T">
-    /// The type of the <paramref name="obj"/> parameter.
+    /// The type of <paramref name="obj"/> parameter.
     /// </typeparam>
     public static bool IsNull<T>(this T obj)
       where T : class
     {
-      return obj == null ? true : false;
+      return obj == null;
     }
 
     /// <summary>
@@ -671,17 +717,17 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is <see langword="null"/> or <see cref="String.Empty"/>.
+    /// Determines whether the specified <see cref="string"/> is <see langword="null"/> or empty.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <paramref name="value"/> parameter is <see langword="null"/> or <see cref="String.Empty"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if the <paramref name="value"/> parameter is <see langword="null"/> or empty; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
     public static bool IsNullOrEmpty(this string value)
     {
-      return String.IsNullOrEmpty(value);
+      return value.IsNull() || value.IsEmpty();
     }
 
     /// <summary>

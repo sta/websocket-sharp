@@ -549,15 +549,6 @@ namespace WebSocketSharp.Net {
 			return i ^ (j << 13 | j >> 19) ^ (k << 26 | k >> 6) ^ (l << 7 | l >> 25) ^ (m << 20 | m >> 12);
 		}
 
-		// See para 3.6 of RFC 2616
-		string Quote (string value)
-		{
-			if (version == 0 || value.IsToken ())
-				return value;
-			else 
-				return "\"" + value.Replace("\"", "\\\"") + "\"";
-		}
-
 		string ToResponseStringVersion0 ()
 		{
 			var result = new StringBuilder (64);
@@ -605,7 +596,7 @@ namespace WebSocketSharp.Net {
 				result.AppendFormat ("; Comment={0}", comment.UrlEncode ());
 
 			if (!commentUri.IsNull ())
-				result.AppendFormat ("; CommentURL={0}", Quote (commentUri.OriginalString));
+				result.AppendFormat ("; CommentURL={0}", commentUri.OriginalString.Quote ());
 
 			if (discard)
 				result.Append ("; Discard");

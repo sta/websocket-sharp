@@ -418,7 +418,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Ext.IsEmpty(System.String)">IsEmpty</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is empty.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -461,7 +461,7 @@
                 <td colspan="2">
                   <b>
                     <a href="#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+                  </b>(<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified object is <tt>null</tt>.
             </blockquote></td>
               </tr>
@@ -485,7 +485,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">IsNullOrEmpty</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or empty.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -1443,7 +1443,7 @@
         <h3 id="M:WebSocketSharp.Ext.IsEmpty(System.String)">IsEmpty Method</h3>
         <blockquote id="M:WebSocketSharp.Ext.IsEmpty(System.String):member">
           <p class="Summary">
-            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is empty.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsEmpty</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value)</div>
@@ -1460,7 +1460,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Returns">
-            <tt>true</tt> if <i>value</i> is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>; otherwise, <tt>false</tt>.
+            <tt>true</tt> if <i>value</i> is empty; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.IsEmpty(System.String):Remarks">
@@ -1593,7 +1593,7 @@
             Determines whether the specified object is <tt>null</tt>.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNull&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i> obj)<br /> where T : class</div>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNull&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i> obj)<br /> where T : class</div>
           <h4 class="Subsection">Type Parameters</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Type Parameters">
             <dl>
@@ -1601,7 +1601,7 @@
                 <i>T</i>
               </dt>
               <dd>
-            The type of the <i>obj</i> parameter.
+            The type of <i>obj</i> parameter.
             </dd>
             </dl>
           </blockquote>
@@ -1612,13 +1612,13 @@
                 <i>obj</i>
               </dt>
               <dd>
-            A class to test.
+            An object to test.
             </dd>
             </dl>
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Returns">
-            <tt>true</tt> if the <i>obj</i> parameter is <tt>null</tt>; otherwise, <tt>false</tt>.
+            <tt>true</tt> if <i>obj</i> is <tt>null</tt>; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Remarks">
@@ -1681,7 +1681,7 @@
         <h3 id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">IsNullOrEmpty Method</h3>
         <blockquote id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):member">
           <p class="Summary">
-            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
+            Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is <tt>null</tt> or empty.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNullOrEmpty</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value)</div>
@@ -1698,7 +1698,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Returns">
-            <tt>true</tt> if the <i>value</i> parameter is <tt>null</tt> or <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the <i>value</i> parameter is <tt>null</tt> or empty; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String):Remarks">

@@ -401,37 +401,7 @@ namespace WebSocketSharp.Net {
 
 		static IEnumerable<string> Split (string value)
 		{
-			var buffer = new StringBuilder (64);
-			int len = value.Length;
-			bool quoted = false;
-			bool escaped = false;
-			for (int i = 0; i < len; i++) {
-				char c = value [i];
-				if (c == '"') {
-					if (escaped)
-						escaped = !escaped;
-					else
-						quoted = !quoted;
-				}
-				else if (c == '\\') {
-					if (i < len - 1 && value [i + 1] == '"')
-						escaped = true;
-				}
-				else if (c == ',' || c == ';') {
-					if (!quoted) {
-						yield return buffer.ToString ();
-						buffer.Length = 0;
-						continue;
-					}
-				}
-				else {
-				}
-
-				buffer.Append (c);
-			}
-
-			if (buffer.Length > 0)
-				yield return buffer.ToString ();
+			return value.SplitHeaderValue (',', ';');
 		}
 
 		#endregion

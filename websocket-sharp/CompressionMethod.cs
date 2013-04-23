@@ -1,10 +1,10 @@
 #region License
 /*
- * Opcode.cs
+ * CompressionMethod.cs
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,37 +31,22 @@ using System;
 namespace WebSocketSharp {
 
   /// <summary>
-  /// Contains the values of the opcodes that denotes the frame type of the WebSocket frame.
+  /// Contains the values of the compression methods used to compress the payload data of the WebSocket Data frame.
   /// </summary>
   /// <remarks>
-  /// The <b>Opcode</b> enumeration contains the values of the opcodes defined in
-  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">RFC 6455</see> for the WebSocket protocol.
+  /// The <b>CompressionMethod</b> enumeration contains the values of the compression methods defined in
+  /// <see href="http://tools.ietf.org/html/draft-tyoshino-hybi-permessage-compression-00">WebSocket Per-message Compression</see>
+  /// specification for a WebSocket extension.
   /// </remarks>
-  public enum Opcode : byte
+  public enum CompressionMethod : byte
   {
     /// <summary>
-    /// Equivalent to numeric value 0. Indicates a continuation frame.
+    /// Indicates non compression.
     /// </summary>
-    CONT = 0x0,
+    NONE,
     /// <summary>
-    /// Equivalent to numeric value 1. Indicates a text frame.
+    /// Indicates using DEFLATE.
     /// </summary>
-    TEXT = 0x1,
-    /// <summary>
-    /// Equivalent to numeric value 2. Indicates a binary frame.
-    /// </summary>
-    BINARY = 0x2,
-    /// <summary>
-    /// Equivalent to numeric value 8. Indicates a connection close frame.
-    /// </summary>
-    CLOSE = 0x8,
-    /// <summary>
-    /// Equivalent to numeric value 9. Indicates a ping frame.
-    /// </summary>
-    PING = 0x9,
-    /// <summary>
-    /// Equivalent to numeric value 10. Indicates a pong frame.
-    /// </summary>
-    PONG = 0xa
+    DEFLATE
   }
 }

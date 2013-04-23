@@ -271,6 +271,23 @@
           <div class="SubsectionBox">
             <table class="TypeMembers">
               <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td>
+                  <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Compression">Compression</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp/CompressionMethod.html">CompressionMethod</a>
+                  </i>. 
+            Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
+            </td>
+              </tr>
+              <tr valign="top">
                 <td>[read-only]<div></div></td>
                 <td>
                   <b>
@@ -295,7 +312,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
                   </i>. 
-            Gets the extensions selected by the server.
+            Gets the WebSocket extensions selected by the server.
             </td>
               </tr>
               <tr valign="top">
@@ -309,7 +326,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether a connection is alive.
+            Gets a value indicating whether the WebSocket connection is alive.
             </td>
               </tr>
               <tr valign="top">
@@ -323,7 +340,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets a value indicating whether a connection is secure.
+            Gets a value indicating whether the WebSocket connection is secure.
             </td>
               </tr>
               <tr valign="top">
@@ -354,7 +371,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>
                   </i>. 
-            Gets the subprotocol selected by the server.
+            Gets the WebSocket subprotocol selected by the server.
             </td>
               </tr>
               <tr valign="top">
@@ -368,7 +385,7 @@
                   <i>
                     <a href="../WebSocketSharp/WsState.html">WsState</a>
                   </i>. 
-            Gets the state of the connection.
+            Gets the state of the WebSocket connection.
             </td>
               </tr>
               <tr valign="top">
@@ -382,7 +399,7 @@
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a>
                   </i>. 
-            Gets the WebSocket URL.
+            Gets the WebSocket URL to connect.
             </td>
               </tr>
             </table>
@@ -439,8 +456,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            <i>reason</i>, and releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -452,8 +469,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">Close</a>
                   </b>(<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<blockquote>
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            <i>reason</i>, and releases all associated resources.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -665,7 +682,7 @@
                 <td colspan="2">
                   <b>
                     <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+                  </b>(<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified object is <tt>null</tt>.
             </blockquote></td>
               </tr>
@@ -867,8 +884,8 @@
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Remarks">
-            Emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not
+            in the allowable range of the WebSocket close status code.
             </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16):Version Information">
@@ -906,8 +923,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            <i>reason</i>, and releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.UInt16">ushort</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
@@ -930,8 +947,8 @@
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Remarks">
-            Emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <a href="../WebSocketSharp/WebSocket.html#E:WebSocketSharp.WebSocket.OnError">WebSocket.OnError</a> event if <i>code</i> is not
+            in the allowable range of the WebSocket close status code.
             </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String):Version Information">
@@ -941,8 +958,8 @@
         <h3 id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">Close Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String):member">
           <p class="Summary">
-            Closes the WebSocket connection with the specified <i>code</i> and <i>reason</i>, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <i>code</i> and
+            <i>reason</i>, and releases all associated resources.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Close</b> (<a href="../WebSocketSharp/CloseStatusCode.html">CloseStatusCode</a> code, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> reason)</div>
@@ -969,6 +986,27 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Compression">Compression Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Compression:member">
+          <p class="Summary">
+            Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp/CompressionMethod.html">CompressionMethod</a> <b>Compression</b>  { get; set; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Compression:Value">
+            One of the <a href="../WebSocketSharp/CompressionMethod.html">WebSocketSharp.CompressionMethod</a> values that indicates the compression method to use.
+            The default is <a href="../WebSocketSharp/CompressionMethod.html#F:WebSocketSharp.CompressionMethod.NONE">CompressionMethod.NONE</a>.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Compression:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Compression:Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
@@ -1028,14 +1066,13 @@
         <h3 id="P:WebSocketSharp.WebSocket.Extensions">Extensions Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.Extensions:member">
           <p class="Summary">
-            Gets the extensions selected by the server.
+            Gets the WebSocket extensions selected by the server.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Extensions</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the extensions if any. The default is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
-            (Currently this will only ever be the <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.)
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Extensions:Remarks">
@@ -1049,7 +1086,7 @@
         <h3 id="P:WebSocketSharp.WebSocket.IsAlive">IsAlive Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.IsAlive:member">
           <p class="Summary">
-            Gets a value indicating whether a connection is alive.
+            Gets a value indicating whether the WebSocket connection is alive.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsAlive</b>  { get; }</div>
@@ -1069,7 +1106,7 @@
         <h3 id="P:WebSocketSharp.WebSocket.IsSecure">IsSecure Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.IsSecure:member">
           <p class="Summary">
-            Gets a value indicating whether a connection is secure.
+            Gets a value indicating whether the WebSocket connection is secure.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsSecure</b>  { get; }</div>
@@ -1230,13 +1267,13 @@
         <h3 id="P:WebSocketSharp.WebSocket.Protocol">Protocol Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.Protocol:member">
           <p class="Summary">
-            Gets the subprotocol selected by the server.
+            Gets the WebSocket subprotocol selected by the server.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>Protocol</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Protocol:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the subprotocol if any. By default, <tt>String.Empty</tt>.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the subprotocol if any. The default is <a href="http://www.go-mono.com/docs/monodoc.ashx?link=F:System.String.Empty">string.Empty</a>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Protocol:Remarks">
@@ -1250,13 +1287,13 @@
         <h3 id="P:WebSocketSharp.WebSocket.ReadyState">ReadyState Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.ReadyState:member">
           <p class="Summary">
-            Gets the state of the connection.
+            Gets the state of the WebSocket connection.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="../WebSocketSharp/WsState.html">WsState</a> <b>ReadyState</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.ReadyState:Value">
-            One of the <a href="../WebSocketSharp/WsState.html">WebSocketSharp.WsState</a>. By default, <tt>WsState.CONNECTING</tt>.
+            One of the <a href="../WebSocketSharp/WsState.html">WebSocketSharp.WsState</a> values. The default is <a href="../WebSocketSharp/WsState.html#F:WebSocketSharp.WsState.CONNECTING">WsState.CONNECTING</a>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.ReadyState:Remarks">
@@ -1480,13 +1517,13 @@
         <h3 id="P:WebSocketSharp.WebSocket.Url">Url Property</h3>
         <blockquote id="P:WebSocketSharp.WebSocket.Url:member">
           <p class="Summary">
-            Gets the WebSocket URL.
+            Gets the WebSocket URL to connect.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> <b>Url</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Url:Value">
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> that contains the WebSocket URL.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Uri">Uri</a> that contains the WebSocket URL to connect.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Url:Remarks">

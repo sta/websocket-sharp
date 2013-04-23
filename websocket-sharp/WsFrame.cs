@@ -53,16 +53,22 @@ namespace WebSocketSharp {
     #region Public Constructors
 
     public WsFrame(Opcode opcode, PayloadData payloadData)
-      : this(Fin.FINAL, opcode, payloadData)
+      : this(opcode, Mask.MASK, payloadData)
     {
     }
 
-    public WsFrame(Fin fin, Opcode opcode, PayloadData payloadData)
-      : this(fin, opcode, Mask.MASK, payloadData)
+    public WsFrame(Opcode opcode, Mask mask, PayloadData payloadData)
+      : this(Fin.FINAL, opcode, mask, payloadData)
     {
     }
 
     public WsFrame(Fin fin, Opcode opcode, Mask mask, PayloadData payloadData)
+      : this(fin, opcode, mask, payloadData, CompressionMethod.NONE)
+    {
+    }
+
+    public WsFrame(
+      Fin fin, Opcode opcode, Mask mask, PayloadData payloadData, CompressionMethod compress)
     {
       if (payloadData.IsNull())
         throw new ArgumentNullException("payloadData");
@@ -74,10 +80,18 @@ namespace WebSocketSharp {
       if (!isFinal(fin) && isControl(opcode))
         throw new ArgumentException("The control frame must not be fragmented.");
 
+      if (isControl(opcode) && compress != CompressionMethod.NONE)
+        throw new ArgumentException("The control frame must not be compressed.");
+
       Fin = fin;
+      Rsv1 = Rsv.OFF;
+      Rsv2 = Rsv.OFF;
+      Rsv3 = Rsv.OFF;
       Opcode = opcode;
       Mask = mask;
       PayloadData = payloadData;
+      if (compress != CompressionMethod.NONE)
+        compressPayloadData(compress);
 
       init();
     }
@@ -85,6 +99,30 @@ namespace WebSocketSharp {
     #endregion
 
     #region Internal Properties
+
+    internal bool IsBinary {
+      get {
+        return isBinary(Opcode);
+      }
+    }
+
+    internal bool IsClose {
+      get {
+        return isClose(Opcode);
+      }
+    }
+
+    internal bool IsCompressed {
+      get {
+        return Rsv1 == Rsv.ON;
+      }
+    }
+
+    internal bool IsContinuation {
+      get {
+        return isContinuation(Opcode);
+      }
+    }
 
     internal bool IsControl {
       get {
@@ -104,9 +142,33 @@ namespace WebSocketSharp {
       }
     }
 
+    internal bool IsFragmented {
+      get {
+        return !IsFinal || IsContinuation;
+      }
+    }
+
     internal bool IsMasked {
       get {
         return isMasked(Mask);
+      }
+    }
+
+    internal bool IsPing {
+      get {
+        return isPing(Opcode);
+      }
+    }
+
+    internal bool IsPong {
+      get {
+        return isPong(Opcode);
+      }
+    }
+
+    internal bool IsText {
+      get {
+        return isText(Opcode);
       }
     }
 
@@ -143,6 +205,26 @@ namespace WebSocketSharp {
     #endregion
 
     #region Private Methods
+
+    private bool compressPayloadData(CompressionMethod method)
+    {
+      if (!PayloadData.Compress(method))
+        return false;
+
+      if (IsData)
+        Rsv1 = Rsv.ON;
+
+      return true;
+    }
+
+    private bool decompressPayloadData(CompressionMethod method)
+    {
+      if (!PayloadData.Decompress(method))
+        return false;
+
+      Rsv1 = Rsv.OFF;
+      return true;
+    }
 
     private static void dump(WsFrame frame)
     {
@@ -216,10 +298,6 @@ namespace WebSocketSharp {
 
     private void init()
     {
-      Rsv1 = Rsv.OFF;
-      Rsv2 = Rsv.OFF;
-      Rsv3 = Rsv.OFF;
-
       setPayloadLen(PayloadData.Length);
       if (IsMasked)
         maskPayloadData();
@@ -227,16 +305,29 @@ namespace WebSocketSharp {
         MaskingKey = new byte[]{};
     }
 
+    private static bool isBinary(Opcode opcode)
+    {
+      return opcode == Opcode.BINARY;
+    }
+
+    private static bool isClose(Opcode opcode)
+    {
+      return opcode == Opcode.CLOSE;
+    }
+
+    private static bool isContinuation(Opcode opcode)
+    {
+      return opcode == Opcode.CONT;
+    }
+
     private static bool isControl(Opcode opcode)
     {
-      Opcode control = Opcode.CLOSE | Opcode.PING | Opcode.PONG;
-      return (control & opcode) == opcode;
+      return isClose(opcode) || isPing(opcode) || isPong(opcode);
     }
 
     private static bool isData(Opcode opcode)
     {
-      Opcode data = Opcode.TEXT | Opcode.BINARY;
-      return (data & opcode) == opcode;
+      return isText(opcode) || isBinary(opcode);
     }
 
     private static bool isFinal(Fin fin)
@@ -247,6 +338,21 @@ namespace WebSocketSharp {
     private static bool isMasked(Mask mask)
     {
       return mask == Mask.MASK;
+    }
+
+    private static bool isPing(Opcode opcode)
+    {
+      return opcode == Opcode.PING;
+    }
+
+    private static bool isPong(Opcode opcode)
+    {
+      return opcode == Opcode.PONG;
+    }
+
+    private static bool isText(Opcode opcode)
+    {
+      return opcode == Opcode.TEXT;
     }
 
     private void maskPayloadData()
@@ -289,7 +395,7 @@ namespace WebSocketSharp {
       var opcode = frame.Opcode;
       var payloadData = frame.PayloadData.Length == 0
                       ? String.Empty
-                      : masked || ((Opcode.CONT | Opcode.BINARY | Opcode.CLOSE) & opcode) == opcode
+                      : masked || frame.IsFragmented || frame.IsBinary || frame.IsClose
                         ? BitConverter.ToString(frame.PayloadData.ToByteArray())
                         : Encoding.UTF8.GetString(frame.PayloadData.ToByteArray());
 
@@ -430,6 +536,26 @@ namespace WebSocketSharp {
 
       PayloadLen = (byte)127;
       ExtPayloadLen = length.ToByteArray(ByteOrder.BIG);
+    }
+
+    private void unmaskPayloadData()
+    {
+      PayloadData.Mask(MaskingKey);
+      Mask = Mask.UNMASK;
+      MaskingKey = new byte[]{};
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal void Decompress(CompressionMethod method)
+    {
+      if (Mask == Mask.MASK)
+        unmaskPayloadData();
+
+      if (decompressPayloadData(method))
+        setPayloadLen(PayloadData.Length);
     }
 
     #endregion

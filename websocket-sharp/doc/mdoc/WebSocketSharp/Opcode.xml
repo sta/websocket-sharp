@@ -7,11 +7,6 @@
   <Base>
     <BaseTypeName>System.Enum</BaseTypeName>
   </Base>
-  <Attributes>
-    <Attribute>
-      <AttributeName>System.Flags</AttributeName>
-    </Attribute>
-  </Attributes>
   <Docs>
     <summary>
             Contains the values of the opcodes that denotes the frame type of the WebSocket frame.

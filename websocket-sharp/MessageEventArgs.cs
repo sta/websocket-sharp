@@ -68,7 +68,7 @@ namespace WebSocketSharp {
     /// </value>
     public string Data {
       get {
-        return ((Opcode.TEXT | Opcode.PING | Opcode.PONG) & _type) == _type
+        return _type == Opcode.TEXT || _type == Opcode.PING || _type == Opcode.PONG
                ? _data.Length > 0
                  ? Encoding.UTF8.GetString(_data.ToByteArray())
                  : String.Empty

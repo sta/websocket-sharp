@@ -252,10 +252,10 @@
         </member>
         <member name="M:WebSocketSharp.Ext.IsEmpty(System.String)">
             <summary>
-            Determines whether the specified <see cref="T:System.String" /> is a <see cref="F:System.String.Empty" />.
+            Determines whether the specified <see cref="T:System.String" /> is empty.
             </summary>
             <returns>
-                <c>true</c> if <paramref name="value" /> is <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+                <c>true</c> if <paramref name="value" /> is empty; otherwise, <c>false</c>.
             </returns>
             <param name="value">
             A <see cref="T:System.String" /> to test.
@@ -305,13 +305,13 @@
             Determines whether the specified object is <see langword="null" />.
             </summary>
             <returns>
-                <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
+                <c>true</c> if <paramref name="obj" /> is <see langword="null" />; otherwise, <c>false</c>.
             </returns>
             <param name="obj">
-            A <b>class</b> to test.
+            An <b>object</b> to test.
             </param>
             <typeparam name="T">
-            The type of the <paramref name="obj" /> parameter.
+            The type of <paramref name="obj" /> parameter.
             </typeparam>
         </member>
         <member name="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">
@@ -334,10 +334,10 @@
         </member>
         <member name="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">
             <summary>
-            Determines whether the specified <see cref="T:System.String" /> is <see langword="null" /> or <see cref="F:System.String.Empty" />.
+            Determines whether the specified <see cref="T:System.String" /> is <see langword="null" /> or empty.
             </summary>
             <returns>
-                <c>true</c> if the <paramref name="value" /> parameter is <see langword="null" /> or <see cref="F:System.String.Empty" />; otherwise, <c>false</c>.
+                <c>true</c> if the <paramref name="value" /> parameter is <see langword="null" /> or empty; otherwise, <c>false</c>.
             </returns>
             <param name="value">
             A <see cref="T:System.String" /> to test.
@@ -942,6 +942,15 @@
             Occurs when the WebSocket connection has been established.
             </summary>
         </member>
+        <member name="P:WebSocketSharp.WebSocket.Compression">
+            <summary>
+            Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
+            </summary>
+            <value>
+            One of the <see cref="T:WebSocketSharp.CompressionMethod" /> values that indicates the compression method to use.
+            The default is <see cref="F:WebSocketSharp.CompressionMethod.NONE" />.
+            </value>
+        </member>
         <member name="P:WebSocketSharp.WebSocket.Cookies">
             <summary>
             Gets the cookies used in the WebSocket opening handshake.
@@ -953,16 +962,15 @@
         </member>
         <member name="P:WebSocketSharp.WebSocket.Extensions">
             <summary>
-            Gets the extensions selected by the server.
+            Gets the WebSocket extensions selected by the server.
             </summary>
             <value>
             A <see cref="T:System.String" /> that contains the extensions if any. The default is <see cref="F:System.String.Empty" />.
-            (Currently this will only ever be the <see cref="F:System.String.Empty" />.)
             </value>
         </member>
         <member name="P:WebSocketSharp.WebSocket.IsAlive">
             <summary>
-            Gets a value indicating whether a connection is alive.
+            Gets a value indicating whether the WebSocket connection is alive.
             </summary>
             <value>
                 <c>true</c> if the connection is alive; otherwise, <c>false</c>.
@@ -970,7 +978,7 @@
         </member>
         <member name="P:WebSocketSharp.WebSocket.IsSecure">
             <summary>
-            Gets a value indicating whether a connection is secure.
+            Gets a value indicating whether the WebSocket connection is secure.
             </summary>
             <value>
                 <c>true</c> if the connection is secure; otherwise, <c>false</c>.
@@ -995,26 +1003,26 @@
         </member>
         <member name="P:WebSocketSharp.WebSocket.Protocol">
             <summary>
-            Gets the subprotocol selected by the server.
+            Gets the WebSocket subprotocol selected by the server.
             </summary>
             <value>
-            A <see cref="T:System.String" /> that contains the subprotocol if any. By default, <c>String.Empty</c>.
+            A <see cref="T:System.String" /> that contains the subprotocol if any. The default is <see cref="F:System.String.Empty" />.
             </value>
         </member>
         <member name="P:WebSocketSharp.WebSocket.ReadyState">
             <summary>
-            Gets the state of the connection.
+            Gets the state of the WebSocket connection.
             </summary>
             <value>
-            One of the <see cref="T:WebSocketSharp.WsState" />. By default, <c>WsState.CONNECTING</c>.
+            One of the <see cref="T:WebSocketSharp.WsState" /> values. The default is <see cref="F:WebSocketSharp.WsState.CONNECTING" />.
             </value>
         </member>
         <member name="P:WebSocketSharp.WebSocket.Url">
             <summary>
-            Gets the WebSocket URL.
+            Gets the WebSocket URL to connect.
             </summary>
             <value>
-            A <see cref="T:System.Uri" /> that contains the WebSocket URL.
+            A <see cref="T:System.Uri" /> that contains the WebSocket URL to connect.
             </value>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Close">
@@ -1028,8 +1036,8 @@
             releases all associated resources.
             </summary>
             <remarks>
-            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not
+            in the allowable range of the WebSocket close status code.
             </remarks>
             <param name="code">
             A <see cref="T:System.UInt16" /> that indicates the status code for closure.
@@ -1046,12 +1054,12 @@
         </member>
         <member name="M:WebSocketSharp.WebSocket.Close(System.UInt16,System.String)">
             <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            <paramref name="reason" />, and releases all associated resources.
             </summary>
             <remarks>
-            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not
+            in the allowable range of the WebSocket close status code.
             </remarks>
             <param name="code">
             A <see cref="T:System.UInt16" /> that indicates the status code for closure.
@@ -1062,8 +1070,8 @@
         </member>
         <member name="M:WebSocketSharp.WebSocket.Close(WebSocketSharp.CloseStatusCode,System.String)">
             <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            <paramref name="reason" />, and releases all associated resources.
             </summary>
             <param name="code">
             One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the status code for closure.
@@ -5169,6 +5177,26 @@
             <value>
             A <see cref="T:WebSocketSharp.Net.HttpListenerResponse" /> that contains the HTTP response objects.
             </value>
+        </member>
+        <member name="T:WebSocketSharp.CompressionMethod">
+            <summary>
+            Contains the values of the compression methods used to compress the payload data of the WebSocket Data frame.
+            </summary>
+            <remarks>
+            The <b>CompressionMethod</b> enumeration contains the values of the compression methods defined in
+            <see href="http://tools.ietf.org/html/draft-tyoshino-hybi-permessage-compression-00">WebSocket Per-message Compression</see>
+            specification for a WebSocket extension.
+            </remarks>
+        </member>
+        <member name="F:WebSocketSharp.CompressionMethod.NONE">
+            <summary>
+            Indicates non compression.
+            </summary>
+        </member>
+        <member name="F:WebSocketSharp.CompressionMethod.DEFLATE">
+            <summary>
+            Indicates using DEFLATE.
+            </summary>
         </member>
     </members>
 </doc>

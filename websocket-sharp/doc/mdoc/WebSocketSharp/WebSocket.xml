@@ -1,6 +1,6 @@
 <Type Name="WebSocket" FullName="WebSocketSharp.WebSocket">
   <TypeSignature Language="C#" Value="public class WebSocket : IDisposable" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WebSocket extends System.Object implements class System.IDisposable" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi WebSocket extends System.Object implements class System.IDisposable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
   </AssemblyInfo>
@@ -142,8 +142,8 @@
             releases all associated resources.
             </summary>
         <remarks>
-            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not
+            in the allowable range of the WebSocket close status code.
             </remarks>
       </Docs>
     </Member>
@@ -187,12 +187,12 @@
             A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            <paramref name="reason" />, and releases all associated resources.
             </summary>
         <remarks>
-            Emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not in the allowable range of
-            the WebSocket close status code, and do nothing any more.
+            This Close method emits a <see cref="E:WebSocketSharp.WebSocket.OnError" /> event if <paramref name="code" /> is not
+            in the allowable range of the WebSocket close status code.
             </remarks>
       </Docs>
     </Member>
@@ -215,9 +215,27 @@
             A <see cref="T:System.String" /> that contains the reason for closure.
             </param>
         <summary>
-            Closes the WebSocket connection with the specified <paramref name="code" /> and <paramref name="reason" />, and
-            releases all associated resources.
+            Closes the WebSocket connection with the specified <paramref name="code" /> and
+            <paramref name="reason" />, and releases all associated resources.
             </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Compression">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.CompressionMethod Compression { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.CompressionMethod Compression" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.CompressionMethod</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
+            </summary>
+        <value>
+            One of the <see cref="T:WebSocketSharp.CompressionMethod" /> values that indicates the compression method to use.
+            The default is <see cref="F:WebSocketSharp.CompressionMethod.NONE" />.
+            </value>
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
@@ -280,11 +298,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the extensions selected by the server.
+            Gets the WebSocket extensions selected by the server.
             </summary>
         <value>
             A <see cref="T:System.String" /> that contains the extensions if any. The default is <see cref="F:System.String.Empty" />.
-            (Currently this will only ever be the <see cref="F:System.String.Empty" />.)
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -298,7 +315,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether a connection is alive.
+            Gets a value indicating whether the WebSocket connection is alive.
             </summary>
         <value>
           <c>true</c> if the connection is alive; otherwise, <c>false</c>.
@@ -315,7 +332,7 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets a value indicating whether a connection is secure.
+            Gets a value indicating whether the WebSocket connection is secure.
             </summary>
         <value>
           <c>true</c> if the connection is secure; otherwise, <c>false</c>.
@@ -454,10 +471,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the subprotocol selected by the server.
+            Gets the WebSocket subprotocol selected by the server.
             </summary>
         <value>
-            A <see cref="T:System.String" /> that contains the subprotocol if any. By default, <c>String.Empty</c>.
+            A <see cref="T:System.String" /> that contains the subprotocol if any. The default is <see cref="F:System.String.Empty" />.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -471,10 +488,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the state of the connection.
+            Gets the state of the WebSocket connection.
             </summary>
         <value>
-            One of the <see cref="T:WebSocketSharp.WsState" />. By default, <c>WsState.CONNECTING</c>.
+            One of the <see cref="T:WebSocketSharp.WsState" /> values. The default is <see cref="F:WebSocketSharp.WsState.CONNECTING" />.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -643,10 +660,10 @@
       </ReturnValue>
       <Docs>
         <summary>
-            Gets the WebSocket URL.
+            Gets the WebSocket URL to connect.
             </summary>
         <value>
-            A <see cref="T:System.Uri" /> that contains the WebSocket URL.
+            A <see cref="T:System.Uri" /> that contains the WebSocket URL to connect.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
