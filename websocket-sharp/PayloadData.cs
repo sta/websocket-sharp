@@ -128,48 +128,6 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private static byte[] compress(byte[] value)
-    {
-      if (value.LongLength == 0)
-        //return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
-        return value;
-
-      using (var comp = new MemoryStream())
-      using (var ds = new DeflateStream(comp, CompressionMode.Compress, true))
-      {
-        ds.Write(value, 0, value.Length);
-        ds.Close(); // "BFINAL" set to 1.
-        comp.Close();
-
-        return comp.ToArray();
-      }
-    }
-
-    private static byte[] decompress(byte[] value)
-    {
-      if (value.LongLength == 0)
-        return value;
-
-      using (var decomp = new MemoryStream())
-      using (var comp = new MemoryStream(value))
-      using (var ds = new DeflateStream(comp, CompressionMode.Decompress, true))
-      {
-        int readLen = 0;
-        var buffer = new byte[256];
-        while (true)
-        {
-          readLen = ds.Read(buffer, 0, buffer.Length);
-          if (readLen == 0)
-            break;
-
-          decomp.Write(buffer, 0, readLen);
-        }
-
-        decomp.Close();
-        return decomp.ToArray();
-      }
-    }
-
     private static void mask(byte[] src, byte[] key)
     {
       for (long i = 0; i < src.LongLength; i++)
@@ -184,14 +142,13 @@ namespace WebSocketSharp {
     {
       try
       {
+        if (method == CompressionMethod.NONE)
+          return false;
+
         if (ExtensionData.LongLength > 0)
           return false;
 
-        if (method == CompressionMethod.DEFLATE)
-          ApplicationData = compress(ApplicationData);
-        else
-          return false;
-
+        ApplicationData = ApplicationData.Compress(method);
         return true;
       }
       catch
@@ -204,13 +161,11 @@ namespace WebSocketSharp {
     {
       try
       {
-        if (ApplicationData.LongLength == 0)
-          return true;
-
-        if (method == CompressionMethod.DEFLATE)
-          ApplicationData = decompress(ApplicationData);
-        else
+        if (method == CompressionMethod.NONE)
           return false;
+
+        if (ApplicationData.LongLength > 0)
+          ApplicationData = ApplicationData.Decompress(method);
 
         return true;
       }

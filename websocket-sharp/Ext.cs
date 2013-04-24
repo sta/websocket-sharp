@@ -42,6 +42,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -63,6 +64,83 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
+    private static byte[] compress(this byte[] value)
+    {
+      if (value.LongLength == 0)
+        //return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
+        return value;
+
+      using (var input = new MemoryStream(value))
+      using (var output = input.compress())
+      {
+        output.Close();
+        return output.ToArray();
+      }
+    }
+
+    private static MemoryStream compress(this Stream stream)
+    {
+      var output = new MemoryStream();
+      if (stream.Length == 0)
+        return output;
+
+      using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
+      {
+        int readLen = 0;
+        var buffer = new byte[256];
+        while (true)
+        {
+          readLen = stream.Read(buffer, 0, buffer.Length);
+          if (readLen == 0)
+            break;
+
+          ds.Write(buffer, 0, readLen);
+        }
+
+        ds.Close(); // "BFINAL" set to 1.
+        output.Position = 0;
+
+        return output;
+      }
+    }
+
+    private static byte[] decompress(this byte[] value)
+    {
+      if (value.LongLength == 0)
+        return value;
+
+      using (var input = new MemoryStream(value))
+      using (var output = input.decompress())
+      {
+        output.Close();
+        return output.ToArray();
+      }
+    }
+
+    private static MemoryStream decompress(this Stream stream)
+    {
+      var output = new MemoryStream();
+      if (stream.Length == 0)
+        return output;
+
+      using (var ds = new DeflateStream(stream, CompressionMode.Decompress, true))
+      {
+        int readLen = 0;
+        var buffer = new byte[256];
+        while (true)
+        {
+          readLen = ds.Read(buffer, 0, buffer.Length);
+          if (readLen == 0)
+            break;
+
+          output.Write(buffer, 0, readLen);
+        }
+
+        output.Position = 0;
+        return output;
+      }
+    }
+
     private static void times(this ulong n, Action act)
     {
       for (ulong i = 0; i < n; i++)
@@ -72,6 +150,34 @@ namespace WebSocketSharp {
     #endregion
 
     #region Internal Methods
+
+    internal static byte[] Compress(this byte[] value, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? value.compress()
+             : value;
+    }
+
+    internal static Stream Compress(this Stream stream, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? stream.compress()
+             : stream;
+    }
+
+    internal static byte[] Decompress(this byte[] value, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? value.decompress()
+             : value;
+    }
+
+    internal static Stream Decompress(this Stream stream, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? stream.decompress()
+             : stream;
+    }
 
     internal static string GetNameInternal(this string nameAndValue, string separator)
     {

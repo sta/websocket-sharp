@@ -178,6 +178,19 @@ namespace WebSocketSharp {
       }
     }
 
+    internal bool PerMessageCompressed {
+      get {
+        return IsData && IsCompressed;
+      }
+
+      set {
+        if (value && !IsData)
+          return;
+
+        Rsv1 = value ? Rsv.ON : Rsv.OFF;
+      }
+    }
+
     #endregion
 
     #region Public Properties

@@ -116,6 +116,7 @@ namespace Example
         //ws.SetCookie(new Cookie("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie(new Cookie("dora", "tanuki"));
         ws.Connect();
+        //Console.WriteLine("Compression: {0}", ws.Compression);
 
         Thread.Sleep(500);
         Console.WriteLine("\nType \"exit\" to exit.\n");

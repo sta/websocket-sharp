@@ -1,6 +1,6 @@
 <Type Name="WebSocket" FullName="WebSocketSharp.WebSocket">
   <TypeSignature Language="C#" Value="public class WebSocket : IDisposable" />
-  <TypeSignature Language="ILAsm" Value=".class public auto ansi WebSocket extends System.Object implements class System.IDisposable" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WebSocket extends System.Object implements class System.IDisposable" />
   <AssemblyInfo>
     <AssemblyName>websocket-sharp</AssemblyName>
   </AssemblyInfo>
