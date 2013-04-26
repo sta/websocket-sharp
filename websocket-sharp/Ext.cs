@@ -71,10 +71,8 @@ namespace WebSocketSharp {
         return value;
 
       using (var input = new MemoryStream(value))
-      using (var output = input.compress())
       {
-        output.Close();
-        return output.ToArray();
+        return input.compressToArray();
       }
     }
 
@@ -84,23 +82,23 @@ namespace WebSocketSharp {
       if (stream.Length == 0)
         return output;
 
+      stream.Position = 0;
       using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
       {
-        int readLen = 0;
-        var buffer = new byte[256];
-        while (true)
-        {
-          readLen = stream.Read(buffer, 0, buffer.Length);
-          if (readLen == 0)
-            break;
-
-          ds.Write(buffer, 0, readLen);
-        }
-
+        stream.CopyTo(ds);
         ds.Close(); // "BFINAL" set to 1.
         output.Position = 0;
 
         return output;
+      }
+    }
+
+    private static byte[] compressToArray(this Stream stream)
+    {
+      using (var comp = stream.compress())
+      {
+        comp.Close();
+        return comp.ToArray();
       }
     }
 
@@ -110,10 +108,8 @@ namespace WebSocketSharp {
         return value;
 
       using (var input = new MemoryStream(value))
-      using (var output = input.decompress())
       {
-        output.Close();
-        return output.ToArray();
+        return input.decompressToArray();
       }
     }
 
@@ -123,21 +119,20 @@ namespace WebSocketSharp {
       if (stream.Length == 0)
         return output;
 
+      stream.Position = 0;
       using (var ds = new DeflateStream(stream, CompressionMode.Decompress, true))
       {
-        int readLen = 0;
-        var buffer = new byte[256];
-        while (true)
-        {
-          readLen = ds.Read(buffer, 0, buffer.Length);
-          if (readLen == 0)
-            break;
-
-          output.Write(buffer, 0, readLen);
-        }
-
-        output.Position = 0;
+        ds.CopyTo(output, true);
         return output;
+      }
+    }
+
+    private static byte[] decompressToArray(this Stream stream)
+    {
+      using (var decomp = stream.decompress())
+      {
+        decomp.Close();
+        return decomp.ToArray();
       }
     }
 
@@ -165,6 +160,32 @@ namespace WebSocketSharp {
              : stream;
     }
 
+    internal static byte[] CompressToArray(this Stream stream, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? stream.compressToArray()
+             : stream.ToByteArray();
+    }
+
+    internal static void CopyTo(this Stream src, Stream dest)
+    {
+      src.CopyTo(dest, false);
+    }
+
+    internal static void CopyTo(this Stream src, Stream dest, bool setDefaultPosition)
+    {
+      int readLen;
+      int bufferLen = 256;
+      var buffer = new byte[bufferLen];
+      while ((readLen = src.Read(buffer, 0, bufferLen)) > 0)
+      {
+        dest.Write(buffer, 0, readLen);
+      }
+
+      if (setDefaultPosition)
+        dest.Position = 0;
+    }
+
     internal static byte[] Decompress(this byte[] value, CompressionMethod method)
     {
       return method == CompressionMethod.DEFLATE
@@ -177,6 +198,13 @@ namespace WebSocketSharp {
       return method == CompressionMethod.DEFLATE
              ? stream.decompress()
              : stream;
+    }
+
+    internal static byte[] DecompressToArray(this Stream stream, CompressionMethod method)
+    {
+      return method == CompressionMethod.DEFLATE
+             ? stream.decompressToArray()
+             : stream.ToByteArray();
     }
 
     internal static string GetNameInternal(this string nameAndValue, string separator)
@@ -234,6 +262,23 @@ namespace WebSocketSharp {
              : String.Format("\"{0}\"", value.Replace("\"", "\\\""));
     }
 
+    internal static string RemovePrefix(this string value, params string[] prefixes)
+    {
+      int i = 0;
+      foreach (var prefix in prefixes)
+      {
+        if (value.StartsWith(prefix))
+        {
+          i = prefix.Length;
+          break;
+        }
+      }
+
+      return i > 0
+             ? value.Substring(i)
+             : value;
+    }
+
     internal static IEnumerable<string> SplitHeaderValue(this string value, params char[] separator)
     {
       var separators = new string(separator);
@@ -273,6 +318,26 @@ namespace WebSocketSharp {
 
       if (buffer.Length > 0)
         yield return buffer.ToString();
+    }
+
+    internal static byte[] ToByteArray(this Stream stream)
+    {
+      using (var output = new MemoryStream())
+      {
+        stream.Position = 0;
+        stream.CopyTo(output);
+        output.Close();
+
+        return output.ToArray();
+      }
+    }
+
+    internal static void WriteBytes(this Stream stream, byte[] value)
+    {
+      using (var input = new MemoryStream(value))
+      {
+        input.CopyTo(stream);
+      }
     }
 
     #endregion

@@ -36,7 +36,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -770,6 +769,59 @@ namespace WebSocketSharp {
                  response.HeaderExists("Sec-WebSocket-Version", _version);
     }
 
+    private bool mergeFragments(Stream dest)
+    {
+      Func<WsFrame, bool> processContinuation = contFrame =>
+      {
+        if (!contFrame.IsContinuation)
+          return false;
+
+        if (contFrame.IsCompressed)
+          contFrame.Decompress(_compression);
+
+        dest.WriteBytes(contFrame.PayloadData.ToByteArray());
+        return true;
+      };
+
+      while (true)
+      {
+        var frame = readFrame();
+        if (processAbnormal(frame))
+          return false;
+
+        if (!frame.IsFinal)
+        {
+          // MORE & CONT
+          if (processContinuation(frame))
+            continue;
+        }
+        else
+        {
+          // FINAL & CONT
+          if (processContinuation(frame))
+            break;
+
+          // FINAL & PING
+          if (processPing(frame))
+            continue;
+
+          // FINAL & PONG
+          if (processPong(frame))
+            continue;
+
+          // FINAL & CLOSE
+          if (processClose(frame))
+            return false;
+        }
+
+        // ?
+        processIncorrectFrame();
+        return false;
+      }
+
+      return true;
+    }
+
     private void onClose(CloseEventArgs eventArgs)
     {
       if (!Thread.CurrentThread.IsBackground)
@@ -897,64 +949,28 @@ namespace WebSocketSharp {
 
     private void processFragments(WsFrame first)
     {
-      bool compressed = first.IsCompressed;
-      if (compressed && _perFrameCompress)
-        first.Decompress(_compression);
-
-      var buffer = new List<byte>(first.PayloadData.ToByteArray());
-      Func<WsFrame, bool> processContinuation = contFrame =>
+      using (var merge = new MemoryStream())
       {
-        if (!contFrame.IsContinuation)
-          return false;
+        if (first.IsCompressed && _perFrameCompress)
+          first.Decompress(_compression);
 
-        if (contFrame.IsCompressed)
-          contFrame.Decompress(_compression);
-
-        buffer.AddRange(contFrame.PayloadData.ToByteArray());
-        return true;
-      };
- 
-      while (true)
-      {
-        var frame = readFrame();
-        if (processAbnormal(frame))
+        merge.WriteBytes(first.PayloadData.ToByteArray());
+        if (!mergeFragments(merge))
           return;
 
-        if (!frame.IsFinal)
+        byte[] data;
+        if (_compression != CompressionMethod.NONE && !_perFrameCompress)
         {
-          // MORE & CONT
-          if (processContinuation(frame))
-            continue;
+          data = merge.DecompressToArray(_compression);
         }
         else
         {
-          // FINAL & CONT
-          if (processContinuation(frame))
-            break;
-
-          // FINAL & PING
-          if (processPing(frame))
-            continue;
-
-          // FINAL & PONG
-          if (processPong(frame))
-            continue;
-
-          // FINAL & CLOSE
-          if (processClose(frame))
-            return;
+          merge.Close();
+          data = merge.ToArray();
         }
 
-        // ?
-        processIncorrectFrame();
-        return;
+        onMessage(new MessageEventArgs(first.Opcode, new PayloadData(data)));
       }
-
-      var data = compressed && !_perFrameCompress
-               ? buffer.ToArray().Decompress(_compression)
-               : buffer.ToArray();
-
-      onMessage(new MessageEventArgs(first.Opcode, new PayloadData(data)));
     }
 
     private void processFrame(WsFrame frame)
@@ -1015,10 +1031,7 @@ namespace WebSocketSharp {
       foreach (var extension in extensions.SplitHeaderValue(','))
       {
         var e = extension.Trim();
-        var tmp = e.StartsWith("x-webkit-")
-                ? e.Substring(9)
-                : e;
-
+        var tmp = e.RemovePrefix("x-webkit-");
         if (!compress)
         {
           if (isPerFrameCompressExtension(tmp))
