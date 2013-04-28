@@ -63,12 +63,12 @@ namespace WebSocketSharp {
     }
 
     public WsFrame(Fin fin, Opcode opcode, Mask mask, PayloadData payloadData)
-      : this(fin, opcode, mask, payloadData, CompressionMethod.NONE)
+      : this(fin, opcode, mask, payloadData, false)
     {
     }
 
     public WsFrame(
-      Fin fin, Opcode opcode, Mask mask, PayloadData payloadData, CompressionMethod compress)
+      Fin fin, Opcode opcode, Mask mask, PayloadData payloadData, bool compressed)
     {
       if (payloadData.IsNull())
         throw new ArgumentNullException("payloadData");
@@ -80,18 +80,14 @@ namespace WebSocketSharp {
       if (!isFinal(fin) && isControl(opcode))
         throw new ArgumentException("The control frame must not be fragmented.");
 
-      if (isControl(opcode) && compress != CompressionMethod.NONE)
+      if (isControl(opcode) && compressed)
         throw new ArgumentException("The control frame must not be compressed.");
 
       Fin = fin;
-      Rsv1 = Rsv.OFF;
-      Rsv2 = Rsv.OFF;
-      Rsv3 = Rsv.OFF;
+      Rsv1 = isData(opcode) && compressed ? Rsv.ON : Rsv.OFF;
       Opcode = opcode;
       Mask = mask;
       PayloadData = payloadData;
-      if (compress != CompressionMethod.NONE)
-        compressPayloadData(compress);
 
       init();
     }
@@ -219,26 +215,6 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private bool compressPayloadData(CompressionMethod method)
-    {
-      if (!PayloadData.Compress(method))
-        return false;
-
-      if (IsData)
-        Rsv1 = Rsv.ON;
-
-      return true;
-    }
-
-    private bool decompressPayloadData(CompressionMethod method)
-    {
-      if (!PayloadData.Decompress(method))
-        return false;
-
-      Rsv1 = Rsv.OFF;
-      return true;
-    }
-
     private static void dump(WsFrame frame)
     {
       var len = frame.Length;
@@ -311,6 +287,8 @@ namespace WebSocketSharp {
 
     private void init()
     {
+      Rsv2 = Rsv.OFF;
+      Rsv3 = Rsv.OFF;
       setPayloadLen(PayloadData.Length);
       if (IsMasked)
         maskPayloadData();
@@ -556,19 +534,6 @@ namespace WebSocketSharp {
       PayloadData.Mask(MaskingKey);
       Mask = Mask.UNMASK;
       MaskingKey = new byte[]{};
-    }
-
-    #endregion
-
-    #region Internal Methods
-
-    internal void Decompress(CompressionMethod method)
-    {
-      if (Mask == Mask.MASK)
-        unmaskPayloadData();
-
-      if (decompressPayloadData(method))
-        setPayloadLen(PayloadData.Length);
     }
 
     #endregion

@@ -54,9 +54,9 @@ namespace WebSocketSharp {
     internal CloseEventArgs(PayloadData data)
       : base(Opcode.CLOSE, data)
     {
-      _code   = getCodeFrom(data);
+      _code = getCodeFrom(data);
       _reason = getReasonFrom(data);
-      _clean  = false;
+      _clean = false;
     }
 
     #endregion
@@ -107,19 +107,22 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private ushort getCodeFrom(PayloadData data)
+    private static ushort getCodeFrom(PayloadData data)
     {
-      return data.Length >= 2
-             ? data.ToByteArray().SubArray(0, 2).To<ushort>(ByteOrder.BIG)
+      var appData = data.ApplicationData;
+      return appData.Length >= 2
+             ? appData.SubArray(0, 2).To<ushort>(ByteOrder.BIG)
              : (ushort)CloseStatusCode.NO_STATUS_CODE;
     }
 
-    private string getReasonFrom(PayloadData data)
+    private static string getReasonFrom(PayloadData data)
     {
-      if (data.Length <= 2)
+      var appData = data.ApplicationData;
+      var appDataLen = appData.Length;
+      if (appDataLen <= 2)
         return String.Empty;
 
-      var buffer = data.ToByteArray().SubArray(2, (int)(data.Length - 2));
+      var buffer = appData.SubArray(2, appDataLen - 2);
       return Encoding.UTF8.GetString(buffer);
     }
 

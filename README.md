@@ -346,19 +346,40 @@ Examples of using **websocket-sharp**.
 
 Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
 
-## Supported WebSocket Protocol ##
+## Supported WebSocket Protocols ##
 
 **websocket-sharp** supports **[RFC 6455]**.
 
 - **[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 ( **[hybi-00]** ).
 - **[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 ( **[hixie-75]** ).
 
-## Reference ##
+## Supported WebSocket Extensions ##
+
+### Per-message Compression ###
+
+**websocket-sharp** supports **[Per-message Compression]**.
+
+If you want to enable this extension as a WebSocket client, you should do like the following.
+
+```cs
+ws.Compression = CompressionMethod.DEFLATE;
+```
+
+And then your client sends the following header in the opening handshake to a WebSocket server.
+
+```
+Sec-WebSocket-Extensions: permessage-compress; method=deflate
+```
+
+If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
+
+## References ##
 
 - **[The WebSocket Protocol]**
 - **[The WebSocket API]**
+- **[Per-message Compression]**
 
-Thx for translating to japanese.
+Thanks for translating to japanese.
 
 - **[The WebSocket Protocol 日本語訳]**
 - **[The WebSocket API 日本語訳]**
@@ -383,6 +404,7 @@ Licensed under the **[MIT License]**.
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [MIT License]: http://www.opensource.org/licenses/mit-license.php
 [Mono]: http://www.mono-project.com/
+[Per-message Compression]: http://tools.ietf.org/html/draft-tyoshino-hybi-permessage-compression-00
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html

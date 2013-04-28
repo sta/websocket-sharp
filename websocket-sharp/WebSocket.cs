@@ -76,7 +76,6 @@ namespace WebSocketSharp {
     private Object            _forClose;
     private Object            _forSend;
     private string            _origin;
-    private bool              _perFrameCompress;
     private string            _protocol;
     private string            _protocols;
     private volatile WsState  _readyState;
@@ -98,7 +97,6 @@ namespace WebSocketSharp {
       _forClose = new Object();
       _forSend = new Object();
       _origin = String.Empty;
-      _perFrameCompress = false;
       _protocol = String.Empty;
       _readyState = WsState.CONNECTING;
     }
@@ -576,18 +574,14 @@ namespace WebSocketSharp {
 
     private static WsFrame createControlFrame(Opcode opcode, PayloadData payloadData, bool client)
     {
-      var mask = client ? Mask.MASK : Mask.UNMASK;
-      return new WsFrame(opcode, mask, payloadData);
+      return createFrame(Fin.FINAL, opcode, payloadData, false, client);
     }
 
-    private static WsFrame createDataFrame(
-      Fin fin, Opcode opcode, PayloadData payloadData, CompressionMethod method, bool compressed, bool client)
+    private static WsFrame createFrame(
+      Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool client)
     {
       var mask = client ? Mask.MASK : Mask.UNMASK;
-      var compress = compressed ? CompressionMethod.NONE : method;
-      var frame = new WsFrame(fin, opcode, mask, payloadData, compress);
-      if (compressed)
-        frame.PerMessageCompressed = true;
+      var frame = new WsFrame(fin, opcode, mask, payloadData, compressed);
 
       return frame;
     }
@@ -717,18 +711,6 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private static bool isPerFrameCompressExtension(string value)
-    {
-      if (value.Equals("deflate-frame"))
-        return true;
-
-      if (value.Equals("perframe-compress; method=deflate"))
-        return true;
-
-      return false;
-    }
-
-    // As server
     private bool isValidHostHeader()
     {
       var authority = _context.Headers["Host"];
@@ -776,10 +758,7 @@ namespace WebSocketSharp {
         if (!contFrame.IsContinuation)
           return false;
 
-        if (contFrame.IsCompressed)
-          contFrame.Decompress(_compression);
-
-        dest.WriteBytes(contFrame.PayloadData.ToByteArray());
+        dest.WriteBytes(contFrame.PayloadData.ApplicationData);
         return true;
       };
 
@@ -921,10 +900,11 @@ namespace WebSocketSharp {
       if (frame.IsCompressed && _compression == CompressionMethod.NONE)
         return false;
 
-      if (frame.IsCompressed)
-        frame.Decompress(_compression);
+      var data = frame.IsCompressed
+               ? new PayloadData(frame.PayloadData.ApplicationData.Decompress(_compression))
+               : frame.PayloadData;
 
-      onMessage(new MessageEventArgs(frame.Opcode, frame.PayloadData));
+      onMessage(new MessageEventArgs(frame.Opcode, data));
       return true;
     }
 
@@ -938,8 +918,10 @@ namespace WebSocketSharp {
       if (frame.IsFinal)
         return false;
 
-      // First fragment
-      if (frame.IsData && !(frame.IsCompressed && _compression == CompressionMethod.NONE))
+      bool incorrect = !frame.IsData ||
+                       frame.IsCompressed && _compression == CompressionMethod.NONE;
+
+      if (!incorrect)
         processFragments(frame);
       else
         processIncorrectFrame();
@@ -951,15 +933,12 @@ namespace WebSocketSharp {
     {
       using (var merge = new MemoryStream())
       {
-        if (first.IsCompressed && _perFrameCompress)
-          first.Decompress(_compression);
-
-        merge.WriteBytes(first.PayloadData.ToByteArray());
+        merge.WriteBytes(first.PayloadData.ApplicationData);
         if (!mergeFragments(merge))
           return;
 
         byte[] data;
-        if (_compression != CompressionMethod.NONE && !_perFrameCompress)
+        if (_compression != CompressionMethod.NONE)
         {
           data = merge.DecompressToArray(_compression);
         }
@@ -969,7 +948,7 @@ namespace WebSocketSharp {
           data = merge.ToArray();
         }
 
-        onMessage(new MessageEventArgs(first.Opcode, new PayloadData(data)));
+        onMessage(new MessageEventArgs(first.Opcode, data));
       }
     }
 
@@ -1032,26 +1011,11 @@ namespace WebSocketSharp {
       {
         var e = extension.Trim();
         var tmp = e.RemovePrefix("x-webkit-");
-        if (!compress)
+        if (!compress && isCompressExtension(tmp, CompressionMethod.DEFLATE))
         {
-          if (isPerFrameCompressExtension(tmp))
-          {
-            _perFrameCompress = true;
-            _compression = CompressionMethod.DEFLATE;
-            compress = true;
-          }
-
-          if (!compress && isCompressExtension(tmp, CompressionMethod.DEFLATE))
-          {
-            _compression = CompressionMethod.DEFLATE;
-            compress = true;
-          }
-
-          if (compress)
-          {
-            buffer.Add(e);
-            continue;
-          }
+          _compression = CompressionMethod.DEFLATE;
+          compress = true;
+          buffer.Add(e);
         }
       }
 
@@ -1216,7 +1180,7 @@ namespace WebSocketSharp {
 
     private void send(Opcode opcode, Stream stream)
     {
-      if (_compression == CompressionMethod.NONE || _perFrameCompress)
+      if (_compression == CompressionMethod.NONE)
       {
         send(opcode, stream, false);
         return;
@@ -1255,8 +1219,7 @@ namespace WebSocketSharp {
 
     private bool send(Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
-      var frame = createDataFrame(
-        fin, opcode, new PayloadData(data), _compression, compressed, _client);
+      var frame = createFrame(fin, opcode, new PayloadData(data), compressed, _client);
       return send(frame);
     }
 

@@ -30,7 +30,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -137,43 +136,6 @@ namespace WebSocketSharp {
     #endregion
 
     #region Internal Methods
-
-    internal bool Compress(CompressionMethod method)
-    {
-      try
-      {
-        if (method == CompressionMethod.NONE)
-          return false;
-
-        if (ExtensionData.LongLength > 0)
-          return false;
-
-        ApplicationData = ApplicationData.Compress(method);
-        return true;
-      }
-      catch
-      {
-        return false;
-      }
-    }
-
-    internal bool Decompress(CompressionMethod method)
-    {
-      try
-      {
-        if (method == CompressionMethod.NONE)
-          return false;
-
-        if (ApplicationData.LongLength > 0)
-          ApplicationData = ApplicationData.Decompress(method);
-
-        return true;
-      }
-      catch
-      {
-        return false;
-      }
-    }
 
     #endregion
 

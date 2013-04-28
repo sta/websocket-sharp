@@ -50,6 +50,11 @@ namespace WebSocketSharp {
 
     #region Constructors
 
+    internal MessageEventArgs(Opcode type, byte[] data)
+      : this(type, new PayloadData(data))
+    {
+    }
+
     internal MessageEventArgs(Opcode type, PayloadData data)
     {
       _type = type;
