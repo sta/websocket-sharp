@@ -10,7 +10,7 @@
 //
 // Copyright (c) 2003 Ximian, Inc. (http://www.ximian.com)
 // Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -253,7 +253,7 @@ namespace WebSocketSharp.Net {
 		internal WebHeaderCollection (bool internallyCreated)
 		{
 			this.internallyCreated = internallyCreated;
-			state = HttpHeaderType.Undefined;
+			state = HttpHeaderType.Unspecified;
 		}
 
 		/// <summary>
@@ -299,7 +299,7 @@ namespace WebSocketSharp.Net {
 		public WebHeaderCollection ()
 		{
 			internallyCreated = false;
-			state = HttpHeaderType.Undefined;
+			state = HttpHeaderType.Unspecified;
 		}
 
 		#endregion
@@ -457,12 +457,12 @@ namespace WebSocketSharp.Net {
 		{
 			HttpHeaderInfo info;
 			return !TryGetHeaderInfo (name, out info)
-			       ? HttpHeaderType.Undefined
+			       ? HttpHeaderType.Unspecified
 			       : info.IsRequest && !info.IsResponse
 			         ? HttpHeaderType.Request
 			         : !info.IsRequest && info.IsResponse
 			           ? HttpHeaderType.Response
-			           : HttpHeaderType.Undefined;
+			           : HttpHeaderType.Unspecified;
 		}
 
 		static string CheckName (string name)
@@ -485,7 +485,7 @@ namespace WebSocketSharp.Net {
 
 		void CheckState (bool response)
 		{
-			if (state == HttpHeaderType.Undefined)
+			if (state == HttpHeaderType.Unspecified)
 				return;
 
 			if (response && state == HttpHeaderType.Request)
@@ -568,7 +568,7 @@ namespace WebSocketSharp.Net {
 
 		void SetState (bool response)
 		{
-			if (state == HttpHeaderType.Undefined)
+			if (state == HttpHeaderType.Unspecified)
 				state = response
 				        ? HttpHeaderType.Response
 				        : HttpHeaderType.Request;
@@ -862,7 +862,7 @@ namespace WebSocketSharp.Net {
 		public override void Clear ()
 		{
 			base.Clear ();
-			state = HttpHeaderType.Undefined;
+			state = HttpHeaderType.Unspecified;
 		}
 
 		/// <summary>

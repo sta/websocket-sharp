@@ -4,7 +4,7 @@
 // Authors:
 //	sta (sta.blockhead@gmail.com)
 //
-// Copyright (c) 2013 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -33,12 +33,12 @@ namespace WebSocketSharp.Net {
 	[Flags]
 	enum HttpHeaderType
 	{
-		Undefined,
-		Request,
-		Response,
-		Restricted,
-		MultiValue,
-		MultiValueInRequest,
-		MultiValueInResponse
+		Unspecified = 0,
+		Request = 1,
+		Response = 1 << 1,
+		Restricted = 1 << 2,
+		MultiValue = 1 << 3,
+		MultiValueInRequest = 1 << 4,
+		MultiValueInResponse = 1 << 5
 	}
 }
