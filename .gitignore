@@ -1,2 +1,4 @@
-# Debug files
+## Ignore MonoDevelop temporary files.
+
 *.mdb
+*.pidb
