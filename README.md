@@ -346,7 +346,7 @@ Examples of using **websocket-sharp**.
 
 Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
 
-## Supported WebSocket Protocols ##
+## Supported WebSocket Specifications ##
 
 **websocket-sharp** supports **[RFC 6455]**.
 
@@ -357,7 +357,7 @@ Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Ech
 
 ### Per-message Compression ###
 
-**websocket-sharp** supports **[Per-message Compression]**.
+**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But, does not support with [extension parameters].)
 
 If you want to enable this extension as a WebSocket client, you should do like the following.
 
@@ -368,7 +368,7 @@ ws.Compression = CompressionMethod.DEFLATE;
 And then your client sends the following header in the opening handshake to a WebSocket server.
 
 ```
-Sec-WebSocket-Extensions: permessage-compress; method=deflate
+Sec-WebSocket-Extensions: permessage-deflate
 ```
 
 If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
@@ -377,7 +377,7 @@ If the server supports this extension, responds the same header. And when your c
 
 - **[The WebSocket Protocol]**
 - **[The WebSocket API]**
-- **[Per-message Compression]**
+- **[Compression Extensions for WebSocket][compression]**
 
 Thanks for translating to japanese.
 
@@ -394,17 +394,18 @@ Licensed under the **[MIT License]**.
 [Audio Data delivery server]: http://agektmr.node-ninja.com:3000/
 [branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
 [branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
+[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
 [Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example1]: https://github.com/sta/websocket-sharp/tree/master/Example1
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
+[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [MIT License]: http://www.opensource.org/licenses/mit-license.php
 [Mono]: http://www.mono-project.com/
-[Per-message Compression]: http://tools.ietf.org/html/draft-tyoshino-hybi-permessage-compression-00
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
