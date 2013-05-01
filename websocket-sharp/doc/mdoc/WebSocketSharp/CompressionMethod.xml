@@ -13,8 +13,7 @@
             </summary>
     <remarks>
             The <b>CompressionMethod</b> enumeration contains the values of the compression methods defined in
-            <see href="http://tools.ietf.org/html/draft-tyoshino-hybi-permessage-compression-00">WebSocket Per-message Compression</see>
-            specification for a WebSocket extension.
+            <see href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression Extensions for WebSocket</see>.
             </remarks>
   </Docs>
   <Members>

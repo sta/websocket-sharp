@@ -41,29 +41,31 @@ namespace WebSocketSharp {
   /// </remarks>
   public class MessageEventArgs : EventArgs
   {
-    #region Fields
+    #region Private Fields
 
-    private PayloadData _data;
-    private Opcode      _type;
-
-    #endregion
-
-    #region Constructors
-
-    internal MessageEventArgs(Opcode type, byte[] data)
-      : this(type, new PayloadData(data))
-    {
-    }
-
-    internal MessageEventArgs(Opcode type, PayloadData data)
-    {
-      _type = type;
-      _data = data;
-    }
+    private byte[] _data;
+    private Opcode _opcode;
 
     #endregion
 
-    #region Properties
+    #region Internal Constructors
+
+    internal MessageEventArgs(Opcode opcode, byte[] data)
+    {
+      if ((ulong)data.LongLength > PayloadData.MaxLength)
+        throw new WebSocketException(CloseStatusCode.TOO_BIG);
+
+      init(opcode, data);
+    }
+
+    internal MessageEventArgs(Opcode opcode, PayloadData data)
+    {
+      init(opcode, data.ApplicationData);
+    }
+
+    #endregion
+
+    #region Public Properties
 
     /// <summary>
     /// Gets the received data as a <see cref="string"/>.
@@ -73,11 +75,11 @@ namespace WebSocketSharp {
     /// </value>
     public string Data {
       get {
-        return _type == Opcode.TEXT || _type == Opcode.PING || _type == Opcode.PONG
-               ? _data.Length > 0
-                 ? Encoding.UTF8.GetString(_data.ToByteArray())
+        return _opcode == Opcode.TEXT || _opcode == Opcode.PING || _opcode == Opcode.PONG
+               ? _data.LongLength > 0
+                 ? Encoding.UTF8.GetString(_data)
                  : String.Empty
-               : _type.ToString();
+               : _opcode.ToString();
       }
     }
 
@@ -89,7 +91,7 @@ namespace WebSocketSharp {
     /// </value>
     public byte[] RawData {
       get {
-        return _data.ToByteArray();
+        return _data;
       }
     }
 
@@ -101,8 +103,18 @@ namespace WebSocketSharp {
     /// </value>
     public Opcode Type {
       get {
-        return _type;
+        return _opcode;
       }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void init(Opcode opcode, byte[] data)
+    {
+      _opcode = opcode;
+      _data = data;
     }
 
     #endregion

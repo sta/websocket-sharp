@@ -930,11 +930,12 @@ namespace WebSocketSharp {
       if (frame.IsCompressed && _compression == CompressionMethod.NONE)
         return false;
 
-      var data = frame.IsCompressed
-               ? new PayloadData(frame.PayloadData.ApplicationData.Decompress(_compression))
-               : frame.PayloadData;
+      var args = frame.IsCompressed
+               ? new MessageEventArgs(
+                   frame.Opcode, frame.PayloadData.ApplicationData.Decompress(_compression))
+               : new MessageEventArgs(frame.Opcode, frame.PayloadData);
 
-      onMessage(new MessageEventArgs(frame.Opcode, data));
+      onMessage(args);
       return true;
     }
 
