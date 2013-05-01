@@ -830,6 +830,19 @@
                 <c>true</c> if the WebSocket connection closed cleanly; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="T:WebSocketSharp.WebSocketException">
+            <summary>
+            Represents the exception that occurred when attempting to perform an operation on the WebSocket connection.
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.WebSocketException.Code">
+            <summary>
+            Gets the <see cref="T:WebSocketSharp.CloseStatusCode" /> associated with a <see cref="T:WebSocketSharp.WebSocketException" />.
+            </summary>
+            <value>
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the cause of the exception.
+            </value>
+        </member>
         <member name="T:WebSocketSharp.ByteOrder">
             <summary>
             Contains the values that indicate whether the byte order is a Little-endian or Big-endian.

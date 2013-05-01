@@ -903,8 +903,8 @@ namespace WebSocketSharp {
       #if DEBUG
       Console.WriteLine("WS: Info@processAbnormal: Start closing handshake.");
       #endif
-      var msg = "What we've got here is a failure to communicate in the WebSocket protocol.";
-      Close(CloseStatusCode.ABNORMAL, msg);
+      var code = CloseStatusCode.ABNORMAL;
+      Close(code, code.GetMessage());
 
       return true;
     }
@@ -1368,9 +1368,9 @@ namespace WebSocketSharp {
           else
             _exitReceiving.Set();
         }
-        catch (WsReceivedTooBigMessageException ex)
+        catch (WebSocketException ex)
         {
-          Close(CloseStatusCode.TOO_BIG, ex.Message);
+          Close(ex.Code, ex.Message);
         }
         catch (Exception)
         {

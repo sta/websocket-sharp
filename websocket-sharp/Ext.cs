@@ -215,6 +215,19 @@ namespace WebSocketSharp {
              : null;
     }
 
+    internal static string GetMessage(this CloseStatusCode code)
+    {
+      if (code == CloseStatusCode.ABNORMAL)
+        return "What we've got here is a failure to communicate in the WebSocket protocol.";
+
+      if (code == CloseStatusCode.TOO_BIG)
+        return String.Format(
+          "The size of received payload data is bigger than the allowable value ({0} bytes).",
+          PayloadData.MaxLength);
+
+      return String.Empty;
+    }
+
     internal static string GetValueInternal(this string nameAndValue, string separator)
     {
       int i = nameAndValue.IndexOf(separator);

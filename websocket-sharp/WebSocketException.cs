@@ -1,6 +1,6 @@
-#region MIT License
+#region License
 /*
- * WsReceivedTooBigMessageException.cs
+ * WebSocketException.cs
  *
  * The MIT License
  *
@@ -30,24 +30,43 @@ using System;
 
 namespace WebSocketSharp {
 
-  public class WsReceivedTooBigMessageException : Exception
+  /// <summary>
+  /// Represents the exception that occurred when attempting to perform an operation on the WebSocket connection.
+  /// </summary>
+  public class WebSocketException : Exception
   {
-    private static readonly string _defaultMessage;
+    #region Internal Constructors
 
-    static WsReceivedTooBigMessageException()
-    {
-      _defaultMessage = String.Format(
-        "Size of received payload data is bigger than the allowable value({0} bytes).", PayloadData.MaxLength);
-    }
-
-    public WsReceivedTooBigMessageException()
-     : this(_defaultMessage)
+    internal WebSocketException()
+      : this(CloseStatusCode.ABNORMAL)
     {
     }
 
-    public WsReceivedTooBigMessageException(string message)
-     : base(message)
+    internal WebSocketException(CloseStatusCode code)
+      : this(code, code.GetMessage())
     {
     }
+
+    internal WebSocketException(CloseStatusCode code, string message)
+      : base(message)
+    {
+      Code = code;
+    }
+
+    #endregion
+
+    #region Public Properties
+
+    /// <summary>
+    /// Gets the <see cref="CloseStatusCode"/> associated with a <see cref="WebSocketException"/>.
+    /// </summary>
+    /// <value>
+    /// One of the <see cref="CloseStatusCode"/> values that indicates the cause of the exception.
+    /// </value>
+    public CloseStatusCode Code {
+      get; internal set;
+    }
+
+    #endregion
   }
 }

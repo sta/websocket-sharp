@@ -67,7 +67,6 @@
     <Compile Include="WsState.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="CloseEventArgs.cs" />
-    <Compile Include="WsReceivedTooBigMessageException.cs" />
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
@@ -123,6 +122,7 @@
     <Compile Include="Net\HttpHeaderType.cs" />
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
+    <Compile Include="WebSocketException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

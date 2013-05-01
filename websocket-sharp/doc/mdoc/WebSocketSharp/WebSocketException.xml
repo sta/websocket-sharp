@@ -1,0 +1,36 @@
+<Type Name="WebSocketException" FullName="WebSocketSharp.WebSocketException">
+  <TypeSignature Language="C#" Value="public class WebSocketException : Exception" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit WebSocketException extends System.Exception" />
+  <AssemblyInfo>
+    <AssemblyName>websocket-sharp</AssemblyName>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Exception</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>
+            Represents the exception that occurred when attempting to perform an operation on the WebSocket connection.
+            </summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Code">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.CloseStatusCode Code { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype WebSocketSharp.CloseStatusCode Code" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.CloseStatusCode</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the <see cref="T:WebSocketSharp.CloseStatusCode" /> associated with a <see cref="T:WebSocketSharp.WebSocketException" />.
+            </summary>
+        <value>
+            One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the cause of the exception.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
