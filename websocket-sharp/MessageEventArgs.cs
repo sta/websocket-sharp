@@ -43,19 +43,20 @@ namespace WebSocketSharp {
   {
     #region Private Fields
 
-    private byte[] _data;
+    private string _data;
     private Opcode _opcode;
+    private byte[] _rawData;
 
     #endregion
 
     #region Internal Constructors
 
-    internal MessageEventArgs(Opcode opcode, byte[] data)
+    internal MessageEventArgs(Opcode opcode, byte[] rawData)
     {
-      if ((ulong)data.LongLength > PayloadData.MaxLength)
+      if ((ulong)rawData.LongLength > PayloadData.MaxLength)
         throw new WebSocketException(CloseStatusCode.TOO_BIG);
 
-      init(opcode, data);
+      init(opcode, rawData);
     }
 
     internal MessageEventArgs(Opcode opcode, PayloadData data)
@@ -75,11 +76,10 @@ namespace WebSocketSharp {
     /// </value>
     public string Data {
       get {
-        return _opcode == Opcode.TEXT || _opcode == Opcode.PING || _opcode == Opcode.PONG
-               ? _data.LongLength > 0
-                 ? Encoding.UTF8.GetString(_data)
-                 : String.Empty
-               : _opcode.ToString();
+        if (_data.IsNull())
+          _data = toString(_opcode, _rawData);
+
+        return _data;
       }
     }
 
@@ -91,7 +91,7 @@ namespace WebSocketSharp {
     /// </value>
     public byte[] RawData {
       get {
-        return _data;
+        return _rawData;
       }
     }
 
@@ -111,10 +111,20 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private void init(Opcode opcode, byte[] data)
+    private void init(Opcode opcode, byte[] rawData)
     {
       _opcode = opcode;
-      _data = data;
+      _rawData = rawData;
+    }
+
+    private static string toString(Opcode opcode, byte[] rawData)
+    {
+      if (rawData.LongLength == 0)
+        return String.Empty;
+
+      return opcode == Opcode.TEXT || opcode == Opcode.PING || opcode == Opcode.PONG
+             ? Encoding.UTF8.GetString(rawData)
+             : opcode.ToString();
     }
 
     #endregion
