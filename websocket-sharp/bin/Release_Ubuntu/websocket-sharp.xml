@@ -49,9 +49,9 @@
             in the specified array of <see cref="T:System.Char" />.
             </summary>
             <returns>
-                <c>true</c> if <paramref name="str" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
+                <c>true</c> if <paramref name="value" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
             </returns>
-            <param name="str">
+            <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
             <param name="chars">
@@ -180,13 +180,14 @@
         </member>
         <member name="M:WebSocketSharp.Ext.GetName(System.String,System.String)">
             <summary>
-            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
             <returns>
             A <see cref="T:System.String" /> that contains the name if any; otherwise, <c>null</c>.
             </returns>
             <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
             <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
@@ -219,13 +220,14 @@
         </member>
         <member name="M:WebSocketSharp.Ext.GetValue(System.String,System.String)">
             <summary>
-            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
             <returns>
             A <see cref="T:System.String" /> that contains the value if any; otherwise, <c>null</c>.
             </returns>
             <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
             <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
@@ -266,9 +268,9 @@
             Determines whether the specified <see cref="T:System.String" /> is enclosed in the specified <see cref="T:System.Char" />.
             </summary>
             <returns>
-                <c>true</c> if <paramref name="str" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
+                <c>true</c> if <paramref name="value" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
             </returns>
-            <param name="str">
+            <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
             <param name="c">
@@ -299,38 +301,6 @@
             <exception cref="T:System.ArgumentNullException">
                 <paramref name="address" /> is <see langword="null" />.
             </exception>
-        </member>
-        <member name="M:WebSocketSharp.Ext.IsNull``1(``0)">
-            <summary>
-            Determines whether the specified object is <see langword="null" />.
-            </summary>
-            <returns>
-                <c>true</c> if <paramref name="obj" /> is <see langword="null" />; otherwise, <c>false</c>.
-            </returns>
-            <param name="obj">
-            An <b>object</b> to test.
-            </param>
-            <typeparam name="T">
-            The type of <paramref name="obj" /> parameter.
-            </typeparam>
-        </member>
-        <member name="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">
-            <summary>
-            Determines whether the specified object is <see langword="null" />.
-            And invokes the specified <see cref="T:System.Action" /> delegate if the specified object is <see langword="null" />.
-            </summary>
-            <returns>
-                <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
-            </returns>
-            <param name="obj">
-            A <b>class</b> to test.
-            </param>
-            <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) called if the <paramref name="obj" /> is <see langword="null" />.
-            </param>
-            <typeparam name="T">
-            The type of the <paramref name="obj" /> parameter.
-            </typeparam>
         </member>
         <member name="M:WebSocketSharp.Ext.IsNullOrEmpty(System.String)">
             <summary>

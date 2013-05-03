@@ -236,6 +236,52 @@ namespace WebSocketSharp {
              : null;
     }
 
+    // <summary>
+    // Determines whether the specified object is <see langword="null"/>.
+    // </summary>
+    // <returns>
+    // <c>true</c> if <paramref name="obj"/> is <see langword="null"/>; otherwise, <c>false</c>.
+    // </returns>
+    // <param name="obj">
+    // An <b>object</b> to test.
+    // </param>
+    // <typeparam name="T">
+    // The type of <paramref name="obj"/> parameter.
+    // </typeparam>
+    internal static bool IsNull<T>(this T obj)
+      where T : class
+    {
+      return obj == null;
+    }
+
+    // <summary>
+    // Determines whether the specified object is <see langword="null"/>.
+    // And invokes the specified <see cref="Action"/> delegate if the specified object is <see langword="null"/>.
+    // </summary>
+    // <returns>
+    // <c>true</c> if the <paramref name="obj"/> parameter is <see langword="null"/>; otherwise, <c>false</c>.
+    // </returns>
+    // <param name="obj">
+    // A <b>class</b> to test.
+    // </param>
+    // <param name="act">
+    // An <see cref="Action"/> delegate that contains the method(s) called if the <paramref name="obj"/> is <see langword="null"/>.
+    // </param>
+    // <typeparam name="T">
+    // The type of the <paramref name="obj"/> parameter.
+    // </typeparam>
+    internal static bool IsNullDo<T>(this T obj, Action act)
+      where T : class
+    {
+      if (obj == null)
+      {
+        act();
+        return true;
+      }
+
+      return false;
+    }
+
     internal static bool IsText(this string value)
     {
       int len = value.Length;
@@ -374,7 +420,7 @@ namespace WebSocketSharp {
     /// </exception>
     public static TcpListenerWebSocketContext AcceptWebSocket(this TcpListener listener, bool secure)
     {
-      if (listener.IsNull())
+      if (listener == null)
         throw new ArgumentNullException("listener");
 
       var client = listener.AcceptTcpClient();
@@ -398,7 +444,7 @@ namespace WebSocketSharp {
     /// </exception>
     public static void AcceptWebSocketAsync(this TcpListener listener, bool secure, Action<TcpListenerWebSocketContext> completed)
     {
-      if (listener.IsNull())
+      if (listener == null)
         throw new ArgumentNullException("listener");
 
       AsyncCallback callback = (ar) =>
@@ -416,21 +462,21 @@ namespace WebSocketSharp {
     /// in the specified array of <see cref="char"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="str"/> contains any of <paramref name="chars"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> contains any of <paramref name="chars"/>; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="str">
+    /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
     /// <param name="chars">
     /// An array of <see cref="char"/> that contains characters to find.
     /// </param>
-    public static bool Contains(this string str, params char[] chars)
+    public static bool Contains(this string value, params char[] chars)
     {
-      return str.IsNullOrEmpty()
-             ? false
-             : chars.Length == 0
-               ? true
-               : str.IndexOfAny(chars) != -1;
+      return chars.Length == 0
+             ? true
+             : value == null || value.Length == 0
+               ? false
+               : value.IndexOfAny(chars) != -1;
     }
 
     /// <summary>
@@ -448,7 +494,7 @@ namespace WebSocketSharp {
     public static void Emit(
       this EventHandler eventHandler, object sender, EventArgs e)
     {
-      if (!eventHandler.IsNull())
+      if (eventHandler != null)
         eventHandler(sender, e);
     }
 
@@ -471,7 +517,7 @@ namespace WebSocketSharp {
       this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e)
       where TEventArgs : EventArgs
     {
-      if (!eventHandler.IsNull())
+      if (eventHandler != null)
         eventHandler(sender, e);
     }
 
@@ -519,9 +565,9 @@ namespace WebSocketSharp {
     /// </param>
     public static bool Exists(this NameValueCollection collection, string name)
     {
-      return collection.IsNull()
+      return collection == null
              ? false
-             : !collection[name].IsNull();
+             : collection[name] != null;
     }
 
     /// <summary>
@@ -541,11 +587,11 @@ namespace WebSocketSharp {
     /// </param>
     public static bool Exists(this NameValueCollection collection, string name, string value)
     {
-      if (collection.IsNull())
+      if (collection == null)
         return false;
 
       var values = collection[name];
-      if (values.IsNull())
+      if (values == null)
         return false;
 
       foreach (string v in values.Split(','))
@@ -566,7 +612,7 @@ namespace WebSocketSharp {
     /// </param>
     public static string GetAbsolutePath(this Uri uri)
     {
-      if (uri.IsNull())
+      if (uri == null)
         return null;
 
       if (uri.IsAbsoluteUri)
@@ -599,7 +645,7 @@ namespace WebSocketSharp {
     public static CookieCollection GetCookies(this NameValueCollection headers, bool response)
     {
       var name = response ? "Set-Cookie" : "Cookie";
-      if (headers.IsNull() || !headers.Exists(name))
+      if (headers == null || !headers.Exists(name))
         return new CookieCollection();
 
       return CookieCollection.Parse(headers[name], response);
@@ -620,20 +666,22 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the name from the specified <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// Gets the name from the specified <see cref="string"/> that contains a pair of name and value
+    /// separated by a separator string.
     /// </summary>
     /// <returns>
     /// A <see cref="string"/> that contains the name if any; otherwise, <c>null</c>.
     /// </returns>
     /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// A <see cref="string"/> that contains a pair of name and value separated by a separator string.
     /// </param>
     /// <param name="separator">
     /// A <see cref="string"/> that contains a separator string.
     /// </param>
     public static string GetName(this string nameAndValue, string separator)
     {
-      return !nameAndValue.IsNullOrEmpty() && !separator.IsNullOrEmpty()
+      return (nameAndValue != null && nameAndValue.Length != 0) &&
+             (separator != null && separator.Length != 0)
              ? nameAndValue.GetNameInternal(separator)
              : null;
     }
@@ -654,7 +702,7 @@ namespace WebSocketSharp {
     {
       var name  = nameAndValue.GetName(separator);
       var value = nameAndValue.GetValue(separator);
-      return !name.IsNull()
+      return name != null
              ? new KeyValuePair<string, string>(name, value)
              : new KeyValuePair<string, string>(null, null);
     }
@@ -724,20 +772,22 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Gets the value from the specified <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// Gets the value from the specified <see cref="string"/> that contains a pair of name and value
+    /// separated by a separator string.
     /// </summary>
     /// <returns>
     /// A <see cref="string"/> that contains the value if any; otherwise, <c>null</c>.
     /// </returns>
     /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value are separated by a separator string.
+    /// A <see cref="string"/> that contains a pair of name and value separated by a separator string.
     /// </param>
     /// <param name="separator">
     /// A <see cref="string"/> that contains a separator string.
     /// </param>
     public static string GetValue(this string nameAndValue, string separator)
     {
-      return !nameAndValue.IsNullOrEmpty() && !separator.IsNullOrEmpty()
+      return (nameAndValue != null && nameAndValue.Length != 0) &&
+             (separator != null && separator.Length != 0)
              ? nameAndValue.GetValueInternal(separator)
              : null;
     }
@@ -794,19 +844,19 @@ namespace WebSocketSharp {
     /// Determines whether the specified <see cref="string"/> is enclosed in the specified <see cref="char"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="str"/> is enclosed in <paramref name="c"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is enclosed in <paramref name="c"/>; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="str">
+    /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
     /// <param name="c">
     /// A <see cref="char"/> that contains character to find.
     /// </param>
-    public static bool IsEnclosedIn(this string str, char c)
+    public static bool IsEnclosedIn(this string value, char c)
     {
-      return str.IsNullOrEmpty()
+      return value == null || value.Length == 0
              ? false
-             : str[0] == c && str[str.Length - 1] == c;
+             : value[0] == c && value[value.Length - 1] == c;
     }
 
     /// <summary>
@@ -839,7 +889,7 @@ namespace WebSocketSharp {
     /// </exception>
     public static bool IsLocal(this System.Net.IPAddress address)
     {
-      if (address.IsNull())
+      if (address == null)
         throw new ArgumentNullException("address");
 
       if (System.Net.IPAddress.IsLoopback(address))
@@ -855,52 +905,6 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Determines whether the specified object is <see langword="null"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="obj"/> is <see langword="null"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="obj">
-    /// An <b>object</b> to test.
-    /// </param>
-    /// <typeparam name="T">
-    /// The type of <paramref name="obj"/> parameter.
-    /// </typeparam>
-    public static bool IsNull<T>(this T obj)
-      where T : class
-    {
-      return obj == null;
-    }
-
-    /// <summary>
-    /// Determines whether the specified object is <see langword="null"/>.
-    /// And invokes the specified <see cref="Action"/> delegate if the specified object is <see langword="null"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the <paramref name="obj"/> parameter is <see langword="null"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="obj">
-    /// A <b>class</b> to test.
-    /// </param>
-    /// <param name="act">
-    /// An <see cref="Action"/> delegate that contains the method(s) called if the <paramref name="obj"/> is <see langword="null"/>.
-    /// </param>
-    /// <typeparam name="T">
-    /// The type of the <paramref name="obj"/> parameter.
-    /// </typeparam>
-    public static bool IsNullDo<T>(this T obj, Action act)
-      where T : class
-    {
-      if (obj.IsNull())
-      {
-        act();
-        return true;
-      }
-
-      return false;
-    }
-
-    /// <summary>
     /// Determines whether the specified <see cref="string"/> is <see langword="null"/> or empty.
     /// </summary>
     /// <returns>
@@ -911,7 +915,7 @@ namespace WebSocketSharp {
     /// </param>
     public static bool IsNullOrEmpty(this string value)
     {
-      return value.IsNull() || value.IsEmpty();
+      return value == null || value.Length == 0;
     }
 
     /// <summary>
@@ -925,7 +929,7 @@ namespace WebSocketSharp {
     /// </param>
     public static bool IsPredefinedScheme(this string scheme)
     {
-      if (scheme.IsNull() && scheme.Length < 2)
+      if (scheme == null && scheme.Length < 2)
         return false;
 
       char c = scheme[0];
@@ -986,13 +990,13 @@ namespace WebSocketSharp {
     /// </exception>
     public static bool IsUpgradeTo(this HttpListenerRequest request, string protocol)
     {
-      if (request.IsNull())
+      if (request == null)
         throw new ArgumentNullException("request");
 
-      if (protocol.IsNull())
+      if (protocol == null)
         throw new ArgumentNullException("protocol");
 
-      if (protocol.IsEmpty())
+      if (protocol.Length == 0)
         throw new ArgumentException("Must not be empty.", "protocol");
 
       if (!request.Headers.Exists("Upgrade", protocol))
@@ -1018,7 +1022,7 @@ namespace WebSocketSharp {
     /// </param>
     public static bool IsValidAbsolutePath(this string absPath, out string message)
     {
-      if (absPath.IsNullOrEmpty())
+      if (absPath == null || absPath.Length == 0)
       {
         message = "Must not be null or empty.";
         return false;
@@ -1053,7 +1057,7 @@ namespace WebSocketSharp {
     /// </param>
     public static bool MaybeUri(this string uriString)
     {
-      if (uriString.IsNullOrEmpty())
+      if (uriString == null || uriString.Length == 0)
         return false;
 
       int p = uriString.IndexOf(':');
@@ -1102,7 +1106,7 @@ namespace WebSocketSharp {
     /// </param>
     public static byte[] ReadBytes(this Stream stream, int length)
     {
-      if (stream.IsNull() || length <= 0)
+      if (stream == null || length <= 0)
         return new byte[]{};
 
       var buffer  = new byte[length];
@@ -1149,7 +1153,7 @@ namespace WebSocketSharp {
     /// </param>
     public static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
     {
-      if (stream.IsNull() || length <= 0)
+      if (stream == null || length <= 0)
         return new byte[]{};
 
       if (bufferLength <= 0)
@@ -1205,7 +1209,7 @@ namespace WebSocketSharp {
     /// </typeparam>
     public static T[] SubArray<T>(this T[] array, int startIndex, int length)
     {
-      if (array.IsNull() || array.Length == 0)
+      if (array == null || array.Length == 0)
         return new T[]{};
 
       if (startIndex < 0 || length <= 0)
@@ -1234,7 +1238,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this int n, Action act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         ((ulong)n).times(act);
     }
 
@@ -1249,7 +1253,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this long n, Action act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         ((ulong)n).times(act);
     }
 
@@ -1264,7 +1268,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this uint n, Action act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         ((ulong)n).times(act);
     }
 
@@ -1279,7 +1283,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this ulong n, Action act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         n.times(act);
     }
 
@@ -1295,7 +1299,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this int n, Action<int> act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         for (int i = 0; i < n; i++)
           act(i);
     }
@@ -1312,7 +1316,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this long n, Action<long> act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         for (long i = 0; i < n; i++)
           act(i);
     }
@@ -1329,7 +1333,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this uint n, Action<uint> act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         for (uint i = 0; i < n; i++)
           act(i);
     }
@@ -1346,7 +1350,7 @@ namespace WebSocketSharp {
     /// </param>
     public static void Times(this ulong n, Action<ulong> act)
     {
-      if (n > 0 && !act.IsNull())
+      if (n > 0 && act != null)
         for (ulong i = 0; i < n; i++)
           act(i);
     }
@@ -1376,7 +1380,7 @@ namespace WebSocketSharp {
     public static T To<T>(this byte[] src, ByteOrder srcOrder)
       where T : struct
     {
-      if (src.IsNull())
+      if (src == null)
         throw new ArgumentNullException("src");
 
       if (src.Length == 0)
@@ -1504,7 +1508,7 @@ namespace WebSocketSharp {
     /// </exception>
     public static byte[] ToHostOrder(this byte[] src, ByteOrder srcOrder)
     {
-      if (src.IsNull())
+      if (src == null)
         throw new ArgumentNullException("src");
 
       return src.Length == 0 || srcOrder.IsHostOrder()
@@ -1534,14 +1538,14 @@ namespace WebSocketSharp {
     /// </exception>
     public static string ToString<T>(this T[] array, string separator)
     {
-      if (array.IsNull())
+      if (array == null)
         throw new ArgumentNullException("array");
 
       var len = array.Length;
       if (len == 0)
         return String.Empty;
 
-      if (separator.IsNull())
+      if (separator == null)
         separator = String.Empty;
 
       var sb = new StringBuilder();
@@ -1565,7 +1569,7 @@ namespace WebSocketSharp {
     /// </param>
     public static Uri ToUri(this string uriString)
     {
-      return uriString.IsNullOrEmpty()
+      return uriString == null || uriString.Length == 0
              ? null
              : uriString.MaybeUri()
                ? new Uri(uriString)
@@ -1592,11 +1596,11 @@ namespace WebSocketSharp {
     /// </exception>
     public static bool TryCreateWebSocketUri(this string uriString, out Uri result, out string message)
     {
-      if (uriString.IsNull())
+      if (uriString == null)
         throw new ArgumentNullException("uriString");
 
       result = null;
-      if (uriString.IsEmpty())
+      if (uriString.Length == 0)
       {
         message = "Must not be empty.";
         return false;
@@ -1617,7 +1621,7 @@ namespace WebSocketSharp {
       }
 
       var fragment = uri.Fragment;
-      if (!String.IsNullOrEmpty(fragment))
+      if (fragment != null && fragment.Length != 0)
       {
         message = "Must not contain the fragment component: " + uriString;
         return false;
@@ -1661,7 +1665,7 @@ namespace WebSocketSharp {
     /// </param>
     public static string UrlDecode(this string s)
     {
-      return s.IsNullOrEmpty()
+      return s == null || s.Length == 0
              ? s
              : HttpUtility.UrlDecode(s);
     }
@@ -1678,7 +1682,7 @@ namespace WebSocketSharp {
     /// </param>
     public static string UrlEncode(this string s)
     {
-      return s.IsNullOrEmpty()
+      return s == null || s.Length == 0
              ? s
              : HttpUtility.UrlEncode(s);
     }
@@ -1697,10 +1701,10 @@ namespace WebSocketSharp {
     /// </exception>
     public static void WriteContent(this HttpListenerResponse response, byte[] content)
     {
-      if (response.IsNull())
+      if (response == null)
         throw new ArgumentNullException("response");
 
-      if (content.IsNull() || content.Length == 0)
+      if (content == null || content.Length == 0)
         return;
 
       var output = response.OutputStream;

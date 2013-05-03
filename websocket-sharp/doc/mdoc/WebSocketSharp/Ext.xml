@@ -77,14 +77,14 @@
       </Docs>
     </Member>
     <Member MemberName="Contains">
-      <MemberSignature Language="C#" Value="public static bool Contains (this string str, char[] chars);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string str, char[] chars) cil managed" />
+      <MemberSignature Language="C#" Value="public static bool Contains (this string value, char[] chars);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string value, char[] chars) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="str" Type="System.String" RefType="this" />
+        <Parameter Name="value" Type="System.String" RefType="this" />
         <Parameter Name="chars" Type="System.Char[]">
           <Attributes>
             <Attribute>
@@ -94,7 +94,7 @@
         </Parameter>
       </Parameters>
       <Docs>
-        <param name="str">
+        <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
         <param name="chars">
@@ -105,7 +105,7 @@
             in the specified array of <see cref="T:System.Char" />.
             </summary>
         <returns>
-          <c>true</c> if <paramref name="str" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
+          <c>true</c> if <paramref name="value" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -356,13 +356,14 @@
       </Parameters>
       <Docs>
         <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
         <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
         <summary>
-            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
         <returns>
             A <see cref="T:System.String" /> that contains the name if any; otherwise, <c>null</c>.
@@ -433,13 +434,14 @@
       </Parameters>
       <Docs>
         <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
         <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
         <summary>
-            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
         <returns>
             A <see cref="T:System.String" /> that contains the value if any; otherwise, <c>null</c>.
@@ -501,18 +503,18 @@
       </Docs>
     </Member>
     <Member MemberName="IsEnclosedIn">
-      <MemberSignature Language="C#" Value="public static bool IsEnclosedIn (this string str, char c);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEnclosedIn(string str, char c) cil managed" />
+      <MemberSignature Language="C#" Value="public static bool IsEnclosedIn (this string value, char c);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEnclosedIn(string value, char c) cil managed" />
       <MemberType>Method</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Parameters>
-        <Parameter Name="str" Type="System.String" RefType="this" />
+        <Parameter Name="value" Type="System.String" RefType="this" />
         <Parameter Name="c" Type="System.Char" />
       </Parameters>
       <Docs>
-        <param name="str">
+        <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
         <param name="c">
@@ -522,7 +524,7 @@
             Determines whether the specified <see cref="T:System.String" /> is enclosed in the specified <see cref="T:System.Char" />.
             </summary>
         <returns>
-          <c>true</c> if <paramref name="str" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
+          <c>true</c> if <paramref name="value" /> is enclosed in <paramref name="c" />; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -574,77 +576,6 @@
         <exception cref="T:System.ArgumentNullException">
           <paramref name="address" /> is <see langword="null" />.
             </exception>
-      </Docs>
-    </Member>
-    <Member MemberName="IsNull&lt;T&gt;">
-      <MemberSignature Language="C#" Value="public static bool IsNull&lt;T&gt; (this T obj) where T : class;" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNull&lt;class T&gt;(!!T obj) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Boolean</ReturnType>
-      </ReturnValue>
-      <TypeParameters>
-        <TypeParameter Name="T">
-          <Constraints>
-            <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
-          </Constraints>
-        </TypeParameter>
-      </TypeParameters>
-      <Parameters>
-        <Parameter Name="obj" Type="T" RefType="this" />
-      </Parameters>
-      <Docs>
-        <typeparam name="T">
-            The type of <paramref name="obj" /> parameter.
-            </typeparam>
-        <param name="obj">
-            An <b>object</b> to test.
-            </param>
-        <summary>
-            Determines whether the specified object is <see langword="null" />.
-            </summary>
-        <returns>
-          <c>true</c> if <paramref name="obj" /> is <see langword="null" />; otherwise, <c>false</c>.
-            </returns>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="IsNullDo&lt;T&gt;">
-      <MemberSignature Language="C#" Value="public static bool IsNullDo&lt;T&gt; (this T obj, Action act) where T : class;" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullDo&lt;class T&gt;(!!T obj, class System.Action act) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Boolean</ReturnType>
-      </ReturnValue>
-      <TypeParameters>
-        <TypeParameter Name="T">
-          <Constraints>
-            <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
-          </Constraints>
-        </TypeParameter>
-      </TypeParameters>
-      <Parameters>
-        <Parameter Name="obj" Type="T" RefType="this" />
-        <Parameter Name="act" Type="System.Action" />
-      </Parameters>
-      <Docs>
-        <typeparam name="T">
-            The type of the <paramref name="obj" /> parameter.
-            </typeparam>
-        <param name="obj">
-            A <b>class</b> to test.
-            </param>
-        <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) called if the <paramref name="obj" /> is <see langword="null" />.
-            </param>
-        <summary>
-            Determines whether the specified object is <see langword="null" />.
-            And invokes the specified <see cref="T:System.Action" /> delegate if the specified object is <see langword="null" />.
-            </summary>
-        <returns>
-          <c>true</c> if the <paramref name="obj" /> parameter is <see langword="null" />; otherwise, <c>false</c>.
-            </returns>
-        <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="IsNullOrEmpty">

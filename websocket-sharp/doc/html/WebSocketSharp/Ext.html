@@ -362,7 +362,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Ext.GetName(System.String,System.String)">GetName</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
-            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value
+            separated by a separator string.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -395,7 +396,8 @@
                   <b>
                     <a href="#M:WebSocketSharp.Ext.GetValue(System.String,System.String)">GetValue</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a></nobr><blockquote>
-            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value
+            separated by a separator string.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -452,29 +454,6 @@
                     <a href="#M:WebSocketSharp.Ext.IsLocal(System.Net.IPAddress)">IsLocal</a>
                   </b>(<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Net.IPAddress">System.Net.IPAddress</a> represents a local IP address.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -901,12 +880,12 @@
             in the specified array of <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Contains</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> str, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>[] chars)</div>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Contains</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value, <b>params</b> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>[] chars)</div>
           <h4 class="Subsection">Parameters</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Contains(System.String,System.Char[]):Parameters">
             <dl>
               <dt>
-                <i>str</i>
+                <i>value</i>
               </dt>
               <dd>
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
@@ -921,7 +900,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.Contains(System.String,System.Char[]):Returns">
-            <tt>true</tt> if <i>str</i> contains any of <i>chars</i>; otherwise, <tt>false</tt>.
+            <tt>true</tt> if <i>value</i> contains any of <i>chars</i>; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.Contains(System.String,System.Char[]):Remarks">
@@ -1265,7 +1244,8 @@
         <h3 id="M:WebSocketSharp.Ext.GetName(System.String,System.String)">GetName Method</h3>
         <blockquote id="M:WebSocketSharp.Ext.GetName(System.String,System.String):member">
           <p class="Summary">
-            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            Gets the name from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value
+            separated by a separator string.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetName</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> nameAndValue, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
@@ -1276,7 +1256,7 @@
                 <i>nameAndValue</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value separated by a separator string.
             </dd>
               <dt>
                 <i>separator</i>
@@ -1370,7 +1350,8 @@
         <h3 id="M:WebSocketSharp.Ext.GetValue(System.String,System.String)">GetValue Method</h3>
         <blockquote id="M:WebSocketSharp.Ext.GetValue(System.String,System.String):member">
           <p class="Summary">
-            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            Gets the value from the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value
+            separated by a separator string.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> <b>GetValue</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> nameAndValue, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> separator)</div>
@@ -1381,7 +1362,7 @@
                 <i>nameAndValue</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value are separated by a separator string.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a pair of name and value separated by a separator string.
             </dd>
               <dt>
                 <i>separator</i>
@@ -1477,12 +1458,12 @@
             Determines whether the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> is enclosed in the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a>.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsEnclosedIn</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> str, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> c)</div>
+          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsEnclosedIn</b> (<i>this</i> <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> value, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Char">char</a> c)</div>
           <h4 class="Subsection">Parameters</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsEnclosedIn(System.String,System.Char):Parameters">
             <dl>
               <dt>
-                <i>str</i>
+                <i>value</i>
               </dt>
               <dd>
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> to test.
@@ -1497,7 +1478,7 @@
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsEnclosedIn(System.String,System.Char):Returns">
-            <tt>true</tt> if <i>str</i> is enclosed in <i>c</i>; otherwise, <tt>false</tt>.
+            <tt>true</tt> if <i>value</i> is enclosed in <i>c</i>; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.IsEnclosedIn(System.String,System.Char):Remarks">
@@ -1584,97 +1565,6 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Ext.IsLocal(System.Net.IPAddress):Version Information">
-            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
-        <h3 id="M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt; Generic Method</h3>
-        <blockquote id="M:WebSocketSharp.Ext.IsNull``1(``0):member">
-          <p class="Summary">
-            Determines whether the specified object is <tt>null</tt>.
-            </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNull&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i> obj)<br /> where T : class</div>
-          <h4 class="Subsection">Type Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Type Parameters">
-            <dl>
-              <dt>
-                <i>T</i>
-              </dt>
-              <dd>
-            The type of <i>obj</i> parameter.
-            </dd>
-            </dl>
-          </blockquote>
-          <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Parameters">
-            <dl>
-              <dt>
-                <i>obj</i>
-              </dt>
-              <dd>
-            An object to test.
-            </dd>
-            </dl>
-          </blockquote>
-          <h4 class="Subsection">Returns</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Returns">
-            <tt>true</tt> if <i>obj</i> is <tt>null</tt>; otherwise, <tt>false</tt>.
-            </blockquote>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNull``1(``0):Version Information">
-            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
-          <hr size="1" />
-        </blockquote>
-        <h3 id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt; Generic Method</h3>
-        <blockquote id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):member">
-          <p class="Summary">
-            Determines whether the specified object is <tt>null</tt>.
-            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
-            </p>
-          <h2>Syntax</h2>
-          <div class="Signature">public static <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsNullDo&lt;T&gt;</b> (<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i> obj, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> act)<br /> where T : class</div>
-          <h4 class="Subsection">Type Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Type Parameters">
-            <dl>
-              <dt>
-                <i>T</i>
-              </dt>
-              <dd>
-            The type of the <i>obj</i> parameter.
-            </dd>
-            </dl>
-          </blockquote>
-          <h4 class="Subsection">Parameters</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Parameters">
-            <dl>
-              <dt>
-                <i>obj</i>
-              </dt>
-              <dd>
-            A class to test.
-            </dd>
-              <dt>
-                <i>act</i>
-              </dt>
-              <dd>
-            An <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate that contains the method(s) called if the <i>obj</i> is <tt>null</tt>.
-            </dd>
-            </dl>
-          </blockquote>
-          <h4 class="Subsection">Returns</h4>
-          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Returns">
-            <tt>true</tt> if the <i>obj</i> parameter is <tt>null</tt>; otherwise, <tt>false</tt>.
-            </blockquote>
-          <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Remarks">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </div>
-          <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

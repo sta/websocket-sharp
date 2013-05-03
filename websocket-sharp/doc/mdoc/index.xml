@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="websocket-sharp" Version="1.0.2.4718">
+    <Assembly Name="websocket-sharp" Version="1.0.2.27098">
       <AssemblyPublicKey>[00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 11 00 00 00 29 17 fb 89 fe c3 91 f7 2b cb 8b e2 61 d2 3f 05 93 6d 65 a8 9e 63 72 a6 f5 d5 2c f2 9d 20 fa 0b c0 70 6a f6 88 7e 8b 90 3f 39 f5 76 c8 48 e0 bb 7b b2 7b ed d3 10 a7 1a 0f 70 98 0f 7f f4 4b 53 09 d2 a5 ef 36 c3 56 b4 aa f0 91 72 63 25 07 89 e0 93 3e 3f 2e f2 b9 73 0e 12 15 5d 43 56 c3 f4 70 a5 89 fe f7 f6 ac 3e 77 c2 d8 d0 84 91 f4 0c d1 f3 8e dc c3 c3 b8 38 3d 0c bf 17 de 20 78 c1 ]</AssemblyPublicKey>
       <Attributes>
         <Attribute>
@@ -147,14 +147,14 @@
         <Target Type="T:System.String" />
       </Targets>
       <Member MemberName="Contains">
-        <MemberSignature Language="C#" Value="public static bool Contains (this string str, char[] chars);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string str, char[] chars) cil managed" />
+        <MemberSignature Language="C#" Value="public static bool Contains (this string value, char[] chars);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string value, char[] chars) cil managed" />
         <MemberType>ExtensionMethod</MemberType>
         <ReturnValue>
           <ReturnType>System.Boolean</ReturnType>
         </ReturnValue>
         <Parameters>
-          <Parameter Name="str" Type="System.String" RefType="this" />
+          <Parameter Name="value" Type="System.String" RefType="this" />
           <Parameter Name="chars" Type="System.Char[]">
             <Attributes>
               <Attribute>
@@ -164,7 +164,7 @@
           </Parameter>
         </Parameters>
         <Docs>
-          <param name="str">
+          <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
           <param name="chars">
@@ -447,13 +447,14 @@
         </Parameters>
         <Docs>
           <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
           <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
           <summary>
-            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the name from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.GetName(System.String,System.String)" />
@@ -530,13 +531,14 @@
         </Parameters>
         <Docs>
           <param name="nameAndValue">
-            A <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            A <see cref="T:System.String" /> that contains a pair of name and value separated by a separator string.
             </param>
           <param name="separator">
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
           <summary>
-            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value are separated by a separator string.
+            Gets the value from the specified <see cref="T:System.String" /> that contains a pair of name and value
+            separated by a separator string.
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.GetValue(System.String,System.String)" />
@@ -598,18 +600,18 @@
         <Target Type="T:System.String" />
       </Targets>
       <Member MemberName="IsEnclosedIn">
-        <MemberSignature Language="C#" Value="public static bool IsEnclosedIn (this string str, char c);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEnclosedIn(string str, char c) cil managed" />
+        <MemberSignature Language="C#" Value="public static bool IsEnclosedIn (this string value, char c);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsEnclosedIn(string value, char c) cil managed" />
         <MemberType>ExtensionMethod</MemberType>
         <ReturnValue>
           <ReturnType>System.Boolean</ReturnType>
         </ReturnValue>
         <Parameters>
-          <Parameter Name="str" Type="System.String" RefType="this" />
+          <Parameter Name="value" Type="System.String" RefType="this" />
           <Parameter Name="c" Type="System.Char" />
         </Parameters>
         <Docs>
-          <param name="str">
+          <param name="value">
             A <see cref="T:System.String" /> to test.
             </param>
           <param name="c">
@@ -670,81 +672,6 @@
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.IsLocal(System.Net.IPAddress)" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
-        <Target Type="System.Object" />
-      </Targets>
-      <Member MemberName="IsNull&lt;T&gt;">
-        <MemberSignature Language="C#" Value="public static bool IsNull&lt;T&gt; (this T obj) where T : class;" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNull&lt;class T&gt;(!!T obj) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Boolean</ReturnType>
-        </ReturnValue>
-        <TypeParameters>
-          <TypeParameter Name="T">
-            <Constraints>
-              <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
-            </Constraints>
-          </TypeParameter>
-        </TypeParameters>
-        <Parameters>
-          <Parameter Name="obj" Type="T" RefType="this" />
-        </Parameters>
-        <Docs>
-          <typeparam name="T">
-            The type of <paramref name="obj" /> parameter.
-            </typeparam>
-          <param name="obj">
-            An <b>object</b> to test.
-            </param>
-          <summary>
-            Determines whether the specified object is <see langword="null" />.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.IsNull``1(``0)" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
-        <Target Type="System.Object" />
-      </Targets>
-      <Member MemberName="IsNullDo&lt;T&gt;">
-        <MemberSignature Language="C#" Value="public static bool IsNullDo&lt;T&gt; (this T obj, Action act) where T : class;" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool IsNullDo&lt;class T&gt;(!!T obj, class System.Action act) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Boolean</ReturnType>
-        </ReturnValue>
-        <TypeParameters>
-          <TypeParameter Name="T">
-            <Constraints>
-              <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
-            </Constraints>
-          </TypeParameter>
-        </TypeParameters>
-        <Parameters>
-          <Parameter Name="obj" Type="T" RefType="this" />
-          <Parameter Name="act" Type="System.Action" />
-        </Parameters>
-        <Docs>
-          <typeparam name="T">
-            The type of the <paramref name="obj" /> parameter.
-            </typeparam>
-          <param name="obj">
-            A <b>class</b> to test.
-            </param>
-          <param name="act">
-            An <see cref="T:System.Action" /> delegate that contains the method(s) called if the <paramref name="obj" /> is <see langword="null" />.
-            </param>
-          <summary>
-            Determines whether the specified object is <see langword="null" />.
-            And invokes the specified <see cref="T:System.Action" /> delegate if the specified object is <see langword="null" />.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
