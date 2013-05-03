@@ -300,7 +300,10 @@
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets or sets a value indicating whether the <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> returns exceptions
+            that occur when sending the response to the client.
+            </td>
               </tr>
               <tr valign="top">
                 <td>[read-only]<div></div></td>
@@ -374,7 +377,11 @@
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
-                  </i>. <span class="NotEntered">Documentation for this section has not yet been entered.</span></td>
+                  </i>. 
+            Gets or sets a value indicating whether, when NTLM authentication is used,
+            the authentication information of first request is used to authenticate
+            additional requests on the same connection.
+            </td>
               </tr>
             </table>
           </div>
@@ -502,7 +509,7 @@
                 <td colspan="2">
                   <b>
                     <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
+                  </b>(<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
             Determines whether the specified object is <tt>null</tt>.
             </blockquote></td>
               </tr>
@@ -570,6 +577,23 @@
             One of the <a href="../WebSocketSharp.Net/AuthenticationSchemes.html">WebSocketSharp.Net.AuthenticationSchemes</a> values that indicates the scheme used to
             authenticate the clients. The default value is <a href="../WebSocketSharp.Net/AuthenticationSchemes.html#F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous">AuthenticationSchemes.Anonymous</a>.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemes:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -591,6 +615,23 @@
             A <a href="../WebSocketSharp.Net/AuthenticationSchemeSelector.html">WebSocketSharp.Net.AuthenticationSchemeSelector</a> delegate that invokes the method(s) used to select
             an authentication scheme. The default value is <tt>null</tt>.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -642,6 +683,14 @@
                 </td>
                 <td>
             The <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> has not been started or is stopped currently.
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
             </td>
               </tr>
             </table>
@@ -725,6 +774,14 @@
             The EndGetContext method was already called for the specified <i>asyncResult</i>.
             </td>
               </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
             </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
@@ -759,7 +816,23 @@
                   <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.InvalidOperationException">InvalidOperationException</a>
                 </td>
                 <td>
+                  <p>
             The <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> does not have any URI prefixes to listen on.
+            </p>
+                  <p>
+            -or-
+            </p>
+                  <p>
+            The <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> has not been started or is stopped currently.
+            </p>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
             </td>
               </tr>
             </table>
@@ -777,13 +850,32 @@
         <h3 id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions">IgnoreWriteExceptions Property</h3>
         <blockquote id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets or sets a value indicating whether the <a href="../WebSocketSharp.Net/HttpListener.html">WebSocketSharp.Net.HttpListener</a> returns exceptions
+            that occur when sending the response to the client.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IgnoreWriteExceptions</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            <tt>true</tt> if does not return exceptions that occur when sending the response to the client;
+            otherwise, <tt>false</tt>. The default value is <tt>false</tt>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions:Remarks">
@@ -845,6 +937,23 @@
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Value">
             A <a href="../WebSocketSharp.Net/HttpListenerPrefixCollection.html">WebSocketSharp.Net.HttpListenerPrefixCollection</a> that contains the URI prefixes.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Prefixes:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -865,6 +974,23 @@
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Value">
             A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains the name of the realm.
             </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.Realm:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -881,6 +1007,23 @@
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Start</b> ()</div>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.Start:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Start:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -897,6 +1040,23 @@
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>Stop</b> ()</div>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.Net.HttpListener.Stop:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
+          </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.Net.HttpListener.Stop:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
@@ -926,13 +1086,33 @@
         <h3 id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication">UnsafeConnectionNtlmAuthentication Property</h3>
         <blockquote id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:member">
           <p class="Summary">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
-          </p>
+            Gets or sets a value indicating whether, when NTLM authentication is used,
+            the authentication information of first request is used to authenticate
+            additional requests on the same connection.
+            </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>UnsafeConnectionNtlmAuthentication</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Value">
-            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+            <tt>true</tt> if the authentication information of first request is used;
+            otherwise, <tt>false</tt>. The default value is <tt>false</tt>.
+            </blockquote>
+          <h4 class="Subsection">Exceptions</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Exceptions">
+            <table class="TypeDocumentation">
+              <tr>
+                <th>Type</th>
+                <th>Reason</th>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.ObjectDisposedException">ObjectDisposedException</a>
+                </td>
+                <td>
+            This object has been closed.
+            </td>
+              </tr>
+            </table>
           </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication:Remarks">

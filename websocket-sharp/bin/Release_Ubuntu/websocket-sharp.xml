@@ -2141,6 +2141,9 @@
             One of the <see cref="T:WebSocketSharp.Net.AuthenticationSchemes" /> values that indicates the scheme used to
             authenticate the clients. The default value is <see cref="F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous" />.
             </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.HttpListener.AuthenticationSchemeSelectorDelegate">
             <summary>
@@ -2150,6 +2153,22 @@
             A <see cref="T:WebSocketSharp.Net.AuthenticationSchemeSelector" /> delegate that invokes the method(s) used to select
             an authentication scheme. The default value is <see langword="null" />.
             </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.IgnoreWriteExceptions">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> returns exceptions
+            that occur when sending the response to the client.
+            </summary>
+            <value>
+                <c>true</c> if does not return exceptions that occur when sending the response to the client;
+            otherwise, <c>false</c>. The default value is <c>false</c>.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.HttpListener.IsListening">
             <summary>
@@ -2174,6 +2193,9 @@
             <value>
             A <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> that contains the URI prefixes.
             </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="P:WebSocketSharp.Net.HttpListener.Realm">
             <summary>
@@ -2182,6 +2204,23 @@
             <value>
             A <see cref="T:System.String" /> that contains the name of the realm.
             </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
+        </member>
+        <member name="P:WebSocketSharp.Net.HttpListener.UnsafeConnectionNtlmAuthentication">
+            <summary>
+            Gets or sets a value indicating whether, when NTLM authentication is used,
+            the authentication information of first request is used to authenticate
+            additional requests on the same connection.
+            </summary>
+            <value>
+                <c>true</c> if the authentication information of first request is used;
+            otherwise, <c>false</c>. The default value is <c>false</c>.
+            </value>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.HttpListener.System#IDisposable#Dispose">
             <summary>
@@ -2211,6 +2250,9 @@
             <param name="state">
             An <see cref="T:System.Object" /> that contains a user defined object to pass to the <paramref name="callback" /> delegate.
             </param>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
             <exception cref="T:System.InvalidOperationException">
             The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
             </exception>
@@ -2233,6 +2275,9 @@
             <param name="asyncResult">
             An <see cref="T:System.IAsyncResult" /> obtained by calling the <see cref="M:WebSocketSharp.Net.HttpListener.BeginGetContext(System.AsyncCallback,System.Object)" /> method.
             </param>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
             <exception cref="T:System.ArgumentNullException">
                 <paramref name="asyncResult" /> is <see langword="null" />.
             </exception>
@@ -2255,18 +2300,35 @@
             A <see cref="T:WebSocketSharp.Net.HttpListenerContext" /> that contains a client's request information.
             </returns>
             <exception cref="T:System.InvalidOperationException">
+                <para>
             The <see cref="T:WebSocketSharp.Net.HttpListener" /> does not have any URI prefixes to listen on.
+            </para>
+                <para>
+            -or-
+            </para>
+                <para>
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
+            </para>
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Net.HttpListener.Start">
             <summary>
             Starts to receive incoming requests.
             </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="M:WebSocketSharp.Net.HttpListener.Stop">
             <summary>
             Stops receiving incoming requests.
             </summary>
+            <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
         </member>
         <member name="T:WebSocketSharp.Net.HttpListenerContext">
             <summary>

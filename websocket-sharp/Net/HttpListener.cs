@@ -4,9 +4,10 @@
 //
 // Author:
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
+//	sta (sta.blockhead@gmail.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -41,7 +42,7 @@ namespace WebSocketSharp.Net {
 	/// </summary>
 	public sealed class HttpListener : IDisposable {
 
-		#region Fields
+		#region Private Fields
 
 		AuthenticationSchemes                                auth_schemes;
 		AuthenticationSchemeSelector                         auth_selector; 
@@ -58,7 +59,7 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Constructor
+		#region Public Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HttpListener"/> class.
@@ -75,7 +76,7 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Properties
+		#region Public Properties
 
 		/// <summary>
 		/// Gets or sets the scheme used to authenticate the clients.
@@ -84,9 +85,15 @@ namespace WebSocketSharp.Net {
 		/// One of the <see cref="AuthenticationSchemes"/> values that indicates the scheme used to
 		/// authenticate the clients. The default value is <see cref="AuthenticationSchemes.Anonymous"/>.
 		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public AuthenticationSchemes AuthenticationSchemes {
-		// TODO: Digest, NTLM and Negotiate require ControlPrincipal
-			get { return auth_schemes; }
+			// TODO: Digest, NTLM and Negotiate require ControlPrincipal
+			get {
+				CheckDisposed ();
+				return auth_schemes;
+			}
 			set {
 				CheckDisposed ();
 				auth_schemes = value;
@@ -100,16 +107,36 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="AuthenticationSchemeSelector"/> delegate that invokes the method(s) used to select
 		/// an authentication scheme. The default value is <see langword="null"/>.
 		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate {
-			get { return auth_selector; }
+			get {
+				CheckDisposed ();
+				return auth_selector;
+			}
 			set {
 				CheckDisposed ();
 				auth_selector = value;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether the <see cref="HttpListener"/> returns exceptions
+		/// that occur when sending the response to the client.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if does not return exceptions that occur when sending the response to the client;
+		/// otherwise, <c>false</c>. The default value is <c>false</c>.
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public bool IgnoreWriteExceptions {
-			get { return ignore_write_exceptions; }
+			get {
+				CheckDisposed ();
+				return ignore_write_exceptions;
+			}
 			set {
 				CheckDisposed ();
 				ignore_write_exceptions = value;
@@ -142,6 +169,9 @@ namespace WebSocketSharp.Net {
 		/// <value>
 		/// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
 		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public HttpListenerPrefixCollection Prefixes {
 			get {
 				CheckDisposed ();
@@ -155,18 +185,39 @@ namespace WebSocketSharp.Net {
 		/// <value>
 		/// A <see cref="string"/> that contains the name of the realm.
 		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public string Realm {
-		// TODO: Use this
-			get { return realm; }
+			// TODO: Use this
+			get {
+				CheckDisposed ();
+				return realm;
+			}
 			set {
 				CheckDisposed ();
 				realm = value;
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets a value indicating whether, when NTLM authentication is used,
+		/// the authentication information of first request is used to authenticate
+		/// additional requests on the same connection.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the authentication information of first request is used;
+		/// otherwise, <c>false</c>. The default value is <c>false</c>.
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public bool UnsafeConnectionNtlmAuthentication {
-		// TODO: Support for NTLM needs some loving.
-			get { return unsafe_ntlm_auth; }
+			// TODO: Support for NTLM needs some loving.
+			get {
+				CheckDisposed ();
+				return unsafe_ntlm_auth;
+			}
 			set {
 				CheckDisposed ();
 				unsafe_ntlm_auth = value;
@@ -331,22 +382,6 @@ namespace WebSocketSharp.Net {
 
 		#endregion
 
-		#region Explicit Interface Implementation
-
-		/// <summary>
-		/// Releases all resource used by the <see cref="HttpListener"/>.
-		/// </summary>
-		void IDisposable.Dispose ()
-		{
-			if (disposed)
-				return;
-
-			Close (true); // TODO: Should we force here or not?
-			disposed = true;
-		}
-
-		#endregion
-
 		#region Public Methods
 
 		/// <summary>
@@ -378,6 +413,9 @@ namespace WebSocketSharp.Net {
 		/// <param name="state">
 		/// An <see cref="object"/> that contains a user defined object to pass to the <paramref name="callback"/> delegate.
 		/// </param>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		/// <exception cref="InvalidOperationException">
 		/// The <see cref="HttpListener"/> has not been started or is stopped currently.
 		/// </exception>
@@ -429,6 +467,9 @@ namespace WebSocketSharp.Net {
 		/// <param name="asyncResult">
 		/// An <see cref="IAsyncResult"/> obtained by calling the <see cref="BeginGetContext"/> method.
 		/// </param>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="asyncResult"/> is <see langword="null"/>.
 		/// </exception>
@@ -477,7 +518,18 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="HttpListenerContext"/> that contains a client's request information.
 		/// </returns>
 		/// <exception cref="InvalidOperationException">
+		/// <para>
 		/// The <see cref="HttpListener"/> does not have any URI prefixes to listen on.
+		/// </para>
+		/// <para>
+		/// -or-
+		/// </para>
+		/// <para>
+		/// The <see cref="HttpListener"/> has not been started or is stopped currently.
+		/// </para>
+		/// </exception>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
 		/// </exception>
 		public HttpListenerContext GetContext ()
 		{
@@ -493,6 +545,9 @@ namespace WebSocketSharp.Net {
 		/// <summary>
 		/// Starts to receive incoming requests.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public void Start ()
 		{
 			CheckDisposed ();
@@ -506,6 +561,9 @@ namespace WebSocketSharp.Net {
 		/// <summary>
 		/// Stops receiving incoming requests.
 		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
 		public void Stop ()
 		{
 			CheckDisposed ();
@@ -515,6 +573,22 @@ namespace WebSocketSharp.Net {
 			listening = false;
 			EndPointManager.RemoveListener (this);
 			SendServiceUnavailable ();
+		}
+
+		#endregion
+
+		#region Explicit Interface Implementation
+
+		/// <summary>
+		/// Releases all resource used by the <see cref="HttpListener"/>.
+		/// </summary>
+		void IDisposable.Dispose ()
+		{
+			if (disposed)
+				return;
+
+			Close (true); // TODO: Should we force here or not?
+			disposed = true;
 		}
 
 		#endregion

@@ -62,6 +62,9 @@
             authenticate the clients. The default value is <see cref="F:WebSocketSharp.Net.AuthenticationSchemes.Anonymous" />.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="AuthenticationSchemeSelectorDelegate">
@@ -80,6 +83,9 @@
             an authentication scheme. The default value is <see langword="null" />.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="BeginGetContext">
@@ -113,6 +119,9 @@
             </remarks>
         <exception cref="T:System.InvalidOperationException">
             The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
+            </exception>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
             </exception>
       </Docs>
     </Member>
@@ -163,6 +172,9 @@
         <exception cref="T:System.InvalidOperationException">
             The EndGetContext method was already called for the specified <paramref name="asyncResult" />.
             </exception>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="GetContext">
@@ -185,7 +197,18 @@
             when received the request.
             </remarks>
         <exception cref="T:System.InvalidOperationException">
+          <para>
             The <see cref="T:WebSocketSharp.Net.HttpListener" /> does not have any URI prefixes to listen on.
+            </para>
+          <para>
+            -or-
+            </para>
+          <para>
+            The <see cref="T:WebSocketSharp.Net.HttpListener" /> has not been started or is stopped currently.
+            </para>
+        </exception>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
             </exception>
       </Docs>
     </Member>
@@ -197,9 +220,18 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether the <see cref="T:WebSocketSharp.Net.HttpListener" /> returns exceptions
+            that occur when sending the response to the client.
+            </summary>
+        <value>
+          <c>true</c> if does not return exceptions that occur when sending the response to the client;
+            otherwise, <c>false</c>. The default value is <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="IsListening">
@@ -251,6 +283,9 @@
             A <see cref="T:WebSocketSharp.Net.HttpListenerPrefixCollection" /> that contains the URI prefixes.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Realm">
@@ -268,6 +303,9 @@
             A <see cref="T:System.String" /> that contains the name of the realm.
             </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Start">
@@ -283,6 +321,9 @@
             Starts to receive incoming requests.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="Stop">
@@ -298,6 +339,9 @@
             Stops receiving incoming requests.
             </summary>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
     <Member MemberName="System.IDisposable.Dispose">
@@ -323,9 +367,19 @@
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
-        <summary>To be added.</summary>
-        <value>To be added.</value>
+        <summary>
+            Gets or sets a value indicating whether, when NTLM authentication is used,
+            the authentication information of first request is used to authenticate
+            additional requests on the same connection.
+            </summary>
+        <value>
+          <c>true</c> if the authentication information of first request is used;
+            otherwise, <c>false</c>. The default value is <c>false</c>.
+            </value>
         <remarks>To be added.</remarks>
+        <exception cref="T:System.ObjectDisposedException">
+            This object has been closed.
+            </exception>
       </Docs>
     </Member>
   </Members>
