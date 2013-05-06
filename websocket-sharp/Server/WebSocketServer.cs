@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketServer.cs
  *
@@ -44,7 +44,7 @@ namespace WebSocketSharp.Server {
   /// </remarks>
   public class WebSocketServer : WebSocketServerBase
   {
-    #region Field
+    #region Private Fields
 
     private ServiceHostManager _svcHosts;
 
@@ -142,7 +142,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the collection of paths associated with the every WebSocket services that the server provides.
@@ -179,7 +179,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Private Method
+    #region Private Methods
 
     private void init()
     {
@@ -188,7 +188,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Protected Method
+    #region Protected Methods
 
     /// <summary>
     /// Accepts a WebSocket connection request.

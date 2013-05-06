@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * HttpListenerWebSocketContext.cs
  *
@@ -40,7 +40,7 @@ namespace WebSocketSharp.Net.WebSockets {
   /// </remarks>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
-    #region Fields
+    #region Private Fields
 
     private HttpListenerContext _context;
     private WebSocket           _websocket;
@@ -48,7 +48,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Constructor
+    #region Internal Constructors
 
     internal HttpListenerWebSocketContext(HttpListenerContext context)
     {
@@ -59,7 +59,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Internal Property
+    #region Internal Properties
 
     internal WsStream Stream {
       get {
@@ -290,7 +290,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Internal Method
+    #region Internal Methods
 
     internal void Close()
     {

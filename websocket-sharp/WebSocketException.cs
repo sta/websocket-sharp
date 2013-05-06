@@ -64,7 +64,7 @@ namespace WebSocketSharp {
     /// One of the <see cref="CloseStatusCode"/> values that indicates the cause of the exception.
     /// </value>
     public CloseStatusCode Code {
-      get; internal set;
+      get; private set;
     }
 
     #endregion

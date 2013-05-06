@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketServiceManager.cs
  *
@@ -38,7 +38,7 @@ namespace WebSocketSharp.Server {
   /// </summary>
   public class WebSocketServiceManager {
 
-    #region Fields
+    #region Private Fields
 
     private object                               _forSweep;
     private volatile bool                        _isStopped;
@@ -49,7 +49,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Constructor
+    #region Internal Constructors
 
     internal WebSocketServiceManager()
     {
@@ -65,7 +65,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the collection of IDs of active <see cref="WebSocketService"/> objects

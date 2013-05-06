@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * Fin.cs
  *
@@ -32,7 +32,7 @@ namespace WebSocketSharp {
 
   internal enum Fin : byte
   {
-    MORE  = 0x0,
+    MORE = 0x0,
     FINAL = 0x1
   }
 }

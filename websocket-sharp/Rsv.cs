@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * Rsv.cs
  *
@@ -33,6 +33,6 @@ namespace WebSocketSharp {
   internal enum Rsv : byte
   {
     OFF = 0x0,
-    ON  = 0x1
+    ON = 0x1
   }
 }

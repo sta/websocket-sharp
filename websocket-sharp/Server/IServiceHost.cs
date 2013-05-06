@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * IServiceHost.cs
  *

@@ -1,10 +1,10 @@
-#region MIT License
+#region License
 /*
  * WsState.cs
  *
  * The MIT License
  *
- * Copyright (c) 2010-2012 sta.blockhead
+ * Copyright (c) 2010-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,14 +46,14 @@ namespace WebSocketSharp {
     /// <summary>
     /// Equivalent to numeric value 1. Indicates that the connection is established and communication is possible.
     /// </summary>
-    OPEN       = 1,
+    OPEN = 1,
     /// <summary>
     /// Equivalent to numeric value 2. Indicates that the connection is going through the closing handshake, or the <b>Close</b> method has been invoked.
     /// </summary>
-    CLOSING    = 2,
+    CLOSING = 2,
     /// <summary>
     /// Equivalent to numeric value 3. Indicates that the connection has been closed or could not be opened.
     /// </summary>
-    CLOSED     = 3
+    CLOSED = 3
   }
 }

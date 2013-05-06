@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketServiceHost.cs
  *
@@ -48,13 +48,13 @@ namespace WebSocketSharp.Server {
   public class WebSocketServiceHost<T> : WebSocketServerBase, IServiceHost
     where T : WebSocketService, new()
   {
-    #region Field
+    #region Private Fields
 
     private WebSocketServiceManager _sessions;
 
     #endregion
 
-    #region Internal Constructor
+    #region Internal Constructors
 
     internal WebSocketServiceHost()
     {
@@ -180,7 +180,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
@@ -217,7 +217,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Private Method
+    #region Private Methods
 
     private void init()
     {
@@ -226,24 +226,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Explicit Interface Implementation
-
-    /// <summary>
-    /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <param name="context">
-    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
-    /// </param>
-    void IServiceHost.BindWebSocket(WebSocketContext context)
-    {
-      T service = new T();
-      service.Bind(context, _sessions);
-      service.Start();
-    }
-
-    #endregion
-
-    #region Protected Method
+    #region Protected Methods
 
     /// <summary>
     /// Accepts a WebSocket connection request.
@@ -304,6 +287,23 @@ namespace WebSocketSharp.Server {
     {
       base.Stop();
       _sessions.Stop();
+    }
+
+    #endregion
+
+    #region Explicit Interface Implementation
+
+    /// <summary>
+    /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <param name="context">
+    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
+    /// </param>
+    void IServiceHost.BindWebSocket(WebSocketContext context)
+    {
+      T service = new T();
+      service.Bind(context, _sessions);
+      service.Start();
     }
 
     #endregion

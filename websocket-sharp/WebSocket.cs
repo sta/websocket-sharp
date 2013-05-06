@@ -383,7 +383,7 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Events
+    #region Public Events
 
     /// <summary>
     /// Occurs when the <see cref="WebSocket"/> receives a Close frame or the Close method is called.
@@ -1384,9 +1384,9 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Internal Method
+    #region Internal Methods
 
-    // As Server
+    // As server
     internal void Close(HttpStatusCode code)
     {
       close(code);

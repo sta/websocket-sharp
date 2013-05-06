@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * HttpServer.cs
  *
@@ -59,7 +59,7 @@ namespace WebSocketSharp.Server {
   /// </remarks>
   public class HttpServer {
 
-    #region Fields
+    #region Private Fields
 
     private bool               _isWindows;
     private HttpListener       _listener;
@@ -70,7 +70,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Constructors
+    #region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for incoming requests
@@ -96,7 +96,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the port on which to listen for incoming requests.
@@ -139,7 +139,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Events
+    #region Public Events
 
     /// <summary>
     /// Occurs when the server receives an HTTP CONNECT request.

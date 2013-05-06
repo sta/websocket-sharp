@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * Handshake.cs
  *
@@ -35,13 +35,13 @@ namespace WebSocketSharp {
 
   internal abstract class Handshake {
 
-    #region Field
+    #region Protected Const Fields
 
     protected const string _crlf = "\r\n";
 
     #endregion
 
-    #region Constructor
+    #region Protected Constructors
 
     protected Handshake()
     {
@@ -51,14 +51,14 @@ namespace WebSocketSharp {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     public NameValueCollection Headers         { get; internal set; }
     public Version             ProtocolVersion { get; internal set; }
 
     #endregion
 
-    #region Methods
+    #region Public Methods
 
     public void AddHeader(string name, string value)
     {

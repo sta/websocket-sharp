@@ -1,10 +1,10 @@
-#region MIT License
+#region License
 /*
  * SslStream.cs
  *
  * The MIT License
  *
- * Copyright (c) 2012 sta.blockhead
+ * Copyright (c) 2012-2013 sta.blockhead
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ namespace WebSocketSharp.Net.Security {
 
   internal class SslStream : System.Net.Security.SslStream
   {
-    #region Constructors
+    #region Public Constructors
 
     public SslStream(NetworkStream innerStream)
       : base(innerStream)
@@ -70,7 +70,7 @@ namespace WebSocketSharp.Net.Security {
 
     #endregion
 
-    #region Property
+    #region Public Properties
 
     public bool DataAvailable {
       get {

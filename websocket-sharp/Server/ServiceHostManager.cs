@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * ServiceHostManager.cs
  *
@@ -33,14 +33,14 @@ namespace WebSocketSharp.Server {
 
   internal class ServiceHostManager {
   
-    #region Fields
+    #region Private Fields
 
     private Dictionary<string, IServiceHost> _svcHosts;
     private bool                             _sweeped;
 
     #endregion
 
-    #region Constructor
+    #region Public Constructors
 
     public ServiceHostManager()
     {
@@ -50,7 +50,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     public int Count {
       get {

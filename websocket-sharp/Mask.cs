@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * Mask.cs
  *
@@ -33,6 +33,6 @@ namespace WebSocketSharp {
   internal enum Mask : byte
   {
     UNMASK = 0x0,
-    MASK   = 0x1
+    MASK = 0x1
   }
 }

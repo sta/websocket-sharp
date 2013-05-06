@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketServerBase.cs
  *
@@ -43,7 +43,7 @@ namespace WebSocketSharp.Server {
   /// </remarks>
   public abstract class WebSocketServerBase {
 
-    #region Fields
+    #region Private Fields
 
     private Thread      _receiveRequestThread;
     private IPAddress   _address;
@@ -55,7 +55,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Constructors
+    #region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class.
@@ -153,7 +153,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Protected Property
+    #region Protected Properties
 
     /// <summary>
     /// Gets or sets the WebSocket URL on which to listen for incoming connection attempts.
@@ -226,7 +226,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Event
+    #region Public Events
 
     /// <summary>
     /// Occurs when the server gets an error.

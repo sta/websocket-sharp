@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketService.cs
  *
@@ -51,7 +51,7 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Public Constructor
+    #region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketService"/> class.

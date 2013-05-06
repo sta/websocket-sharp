@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * TcpListenerWebSocketContext.cs
  *
@@ -41,7 +41,7 @@ namespace WebSocketSharp.Net.WebSockets {
   /// </remarks>
   public class TcpListenerWebSocketContext : WebSocketContext
   {
-    #region Fields
+    #region Private Fields
 
     private CookieCollection _cookies;
     private TcpClient        _tcpClient;
@@ -52,7 +52,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Constructor
+    #region Internal Constructors
 
     internal TcpListenerWebSocketContext(TcpClient tcpClient, bool secure)
     {
@@ -305,7 +305,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Internal Method
+    #region Internal Methods
 
     internal void Close()
     {

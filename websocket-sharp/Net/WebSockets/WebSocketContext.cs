@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * WebSocketContext.cs
  *
@@ -41,7 +41,7 @@ namespace WebSocketSharp.Net.WebSockets {
   /// </remarks>
   public abstract class WebSocketContext {
 
-    #region Constructor
+    #region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketSharp.Net.WebSockets.WebSocketContext"/> class.
@@ -52,7 +52,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the cookies used in the WebSocket opening handshake.

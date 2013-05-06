@@ -1,4 +1,4 @@
-#region MIT License
+#region License
 /*
  * HttpRequestEventArgs.cs
  *
@@ -41,17 +41,17 @@ namespace WebSocketSharp.Server {
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
   {
-    #region Constructor
+    #region Internal Constructors
 
     internal HttpRequestEventArgs(HttpListenerContext context)
     {
-      Request  = context.Request;
+      Request = context.Request;
       Response = context.Response;
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the HTTP request objects sent from a client.
