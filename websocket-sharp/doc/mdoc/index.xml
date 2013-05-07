@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="websocket-sharp" Version="1.0.2.27098">
+    <Assembly Name="websocket-sharp" Version="1.0.2.30668">
       <AssemblyPublicKey>[00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 11 00 00 00 29 17 fb 89 fe c3 91 f7 2b cb 8b e2 61 d2 3f 05 93 6d 65 a8 9e 63 72 a6 f5 d5 2c f2 9d 20 fa 0b c0 70 6a f6 88 7e 8b 90 3f 39 f5 76 c8 48 e0 bb 7b b2 7b ed d3 10 a7 1a 0f 70 98 0f 7f f4 4b 53 09 d2 a5 ef 36 c3 56 b4 aa f0 91 72 63 25 07 89 e0 93 3e 3f 2e f2 b9 73 0e 12 15 5d 43 56 c3 f4 70 a5 89 fe f7 f6 ac 3e 77 c2 d8 d0 84 91 f4 0c d1 f3 8e dc c3 c3 b8 38 3d 0c bf 17 de 20 78 c1 ]</AssemblyPublicKey>
       <Attributes>
         <Attribute>

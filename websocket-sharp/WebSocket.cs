@@ -143,7 +143,7 @@ namespace WebSocketSharp {
     public WebSocket(string url, params string[] protocols)
       : this()
     {
-      if (url.IsNull())
+      if (url == null)
         throw new ArgumentNullException("url");
 
       Uri uri;
@@ -332,7 +332,7 @@ namespace WebSocketSharp {
         var origin = new Uri(value);
         if (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
         {
-          onError("The syntax of value must be '<scheme>://<host>[:<port>]'.");
+          onError("The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.");
           return;
         }
 
@@ -524,13 +524,13 @@ namespace WebSocketSharp {
     // As client
     private void closeResourcesAsClient()
     {
-      if (!_wsStream.IsNull())
+      if (_wsStream != null)
       {
         _wsStream.Dispose();
         _wsStream = null;
       }
 
-      if (!_tcpClient.IsNull())
+      if (_tcpClient != null)
       {
         _tcpClient.Close();
         _tcpClient = null;
@@ -540,11 +540,11 @@ namespace WebSocketSharp {
     // As server
     private void closeResourcesAsServer()
     {
-      if (!_context.IsNull() && !_closeContext.IsNull())
+      if (_context != null && _closeContext != null)
       {
         _closeContext();
         _wsStream = null;
-        _context  = null;
+        _context = null;
       }
     }
 
@@ -561,7 +561,7 @@ namespace WebSocketSharp {
 
       while (true)
       {
-        var frame = readFrame();
+        var frame = _wsStream.ReadFrame();
         if (processAbnormal(frame))
           return false;
 
@@ -622,7 +622,10 @@ namespace WebSocketSharp {
 
     private static WsFrame createControlFrame(Opcode opcode, PayloadData payloadData, bool client)
     {
-      return createFrame(Fin.FINAL, opcode, payloadData, false, client);
+      var mask = client ? Mask.MASK : Mask.UNMASK;
+      var frame = new WsFrame(Fin.FINAL, opcode, mask, payloadData);
+
+      return frame;
     }
 
     private static string createCurrentCompressionExtension(CompressionMethod method)
@@ -653,7 +656,7 @@ namespace WebSocketSharp {
     {
       var extensions = new StringBuilder(64);
       var comp = createCompressionExtension(_compression);
-      if (!comp.IsEmpty())
+      if (comp.Length > 0)
         extensions.Append(comp);
 
       return extensions.Length > 0
@@ -672,7 +675,7 @@ namespace WebSocketSharp {
       var req = new RequestHandshake(path);
       req.AddHeader("Host", host);
 
-      if (!_origin.IsEmpty())
+      if (_origin.Length > 0)
         req.AddHeader("Origin", _origin);
 
       req.AddHeader("Sec-WebSocket-Key", _base64key);
@@ -681,7 +684,7 @@ namespace WebSocketSharp {
         req.AddHeader("Sec-WebSocket-Protocol", _protocols);
 
       var extensions = createRequestExtensions();
-      if (!extensions.IsEmpty())
+      if (extensions.Length > 0)
         req.AddHeader("Sec-WebSocket-Extensions", extensions);
 
       req.AddHeader("Sec-WebSocket-Version", _version);
@@ -697,7 +700,7 @@ namespace WebSocketSharp {
     {
       var res = new ResponseHandshake();
       res.AddHeader("Sec-WebSocket-Accept", createResponseKey());
-      if (!_extensions.IsEmpty())
+      if (_extensions.Length > 0)
         res.AddHeader("Sec-WebSocket-Extensions", _extensions);
 
       if (_cookies.Count > 0)
@@ -774,7 +777,7 @@ namespace WebSocketSharp {
     private static bool isCompressionExtension(string value, CompressionMethod method)
     {
       var expected = createCompressionExtension(method);
-      return !expected.IsEmpty()
+      return expected.Length > 0
              ? value.Equals(expected)
              : false;
     }
@@ -834,7 +837,7 @@ namespace WebSocketSharp {
     private void onClose(CloseEventArgs eventArgs)
     {
       if (!Thread.CurrentThread.IsBackground)
-        if (!_exitReceiving.IsNull())
+        if (_exitReceiving != null)
           _exitReceiving.WaitOne(5 * 1000);
 
       if (!closeResources())
@@ -855,7 +858,7 @@ namespace WebSocketSharp {
 
     private void onMessage(MessageEventArgs eventArgs)
     {
-      if (!eventArgs.IsNull())
+      if (eventArgs != null)
         OnMessage.Emit(this, eventArgs);
     }
 
@@ -897,7 +900,7 @@ namespace WebSocketSharp {
 
     private bool processAbnormal(WsFrame frame)
     {
-      if (!frame.IsNull())
+      if (frame != null)
         return false;
 
       #if DEBUG
@@ -950,7 +953,7 @@ namespace WebSocketSharp {
         return false;
 
       bool incorrect = !frame.IsData ||
-                       frame.IsCompressed && _compression == CompressionMethod.NONE;
+                       (frame.IsCompressed && _compression == CompressionMethod.NONE);
 
       if (!incorrect)
         processFragments(frame);
@@ -1055,7 +1058,7 @@ namespace WebSocketSharp {
       }
 
       if (buffer.Count > 0)
-        _extensions = buffer.ToArray().ToString(",");
+        _extensions = buffer.ToArray().ToString(", ");
     }
 
     // As server
@@ -1147,20 +1150,10 @@ namespace WebSocketSharp {
         _protocol = protocol;
     }
 
-    private WsFrame readFrame()
-    {
-      return _wsStream.ReadFrame();
-    }
-
-    private string[] readHandshake()
-    {
-      return _wsStream.ReadHandshake();
-    }
-
     // As client
     private ResponseHandshake receiveResponseHandshake()
     {
-      var res = ResponseHandshake.Parse(readHandshake());
+      var res = ResponseHandshake.Parse(_wsStream.ReadHandshake());
       #if DEBUG
       Console.WriteLine("WS: Info@receiveResponseHandshake: Response handshake from server:\n");
       Console.WriteLine(res.ToString());
@@ -1198,7 +1191,7 @@ namespace WebSocketSharp {
 
       try
       {
-        if (_wsStream.IsNull())
+        if (_wsStream == null)
           return false;
 
         _wsStream.Write(frame);
@@ -1208,14 +1201,6 @@ namespace WebSocketSharp {
       {
         onError(ex.Message);
         return false;
-      }
-    }
-
-    private void send(Opcode opcode, byte[] data)
-    {
-      using (MemoryStream ms = new MemoryStream(data))
-      {
-        send(opcode, ms);
       }
     }
 
@@ -1264,21 +1249,15 @@ namespace WebSocketSharp {
       return send(frame);
     }
 
-    private void sendAsync(Opcode opcode, byte[] data, Action completed)
-    {
-      sendAsync(opcode, new MemoryStream(data), completed);
-    }
-
     private void sendAsync(Opcode opcode, Stream stream, Action completed)
     {
       Action<Opcode, Stream> action = send;
-
       AsyncCallback callback = (ar) =>
       {
         try
         {
           action.EndInvoke(ar);
-          if (!completed.IsNull())
+          if (completed != null)
             completed();
         }
         catch (Exception ex)
@@ -1527,7 +1506,7 @@ namespace WebSocketSharp {
     /// </returns>
     public bool Ping(string message)
     {
-      if (message.IsNull())
+      if (message == null)
         message = String.Empty;
 
       return _client
@@ -1543,13 +1522,16 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(byte[] data)
     {
-      if (data.IsNull())
+      if (data == null)
       {
         onError("'data' must not be null.");
         return;
       }
 
-      send(Opcode.BINARY, data);
+      using (var ms = new MemoryStream(data))
+      {
+        send(Opcode.BINARY, ms);
+      }
     }
 
     /// <summary>
@@ -1560,14 +1542,16 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(string data)
     {
-      if (data.IsNull())
+      if (data == null)
       {
         onError("'data' must not be null.");
         return;
       }
 
-      var buffer = Encoding.UTF8.GetBytes(data);
-      send(Opcode.TEXT, buffer);
+      using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
+      {
+        send(Opcode.TEXT, ms);
+      }
     }
 
     /// <summary>
@@ -1578,13 +1562,13 @@ namespace WebSocketSharp {
     /// </param>
     public void Send(FileInfo file)
     {
-      if (file.IsNull())
+      if (file == null)
       {
         onError("'file' must not be null.");
         return;
       }
 
-      using (FileStream fs = file.OpenRead())
+      using (var fs = file.OpenRead())
       {
         send(Opcode.BINARY, fs);
       }
@@ -1602,13 +1586,14 @@ namespace WebSocketSharp {
     /// </param>
     public void SendAsync(byte[] data, Action completed)
     {
-      if (data.IsNull())
+      if (data == null)
       {
         onError("'data' must not be null.");
         return;
       }
 
-      sendAsync(Opcode.BINARY, data, completed);
+      var ms = new MemoryStream(data);
+      sendAsync(Opcode.BINARY, ms, completed);
     }
 
     /// <summary>
@@ -1623,14 +1608,14 @@ namespace WebSocketSharp {
     /// </param>
     public void SendAsync(string data, Action completed)
     {
-      if (data.IsNull())
+      if (data == null)
       {
         onError("'data' must not be null.");
         return;
       }
 
-      var buffer = Encoding.UTF8.GetBytes(data);
-      sendAsync(Opcode.TEXT, buffer, completed);
+      var ms = new MemoryStream(Encoding.UTF8.GetBytes(data));
+      sendAsync(Opcode.TEXT, ms, completed);
     }
 
     /// <summary>
@@ -1645,7 +1630,7 @@ namespace WebSocketSharp {
     /// </param>
     public void SendAsync(FileInfo file, Action completed)
     {
-      if (file.IsNull())
+      if (file == null)
       {
         onError("'file' must not be null.");
         return;
@@ -1665,7 +1650,7 @@ namespace WebSocketSharp {
       if (isOpened(true))
         return;
 
-      if (cookie.IsNull())
+      if (cookie == null)
       {
         onError("'cookie' must not be null.");
         return;
