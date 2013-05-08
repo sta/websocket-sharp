@@ -819,7 +819,7 @@ namespace WebSocketSharp {
              ? false
              : !isValidHostHeader()
                ? false
-               : _context.Headers.Exists("Sec-WebSocket-Version", _version);
+               : _context.Headers.Contains("Sec-WebSocket-Version", _version);
     }
 
     // As client

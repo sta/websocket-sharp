@@ -480,6 +480,60 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="NameValueCollection"/> contains the entry
+    /// with the specified <paramref name="name"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="collection"/> contains the entry with <paramref name="name"/>;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="collection">
+    /// A <see cref="NameValueCollection"/> that contains the entries.
+    /// </param>
+    /// <param name="name">
+    /// A <see cref="string"/> that contains the key of the entry to find.
+    /// </param>
+    public static bool Contains(this NameValueCollection collection, string name)
+    {
+      return collection == null
+             ? false
+             : collection[name] != null;
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="NameValueCollection"/> contains the entry
+    /// with the specified both <paramref name="name"/> and <paramref name="value"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="collection"/> contains the entry with both <paramref name="name"/> and <paramref name="value"/>;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="collection">
+    /// A <see cref="NameValueCollection"/> that contains the entries.
+    /// </param>
+    /// <param name="name">
+    /// A <see cref="string"/> that contains the key of the entry to find.
+    /// </param>
+    /// <param name="value">
+    /// A <see cref="string"/> that contains the value of the entry to find.
+    /// </param>
+    public static bool Contains(this NameValueCollection collection, string name, string value)
+    {
+      if (collection == null)
+        return false;
+
+      var values = collection[name];
+      if (values == null)
+        return false;
+
+      foreach (string v in values.Split(','))
+        if (v.Trim().Equals(value, StringComparison.OrdinalIgnoreCase))
+          return true;
+
+      return false;
+    }
+
+    /// <summary>
     /// Emit the specified <see cref="EventHandler"/> delegate if is not <see langword="null"/>.
     /// </summary>
     /// <param name="eventHandler">
@@ -552,56 +606,6 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Determines whether the entry with the specified key exists in the specified <see cref="NameValueCollection"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the entry with the <paramref name="name"/> exists in the <paramref name="collection"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="collection">
-    /// A <see cref="NameValueCollection"/> that contains the entries.
-    /// </param>
-    /// <param name="name">
-    /// A <see cref="string"/> that contains the key of the entry to find.
-    /// </param>
-    public static bool Exists(this NameValueCollection collection, string name)
-    {
-      return collection == null
-             ? false
-             : collection[name] != null;
-    }
-
-    /// <summary>
-    /// Determines whether the entry with the specified both key and value exists in the specified <see cref="NameValueCollection"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the entry with the both <paramref name="name"/> and <paramref name="value"/> exists in the <paramref name="collection"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="collection">
-    /// A <see cref="NameValueCollection"/> that contains the entries.
-    /// </param>
-    /// <param name="name">
-    /// A <see cref="string"/> that contains the key of the entry to find.
-    /// </param>
-    /// <param name="value">
-    /// A <see cref="string"/> that contains the value of the entry to find.
-    /// </param>
-    public static bool Exists(this NameValueCollection collection, string name, string value)
-    {
-      if (collection == null)
-        return false;
-
-      var values = collection[name];
-      if (values == null)
-        return false;
-
-      foreach (string v in values.Split(','))
-        if (String.Compare(v.Trim(), value, true) == 0)
-          return true;
-
-      return false;
-    }
-
-    /// <summary>
     /// Gets the absolute path from the specified <see cref="Uri"/>.
     /// </summary>
     /// <returns>
@@ -645,10 +649,9 @@ namespace WebSocketSharp {
     public static CookieCollection GetCookies(this NameValueCollection headers, bool response)
     {
       var name = response ? "Set-Cookie" : "Cookie";
-      if (headers == null || !headers.Exists(name))
-        return new CookieCollection();
-
-      return CookieCollection.Parse(headers[name], response);
+      return headers == null || !headers.Contains(name)
+             ? new CookieCollection()
+             : CookieCollection.Parse(headers[name], response);
     }
 
     /// <summary>
@@ -999,10 +1002,10 @@ namespace WebSocketSharp {
       if (protocol.Length == 0)
         throw new ArgumentException("Must not be empty.", "protocol");
 
-      if (!request.Headers.Exists("Upgrade", protocol))
+      if (!request.Headers.Contains("Upgrade", protocol))
         return false;
 
-      if (!request.Headers.Exists("Connection", "Upgrade"))
+      if (!request.Headers.Contains("Connection", "Upgrade"))
         return false;
 
       return true;

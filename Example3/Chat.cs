@@ -13,7 +13,7 @@ namespace Example3 {
 
     private string getName()
     {
-      return QueryString.Exists("name")
+      return QueryString.Contains("name")
              ? QueryString["name"]
              : "anon#" + getNum();
     }

@@ -72,12 +72,12 @@ namespace WebSocketSharp {
 
     public bool ContainsHeader(string name)
     {
-      return Headers.Exists(name);
+      return Headers.Contains(name);
     }
 
     public bool ContainsHeader(string name, string value)
     {
-      return Headers.Exists(name, value);
+      return Headers.Contains(name, value);
     }
 
     public string[] GetHeaderValues(string name)

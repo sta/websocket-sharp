@@ -265,15 +265,15 @@ namespace WebSocketSharp.Net {
 					? false
 					: version < HttpVersion.Version11
 						? false
-						: !headers.Exists("Upgrade", "websocket")
+						: !headers.Contains("Upgrade", "websocket")
 							? false
-							: !headers.Exists("Connection", "Upgrade")
+							: !headers.Contains("Connection", "Upgrade")
 								? false
-								: !headers.Exists("Host")
+								: !headers.Contains("Host")
 									? false
-									: !headers.Exists("Sec-WebSocket-Key")
+									: !headers.Contains("Sec-WebSocket-Key")
 										? false
-										: headers.Exists("Sec-WebSocket-Version");
+										: headers.Contains("Sec-WebSocket-Version");
 			}
 		}
 

@@ -9,7 +9,7 @@ namespace Example2 {
   {
     protected override void OnMessage(MessageEventArgs e)
     {
-      var msg = QueryString.Exists("name")
+      var msg = QueryString.Contains("name")
               ? String.Format("'{0}' returns to {1}", e.Data, QueryString["name"])
               : e.Data;
       Send(msg);
