@@ -256,7 +256,7 @@ namespace WebSocketSharp {
 
     public bool Write(Handshake handshake)
     {
-      return write(handshake.ToBytes());
+      return write(handshake.ToByteArray());
     }
 
     #endregion

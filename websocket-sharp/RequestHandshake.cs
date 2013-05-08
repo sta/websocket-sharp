@@ -72,7 +72,9 @@ namespace WebSocketSharp {
       }
     }
 
-    public string HttpMethod { get; private set; }
+    public string HttpMethod {
+      get; private set;
+    }
 
     public bool IsWebSocketRequest {
       get {
@@ -80,15 +82,15 @@ namespace WebSocketSharp {
                ? false
                : ProtocolVersion < HttpVersion.Version11
                  ? false
-                 : !HeaderExists("Upgrade", "websocket")
+                 : !ContainsHeader("Upgrade", "websocket")
                    ? false
-                   : !HeaderExists("Connection", "Upgrade")
+                   : !ContainsHeader("Connection", "Upgrade")
                      ? false
-                     : !HeaderExists("Host")
+                     : !ContainsHeader("Host")
                        ? false
-                       : !HeaderExists("Sec-WebSocket-Key")
+                       : !ContainsHeader("Sec-WebSocket-Key")
                          ? false
-                         : HeaderExists("Sec-WebSocket-Version");
+                         : ContainsHeader("Sec-WebSocket-Version");
       }
     }
 
@@ -101,7 +103,7 @@ namespace WebSocketSharp {
           var i = RawUrl.IndexOf('?');
           if (i > 0)
           {
-            var query      = RawUrl.Substring(i + 1);
+            var query = RawUrl.Substring(i + 1);
             var components = query.Split('&');
             foreach (var c in components)
             {
@@ -109,7 +111,7 @@ namespace WebSocketSharp {
               if (nv.Key != null)
               {
                 var name = nv.Key.UrlDecode();
-                var val  = nv.Value.UrlDecode();
+                var val = nv.Value.UrlDecode();
                 _queryString.Add(name, val);
               }
             }
@@ -128,7 +130,9 @@ namespace WebSocketSharp {
       }
     }
 
-    public Uri RequestUri { get; private set; }
+    public Uri RequestUri {
+      get; private set;
+    }
 
     #endregion
 
@@ -148,9 +152,9 @@ namespace WebSocketSharp {
         headers.SetInternal(request[i], false);
 
       return new RequestHandshake {
-        Headers         = headers,
-        HttpMethod      = requestLine[0],
-        RequestUri      = requestLine[1].ToUri(),
+        Headers = headers,
+        HttpMethod = requestLine[0],
+        RequestUri = requestLine[1].ToUri(),
         ProtocolVersion = new Version(requestLine[2].Substring(5))
       };
     }
@@ -158,20 +162,20 @@ namespace WebSocketSharp {
     public static RequestHandshake Parse(WebSocketContext context)
     {
       return new RequestHandshake {
-        Headers         = context.Headers,
-        HttpMethod      = "GET",
-        RequestUri      = context.RequestUri,
+        Headers = context.Headers,
+        HttpMethod = "GET",
+        RequestUri = context.RequestUri,
         ProtocolVersion = HttpVersion.Version11
       };
     }
 
     public void SetCookies(CookieCollection cookies)
     {
-      if (cookies.IsNull() || cookies.Count == 0)
+      if (cookies == null || cookies.Count == 0)
         return;
 
       var sorted = cookies.Sorted.ToArray();
-      var header = new StringBuilder(sorted[0].ToString());
+      var header = new StringBuilder(sorted[0].ToString(), 64);
       for (int i = 1; i < sorted.Length; i++)
         if (!sorted[i].Expired)
           header.AppendFormat("; {0}", sorted[i].ToString());
@@ -181,12 +185,12 @@ namespace WebSocketSharp {
 
     public override string ToString()
     {
-      var buffer = new StringBuilder();
-      buffer.AppendFormat("{0} {1} HTTP/{2}{3}", HttpMethod, RawUrl, ProtocolVersion, _crlf);
+      var buffer = new StringBuilder(64);
+      buffer.AppendFormat("{0} {1} HTTP/{2}{3}", HttpMethod, RawUrl, ProtocolVersion, CrLf);
       foreach (string key in Headers.AllKeys)
-        buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
+        buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], CrLf);
 
-      buffer.Append(_crlf);
+      buffer.Append(CrLf);
       return buffer.ToString();
     }
 

@@ -37,7 +37,7 @@ namespace WebSocketSharp {
 
     #region Protected Const Fields
 
-    protected const string _crlf = "\r\n";
+    protected const string CrLf = "\r\n";
 
     #endregion
 
@@ -46,15 +46,20 @@ namespace WebSocketSharp {
     protected Handshake()
     {
       ProtocolVersion = HttpVersion.Version11;
-      Headers         = new NameValueCollection();
+      Headers = new NameValueCollection();
     }
 
     #endregion
 
     #region Public Properties
 
-    public NameValueCollection Headers         { get; internal set; }
-    public Version             ProtocolVersion { get; internal set; }
+    public NameValueCollection Headers {
+      get; protected set;
+    }
+
+    public Version ProtocolVersion {
+      get; protected set;
+    }
 
     #endregion
 
@@ -65,22 +70,22 @@ namespace WebSocketSharp {
       Headers.Add(name, value);
     }
 
+    public bool ContainsHeader(string name)
+    {
+      return Headers.Exists(name);
+    }
+
+    public bool ContainsHeader(string name, string value)
+    {
+      return Headers.Exists(name, value);
+    }
+
     public string[] GetHeaderValues(string name)
     {
       return Headers.GetValues(name);
     }
 
-    public bool HeaderExists(string name)
-    {
-      return Headers.Exists(name);
-    }
-
-    public bool HeaderExists(string name, string value)
-    {
-      return Headers.Exists(name, value);
-    }
-
-    public byte[] ToBytes()
+    public byte[] ToByteArray()
     {
       return Encoding.UTF8.GetBytes(ToString());
     }

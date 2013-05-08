@@ -67,17 +67,21 @@ namespace WebSocketSharp {
                ? false
                : StatusCode != "101"
                  ? false
-                 : !HeaderExists("Upgrade", "websocket")
+                 : !ContainsHeader("Upgrade", "websocket")
                    ? false
-                   : !HeaderExists("Connection", "Upgrade")
+                   : !ContainsHeader("Connection", "Upgrade")
                      ? false
-                     : HeaderExists("Sec-WebSocket-Accept");
+                     : ContainsHeader("Sec-WebSocket-Accept");
       }
     }
 
-    public string Reason { get; internal set; }
+    public string Reason {
+      get; private set;
+    }
 
-    public string StatusCode { get; internal set; }
+    public string StatusCode {
+      get; private set;
+    }
 
     #endregion
 
@@ -97,7 +101,7 @@ namespace WebSocketSharp {
       if (statusLine.Length < 3)
         throw new ArgumentException("Invalid status line.");
 
-      var reason = new StringBuilder(statusLine[2]);
+      var reason = new StringBuilder(statusLine[2], 64);
       for (int i = 3; i < statusLine.Length; i++)
         reason.AppendFormat(" {0}", statusLine[i]);
 
@@ -106,16 +110,16 @@ namespace WebSocketSharp {
         headers.SetInternal(response[i], true);
 
       return new ResponseHandshake {
-        Headers         = headers,
-        Reason          = reason.ToString(),
-        StatusCode      = statusLine[1],
+        Headers = headers,
+        Reason = reason.ToString(),
+        StatusCode = statusLine[1],
         ProtocolVersion = new Version(statusLine[0].Substring(5))
       };
     }
 
     public void SetCookies(CookieCollection cookies)
     {
-      if (cookies.IsNull() || cookies.Count == 0)
+      if (cookies == null || cookies.Count == 0)
         return;
 
       foreach (var cookie in cookies.Sorted)
@@ -124,12 +128,12 @@ namespace WebSocketSharp {
 
     public override string ToString()
     {
-      var buffer = new StringBuilder();
-      buffer.AppendFormat("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, _crlf);
+      var buffer = new StringBuilder(64);
+      buffer.AppendFormat("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, CrLf);
       foreach (string key in Headers.AllKeys)
-        buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], _crlf);
+        buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], CrLf);
 
-      buffer.Append(_crlf);
+      buffer.Append(CrLf);
       return buffer.ToString();
     }
 

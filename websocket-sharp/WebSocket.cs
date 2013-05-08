@@ -827,10 +827,10 @@ namespace WebSocketSharp {
     {
       return !response.IsWebSocketResponse
              ? false
-             : !response.HeaderExists("Sec-WebSocket-Accept", createResponseKey())
+             : !response.ContainsHeader("Sec-WebSocket-Accept", createResponseKey())
                ? false
-               : !response.HeaderExists("Sec-WebSocket-Version") ||
-                 response.HeaderExists("Sec-WebSocket-Version", _version);
+               : !response.ContainsHeader("Sec-WebSocket-Version") ||
+                 response.ContainsHeader("Sec-WebSocket-Version", _version);
     }
 
     private void onClose(CloseEventArgs eventArgs)
