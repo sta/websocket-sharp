@@ -275,14 +275,13 @@ namespace WebSocketSharp {
     /// Gets a value indicating whether the WebSocket connection is alive.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket connection is alive; otherwise, <c>false</c>.
     /// </value>
     public bool IsAlive {
       get {
-        if (_readyState != WsState.OPEN)
-          return false;
-
-        return Ping();
+        return _readyState == WsState.OPEN
+               ? ping(new byte[]{})
+               : false;
       }
     }
 
@@ -869,33 +868,20 @@ namespace WebSocketSharp {
       OnOpen.Emit(this, EventArgs.Empty);
     }
 
-    private bool ping(string message, int millisecondsTimeout)
+    private bool ping(byte[] data)
     {
-      var buffer = Encoding.UTF8.GetBytes(message);
-      if (buffer.Length > 125)
-      {
-        var msg = "The payload length of a Ping frame must be 125 bytes or less.";
-        onError(msg);
-        return false;
-      }
+      var frame = createControlFrame(Opcode.PING, new PayloadData(data), _client);
+      var timeOut = _client ? 5000 : 1000;
 
-      var frame = createControlFrame(Opcode.PING, new PayloadData(buffer), _client);
-      if (!send(frame))
-        return false;
-
-      return _receivePong.WaitOne(millisecondsTimeout);
+      return send(frame)
+             ? _receivePong.WaitOne(timeOut)
+             : false;
     }
 
     private void pong(PayloadData data)
     {
       var frame = createControlFrame(Opcode.PONG, data, _client);
       send(frame);
-    }
-
-    private void pong(string data)
-    {
-      var payloadData = new PayloadData(data);
-      pong(payloadData);
     }
 
     private bool processAbnormal(WsFrame frame)
@@ -1485,33 +1471,38 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Pings using the WebSocket connection.
+    /// Sends a Ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if a <see cref="WebSocket"/> instance receives a Pong in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping()
     {
-      return Ping(String.Empty);
+      return ping(new byte[]{});
     }
 
     /// <summary>
-    /// Pings with the specified <paramref name="message"/> using the WebSocket connection.
+    /// Sends a Ping with the specified <paramref name="message"/> using the WebSocket connection.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that contains a message.
+    /// A <see cref="string"/> that contains a message to send with a Ping.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if a <see cref="WebSocket"/> instance receives a Pong in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping(string message)
     {
-      if (message == null)
-        message = String.Empty;
+      if (message.IsNullOrEmpty())
+        return ping(new byte[]{});
 
-      return _client
-             ? ping(message, 5 * 1000)
-             : ping(message, 1 * 1000);
+      var data = Encoding.UTF8.GetBytes(message);
+      if (data.Length > 125)
+      {
+        onError("The payload length of a Ping frame must be 125 bytes or less.");
+        return false;
+      }
+
+      return ping(data);
     }
 
     /// <summary>
