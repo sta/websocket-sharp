@@ -607,7 +607,7 @@ namespace WebSocketSharp {
     // As client
     private static string createBase64Key()
     {
-      var src  = new byte[16];
+      var src = new byte[16];
       var rand = new Random();
       rand.NextBytes(src);
 
@@ -719,10 +719,10 @@ namespace WebSocketSharp {
 
     private string createResponseKey()
     {
+      var buffer = new StringBuilder(_base64key, 64);
+      buffer.Append(_guid);
       SHA1 sha1 = new SHA1CryptoServiceProvider();
-      var sb = new StringBuilder(_base64key);
-      sb.Append(_guid);
-      var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
+      var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(buffer.ToString()));
 
       return Convert.ToBase64String(src);
     }
@@ -1169,38 +1169,41 @@ namespace WebSocketSharp {
 
     private bool send(WsFrame frame)
     {
-      if (!isOpened(false))
+      if (_readyState == WsState.CONNECTING || _readyState == WsState.CLOSED)
       {
         onError("The WebSocket connection isn't established or has been closed.");
         return false;
       }
 
-      try
-      {
-        if (_wsStream == null)
-          return false;
-
-        _wsStream.Write(frame);
-        return true;
-      }
-      catch (Exception ex)
-      {
-        onError(ex.Message);
-        return false;
-      }
+      return _wsStream != null
+             ? _wsStream.Write(frame)
+             : false;
     }
 
     private void send(Opcode opcode, Stream stream)
     {
-      if (_compression == CompressionMethod.NONE)
+      var data = stream;
+      var compressed = false;
+      try
       {
-        send(opcode, stream, false);
-        return;
-      }
+        if (_compression != CompressionMethod.NONE)
+        {
+          data = data.Compress(_compression);
+          compressed = true;
+        }
 
-      using (var compressed = stream.Compress(_compression))
+        send(opcode, data, compressed);
+      }
+      catch (Exception ex)
       {
-        send(opcode, compressed, true);
+        onError(ex.Message);
+      }
+      finally
+      {
+        if (compressed)
+          data.Dispose();
+
+        stream.Dispose();
       }
     }
 
@@ -1208,24 +1211,17 @@ namespace WebSocketSharp {
     {
       lock (_forSend)
       {
-        try
+        if (_readyState != WsState.OPEN)
         {
-          if (_readyState != WsState.OPEN)
-          {
-            onError("The WebSocket connection isn't established or has been closed.");
-            return;
-          }
+          onError("The WebSocket connection isn't established or has been closed.");
+          return;
+        }
 
-          var length = stream.Length;
-          if (length <= _fragmentLen)
-            send(Fin.FINAL, opcode, stream.ReadBytes((int)length), compressed);
-          else
-            sendFragmented(opcode, stream, compressed);
-        }
-        catch (Exception ex)
-        {
-          onError(ex.Message);
-        }
+        var length = stream.Length;
+        if (length <= _fragmentLen)
+          send(Fin.FINAL, opcode, stream.ReadBytes((int)length), compressed);
+        else
+          sendFragmented(opcode, stream, compressed);
       }
     }
 
@@ -1237,12 +1233,12 @@ namespace WebSocketSharp {
 
     private void sendAsync(Opcode opcode, Stream stream, Action completed)
     {
-      Action<Opcode, Stream> action = send;
-      AsyncCallback callback = (ar) =>
+      Action<Opcode, Stream> sender = send;
+      AsyncCallback callback = ar =>
       {
         try
         {
-          action.EndInvoke(ar);
+          sender.EndInvoke(ar);
           if (completed != null)
             completed();
         }
@@ -1250,13 +1246,9 @@ namespace WebSocketSharp {
         {
           onError(ex.Message);
         }
-        finally
-        {
-          stream.Close();
-        }
       };
 
-      action.BeginInvoke(opcode, stream, callback, null);
+      sender.BeginInvoke(opcode, stream, callback, null);
     }
 
     private long sendFragmented(Opcode opcode, Stream stream, bool compressed)
@@ -1267,8 +1259,8 @@ namespace WebSocketSharp {
       var count  = rem == 0 ? quo - 2 : quo - 1;
 
       long readLen = 0;
-      var  tmpLen  = 0;
-      var  buffer  = new byte[_fragmentLen];
+      var tmpLen = 0;
+      var buffer = new byte[_fragmentLen];
 
       // First
       tmpLen = stream.Read(buffer, 0, _fragmentLen);
@@ -1519,10 +1511,8 @@ namespace WebSocketSharp {
         return;
       }
 
-      using (var ms = new MemoryStream(data))
-      {
-        send(Opcode.BINARY, ms);
-      }
+      var stream = new MemoryStream(data);
+      send(Opcode.BINARY, stream);
     }
 
     /// <summary>
@@ -1539,10 +1529,8 @@ namespace WebSocketSharp {
         return;
       }
 
-      using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(data)))
-      {
-        send(Opcode.TEXT, ms);
-      }
+      var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+      send(Opcode.TEXT, stream);
     }
 
     /// <summary>
@@ -1559,10 +1547,7 @@ namespace WebSocketSharp {
         return;
       }
 
-      using (var fs = file.OpenRead())
-      {
-        send(Opcode.BINARY, fs);
-      }
+      send(Opcode.BINARY, file.OpenRead());
     }
 
     /// <summary>
@@ -1583,8 +1568,8 @@ namespace WebSocketSharp {
         return;
       }
 
-      var ms = new MemoryStream(data);
-      sendAsync(Opcode.BINARY, ms, completed);
+      var stream = new MemoryStream(data);
+      sendAsync(Opcode.BINARY, stream, completed);
     }
 
     /// <summary>
@@ -1605,8 +1590,8 @@ namespace WebSocketSharp {
         return;
       }
 
-      var ms = new MemoryStream(Encoding.UTF8.GetBytes(data));
-      sendAsync(Opcode.TEXT, ms, completed);
+      var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+      sendAsync(Opcode.TEXT, stream, completed);
     }
 
     /// <summary>
