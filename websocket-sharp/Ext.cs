@@ -1362,23 +1362,23 @@ namespace WebSocketSharp {
     /// Converts the specified array of <see cref="byte"/> to the specified type data.
     /// </summary>
     /// <returns>
-    /// A T converted from the <paramref name="src"/>, or a default value of T
-    /// if the <paramref name="src"/> is an empty array of <see cref="byte"/>
-    /// or if the types of T aren't the <see cref="bool"/>, <see cref="char"/>, <see cref="double"/>,
+    /// A T converted from <paramref name="src"/>, or a default value of T
+    /// if <paramref name="src"/> is an empty array of <see cref="byte"/>
+    /// or if the type of T isn't <see cref="bool"/>, <see cref="char"/>, <see cref="double"/>,
     /// <see cref="float"/>, <see cref="int"/>, <see cref="long"/>, <see cref="short"/>,
-    /// <see cref="uint"/>, <see cref="ulong"/>, <see cref="ushort"/>.
+    /// <see cref="uint"/>, <see cref="ulong"/> or <see cref="ushort"/>.
     /// </returns>
     /// <param name="src">
     /// An array of <see cref="byte"/> to convert.
     /// </param>
     /// <param name="srcOrder">
-    /// A <see cref="WebSocketSharp.ByteOrder"/> that indicates the byte order of the <paramref name="src"/>.
+    /// A <see cref="WebSocketSharp.ByteOrder"/> that indicates the byte order of <paramref name="src"/>.
     /// </param>
     /// <typeparam name="T">
-    /// The type of the return value. The T must be a value type.
+    /// The type of the return. The T must be a value type.
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
-    /// Is thrown when the <paramref name="src"/> parameter passed to a method is invalid because it is <see langword="null"/>.
+    /// <paramref name="src"/> is <see langword="null"/>.
     /// </exception>
     public static T To<T>(this byte[] src, ByteOrder srcOrder)
       where T : struct
@@ -1389,46 +1389,37 @@ namespace WebSocketSharp {
       if (src.Length == 0)
         return default(T);
 
-      var type   = typeof(T);
+      var type = typeof(T);
       var buffer = src.ToHostOrder(srcOrder);
-      if (type == typeof(Boolean))
-        return (T)(object)BitConverter.ToBoolean(buffer, 0);
 
-      if (type == typeof(Char))
-        return (T)(object)BitConverter.ToChar(buffer, 0);
-
-      if (type == typeof(Double))
-        return (T)(object)BitConverter.ToDouble(buffer, 0);
-
-      if (type == typeof(Int16))
-        return (T)(object)BitConverter.ToInt16(buffer, 0);
-
-      if (type == typeof(Int32))
-        return (T)(object)BitConverter.ToInt32(buffer, 0);
-
-      if (type == typeof(Int64))
-        return (T)(object)BitConverter.ToInt64(buffer, 0);
-
-      if (type == typeof(Single))
-        return (T)(object)BitConverter.ToSingle(buffer, 0);
-
-      if (type == typeof(UInt16))
-        return (T)(object)BitConverter.ToUInt16(buffer, 0);
-
-      if (type == typeof(UInt32))
-        return (T)(object)BitConverter.ToUInt32(buffer, 0);
-
-      if (type == typeof(UInt64))
-        return (T)(object)BitConverter.ToUInt64(buffer, 0);
-
-      return default(T);
+      return type == typeof(Boolean)
+             ? (T)(object)BitConverter.ToBoolean(buffer, 0)
+             : type == typeof(Char)
+               ? (T)(object)BitConverter.ToChar(buffer, 0)
+               : type == typeof(Double)
+                 ? (T)(object)BitConverter.ToDouble(buffer, 0)
+                 : type == typeof(Int16)
+                   ? (T)(object)BitConverter.ToInt16(buffer, 0)
+                   : type == typeof(Int32)
+                     ? (T)(object)BitConverter.ToInt32(buffer, 0)
+                     : type == typeof(Int64)
+                       ? (T)(object)BitConverter.ToInt64(buffer, 0)
+                       : type == typeof(Single)
+                         ? (T)(object)BitConverter.ToSingle(buffer, 0)
+                         : type == typeof(UInt16)
+                           ? (T)(object)BitConverter.ToUInt16(buffer, 0)
+                           : type == typeof(UInt32)
+                             ? (T)(object)BitConverter.ToUInt32(buffer, 0)
+                             : type == typeof(UInt64)
+                               ? (T)(object)BitConverter.ToUInt64(buffer, 0)
+                               : default(T);
     }
 
     /// <summary>
-    /// Converts the specified data to an array of <see cref="byte"/>.
+    /// Converts the specified <paramref name="value"/> to an array of <see cref="byte"/>.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> converted from the <paramref name="value"/>.
+    /// An array of <see cref="byte"/> converted from <paramref name="value"/>.
     /// </returns>
     /// <param name="value">
     /// A T to convert.
@@ -1437,59 +1428,37 @@ namespace WebSocketSharp {
     /// A <see cref="WebSocketSharp.ByteOrder"/> that indicates the byte order of the return.
     /// </param>
     /// <typeparam name="T">
-    /// The type of the <paramref name="value"/>. The T must be a value type.
+    /// The type of <paramref name="value"/>. The T must be a value type.
     /// </typeparam>
     public static byte[] ToByteArray<T>(this T value, ByteOrder order)
       where T : struct
     {
       var type = typeof(T);
-      byte[] buffer;
-      if (type == typeof(Boolean))
-      {
-        buffer = BitConverter.GetBytes((Boolean)(object)value);
-      }
-      else if (type == typeof(Char))
-      {
-        buffer = BitConverter.GetBytes((Char)(object)value);
-      }
-      else if (type == typeof(Double))
-      {
-        buffer = BitConverter.GetBytes((Double)(object)value);
-      }
-      else if (type == typeof(Int16))
-      {
-        buffer = BitConverter.GetBytes((Int16)(object)value);
-      }
-      else if (type == typeof(Int32))
-      {
-        buffer = BitConverter.GetBytes((Int32)(object)value);
-      }
-      else if (type == typeof(Int64))
-      {
-        buffer = BitConverter.GetBytes((Int64)(object)value);
-      }
-      else if (type == typeof(Single))
-      {
-        buffer = BitConverter.GetBytes((Single)(object)value);
-      }
-      else if (type == typeof(UInt16))
-      {
-        buffer = BitConverter.GetBytes((UInt16)(object)value);
-      }
-      else if (type == typeof(UInt32))
-      {
-        buffer = BitConverter.GetBytes((UInt32)(object)value);
-      }
-      else if (type == typeof(UInt64))
-      {
-        buffer = BitConverter.GetBytes((UInt64)(object)value);
-      }
-      else
-      {
-        buffer = new byte[]{};
-      }
+      var buffer = type == typeof(Boolean)
+                 ? BitConverter.GetBytes((Boolean)(object)value)
+                 : type == typeof(Byte)
+                   ? new byte[]{ (Byte)(object)value }
+                   : type == typeof(Char)
+                     ? BitConverter.GetBytes((Char)(object)value)
+                     : type == typeof(Double)
+                       ? BitConverter.GetBytes((Double)(object)value)
+                       : type == typeof(Int16)
+                         ? BitConverter.GetBytes((Int16)(object)value)
+                         : type == typeof(Int32)
+                           ? BitConverter.GetBytes((Int32)(object)value)
+                           : type == typeof(Int64)
+                             ? BitConverter.GetBytes((Int64)(object)value)
+                             : type == typeof(Single)
+                               ? BitConverter.GetBytes((Single)(object)value)
+                               : type == typeof(UInt16)
+                                 ? BitConverter.GetBytes((UInt16)(object)value)
+                                 : type == typeof(UInt32)
+                                   ? BitConverter.GetBytes((UInt32)(object)value)
+                                   : type == typeof(UInt64)
+                                     ? BitConverter.GetBytes((UInt64)(object)value)
+                                     : new byte[]{};
 
-      return buffer.Length == 0 || order.IsHostOrder()
+      return buffer.Length <= 1 || order.IsHostOrder()
              ? buffer
              : buffer.Reverse().ToArray();
     }
@@ -1498,34 +1467,34 @@ namespace WebSocketSharp {
     /// Converts the order of the specified array of <see cref="byte"/> to the host byte order.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> converted from the <paramref name="src"/>.
+    /// An array of <see cref="byte"/> converted from <paramref name="src"/>.
     /// </returns>
     /// <param name="src">
     /// An array of <see cref="byte"/> to convert.
     /// </param>
     /// <param name="srcOrder">
-    /// A <see cref="WebSocketSharp.ByteOrder"/> that indicates the byte order of the <paramref name="src"/>.
+    /// A <see cref="WebSocketSharp.ByteOrder"/> that indicates the byte order of <paramref name="src"/>.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Is thrown when the <paramref name="src"/> parameter passed to a method is invalid because it is <see langword="null"/>.
+    /// <paramref name="src"/> is <see langword="null"/>.
     /// </exception>
     public static byte[] ToHostOrder(this byte[] src, ByteOrder srcOrder)
     {
       if (src == null)
         throw new ArgumentNullException("src");
 
-      return src.Length == 0 || srcOrder.IsHostOrder()
+      return src.Length <= 1 || srcOrder.IsHostOrder()
              ? src
              : src.Reverse().ToArray();
     }
 
     /// <summary>
-    /// Converts the specified array to a <see cref="string"/> concatenated the specified separator string
-    /// between each element of this array.
+    /// Converts the specified <paramref name="array"/> to a <see cref="string"/> that concatenates
+    /// the each element of <paramref name="array"/> across the specified <paramref name="separator"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> converted from the <paramref name="array"/> parameter, or a <see cref="String.Empty"/>
-    /// if the length of the <paramref name="array"/> is zero.
+    /// A <see cref="string"/> converted from <paramref name="array"/>, or a <see cref="String.Empty"/>
+    /// if the length of <paramref name="array"/> is zero.
     /// </returns>
     /// <param name="array">
     /// An array of T to convert.
@@ -1534,10 +1503,10 @@ namespace WebSocketSharp {
     /// A <see cref="string"/> that contains a separator string.
     /// </param>
     /// <typeparam name="T">
-    /// The type of elements in the <paramref name="array"/>.
+    /// The type of elements in <paramref name="array"/>.
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
-    /// Is thrown when the <paramref name="array"/> parameter passed to a method is invalid because it is <see langword="null"/>.
+    /// <paramref name="array"/> is <see langword="null"/>.
     /// </exception>
     public static string ToString<T>(this T[] array, string separator)
     {
@@ -1551,13 +1520,13 @@ namespace WebSocketSharp {
       if (separator == null)
         separator = String.Empty;
 
-      var sb = new StringBuilder();
+      var buffer = new StringBuilder(64);
       (len - 1).Times(i =>
-        sb.AppendFormat("{0}{1}", array[i].ToString(), separator)
+        buffer.AppendFormat("{0}{1}", array[i].ToString(), separator)
       );
 
-      sb.Append(array[len - 1].ToString());
-      return sb.ToString();
+      buffer.Append(array[len - 1].ToString());
+      return buffer.ToString();
     }
 
     /// <summary>
