@@ -73,8 +73,9 @@ namespace WebSocketSharp {
     private WebSocketContext  _context;
     private string            _extensions;
     private AutoResetEvent    _exitReceiving;
-    private Object            _forClose;
-    private Object            _forSend;
+    private object            _forClose;
+    private object            _forFrame;
+    private object            _forSend;
     private string            _origin;
     private string            _protocol;
     private string            _protocols;
@@ -94,8 +95,9 @@ namespace WebSocketSharp {
       _compression = CompressionMethod.NONE;
       _cookies = new CookieCollection();
       _extensions = String.Empty;
-      _forClose = new Object();
-      _forSend = new Object();
+      _forClose = new object();
+      _forFrame = new object();
+      _forSend = new object();
       _origin = String.Empty;
       _protocol = String.Empty;
       _readyState = WsState.CONNECTING;
@@ -426,8 +428,7 @@ namespace WebSocketSharp {
       lock(_forClose)
       {
         // Whether the closing handshake has been started already?
-        if (_readyState == WsState.CLOSING ||
-            _readyState == WsState.CLOSED)
+        if (_readyState == WsState.CLOSING || _readyState == WsState.CLOSED)
           return;
 
         // Whether the closing handshake on server is started before the connection has been established?
@@ -1169,15 +1170,24 @@ namespace WebSocketSharp {
 
     private bool send(WsFrame frame)
     {
-      if (_readyState == WsState.CONNECTING || _readyState == WsState.CLOSED)
+      lock (_forFrame)
       {
-        onError("The WebSocket connection isn't established or has been closed.");
-        return false;
-      }
+        var ready = _wsStream == null
+                    ? false
+                    : _readyState == WsState.OPEN
+                      ? true
+                      : _readyState == WsState.CLOSING
+                        ? frame.IsClose
+                        : false;
 
-      return _wsStream != null
-             ? _wsStream.Write(frame)
-             : false;
+        if (!ready)
+        {
+          onError("The WebSocket connection isn't established or has been closed.");
+          return false;
+        }
+
+        return _wsStream.Write(frame);
+      }
     }
 
     private void send(Opcode opcode, Stream stream)

@@ -318,7 +318,7 @@
             Gets a value indicating whether the WebSocket connection is alive.
             </summary>
         <value>
-          <c>true</c> if the connection is alive; otherwise, <c>false</c>.
+          <c>true</c> if the WebSocket connection is alive; otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>
@@ -431,10 +431,10 @@
       <Parameters />
       <Docs>
         <summary>
-            Pings using the WebSocket connection.
+            Sends a Ping using the WebSocket connection.
             </summary>
         <returns>
-          <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if a <see cref="T:WebSocketSharp.WebSocket" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -451,13 +451,13 @@
       </Parameters>
       <Docs>
         <param name="message">
-            A <see cref="T:System.String" /> that contains a message.
+            A <see cref="T:System.String" /> that contains a message to send with a Ping.
             </param>
         <summary>
-            Pings with the specified <paramref name="message" /> using the WebSocket connection.
+            Sends a Ping with the specified <paramref name="message" /> using the WebSocket connection.
             </summary>
         <returns>
-          <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
+          <c>true</c> if a <see cref="T:WebSocketSharp.WebSocket" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>

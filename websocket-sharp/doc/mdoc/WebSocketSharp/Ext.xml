@@ -77,6 +77,35 @@
       </Docs>
     </Member>
     <Member MemberName="Contains">
+      <MemberSignature Language="C#" Value="public static bool Contains (this System.Collections.Specialized.NameValueCollection collection, string name);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+        <Parameter Name="name" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified <paramref name="name" />.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="collection" /> contains the entry with <paramref name="name" />;
+            otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Contains">
       <MemberSignature Language="C#" Value="public static bool Contains (this string value, char[] chars);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(string value, char[] chars) cil managed" />
       <MemberType>Method</MemberType>
@@ -106,6 +135,39 @@
             </summary>
         <returns>
           <c>true</c> if <paramref name="value" /> contains any of <paramref name="chars" />; otherwise, <c>false</c>.
+            </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Contains">
+      <MemberSignature Language="C#" Value="public static bool Contains (this System.Collections.Specialized.NameValueCollection collection, string name, string value);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+        <Parameter Name="name" Type="System.String" />
+        <Parameter Name="value" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+        <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+        <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the entry to find.
+            </param>
+        <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified both <paramref name="name" /> and <paramref name="value" />.
+            </summary>
+        <returns>
+          <c>true</c> if <paramref name="collection" /> contains the entry with both <paramref name="name" /> and <paramref name="value" />;
+            otherwise, <c>false</c>.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -209,64 +271,6 @@
         <exception cref="T:System.ArgumentOutOfRangeException">
             Is thrown when the <paramref name="value" /> parameter passed to a method is invalid because it is outside the allowable range of values as <see cref="T:System.Byte" />.
             </exception>
-      </Docs>
-    </Member>
-    <Member MemberName="Exists">
-      <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Boolean</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
-        <Parameter Name="name" Type="System.String" />
-      </Parameters>
-      <Docs>
-        <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-        <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-        <summary>
-            Determines whether the entry with the specified key exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-        <returns>
-          <c>true</c> if the entry with the <paramref name="name" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
-            </returns>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="Exists">
-      <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name, string value);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Boolean</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
-        <Parameter Name="name" Type="System.String" />
-        <Parameter Name="value" Type="System.String" />
-      </Parameters>
-      <Docs>
-        <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-        <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-        <param name="value">
-            A <see cref="T:System.String" /> that contains the value of the entry to find.
-            </param>
-        <summary>
-            Determines whether the entry with the specified both key and value exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-        <returns>
-          <c>true</c> if the entry with the both <paramref name="name" /> and <paramref name="value" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
-            </returns>
-        <remarks>To be added.</remarks>
       </Docs>
     </Member>
     <Member MemberName="GetAbsolutePath">
@@ -1088,27 +1092,27 @@
       </Parameters>
       <Docs>
         <typeparam name="T">
-            The type of the return value. The T must be a value type.
+            The type of the return. The T must be a value type.
             </typeparam>
         <param name="src">
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
         <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
         <summary>
             Converts the specified array of <see cref="T:System.Byte" /> to the specified type data.
             </summary>
         <returns>
-            A T converted from the <paramref name="src" />, or a default value of T
-            if the <paramref name="src" /> is an empty array of <see cref="T:System.Byte" />
-            or if the types of T aren't the <see cref="T:System.Boolean" />, <see cref="T:System.Char" />, <see cref="T:System.Double" />,
+            A T converted from <paramref name="src" />, or a default value of T
+            if <paramref name="src" /> is an empty array of <see cref="T:System.Byte" />
+            or if the type of T isn't <see cref="T:System.Boolean" />, <see cref="T:System.Char" />, <see cref="T:System.Double" />,
             <see cref="T:System.Single" />, <see cref="T:System.Int32" />, <see cref="T:System.Int64" />, <see cref="T:System.Int16" />,
-            <see cref="T:System.UInt32" />, <see cref="T:System.UInt64" />, <see cref="T:System.UInt16" />.
+            <see cref="T:System.UInt32" />, <see cref="T:System.UInt64" /> or <see cref="T:System.UInt16" />.
             </returns>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+          <paramref name="src" /> is <see langword="null" />.
             </exception>
       </Docs>
     </Member>
@@ -1134,7 +1138,7 @@
       </Parameters>
       <Docs>
         <typeparam name="T">
-            The type of the <paramref name="value" />. The T must be a value type.
+            The type of <paramref name="value" />. The T must be a value type.
             </typeparam>
         <param name="value">
             A T to convert.
@@ -1143,10 +1147,10 @@
             A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the return.
             </param>
         <summary>
-            Converts the specified data to an array of <see cref="T:System.Byte" />.
+            Converts the specified <paramref name="value" /> to an array of <see cref="T:System.Byte" />.
             </summary>
         <returns>
-            An array of <see cref="T:System.Byte" /> converted from the <paramref name="value" />.
+            An array of <see cref="T:System.Byte" /> converted from <paramref name="value" />.
             </returns>
         <remarks>To be added.</remarks>
       </Docs>
@@ -1167,17 +1171,17 @@
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
         <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
         <summary>
             Converts the order of the specified array of <see cref="T:System.Byte" /> to the host byte order.
             </summary>
         <returns>
-            An array of <see cref="T:System.Byte" /> converted from the <paramref name="src" />.
+            An array of <see cref="T:System.Byte" /> converted from <paramref name="src" />.
             </returns>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+          <paramref name="src" /> is <see langword="null" />.
             </exception>
       </Docs>
     </Member>
@@ -1197,7 +1201,7 @@
       </Parameters>
       <Docs>
         <typeparam name="T">
-            The type of elements in the <paramref name="array" />.
+            The type of elements in <paramref name="array" />.
             </typeparam>
         <param name="array">
             An array of T to convert.
@@ -1206,16 +1210,16 @@
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
         <summary>
-            Converts the specified array to a <see cref="T:System.String" /> concatenated the specified separator string
-            between each element of this array.
+            Converts the specified <paramref name="array" /> to a <see cref="T:System.String" /> that concatenates
+            the each element of <paramref name="array" /> across the specified <paramref name="separator" />.
             </summary>
         <returns>
-            A <see cref="T:System.String" /> converted from the <paramref name="array" /> parameter, or a <see cref="F:System.String.Empty" />
-            if the length of the <paramref name="array" /> is zero.
+            A <see cref="T:System.String" /> converted from <paramref name="array" />, or a <see cref="F:System.String.Empty" />
+            if the length of <paramref name="array" /> is zero.
             </returns>
         <remarks>To be added.</remarks>
         <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="array" /> parameter passed to a method is invalid because it is <see langword="null" />.
+          <paramref name="array" /> is <see langword="null" />.
             </exception>
       </Docs>
     </Member>

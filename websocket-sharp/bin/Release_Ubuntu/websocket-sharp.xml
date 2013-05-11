@@ -58,6 +58,41 @@
             An array of <see cref="T:System.Char" /> that contains characters to find.
             </param>
         </member>
+        <member name="M:WebSocketSharp.Ext.Contains(System.Collections.Specialized.NameValueCollection,System.String)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified <paramref name="name" />.
+            </summary>
+            <returns>
+                <c>true</c> if <paramref name="collection" /> contains the entry with <paramref name="name" />;
+            otherwise, <c>false</c>.
+            </returns>
+            <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.Ext.Contains(System.Collections.Specialized.NameValueCollection,System.String,System.String)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified both <paramref name="name" /> and <paramref name="value" />.
+            </summary>
+            <returns>
+                <c>true</c> if <paramref name="collection" /> contains the entry with both <paramref name="name" /> and <paramref name="value" />;
+            otherwise, <c>false</c>.
+            </returns>
+            <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+            <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+            <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the entry to find.
+            </param>
+        </member>
         <member name="M:WebSocketSharp.Ext.Emit(System.EventHandler,System.Object,System.EventArgs)">
             <summary>
             Emit the specified <see cref="T:System.EventHandler" /> delegate if is not <see langword="null" />.
@@ -109,37 +144,6 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             Is thrown when the <paramref name="value" /> parameter passed to a method is invalid because it is outside the allowable range of values as <see cref="T:System.Byte" />.
             </exception>
-        </member>
-        <member name="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String)">
-            <summary>
-            Determines whether the entry with the specified key exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-            <returns>
-                <c>true</c> if the entry with the <paramref name="name" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
-            </returns>
-            <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-            <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-        </member>
-        <member name="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String)">
-            <summary>
-            Determines whether the entry with the specified both key and value exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-            <returns>
-                <c>true</c> if the entry with the both <paramref name="name" /> and <paramref name="value" /> exists in the <paramref name="collection" />; otherwise, <c>false</c>.
-            </returns>
-            <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-            <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-            <param name="value">
-            A <see cref="T:System.String" /> that contains the value of the entry to find.
-            </param>
         </member>
         <member name="M:WebSocketSharp.Ext.GetAbsolutePath(System.Uri)">
             <summary>
@@ -558,31 +562,31 @@
             Converts the specified array of <see cref="T:System.Byte" /> to the specified type data.
             </summary>
             <returns>
-            A T converted from the <paramref name="src" />, or a default value of T
-            if the <paramref name="src" /> is an empty array of <see cref="T:System.Byte" />
-            or if the types of T aren't the <see cref="T:System.Boolean" />, <see cref="T:System.Char" />, <see cref="T:System.Double" />,
+            A T converted from <paramref name="src" />, or a default value of T
+            if <paramref name="src" /> is an empty array of <see cref="T:System.Byte" />
+            or if the type of T isn't <see cref="T:System.Boolean" />, <see cref="T:System.Char" />, <see cref="T:System.Double" />,
             <see cref="T:System.Single" />, <see cref="T:System.Int32" />, <see cref="T:System.Int64" />, <see cref="T:System.Int16" />,
-            <see cref="T:System.UInt32" />, <see cref="T:System.UInt64" />, <see cref="T:System.UInt16" />.
+            <see cref="T:System.UInt32" />, <see cref="T:System.UInt64" /> or <see cref="T:System.UInt16" />.
             </returns>
             <param name="src">
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
             <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
             <typeparam name="T">
-            The type of the return value. The T must be a value type.
+            The type of the return. The T must be a value type.
             </typeparam>
             <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+                <paramref name="src" /> is <see langword="null" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Ext.ToByteArray``1(``0,WebSocketSharp.ByteOrder)">
             <summary>
-            Converts the specified data to an array of <see cref="T:System.Byte" />.
+            Converts the specified <paramref name="value" /> to an array of <see cref="T:System.Byte" />.
             </summary>
             <returns>
-            An array of <see cref="T:System.Byte" /> converted from the <paramref name="value" />.
+            An array of <see cref="T:System.Byte" /> converted from <paramref name="value" />.
             </returns>
             <param name="value">
             A T to convert.
@@ -591,7 +595,7 @@
             A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the return.
             </param>
             <typeparam name="T">
-            The type of the <paramref name="value" />. The T must be a value type.
+            The type of <paramref name="value" />. The T must be a value type.
             </typeparam>
         </member>
         <member name="M:WebSocketSharp.Ext.ToHostOrder(System.Byte[],WebSocketSharp.ByteOrder)">
@@ -599,26 +603,26 @@
             Converts the order of the specified array of <see cref="T:System.Byte" /> to the host byte order.
             </summary>
             <returns>
-            An array of <see cref="T:System.Byte" /> converted from the <paramref name="src" />.
+            An array of <see cref="T:System.Byte" /> converted from <paramref name="src" />.
             </returns>
             <param name="src">
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
             <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
             <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="src" /> parameter passed to a method is invalid because it is <see langword="null" />.
+                <paramref name="src" /> is <see langword="null" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Ext.ToString``1(``0[],System.String)">
             <summary>
-            Converts the specified array to a <see cref="T:System.String" /> concatenated the specified separator string
-            between each element of this array.
+            Converts the specified <paramref name="array" /> to a <see cref="T:System.String" /> that concatenates
+            the each element of <paramref name="array" /> across the specified <paramref name="separator" />.
             </summary>
             <returns>
-            A <see cref="T:System.String" /> converted from the <paramref name="array" /> parameter, or a <see cref="F:System.String.Empty" />
-            if the length of the <paramref name="array" /> is zero.
+            A <see cref="T:System.String" /> converted from <paramref name="array" />, or a <see cref="F:System.String.Empty" />
+            if the length of <paramref name="array" /> is zero.
             </returns>
             <param name="array">
             An array of T to convert.
@@ -627,10 +631,10 @@
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
             <typeparam name="T">
-            The type of elements in the <paramref name="array" />.
+            The type of elements in <paramref name="array" />.
             </typeparam>
             <exception cref="T:System.ArgumentNullException">
-            Is thrown when the <paramref name="array" /> parameter passed to a method is invalid because it is <see langword="null" />.
+                <paramref name="array" /> is <see langword="null" />.
             </exception>
         </member>
         <member name="M:WebSocketSharp.Ext.ToUri(System.String)">
@@ -943,7 +947,7 @@
             Gets a value indicating whether the WebSocket connection is alive.
             </summary>
             <value>
-                <c>true</c> if the connection is alive; otherwise, <c>false</c>.
+                <c>true</c> if the WebSocket connection is alive; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.WebSocket.IsSecure">
@@ -1065,21 +1069,21 @@
         </member>
         <member name="M:WebSocketSharp.WebSocket.Ping">
             <summary>
-            Pings using the WebSocket connection.
+            Sends a Ping using the WebSocket connection.
             </summary>
             <returns>
-                <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
+                <c>true</c> if a <see cref="T:WebSocketSharp.WebSocket" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Ping(System.String)">
             <summary>
-            Pings with the specified <paramref name="message" /> using the WebSocket connection.
+            Sends a Ping with the specified <paramref name="message" /> using the WebSocket connection.
             </summary>
             <param name="message">
-            A <see cref="T:System.String" /> that contains a message.
+            A <see cref="T:System.String" /> that contains a message to send with a Ping.
             </param>
             <returns>
-                <c>true</c> if the <see cref="T:WebSocketSharp.WebSocket" /> receives a Pong in a time; otherwise, <c>false</c>.
+                <c>true</c> if a <see cref="T:WebSocketSharp.WebSocket" /> instance receives a Pong in a time; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="M:WebSocketSharp.WebSocket.Send(System.Byte[])">

@@ -506,7 +506,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Ping">Ping</a>
                   </b>()<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings using the WebSocket connection.
+            Sends a Ping using the WebSocket connection.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -518,7 +518,7 @@
                   <b>
                     <a href="#M:WebSocketSharp.WebSocket.Ping(System.String)">Ping</a>
                   </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Pings with the specified <i>message</i> using the WebSocket connection.
+            Sends a Ping with the specified <i>message</i> using the WebSocket connection.
             </blockquote></td>
               </tr>
               <tr valign="top">
@@ -667,36 +667,6 @@
                 <td>
             Occurs when the WebSocket connection has been established.
             </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        <h2 class="Section">Extension Methods</h2>
-        <div class="SectionBox" id="Extension Methods">
-          <div class="SubsectionBox">
-            <table class="TypeMembers">
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
-            </blockquote></td>
               </tr>
             </table>
           </div>
@@ -1092,7 +1062,7 @@
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>IsAlive</b>  { get; }</div>
           <h4 class="Subsection">Value</h4>
           <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.IsAlive:Value">
-            <tt>true</tt> if the connection is alive; otherwise, <tt>false</tt>.
+            <tt>true</tt> if the WebSocket connection is alive; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.IsAlive:Remarks">
@@ -1216,13 +1186,13 @@
         <h3 id="M:WebSocketSharp.WebSocket.Ping">Ping Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Ping:member">
           <p class="Summary">
-            Pings using the WebSocket connection.
+            Sends a Ping using the WebSocket connection.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> ()</div>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Ping:Returns">
-            <tt>true</tt> if the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping:Remarks">
@@ -1236,7 +1206,7 @@
         <h3 id="M:WebSocketSharp.WebSocket.Ping(System.String)">Ping Method</h3>
         <blockquote id="M:WebSocketSharp.WebSocket.Ping(System.String):member">
           <p class="Summary">
-            Pings with the specified <i>message</i> using the WebSocket connection.
+            Sends a Ping with the specified <i>message</i> using the WebSocket connection.
             </p>
           <h2>Syntax</h2>
           <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Ping</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> message)</div>
@@ -1247,13 +1217,13 @@
                 <i>message</i>
               </dt>
               <dd>
-            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a message.
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a message to send with a Ping.
             </dd>
             </dl>
           </blockquote>
           <h4 class="Subsection">Returns</h4>
           <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Returns">
-            <tt>true</tt> if the <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> receives a Pong in a time; otherwise, <tt>false</tt>.
+            <tt>true</tt> if a <a href="../WebSocketSharp/WebSocket.html">WebSocketSharp.WebSocket</a> instance receives a Pong in a time; otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.Ping(System.String):Remarks">

@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="websocket-sharp" Version="1.0.2.30668">
+    <Assembly Name="websocket-sharp" Version="1.0.2.41223">
       <AssemblyPublicKey>[00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 11 00 00 00 29 17 fb 89 fe c3 91 f7 2b cb 8b e2 61 d2 3f 05 93 6d 65 a8 9e 63 72 a6 f5 d5 2c f2 9d 20 fa 0b c0 70 6a f6 88 7e 8b 90 3f 39 f5 76 c8 48 e0 bb 7b b2 7b ed d3 10 a7 1a 0f 70 98 0f 7f f4 4b 53 09 d2 a5 ef 36 c3 56 b4 aa f0 91 72 63 25 07 89 e0 93 3e 3f 2e f2 b9 73 0e 12 15 5d 43 56 c3 f4 70 a5 89 fe f7 f6 ac 3e 77 c2 d8 d0 84 91 f4 0c d1 f3 8e dc c3 c3 b8 38 3d 0c bf 17 de 20 78 c1 ]</AssemblyPublicKey>
       <Attributes>
         <Attribute>
@@ -140,6 +140,70 @@
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.AcceptWebSocketAsync(System.Net.Sockets.TcpListener,System.Boolean,System.Action{WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext})" />
+      </Member>
+    </ExtensionMethod>
+    <ExtensionMethod>
+      <Targets>
+        <Target Type="T:System.Collections.Specialized.NameValueCollection" />
+      </Targets>
+      <Member MemberName="Contains">
+        <MemberSignature Language="C#" Value="public static bool Contains (this System.Collections.Specialized.NameValueCollection collection, string name);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
+        <MemberType>ExtensionMethod</MemberType>
+        <ReturnValue>
+          <ReturnType>System.Boolean</ReturnType>
+        </ReturnValue>
+        <Parameters>
+          <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+          <Parameter Name="name" Type="System.String" />
+        </Parameters>
+        <Docs>
+          <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+          <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+          <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified <paramref name="name" />.
+            </summary>
+        </Docs>
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Contains(System.Collections.Specialized.NameValueCollection,System.String)" />
+      </Member>
+    </ExtensionMethod>
+    <ExtensionMethod>
+      <Targets>
+        <Target Type="T:System.Collections.Specialized.NameValueCollection" />
+      </Targets>
+      <Member MemberName="Contains">
+        <MemberSignature Language="C#" Value="public static bool Contains (this System.Collections.Specialized.NameValueCollection collection, string name, string value);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Contains(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
+        <MemberType>ExtensionMethod</MemberType>
+        <ReturnValue>
+          <ReturnType>System.Boolean</ReturnType>
+        </ReturnValue>
+        <Parameters>
+          <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
+          <Parameter Name="name" Type="System.String" />
+          <Parameter Name="value" Type="System.String" />
+        </Parameters>
+        <Docs>
+          <param name="collection">
+            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
+            </param>
+          <param name="name">
+            A <see cref="T:System.String" /> that contains the key of the entry to find.
+            </param>
+          <param name="value">
+            A <see cref="T:System.String" /> that contains the value of the entry to find.
+            </param>
+          <summary>
+            Determines whether the specified <see cref="T:System.Collections.Specialized.NameValueCollection" /> contains the entry
+            with the specified both <paramref name="name" /> and <paramref name="value" />.
+            </summary>
+        </Docs>
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Contains(System.Collections.Specialized.NameValueCollection,System.String,System.String)" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
@@ -286,68 +350,6 @@
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.EqualsAndSaveTo(System.Int32,System.Char,System.Collections.Generic.List{System.Byte})" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
-        <Target Type="T:System.Collections.Specialized.NameValueCollection" />
-      </Targets>
-      <Member MemberName="Exists">
-        <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Boolean</ReturnType>
-        </ReturnValue>
-        <Parameters>
-          <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
-          <Parameter Name="name" Type="System.String" />
-        </Parameters>
-        <Docs>
-          <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-          <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-          <summary>
-            Determines whether the entry with the specified key exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String)" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
-        <Target Type="T:System.Collections.Specialized.NameValueCollection" />
-      </Targets>
-      <Member MemberName="Exists">
-        <MemberSignature Language="C#" Value="public static bool Exists (this System.Collections.Specialized.NameValueCollection collection, string name, string value);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool Exists(class System.Collections.Specialized.NameValueCollection collection, string name, string value) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Boolean</ReturnType>
-        </ReturnValue>
-        <Parameters>
-          <Parameter Name="collection" Type="System.Collections.Specialized.NameValueCollection" RefType="this" />
-          <Parameter Name="name" Type="System.String" />
-          <Parameter Name="value" Type="System.String" />
-        </Parameters>
-        <Docs>
-          <param name="collection">
-            A <see cref="T:System.Collections.Specialized.NameValueCollection" /> that contains the entries.
-            </param>
-          <param name="name">
-            A <see cref="T:System.String" /> that contains the key of the entry to find.
-            </param>
-          <param name="value">
-            A <see cref="T:System.String" /> that contains the value of the entry to find.
-            </param>
-          <summary>
-            Determines whether the entry with the specified both key and value exists in the specified <see cref="T:System.Collections.Specialized.NameValueCollection" />.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.Exists(System.Collections.Specialized.NameValueCollection,System.String,System.String)" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>
@@ -1233,13 +1235,13 @@
         </Parameters>
         <Docs>
           <typeparam name="T">
-            The type of the return value. The T must be a value type.
+            The type of the return. The T must be a value type.
             </typeparam>
           <param name="src">
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
           <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
           <summary>
             Converts the specified array of <see cref="T:System.Byte" /> to the specified type data.
@@ -1274,7 +1276,7 @@
         </Parameters>
         <Docs>
           <typeparam name="T">
-            The type of the <paramref name="value" />. The T must be a value type.
+            The type of <paramref name="value" />. The T must be a value type.
             </typeparam>
           <param name="value">
             A T to convert.
@@ -1283,7 +1285,7 @@
             A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the return.
             </param>
           <summary>
-            Converts the specified data to an array of <see cref="T:System.Byte" />.
+            Converts the specified <paramref name="value" /> to an array of <see cref="T:System.Byte" />.
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.ToByteArray``1(``0,WebSocketSharp.ByteOrder)" />
@@ -1309,7 +1311,7 @@
             An array of <see cref="T:System.Byte" /> to convert.
             </param>
           <param name="srcOrder">
-            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of the <paramref name="src" />.
+            A <see cref="T:WebSocketSharp.ByteOrder" /> that indicates the byte order of <paramref name="src" />.
             </param>
           <summary>
             Converts the order of the specified array of <see cref="T:System.Byte" /> to the host byte order.
@@ -1338,7 +1340,7 @@
         </Parameters>
         <Docs>
           <typeparam name="T">
-            The type of elements in the <paramref name="array" />.
+            The type of elements in <paramref name="array" />.
             </typeparam>
           <param name="array">
             An array of T to convert.
@@ -1347,8 +1349,8 @@
             A <see cref="T:System.String" /> that contains a separator string.
             </param>
           <summary>
-            Converts the specified array to a <see cref="T:System.String" /> concatenated the specified separator string
-            between each element of this array.
+            Converts the specified <paramref name="array" /> to a <see cref="T:System.String" /> that concatenates
+            the each element of <paramref name="array" /> across the specified <paramref name="separator" />.
             </summary>
         </Docs>
         <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.ToString``1(``0[],System.String)" />
