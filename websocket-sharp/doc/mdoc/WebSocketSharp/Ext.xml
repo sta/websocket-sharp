@@ -771,7 +771,8 @@
             An <see cref="T:System.Int32" /> that contains the number of bytes to read.
             </param>
         <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
+            and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
         <returns>
             An array of <see cref="T:System.Byte" /> that receives the read data.
@@ -829,7 +830,8 @@
             An <see cref="T:System.Int32" /> that contains the buffer size in bytes of each internal read.
             </param>
         <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
+            and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
         <returns>
             An array of <see cref="T:System.Byte" /> that receives the read data.

@@ -1096,7 +1096,8 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="byte"/>.
+    /// Reads a block of bytes from the specified <see cref="Stream"/>
+    /// and returns the read data in an array of <see cref="byte"/>.
     /// </summary>
     /// <returns>
     /// An array of <see cref="byte"/> that receives the read data.
@@ -1112,8 +1113,20 @@ namespace WebSocketSharp {
       if (stream == null || length <= 0)
         return new byte[]{};
 
-      var buffer  = new byte[length];
+      var buffer = new byte[length];
       var readLen = stream.Read(buffer, 0, length);
+      if (readLen <= 0)
+        return new byte[]{};
+
+      var tmpLen = 0;
+      while (readLen < length)
+      {
+        tmpLen = stream.Read(buffer, readLen, length - readLen);
+        if (tmpLen <= 0)
+          break;
+
+        readLen += tmpLen;
+      }
 
       return readLen == length
              ? buffer
@@ -1140,7 +1153,8 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="byte"/>.
+    /// Reads a block of bytes from the specified <see cref="Stream"/>
+    /// and returns the read data in an array of <see cref="byte"/>.
     /// </summary>
     /// <returns>
     /// An array of <see cref="byte"/> that receives the read data.
@@ -1162,34 +1176,53 @@ namespace WebSocketSharp {
       if (bufferLength <= 0)
         bufferLength = 1024;
 
-      var  count      = length / bufferLength;
-      var  rem        = length % bufferLength;
-      var  readData   = new List<byte>();
-      var  readBuffer = new byte[bufferLength];
-      long readLen    = 0;
-      var  tmpLen     = 0;
+      var count = length / bufferLength;
+      var rem   = length % bufferLength;
+      if (count == 0)
+        return stream.ReadBytes((int)rem);
 
-      Action<byte[]> read = (buffer) =>
+      using (var readData = new MemoryStream())
       {
-        tmpLen = stream.Read(buffer, 0, buffer.Length);
-        if (tmpLen > 0)
+        var readLen = 0;
+        var bufferLen = 0;
+        var tmpLen = 0;
+        Func<byte[], bool> read = buffer =>
         {
-          readLen += tmpLen;
-          readData.AddRange(buffer.SubArray(0, tmpLen));
+          bufferLen = buffer.Length;
+          readLen = stream.Read(buffer, 0, bufferLen);
+          if (readLen <= 0)
+            return false;
+
+          while (readLen < bufferLen)
+          {
+            tmpLen = stream.Read(buffer, readLen, bufferLen - readLen);
+            if (tmpLen <= 0)
+              break;
+
+            readLen += tmpLen;
+          }
+
+          readData.Write(buffer, 0, readLen);
+          return readLen == bufferLen;
+        };
+
+        var readBuffer = new byte[bufferLength];
+        var cont = true;
+        for (long i = 0; i < count; i++)
+        {
+          if (!read(readBuffer))
+          {
+            cont = false;
+            break;
+          }
         }
-      };
 
-      count.Times(() =>
-      {
-        read(readBuffer);
-      });
+        if (cont && rem > 0)
+          read(new byte[rem]);
 
-      if (rem > 0)
-        read(new byte[rem]);
-
-      return readLen > 0
-             ? readData.ToArray()
-             : new byte[]{};
+        readData.Close();
+        return readData.ToArray();
+      }
     }
 
     /// <summary>

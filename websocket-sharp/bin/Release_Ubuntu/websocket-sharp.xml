@@ -402,7 +402,8 @@
         </member>
         <member name="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32)">
             <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
+            and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
             <returns>
             An array of <see cref="T:System.Byte" /> that receives the read data.
@@ -430,7 +431,8 @@
         </member>
         <member name="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32)">
             <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
+            Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
+            and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
             <returns>
             An array of <see cref="T:System.Byte" /> that receives the read data.

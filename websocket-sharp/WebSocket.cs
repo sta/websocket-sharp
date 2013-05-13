@@ -1196,13 +1196,26 @@ namespace WebSocketSharp {
       var compressed = false;
       try
       {
+        if (_readyState != WsState.OPEN)
+        {
+          onError("The WebSocket connection isn't established or has been closed.");
+          return;
+        }
+
         if (_compression != CompressionMethod.NONE)
         {
           data = data.Compress(_compression);
           compressed = true;
         }
 
-        send(opcode, data, compressed);
+        var length = data.Length;
+        lock (_forSend)
+        {
+          if (length <= _fragmentLen)
+            send(Fin.FINAL, opcode, data.ReadBytes((int)length), compressed);
+          else
+            sendFragmented(opcode, data, compressed);
+        }
       }
       catch (Exception ex)
       {
@@ -1214,24 +1227,6 @@ namespace WebSocketSharp {
           data.Dispose();
 
         stream.Dispose();
-      }
-    }
-
-    private void send(Opcode opcode, Stream stream, bool compressed)
-    {
-      lock (_forSend)
-      {
-        if (_readyState != WsState.OPEN)
-        {
-          onError("The WebSocket connection isn't established or has been closed.");
-          return;
-        }
-
-        var length = stream.Length;
-        if (length <= _fragmentLen)
-          send(Fin.FINAL, opcode, stream.ReadBytes((int)length), compressed);
-        else
-          sendFragmented(opcode, stream, compressed);
       }
     }
 
