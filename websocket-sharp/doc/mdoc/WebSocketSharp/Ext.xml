@@ -721,37 +721,6 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="NotEqual">
-      <MemberSignature Language="C#" Value="public static bool NotEqual (this string expected, string actual, bool ignoreCase);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool NotEqual(string expected, string actual, bool ignoreCase) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Boolean</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="expected" Type="System.String" RefType="this" />
-        <Parameter Name="actual" Type="System.String" />
-        <Parameter Name="ignoreCase" Type="System.Boolean" />
-      </Parameters>
-      <Docs>
-        <param name="expected">
-            The first <see cref="T:System.String" /> to compare.
-            </param>
-        <param name="actual">
-            The second <see cref="T:System.String" /> to compare.
-            </param>
-        <param name="ignoreCase">
-            A <see cref="T:System.Boolean" /> that indicates a case-sensitive or insensitive comparison. (<c>true</c> indicates a case-insensitive comparison.)
-            </param>
-        <summary>
-            Determines whether two specified <see cref="T:System.String" /> objects don't have the same value.
-            </summary>
-        <returns>
-          <c>true</c> if the value of <paramref name="expected" /> parameter isn't the same as the value of <paramref name="actual" /> parameter; otherwise, <c>false</c>.
-            </returns>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
     <Member MemberName="ReadBytes">
       <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, int length);" />
       <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int32 length) cil managed" />
@@ -797,37 +766,6 @@
             </param>
         <param name="length">
             A <see cref="T:System.Int64" /> that contains the number of bytes to read.
-            </param>
-        <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
-            </summary>
-        <returns>
-            An array of <see cref="T:System.Byte" /> that receives the read data.
-            </returns>
-        <remarks>To be added.</remarks>
-      </Docs>
-    </Member>
-    <Member MemberName="ReadBytes">
-      <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, long length, int bufferLength);" />
-      <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length, int32 bufferLength) cil managed" />
-      <MemberType>Method</MemberType>
-      <ReturnValue>
-        <ReturnType>System.Byte[]</ReturnType>
-      </ReturnValue>
-      <Parameters>
-        <Parameter Name="stream" Type="System.IO.Stream" RefType="this" />
-        <Parameter Name="length" Type="System.Int64" />
-        <Parameter Name="bufferLength" Type="System.Int32" />
-      </Parameters>
-      <Docs>
-        <param name="stream">
-            A <see cref="T:System.IO.Stream" /> that contains the data to read.
-            </param>
-        <param name="length">
-            A <see cref="T:System.Int64" /> that contains the number of bytes to read.
-            </param>
-        <param name="bufferLength">
-            An <see cref="T:System.Int32" /> that contains the buffer size in bytes of each internal read.
             </param>
         <summary>
             Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />

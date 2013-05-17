@@ -72,12 +72,6 @@ namespace WebSocketSharp {
 
     public PayloadData(byte[] extData, byte[] appData, bool masked)
     {
-      if (extData.IsNull())
-        throw new ArgumentNullException("extData");
-
-      if (appData.IsNull())
-        throw new ArgumentNullException("appData");
-
       if ((ulong)extData.LongLength + (ulong)appData.LongLength > MaxLength)
         throw new ArgumentOutOfRangeException(
           "The length of 'extData' plus 'appData' must be less than MaxLength.");
@@ -107,7 +101,9 @@ namespace WebSocketSharp {
       }
     }
 
-    internal bool IsMasked { get; private set; }
+    internal bool IsMasked {
+      get; private set;
+    }
 
     internal ulong Length {
       get {
@@ -119,9 +115,13 @@ namespace WebSocketSharp {
 
     #region Public Properties
 
-    public byte[] ExtensionData { get; private set; }
+    public byte[] ExtensionData {
+      get; private set;
+    }
 
-    public byte[] ApplicationData { get; private set; }
+    public byte[] ApplicationData {
+      get; private set;
+    }
 
     #endregion
 
@@ -152,12 +152,6 @@ namespace WebSocketSharp {
 
     public void Mask(byte[] maskingKey)
     {
-      if (maskingKey.IsNull())
-        throw new ArgumentNullException("maskingKey");
-
-      if (maskingKey.Length != 4)
-        throw new ArgumentOutOfRangeException("maskingKey", "The length must be 4.");
-
       if (ExtensionData.LongLength > 0)
         mask(ExtensionData, maskingKey);
 

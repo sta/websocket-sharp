@@ -174,8 +174,8 @@ namespace WebSocketSharp {
 
     internal static void CopyTo(this Stream src, Stream dest, bool setDefaultPosition)
     {
-      int readLen;
-      int bufferLen = 256;
+      var readLen = 0;
+      var bufferLen = 256;
       var buffer = new byte[bufferLen];
       while ((readLen = src.Read(buffer, 0, bufferLen)) > 0)
       {
@@ -319,6 +319,76 @@ namespace WebSocketSharp {
       return value.IsToken()
              ? value
              : String.Format("\"{0}\"", value.Replace("\"", "\\\""));
+    }
+
+    internal static byte[] ReadBytesInternal(this Stream stream, int length)
+    {
+      var buffer = new byte[length];
+      var readLen = stream.Read(buffer, 0, length);
+      if (readLen <= 0)
+        return new byte[]{};
+
+      var tmpLen = 0;
+      while (readLen < length)
+      {
+        tmpLen = stream.Read(buffer, readLen, length - readLen);
+        if (tmpLen <= 0)
+          break;
+
+        readLen += tmpLen;
+      }
+
+      return readLen == length
+             ? buffer
+             : buffer.SubArray(0, readLen);
+    }
+
+    internal static byte[] ReadBytesInternal(this Stream stream, long length, int bufferLength)
+    {
+      var count = length / bufferLength;
+      var rem   = length % bufferLength;
+      using (var readData = new MemoryStream())
+      {
+        var readLen = 0;
+        var bufferLen = 0;
+        var tmpLen = 0;
+        Func<byte[], bool> read = buffer =>
+        {
+          bufferLen = buffer.Length;
+          readLen = stream.Read(buffer, 0, bufferLen);
+          if (readLen <= 0)
+            return false;
+
+          while (readLen < bufferLen)
+          {
+            tmpLen = stream.Read(buffer, readLen, bufferLen - readLen);
+            if (tmpLen <= 0)
+              break;
+
+            readLen += tmpLen;
+          }
+
+          readData.Write(buffer, 0, readLen);
+          return readLen == bufferLen;
+        };
+
+        var readBuffer = new byte[bufferLength];
+        var readEnd = false;
+        for (long i = 0; i < count; i++)
+        {
+          if (!read(readBuffer))
+          {
+            readEnd = true;
+            break;
+          }
+        }
+
+        if (!readEnd && rem > 0)
+          read(new byte[rem]);
+
+        readData.Close();
+        return readData.ToArray();
+      }
     }
 
     internal static string RemovePrefix(this string value, params string[] prefixes)
@@ -1074,28 +1144,6 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Determines whether two specified <see cref="string"/> objects don't have the same value.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the value of <paramref name="expected"/> parameter isn't the same as the value of <paramref name="actual"/> parameter; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="expected">
-    /// The first <see cref="string"/> to compare.
-    /// </param>
-    /// <param name="actual">
-    /// The second <see cref="string"/> to compare.
-    /// </param>
-    /// <param name="ignoreCase">
-    /// A <see cref="bool"/> that indicates a case-sensitive or insensitive comparison. (<c>true</c> indicates a case-insensitive comparison.)
-    /// </param>
-    public static bool NotEqual(this string expected, string actual, bool ignoreCase)
-    {
-      return String.Compare(expected, actual, ignoreCase) != 0
-             ? true
-             : false;
-    }
-
-    /// <summary>
     /// Reads a block of bytes from the specified <see cref="Stream"/>
     /// and returns the read data in an array of <see cref="byte"/>.
     /// </summary>
@@ -1110,46 +1158,9 @@ namespace WebSocketSharp {
     /// </param>
     public static byte[] ReadBytes(this Stream stream, int length)
     {
-      if (stream == null || length <= 0)
-        return new byte[]{};
-
-      var buffer = new byte[length];
-      var readLen = stream.Read(buffer, 0, length);
-      if (readLen <= 0)
-        return new byte[]{};
-
-      var tmpLen = 0;
-      while (readLen < length)
-      {
-        tmpLen = stream.Read(buffer, readLen, length - readLen);
-        if (tmpLen <= 0)
-          break;
-
-        readLen += tmpLen;
-      }
-
-      return readLen == length
-             ? buffer
-             : readLen > 0
-               ? buffer.SubArray(0, readLen)
-               : new byte[]{};
-    }
-
-    /// <summary>
-    /// Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="byte"/>.
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="byte"/> that receives the read data.
-    /// </returns>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> that contains the data to read.
-    /// </param>
-    /// <param name="length">
-    /// A <see cref="long"/> that contains the number of bytes to read.
-    /// </param>
-    public static byte[] ReadBytes(this Stream stream, long length)
-    {
-      return stream.ReadBytes(length, 1024);
+      return stream == null || length < 1
+             ? new byte[]{}
+             : stream.ReadBytesInternal(length);
     }
 
     /// <summary>
@@ -1165,64 +1176,13 @@ namespace WebSocketSharp {
     /// <param name="length">
     /// A <see cref="long"/> that contains the number of bytes to read.
     /// </param>
-    /// <param name="bufferLength">
-    /// An <see cref="int"/> that contains the buffer size in bytes of each internal read.
-    /// </param>
-    public static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
+    public static byte[] ReadBytes(this Stream stream, long length)
     {
-      if (stream == null || length <= 0)
-        return new byte[]{};
-
-      if (bufferLength <= 0)
-        bufferLength = 1024;
-
-      var count = length / bufferLength;
-      var rem   = length % bufferLength;
-      if (count == 0)
-        return stream.ReadBytes((int)rem);
-
-      using (var readData = new MemoryStream())
-      {
-        var readLen = 0;
-        var bufferLen = 0;
-        var tmpLen = 0;
-        Func<byte[], bool> read = buffer =>
-        {
-          bufferLen = buffer.Length;
-          readLen = stream.Read(buffer, 0, bufferLen);
-          if (readLen <= 0)
-            return false;
-
-          while (readLen < bufferLen)
-          {
-            tmpLen = stream.Read(buffer, readLen, bufferLen - readLen);
-            if (tmpLen <= 0)
-              break;
-
-            readLen += tmpLen;
-          }
-
-          readData.Write(buffer, 0, readLen);
-          return readLen == bufferLen;
-        };
-
-        var readBuffer = new byte[bufferLength];
-        var cont = true;
-        for (long i = 0; i < count; i++)
-        {
-          if (!read(readBuffer))
-          {
-            cont = false;
-            break;
-          }
-        }
-
-        if (cont && rem > 0)
-          read(new byte[rem]);
-
-        readData.Close();
-        return readData.ToArray();
-      }
+      return stream == null || length < 1
+             ? new byte[]{}
+             : length > 1024
+               ? stream.ReadBytesInternal(length, 1024)
+               : stream.ReadBytesInternal((int)length);
     }
 
     /// <summary>

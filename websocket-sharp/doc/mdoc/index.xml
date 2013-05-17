@@ -1,6 +1,6 @@
 <Overview>
   <Assemblies>
-    <Assembly Name="websocket-sharp" Version="1.0.2.3113">
+    <Assembly Name="websocket-sharp" Version="1.0.2.41351">
       <AssemblyPublicKey>[00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 11 00 00 00 29 17 fb 89 fe c3 91 f7 2b cb 8b e2 61 d2 3f 05 93 6d 65 a8 9e 63 72 a6 f5 d5 2c f2 9d 20 fa 0b c0 70 6a f6 88 7e 8b 90 3f 39 f5 76 c8 48 e0 bb 7b b2 7b ed d3 10 a7 1a 0f 70 98 0f 7f f4 4b 53 09 d2 a5 ef 36 c3 56 b4 aa f0 91 72 63 25 07 89 e0 93 3e 3f 2e f2 b9 73 0e 12 15 5d 43 56 c3 f4 70 a5 89 fe f7 f6 ac 3e 77 c2 d8 d0 84 91 f4 0c d1 f3 8e dc c3 c3 b8 38 3d 0c bf 17 de 20 78 c1 ]</AssemblyPublicKey>
       <Attributes>
         <Attribute>
@@ -812,39 +812,6 @@
     </ExtensionMethod>
     <ExtensionMethod>
       <Targets>
-        <Target Type="T:System.String" />
-      </Targets>
-      <Member MemberName="NotEqual">
-        <MemberSignature Language="C#" Value="public static bool NotEqual (this string expected, string actual, bool ignoreCase);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig bool NotEqual(string expected, string actual, bool ignoreCase) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Boolean</ReturnType>
-        </ReturnValue>
-        <Parameters>
-          <Parameter Name="expected" Type="System.String" RefType="this" />
-          <Parameter Name="actual" Type="System.String" />
-          <Parameter Name="ignoreCase" Type="System.Boolean" />
-        </Parameters>
-        <Docs>
-          <param name="expected">
-            The first <see cref="T:System.String" /> to compare.
-            </param>
-          <param name="actual">
-            The second <see cref="T:System.String" /> to compare.
-            </param>
-          <param name="ignoreCase">
-            A <see cref="T:System.Boolean" /> that indicates a case-sensitive or insensitive comparison. (<c>true</c> indicates a case-insensitive comparison.)
-            </param>
-          <summary>
-            Determines whether two specified <see cref="T:System.String" /> objects don't have the same value.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean)" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
         <Target Type="T:System.IO.Stream" />
       </Targets>
       <Member MemberName="ReadBytes">
@@ -896,44 +863,11 @@
             A <see cref="T:System.Int64" /> that contains the number of bytes to read.
             </param>
           <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
-            </summary>
-        </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64)" />
-      </Member>
-    </ExtensionMethod>
-    <ExtensionMethod>
-      <Targets>
-        <Target Type="T:System.IO.Stream" />
-      </Targets>
-      <Member MemberName="ReadBytes">
-        <MemberSignature Language="C#" Value="public static byte[] ReadBytes (this System.IO.Stream stream, long length, int bufferLength);" />
-        <MemberSignature Language="ILAsm" Value=".method public static hidebysig unsigned int8[] ReadBytes(class System.IO.Stream stream, int64 length, int32 bufferLength) cil managed" />
-        <MemberType>ExtensionMethod</MemberType>
-        <ReturnValue>
-          <ReturnType>System.Byte[]</ReturnType>
-        </ReturnValue>
-        <Parameters>
-          <Parameter Name="stream" Type="System.IO.Stream" RefType="this" />
-          <Parameter Name="length" Type="System.Int64" />
-          <Parameter Name="bufferLength" Type="System.Int32" />
-        </Parameters>
-        <Docs>
-          <param name="stream">
-            A <see cref="T:System.IO.Stream" /> that contains the data to read.
-            </param>
-          <param name="length">
-            A <see cref="T:System.Int64" /> that contains the number of bytes to read.
-            </param>
-          <param name="bufferLength">
-            An <see cref="T:System.Int32" /> that contains the buffer size in bytes of each internal read.
-            </param>
-          <summary>
             Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
             and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
         </Docs>
-        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32)" />
+        <Link Type="WebSocketSharp.Ext" Member="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64)" />
       </Member>
     </ExtensionMethod>
     <ExtensionMethod>

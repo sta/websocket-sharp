@@ -383,23 +383,6 @@
             A <see cref="T:System.String" /> to test.
             </param>
         </member>
-        <member name="M:WebSocketSharp.Ext.NotEqual(System.String,System.String,System.Boolean)">
-            <summary>
-            Determines whether two specified <see cref="T:System.String" /> objects don't have the same value.
-            </summary>
-            <returns>
-                <c>true</c> if the value of <paramref name="expected" /> parameter isn't the same as the value of <paramref name="actual" /> parameter; otherwise, <c>false</c>.
-            </returns>
-            <param name="expected">
-            The first <see cref="T:System.String" /> to compare.
-            </param>
-            <param name="actual">
-            The second <see cref="T:System.String" /> to compare.
-            </param>
-            <param name="ignoreCase">
-            A <see cref="T:System.Boolean" /> that indicates a case-sensitive or insensitive comparison. (<c>true</c> indicates a case-insensitive comparison.)
-            </param>
-        </member>
         <member name="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int32)">
             <summary>
             Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
@@ -417,20 +400,6 @@
         </member>
         <member name="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64)">
             <summary>
-            Reads a block of bytes from the specified stream and returns the read data in an array of <see cref="T:System.Byte" />.
-            </summary>
-            <returns>
-            An array of <see cref="T:System.Byte" /> that receives the read data.
-            </returns>
-            <param name="stream">
-            A <see cref="T:System.IO.Stream" /> that contains the data to read.
-            </param>
-            <param name="length">
-            A <see cref="T:System.Int64" /> that contains the number of bytes to read.
-            </param>
-        </member>
-        <member name="M:WebSocketSharp.Ext.ReadBytes(System.IO.Stream,System.Int64,System.Int32)">
-            <summary>
             Reads a block of bytes from the specified <see cref="T:System.IO.Stream" />
             and returns the read data in an array of <see cref="T:System.Byte" />.
             </summary>
@@ -442,9 +411,6 @@
             </param>
             <param name="length">
             A <see cref="T:System.Int64" /> that contains the number of bytes to read.
-            </param>
-            <param name="bufferLength">
-            An <see cref="T:System.Int32" /> that contains the buffer size in bytes of each internal read.
             </param>
         </member>
         <member name="M:WebSocketSharp.Ext.SubArray``1(``0[],System.Int32,System.Int32)">
