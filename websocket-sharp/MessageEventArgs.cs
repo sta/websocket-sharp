@@ -78,9 +78,8 @@ namespace WebSocketSharp {
     /// </value>
     public string Data {
       get {
-        _data = _data != null
-              ? _data
-              : _rawData.LongLength == 0
+        if (_data == null)
+          _data = _rawData.LongLength == 0
                 ? String.Empty
                 : _opcode == Opcode.TEXT
                   ? Encoding.UTF8.GetString(_rawData)

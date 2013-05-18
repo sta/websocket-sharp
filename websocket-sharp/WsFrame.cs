@@ -113,13 +113,13 @@ namespace WebSocketSharp {
 
     internal bool IsBinary {
       get {
-        return isBinary(Opcode);
+        return Opcode == Opcode.BINARY;
       }
     }
 
     internal bool IsClose {
       get {
-        return isClose(Opcode);
+        return Opcode == Opcode.CLOSE;
       }
     }
 
@@ -131,74 +131,70 @@ namespace WebSocketSharp {
 
     internal bool IsContinuation {
       get {
-        return isContinuation(Opcode);
+        return Opcode == Opcode.CONT;
       }
     }
 
     internal bool IsControl {
       get {
-        return isControl(Opcode);
+        var opcode = Opcode;
+        return opcode == Opcode.CLOSE || opcode == Opcode.PING || opcode == Opcode.PONG;
       }
     }
 
     internal bool IsData {
       get {
-        return isData(Opcode);
+        var opcode = Opcode;
+        return opcode == Opcode.BINARY || opcode == Opcode.TEXT;
       }
     }
 
     internal bool IsFinal {
       get {
-        return isFinal(Fin);
+        return Fin == Fin.FINAL;
       }
     }
 
     internal bool IsFragmented {
       get {
-        return !IsFinal || IsContinuation;
+        return Fin == Fin.MORE || Opcode == Opcode.CONT;
       }
     }
 
     internal bool IsMasked {
       get {
-        return isMasked(Mask);
+        return Mask == Mask.MASK;
+      }
+    }
+
+    internal bool IsPerMessageCompressed {
+      get {
+        var opcode = Opcode;
+        return (opcode == Opcode.BINARY || opcode == Opcode.TEXT) && Rsv1 == Rsv.ON;
       }
     }
 
     internal bool IsPing {
       get {
-        return isPing(Opcode);
+        return Opcode == Opcode.PING;
       }
     }
 
     internal bool IsPong {
       get {
-        return isPong(Opcode);
+        return Opcode == Opcode.PONG;
       }
     }
 
     internal bool IsText {
       get {
-        return isText(Opcode);
+        return Opcode == Opcode.TEXT;
       }
     }
 
     internal ulong Length {
       get {
         return 2 + (ulong)(ExtPayloadLen.Length + MaskingKey.Length) + PayloadData.Length;
-      }
-    }
-
-    internal bool PerMessageCompressed {
-      get {
-        return IsData && IsCompressed;
-      }
-
-      set {
-        if (value && !IsData)
-          return;
-
-        Rsv1 = value ? Rsv.ON : Rsv.OFF;
       }
     }
 
@@ -230,24 +226,20 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private static WsFrame createCloseFrame(WebSocketException exception)
+    private static WsFrame createCloseFrame(CloseStatusCode code, string message)
     {
       using (var buffer = new MemoryStream())
       {
-        var code = (ushort)exception.Code;
-        var msg = exception.Message;
-        buffer.Write(code.ToByteArray(ByteOrder.BIG), 0, 2);
-        if (msg.Length != 0)
+        var tmp = ((ushort)code).ToByteArray(ByteOrder.BIG);
+        buffer.Write(tmp, 0, 2);
+        if (message.Length != 0)
         {
-          var tmp = Encoding.UTF8.GetBytes(msg);
+          tmp = Encoding.UTF8.GetBytes(message);
           buffer.Write(tmp, 0, tmp.Length);
         }
 
         buffer.Close();
-        var payload = new PayloadData(buffer.ToArray());
-        var frame = new WsFrame(Fin.FINAL, Opcode.CLOSE, Mask.UNMASK, payload);
-
-        return frame;
+        return new WsFrame(Fin.FINAL, Opcode.CLOSE, Mask.UNMASK, new PayloadData(buffer.ToArray()));
       }
     }
 
@@ -382,9 +374,6 @@ namespace WebSocketSharp {
 
     private static WsFrame parse(byte[] header, Stream stream, bool unmask)
     {
-      if (header == null || header.Length != 2)
-        return null;
-
       /* Header */
 
       // FIN
@@ -403,7 +392,7 @@ namespace WebSocketSharp {
       var payloadLen = (byte)(header[1] & 0x7f);
 
       if (isControl(opcode) && payloadLen > 125)
-        throw new WebSocketException(CloseStatusCode.INCONSISTENT_DATA,
+        return createCloseFrame(CloseStatusCode.INCONSISTENT_DATA,
           "The payload length of a control frame must be 125 bytes or less.");
 
       var frame = new WsFrame {
@@ -429,7 +418,8 @@ namespace WebSocketSharp {
                         : new byte[]{};
 
       if (extLen > 0 && extPayloadLen.Length != extLen)
-        throw new IOException();
+        return createCloseFrame(CloseStatusCode.ABNORMAL,
+          "'Extended Payload Length' of a frame cannot be read from the data stream.");
 
       frame.ExtPayloadLen = extPayloadLen;
 
@@ -441,7 +431,8 @@ namespace WebSocketSharp {
                      : new byte[]{};
 
       if (masked && maskingKey.Length != 4)
-        throw new IOException();
+        return createCloseFrame(CloseStatusCode.ABNORMAL,
+          "'Masking Key' of a frame cannot be read from the data stream.");
 
       frame.MaskingKey = maskingKey;
 
@@ -457,14 +448,18 @@ namespace WebSocketSharp {
       if (dataLen > 0)
       {
         if (payloadLen > 126 && dataLen > PayloadData.MaxLength)
-          throw new WebSocketException(CloseStatusCode.TOO_BIG);
+        {
+          var code = CloseStatusCode.TOO_BIG;
+          return createCloseFrame(code, code.GetMessage());
+        }
 
         data = dataLen > 1024
              ? stream.ReadBytesInternal((long)dataLen, 1024)
              : stream.ReadBytesInternal((int)dataLen);
 
         if (data.LongLength != (long)dataLen)
-          throw new IOException();
+          return createCloseFrame(CloseStatusCode.ABNORMAL,
+            "'Payload Data' of a frame cannot be read from the data stream.");
       }
       else
       {
@@ -559,11 +554,10 @@ namespace WebSocketSharp {
       try
       {
         var header = stream.ReadBytesInternal(2);
-        frame = parse(header, stream, unmask);
-      }
-      catch (WebSocketException ex)
-      {
-        frame = createCloseFrame(ex);
+        frame = header.Length == 2
+              ? parse(header, stream, unmask)
+              : createCloseFrame(CloseStatusCode.ABNORMAL,
+                  "'Header' of a frame cannot be read from the data stream.");
       }
       catch (Exception ex)
       {
@@ -594,17 +588,20 @@ namespace WebSocketSharp {
         try
         {
           var readLen = stream.EndRead(ar);
-          if (readLen > 0)
+          if (readLen == 1)
           {
-            if (readLen == 1)
-              header[1] = (byte)stream.ReadByte();
-
-            frame = parse(header, stream, unmask);
+            var tmp = stream.ReadByte();
+            if (tmp > -1)
+            {
+              header[1] = (byte)tmp;
+              readLen++;
+            }
           }
-        }
-        catch (WebSocketException ex)
-        {
-          frame = createCloseFrame(ex);
+
+          frame = readLen == 2
+                ? parse(header, stream, unmask)
+                : createCloseFrame(CloseStatusCode.ABNORMAL,
+                    "'Header' of a frame cannot be read from the data stream.");
         }
         catch (Exception ex)
         {
