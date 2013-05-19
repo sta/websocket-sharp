@@ -146,6 +146,23 @@ namespace WebSocketSharp {
 
     #region Internal Methods
 
+    internal static byte[] Append(this ushort code, string reason)
+    {
+      using (var buffer = new MemoryStream())
+      {
+        var tmp = code.ToByteArray(ByteOrder.BIG);
+        buffer.Write(tmp, 0, 2);
+        if (reason != null && reason.Length > 0)
+        {
+          tmp = Encoding.UTF8.GetBytes(reason);
+          buffer.Write(tmp, 0, tmp.Length);
+        }
+
+        buffer.Close();
+        return buffer.ToArray();
+      }
+    }
+
     internal static byte[] Compress(this byte[] value, CompressionMethod method)
     {
       return method == CompressionMethod.DEFLATE

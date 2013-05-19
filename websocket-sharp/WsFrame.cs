@@ -226,21 +226,10 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private static WsFrame createCloseFrame(CloseStatusCode code, string message)
+    private static WsFrame createCloseFrame(CloseStatusCode code, string reason, Mask mask)
     {
-      using (var buffer = new MemoryStream())
-      {
-        var tmp = ((ushort)code).ToByteArray(ByteOrder.BIG);
-        buffer.Write(tmp, 0, 2);
-        if (message.Length != 0)
-        {
-          tmp = Encoding.UTF8.GetBytes(message);
-          buffer.Write(tmp, 0, tmp.Length);
-        }
-
-        buffer.Close();
-        return new WsFrame(Fin.FINAL, Opcode.CLOSE, Mask.UNMASK, new PayloadData(buffer.ToArray()));
-      }
+      var data = ((ushort)code).Append(reason);
+      return new WsFrame(Fin.FINAL, Opcode.CLOSE, mask, new PayloadData(data));
     }
 
     private static byte[] createMaskingKey()
@@ -393,7 +382,8 @@ namespace WebSocketSharp {
 
       if (isControl(opcode) && payloadLen > 125)
         return createCloseFrame(CloseStatusCode.INCONSISTENT_DATA,
-          "The payload length of a control frame must be 125 bytes or less.");
+          "The payload length of a control frame must be 125 bytes or less.",
+          Mask.UNMASK);
 
       var frame = new WsFrame {
         Fin = fin,
@@ -419,7 +409,8 @@ namespace WebSocketSharp {
 
       if (extLen > 0 && extPayloadLen.Length != extLen)
         return createCloseFrame(CloseStatusCode.ABNORMAL,
-          "'Extended Payload Length' of a frame cannot be read from the data stream.");
+          "'Extended Payload Length' of a frame cannot be read from the data stream.",
+          Mask.UNMASK);
 
       frame.ExtPayloadLen = extPayloadLen;
 
@@ -432,7 +423,8 @@ namespace WebSocketSharp {
 
       if (masked && maskingKey.Length != 4)
         return createCloseFrame(CloseStatusCode.ABNORMAL,
-          "'Masking Key' of a frame cannot be read from the data stream.");
+          "'Masking Key' of a frame cannot be read from the data stream.",
+          Mask.UNMASK);
 
       frame.MaskingKey = maskingKey;
 
@@ -450,7 +442,7 @@ namespace WebSocketSharp {
         if (payloadLen > 126 && dataLen > PayloadData.MaxLength)
         {
           var code = CloseStatusCode.TOO_BIG;
-          return createCloseFrame(code, code.GetMessage());
+          return createCloseFrame(code, code.GetMessage(), Mask.UNMASK);
         }
 
         data = dataLen > 1024
@@ -459,7 +451,8 @@ namespace WebSocketSharp {
 
         if (data.LongLength != (long)dataLen)
           return createCloseFrame(CloseStatusCode.ABNORMAL,
-            "'Payload Data' of a frame cannot be read from the data stream.");
+            "'Payload Data' of a frame cannot be read from the data stream.",
+            Mask.UNMASK);
       }
       else
       {
@@ -557,7 +550,8 @@ namespace WebSocketSharp {
         frame = header.Length == 2
               ? parse(header, stream, unmask)
               : createCloseFrame(CloseStatusCode.ABNORMAL,
-                  "'Header' of a frame cannot be read from the data stream.");
+                  "'Header' of a frame cannot be read from the data stream.",
+                  Mask.UNMASK);
       }
       catch (Exception ex)
       {
@@ -601,7 +595,8 @@ namespace WebSocketSharp {
           frame = readLen == 2
                 ? parse(header, stream, unmask)
                 : createCloseFrame(CloseStatusCode.ABNORMAL,
-                    "'Header' of a frame cannot be read from the data stream.");
+                    "'Header' of a frame cannot be read from the data stream.",
+                    Mask.UNMASK);
         }
         catch (Exception ex)
         {

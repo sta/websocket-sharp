@@ -467,28 +467,14 @@ namespace WebSocketSharp {
 
     private void close(ushort code, string reason)
     {
-      using (var buffer = new MemoryStream())
+      var data = code.Append(reason);
+      if (data.Length > 125)
       {
-        var tmp = code.ToByteArray(ByteOrder.BIG);
-        buffer.Write(tmp, 0, tmp.Length);
-        if (!reason.IsNullOrEmpty())
-        {
-          tmp = Encoding.UTF8.GetBytes(reason);
-          buffer.Write(tmp, 0, tmp.Length);
-        }
-
-        buffer.Close();
-        var data = buffer.ToArray();
-        if (data.Length > 125)
-        {
-          var msg = "The payload length of a Close frame must be 125 bytes or less.";
-          onError(msg);
-
-          return;
-        }
-
-        close(new PayloadData(data));
+        onError("The payload length of a Close frame must be 125 bytes or less.");
+        return;
       }
+
+      close(new PayloadData(data));
     }
 
     private void closeHandshake(PayloadData data)
