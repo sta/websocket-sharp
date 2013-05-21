@@ -1,4 +1,5 @@
-# websocket-sharp #
+<!-- # websocket-sharp # -->
+![Logo](websocket-sharp.png)
 
 **websocket-sharp** is a C# implementation of the WebSocket protocol client & server.
 
