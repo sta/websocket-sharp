@@ -842,12 +842,6 @@ namespace WebSocketSharp {
       OnError.Emit(this, new ErrorEventArgs(message));
     }
 
-    private void onMessage(MessageEventArgs eventArgs)
-    {
-      if (eventArgs != null)
-        OnMessage.Emit(this, eventArgs);
-    }
-
     private void onOpen()
     {
       _readyState = WsState.OPEN;
@@ -911,7 +905,7 @@ namespace WebSocketSharp {
                    frame.Opcode, frame.PayloadData.ApplicationData.Decompress(_compression))
                : new MessageEventArgs(frame.Opcode, frame.PayloadData);
 
-      onMessage(args);
+      OnMessage.Emit(this, args);
       return true;
     }
 
@@ -955,7 +949,7 @@ namespace WebSocketSharp {
           data = concatenated.ToArray();
         }
 
-        onMessage(new MessageEventArgs(first.Opcode, data));
+        OnMessage.Emit(this, new MessageEventArgs(first.Opcode, data));
       }
     }
 
