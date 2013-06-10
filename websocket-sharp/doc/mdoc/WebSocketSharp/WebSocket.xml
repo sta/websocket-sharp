@@ -272,6 +272,23 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="Credentials">
+      <MemberSignature Language="C#" Value="public WebSocketSharp.WsCredential Credentials { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class WebSocketSharp.WsCredential Credentials" />
+      <MemberType>Property</MemberType>
+      <ReturnValue>
+        <ReturnType>WebSocketSharp.WsCredential</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+            Gets the credentials for HTTP authentication (Basic/Digest).
+            </summary>
+        <value>
+            A <see cref="T:WebSocketSharp.WsCredential" /> that contains the credentials for HTTP authentication.
+            </value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Dispose">
       <MemberSignature Language="C#" Value="public void Dispose ();" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void Dispose() cil managed" />
@@ -647,6 +664,35 @@
             </param>
         <summary>
             Sets a <see cref="T:WebSocketSharp.Net.Cookie" /> used in the WebSocket opening handshake.
+            </summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SetCredentials">
+      <MemberSignature Language="C#" Value="public void SetCredentials (string userName, string password, bool preAuth);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance void SetCredentials(string userName, string password, bool preAuth) cil managed" />
+      <MemberType>Method</MemberType>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="userName" Type="System.String" />
+        <Parameter Name="password" Type="System.String" />
+        <Parameter Name="preAuth" Type="System.Boolean" />
+      </Parameters>
+      <Docs>
+        <param name="userName">
+            A <see cref="T:System.String" /> that contains a user name associated with the credentials.
+            </param>
+        <param name="password">
+            A <see cref="T:System.String" /> that contains a password for <paramref name="userName" /> associated with the credentials.
+            </param>
+        <param name="preAuth">
+          <c>true</c> if sends the credentials as a Basic authorization with the first request handshake;
+            otherwise, <c>false</c>.
+            </param>
+        <summary>
+            Sets the credentials for HTTP authentication (Basic/Digest).
             </summary>
         <remarks>To be added.</remarks>
       </Docs>

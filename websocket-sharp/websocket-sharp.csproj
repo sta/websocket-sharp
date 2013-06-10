@@ -123,6 +123,9 @@
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
+    <Compile Include="AuthenticationChallenge.cs" />
+    <Compile Include="AuthenticationResponse.cs" />
+    <Compile Include="WsCredential.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

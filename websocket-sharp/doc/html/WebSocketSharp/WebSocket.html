@@ -305,6 +305,20 @@
                 <td>[read-only]<div></div></td>
                 <td>
                   <b>
+                    <a href="#P:WebSocketSharp.WebSocket.Credentials">Credentials</a>
+                  </b>
+                </td>
+                <td>
+                  <i>
+                    <a href="../WebSocketSharp/WsCredential.html">WsCredential</a>
+                  </i>. 
+            Gets the credentials for HTTP authentication (Basic/Digest).
+            </td>
+              </tr>
+              <tr valign="top">
+                <td>[read-only]<div></div></td>
+                <td>
+                  <b>
                     <a href="#P:WebSocketSharp.WebSocket.Extensions">Extensions</a>
                   </b>
                 </td>
@@ -603,6 +617,18 @@
                     <a href="#M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie)">SetCookie</a>
                   </b>(<a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a>)<blockquote>
             Sets a <a href="../WebSocketSharp.Net/Cookie.html">WebSocketSharp.Net.Cookie</a> used in the WebSocket opening handshake.
+            </blockquote></td>
+              </tr>
+              <tr valign="top">
+                <td>
+                  <div>
+                  </div>
+                </td>
+                <td colspan="2">
+                  <b>
+                    <a href="#M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean)">SetCredentials</a>
+                  </b>(<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>)<blockquote>
+            Sets the credentials for HTTP authentication (Basic/Digest).
             </blockquote></td>
               </tr>
             </table>
@@ -1014,6 +1040,26 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Cookies:Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="P:WebSocketSharp.WebSocket.Credentials">Credentials Property</h3>
+        <blockquote id="P:WebSocketSharp.WebSocket.Credentials:member">
+          <p class="Summary">
+            Gets the credentials for HTTP authentication (Basic/Digest).
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="../WebSocketSharp/WsCredential.html">WsCredential</a> <b>Credentials</b>  { get; }</div>
+          <h4 class="Subsection">Value</h4>
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.WebSocket.Credentials:Value">
+            A <a href="../WebSocketSharp/WsCredential.html">WebSocketSharp.WsCredential</a> that contains the credentials for HTTP authentication.
+            </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Credentials:Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="P:WebSocketSharp.WebSocket.Credentials:Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
@@ -1481,6 +1527,46 @@
           </div>
           <h2 class="Section">Requirements</h2>
           <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SetCookie(WebSocketSharp.Net.Cookie):Version Information">
+            <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
+          <hr size="1" />
+        </blockquote>
+        <h3 id="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean)">SetCredentials Method</h3>
+        <blockquote id="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean):member">
+          <p class="Summary">
+            Sets the credentials for HTTP authentication (Basic/Digest).
+            </p>
+          <h2>Syntax</h2>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Void">void</a> <b>SetCredentials</b> (<a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> userName, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> password, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> preAuth)</div>
+          <h4 class="Subsection">Parameters</h4>
+          <blockquote class="SubsectionBox" id="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean):Parameters">
+            <dl>
+              <dt>
+                <i>userName</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a user name associated with the credentials.
+            </dd>
+              <dt>
+                <i>password</i>
+              </dt>
+              <dd>
+            A <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.String">string</a> that contains a password for <i>userName</i> associated with the credentials.
+            </dd>
+              <dt>
+                <i>preAuth</i>
+              </dt>
+              <dd>
+                <tt>true</tt> if sends the credentials as a Basic authorization with the first request handshake;
+            otherwise, <tt>false</tt>.
+            </dd>
+            </dl>
+          </blockquote>
+          <h2 class="Section">Remarks</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean):Remarks">
+            <span class="NotEntered">Documentation for this section has not yet been entered.</span>
+          </div>
+          <h2 class="Section">Requirements</h2>
+          <div class="SectionBox" id="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean):Version Information">
             <b>Namespace: </b>WebSocketSharp<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

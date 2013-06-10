@@ -902,6 +902,14 @@
             over the collection of cookies.
             </value>
         </member>
+        <member name="P:WebSocketSharp.WebSocket.Credentials">
+            <summary>
+            Gets the credentials for HTTP authentication (Basic/Digest).
+            </summary>
+            <value>
+            A <see cref="T:WebSocketSharp.WsCredential" /> that contains the credentials for HTTP authentication.
+            </value>
+        </member>
         <member name="P:WebSocketSharp.WebSocket.Extensions">
             <summary>
             Gets the WebSocket extensions selected by the server.
@@ -1120,6 +1128,21 @@
             </summary>
             <param name="cookie">
             A <see cref="T:WebSocketSharp.Net.Cookie" /> that contains an HTTP Cookie to set.
+            </param>
+        </member>
+        <member name="M:WebSocketSharp.WebSocket.SetCredentials(System.String,System.String,System.Boolean)">
+            <summary>
+            Sets the credentials for HTTP authentication (Basic/Digest).
+            </summary>
+            <param name="userName">
+            A <see cref="T:System.String" /> that contains a user name associated with the credentials.
+            </param>
+            <param name="password">
+            A <see cref="T:System.String" /> that contains a password for <paramref name="userName" /> associated with the credentials.
+            </param>
+            <param name="preAuth">
+                <c>true</c> if sends the credentials as a Basic authorization with the first request handshake;
+            otherwise, <c>false</c>.
             </param>
         </member>
         <member name="T:WebSocketSharp.Server.WebSocketServer">
@@ -5212,6 +5235,36 @@
             </summary>
             <value>
             One of the <see cref="T:WebSocketSharp.CloseStatusCode" /> values that indicates the cause of the exception.
+            </value>
+        </member>
+        <member name="T:WebSocketSharp.WsCredential">
+            <summary>
+            Provides the credentials for HTTP authentication (Basic/Digest).
+            </summary>
+        </member>
+        <member name="P:WebSocketSharp.WsCredential.Domain">
+            <summary>
+            Gets the name of the user domain associated with the credentials.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the name of the user domain associated with the credentials.
+            Currently, returns the request uri of a WebSocket opening handshake.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.WsCredential.Password">
+            <summary>
+            Gets the password for the user name associated with the credentials.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the password for the user name associated with the credentials.
+            </value>
+        </member>
+        <member name="P:WebSocketSharp.WsCredential.UserName">
+            <summary>
+            Gets the user name associated with the credentials.
+            </summary>
+            <value>
+            A <see cref="T:System.String" /> that contains the user name associated with the credentials.
             </value>
         </member>
     </members>

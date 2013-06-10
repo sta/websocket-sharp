@@ -183,6 +183,12 @@ namespace WebSocketSharp {
       AddHeader("Cookie", header.ToString());
     }
 
+    public void SetAuthorization(AuthenticationResponse response)
+    {
+      var credentials = response.ToString();
+      AddHeader("Authorization", credentials);
+    }
+
     public override string ToString()
     {
       var buffer = new StringBuilder(64);

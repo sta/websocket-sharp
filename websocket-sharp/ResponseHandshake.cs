@@ -55,9 +55,23 @@ namespace WebSocketSharp {
 
     #region Public Properties
 
+    public AuthenticationChallenge AuthChallenge {
+      get {
+        return ContainsHeader("WWW-Authenticate")
+               ? AuthenticationChallenge.Parse(Headers["WWW-Authenticate"])
+               : null;
+      }
+    }
+
     public CookieCollection Cookies {
       get {
         return Headers.GetCookies(true);
+      }
+    }
+
+    public bool IsUnauthorized {
+      get {
+        return StatusCode == "401";
       }
     }
 

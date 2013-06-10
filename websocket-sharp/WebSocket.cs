@@ -71,12 +71,14 @@ namespace WebSocketSharp {
     private CookieCollection  _cookies;
     private CompressionMethod _compression;
     private WebSocketContext  _context;
+    private WsCredential      _credentials;
     private string            _extensions;
     private AutoResetEvent    _exitReceiving;
     private object            _forClose;
     private object            _forFrame;
     private object            _forSend;
     private string            _origin;
+    private bool              _preAuth;
     private string            _protocol;
     private string            _protocols;
     private volatile WsState  _readyState;
@@ -99,6 +101,7 @@ namespace WebSocketSharp {
       _forFrame = new object();
       _forSend = new object();
       _origin = String.Empty;
+      _preAuth = false;
       _protocol = String.Empty;
       _readyState = WsState.CONNECTING;
     }
@@ -258,6 +261,18 @@ namespace WebSocketSharp {
           return from Cookie cookie in _cookies
                  select cookie;
         }
+      }
+    }
+
+    /// <summary>
+    /// Gets the credentials for HTTP authentication (Basic/Digest).
+    /// </summary>
+    /// <value>
+    /// A <see cref="WsCredential"/> that contains the credentials for HTTP authentication.
+    /// </value>
+    public WsCredential Credentials {
+      get {
+        return _credentials;
       }
     }
 
@@ -675,6 +690,9 @@ namespace WebSocketSharp {
 
       req.AddHeader("Sec-WebSocket-Version", _version);
 
+      if (_preAuth && _credentials != null)
+        req.SetAuthorization(new AuthenticationResponse(_credentials));
+
       if (_cookies.Count > 0)
         req.SetCookies(_cookies);
 
@@ -718,8 +736,7 @@ namespace WebSocketSharp {
     private bool doHandshake()
     {
       init();
-      sendRequestHandshake();
-      return processResponseHandshake();
+      return processResponseHandshake(sendRequestHandshake());
     }
 
     private static CompressionMethod getCompressionMethod(string value)
@@ -1091,21 +1108,25 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private bool processResponseHandshake()
+    private bool processResponseHandshake(ResponseHandshake response)
     {
-      var res = receiveResponseHandshake();
-      if (!isValidResponseHandshake(res))
+      var error = response.IsUnauthorized
+                ? String.Format("An HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
+                : !isValidResponseHandshake(response)
+                  ? "Invalid response to this WebSocket connection request."
+                  : String.Empty;
+
+      if (error.Length > 0)
       {
-        var msg = "Invalid response to this WebSocket connection request.";
-        onError(msg);
-        Close(CloseStatusCode.ABNORMAL, msg);
+        onError(error);
+        Close(CloseStatusCode.ABNORMAL, error);
 
         return false;
       }
 
-      processResponseProtocol(res.Headers["Sec-WebSocket-Protocol"]);
-      processResponseExtensions(res.Headers["Sec-WebSocket-Extensions"]);
-      processResponseCookies(res.Cookies);
+      processResponseProtocol(response.Headers["Sec-WebSocket-Protocol"]);
+      processResponseExtensions(response.Headers["Sec-WebSocket-Extensions"]);
+      processResponseCookies(response.Cookies);
 
       return true;
     }
@@ -1275,10 +1296,25 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private void sendRequestHandshake()
+    private ResponseHandshake sendRequestHandshake()
     {
       var req = createRequestHandshake();
-      send(req);
+      var res = sendRequestHandshake(req);
+      if (!_preAuth && res.IsUnauthorized && _credentials != null)
+      {
+        var challenge = res.AuthChallenge;
+        req.SetAuthorization(new AuthenticationResponse(_credentials, challenge));
+        res = sendRequestHandshake(req);
+      }
+
+      return res;
+    }
+
+    // As client
+    private ResponseHandshake sendRequestHandshake(RequestHandshake request)
+    {
+      send(request);
+      return receiveResponseHandshake();
     }
 
     // As server
@@ -1621,6 +1657,48 @@ namespace WebSocketSharp {
       {
         _cookies.SetOrRemove(cookie);
       }
+    }
+
+    /// <summary>
+    /// Sets the credentials for HTTP authentication (Basic/Digest).
+    /// </summary>
+    /// <param name="userName">
+    /// A <see cref="string"/> that contains a user name associated with the credentials.
+    /// </param>
+    /// <param name="password">
+    /// A <see cref="string"/> that contains a password for <paramref name="userName"/> associated with the credentials.
+    /// </param>
+    /// <param name="preAuth">
+    /// <c>true</c> if sends the credentials as a Basic authorization with the first request handshake;
+    /// otherwise, <c>false</c>.
+    /// </param>
+    public void SetCredentials(string userName, string password, bool preAuth)
+    {
+      if (isOpened(true))
+        return;
+
+      if (userName == null)
+      {
+        _credentials = null;
+        _preAuth = false;
+
+        return;
+      }
+
+      var error = userName.Length > 0 && (userName.Contains(':') || !userName.IsText())
+                ? "'userName' contains an invalid character."
+                : !password.IsNullOrEmpty() && !password.IsText()
+                  ? "'password' contains an invalid character."
+                  : String.Empty;
+
+      if (error.Length > 0)
+      {
+        onError(error);
+        return;
+      }
+
+      _credentials = new WsCredential(userName, password, _uri.PathAndQuery);
+      _preAuth = preAuth;
     }
 
     #endregion
