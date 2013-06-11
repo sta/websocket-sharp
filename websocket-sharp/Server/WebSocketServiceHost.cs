@@ -183,19 +183,20 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+    /// instances periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
-    /// The default value is <c>true</c>.
+    /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+    /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
-    public bool Sweeped {
+    public bool Sweeping {
       get {
-        return _sessions.Sweeped;
+        return _sessions.Sweeping;
       }
 
       set {
-        _sessions.Sweeped = value;
+        _sessions.Sweeping = value;
       }
     }
 
@@ -237,7 +238,7 @@ namespace WebSocketSharp.Server {
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
       var websocket = context.WebSocket;
-      var path      = context.Path.UrlDecode();
+      var path = context.Path.UrlDecode();
       if (path != Uri.GetAbsolutePath().UrlDecode())
       {
         websocket.Close(HttpStatusCode.NotImplemented);

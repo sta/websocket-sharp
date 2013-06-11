@@ -121,19 +121,20 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service instances periodically.
+    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+    /// instances periodically.
     /// </summary>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
     /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
-    public bool Sweeped {
+    public bool Sweeping {
       get {
-        return _svcHosts.Sweeped;
+        return _svcHosts.Sweeping;
       }
 
       set {
-        _svcHosts.Sweeped = value;
+        _svcHosts.Sweeping = value;
       }
     }
 
@@ -391,8 +392,8 @@ namespace WebSocketSharp.Server {
 
       var svcHost = new WebSocketServiceHost<T>();
       svcHost.Uri = absPath.ToUri();
-      if (!Sweeped)
-        svcHost.Sweeped = Sweeped;
+      if (!Sweeping)
+        svcHost.Sweeping = false;
 
       _svcHosts.Add(absPath, svcHost);
     }

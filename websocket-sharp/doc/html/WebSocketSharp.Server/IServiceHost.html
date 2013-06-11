@@ -207,7 +207,7 @@
     </div>
     <h1 class="PageTitle" id="T:WebSocketSharp.Server.IServiceHost">IServiceHost  Interface</h1>
     <p class="Summary" id="T:WebSocketSharp.Server.IServiceHost:Summary">
-            Exposes the methods and property for the host that provides a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a>.
+            Exposes the methods and properties for the WebSocket service host.
             </p>
     <div id="T:WebSocketSharp.Server.IServiceHost:Signature">
       <h2>Syntax</h2>
@@ -233,14 +233,15 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Server.IServiceHost.Sweeped">Sweeped</a>
+                    <a href="#P:WebSocketSharp.Server.IServiceHost.Sweeping">Sweeping</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
+            instances periodically.
             </td>
               </tr>
             </table>
@@ -296,36 +297,6 @@
                     <a href="#M:WebSocketSharp.Server.IServiceHost.Stop">Stop</a>
                   </b>()<blockquote>
             Stops the WebSocket service host.
-            </blockquote></td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        <h2 class="Section">Extension Methods</h2>
-        <div class="SectionBox" id="Extension Methods">
-          <div class="SubsectionBox">
-            <table class="TypeMembers">
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
-                  </b>(<i>this</i> <i title="&#xA;            The type of the  parameter.&#xA;            ">T</i>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
             </blockquote></td>
               </tr>
             </table>
@@ -422,23 +393,25 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Server.IServiceHost.Sweeped">Sweeped Property</h3>
-        <blockquote id="P:WebSocketSharp.Server.IServiceHost.Sweeped:member">
+        <h3 id="P:WebSocketSharp.Server.IServiceHost.Sweeping">Sweeping Property</h3>
+        <blockquote id="P:WebSocketSharp.Server.IServiceHost.Sweeping:member">
           <p class="Summary">
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
+            instances periodically.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeping</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Value">
-            <tt>true</tt> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <tt>false</tt>.
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeping:Value">
+            <tt>true</tt> if the WebSocket service host cleans up the inactive service instances periodically;
+            otherwise, <tt>false</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeping:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeped:Version Information">
+          <div class="SectionBox" id="P:WebSocketSharp.Server.IServiceHost.Sweeping:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>

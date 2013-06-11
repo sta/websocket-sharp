@@ -170,9 +170,9 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="Sweeped">
-      <MemberSignature Language="C#" Value="public bool Sweeped { get; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeped" />
+    <Member MemberName="Sweeping">
+      <MemberSignature Language="C#" Value="public bool Sweeping { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeping" />
       <MemberType>Property</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>

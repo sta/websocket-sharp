@@ -7,7 +7,7 @@
   <Interfaces />
   <Docs>
     <summary>
-            Exposes the methods and property for the host that provides a <see cref="T:WebSocketSharp.Server.WebSocketService" />.
+            Exposes the methods and properties for the WebSocket service host.
             </summary>
     <remarks />
   </Docs>
@@ -82,19 +82,21 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="Sweeped">
-      <MemberSignature Language="C#" Value="public bool Sweeped { get; set; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeped" />
+    <Member MemberName="Sweeping">
+      <MemberSignature Language="C#" Value="public bool Sweeping { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeping" />
       <MemberType>Property</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
+            instances periodically.
             </summary>
         <value>
-          <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
+          <c>true</c> if the WebSocket service host cleans up the inactive service instances periodically;
+            otherwise, <c>false</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

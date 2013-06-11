@@ -32,19 +32,21 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server {
 
   /// <summary>
-  /// Exposes the methods and property for the host that provides a <see cref="WebSocketService"/>.
+  /// Exposes the methods and properties for the WebSocket service host.
   /// </summary>
   /// <remarks>
   /// </remarks>
   public interface IServiceHost {
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
+    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
+    /// instances periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service host cleans up the inactive service instances periodically;
+    /// otherwise, <c>false</c>.
     /// </value>
-    bool Sweeped { get; set; }
+    bool Sweeping { get; set; }
 
     /// <summary>
     /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.

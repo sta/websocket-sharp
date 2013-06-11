@@ -12,7 +12,7 @@ namespace Example3
     public static void Main(string[] args)
     {
       _httpsv = new HttpServer(4649);
-      //_httpsv.Sweeped = false;
+      //_httpsv.Sweeping = false;
       _httpsv.AddWebSocketService<Echo>("/Echo");
       _httpsv.AddWebSocketService<Chat>("/Chat");
 

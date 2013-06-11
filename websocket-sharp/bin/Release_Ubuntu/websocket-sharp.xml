@@ -1223,13 +1223,14 @@
             An IEnumerable&lt;string&gt; that contains the collection of paths.
             </value>
         </member>
-        <member name="P:WebSocketSharp.Server.WebSocketServer.Sweeped">
+        <member name="P:WebSocketSharp.Server.WebSocketServer.Sweeping">
             <summary>
-            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </summary>
             <value>
-                <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
-            The default value is <c>true</c>.
+                <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <c>false</c>. The default value is <c>true</c>.
             </value>
         </member>
         <member name="M:WebSocketSharp.Server.WebSocketServer.AcceptWebSocket(WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext)">
@@ -3777,9 +3778,10 @@
             An IEnumerable&lt;string&gt; that contains the collection of paths.
             </value>
         </member>
-        <member name="P:WebSocketSharp.Server.HttpServer.Sweeped">
+        <member name="P:WebSocketSharp.Server.HttpServer.Sweeping">
             <summary>
-            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service instances periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </summary>
             <value>
                 <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
@@ -4298,17 +4300,19 @@
         </member>
         <member name="T:WebSocketSharp.Server.IServiceHost">
             <summary>
-            Exposes the methods and property for the host that provides a <see cref="T:WebSocketSharp.Server.WebSocketService" />.
+            Exposes the methods and properties for the WebSocket service host.
             </summary>
             <remarks>
             </remarks>
         </member>
-        <member name="P:WebSocketSharp.Server.IServiceHost.Sweeped">
+        <member name="P:WebSocketSharp.Server.IServiceHost.Sweeping">
             <summary>
-            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service clients periodically.
+            Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
+            instances periodically.
             </summary>
             <value>
-                <c>true</c> if the WebSocket service host cleans up the inactive service clients periodically; otherwise, <c>false</c>.
+                <c>true</c> if the WebSocket service host cleans up the inactive service instances periodically;
+            otherwise, <c>false</c>.
             </value>
         </member>
         <member name="M:WebSocketSharp.Server.IServiceHost.BindWebSocket(WebSocketSharp.Net.WebSockets.WebSocketContext)">
@@ -4438,13 +4442,14 @@
             A <see cref="T:System.Boolean" /> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
             </param>
         </member>
-        <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped">
+        <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping">
             <summary>
-            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </summary>
             <value>
-                <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
-            The default value is <c>true</c>.
+                <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <c>false</c>. The default value is <c>true</c>.
             </value>
         </member>
         <member name="P:WebSocketSharp.Server.WebSocketServiceHost`1.Uri">
@@ -5119,7 +5124,7 @@
             An IEnumerable&lt;string&gt; that contains the collection of IDs of <see cref="T:WebSocketSharp.Server.WebSocketService" /> objects.
             </value>
         </member>
-        <member name="P:WebSocketSharp.Server.WebSocketServiceManager.Sweeped">
+        <member name="P:WebSocketSharp.Server.WebSocketServiceManager.Sweeping">
             <summary>
             Gets a value indicating whether the <see cref="T:WebSocketSharp.Server.WebSocketServiceManager" /> cleans up
             the inactive <see cref="T:WebSocketSharp.Server.WebSocketService" /> objects periodically.

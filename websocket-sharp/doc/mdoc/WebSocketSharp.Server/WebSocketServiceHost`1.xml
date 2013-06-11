@@ -273,20 +273,21 @@
         <remarks>To be added.</remarks>
       </Docs>
     </Member>
-    <Member MemberName="Sweeped">
-      <MemberSignature Language="C#" Value="public bool Sweeped { get; set; }" />
-      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeped" />
+    <Member MemberName="Sweeping">
+      <MemberSignature Language="C#" Value="public bool Sweeping { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance bool Sweeping" />
       <MemberType>Property</MemberType>
       <ReturnValue>
         <ReturnType>System.Boolean</ReturnType>
       </ReturnValue>
       <Docs>
         <summary>
-            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </summary>
         <value>
-          <c>true</c> if the server cleans up the inactive clients every 60 seconds; otherwise, <c>false</c>.
-            The default value is <c>true</c>.
+          <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <c>false</c>. The default value is <c>true</c>.
             </value>
         <remarks>To be added.</remarks>
       </Docs>

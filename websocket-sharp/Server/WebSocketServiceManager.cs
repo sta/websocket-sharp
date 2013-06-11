@@ -138,7 +138,7 @@ namespace WebSocketSharp.Server {
     /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up the inactive <see cref="WebSocketService"/> objects
     /// every 60 seconds; otherwise, <c>false</c>.
     /// </value>
-    public bool Sweeped {
+    public bool Sweeping {
       get {
         return _sweepTimer.Enabled;
       }
@@ -230,7 +230,7 @@ namespace WebSocketSharp.Server {
 
     private void startSweepTimer()
     {
-      if (!Sweeped)
+      if (!_sweepTimer.Enabled)
         _sweepTimer.Start();
     }
 
@@ -253,7 +253,7 @@ namespace WebSocketSharp.Server {
 
     private void stopSweepTimer()
     {
-      if (Sweeped)
+      if (_sweepTimer.Enabled)
         _sweepTimer.Stop();
     }
 

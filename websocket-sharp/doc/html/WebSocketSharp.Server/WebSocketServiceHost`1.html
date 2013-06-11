@@ -424,14 +424,15 @@
                 </td>
                 <td>
                   <b>
-                    <a href="#P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped">Sweeped</a>
+                    <a href="#P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping">Sweeping</a>
                   </b>
                 </td>
                 <td>
                   <i>
                     <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a>
                   </i>. 
-            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </td>
               </tr>
               <tr valign="top">
@@ -620,36 +621,6 @@
                 <td>
             Binds the specified <a href="../WebSocketSharp.Net.WebSockets/WebSocketContext.html">WebSocketSharp.Net.WebSockets.WebSocketContext</a> to a <a href="../WebSocketSharp.Server/WebSocketService.html">WebSocketSharp.Server.WebSocketService</a> instance.
             </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        <h2 class="Section">Extension Methods</h2>
-        <div class="SectionBox" id="Extension Methods">
-          <div class="SubsectionBox">
-            <table class="TypeMembers">
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNull``1(``0)">IsNull&lt;T&gt;</a>
-                  </b>(<i>this</i> <a href="javascript:alert(&quot;Documentation not found.&quot;)">T</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            </blockquote></td>
-              </tr>
-              <tr valign="top">
-                <td>
-                  <div>static </div>
-                </td>
-                <td colspan="2">
-                  <b>
-                    <a href="../WebSocketSharp/Ext.html#M:WebSocketSharp.Ext.IsNullDo``1(``0,System.Action)">IsNullDo&lt;T&gt;</a>
-                  </b>(<i>this</i> <a href="javascript:alert(&quot;Documentation not found.&quot;)">T</a>, <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a>)<nobr> : <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a></nobr><blockquote>
-            Determines whether the specified object is <tt>null</tt>.
-            And invokes the specified <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Action">Action</a> delegate if the specified object is <tt>null</tt>.
-            </blockquote></td>
               </tr>
             </table>
           </div>
@@ -1011,24 +982,25 @@
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
-        <h3 id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped">Sweeped Property</h3>
-        <blockquote id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:member">
+        <h3 id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping">Sweeping Property</h3>
+        <blockquote id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping:member">
           <p class="Summary">
-            Gets or sets a value indicating whether the server cleans up the inactive clients periodically.
+            Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+            instances periodically.
             </p>
           <h2>Syntax</h2>
-          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeped</b>  { get; set; }</div>
+          <div class="Signature">public <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T:System.Boolean">bool</a> <b>Sweeping</b>  { get; set; }</div>
           <h4 class="Subsection">Value</h4>
-          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Value">
-            <tt>true</tt> if the server cleans up the inactive clients every 60 seconds; otherwise, <tt>false</tt>.
-            The default value is <tt>true</tt>.
+          <blockquote class="SubsectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping:Value">
+            <tt>true</tt> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+            otherwise, <tt>false</tt>. The default value is <tt>true</tt>.
             </blockquote>
           <h2 class="Section">Remarks</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Remarks">
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping:Remarks">
             <span class="NotEntered">Documentation for this section has not yet been entered.</span>
           </div>
           <h2 class="Section">Requirements</h2>
-          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeped:Version Information">
+          <div class="SectionBox" id="P:WebSocketSharp.Server.WebSocketServiceHost`1.Sweeping:Version Information">
             <b>Namespace: </b>WebSocketSharp.Server<br /><b>Assembly: </b>websocket-sharp (in websocket-sharp.dll)</div>
           <hr size="1" />
         </blockquote>
