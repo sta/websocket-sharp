@@ -1,4 +1,5 @@
-## Ignore MonoDevelop temporary files.
+## Ignore MonoDevelop build results and temporary files.
 
+bin
 *.mdb
 *.pidb
