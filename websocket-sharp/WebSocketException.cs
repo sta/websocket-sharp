@@ -47,6 +47,11 @@ namespace WebSocketSharp {
     {
     }
 
+    internal WebSocketException(string message)
+      : this(CloseStatusCode.NO_STATUS_CODE, message)
+    {
+    }
+
     internal WebSocketException(CloseStatusCode code, string message)
       : base(message)
     {

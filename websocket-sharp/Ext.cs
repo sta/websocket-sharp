@@ -224,6 +224,35 @@ namespace WebSocketSharp {
              : stream.ToByteArray();
     }
 
+    // <summary>
+    // Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
+    // and invokes the specified Action&lt;int&gt; delegate at the same time.
+    // </summary>
+    // <returns>
+    // <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>; otherwise, <c>false</c>.
+    // </returns>
+    // <param name="value">
+    // An <see cref="int"/> to compare.
+    // </param>
+    // <param name="c">
+    // A <see cref="char"/> to compare.
+    // </param>
+    // <param name="action">
+    // An Action&lt;int&gt; delegate that references the method(s) called at the same time as when comparing.
+    // An <see cref="int"/> parameter to pass to the method(s) is <paramref name="value"/>.
+    // </param>
+    // <exception cref="ArgumentOutOfRangeException">
+    // <paramref name="value"/> is less than 0, or greater than 255.
+    // </exception>
+    internal static bool EqualsWith(this int value, char c, Action<int> action)
+    {
+      if (value < 0 || value > 255)
+        throw new ArgumentOutOfRangeException("value");
+
+      action(value);
+      return value == c - 0;
+    }
+
     internal static string GetNameInternal(this string nameAndValue, string separator)
     {
       int i = nameAndValue.IndexOf(separator);
@@ -272,27 +301,27 @@ namespace WebSocketSharp {
     }
 
     // <summary>
-    // Determines whether the specified object is <see langword="null"/>.
-    // And invokes the specified <see cref="Action"/> delegate if the specified object is <see langword="null"/>.
+    // Determines whether the specified object is <see langword="null"/>,
+    // and invokes the specified <see cref="Action"/> delegate if the object is <see langword="null"/>.
     // </summary>
     // <returns>
-    // <c>true</c> if the <paramref name="obj"/> parameter is <see langword="null"/>; otherwise, <c>false</c>.
+    // <c>true</c> if <paramref name="obj"/> is <see langword="null"/>; otherwise, <c>false</c>.
     // </returns>
     // <param name="obj">
     // A <b>class</b> to test.
     // </param>
-    // <param name="act">
-    // An <see cref="Action"/> delegate that contains the method(s) called if the <paramref name="obj"/> is <see langword="null"/>.
+    // <param name="action">
+    // An <see cref="Action"/> delegate that references the method(s) called if <paramref name="obj"/> is <see langword="null"/>.
     // </param>
     // <typeparam name="T">
-    // The type of the <paramref name="obj"/> parameter.
+    // The type of <paramref name="obj"/>.
     // </typeparam>
-    internal static bool IsNullDo<T>(this T obj, Action act)
+    internal static bool IsNullDo<T>(this T obj, Action action)
       where T : class
     {
       if (obj == null)
       {
-        act();
+        action();
         return true;
       }
 
@@ -660,36 +689,6 @@ namespace WebSocketSharp {
     {
       if (eventHandler != null)
         eventHandler(sender, e);
-    }
-
-    /// <summary>
-    /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/> as <see cref="byte"/>.
-    /// And save this specified <see cref="int"/> as <see cref="byte"/> to the specified <strong>List&lt;byte&gt;</strong>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the <paramref name="value"/> parameter equals the <paramref name="c"/> parameter as <see cref="byte"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// An <see cref="int"/> to compare.
-    /// </param>
-    /// <param name="c">
-    /// A <see cref="char"/> to compare.
-    /// </param>
-    /// <param name="dest">
-    /// A <strong>List&lt;byte&gt;</strong> to save the <paramref name="value"/> as <see cref="byte"/>.
-    /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Is thrown when the <paramref name="value"/> parameter passed to a method is invalid because it is outside the allowable range of values as <see cref="byte"/>.
-    /// </exception>
-    public static bool EqualsAndSaveTo(this int value, char c, List<byte> dest)
-    {
-      if (value < 0 || value > 255)
-        throw new ArgumentOutOfRangeException("value");
-
-      var b = (byte)value;
-      dest.Add(b);
-
-      return b == Convert.ToByte(c);
     }
 
     /// <summary>

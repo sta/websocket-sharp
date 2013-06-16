@@ -40,6 +40,12 @@ namespace WebSocketSharp {
 
   internal class WsStream : IDisposable
   {
+    #region Private Const Fields
+
+    private const int _handshakeLimitLen = 8192;
+
+    #endregion
+
     #region Private Fields
 
     private Stream _innerStream;
@@ -53,7 +59,7 @@ namespace WebSocketSharp {
 
     private WsStream()
     {
-      _forRead  = new object();
+      _forRead = new object();
       _forWrite = new object();
     }
 
@@ -64,21 +70,21 @@ namespace WebSocketSharp {
     public WsStream(NetworkStream innerStream)
       : this()
     {
-      if (innerStream.IsNull())
+      if (innerStream == null)
         throw new ArgumentNullException("innerStream");
 
       _innerStream = innerStream;
-      _isSecure    = false;
+      _isSecure = false;
     }
 
     public WsStream(SslStream innerStream)
       : this()
     {
-      if (innerStream.IsNull())
+      if (innerStream == null)
         throw new ArgumentNullException("innerStream");
 
       _innerStream = innerStream;
-      _isSecure    = true;
+      _isSecure = true;
     }
 
     #endregion
@@ -102,40 +108,6 @@ namespace WebSocketSharp {
     #endregion
 
     #region Private Methods
-
-    private int read(byte[] buffer, int offset, int size)
-    {
-      var readLen = _innerStream.Read(buffer, offset, size);
-      if (readLen < size)
-      {
-        var msg = String.Format("Data can not be read from {0}.", _innerStream.GetType().Name);
-        throw new IOException(msg);
-      }
-
-      return readLen;
-    }
-
-    private int readByte()
-    {
-      return _innerStream.ReadByte();
-    }
-
-    private string[] readHandshake()
-    {
-      var buffer = new List<byte>();
-      while (true)
-      {
-        if (readByte().EqualsAndSaveTo('\r', buffer) &&
-            readByte().EqualsAndSaveTo('\n', buffer) &&
-            readByte().EqualsAndSaveTo('\r', buffer) &&
-            readByte().EqualsAndSaveTo('\n', buffer))
-          break;
-      }
-
-      return Encoding.UTF8.GetString(buffer.ToArray())
-             .Replace("\r\n", "\n").Replace("\n\n", "\n").TrimEnd('\n')
-             .Split('\n');
-    }
 
     private bool write(byte[] data)
     {
@@ -181,7 +153,7 @@ namespace WebSocketSharp {
       if (secure)
       {
         var sslStream = new SslStream(netStream, false);
-        var certPath  = ConfigurationManager.AppSettings["ServerCertPath"];
+        var certPath = ConfigurationManager.AppSettings["ServerCertPath"];
         sslStream.AuthenticateAsServer(new X509Certificate2(certPath));
 
         return new WsStream(sslStream);
@@ -192,7 +164,7 @@ namespace WebSocketSharp {
 
     internal static WsStream CreateServerStream(WebSocketSharp.Net.HttpListenerContext context)
     {
-      var conn   = context.Connection;
+      var conn = context.Connection;
       var stream = conn.Stream;
 
       return conn.IsSecure
@@ -236,17 +208,30 @@ namespace WebSocketSharp {
 
     public string[] ReadHandshake()
     {
-      lock (_forRead)
+      var read = false;
+      var buffer = new List<byte>();
+      Action<int> add = i => buffer.Add((byte)i);
+      while (buffer.Count < _handshakeLimitLen)
       {
-        try
+        if (_innerStream.ReadByte().EqualsWith('\r', add) &&
+            _innerStream.ReadByte().EqualsWith('\n', add) &&
+            _innerStream.ReadByte().EqualsWith('\r', add) &&
+            _innerStream.ReadByte().EqualsWith('\n', add))
         {
-          return readHandshake();
-        }
-        catch
-        {
-          return null;
+          read = true;
+          break;
         }
       }
+
+      if (!read)
+        throw new WebSocketException("The length of the handshake is greater than the limit length.");
+
+      return Encoding.UTF8.GetString(buffer.ToArray())
+             .Replace("\r\n", "\n")
+             .Replace("\n ", " ")
+             .Replace("\n\t", " ")
+             .Replace("\n\n", "")
+             .Split('\n');
     }
 
     public bool Write(WsFrame frame)
