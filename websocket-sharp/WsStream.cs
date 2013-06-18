@@ -30,10 +30,10 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using WebSocketSharp.Net;
 using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp {
@@ -48,43 +48,35 @@ namespace WebSocketSharp {
 
     #region Private Fields
 
-    private Stream _innerStream;
-    private bool   _isSecure;
     private Object _forRead;
     private Object _forWrite;
+    private Stream _innerStream;
+    private bool   _secure;
 
     #endregion
 
     #region Private Constructors
 
-    private WsStream()
+    private WsStream(Stream innerStream, bool secure)
     {
+      _innerStream = innerStream;
+      _secure = secure;
       _forRead = new object();
       _forWrite = new object();
     }
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public WsStream(NetworkStream innerStream)
-      : this()
+    internal WsStream(NetworkStream innerStream)
+      : this(innerStream, false)
     {
-      if (innerStream == null)
-        throw new ArgumentNullException("innerStream");
-
-      _innerStream = innerStream;
-      _isSecure = false;
     }
 
-    public WsStream(SslStream innerStream)
-      : this()
+    internal WsStream(SslStream innerStream)
+      : this(innerStream, true)
     {
-      if (innerStream == null)
-        throw new ArgumentNullException("innerStream");
-
-      _innerStream = innerStream;
-      _isSecure = true;
     }
 
     #endregion
@@ -93,7 +85,7 @@ namespace WebSocketSharp {
 
     public bool DataAvailable {
       get {
-        return _isSecure
+        return _secure
                ? ((SslStream)_innerStream).DataAvailable
                : ((NetworkStream)_innerStream).DataAvailable;
       }
@@ -101,7 +93,7 @@ namespace WebSocketSharp {
 
     public bool IsSecure {
       get {
-        return _isSecure;
+        return _secure;
       }
     }
 
@@ -127,18 +119,18 @@ namespace WebSocketSharp {
 
     #region Internal Methods
 
-    internal static WsStream CreateClientStream(TcpClient client, string host, bool secure)
+    internal static WsStream CreateClientStream(TcpClient tcpClient, string host, bool secure)
     {
-      var netStream = client.GetStream();
+      var netStream = tcpClient.GetStream();
       if (secure)
       {
-        System.Net.Security.RemoteCertificateValidationCallback validationCb = (sender, certificate, chain, sslPolicyErrors) =>
+        System.Net.Security.RemoteCertificateValidationCallback callback = (sender, certificate, chain, sslPolicyErrors) =>
         {
           // FIXME: Always returns true
           return true;
         };
 
-        var sslStream = new SslStream(netStream, false, validationCb);
+        var sslStream = new SslStream(netStream, false, callback);
         sslStream.AuthenticateAsClient(host);
 
         return new WsStream(sslStream);
@@ -147,9 +139,9 @@ namespace WebSocketSharp {
       return new WsStream(netStream);
     }
 
-    internal static WsStream CreateServerStream(TcpClient client, bool secure)
+    internal static WsStream CreateServerStream(TcpClient tcpClient, bool secure)
     {
-      var netStream = client.GetStream();
+      var netStream = tcpClient.GetStream();
       if (secure)
       {
         var sslStream = new SslStream(netStream, false);
@@ -162,14 +154,10 @@ namespace WebSocketSharp {
       return new WsStream(netStream);
     }
 
-    internal static WsStream CreateServerStream(WebSocketSharp.Net.HttpListenerContext context)
+    internal static WsStream CreateServerStream(HttpListenerContext context)
     {
       var conn = context.Connection;
-      var stream = conn.Stream;
-
-      return conn.IsSecure
-             ? new WsStream((SslStream)stream)
-             : new WsStream((NetworkStream)stream);
+      return new WsStream(conn.Stream, conn.IsSecure);
     }
 
     #endregion
@@ -230,16 +218,16 @@ namespace WebSocketSharp {
              .Replace("\r\n", "\n")
              .Replace("\n ", " ")
              .Replace("\n\t", " ")
-             .Replace("\n\n", "")
+             .TrimEnd('\n')
              .Split('\n');
     }
 
-    public bool Write(WsFrame frame)
+    public bool WriteFrame(WsFrame frame)
     {
       return write(frame.ToByteArray());
     }
 
-    public bool Write(Handshake handshake)
+    public bool WriteHandshake(Handshake handshake)
     {
       return write(handshake.ToByteArray());
     }

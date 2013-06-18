@@ -1156,7 +1156,7 @@ namespace WebSocketSharp {
       Console.WriteLine("WS: Info@send: Request handshake to server:\n");
       Console.WriteLine(request.ToString());
       #endif
-      _wsStream.Write(request);
+      _wsStream.WriteHandshake(request);
     }
 
     // As server
@@ -1166,7 +1166,7 @@ namespace WebSocketSharp {
       Console.WriteLine("WS: Info@send: Response handshake to client:\n");
       Console.WriteLine(response.ToString());
       #endif
-      _wsStream.Write(response);
+      _wsStream.WriteHandshake(response);
     }
 
     private bool send(WsFrame frame)
@@ -1187,7 +1187,7 @@ namespace WebSocketSharp {
           return false;
         }
 
-        return _wsStream.Write(frame);
+        return _wsStream.WriteFrame(frame);
       }
     }
 
