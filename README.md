@@ -1,11 +1,11 @@
 <!-- # websocket-sharp # -->
 ![Logo](websocket-sharp.png)
 
-**websocket-sharp** is a C# implementation of the WebSocket protocol client & server.
+**websocket-sharp** is a C# implementation of the **WebSocket** protocol client & server.
 
 ## Usage ##
 
-### WebSocket client ###
+### WebSocket Client ###
 
 ```cs
 using System;
@@ -45,7 +45,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 
 #### Step 2 ####
 
-Creating a instance of the `WebSocket` class.
+Creating a instance of the `WebSocket` class with the specified WebSocket URL.
 
 ```cs
 using (var ws = new WebSocket("ws://example.com"))
@@ -118,7 +118,7 @@ The `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) 
 
 ##### WebSocket.OnClose event #####
 
-The `WebSocket.OnClose` event occurs when the `WebSocket` receives a Close frame or the `Close` method is called.
+The `WebSocket.OnClose` event occurs when the `WebSocket` connection has been closed.
 
 ```cs
 ws.OnClose += (sender, e) =>
@@ -147,7 +147,7 @@ ws.Send(data);
 
 The `Send` method is overloaded.
 
-The types of `data` are `string`, `byte[]` or `FileInfo` class.
+The types of `data` are `string`, `byte[]` and `FileInfo` class.
 
 #### Step 6 ####
 
@@ -165,7 +165,7 @@ The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type 
 
 In addition, the `Close()` and `Close(code)` methods exist.
 
-### WebSocket server ###
+### WebSocket Server ###
 
 ```cs
 using System;
@@ -310,7 +310,7 @@ Stopping the server.
 wssv.Stop();
 ```
 
-### HTTP server with the WebSocket ###
+### HTTP Server with the WebSocket ###
 
 I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket request.
 
@@ -321,7 +321,11 @@ var httpsv = new HttpServer(4649);
 httpsv.AddWebSocketService<Echo>("/");
 ```
 
-For more information, please refer to the [Example3].
+For more information, could you see **[Example3]**?
+
+## Required Environment ##
+
+C# **3.0**, .NET **3.5** compatible or later.
 
 ## Examples ##
 
