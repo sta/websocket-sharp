@@ -1,3 +1,4 @@
+#region License
 //
 // HttpListenerRequest.cs
 //	Copied from System.Net.HttpListenerRequest.cs
@@ -27,12 +28,14 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+#endregion
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -49,58 +52,60 @@ namespace WebSocketSharp.Net {
 
 		#region Private Static Fields
 
-		static char [] separators   = new char [] { ' ' };
-		static byte [] _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
+		private static byte [] _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
 
 		#endregion
 
 		#region Private Fields
 
-		string []           accept_types;
-//		int                 client_cert_error;
-		bool                cl_set;
-		Encoding            content_encoding;
-		long                content_length;
-		HttpListenerContext context;
-		CookieCollection    cookies;
-		WebHeaderCollection headers;
-		Stream              input_stream;
-		bool                is_chunked;
-		bool                ka_set;
-		bool                keep_alive;
-		string              method;
-//		bool                no_get_certificate;
-		Version             version;
-		NameValueCollection query_string; // check if null is ok, check if read-only, check case-sensitiveness
-		string              raw_url;
-		Uri                 referrer;
-		Uri                 url;
-		string []           user_languages;
+		private string []           _acceptTypes;
+		private bool                _chunked;
+		private Encoding            _contentEncoding;
+		private long                _contentLength;
+		private bool                _contentLengthWasSet;
+		private HttpListenerContext _context;
+		private CookieCollection    _cookies;
+		private WebHeaderCollection _headers;
+		private Guid                _identifier;
+		private Stream              _inputStream;
+		private bool                _keepAlive;
+		private bool                _keepAliveWasSet;
+		private string              _method;
+		private NameValueCollection _queryString;
+		private string              _rawUrl;
+		private Uri                 _referer;
+		private Uri                 _url;
+		private string []           _userLanguages;
+		private Version             _version;
 
 		#endregion
 
-		#region Constructor
+		#region Internal Constructors
 
 		internal HttpListenerRequest (HttpListenerContext context)
 		{
-			this.context = context;
-			headers = new WebHeaderCollection ();
-			version = HttpVersion.Version10;
+			_context = context;
+			_contentLength = -1;
+			_headers = new WebHeaderCollection ();
+			_identifier = Guid.NewGuid ();
+			_version = HttpVersion.Version10;
 		}
 
 		#endregion
 
-		#region Properties
+		#region Public Properties
 
 		/// <summary>
 		/// Gets the media types which are acceptable for the response.
 		/// </summary>
 		/// <value>
-		/// An array of <see cref="string"/> that contains the media type names in the Accept request-header field
+		/// An array of <see cref="string"/> that contains the media type names in the Accept request-header
 		/// or <see langword="null"/> if the request did not include an Accept header.
 		/// </value>
 		public string [] AcceptTypes {
-			get { return accept_types; }
+			get {
+				return _acceptTypes;
+			}
 		}
 
 		/// <summary>
@@ -110,12 +115,13 @@ namespace WebSocketSharp.Net {
 		/// Always returns <c>0</c>.
 		/// </value>
 		public int ClientCertificateError {
-			// TODO: Always returns 0
 			get {
+				// TODO: Always returns 0.
 /*
 				if (no_get_certificate)
 					throw new InvalidOperationException (
-						"Call GetClientCertificate() before calling this method.");
+						"Call GetClientCertificate method before accessing this property.");
+
 				return client_cert_error;
 */
 				return 0;
@@ -123,17 +129,18 @@ namespace WebSocketSharp.Net {
 		}
 
 		/// <summary>
-		/// Gets the encoding that can be used with the entity body data included in the request.
+		/// Gets the encoding used with the entity body data included in the request.
 		/// </summary>
 		/// <value>
-		/// A <see cref="Encoding"/> that contains the encoding that can be used with the entity body data.
+		/// A <see cref="Encoding"/> that indicates the encoding used with the entity body data
+		/// or <see cref="Encoding.Default"/> if the request did not include the information about the encoding.
 		/// </value>
 		public Encoding ContentEncoding {
-			// TODO: Always returns Encoding.Default
 			get {
-				if (content_encoding == null)
-					content_encoding = Encoding.Default;
-				return content_encoding;
+				if (_contentEncoding == null)
+					_contentEncoding = Encoding.Default;
+
+				return _contentEncoding;
 			}
 		}
 
@@ -141,21 +148,25 @@ namespace WebSocketSharp.Net {
 		/// Gets the size of the entity body data included in the request.
 		/// </summary>
 		/// <value>
-		/// A <see cref="long"/> that contains the value of the Content-Length entity-header field.
+		/// A <see cref="long"/> that contains the value of the Content-Length entity-header.
 		/// The value is a number of bytes in the entity body data. <c>-1</c> if the size is not known.
 		/// </value>
 		public long ContentLength64 {
-			get { return content_length; }
+			get {
+				return _contentLength;
+			}
 		}
 
 		/// <summary>
 		/// Gets the media type of the entity body included in the request.
 		/// </summary>
 		/// <value>
-		/// A <see cref="string"/> that contains the value of the Content-Type entity-header field.
+		/// A <see cref="string"/> that contains the value of the Content-Type entity-header.
 		/// </value>
 		public string ContentType {
-			get { return headers ["content-type"]; }
+			get {
+				return _headers ["Content-Type"];
+			}
 		}
 
 		/// <summary>
@@ -166,10 +177,10 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public CookieCollection Cookies {
 			get {
-				// TODO: check if the collection is read-only
-				if (cookies == null)
-					cookies = new CookieCollection ();
-				return cookies;
+				if (_cookies == null)
+					_cookies = _headers.GetCookies (false);
+
+				return _cookies;
 			}
 		}
 
@@ -180,7 +191,9 @@ namespace WebSocketSharp.Net {
 		/// <c>true</c> if the request has the entity body; otherwise, <c>false</c>.
 		/// </value>
 		public bool HasEntityBody {
-			get { return (content_length > 0 || is_chunked); }
+			get {
+				return _contentLength > 0 || _chunked;
+			}
 		}
 
 		/// <summary>
@@ -190,7 +203,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="NameValueCollection"/> that contains the HTTP headers used in the request.
 		/// </value>
 		public NameValueCollection Headers {
-			get { return headers; }
+			get {
+				return _headers;
+			}
 		}
 
 		/// <summary>
@@ -200,7 +215,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains the HTTP method used in the request.
 		/// </value>
 		public string HttpMethod {
-			get { return method; }
+			get {
+				return _method;
+			}
 		}
 
 		/// <summary>
@@ -211,14 +228,12 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public Stream InputStream {
 			get {
-				if (input_stream == null) {
-					if (is_chunked || content_length > 0)
-						input_stream = context.Connection.GetRequestStream (is_chunked, content_length);
-					else
-						input_stream = Stream.Null;
-				}
+				if (_inputStream == null)
+					_inputStream = HasEntityBody
+					             ? _context.Connection.GetRequestStream (_chunked, _contentLength)
+					             : Stream.Null;
 
-				return input_stream;
+				return _inputStream;
 			}
 		}
 
@@ -229,8 +244,10 @@ namespace WebSocketSharp.Net {
 		/// Always returns <c>false</c>.
 		/// </value>
 		public bool IsAuthenticated {
-			// TODO: Always returns false
-			get { return false; }
+			get {
+				// TODO: Always returns false.
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -240,7 +257,9 @@ namespace WebSocketSharp.Net {
 		/// <c>true</c> if the request is sent from the local computer; otherwise, <c>false</c>.
 		/// </value>
 		public bool IsLocal {
-			get { return RemoteEndPoint.Address.IsLocal(); }
+			get {
+				return RemoteEndPoint.Address.IsLocal ();
+			}
 		}
 
 		/// <summary>
@@ -250,7 +269,9 @@ namespace WebSocketSharp.Net {
 		/// <c>true</c> if the HTTP connection is secured; otherwise, <c>false</c>.
 		/// </value>
 		public bool IsSecureConnection {
-			get { return context.Connection.IsSecure; } 
+			get {
+				return _context.Connection.IsSecure;
+			}
 		}
 
 		/// <summary>
@@ -261,19 +282,19 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public bool IsWebSocketRequest {
 			get {
-				return method != "GET"
+				return _method != "GET"
 					? false
-					: version < HttpVersion.Version11
+					: _version < HttpVersion.Version11
 						? false
-						: !headers.Contains("Upgrade", "websocket")
+						: !_headers.Contains("Upgrade", "websocket")
 							? false
-							: !headers.Contains("Connection", "Upgrade")
+							: !_headers.Contains("Connection", "Upgrade")
 								? false
-								: !headers.Contains("Host")
+								: !_headers.Contains("Host")
 									? false
-									: !headers.Contains("Sec-WebSocket-Key")
+									: !_headers.Contains("Sec-WebSocket-Key")
 										? false
-										: headers.Contains("Sec-WebSocket-Version");
+										: _headers.Contains("Sec-WebSocket-Version");
 			}
 		}
 
@@ -285,24 +306,17 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public bool KeepAlive {
 			get {
-				if (ka_set)
-					return keep_alive;
+				if (!_keepAliveWasSet) {
+					_keepAlive = _headers.Contains ("Connection", "keep-alive") || _version == HttpVersion.Version11
+					           ? true
+					           : _headers.Contains ("Keep-Alive")
+					             ? !_headers.Contains ("Keep-Alive", "closed")
+					             : false;
 
-				ka_set = true;
-				// 1. Connection header
-				// 2. Protocol (1.1 == keep-alive by default)
-				// 3. Keep-Alive header
-				string cnc = headers ["Connection"];
-				if (!String.IsNullOrEmpty (cnc)) {
-					keep_alive = (0 == String.Compare (cnc, "keep-alive", StringComparison.OrdinalIgnoreCase));
-				} else if (version == HttpVersion.Version11) {
-					keep_alive = true;
-				} else {
-					cnc = headers ["keep-alive"];
-					if (!String.IsNullOrEmpty (cnc))
-						keep_alive = (0 != String.Compare (cnc, "closed", StringComparison.OrdinalIgnoreCase));
+					_keepAliveWasSet = true;
 				}
-				return keep_alive;
+
+				return _keepAlive;
 			}
 		}
 
@@ -313,7 +327,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="IPEndPoint"/> that contains the server endpoint.
 		/// </value>
 		public IPEndPoint LocalEndPoint {
-			get { return context.Connection.LocalEndPoint; }
+			get {
+				return _context.Connection.LocalEndPoint;
+			}
 		}
 
 		/// <summary>
@@ -323,7 +339,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="Version"/> that contains the HTTP version used in the request.
 		/// </value>
 		public Version ProtocolVersion {
-			get { return version; }
+			get {
+				return _version;
+			}
 		}
 
 		/// <summary>
@@ -333,7 +351,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="NameValueCollection"/> that contains the collection of query string variables used in the request.
 		/// </value>
 		public NameValueCollection QueryString {
-			get { return query_string; }
+			get {
+				return _queryString;
+			}
 		}
 
 		/// <summary>
@@ -343,7 +363,9 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains the raw URL requested by the client.
 		/// </value>
 		public string RawUrl {
-			get { return raw_url; }
+			get {
+				return _rawUrl;
+			}
 		}
 
 		/// <summary>
@@ -353,18 +375,21 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="IPEndPoint"/> that contains the client endpoint.
 		/// </value>
 		public IPEndPoint RemoteEndPoint {
-			get { return context.Connection.RemoteEndPoint; }
+			get {
+				return _context.Connection.RemoteEndPoint;
+			}
 		}
 
 		/// <summary>
-		/// Gets the identifier of a request.
+		/// Gets the request identifier of a incoming HTTP request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="Guid"/> that contains the identifier of a request.
 		/// </value>
 		public Guid RequestTraceIdentifier {
-			// TODO: Always returns Guid.Empty
-			get { return Guid.Empty; }
+			get {
+				return _identifier;
+			}
 		}
 
 		/// <summary>
@@ -374,27 +399,34 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="Uri"/> that contains the URL requested by the client.
 		/// </value>
 		public Uri Url {
-			get { return url; }
+			get {
+				return _url;
+			}
 		}
 
 		/// <summary>
 		/// Gets the URL of the resource from which the requested URL was obtained.
 		/// </summary>
 		/// <value>
-		/// A <see cref="Uri"/> that contains the value of the Referer request-header field.
+		/// A <see cref="Uri"/> that contains the value of the Referer request-header
+		/// or <see langword="null"/> if the request did not include an Referer header.
 		/// </value>
 		public Uri UrlReferrer {
-			get { return referrer; }
+			get {
+				return _referer;
+			}
 		}
 
 		/// <summary>
 		/// Gets the information about the user agent originating the request.
 		/// </summary>
 		/// <value>
-		/// A <see cref="string"/> that contains the value of the User-Agent request-header field.
+		/// A <see cref="string"/> that contains the value of the User-Agent request-header.
 		/// </value>
 		public string UserAgent {
-			get { return headers ["user-agent"]; }
+			get {
+				return _headers ["User-Agent"];
+			}
 		}
 
 		/// <summary>
@@ -404,52 +436,60 @@ namespace WebSocketSharp.Net {
 		/// A <see cref="string"/> that contains the server endpoint.
 		/// </value>
 		public string UserHostAddress {
-			get { return LocalEndPoint.ToString (); }
+			get {
+				return LocalEndPoint.ToString ();
+			}
 		}
 
 		/// <summary>
-		/// Gets the internet host name and port number (if present) of the resource being requested.
+		/// Gets the internet host name and port number (if present) specified by the client.
 		/// </summary>
 		/// <value>
-		/// A <see cref="string"/> that contains the value of the Host request-header field.
+		/// A <see cref="string"/> that contains the value of the Host request-header.
 		/// </value>
 		public string UserHostName {
-			get { return headers ["host"]; }
+			get {
+				return _headers ["Host"];
+			}
 		}
 
 		/// <summary>
-		/// Gets the natural languages that are preferred as a response to the request.
+		/// Gets the natural languages which are preferred for the response.
 		/// </summary>
 		/// <value>
-		/// An array of <see cref="string"/> that contains the natural language names in the Accept-Language request-header field.
+		/// An array of <see cref="string"/> that contains the natural language names in the Accept-Language request-header
+		/// or <see langword="null"/> if the request did not include an Accept-Language header.
 		/// </value>
 		public string [] UserLanguages {
-			get { return user_languages; }
+			get {
+				return _userLanguages;
+			}
 		}
 
 		#endregion
 
 		#region Private Methods
 
-		void CreateQueryString (string query)
+		private void CreateQueryString (string query)
 		{
 			if (query == null || query.Length == 0) {
-				query_string = new NameValueCollection (1);
+				_queryString = new NameValueCollection (1);
 				return;
 			}
 
-			query_string = new NameValueCollection ();
+			_queryString = new NameValueCollection ();
 			if (query [0] == '?')
 				query = query.Substring (1);
-			string [] components = query.Split ('&');
-			foreach (string kv in components) {
-				int pos = kv.IndexOf ('=');
+
+			var components = query.Split ('&');
+			foreach (var kv in components) {
+				var pos = kv.IndexOf ('=');
 				if (pos == -1) {
-					query_string.Add (null, HttpUtility.UrlDecode (kv));
+					_queryString.Add (null, HttpUtility.UrlDecode (kv));
 				} else {
-					string key = HttpUtility.UrlDecode (kv.Substring (0, pos));
-					string val = HttpUtility.UrlDecode (kv.Substring (pos + 1));
-					query_string.Add (key, val);
+					var key = HttpUtility.UrlDecode (kv.Substring (0, pos));
+					var val = HttpUtility.UrlDecode (kv.Substring (pos + 1));
+					_queryString.Add (key, val);
 				}
 			}
 		}
@@ -460,164 +500,143 @@ namespace WebSocketSharp.Net {
 
 		internal void AddHeader (string header)
 		{
-			int colon = header.IndexOf (':');
-			if (colon == -1 || colon == 0) {
-				context.ErrorMessage = "Bad Request";
-				context.ErrorStatus = 400;
+			var colon = header.IndexOf (':');
+			if (colon <= 0) {
+				_context.ErrorMessage = "Invalid header";
 				return;
 			}
 
-			string name = header.Substring (0, colon).Trim ();
-			string val = header.Substring (colon + 1).Trim ();
-			string lower = name.ToLower (CultureInfo.InvariantCulture);
-			headers.SetInternal (name, val, false);
-			switch (lower) {
-				case "accept-language":
-					user_languages = val.Split (','); // yes, only split with a ','
-					break;
-				case "accept":
-					accept_types = val.Split (','); // yes, only split with a ','
-					break;
-				case "content-length":
-					try {
-						//TODO: max. content_length?
-						content_length = Int64.Parse (val.Trim ());
-						if (content_length < 0)
-							context.ErrorMessage = "Invalid Content-Length.";
-						cl_set = true;
-					} catch {
-						context.ErrorMessage = "Invalid Content-Length.";
-					}
+			var name = header.Substring (0, colon).Trim ();
+			var val = header.Substring (colon + 1).Trim ();
+			var lower = name.ToLower (CultureInfo.InvariantCulture);
+			_headers.SetInternal (name, val, false);
 
-					break;
-				case "referer":
-					try {
-						referrer = new Uri (val);
-					} catch {
-						referrer = new Uri ("http://someone.is.screwing.with.the.headers.com/");
-					}
-					break;
-				case "cookie":
-					if (cookies == null)
-						cookies = new CookieCollection();
-
-					string[] cookieStrings = val.Split(new char[] {',', ';'});
-					Cookie current = null;
-					int version = 0;
-					foreach (string cookieString in cookieStrings) {
-						string str = cookieString.Trim ();
-						if (str.Length == 0)
-							continue;
-						if (str.StartsWith ("$Version")) {
-							version = Int32.Parse (Unquote (str.Substring (str.IndexOf ('=') + 1)));
-						} else if (str.StartsWith ("$Path")) {
-							if (current != null)
-								current.Path = str.Substring (str.IndexOf ('=') + 1).Trim ();
-						} else if (str.StartsWith ("$Domain")) {
-							if (current != null)
-								current.Domain = str.Substring (str.IndexOf ('=') + 1).Trim ();
-						} else if (str.StartsWith ("$Port")) {
-							if (current != null)
-								current.Port = str.Substring (str.IndexOf ('=') + 1).Trim ();
-						} else {
-							if (current != null) {
-								cookies.Add (current);
-							}
-							current = new Cookie ();
-							int idx = str.IndexOf ('=');
-							if (idx > 0) {
-								current.Name = str.Substring (0, idx).Trim ();
-								current.Value =  str.Substring (idx + 1).Trim ();
-							} else {
-								current.Name = str.Trim ();
-								current.Value = String.Empty;
-							}
-							current.Version = version;
-						}
-					}
-					if (current != null) {
-						cookies.Add (current);
-					}
-					break;
+			if (lower == "accept") {
+				_acceptTypes = val.SplitHeaderValue (',').ToArray ();
+				return;
 			}
+
+			if (lower == "accept-language") {
+				_userLanguages = val.Split (',');
+				return;
+			}
+
+			if (lower == "content-length") {
+				long length;
+				if (Int64.TryParse (val, out length) && length >= 0) {
+					_contentLength = length;
+					_contentLengthWasSet = true;
+				} else {
+					_context.ErrorMessage = "Invalid Content-Length header";
+				}
+
+				return;
+			}
+
+			if (lower == "content-type") {
+				var contents = val.Split (';');
+				foreach (var content in contents) {
+					var tmp = content.Trim ();
+					if (tmp.StartsWith ("charset")) {
+						var charset = tmp.GetValue ("=");
+						if (!charset.IsNullOrEmpty ()) {
+							try {
+								_contentEncoding = Encoding.GetEncoding (charset);
+							} catch {
+								_context.ErrorMessage = "Invalid Content-Type header";
+							}
+						}
+
+						break;
+					}
+				}
+
+				return;
+			}
+
+			if (lower == "referer")
+				_referer = val.ToUri ();
 		}
 
 		internal void FinishInitialization ()
 		{
-			string host = UserHostName;
-			if (version > HttpVersion.Version10 && (host == null || host.Length == 0)) {
-				context.ErrorMessage = "Invalid host name";
+			var host = UserHostName;
+			if (_version > HttpVersion.Version10 && host.IsNullOrEmpty ()) {
+				_context.ErrorMessage = "Invalid Host header";
 				return;
 			}
 
-			string path;
-			Uri raw_uri = null;
-			if (raw_url.MaybeUri () && Uri.TryCreate (raw_url, UriKind.Absolute, out raw_uri))
-				path = raw_uri.PathAndQuery;
-			else
-				path = HttpUtility.UrlDecode (raw_url);
+			Uri rawUri = null;
+			var path = _rawUrl.MaybeUri () && Uri.TryCreate (_rawUrl, UriKind.Absolute, out rawUri)
+			         ? rawUri.PathAndQuery
+			         : HttpUtility.UrlDecode (_rawUrl);
 
-			if ((host == null || host.Length == 0))
+			if (host.IsNullOrEmpty ())
 				host = UserHostAddress;
 
-			if (raw_uri != null)
-				host = raw_uri.Host;
+			if (rawUri != null)
+				host = rawUri.Host;
 
-			int colon = host.IndexOf (':');
+			var colon = host.IndexOf (':');
 			if (colon >= 0)
 				host = host.Substring (0, colon);
 
-			string base_uri = String.Format ("{0}://{1}:{2}",
-								(IsSecureConnection) ? "https" : "http",
-								host,
-								LocalEndPoint.Port);
+			var baseUri = String.Format ("{0}://{1}:{2}",
+				IsSecureConnection ? "https" : "http",
+				host,
+				LocalEndPoint.Port);
 
-			if (!Uri.TryCreate (base_uri + path, UriKind.Absolute, out url)){
-				context.ErrorMessage = "Invalid url: " + base_uri + path;
+			if (!Uri.TryCreate (baseUri + path, UriKind.Absolute, out _url)) {
+				_context.ErrorMessage = "Invalid request url: " + baseUri + path;
 				return;
 			}
 
-			CreateQueryString (url.Query);
+			CreateQueryString (_url.Query);
 
-			if (version >= HttpVersion.Version11) {
-				string t_encoding = Headers ["Transfer-Encoding"];
-				is_chunked = (t_encoding != null && String.Compare (t_encoding, "chunked", StringComparison.OrdinalIgnoreCase) == 0);
+			var encoding = Headers ["Transfer-Encoding"];
+			if (_version >= HttpVersion.Version11 && !encoding.IsNullOrEmpty ()) {
+				_chunked = encoding.ToLower () == "chunked";
 				// 'identity' is not valid!
-				if (t_encoding != null && !is_chunked) {
-					context.Connection.SendError (null, 501);
+				if (!_chunked) {
+					_context.ErrorMessage = String.Empty;
+					_context.ErrorStatus = 501;
+
 					return;
 				}
 			}
 
-			if (!is_chunked && !cl_set) {
-				if (String.Compare (method, "POST", StringComparison.OrdinalIgnoreCase) == 0 ||
-				    String.Compare (method, "PUT", StringComparison.OrdinalIgnoreCase) == 0) {
-					context.Connection.SendError (null, 411);
+			if (!_chunked && !_contentLengthWasSet) {
+				var method = _method.ToLower ();
+				if (method == "post" || method == "put") {
+					_context.ErrorMessage = String.Empty;
+					_context.ErrorStatus = 411;
+
 					return;
 				}
 			}
 
-			if (String.Compare (Headers ["Expect"], "100-continue", StringComparison.OrdinalIgnoreCase) == 0) {
-				ResponseStream output = context.Connection.GetResponseStream ();
+			var expect = Headers ["Expect"];
+			if (!expect.IsNullOrEmpty () && expect.ToLower () == "100-continue") {
+				var output = _context.Connection.GetResponseStream ();
 				output.InternalWrite (_100continue, 0, _100continue.Length);
 			}
 		}
 
-		// returns true is the stream could be reused.
+		// Returns true is the stream could be reused.
 		internal bool FlushInput ()
 		{
 			if (!HasEntityBody)
 				return true;
 
-			int length = 2048;
-			if (content_length > 0)
-				length = (int) Math.Min (content_length, (long) length);
+			var length = 2048;
+			if (_contentLength > 0)
+				length = (int) Math.Min (_contentLength, (long) length);
 
-			byte [] bytes = new byte [length];
+			var buffer = new byte [length];
 			while (true) {
-				// TODO: test if MS has a timeout when doing this
+				// TODO: Test if MS has a timeout when doing this.
 				try {
-					IAsyncResult ares = InputStream.BeginRead (bytes, 0, length, null, null);
+					var ares = InputStream.BeginRead (buffer, 0, length, null, null);
 					if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne (100))
 						return false;
 
@@ -629,52 +648,34 @@ namespace WebSocketSharp.Net {
 			}
 		}
 
-		internal void SetRequestLine (string req)
+		internal void SetRequestLine (string requestLine)
 		{
-			string [] parts = req.Split (separators, 3);
+			var parts = requestLine.Split (new char [] { ' ' }, 3);
 			if (parts.Length != 3) {
-				context.ErrorMessage = "Invalid request line (parts).";
+				_context.ErrorMessage = "Invalid request line (parts)";
 				return;
 			}
 
-			method = parts [0];
-			foreach (char c in method){
-				int ic = (int) c;
-
-				if ((ic >= 'A' && ic <= 'Z') ||
-				    (ic > 32 && c < 127 && c != '(' && c != ')' && c != '<' &&
-				     c != '<' && c != '>' && c != '@' && c != ',' && c != ';' &&
-				     c != ':' && c != '\\' && c != '"' && c != '/' && c != '[' &&
-				     c != ']' && c != '?' && c != '=' && c != '{' && c != '}'))
-					continue;
-
-				context.ErrorMessage = "(Invalid verb)";
+			_method = parts [0];
+			if (!_method.IsToken ()) {
+				_context.ErrorMessage = "Invalid request line (method)";
 				return;
 			}
 
-			raw_url = parts [1];
+			_rawUrl = parts [1];
+
 			if (parts [2].Length != 8 || !parts [2].StartsWith ("HTTP/")) {
-				context.ErrorMessage = "Invalid request line (version).";
+				_context.ErrorMessage = "Invalid request line (version)";
 				return;
 			}
 
 			try {
-				version = new Version (parts [2].Substring (5));
-				if (version.Major < 1)
+				_version = new Version (parts [2].Substring (5));
+				if (_version.Major < 1)
 					throw new Exception ();
 			} catch {
-				context.ErrorMessage = "Invalid request line (version).";
-				return;
+				_context.ErrorMessage = "Invalid request line (version)";
 			}
-		}
-
-		internal static string Unquote (String str)
-		{
-			int start = str.IndexOf ('\"');
-			int end = str.LastIndexOf ('\"');
-			if (start >= 0 && end >=0)
-				str = str.Substring (start + 1, end - 1);
-			return str.Trim ();
 		}
 
 		#endregion

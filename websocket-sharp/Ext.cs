@@ -507,6 +507,19 @@ namespace WebSocketSharp {
       }
     }
 
+    internal static string Unquote(this string value)
+    {
+      var start = value.IndexOf('\"');
+      var end = value.LastIndexOf('\"');
+      if (start < end)
+      {
+        value = value.Substring(start + 1, end - start - 1)
+                .Replace("\\\"", "\"");
+      }
+
+      return value.Trim();
+    }
+
     internal static void WriteBytes(this Stream stream, byte[] value)
     {
       using (var input = new MemoryStream(value))
