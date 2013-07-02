@@ -323,10 +323,6 @@ httpsv.AddWebSocketService<Echo>("/");
 
 For more information, could you see **[Example3]**?
 
-## Required Environment ##
-
-C# **3.0**, .NET **3.5** compatible or later.
-
 ## Examples ##
 
 Examples of using **websocket-sharp**.
@@ -350,6 +346,16 @@ Examples of using **websocket-sharp**.
 [Example3] starts the HTTP server that can upgrade the connection to the WebSocket connection.
 
 Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
+
+## Required Environment ##
+
+C# **3.0**, .NET **3.5** compatible or later.
+
+## websocket-sharp for Unity ##
+
+**websocket-sharp** has now been displayed on the **Unity Asset Store**!
+
+- **[websocket-sharp for Unity]**
 
 ## Supported WebSocket Specifications ##
 
@@ -378,7 +384,7 @@ Sec-WebSocket-Extensions: permessage-deflate
 
 If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
 
-## References ##
+## WebSocket References ##
 
 - **[The WebSocket Protocol]**
 - **[The WebSocket API]**
@@ -416,3 +422,4 @@ Licensed under the **[MIT License]**.
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
 [The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[websocket-sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
