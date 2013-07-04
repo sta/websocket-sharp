@@ -41,11 +41,12 @@ namespace WebSocketSharp.Server {
   /// </summary>
   /// <remarks>
   /// <para>
-  /// The HttpServer class provides the multi WebSocket service.
+  /// The HttpServer instance can provide the multi WebSocket services.
   /// </para>
   /// <para>
   /// <para>
-  /// The HttpServer class needs the application configuration file to configure the server root path.
+  /// The HttpServer instance can set the document root path of server using
+  /// the application configuration file or <see cref="RootPath"/> property.
   /// </para>
   /// <code lang="xml">
   /// &lt;?xml version="1.0" encoding="utf-8"?&gt;
@@ -105,7 +106,27 @@ namespace WebSocketSharp.Server {
     /// An <see cref="int"/> that contains a port number.
     /// </value>
     public int Port {
-      get { return _port; }
+      get {
+        return _port;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the document root path of server.
+    /// </summary>
+    /// <value>
+    /// An <see cref="string"/> that contains the document root path of server.
+    /// The default value is set from the application configuration file if is available;
+    /// otherwise, <c>./Public</c>.
+    /// </value>
+    public string RootPath {
+      get {
+        return _rootPath;
+      }
+
+      set {
+        _rootPath = value;
+      }
     }
 
     /// <summary>
@@ -196,17 +217,12 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
-    private void configureFromConfigFile()
-    {
-      _rootPath = ConfigurationManager.AppSettings["RootPath"];
-    }
-
     private void init()
     {
-      _isWindows = false;
-      _listener  = new HttpListener();
-      _svcHosts  = new ServiceHostManager();
+      _listener = new HttpListener();
+      _svcHosts = new ServiceHostManager();
 
+      _isWindows = false;
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
         _isWindows = true;
@@ -215,7 +231,21 @@ namespace WebSocketSharp.Server {
         "http{0}://*:{1}/", _port == 443 ? "s" : String.Empty, _port);
       _listener.Prefixes.Add(prefix);
 
-      configureFromConfigFile();
+      _rootPath = getRootPath();
+    }
+
+    private static string getRootPath()
+    {
+      string rootPath = null;
+      try {
+        rootPath = ConfigurationManager.AppSettings["RootPath"];
+      }
+      catch {
+      }
+
+      return rootPath.IsNullOrEmpty()
+             ? "./Public"
+             : rootPath;
     }
 
     private void onError(string message)
@@ -399,10 +429,11 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets the contents of the specified file.
+    /// Gets the contents of the file with the specified <paramref name="path"/>.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> that contains the contents of the file.
+    /// An array of <see cref="byte"/> that contains the contents of the file if exists;
+    /// otherwise, <see langword="null"/>.
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that contains a virtual path to the file to get.
