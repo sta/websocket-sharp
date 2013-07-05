@@ -178,7 +178,7 @@ namespace Example {
   {
     protected override void OnMessage(MessageEventArgs e)
     {
-      var msg = e.Data.Equals("balus", StringComparison.InvariantCultureIgnoreCase)
+      var msg = e.Data.ToLower().Equals("balus")
               ? "I've been balused already..."
               : "I'm not available now.";
       Send(msg);
@@ -347,15 +347,15 @@ Examples of using **websocket-sharp**.
 
 Please access [http://localhost:4649](http://localhost:4649) to do WebSocket Echo Test with your web browser after [Example3] running.
 
-## Required Environment ##
-
-C# **3.0**, .NET **3.5** compatible or later.
-
 ## websocket-sharp for Unity ##
 
 **websocket-sharp** has now been displayed on the **Unity Asset Store**!
 
 - **[websocket-sharp for Unity]**
+
+## Required Environment ##
+
+C# **3.0**, .NET **3.5** compatible or later.
 
 ## Supported WebSocket Specifications ##
 
