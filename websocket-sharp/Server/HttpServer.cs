@@ -62,12 +62,13 @@ namespace WebSocketSharp.Server {
 
     #region Private Fields
 
-    private bool               _isWindows;
     private HttpListener       _listener;
+    private bool               _listening;
     private int                _port;
     private Thread             _receiveRequestThread;
     private string             _rootPath;
     private ServiceHostManager _svcHosts;
+    private bool               _windows;
 
     #endregion
 
@@ -100,6 +101,18 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
+    /// Gets a value indicating whether the server has been started.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server has been started; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsListening {
+      get {
+        return _listening;
+      }
+    }
+
+    /// <summary>
     /// Gets the port on which to listen for incoming requests.
     /// </summary>
     /// <value>
@@ -125,7 +138,8 @@ namespace WebSocketSharp.Server {
       }
 
       set {
-        _rootPath = value;
+        if (!_listening)
+          _rootPath = value;
       }
     }
 
@@ -220,18 +234,18 @@ namespace WebSocketSharp.Server {
     private void init()
     {
       _listener = new HttpListener();
+      _listening = false;
+      _rootPath = getRootPath();
       _svcHosts = new ServiceHostManager();
 
-      _isWindows = false;
+      _windows = false;
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
-        _isWindows = true;
+        _windows = true;
 
       var prefix = String.Format(
         "http{0}://*:{1}/", _port == 443 ? "s" : String.Empty, _port);
       _listener.Prefixes.Add(prefix);
-
-      _rootPath = getRootPath();
     }
 
     private static string getRootPath()
@@ -252,7 +266,7 @@ namespace WebSocketSharp.Server {
     {
       #if DEBUG
       var callerFrame = new StackFrame(1);
-      var caller      = callerFrame.GetMethod();
+      var caller = callerFrame.GetMethod();
       Console.WriteLine("HTTPSV: Error@{0}: {1}", caller.Name, message);
       #endif
       OnError.Emit(this, new ErrorEventArgs(message));
@@ -382,9 +396,9 @@ namespace WebSocketSharp.Server {
 
     private bool upgradeToWebSocket(HttpListenerContext context)
     {
-      var res       = context.Response;
+      var res = context.Response;
       var wsContext = context.AcceptWebSocket();
-      var path      = wsContext.Path.UrlDecode();
+      var path = wsContext.Path.UrlDecode();
 
       IServiceHost svcHost;
       if (!_svcHosts.TryGetServiceHost(path, out svcHost))
@@ -441,7 +455,7 @@ namespace WebSocketSharp.Server {
     public byte[] GetFile(string path)
     {
       var filePath = _rootPath + path;
-      if (_isWindows)
+      if (_windows)
         filePath = filePath.Replace("/", "\\");
 
       return File.Exists(filePath)
@@ -450,22 +464,30 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Starts the <see cref="HttpServer"/>.
+    /// Starts to receive the HTTP requests.
     /// </summary>
     public void Start()
     {
+      if (_listening)
+        return;
+
       _listener.Start();
       startReceiveRequestThread();
+      _listening = true;
     }
 
     /// <summary>
-    /// Shuts down the <see cref="HttpServer"/>.
+    /// Stops receiving the HTTP requests.
     /// </summary>
     public void Stop()
     {
+      if (!_listening)
+        return;
+
       _listener.Close();
       _receiveRequestThread.Join(5 * 1000);
       _svcHosts.Stop();
+      _listening = false;
     }
 
     #endregion

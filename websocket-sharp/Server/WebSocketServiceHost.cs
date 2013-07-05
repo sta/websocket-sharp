@@ -58,7 +58,7 @@ namespace WebSocketSharp.Server {
 
     internal WebSocketServiceHost()
     {
-      init();
+      _sessions = new WebSocketServiceManager();
     }
 
     #endregion
@@ -87,7 +87,7 @@ namespace WebSocketSharp.Server {
     public WebSocketServiceHost(string url)
       : base(url)
     {
-      init();
+      _sessions = new WebSocketServiceManager();
     }
 
     /// <summary>
@@ -175,7 +175,7 @@ namespace WebSocketSharp.Server {
     public WebSocketServiceHost(System.Net.IPAddress address, int port, string absPath, bool secure)
       : base(address, port, absPath, secure)
     {
-      init();
+      _sessions = new WebSocketServiceManager();
     }
 
     #endregion
@@ -218,15 +218,6 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Private Methods
-
-    private void init()
-    {
-      _sessions = new WebSocketServiceManager();
-    }
-
-    #endregion
-
     #region Protected Methods
 
     /// <summary>
@@ -237,16 +228,16 @@ namespace WebSocketSharp.Server {
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var websocket = context.WebSocket;
+      var ws = context.WebSocket;
       var path = context.Path.UrlDecode();
       if (path != Uri.GetAbsolutePath().UrlDecode())
       {
-        websocket.Close(HttpStatusCode.NotImplemented);
+        ws.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
       if (Uri.IsAbsoluteUri)
-        websocket.Url = Uri;
+        ws.Url = Uri;
 
       ((IServiceHost)this).BindWebSocket(context);
     }

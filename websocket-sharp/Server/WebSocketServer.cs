@@ -88,7 +88,7 @@ namespace WebSocketSharp.Server {
         throw new ArgumentException(msg, "url");
       }
 
-      init();
+      _svcHosts = new ServiceHostManager();
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ namespace WebSocketSharp.Server {
     public WebSocketServer(System.Net.IPAddress address, int port, bool secure)
       : base(address, port, "/", secure)
     {
-      init();
+      _svcHosts = new ServiceHostManager();
     }
 
     #endregion
@@ -155,6 +155,7 @@ namespace WebSocketSharp.Server {
         var url = BaseUri.IsAbsoluteUri
                 ? BaseUri.ToString().TrimEnd('/')
                 : String.Empty;
+
         foreach (var path in _svcHosts.Paths)
           yield return url + path;
       }
@@ -180,15 +181,6 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
-    #region Private Methods
-
-    private void init()
-    {
-      _svcHosts = new ServiceHostManager();
-    }
-
-    #endregion
-
     #region Protected Methods
 
     /// <summary>
@@ -199,18 +191,18 @@ namespace WebSocketSharp.Server {
     /// </param>
     protected override void AcceptWebSocket(TcpListenerWebSocketContext context)
     {
-      var websocket = context.WebSocket;
-      var path      = context.Path.UrlDecode();
+      var ws = context.WebSocket;
+      var path = context.Path.UrlDecode();
 
       IServiceHost svcHost;
       if (!_svcHosts.TryGetServiceHost(path, out svcHost))
       {
-        websocket.Close(HttpStatusCode.NotImplemented);
+        ws.Close(HttpStatusCode.NotImplemented);
         return;
       }
 
       if (BaseUri.IsAbsoluteUri)
-        websocket.Url = new Uri(BaseUri, path);
+        ws.Url = new Uri(BaseUri, path);
 
       svcHost.BindWebSocket(context);
     }
@@ -242,6 +234,7 @@ namespace WebSocketSharp.Server {
       svcHost.Uri = BaseUri.IsAbsoluteUri
                   ? new Uri(BaseUri, absPath)
                   : absPath.ToUri();
+
       if (!Sweeping)
         svcHost.Sweeping = false;
 
