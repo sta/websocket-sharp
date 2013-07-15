@@ -58,13 +58,38 @@ namespace WebSocketSharp.Server {
     /// </summary>
     public WebSocketService()
     {
-      ID      = String.Empty;
+      ID = String.Empty;
       IsBound = false;
     }
 
     #endregion
 
     #region Protected Properties
+
+    /// <summary>
+    /// Gets or sets the logging functions.
+    /// </summary>
+    /// <remarks>
+    /// If you wanted to change the current logger to the service own logger, you would set this property
+    /// to a new <see cref="Logger"/> instance that you created.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </value>
+    protected Logger Log {
+      get {
+        return IsBound
+               ? _websocket.Log
+               : null;
+      }
+
+      set {
+        if (!IsBound)
+          return;
+
+        _websocket.Log = value;
+      }
+    }
 
     /// <summary>
     /// Gets the collection of query string variables used in the WebSocket opening handshake.

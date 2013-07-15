@@ -1,4 +1,5 @@
 using System;
+using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace Example2
@@ -31,6 +32,9 @@ namespace Example2
       // Multi services server
       var wssv = new WebSocketServer(4649);
       //var wssv = new WebSocketServer("ws://localhost:4649");
+      #if DEBUG
+      wssv.Log.Level = LogLevel.TRACE;
+      #endif
       //wssv.Sweeping = false; // Stop the sweep inactive session timer.
       wssv.AddWebSocketService<Echo>("/Echo");
       wssv.AddWebSocketService<Chat>("/Chat");

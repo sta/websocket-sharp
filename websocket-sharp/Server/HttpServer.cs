@@ -64,6 +64,7 @@ namespace WebSocketSharp.Server {
 
     private HttpListener       _listener;
     private bool               _listening;
+    private Logger             _logger;
     private int                _port;
     private Thread             _receiveRequestThread;
     private string             _rootPath;
@@ -109,6 +110,23 @@ namespace WebSocketSharp.Server {
     public bool IsListening {
       get {
         return _listening;
+      }
+    }
+
+    /// <summary>
+    /// Gets the logging functions.
+    /// </summary>
+    /// <remarks>
+    /// The default logging level is the <see cref="LogLevel.ERROR"/>.
+    /// If you wanted to change the current logging level, you would set the <c>Log.Level</c> property
+    /// to one of the <see cref="LogLevel"/> values which you want.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </value>
+    public Logger Log {
+      get {
+        return _logger;
       }
     }
 
@@ -231,10 +249,16 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
+    private void error(string message)
+    {
+      OnError.Emit(this, new ErrorEventArgs(message));
+    }
+
     private void init()
     {
       _listener = new HttpListener();
       _listening = false;
+      _logger = new Logger();
       _rootPath = getRootPath();
       _svcHosts = new ServiceHostManager();
 
@@ -262,103 +286,107 @@ namespace WebSocketSharp.Server {
              : rootPath;
     }
 
-    private void onError(string message)
+    private void processHttpRequest(HttpListenerContext context)
     {
-      #if DEBUG
-      var callerFrame = new StackFrame(1);
-      var caller = callerFrame.GetMethod();
-      Console.WriteLine("HTTPSV: Error@{0}: {1}", caller.Name, message);
-      #endif
-      OnError.Emit(this, new ErrorEventArgs(message));
-    }
-
-    private void onRequest(HttpListenerContext context)
-    {
-      var req = context.Request;
-      var res = context.Response;
       var eventArgs = new HttpRequestEventArgs(context);
-
-      if (req.HttpMethod == "GET" && !OnGet.IsNull())
+      var method = context.Request.HttpMethod;
+      if (method == "GET" && OnGet != null)
       {
         OnGet(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "HEAD" && !OnHead.IsNull())
+      if (method == "HEAD" && OnHead != null)
       {
         OnHead(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "POST" && !OnPost.IsNull())
+      if (method == "POST" && OnPost != null)
       {
         OnPost(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "PUT" && !OnPut.IsNull())
+      if (method == "PUT" && OnPut != null)
       {
         OnPut(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "DELETE" && !OnDelete.IsNull())
+      if (method == "DELETE" && OnDelete != null)
       {
         OnDelete(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "OPTIONS" && !OnOptions.IsNull())
+      if (method == "OPTIONS" && OnOptions != null)
       {
         OnOptions(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "TRACE" && !OnTrace.IsNull())
+      if (method == "TRACE" && OnTrace != null)
       {
         OnTrace(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "CONNECT" && !OnConnect.IsNull())
+      if (method == "CONNECT" && OnConnect != null)
       {
         OnConnect(this, eventArgs);
         return;
       }
 
-      if (req.HttpMethod == "PATCH" && !OnPatch.IsNull())
+      if (method == "PATCH" && OnPatch != null)
       {
         OnPatch(this, eventArgs);
         return;
       }
 
-      res.StatusCode = (int)HttpStatusCode.NotImplemented;
+      context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+    }
+
+    private bool processWebSocketRequest(HttpListenerContext context)
+    {
+      var wsContext = context.AcceptWebSocket();
+      var path = wsContext.Path.UrlDecode();
+
+      IServiceHost svcHost;
+      if (!_svcHosts.TryGetServiceHost(path, out svcHost))
+      {
+        context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+        return false;
+      }
+
+      wsContext.WebSocket.Log = _logger;
+      svcHost.BindWebSocket(wsContext);
+
+      return true;
     }
 
     private void processRequestAsync(HttpListenerContext context)
     {
       WaitCallback callback = (state) =>
       {
-        var req = context.Request;
-        var res = context.Response;
-
         try
         {
-          if (req.IsUpgradeTo("websocket"))
+          if (context.Request.IsUpgradeTo("websocket"))
           {
-            if (upgradeToWebSocket(context))
+            if (processWebSocketRequest(context))
               return;
           }
           else
           {
-            onRequest(context);
+            processHttpRequest(context);
           }
 
-          res.Close();
+          context.Response.Close();
         }
         catch (Exception ex)
         {
-          onError(ex.Message);
+          _logger.Fatal(ex.Message);
+          error("An exception has occured.");
         }
       };
 
@@ -371,8 +399,7 @@ namespace WebSocketSharp.Server {
       {
         try
         {
-          var context = _listener.GetContext();
-          processRequestAsync(context);
+          processRequestAsync(_listener.GetContext());
         }
         catch (HttpListenerException)
         {
@@ -381,7 +408,9 @@ namespace WebSocketSharp.Server {
         }
         catch (Exception ex)
         {
-          onError(ex.Message);
+          _logger.Fatal(ex.Message);
+          error("An exception has occured.");
+
           break;
         }
       }
@@ -392,23 +421,6 @@ namespace WebSocketSharp.Server {
       _receiveRequestThread = new Thread(new ThreadStart(receiveRequest)); 
       _receiveRequestThread.IsBackground = true;
       _receiveRequestThread.Start();
-    }
-
-    private bool upgradeToWebSocket(HttpListenerContext context)
-    {
-      var res = context.Response;
-      var wsContext = context.AcceptWebSocket();
-      var path = wsContext.Path.UrlDecode();
-
-      IServiceHost svcHost;
-      if (!_svcHosts.TryGetServiceHost(path, out svcHost))
-      {
-        res.StatusCode = (int)HttpStatusCode.NotImplemented;
-        return false;
-      }
-
-      svcHost.BindWebSocket(wsContext);
-      return true;
     }
 
     #endregion
@@ -430,11 +442,13 @@ namespace WebSocketSharp.Server {
       string msg;
       if (!absPath.IsValidAbsolutePath(out msg))
       {
-        onError(msg);
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
-      var svcHost = new WebSocketServiceHost<T>();
+      var svcHost = new WebSocketServiceHost<T>(_logger);
       svcHost.Uri = absPath.ToUri();
       if (!Sweeping)
         svcHost.Sweeping = false;

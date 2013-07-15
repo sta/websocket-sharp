@@ -113,6 +113,9 @@ namespace Example
 
         //ws.Origin = "http://echo.websocket.org";
         //ws.Compression = CompressionMethod.DEFLATE;
+        #if DEBUG
+        ws.Log.Level = LogLevel.TRACE;
+        #endif
         //ws.SetCookie(new Cookie("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie(new Cookie("dora", "tanuki"));
         ws.Connect();

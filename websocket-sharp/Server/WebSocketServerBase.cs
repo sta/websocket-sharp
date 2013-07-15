@@ -47,6 +47,7 @@ namespace WebSocketSharp.Server {
 
     private IPAddress   _address;
     private bool        _listening;
+    private Logger      _logger;
     private int         _port;
     private Thread      _receiveRequestThread;
     private bool        _secure;
@@ -61,14 +62,33 @@ namespace WebSocketSharp.Server {
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class.
     /// </summary>
+    /// <remarks>
+    /// This constructor initializes a new instance of this class as non self host.
+    /// </remarks>
     protected WebSocketServerBase()
+      : this(new Logger())
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class
+    /// with the specified <paramref name="logger"/>.
+    /// </summary>
+    /// <remarks>
+    /// This constructor initializes a new instance of this class as non self host.
+    /// </remarks>
+    /// <param name="logger">
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </param>
+    protected WebSocketServerBase(Logger logger)
+    {
+      _logger = logger;
       _selfHost = false;
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class that listens for incoming connection attempts
-    /// on the specified WebSocket URL.
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class
+    /// that listens for incoming connection attempts on the specified WebSocket URL.
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL.
@@ -93,8 +113,9 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class that listens for incoming connection attempts
-    /// on the specified <paramref name="address"/>, <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class
+    /// that listens for incoming connection attempts on the specified <paramref name="address"/>,
+    /// <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
     /// A <see cref="IPAddress"/> that contains a local IP address.
@@ -106,21 +127,22 @@ namespace WebSocketSharp.Server {
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
     /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c> indicates providing a secure connection.)
+    /// A <see cref="bool"/> that indicates providing a secure connection or not.
+    /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Either <paramref name="address"/> or <paramref name="absPath"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <para>
-    /// <paramref name="absPath"/> is invalid.
-    /// </para>
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
-    /// </para>
+    ///   <para>
+    ///   <paramref name="absPath"/> is invalid.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   </para>
     /// </exception>
     protected WebSocketServerBase(IPAddress address, int port, string absPath, bool secure)
     {
@@ -223,6 +245,30 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
+    /// Gets the logging functions.
+    /// </summary>
+    /// <remarks>
+    /// The default logging level is the <see cref="LogLevel.ERROR"/>.
+    /// If you wanted to change the current logging level, you would set the <c>Log.Level</c> property
+    /// to one of the <see cref="LogLevel"/> values which you want.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </value>
+    public Logger Log {
+      get {
+        return _logger;
+      }
+
+      internal set {
+        if (value == null)
+          return;
+
+        _logger = value;
+      }
+    }
+
+    /// <summary>
     /// Gets the port on which to listen for incoming connection attempts.
     /// </summary>
     /// <value>
@@ -247,9 +293,15 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
+    private void error(string message)
+    {
+      OnError.Emit(this, new ErrorEventArgs(message));
+    }
+
     private void init()
     {
       _listening = false;
+      _logger = new Logger();
       _selfHost = true;
       _tcpListener = new TcpListener(_address, _port);
     }
@@ -268,16 +320,6 @@ namespace WebSocketSharp.Server {
       init();
     }
 
-    private void onError(string message)
-    {
-      #if DEBUG
-      var callerFrame = new StackFrame(1);
-      var caller = callerFrame.GetMethod();
-      Console.WriteLine("WSSV: Error@{0}: {1}", caller.Name, message);
-      #endif
-      OnError.Emit(this, new ErrorEventArgs(message));
-    }
-
     private void processRequestAsync(TcpListenerWebSocketContext context)
     {
       WaitCallback callback = (state) =>
@@ -288,7 +330,8 @@ namespace WebSocketSharp.Server {
         }
         catch (Exception ex)
         {
-          onError(ex.Message);
+          _logger.Fatal(ex.Message);
+          error("An exception has occured.");
         }
       };
 
@@ -301,8 +344,7 @@ namespace WebSocketSharp.Server {
       {
         try
         {
-          var context = _tcpListener.AcceptWebSocket(_secure);
-          processRequestAsync(context);
+          processRequestAsync(_tcpListener.AcceptWebSocket(_secure));
         }
         catch (SocketException)
         {
@@ -311,7 +353,9 @@ namespace WebSocketSharp.Server {
         }
         catch (Exception ex)
         {
-          onError(ex.Message);
+          _logger.Fatal(ex.Message);
+          error("An exception has occured.");
+
           break;
         }
       }
@@ -360,7 +404,10 @@ namespace WebSocketSharp.Server {
     /// </param>
     protected virtual void Error(string message)
     {
-      onError(message);
+      if (message.IsNullOrEmpty())
+        return;
+
+      error(message);
     }
 
     #endregion

@@ -12,6 +12,9 @@ namespace Example3
     public static void Main(string[] args)
     {
       _httpsv = new HttpServer(4649);
+      #if DEBUG
+      _httpsv.Log.Level = LogLevel.TRACE;
+      #endif
       //_httpsv.RootPath = "../../Public";
       //_httpsv.Sweeping = false;
       _httpsv.AddWebSocketService<Echo>("/Echo");
@@ -33,7 +36,7 @@ namespace Example3
         Console.WriteLine("  {0}", path);
       Console.WriteLine();
 
-      Console.WriteLine("Press any key to stop server...");
+      Console.WriteLine("Press enter key to stop server...");
       Console.ReadLine();
 
       _httpsv.Stop();       

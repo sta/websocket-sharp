@@ -77,6 +77,7 @@ namespace WebSocketSharp {
     private object            _forClose;
     private object            _forFrame;
     private object            _forSend;
+    private volatile Logger   _logger;
     private string            _origin;
     private bool              _preAuth;
     private string            _protocol;
@@ -100,6 +101,7 @@ namespace WebSocketSharp {
       _forClose = new object();
       _forFrame = new object();
       _forSend = new object();
+      _logger = new Logger();
       _origin = String.Empty;
       _preAuth = false;
       _protocol = String.Empty;
@@ -131,7 +133,8 @@ namespace WebSocketSharp {
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL
+    /// and subprotocols.
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL to connect.
@@ -315,6 +318,30 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
+    /// Gets the logging functions.
+    /// </summary>
+    /// <remarks>
+    /// The default logging level is the <see cref="LogLevel.ERROR"/>.
+    /// If you wanted to change the current logging level, you would set the <c>Log.Level</c> property
+    /// to one of the <see cref="LogLevel"/> values which you want.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </value>
+    public Logger Log {
+      get {
+        return _logger;
+      }
+
+      internal set {
+        if (value == null)
+          return;
+
+        _logger = value;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the value of the Origin header used in the WebSocket opening handshake.
     /// </summary>
     /// <remarks>
@@ -348,7 +375,10 @@ namespace WebSocketSharp {
         var origin = new Uri(value);
         if (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
         {
-          onError("The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.");
+          var msg = "The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.";
+          _logger.Error(msg);
+          error(msg);
+
           return;
         }
 
@@ -435,11 +465,20 @@ namespace WebSocketSharp {
       return true;
     }
 
+    private void close(CloseEventArgs eventArgs)
+    {
+      if (!Thread.CurrentThread.IsBackground && _exitReceiving != null)
+        _exitReceiving.WaitOne(5 * 1000);
+
+      if (!closeResources())
+        eventArgs.WasClean = false;
+
+      OnClose.Emit(this, eventArgs);
+    }
+
     private void close(PayloadData data)
     {
-      #if DEBUG
-      Console.WriteLine("WS: Info@close: Current thread IsBackground?: {0}", Thread.CurrentThread.IsBackground);
-      #endif
+      _logger.Debug("Is this thread background?: " + Thread.CurrentThread.IsBackground);
       lock(_forClose)
       {
         // Whether the closing handshake has been started already?
@@ -450,7 +489,7 @@ namespace WebSocketSharp {
         if (_readyState == WsState.CONNECTING && !_client)
         {
           sendResponseHandshake(HttpStatusCode.BadRequest);
-          onClose(new CloseEventArgs(data));
+          close(new CloseEventArgs(data));
           
           return;
         }
@@ -461,14 +500,12 @@ namespace WebSocketSharp {
       // Whether a payload data contains the close status code which must not be set for send?
       if (data.ContainsReservedCloseStatusCode)
       {
-        onClose(new CloseEventArgs(data));
+        close(new CloseEventArgs(data));
         return;
       }
 
       closeHandshake(data);
-      #if DEBUG
-      Console.WriteLine("WS: Info@close: Exit close method.");
-      #endif
+      _logger.Trace("Exit close method.");
     }
 
     private void close(HttpStatusCode code)
@@ -485,7 +522,10 @@ namespace WebSocketSharp {
       var data = code.Append(reason);
       if (data.Length > 125)
       {
-        onError("The payload length of a Close frame must be 125 bytes or less.");
+        var msg = "The payload length of a Close frame must be 125 bytes or less.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -499,7 +539,7 @@ namespace WebSocketSharp {
       if (send(frame))
         args.WasClean = true;
 
-      onClose(args);
+      close(args);
     }
 
     private bool closeResources()
@@ -517,7 +557,9 @@ namespace WebSocketSharp {
       }
       catch (Exception ex)
       {
-        onError(ex.Message);
+        _logger.Fatal(ex.Message);
+        error("An exception has occured.");
+
         return false;
       }
     }
@@ -739,6 +781,11 @@ namespace WebSocketSharp {
       return processResponseHandshake(sendRequestHandshake());
     }
 
+    private void error(string message)
+    {
+      OnError.Emit(this, new ErrorEventArgs(message));
+    }
+
     private static CompressionMethod getCompressionMethod(string value)
     {
       var deprecated = createDeprecatedCompressionExtension(CompressionMethod.DEFLATE);
@@ -791,7 +838,11 @@ namespace WebSocketSharp {
         return false;
 
       if (errorIfOpened)
-        onError("The WebSocket connection has been established already.");
+      {
+        var msg = "The WebSocket connection has been established already.";
+        _logger.Error(msg);
+        error(msg);
+      }
 
       return true;
     }
@@ -837,29 +888,7 @@ namespace WebSocketSharp {
                  response.ContainsHeader("Sec-WebSocket-Version", _version);
     }
 
-    private void onClose(CloseEventArgs eventArgs)
-    {
-      if (!Thread.CurrentThread.IsBackground)
-        if (_exitReceiving != null)
-          _exitReceiving.WaitOne(5 * 1000);
-
-      if (!closeResources())
-        eventArgs.WasClean = false;
-
-      OnClose.Emit(this, eventArgs);
-    }
-
-    private void onError(string message)
-    {
-      #if DEBUG
-      var callerFrame = new StackFrame(1);
-      var caller      = callerFrame.GetMethod();
-      Console.WriteLine("WS: Error@{0}: {1}", caller.Name, message);
-      #endif
-      OnError.Emit(this, new ErrorEventArgs(message));
-    }
-
-    private void onOpen()
+    private void open()
     {
       _readyState = WsState.OPEN;
       startReceiving();
@@ -887,9 +916,7 @@ namespace WebSocketSharp {
       if (frame != null)
         return false;
 
-      #if DEBUG
-      Console.WriteLine("WS: Info@processAbnormal: Start closing handshake.");
-      #endif
+      _logger.Trace("Start closing handshake.");
       var code = CloseStatusCode.ABNORMAL;
       Close(code, code.GetMessage());
 
@@ -901,9 +928,7 @@ namespace WebSocketSharp {
       if (!frame.IsClose)
         return false;
 
-      #if DEBUG
-      Console.WriteLine("WS: Info@processClose: Start closing handshake.");
-      #endif
+      _logger.Trace("Start closing handshake.");
       close(frame.PayloadData);
 
       return true;
@@ -985,9 +1010,7 @@ namespace WebSocketSharp {
 
     private void processIncorrectFrame()
     {
-      #if DEBUG
-      Console.WriteLine("WS: Info@processIncorrectFrame: Start closing handshake.");
-      #endif
+      _logger.Trace("Start closing handshake.");
       Close(CloseStatusCode.INCORRECT_DATA);
     }
 
@@ -996,9 +1019,7 @@ namespace WebSocketSharp {
       if (!frame.IsPing)
         return false;
 
-      #if DEBUG
-      Console.WriteLine("WS: Info@processPing: Return Pong.");
-      #endif
+      _logger.Trace("Return Pong.");
       pong(frame.PayloadData);
 
       return true;
@@ -1009,9 +1030,7 @@ namespace WebSocketSharp {
       if (!frame.IsPong)
         return false;
 
-      #if DEBUG
-      Console.WriteLine("WS: Info@processPong: Receive Pong.");
-      #endif
+      _logger.Trace("Receive Pong.");
       _receivePong.Set();
 
       return true;
@@ -1048,15 +1067,15 @@ namespace WebSocketSharp {
     // As server
     private bool processRequestHandshake()
     {
-      #if DEBUG
       var req = RequestHandshake.Parse(_context);
-      Console.WriteLine("WS: Info@processRequestHandshake: Request handshake from client:\n");
-      Console.WriteLine(req.ToString());
-      #endif
+      _logger.Debug("Request handshake from client:\n" + req.ToString());
       if (!isValidRequesHandshake())
       {
-        onError("Invalid WebSocket connection request.");
+        var msg = "Invalid WebSocket connection request.";
+        _logger.Error(msg);
+        error(msg);
         close(HttpStatusCode.BadRequest);
+
         return false;
       }
 
@@ -1110,16 +1129,17 @@ namespace WebSocketSharp {
     // As client
     private bool processResponseHandshake(ResponseHandshake response)
     {
-      var error = response.IsUnauthorized
-                ? String.Format("An HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
-                : !isValidResponseHandshake(response)
-                  ? "Invalid response to this WebSocket connection request."
-                  : String.Empty;
+      var msg = response.IsUnauthorized
+              ? String.Format("An HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
+              : !isValidResponseHandshake(response)
+                ? "Invalid response to this WebSocket connection request."
+                : String.Empty;
 
-      if (error.Length > 0)
+      if (msg.Length > 0)
       {
-        onError(error);
-        Close(CloseStatusCode.ABNORMAL, error);
+        _logger.Error(msg);
+        error(msg);
+        Close(CloseStatusCode.ABNORMAL, msg);
 
         return false;
       }
@@ -1142,30 +1162,22 @@ namespace WebSocketSharp {
     private ResponseHandshake receiveResponseHandshake()
     {
       var res = ResponseHandshake.Parse(_wsStream.ReadHandshake());
-      #if DEBUG
-      Console.WriteLine("WS: Info@receiveResponseHandshake: Response handshake from server:\n");
-      Console.WriteLine(res.ToString());
-      #endif
+      _logger.Debug("Response handshake from server:\n" + res.ToString());
+
       return res;
     }
 
     // As client
     private void send(RequestHandshake request)
     {
-      #if DEBUG
-      Console.WriteLine("WS: Info@send: Request handshake to server:\n");
-      Console.WriteLine(request.ToString());
-      #endif
+      _logger.Debug("Request handshake to server:\n" + request.ToString());
       _wsStream.WriteHandshake(request);
     }
 
     // As server
     private void send(ResponseHandshake response)
     {
-      #if DEBUG
-      Console.WriteLine("WS: Info@send: Response handshake to client:\n");
-      Console.WriteLine(response.ToString());
-      #endif
+      _logger.Debug("Response handshake to client:\n" + response.ToString());
       _wsStream.WriteHandshake(response);
     }
 
@@ -1183,7 +1195,10 @@ namespace WebSocketSharp {
 
         if (!ready)
         {
-          onError("The WebSocket connection isn't established or has been closed.");
+          var msg = "The WebSocket connection isn't established or has been closed.";
+          _logger.Error(msg);
+          error(msg);
+
           return false;
         }
 
@@ -1199,7 +1214,10 @@ namespace WebSocketSharp {
       {
         if (_readyState != WsState.OPEN)
         {
-          onError("The WebSocket connection isn't established or has been closed.");
+          var msg = "The WebSocket connection isn't established or has been closed.";
+          _logger.Error(msg);
+          error(msg);
+
           return;
         }
 
@@ -1220,7 +1238,8 @@ namespace WebSocketSharp {
       }
       catch (Exception ex)
       {
-        onError(ex.Message);
+        _logger.Fatal(ex.Message);
+        error("An exception has occured.");
       }
       finally
       {
@@ -1250,7 +1269,8 @@ namespace WebSocketSharp {
         }
         catch (Exception ex)
         {
-          onError(ex.Message);
+          _logger.Fatal(ex.Message);
+          error("An exception has occured.");
         }
       };
 
@@ -1349,10 +1369,12 @@ namespace WebSocketSharp {
         }
         catch (WebSocketException ex)
         {
+          _logger.Fatal(ex.Message);
           Close(ex.Code, ex.Message);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+          _logger.Fatal(ex.Message);
           Close(CloseStatusCode.ABNORMAL, "An exception has occured.");
         }
       };
@@ -1429,7 +1451,9 @@ namespace WebSocketSharp {
       if (!code.IsCloseStatusCode())
       {
         var msg = String.Format("Invalid close status code: {0}", code);
-        onError(msg);
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1462,12 +1486,13 @@ namespace WebSocketSharp {
       try
       {
         if (connect())
-          onOpen();
+          open();
       }
-      catch
+      catch (Exception ex)
       {
+        _logger.Fatal(ex.Message);
         var msg = "An exception has occured.";
-        onError(msg);
+        error(msg);
         Close(CloseStatusCode.ABNORMAL, msg);
       }
     }
@@ -1511,7 +1536,10 @@ namespace WebSocketSharp {
       var data = Encoding.UTF8.GetBytes(message);
       if (data.Length > 125)
       {
-        onError("The payload length of a Ping frame must be 125 bytes or less.");
+        var msg = "The payload length of a Ping frame must be 125 bytes or less.";
+        _logger.Error(msg);
+        error(msg);
+
         return false;
       }
 
@@ -1528,7 +1556,10 @@ namespace WebSocketSharp {
     {
       if (data == null)
       {
-        onError("'data' must not be null.");
+        var msg = "'data' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1546,7 +1577,10 @@ namespace WebSocketSharp {
     {
       if (data == null)
       {
-        onError("'data' must not be null.");
+        var msg = "'data' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1564,7 +1598,10 @@ namespace WebSocketSharp {
     {
       if (file == null)
       {
-        onError("'file' must not be null.");
+        var msg = "'file' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1585,7 +1622,10 @@ namespace WebSocketSharp {
     {
       if (data == null)
       {
-        onError("'data' must not be null.");
+        var msg = "'data' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1607,7 +1647,10 @@ namespace WebSocketSharp {
     {
       if (data == null)
       {
-        onError("'data' must not be null.");
+        var msg = "'data' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1629,7 +1672,10 @@ namespace WebSocketSharp {
     {
       if (file == null)
       {
-        onError("'file' must not be null.");
+        var msg = "'file' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1649,7 +1695,10 @@ namespace WebSocketSharp {
 
       if (cookie == null)
       {
-        onError("'cookie' must not be null.");
+        var msg = "'cookie' must not be null.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 
@@ -1685,15 +1734,17 @@ namespace WebSocketSharp {
         return;
       }
 
-      var error = userName.Length > 0 && (userName.Contains(':') || !userName.IsText())
-                ? "'userName' contains an invalid character."
-                : !password.IsNullOrEmpty() && !password.IsText()
-                  ? "'password' contains an invalid character."
-                  : String.Empty;
+      var msg = userName.Length > 0 && (userName.Contains(':') || !userName.IsText())
+              ? "'userName' contains an invalid character."
+              : !password.IsNullOrEmpty() && !password.IsText()
+                ? "'password' contains an invalid character."
+                : String.Empty;
 
-      if (error.Length > 0)
+      if (msg.Length > 0)
       {
-        onError(error);
+        _logger.Error(msg);
+        error(msg);
+
         return;
       }
 

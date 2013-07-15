@@ -56,7 +56,8 @@ namespace WebSocketSharp.Server {
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost()
+    internal WebSocketServiceHost(Logger logger)
+      : base(logger)
     {
       _sessions = new WebSocketServiceManager();
     }
@@ -230,6 +231,8 @@ namespace WebSocketSharp.Server {
     {
       var ws = context.WebSocket;
       var path = context.Path.UrlDecode();
+
+      ws.Log = Log;
       if (path != Uri.GetAbsolutePath().UrlDecode())
       {
         ws.Close(HttpStatusCode.NotImplemented);

@@ -72,6 +72,9 @@ namespace Example1
 
     private void configure()
     {
+      #if DEBUG
+      _ws.Log.Level = LogLevel.TRACE;
+      #endif
       _ws.OnOpen += (sender, e) =>
       {
         var msg = createTextMessage("connection", String.Empty);

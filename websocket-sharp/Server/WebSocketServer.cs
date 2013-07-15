@@ -194,6 +194,7 @@ namespace WebSocketSharp.Server {
       var ws = context.WebSocket;
       var path = context.Path.UrlDecode();
 
+      ws.Log = Log;
       IServiceHost svcHost;
       if (!_svcHosts.TryGetServiceHost(path, out svcHost))
       {
@@ -226,11 +227,13 @@ namespace WebSocketSharp.Server {
       string msg;
       if (!absPath.IsValidAbsolutePath(out msg))
       {
+        Log.Error(msg);
         Error(msg);
+
         return;
       }
 
-      var svcHost = new WebSocketServiceHost<T>();
+      var svcHost = new WebSocketServiceHost<T>(Log);
       svcHost.Uri = BaseUri.IsAbsoluteUri
                   ? new Uri(BaseUri, absPath)
                   : absPath.ToUri();

@@ -126,6 +126,9 @@
     <Compile Include="AuthenticationChallenge.cs" />
     <Compile Include="AuthenticationResponse.cs" />
     <Compile Include="WsCredential.cs" />
+    <Compile Include="LogData.cs" />
+    <Compile Include="LogLevel.cs" />
+    <Compile Include="Logger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
