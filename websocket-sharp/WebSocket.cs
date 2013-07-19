@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -66,6 +67,8 @@ namespace WebSocketSharp {
     #region Private Fields
 
     private string            _base64key;
+    private RemoteCertificateValidationCallback
+                              _certValidationCallback;
     private bool              _client;
     private Action            _closeContext;
     private CookieCollection  _cookies;
@@ -162,9 +165,8 @@ namespace WebSocketSharp {
       _uri = uri;
       _protocols = protocols.ToString(", ");
       _client = true;
-      _secure = uri.Scheme == "wss"
-              ? true
-              : false;
+      _secure = uri.Scheme == "wss" ? true : false;
+      _base64key = createBase64Key();
     }
 
     /// <summary>
@@ -226,6 +228,12 @@ namespace WebSocketSharp {
       }
     }
 
+    internal bool IsOpened {
+      get {
+        return _readyState == WsState.OPEN || _readyState == WsState.CLOSING;
+      }
+    }
+
     #endregion
 
     #region Public Properties
@@ -243,8 +251,14 @@ namespace WebSocketSharp {
       }
 
       set {
-        if (isOpened(true))
+        if (IsOpened)
+        {
+          var msg = "The WebSocket connection has already been established.";
+          _logger.Error(msg);
+          error(msg);
+
           return;
+        }
 
         _compression = value;
       }
@@ -363,19 +377,25 @@ namespace WebSocketSharp {
       }
 
       set {
-        if (isOpened(true))
-          return;
-
-        if (value.IsNullOrEmpty())
+        string msg = null;
+        if (IsOpened)
+        {
+          msg = "The WebSocket connection has already been established.";
+        }
+        else if (value.IsNullOrEmpty())
         {
           _origin = String.Empty;
           return;
         }
-
-        var origin = new Uri(value);
-        if (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
+        else
         {
-          var msg = "The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.";
+          var origin = new Uri(value);
+          if (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
+            msg = "The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.";
+        }
+
+        if (msg != null)
+        {
           _logger.Error(msg);
           error(msg);
 
@@ -407,6 +427,27 @@ namespace WebSocketSharp {
     public WsState ReadyState {
       get {
         return _readyState;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the callback used to validate the certificate supplied by the server.
+    /// </summary>
+    /// <remarks>
+    /// If the value of this property is <see langword="null"/>, the validation does nothing
+    /// with the server certificate, always returns valid.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method(s)
+    /// used to validate the server certificate. The default is <see langword="null"/>.
+    /// </value>
+    public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
+      get {
+        return _certValidationCallback;
+      }
+
+      set {
+        _certValidationCallback = value;
       }
     }
 
@@ -777,7 +818,7 @@ namespace WebSocketSharp {
     // As client
     private bool doHandshake()
     {
-      init();
+      setWsStream();
       return processResponseHandshake(sendRequestHandshake());
     }
 
@@ -799,24 +840,13 @@ namespace WebSocketSharp {
       return CompressionMethod.NONE;
     }
 
-    // As client
-    private void init()
-    {
-      _base64key = createBase64Key();
-
-      var host = _uri.DnsSafeHost;
-      var port = _uri.Port;
-      _tcpClient = new TcpClient(host, port);
-      _wsStream = WsStream.CreateClientStream(_tcpClient, host, _secure);
-    }
-
     // As server
     private void init(WebSocketContext context)
     {
       _context = context;
-      _uri     = context.Path.ToUri();
-      _secure  = context.IsSecureConnection;
-      _client  = false;
+      _uri = context.Path.ToUri();
+      _secure = context.IsSecureConnection;
+      _client = false;
     }
 
     private static bool isCompressionExtension(string value)
@@ -830,21 +860,6 @@ namespace WebSocketSharp {
       return expected.Length > 0
              ? value.Equals(expected)
              : false;
-    }
-
-    private bool isOpened(bool errorIfOpened)
-    {
-      if (_readyState != WsState.OPEN && _readyState != WsState.CLOSING)
-        return false;
-
-      if (errorIfOpened)
-      {
-        var msg = "The WebSocket connection has been established already.";
-        _logger.Error(msg);
-        error(msg);
-      }
-
-      return true;
     }
 
     // As server
@@ -1351,6 +1366,15 @@ namespace WebSocketSharp {
       send(res);
     }
 
+    // As client
+    private void setWsStream()
+    {
+      var host = _uri.DnsSafeHost;
+      var port = _uri.Port;
+      _tcpClient = new TcpClient(host, port);
+      _wsStream = WsStream.CreateClientStream(_tcpClient, _secure, host, _certValidationCallback);
+    }
+
     private void startReceiving()
     {
       _exitReceiving = new AutoResetEvent(false);
@@ -1480,8 +1504,14 @@ namespace WebSocketSharp {
     /// </summary>
     public void Connect()
     {
-      if (isOpened(true))
+      if (IsOpened)
+      {
+        var msg = "The WebSocket connection has already been established.";
+        _logger.Error(msg);
+        error(msg);
+
         return;
+      }
 
       try
       {
@@ -1690,12 +1720,14 @@ namespace WebSocketSharp {
     /// </param>
     public void SetCookie(Cookie cookie)
     {
-      if (isOpened(true))
-        return;
+      var msg = IsOpened
+              ? "The WebSocket connection has already been established."
+              : cookie == null
+                ? "'cookie' must not be null."
+                : null;
 
-      if (cookie == null)
+      if (msg != null)
       {
-        var msg = "'cookie' must not be null.";
         _logger.Error(msg);
         error(msg);
 
@@ -1723,24 +1755,28 @@ namespace WebSocketSharp {
     /// </param>
     public void SetCredentials(string userName, string password, bool preAuth)
     {
-      if (isOpened(true))
-        return;
-
-      if (userName == null)
+      string msg = null;
+      if (IsOpened)
+      {
+        msg = "The WebSocket connection has already been established.";
+      }
+      else if (userName == null)
       {
         _credentials = null;
         _preAuth = false;
 
         return;
       }
+      else
+      {
+        msg = userName.Length > 0 && (userName.Contains(':') || !userName.IsText())
+            ? "'userName' contains an invalid character."
+            : !password.IsNullOrEmpty() && !password.IsText()
+              ? "'password' contains an invalid character."
+              : null;
+      }
 
-      var msg = userName.Length > 0 && (userName.Contains(':') || !userName.IsText())
-              ? "'userName' contains an invalid character."
-              : !password.IsNullOrEmpty() && !password.IsText()
-                ? "'password' contains an invalid character."
-                : String.Empty;
-
-      if (msg.Length > 0)
+      if (msg != null)
       {
         _logger.Error(msg);
         error(msg);

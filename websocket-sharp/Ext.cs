@@ -45,6 +45,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
@@ -280,6 +281,12 @@ namespace WebSocketSharp {
       return i >= 0 && i < nameAndValue.Length - 1
              ? nameAndValue.Substring(i + 1).Trim()
              : null;
+    }
+
+    internal static TcpListenerWebSocketContext GetWebSocketContext(
+      this TcpClient client, bool secure, X509Certificate cert)
+    {
+      return new TcpListenerWebSocketContext(client, secure, cert);
     }
 
     // <summary>
@@ -531,60 +538,6 @@ namespace WebSocketSharp {
     #endregion
 
     #region Public Methods
-
-    /// <summary>
-    /// Accepts a WebSocket connection by the <see cref="TcpListener"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains a WebSocket connection.
-    /// </returns>
-    /// <param name="listener">
-    /// A <see cref="TcpListener"/> that provides a TCP connection to accept a WebSocket connection.
-    /// </param>
-    /// <param name="secure">
-    /// A <see cref="bool"/> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="listener"/> is <see langword="null"/>.
-    /// </exception>
-    public static TcpListenerWebSocketContext AcceptWebSocket(this TcpListener listener, bool secure)
-    {
-      if (listener == null)
-        throw new ArgumentNullException("listener");
-
-      var client = listener.AcceptTcpClient();
-      return new TcpListenerWebSocketContext(client, secure);
-    }
-
-    /// <summary>
-    /// Accepts a WebSocket connection asynchronously by the <see cref="TcpListener"/>.
-    /// </summary>
-    /// <param name="listener">
-    /// A <see cref="TcpListener"/> that provides a TCP connection to accept a WebSocket connection.
-    /// </param>
-    /// <param name="secure">
-    /// A <see cref="bool"/> that indicates a secure connection or not. (<c>true</c> indicates a secure connection.)
-    /// </param>
-    /// <param name="completed">
-    /// An Action&lt;TcpListenerWebSocketContext&gt; delegate that contains the method(s) that is called when an asynchronous operation completes.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="listener"/> is <see langword="null"/>.
-    /// </exception>
-    public static void AcceptWebSocketAsync(this TcpListener listener, bool secure, Action<TcpListenerWebSocketContext> completed)
-    {
-      if (listener == null)
-        throw new ArgumentNullException("listener");
-
-      AsyncCallback callback = (ar) =>
-      {
-        var client  = listener.EndAcceptTcpClient(ar);
-        var context = new TcpListenerWebSocketContext(client, secure);
-        completed(context);
-      };
-
-      listener.BeginAcceptTcpClient(callback, null);
-    }
 
     /// <summary>
     /// Determines whether the specified <see cref="string"/> contains any of characters

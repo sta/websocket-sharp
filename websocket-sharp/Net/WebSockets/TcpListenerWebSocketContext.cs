@@ -30,12 +30,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets {
 
   /// <summary>
-  /// Provides access to the WebSocket connection request objects received by the <see cref="TcpListener"/> class.
+  /// Provides access to the WebSocket connection request objects received by the <see cref="TcpListener"/>.
   /// </summary>
   /// <remarks>
   /// </remarks>
@@ -44,22 +45,22 @@ namespace WebSocketSharp.Net.WebSockets {
     #region Private Fields
 
     private CookieCollection _cookies;
-    private TcpClient        _tcpClient;
-    private bool             _isSecure;
+    private TcpClient        _client;
     private RequestHandshake _request;
+    private bool             _secure;
+    private WsStream         _stream;
     private WebSocket        _websocket;
-    private WsStream         _wsStream;
 
     #endregion
 
     #region Internal Constructors
 
-    internal TcpListenerWebSocketContext(TcpClient tcpClient, bool secure)
+    internal TcpListenerWebSocketContext(TcpClient client, bool secure, X509Certificate cert)
     {
-      _tcpClient = tcpClient;
-      _isSecure  = secure;
-      _wsStream  = WsStream.CreateServerStream(tcpClient, secure);
-      _request   = RequestHandshake.Parse(_wsStream.ReadHandshake());
+      _client = client;
+      _secure = secure;
+      _stream = WsStream.CreateServerStream(client, secure, cert);
+      _request = RequestHandshake.Parse(_stream.ReadHandshake());
       _websocket = new WebSocket(this);
     }
 
@@ -69,7 +70,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     internal WsStream Stream {
       get {
-        return _wsStream;
+        return _stream;
       }
     }
 
@@ -85,7 +86,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override CookieCollection CookieCollection {
       get {
-        if (_cookies.IsNull())
+        if (_cookies == null)
           _cookies = _request.Cookies;
 
         return _cookies;
@@ -139,7 +140,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _isSecure;
+        return _secure;
       }
     }
 
@@ -260,7 +261,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint ServerEndPoint {
       get {
-        return (System.Net.IPEndPoint)_tcpClient.Client.LocalEndPoint;
+        return (System.Net.IPEndPoint)_client.Client.LocalEndPoint;
       }
     }
 
@@ -287,7 +288,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint UserEndPoint {
       get {
-        return (System.Net.IPEndPoint)_tcpClient.Client.RemoteEndPoint;
+        return (System.Net.IPEndPoint)_client.Client.RemoteEndPoint;
       }
     }
 
@@ -309,8 +310,8 @@ namespace WebSocketSharp.Net.WebSockets {
 
     internal void Close()
     {
-      _wsStream.Close();
-      _tcpClient.Close();
+      _stream.Close();
+      _client.Close();
     }
 
     #endregion

@@ -71,7 +71,7 @@ ws.OnOpen += (sender, e) =>
 };
 ```
 
-`e` has come across as `EventArgs.Empty`, so there is no operation on `e`.
+`e` has come across as `EventArgs.Empty`, so you don't use `e`.
 
 ##### WebSocket.OnMessage event #####
 
@@ -84,7 +84,11 @@ ws.OnMessage += (sender, e) =>
 };
 ```
 
-`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, the type of this property is `WebSocketSharp.Opcode`) indicates the **Frame type** of a WebSocket frame, so by checking this property, you determine which item you should operate.
+`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, the type of this property is `WebSocketSharp.Opcode`) indicates the **Frame Type** of a WebSocket frame, so by checking this property, you determine which item you should use.
+
+If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, the type of this property is `string`) that contains the received data.
+
+If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, the type of this property is `byte[]`) that contains the received data.
 
 ```cs
 if (e.Type == Opcode.TEXT)
@@ -100,10 +104,6 @@ if (e.Type == Opcode.BINARY)
 }
 ```
 
-If `e.Type` equaled `Opcode.TEXT`, you would operate `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, the type of this property is `string`).
-
-If `e.Type` equaled `Opcode.BINARY`, you would operate `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, the type of this property is `byte[]`).
-
 ##### WebSocket.OnError event #####
 
 A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
@@ -114,7 +114,7 @@ ws.OnError += (sender, e) =>
   ...
 };
 ```
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you operate this.
+`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
 
 ##### WebSocket.OnClose event #####
 
@@ -127,7 +127,7 @@ ws.OnClose += (sender, e) =>
 };
 ```
 
-`e.Code` (`WebSocketSharp.CloseEventArgs.Code`, the type of this property is `ushort`) contains a status code indicating the reason for closure and `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, the type of this property is `string`) contains the reason for closure, so you operate these.
+`e.Code` (`WebSocketSharp.CloseEventArgs.Code`, the type of this property is `ushort`) contains a status code indicating the reason for closure and `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, the type of this property is `string`) contains the reason for closure, so you use these.
 
 #### Step 4 ####
 
@@ -157,7 +157,7 @@ Closing the WebSocket connection.
 ws.Close(code, reason);
 ```
 
-If you wanted to close the WebSocket connection explicitly, you would use the `Close` method.
+If you want to close the WebSocket connection explicitly, you can use the `Close` method.
 
 And the `Close` method is overloaded. The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
 
@@ -176,7 +176,7 @@ namespace Example {
   {
     protected override void OnMessage(MessageEventArgs e)
     {
-      var msg = e.Data.ToLower().Equals("balus")
+      var msg = e.Data.ToLower() == "balus"
               ? "I've been balused already..."
               : "I'm not available now.";
       Send(msg);
@@ -266,7 +266,7 @@ You can add any WebSocket service with a specified path to the service to your `
 
 The type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
 
-If you created a instance of the `WebSocketServer` class without the port number, the `WebSocketServer` would set the port number to **80**  automatically. So it is necessary to run with root permission.
+If you create a instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
 
@@ -285,7 +285,7 @@ wssv.OnError += (sender, e) =>
 };
 ```
 
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you operate this.
+`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
 
 ##### WebSocketServer.OnError event #####
 
@@ -320,21 +320,51 @@ httpsv.AddWebSocketService<Echo>("/");
 
 For more information, could you see **[Example3]**?
 
+### Secure Connection ###
+
+As a **WebSocket Client**, creating a instance of the `WebSocket` class with the WebSocket URL with the **wss** scheme.
+
+```cs
+using (var ws = new WebSocket("wss://example.com"))
+{
+  ...
+}
+```
+
+If you want to set the custom validation for the server certificate, you can use the `WebSocket.ServerCertificateValidationCallback` property.
+
+```cs
+ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+{
+  // Do something to validate the server certificate.
+  return true; // The server certificate is valid.
+};
+```
+
+If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.
+
+As a **WebSocket Server**, creating and setting a instance of the WebSocket server with some settings for the secure connection.
+
+```cs
+var wssv = new WebSocketServer(4649, true);
+wssv.Certificate = new X509Certificate2("/path/to/cert.pfx", "password for cert.pfx");
+```
+
 ### Logging ###
 
 The `WebSocket` class includes own logging functions.
 
 The `WebSocket.Log` property provides the logging functions.
 
-If you wanted to change the current logging level (the default is the `LogLevel.ERROR`), you would operate the `WebSocket.Log.Level` property.
+If you want to change the current logging level (the default is `LogLevel.ERROR`), you can use the `WebSocket.Log.Level` property.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
 ```
 
-This setting means that the logging outputs with a less than the `LogLevel.DEBUG` are not outputted.
+This setting means that the logging outputs with a less than `LogLevel.DEBUG` are not outputted.
 
-And if you wanted to output a log, you would use some output methods. The following outputs a log with the `LogLevel.DEBUG`.
+And if you want to output a log, you can use some output methods. The following outputs a log with `LogLevel.DEBUG`.
 
 ```cs
 ws.Log.Debug("This is a debug message.");
@@ -354,7 +384,7 @@ Examples of using **websocket-sharp**.
 
 [Example1] connects to the [Audio Data delivery server] using the WebSocket ([Example1] is only implemented the chat feature, still unfinished).
 
-And [Example1] uses the [Json.NET].
+And [Example1] uses [Json.NET].
 
 ### Example2 ###
 

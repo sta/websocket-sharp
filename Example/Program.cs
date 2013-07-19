@@ -8,29 +8,29 @@ using System.Threading;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 
-namespace Example
-{
-  public struct NfMessage
-  {
+namespace Example {
+
+  public struct NfMessage {
+
     public string Summary;
     public string Body;
     public string Icon;
   }
 
-  public class ThreadState
-  {
+  public class ThreadState {
+
     public bool           Enabled      { get; set; }
     public AutoResetEvent Notification { get; private set; }
 
     public ThreadState()
     {
-      Enabled      = true;
+      Enabled = true;
       Notification = new AutoResetEvent(false);
     }
   }
 
-  public class Program
-  {
+  public class Program {
+
     private static Queue _msgQ = Queue.Synchronized(new Queue());
 
     private static void enNfMessage(string summary, string body, string icon)
@@ -38,8 +38,8 @@ namespace Example
       var msg = new NfMessage
       {
         Summary = summary,
-        Body    = body,
-        Icon    = icon
+        Body = body,
+        Icon = icon
       };
 
       _msgQ.Enqueue(msg);
@@ -47,7 +47,7 @@ namespace Example
 
     public static void Main(string[] args)
     {
-      ThreadState ts = new ThreadState();
+      var ts = new ThreadState();
 
       WaitCallback notifyMsg = state => 
       {
@@ -57,11 +57,9 @@ namespace Example
 
           if (_msgQ.Count > 0)
           {
-            NfMessage msg = (NfMessage)_msgQ.Dequeue();
+            var msg = (NfMessage)_msgQ.Dequeue();
             #if NOTIFY
-            Notification nf = new Notification(msg.Summary,
-                                               msg.Body,
-                                               msg.Icon);
+            var nf = new Notification(msg.Summary, msg.Body, msg.Icon);
             nf.AddHint("append", "allowed");
             nf.Show();
             #else
@@ -75,15 +73,16 @@ namespace Example
 
       ThreadPool.QueueUserWorkItem(notifyMsg);
 
-      using (WebSocket ws = new WebSocket("ws://echo.websocket.org", "echo"))
-      //using (WebSocket ws = new WebSocket("wss://echo.websocket.org", "echo"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Echo"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Echo?name=nobita"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/エコー?name=のび太"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Chat"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/Chat?name=nobita"))
-      //using (WebSocket ws = new WebSocket("ws://localhost:4649/チャット?name=のび太"))
+      using (var ws = new WebSocket("ws://echo.websocket.org", "echo"))
+      //using (var ws = new WebSocket("wss://echo.websocket.org", "echo"))
+      //using (var ws = new WebSocket("ws://localhost:4649"))
+      //using (var ws = new WebSocket("ws://localhost:4649/Echo"))
+      //using (var ws = new WebSocket("wss://localhost:4649/Echo"))
+      //using (var ws = new WebSocket("ws://localhost:4649/Echo?name=nobita"))
+      //using (var ws = new WebSocket("ws://localhost:4649/エコー?name=のび太"))
+      //using (var ws = new WebSocket("ws://localhost:4649/Chat"))
+      //using (var ws = new WebSocket("ws://localhost:4649/Chat?name=nobita"))
+      //using (var ws = new WebSocket("ws://localhost:4649/チャット?name=のび太"))
       {
         ws.OnOpen += (sender, e) =>
         {
@@ -111,11 +110,16 @@ namespace Example
             "notification-message-im");
         };
 
-        //ws.Origin = "http://echo.websocket.org";
-        //ws.Compression = CompressionMethod.DEFLATE;
         #if DEBUG
         ws.Log.Level = LogLevel.TRACE;
         #endif
+        //ws.Compression = CompressionMethod.DEFLATE;
+        //ws.Origin = "http://echo.websocket.org";
+        //ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+        //{
+        //  ws.Log.Debug(String.Format("\n{0}\n{1}", certificate.Issuer, certificate.Subject));
+        //  return true;
+        //};
         //ws.SetCookie(new Cookie("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie(new Cookie("dora", "tanuki"));
         ws.Connect();
