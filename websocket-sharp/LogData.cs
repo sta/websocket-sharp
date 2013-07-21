@@ -30,13 +30,13 @@ using System;
 using System.Diagnostics;
 using System.Text;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Represents the log data used by the <see cref="Logger"/> class.
   /// </summary>
-  public class LogData {
-
+  public class LogData
+  {
     #region Private Fields
 
     private StackFrame _caller;
@@ -48,12 +48,12 @@ namespace WebSocketSharp {
 
     #region Internal Constructors
 
-    internal LogData (DateTime date, LogLevel level, StackFrame caller, string message)
+    internal LogData (LogLevel level, StackFrame caller, string message)
     {
-      _date = date;
       _level = level;
       _caller = caller;
       _message = message;
+      _date = DateTime.Now;
     }
 
     #endregion

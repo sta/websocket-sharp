@@ -30,8 +30,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Provides the simple logging functions.
   /// </summary>
@@ -39,20 +39,20 @@ namespace WebSocketSharp {
   ///   <para>
   ///   The Logger class provides some methods that output the logs associated with the each
   ///   <see cref="LogLevel"/> values.
-  ///   If the <see cref="LogLevel"/> value associated with a log was less than the <see cref="Level"/>,
-  ///   the log could not be outputted.
+  ///   If the <see cref="LogLevel"/> value associated with a log is less than the <see cref="Level"/>,
+  ///   the log can not be outputted.
   ///   </para>
   ///   <para>
   ///   The default output action used by the output methods outputs the log data to the standard output stream
   ///   and writes the same log data to the <see cref="Logger.File"/> if it has a valid path.
   ///   </para>
   ///   <para>
-  ///   If you wanted to run your custom output action, you would replace the current output action with
+  ///   If you want to run custom output action, you can replace the current output action with
   ///   your output action by using the <see cref="SetOutput"/> method.
   ///   </para>
   /// </remarks>
-  public class Logger {
-
+  public class Logger
+  {
     #region Private Fields
 
     private volatile string         _file;
@@ -72,7 +72,7 @@ namespace WebSocketSharp {
     /// initializes the path to the log file with <see langword="null"/>.
     /// </remarks>
     public Logger ()
-      : this (LogLevel.ERROR, null, defaultOutput)
+      : this (LogLevel.ERROR, null, null)
     {
     }
 
@@ -87,7 +87,7 @@ namespace WebSocketSharp {
     /// One of the <see cref="LogLevel"/> values to initialize.
     /// </param>
     public Logger (LogLevel level)
-      : this (level, null, defaultOutput)
+      : this (level, null, null)
     {
     }
 
@@ -104,18 +104,14 @@ namespace WebSocketSharp {
     /// </param>
     /// <param name="output">
     /// An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s) to initialize.
-    /// A <see cref="string"/> parameter to pass to the method(s) is the value of <see cref="Logger.File"/> 
+    /// A <see cref="string"/> parameter to pass to the method(s) is the value of the <see cref="Logger.File"/> 
     /// if any.
     /// </param>
     public Logger (LogLevel level, string file, Action<LogData, string> output)
     {
       _level = level;
       _file = file;
-      if (output != null)
-        _output = output;
-      else
-        _output = defaultOutput;
-
+      _output = output != null ? output : defaultOutput;
       _sync = new object ();
     }
 
@@ -127,7 +123,7 @@ namespace WebSocketSharp {
     /// Gets or sets the path to the log file.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains a path to the log file.
+    /// A <see cref="string"/> that contains a path to the log file if any.
     /// </value>
     public string File {
       get {
@@ -138,6 +134,7 @@ namespace WebSocketSharp {
         lock (_sync)
         {
           _file = value;
+          Warn (String.Format ("The current path to the log file has been changed to {0}.", _file ?? ""));
         }
       }
     }
@@ -158,6 +155,7 @@ namespace WebSocketSharp {
 
       set {
         _level = value;
+        Warn (String.Format ("The current logging level has been changed to {0}.", _level));
       }
     }
 
@@ -173,7 +171,7 @@ namespace WebSocketSharp {
         writeLine (log, path);
     }
 
-    private void output (LogLevel level, string message)
+    private void output (string message, LogLevel level)
     {
       if (level < _level || message == null || message.Length == 0)
         return;
@@ -182,11 +180,11 @@ namespace WebSocketSharp {
       {
         LogData data = null;
         try {
-          data = new LogData (DateTime.Now, level, new StackFrame (2, true), message);
+          data = new LogData (level, new StackFrame (2, true), message);
           _output (data, _file);
         }
         catch (Exception ex) {
-          data = new LogData (DateTime.Now, LogLevel.FATAL, new StackFrame (0, true), ex.Message);
+          data = new LogData (LogLevel.FATAL, new StackFrame (0, true), ex.Message);
           Console.WriteLine (data.ToString ());
         }
       }
@@ -206,116 +204,114 @@ namespace WebSocketSharp {
     #region Public Methods
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.DEBUG"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.DEBUG"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.DEBUG"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.DEBUG"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Debug (string message)
     {
-      output (LogLevel.DEBUG, message);
+      output (message, LogLevel.DEBUG);
     }
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.ERROR"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.ERROR"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.ERROR"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.ERROR"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Error (string message)
     {
-      output (LogLevel.ERROR, message);
+      output (message, LogLevel.ERROR);
     }
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.FATAL"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.FATAL"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.FATAL"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.FATAL"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Fatal (string message)
     {
-      output (LogLevel.FATAL, message);
+      output (message, LogLevel.FATAL);
     }
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.INFO"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.INFO"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.INFO"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.INFO"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Info (string message)
     {
-      output (LogLevel.INFO, message);
+      output (message, LogLevel.INFO);
     }
 
     /// <summary>
     /// Replaces the current output action with the specified <paramref name="output"/> action.
     /// </summary>
     /// <remarks>
-    /// This method replaces the current output action with the default output action
-    /// if <paramref name="output"/> is <see langword="null"/>.
+    /// If <paramref name="output"/> is <see langword="null"/>,
+    /// this method replaces the current output action with the default output action.
     /// </remarks>
     /// <param name="output">
     /// An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s) to set.
-    /// A <see cref="string"/> parameter to pass to the method(s) is the value of <see cref="Logger.File"/>
+    /// A <see cref="string"/> parameter to pass to the method(s) is the value of the <see cref="Logger.File"/>
     /// if any.
     /// </param>
     public void SetOutput (Action<LogData, string> output)
     {
       lock (_sync)
       {
-        if (output != null)
-          _output = output;
-        else
-          _output = defaultOutput;
+        _output = output != null ? output : defaultOutput;
+        Warn ("The current output action has been replaced.");
       }
     }
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.TRACE"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.TRACE"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.TRACE"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.TRACE"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Trace (string message)
     {
-      output (LogLevel.TRACE, message);
+      output (message, LogLevel.TRACE);
     }
 
     /// <summary>
-    /// Outputs the specified <paramref name="message"/> as a log with the <see cref="LogLevel.WARN"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.WARN"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not output <paramref name="message"/> as a log
-    /// if the current logging level is greater than the <see cref="LogLevel.WARN"/>.
+    /// If the current logging level is greater than the <see cref="LogLevel.WARN"/>,
+    /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to output as a log.
     /// </param>
     public void Warn (string message)
     {
-      output (LogLevel.WARN, message);
+      output (message, LogLevel.WARN);
     }
 
     #endregion

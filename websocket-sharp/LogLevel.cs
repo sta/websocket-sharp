@@ -28,13 +28,13 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Contains the values of the logging level.
   /// </summary>
-  public enum LogLevel {
-
+  public enum LogLevel
+  {
     /// <summary>
     /// Indicates the bottom logging level.
     /// </summary>
