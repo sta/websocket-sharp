@@ -60,7 +60,7 @@ The `WebSocket` class inherits the `IDisposable` interface, so you can use the `
 
 Setting the `WebSocket` events.
 
-##### WebSocket.OnOpen event #####
+##### WebSocket.OnOpen Event #####
 
 A `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
 
@@ -73,7 +73,7 @@ ws.OnOpen += (sender, e) =>
 
 `e` has come across as `EventArgs.Empty`, so you don't use `e`.
 
-##### WebSocket.OnMessage event #####
+##### WebSocket.OnMessage Event #####
 
 A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a WebSocket data frame.
 
@@ -86,9 +86,9 @@ ws.OnMessage += (sender, e) =>
 
 `e.Type` (`WebSocketSharp.MessageEventArgs.Type`, the type of this property is `WebSocketSharp.Opcode`) indicates the **Frame Type** of a WebSocket frame, so by checking this property, you determine which item you should use.
 
-If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, the type of this property is `string`) that contains the received data.
+If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, the type of this property is `string`) that contains the received **Text** data.
 
-If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, the type of this property is `byte[]`) that contains the received data.
+If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, the type of this property is `byte[]`) that contains the received **Binary** data.
 
 ```cs
 if (e.Type == Opcode.TEXT)
@@ -104,7 +104,7 @@ if (e.Type == Opcode.BINARY)
 }
 ```
 
-##### WebSocket.OnError event #####
+##### WebSocket.OnError Event #####
 
 A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
 
@@ -116,7 +116,7 @@ ws.OnError += (sender, e) =>
 ```
 `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
 
-##### WebSocket.OnClose event #####
+##### WebSocket.OnClose Event #####
 
 A `WebSocket.OnClose` event occurs when the WebSocket connection has been closed.
 
@@ -274,7 +274,7 @@ If you create a instance of the `WebSocketServer` class without the port number,
 
 Setting the event.
 
-##### WebSocketServiceHost&lt;T>.OnError event #####
+##### WebSocketServiceHost&lt;T>.OnError Event #####
 
 A `WebSocketServiceHost<T>.OnError` event occurs when the `WebSocketServiceHost<T>` gets an error.
 
@@ -287,7 +287,7 @@ wssv.OnError += (sender, e) =>
 
 `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
 
-##### WebSocketServer.OnError event #####
+##### WebSocketServer.OnError Event #####
 
 Same as the `WebSocketServiceHost<T>.OnError` event.
 
@@ -322,7 +322,7 @@ For more information, could you see **[Example3]**?
 
 ### Secure Connection ###
 
-As a **WebSocket Client**, creating a instance of the `WebSocket` class with the WebSocket URL with the **wss** scheme.
+As a **WebSocket Client**, creating a instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
 
 ```cs
 using (var ws = new WebSocket("wss://example.com"))
