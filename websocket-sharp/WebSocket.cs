@@ -88,9 +88,9 @@ namespace WebSocketSharp {
     private volatile WsState  _readyState;
     private AutoResetEvent    _receivePong;
     private bool              _secure;
+    private WsStream          _stream;
     private TcpClient         _tcpClient;
     private Uri               _uri;
-    private WsStream          _wsStream;
 
     #endregion
 
@@ -118,7 +118,7 @@ namespace WebSocketSharp {
     internal WebSocket(HttpListenerWebSocketContext context)
       : this()
     {
-      _wsStream = context.Stream;
+      _stream = context.Stream;
       _closeContext = () => context.Close();
       init(context);
     }
@@ -126,7 +126,7 @@ namespace WebSocketSharp {
     internal WebSocket(TcpListenerWebSocketContext context)
       : this()
     {
-      _wsStream = context.Stream;
+      _stream = context.Stream;
       _closeContext = () => context.Close();
       init(context);
     }
@@ -336,7 +336,7 @@ namespace WebSocketSharp {
     /// </summary>
     /// <remarks>
     /// The default logging level is the <see cref="LogLevel.ERROR"/>.
-    /// If you wanted to change the current logging level, you would set the <c>Log.Level</c> property
+    /// If you want to change the current logging level, you set the <c>Log.Level</c> property
     /// to one of the <see cref="LogLevel"/> values which you want.
     /// </remarks>
     /// <value>
@@ -608,10 +608,10 @@ namespace WebSocketSharp {
     // As client
     private void closeResourcesAsClient()
     {
-      if (_wsStream != null)
+      if (_stream != null)
       {
-        _wsStream.Dispose();
-        _wsStream = null;
+        _stream.Dispose();
+        _stream = null;
       }
 
       if (_tcpClient != null)
@@ -627,7 +627,7 @@ namespace WebSocketSharp {
       if (_context != null && _closeContext != null)
       {
         _closeContext();
-        _wsStream = null;
+        _stream = null;
         _context = null;
       }
     }
@@ -645,7 +645,7 @@ namespace WebSocketSharp {
 
       while (true)
       {
-        var frame = _wsStream.ReadFrame();
+        var frame = _stream.ReadFrame();
         if (processAbnormal(frame))
           return false;
 
@@ -818,7 +818,7 @@ namespace WebSocketSharp {
     // As client
     private bool doHandshake()
     {
-      setWsStream();
+      setClientStream();
       return processResponseHandshake(sendRequestHandshake());
     }
 
@@ -1176,7 +1176,7 @@ namespace WebSocketSharp {
     // As client
     private ResponseHandshake receiveResponseHandshake()
     {
-      var res = ResponseHandshake.Parse(_wsStream.ReadHandshake());
+      var res = ResponseHandshake.Parse(_stream.ReadHandshake());
       _logger.Debug("Response handshake from server:\n" + res.ToString());
 
       return res;
@@ -1186,21 +1186,21 @@ namespace WebSocketSharp {
     private void send(RequestHandshake request)
     {
       _logger.Debug("Request handshake to server:\n" + request.ToString());
-      _wsStream.WriteHandshake(request);
+      _stream.WriteHandshake(request);
     }
 
     // As server
     private void send(ResponseHandshake response)
     {
       _logger.Debug("Response handshake to client:\n" + response.ToString());
-      _wsStream.WriteHandshake(response);
+      _stream.WriteHandshake(response);
     }
 
     private bool send(WsFrame frame)
     {
       lock (_forFrame)
       {
-        var ready = _wsStream == null
+        var ready = _stream == null
                     ? false
                     : _readyState == WsState.OPEN
                       ? true
@@ -1217,7 +1217,7 @@ namespace WebSocketSharp {
           return false;
         }
 
-        return _wsStream.WriteFrame(frame);
+        return _stream.WriteFrame(frame);
       }
     }
 
@@ -1367,12 +1367,12 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private void setWsStream()
+    private void setClientStream()
     {
       var host = _uri.DnsSafeHost;
       var port = _uri.Port;
       _tcpClient = new TcpClient(host, port);
-      _wsStream = WsStream.CreateClientStream(_tcpClient, _secure, host, _certValidationCallback);
+      _stream = WsStream.CreateClientStream(_tcpClient, _secure, host, _certValidationCallback);
     }
 
     private void startReceiving()
@@ -1387,7 +1387,7 @@ namespace WebSocketSharp {
         {
           processFrame(frame);
           if (_readyState == WsState.OPEN)
-            _wsStream.ReadFrameAsync(completed);
+            _stream.ReadFrameAsync(completed);
           else
             _exitReceiving.Set();
         }
@@ -1403,7 +1403,7 @@ namespace WebSocketSharp {
         }
       };
 
-      _wsStream.ReadFrameAsync(completed);
+      _stream.ReadFrameAsync(completed);
     }
 
     #endregion
