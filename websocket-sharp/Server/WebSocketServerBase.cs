@@ -34,16 +34,16 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using WebSocketSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server {
-
+namespace WebSocketSharp.Server
+{
   /// <summary>
   /// Provides the basic functions of the server that receives the WebSocket connection requests.
   /// </summary>
   /// <remarks>
   /// The WebSocketServerBase class is an abstract class.
   /// </remarks>
-  public abstract class WebSocketServerBase {
-
+  public abstract class WebSocketServerBase
+  {
     #region Private Fields
 
     private IPAddress        _address;
@@ -67,8 +67,8 @@ namespace WebSocketSharp.Server {
     /// <remarks>
     /// This constructor initializes a new instance of this class as non self hosted server.
     /// </remarks>
-    protected WebSocketServerBase()
-      : this(new Logger())
+    protected WebSocketServerBase ()
+      : this (new Logger ())
     {
     }
 
@@ -82,7 +82,7 @@ namespace WebSocketSharp.Server {
     /// <param name="logger">
     /// A <see cref="Logger"/> that provides the logging functions.
     /// </param>
-    protected WebSocketServerBase(Logger logger)
+    protected WebSocketServerBase (Logger logger)
     {
       _logger = logger;
       _selfHost = false;
@@ -101,17 +101,17 @@ namespace WebSocketSharp.Server {
     /// <exception cref="ArgumentException">
     /// <paramref name="url"/> is invalid.
     /// </exception>
-    protected WebSocketServerBase(string url)
+    protected WebSocketServerBase (string url)
     {
-      if (url.IsNull())
-        throw new ArgumentNullException("url");
+      if (url == null)
+        throw new ArgumentNullException ("url");
 
       Uri uri;
       string msg;
-      if (!tryCreateUri(url, out uri, out msg))
-        throw new ArgumentException(msg, "url");
+      if (!tryCreateUri (url, out uri, out msg))
+        throw new ArgumentException (msg, "url");
 
-      init(uri);
+      init (uri);
     }
 
     /// <summary>
@@ -146,32 +146,32 @@ namespace WebSocketSharp.Server {
     ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
     ///   </para>
     /// </exception>
-    protected WebSocketServerBase(IPAddress address, int port, string absPath, bool secure)
+    protected WebSocketServerBase (IPAddress address, int port, string absPath, bool secure)
     {
-      if (address.IsNull())
-        throw new ArgumentNullException("address");
+      if (address == null)
+        throw new ArgumentNullException ("address");
 
-      if (absPath.IsNull())
-        throw new ArgumentNullException("absPath");
+      if (absPath == null)
+        throw new ArgumentNullException ("absPath");
 
       string msg;
-      if (!absPath.IsValidAbsolutePath(out msg))
-        throw new ArgumentException(msg, "absPath");
+      if (!absPath.IsValidAbsolutePath (out msg))
+        throw new ArgumentException (msg, "absPath");
 
       if ((port == 80 && secure) ||
           (port == 443 && !secure))
       {
-        msg = String.Format(
+        msg = String.Format (
           "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure);
-        throw new ArgumentException(msg);
+        throw new ArgumentException (msg);
       }
 
       _address = address;
       _port = port > 0 ? port : secure ? 443 : 80;
-      _uri = absPath.ToUri();
+      _uri = absPath.ToUri ();
       _secure = secure;
 
-      init();
+      init ();
     }
 
     #endregion
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Server {
     /// </summary>
     /// <remarks>
     /// The default logging level is the <see cref="LogLevel.ERROR"/>.
-    /// If you wanted to change the current logging level, you would set the <c>Log.Level</c> property
+    /// If you want to change the current logging level, you set the <c>Log.Level</c> property
     /// to one of the <see cref="LogLevel"/> values which you want.
     /// </remarks>
     /// <value>
@@ -314,87 +314,83 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
-    private void error(string message)
+    private void error (string message)
     {
-      OnError.Emit(this, new ErrorEventArgs(message));
+      OnError.Emit (this, new ErrorEventArgs (message));
     }
 
-    private void init()
+    private void init ()
     {
       _listening = false;
-      _logger = new Logger();
+      _logger = new Logger ();
       _selfHost = true;
-      _listener = new TcpListener(_address, _port);
+      _listener = new TcpListener (_address, _port);
     }
 
-    private void init(Uri uri)
+    private void init (Uri uri)
     {
       var scheme = uri.Scheme;
       var host = uri.DnsSafeHost;
       var port = uri.Port;
-      var addrs = Dns.GetHostAddresses(host);
+      var addrs = Dns.GetHostAddresses (host);
 
       _uri = uri;
-      _address = addrs[0];
+      _address = addrs [0];
       _secure = scheme == "wss" ? true : false;
       _port = port > 0 ? port : _secure ? 443 : 80;
-      init();
+      init ();
     }
 
-    private void processRequestAsync(TcpClient client)
+    private void processRequestAsync (TcpClient client)
     {
       WaitCallback callback = state =>
       {
-        try
-        {
-          AcceptWebSocket(client.GetWebSocketContext(_secure, _cert));
+        try {
+          AcceptWebSocket (client.GetWebSocketContext (_secure, _cert));
         }
         catch (Exception ex)
         {
-          _logger.Fatal(ex.Message);
-          error("An exception has occured.");
+          _logger.Fatal (ex.Message);
+          error ("An exception has occured.");
         }
       };
 
-      ThreadPool.QueueUserWorkItem(callback);
+      ThreadPool.QueueUserWorkItem (callback);
     }
 
-    private void receiveRequest()
+    private void receiveRequest ()
     {
       while (true)
       {
-        try
-        {
-          processRequestAsync(_listener.AcceptTcpClient());
+        try {
+          processRequestAsync (_listener.AcceptTcpClient ());
         }
-        catch (SocketException)
-        {
-          _logger.Info("TcpListener has been stopped.");
+        catch (SocketException) {
+          _logger.Info ("TcpListener has been stopped.");
           break;
         }
-        catch (Exception ex)
-        {
-          _logger.Fatal(ex.Message);
-          error("An exception has occured.");
+        catch (Exception ex) {
+          _logger.Fatal (ex.Message);
+          error ("An exception has occured.");
 
           break;
         }
       }
     }
 
-    private void startReceiveRequestThread()
+    private void startReceiveRequestThread ()
     {
-      _receiveRequestThread = new Thread(new ThreadStart(receiveRequest)); 
+      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest)); 
       _receiveRequestThread.IsBackground = true;
-      _receiveRequestThread.Start();
+      _receiveRequestThread.Start ();
     }
 
-    private static bool tryCreateUri(string uriString, out Uri result, out string message)
+    private static bool tryCreateUri (string uriString, out Uri result, out string message)
     {
-      if (!uriString.TryCreateWebSocketUri(out result, out message))
+      if (!uriString.TryCreateWebSocketUri (out result, out message))
         return false;
 
-      if (!result.Query.IsNullOrEmpty())
+      if (!result.Query.IsNullOrEmpty ())
       {
         result = null;
         message = "Must not contain the query component: " + uriString;
@@ -415,7 +411,7 @@ namespace WebSocketSharp.Server {
     /// <param name="context">
     /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
-    protected abstract void AcceptWebSocket(TcpListenerWebSocketContext context);
+    protected abstract void AcceptWebSocket (TcpListenerWebSocketContext context);
 
     /// <summary>
     /// Occurs the <see cref="WebSocketServerBase.OnError"/> event with the specified <see cref="string"/>.
@@ -423,12 +419,12 @@ namespace WebSocketSharp.Server {
     /// <param name="message">
     /// A <see cref="string"/> that contains an error message.
     /// </param>
-    protected virtual void Error(string message)
+    protected virtual void Error (string message)
     {
-      if (message.IsNullOrEmpty())
+      if (message.IsNullOrEmpty ())
         return;
 
-      error(message);
+      error (message);
     }
 
     #endregion
@@ -438,7 +434,7 @@ namespace WebSocketSharp.Server {
     /// <summary>
     /// Starts to receive the WebSocket connection requests.
     /// </summary>
-    public virtual void Start()
+    public virtual void Start ()
     {
       if (!_selfHost || _listening)
         return;
@@ -446,27 +442,27 @@ namespace WebSocketSharp.Server {
       if (_secure && _cert == null)
       {
         var msg = "Secure connection requires a server certificate.";
-        _logger.Error(msg);
-        error(msg);
+        _logger.Error (msg);
+        error (msg);
 
         return;
       }
 
-      _listener.Start();
-      startReceiveRequestThread();
+      _listener.Start ();
+      startReceiveRequestThread ();
       _listening = true;
     }
 
     /// <summary>
     /// Stops receiving the WebSocket connection requests.
     /// </summary>
-    public virtual void Stop()
+    public virtual void Stop ()
     {
       if (!_selfHost || !_listening)
         return;
 
-      _listener.Stop();
-      _receiveRequestThread.Join(5 * 1000);
+      _listener.Stop ();
+      _receiveRequestThread.Join (5 * 1000);
       _listening = false;
     }
 
