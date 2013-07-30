@@ -11,22 +11,22 @@
 using System;
 using WebSocketSharp;
 
-namespace Example {
-
-  public class Program {
-
-    public static void Main(string[] args)
+namespace Example
+{
+  public class Program
+  {
+    public static void Main (string [] args)
     {
-      using (var ws = new WebSocket("ws://dragonsnest.far/Laputa"))
+      using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa"))
       {
         ws.OnMessage += (sender, e) =>
         {
-          Console.WriteLine("Laputa says: {0}", e.Data);
+          Console.WriteLine ("Laputa says: {0}", e.Data);
         };
 
-        ws.Connect();
-        ws.Send("BALUS");
-        Console.ReadKey(true);
+        ws.Connect ();
+        ws.Send ("BALUS");
+        Console.ReadKey (true);
       }
     }
   }
@@ -48,7 +48,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 Creating a instance of the `WebSocket` class with the specified WebSocket URL to connect.
 
 ```cs
-using (var ws = new WebSocket("ws://example.com"))
+using (var ws = new WebSocket ("ws://example.com"))
 {
   ...
 }
@@ -84,11 +84,11 @@ ws.OnMessage += (sender, e) =>
 };
 ```
 
-`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, the type of this property is `WebSocketSharp.Opcode`) indicates the **Frame Type** of a WebSocket frame, so by checking this property, you determine which item you should use.
+`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Opcode`) indicates the **Frame Type** of a received WebSocket frame. So by checking it, you determine which item you should use.
 
-If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, the type of this property is `string`) that contains the received **Text** data.
+If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`) that contains a received **Text** data.
 
-If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, the type of this property is `byte[]`) that contains the received **Binary** data.
+If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte []`) that contains a received **Binary** data.
 
 ```cs
 if (e.Type == Opcode.TEXT)
@@ -114,7 +114,7 @@ ws.OnError += (sender, e) =>
   ...
 };
 ```
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
+`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains an error message, so you use it.
 
 ##### WebSocket.OnClose Event #####
 
@@ -127,14 +127,14 @@ ws.OnClose += (sender, e) =>
 };
 ```
 
-`e.Code` (`WebSocketSharp.CloseEventArgs.Code`, the type of this property is `ushort`) contains a status code indicating the reason for closure and `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, the type of this property is `string`) contains the reason for closure, so you use these.
+`e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `ushort`) contains a status code indicating the reason for closure and `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason for closure, so you use them.
 
 #### Step 4 ####
 
 Connecting to the WebSocket server.
 
 ```cs
-ws.Connect();
+ws.Connect ();
 ```
 
 #### Step 5 ####
@@ -142,26 +142,26 @@ ws.Connect();
 Sending a data.
 
 ```cs
-ws.Send(data);
+ws.Send (data);
 ```
 
 The `Send` method is overloaded.
 
-The types of `data` are `string`, `byte[]` and `FileInfo` class.
+The types of `data` are `string`, `byte []` and `FileInfo` class.
 
 #### Step 6 ####
 
 Closing the WebSocket connection.
 
 ```cs
-ws.Close(code, reason);
+ws.Close (code, reason);
 ```
 
-If you want to close the WebSocket connection explicitly, you can use the `Close` method.
+If you want to close the WebSocket connection explicitly, you use the `Close` method.
 
-And the `Close` method is overloaded. The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
+The `Close` method is overloaded. The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
 
-In addition, the `Close()` and `Close(code)` methods exist.
+In addition, the `Close ()` and `Close (code)` methods exist.
 
 ### WebSocket Server ###
 
@@ -170,27 +170,27 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Example {
-
+namespace Example
+{
   public class Laputa : WebSocketService
   {
-    protected override void OnMessage(MessageEventArgs e)
+    protected override void OnMessage (MessageEventArgs e)
     {
-      var msg = e.Data.ToLower() == "balus"
+      var msg = e.Data.ToLower () == "balus"
               ? "I've been balused already..."
               : "I'm not available now.";
-      Send(msg);
+      Send (msg);
     }
   }
 
-  public class Program {
-
-    public static void Main(string[] args)
+  public class Program
+  {
+    public static void Main (string [] args)
     {
-      var wssv = new WebSocketServiceHost<Laputa>("ws://dragonsnest.far/Laputa");
-      wssv.Start();
-      Console.ReadKey(true);
-      wssv.Stop();
+      var wssv = new WebSocketServiceHost<Laputa> ("ws://dragonsnest.far/Laputa");
+      wssv.Start ();
+      Console.ReadKey (true);
+      wssv.Stop ();
     }
   }
 }
@@ -210,7 +210,7 @@ The `WebSocketServer`, `WebSocketServiceHost<T>` and `WebSocketService` classes 
 
 Creating a class that inherits the `WebSocketService` class.
 
-For example, if you want to provide the echo service,
+For example, if you want to provide an echo service,
 
 ```cs
 using System;
@@ -219,14 +219,14 @@ using WebSocketSharp.Server;
 
 public class Echo : WebSocketService
 {
-  protected override void OnMessage(MessageEventArgs e)
+  protected override void OnMessage (MessageEventArgs e)
   {
-    Send(e.Data);
+    Send (e.Data);
   }
 }
 ```
 
-Or if you want to provide the chat service,
+Or if you want to provide a chat service,
 
 ```cs
 using System;
@@ -235,9 +235,9 @@ using WebSocketSharp.Server;
 
 public class Chat : WebSocketService
 {
-  protected override void OnMessage(MessageEventArgs e)
+  protected override void OnMessage (MessageEventArgs e)
   {
-    Broadcast(e.Data);
+    Broadcast (e.Data);
   }
 }
 ```
@@ -251,15 +251,15 @@ In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each
 Creating a instance of the `WebSocketServiceHost<T>` class if you want the single WebSocket service server.
 
 ```cs
-var wssv = new WebSocketServiceHost<Echo>("ws://example.com:4649");
+var wssv = new WebSocketServiceHost<Echo> ("ws://example.com:4649");
 ```
 
 Or creating a instance of the `WebSocketServer` class if you want the multi WebSocket service server.
 
 ```cs
-var wssv = new WebSocketServer(4649);
-wssv.AddWebSocketService<Echo>("/Echo");
-wssv.AddWebSocketService<Chat>("/Chat");
+var wssv = new WebSocketServer (4649);
+wssv.AddWebSocketService<Echo> ("/Echo");
+wssv.AddWebSocketService<Chat> ("/Chat");
 ```
 
 You can add any WebSocket service with a specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<T>` method.
@@ -285,7 +285,7 @@ wssv.OnError += (sender, e) =>
 };
 ```
 
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, the type of this property is `string`) contains an error message, so you use this.
+`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains an error message, so you use it.
 
 ##### WebSocketServer.OnError Event #####
 
@@ -296,7 +296,7 @@ Same as the `WebSocketServiceHost<T>.OnError` event.
 Starting the server.
 
 ```cs
-wssv.Start();
+wssv.Start ();
 ```
 
 #### Step 6 ####
@@ -304,7 +304,7 @@ wssv.Start();
 Stopping the server.
 
 ```cs
-wssv.Stop();
+wssv.Stop ();
 ```
 
 ### HTTP Server with the WebSocket ###
@@ -314,8 +314,8 @@ I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and s
 You can add any WebSocket service with a specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<T>` method.
 
 ```cs
-var httpsv = new HttpServer(4649);
-httpsv.AddWebSocketService<Echo>("/");
+var httpsv = new HttpServer (4649);
+httpsv.AddWebSocketService<Echo> ("/");
 ```
 
 For more information, could you see **[Example3]**?
@@ -325,13 +325,13 @@ For more information, could you see **[Example3]**?
 As a **WebSocket Client**, creating a instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
 
 ```cs
-using (var ws = new WebSocket("wss://example.com"))
+using (var ws = new WebSocket ("wss://example.com"))
 {
   ...
 }
 ```
 
-If you want to set the custom validation for the server certificate, you can use the `WebSocket.ServerCertificateValidationCallback` property.
+If you want to set the custom validation for the server certificate, you use the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
@@ -346,8 +346,8 @@ If you set this property to nothing, the validation does nothing with the server
 As a **WebSocket Server**, creating and setting a instance of the WebSocket server with some settings for the secure connection.
 
 ```cs
-var wssv = new WebSocketServer(4649, true);
-wssv.Certificate = new X509Certificate2("/path/to/cert.pfx", "password for cert.pfx");
+var wssv = new WebSocketServer (4649, true);
+wssv.Certificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
 ```
 
 ### Logging ###
@@ -356,25 +356,25 @@ The `WebSocket` class includes own logging functions.
 
 The `WebSocket.Log` property provides the logging functions.
 
-If you want to change the current logging level (the default is `LogLevel.ERROR`), you can use the `WebSocket.Log.Level` property.
+If you want to change the current logging level (the default is `LogLevel.ERROR`), you use the `WebSocket.Log.Level` property.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
 ```
 
-This setting means that the logging outputs with a less than `LogLevel.DEBUG` are not outputted.
+The above means that the logging outputs with a less than `LogLevel.DEBUG` are not outputted.
 
-And if you want to output a log, you can use some output methods. The following outputs a log with `LogLevel.DEBUG`.
+And if you want to output a log, you use some output methods. The following outputs a log with `LogLevel.DEBUG`.
 
 ```cs
-ws.Log.Debug("This is a debug message.");
+ws.Log.Debug ("This is a debug message.");
 ```
 
 The `WebSocketServiceHost<T>`, `WebSocketServer` and `HttpServer` classes include the same logging functions.
 
 ## Examples ##
 
-Examples of using **websocket-sharp**.
+Examples using **websocket-sharp**.
 
 ### Example ###
 
