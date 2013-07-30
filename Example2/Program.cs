@@ -26,7 +26,7 @@ namespace Example2 {
       #if DEBUG
       wssv.Log.Level = LogLevel.TRACE;
       #endif
-      //wssv.Sweeping = false;
+      //wssv.KeepClean = false;
 
       wssv.Start ();
       Console.WriteLine (
@@ -45,7 +45,7 @@ namespace Example2 {
       //var file = ConfigurationManager.AppSettings ["ServerCertFile"];
       //var password = ConfigurationManager.AppSettings ["CertFilePassword"];
       //wssv.Certificate = new X509Certificate2 (file, password);
-      //wssv.Sweeping = false;
+      //wssv.KeepClean = false;
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
       //wssv.AddWebSocketService<Echo> ("/エコー");

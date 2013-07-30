@@ -17,7 +17,7 @@ namespace Example3
       _httpsv.Log.Level = LogLevel.TRACE;
       #endif
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
-      //_httpsv.Sweeping = false;
+      //_httpsv.KeepClean = false;
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
 

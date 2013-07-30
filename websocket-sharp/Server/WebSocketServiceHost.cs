@@ -191,13 +191,13 @@ namespace WebSocketSharp.Server {
     /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
     /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
-    public bool Sweeping {
+    public bool KeepClean {
       get {
-        return _sessions.Sweeping;
+        return _sessions.KeepClean;
       }
 
       set {
-        _sessions.Sweeping = value;
+        _sessions.KeepClean = value;
       }
     }
 

@@ -35,8 +35,8 @@ namespace WebSocketSharp.Server {
   
     #region Private Fields
 
+    private bool                             _keepClean;
     private Dictionary<string, IServiceHost> _svcHosts;
-    private bool                             _sweeping;
 
     #endregion
 
@@ -44,8 +44,8 @@ namespace WebSocketSharp.Server {
 
     public ServiceHostManager()
     {
+      _keepClean = true;
       _svcHosts = new Dictionary<string, IServiceHost>();
-      _sweeping = true;
     }
 
     #endregion
@@ -58,6 +58,21 @@ namespace WebSocketSharp.Server {
       }
     } 
 
+    public bool KeepClean {
+      get {
+        return _keepClean;
+      }
+
+      set {
+        if (_keepClean ^ value)
+        {
+          _keepClean = value;
+          foreach (var svcHost in _svcHosts.Values)
+            svcHost.KeepClean = value;
+        }
+      }
+    }
+
     public IEnumerable<string> Paths {
       get {
         return _svcHosts.Keys;
@@ -67,21 +82,6 @@ namespace WebSocketSharp.Server {
     public IEnumerable<IServiceHost> ServiceHosts {
       get {
         return _svcHosts.Values;
-      }
-    }
-
-    public bool Sweeping {
-      get {
-        return _sweeping;
-      }
-
-      set {
-        if (_sweeping ^ value)
-        {
-          _sweeping = value;
-          foreach (var svcHost in _svcHosts.Values)
-            svcHost.Sweeping = value;
-        }
       }
     }
 

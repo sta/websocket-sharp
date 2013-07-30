@@ -138,10 +138,10 @@ namespace WebSocketSharp.Server
     /// the inactive <see cref="WebSocketService"/> instances periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up
-    /// the inactive <see cref="WebSocketService"/> instances every 60 seconds; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up the inactive
+    /// <see cref="WebSocketService"/> instances every 60 seconds; otherwise, <c>false</c>.
     /// </value>
-    public bool Sweeping {
+    public bool KeepClean {
       get {
         return _sweepTimer.Enabled;
       }

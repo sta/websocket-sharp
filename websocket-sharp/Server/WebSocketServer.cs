@@ -145,6 +145,24 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
+    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
+    /// instances periodically.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+    /// otherwise, <c>false</c>. The default value is <c>true</c>.
+    /// </value>
+    public bool KeepClean {
+      get {
+        return _svcHosts.KeepClean;
+      }
+
+      set {
+        _svcHosts.KeepClean = value;
+      }
+    }
+
+    /// <summary>
     /// Gets the collection of paths associated with the every WebSocket services that the server provides.
     /// </summary>
     /// <value>
@@ -158,24 +176,6 @@ namespace WebSocketSharp.Server {
 
         foreach (var path in _svcHosts.Paths)
           yield return url + path;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
-    /// instances periodically.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
-    /// otherwise, <c>false</c>. The default value is <c>true</c>.
-    /// </value>
-    public bool Sweeping {
-      get {
-        return _svcHosts.Sweeping;
-      }
-
-      set {
-        _svcHosts.Sweeping = value;
       }
     }
 
@@ -238,8 +238,8 @@ namespace WebSocketSharp.Server {
                   ? new Uri(BaseUri, absPath)
                   : absPath.ToUri();
 
-      if (!Sweeping)
-        svcHost.Sweeping = false;
+      if (!KeepClean)
+        svcHost.KeepClean = false;
 
       _svcHosts.Add(absPath, svcHost);
     }

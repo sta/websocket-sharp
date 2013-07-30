@@ -46,7 +46,7 @@ namespace WebSocketSharp.Server {
     /// <c>true</c> if the WebSocket service host cleans up the inactive service instances periodically;
     /// otherwise, <c>false</c>.
     /// </value>
-    bool Sweeping { get; set; }
+    bool KeepClean { get; set; }
 
     /// <summary>
     /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
