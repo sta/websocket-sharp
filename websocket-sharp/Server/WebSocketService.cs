@@ -64,6 +64,16 @@ namespace WebSocketSharp.Server {
 
     #endregion
 
+    #region Internal Properties
+
+    internal WebSocket WebSocket {
+      get {
+        return _websocket;
+      }
+    }
+
+    #endregion
+
     #region Protected Properties
 
     /// <summary>

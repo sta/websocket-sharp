@@ -31,36 +31,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 
-namespace WebSocketSharp.Server {
-
+namespace WebSocketSharp.Server
+{
   /// <summary>
-  /// Manages the collection of <see cref="WebSocketService"/> objects.
+  /// Manages the collection of <see cref="WebSocketService"/> instances.
   /// </summary>
-  public class WebSocketServiceManager {
-
+  public class WebSocketServiceManager
+  {
     #region Private Fields
 
     private object                               _forSweep;
-    private volatile bool                        _isStopped;
-    private volatile bool                        _isSweeping;
     private Dictionary<string, WebSocketService> _services;
+    private volatile bool                        _stopped;
+    private volatile bool                        _sweeping;
     private Timer                                _sweepTimer;
-    private object                               _syncRoot;
+    private object                               _sync;
 
     #endregion
 
     #region Internal Constructors
 
-    internal WebSocketServiceManager()
+    internal WebSocketServiceManager ()
     {
-      _forSweep   = new object();
-      _isStopped  = false;
-      _isSweeping = false;
-      _services   = new Dictionary<string, WebSocketService>();
-      _syncRoot   = new object();
+      _forSweep = new object ();
+      _services = new Dictionary<string, WebSocketService> ();
+      _stopped = false;
+      _sweeping = false;
+      _sync = new object ();
 
-      setSweepTimer();
-      startSweepTimer();
+      setSweepTimer ();
+      startSweepTimer ();
     }
 
     #endregion
@@ -68,62 +68,49 @@ namespace WebSocketSharp.Server {
     #region Public Properties
 
     /// <summary>
-    /// Gets the collection of IDs of active <see cref="WebSocketService"/> objects
+    /// Gets the collection of IDs of active <see cref="WebSocketService"/> instances
     /// managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs of active <see cref="WebSocketService"/> objects.
+    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
+    /// of active <see cref="WebSocketService"/> instances.
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        return from result in Broadping(String.Empty)
+        return from result in Broadping (String.Empty)
                where result.Value
                select result.Key;
       }
     }
 
     /// <summary>
-    /// Gets the number of <see cref="WebSocketService"/> objects
+    /// Gets the number of <see cref="WebSocketService"/> instances
     /// managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains the number of <see cref="WebSocketService"/> objects
+    /// An <see cref="int"/> that contains the number of <see cref="WebSocketService"/> instances
     /// managed by the <see cref="WebSocketServiceManager"/>.
     /// </value>
     public int Count {
       get {
-        lock (_syncRoot)
+        lock (_sync)
         {
           return _services.Count;
         }
       }
-    } 
-
-    /// <summary>
-    /// Gets the collection of IDs of inactive <see cref="WebSocketService"/> objects
-    /// managed by the <see cref="WebSocketServiceManager"/>.
-    /// </summary>
-    /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs of inactive <see cref="WebSocketService"/> objects.
-    /// </value>
-    public IEnumerable<string> InactiveIDs {
-      get {
-        return from result in Broadping(String.Empty)
-               where !result.Value
-               select result.Key;
-      }
     }
 
     /// <summary>
-    /// Gets the collection of IDs of <see cref="WebSocketService"/> objects
+    /// Gets the collection of IDs of <see cref="WebSocketService"/> instances
     /// managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs of <see cref="WebSocketService"/> objects.
+    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
+    /// of <see cref="WebSocketService"/> instances.
     /// </value>
     public IEnumerable<string> IDs {
       get {
-        lock (_syncRoot)
+        lock (_sync)
         {
           return _services.Keys;
         }
@@ -131,12 +118,28 @@ namespace WebSocketSharp.Server {
     }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="WebSocketServiceManager"/> cleans up
-    /// the inactive <see cref="WebSocketService"/> objects periodically.
+    /// Gets the collection of IDs of inactive <see cref="WebSocketService"/> instances
+    /// managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up the inactive <see cref="WebSocketService"/> objects
-    /// every 60 seconds; otherwise, <c>false</c>.
+    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
+    /// of inactive <see cref="WebSocketService"/> instances.
+    /// </value>
+    public IEnumerable<string> InactiveIDs {
+      get {
+        return from result in Broadping (String.Empty)
+               where !result.Value
+               select result.Key;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the <see cref="WebSocketServiceManager"/> cleans up
+    /// the inactive <see cref="WebSocketService"/> instances periodically.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up
+    /// the inactive <see cref="WebSocketService"/> instances every 60 seconds; otherwise, <c>false</c>.
     /// </value>
     public bool Sweeping {
       get {
@@ -144,11 +147,13 @@ namespace WebSocketSharp.Server {
       }
 
       internal set {
-        if (value && !_isStopped)
-          startSweepTimer();
-
-        if (!value)
-          stopSweepTimer();
+        if (value)
+        {
+          if (!_stopped)
+            startSweepTimer ();
+        }
+        else
+          stopSweepTimer ();
       }
     }
 
@@ -156,146 +161,146 @@ namespace WebSocketSharp.Server {
 
     #region Private Methods
 
-    private void broadcast(byte[] data)
+    private void broadcast (byte [] data)
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
         foreach (var service in _services.Values)
-          service.Send(data);
+          service.Send (data);
       }
     }
 
-    private void broadcast(string data)
+    private void broadcast (string data)
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
         foreach (var service in _services.Values)
-          service.Send(data);
+          service.Send (data);
       }
     }
 
-    private void broadcastAsync(byte[] data)
+    private void broadcastAsync (byte [] data)
     {
-      var copied   = copy();
-      var services = copied.Values.GetEnumerator();
+      var copied = copy ();
+      var services = copied.Values.GetEnumerator ();
 
       Action completed = null;
       completed = () =>
       {
-        if (services.MoveNext())
-          services.Current.SendAsync(data, completed);
+        if (services.MoveNext ())
+          services.Current.SendAsync (data, completed);
       };
 
-      if (services.MoveNext())
-        services.Current.SendAsync(data, completed);
+      if (services.MoveNext ())
+        services.Current.SendAsync (data, completed);
     }
 
-    private void broadcastAsync(string data)
+    private void broadcastAsync (string data)
     {
-      var copied   = copy();
-      var services = copied.Values.GetEnumerator();
+      var copied = copy ();
+      var services = copied.Values.GetEnumerator ();
 
       Action completed = null;
       completed = () =>
       {
-        if (services.MoveNext())
-          services.Current.SendAsync(data, completed);
+        if (services.MoveNext ())
+          services.Current.SendAsync (data, completed);
       };
 
-      if (services.MoveNext())
-        services.Current.SendAsync(data, completed);
+      if (services.MoveNext ())
+        services.Current.SendAsync (data, completed);
     }
 
-    private Dictionary<string, WebSocketService> copy()
+    private Dictionary<string, WebSocketService> copy ()
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
-        return new Dictionary<string, WebSocketService>(_services);
+        return new Dictionary<string, WebSocketService> (_services);
       }
     }
 
-    private string createID()
+    private static string createID ()
     {
-      return Guid.NewGuid().ToString("N");
+      return Guid.NewGuid ().ToString ("N");
     }
 
-    private void setSweepTimer()
+    private void setSweepTimer ()
     {
-      _sweepTimer = new Timer(60 * 1000);
+      _sweepTimer = new Timer (60 * 1000);
       _sweepTimer.Elapsed += (sender, e) =>
       {
-        Sweep();
+        Sweep ();
       };
     }
 
-    private void startSweepTimer()
+    private void startSweepTimer ()
     {
       if (!_sweepTimer.Enabled)
-        _sweepTimer.Start();
+        _sweepTimer.Start ();
     }
 
-    private void stop(ushort code, string reason, bool ignoreArgs)
+    private void stop (ushort code, string reason, bool ignoreArgs)
     {
-      stopSweepTimer();
-      lock (_syncRoot)
+      stopSweepTimer ();
+      lock (_sync)
       {
-        if (_isStopped)
+        if (_stopped)
           return;
 
-        _isStopped = true;
-        foreach (var service in copy().Values)
+        _stopped = true;
+        foreach (var service in copy ().Values)
           if (ignoreArgs)
-            service.Stop();
+            service.Stop ();
           else
-            service.Stop(code, reason);
+            service.Stop (code, reason);
       }
     }
 
-    private void stopSweepTimer()
+    private void stopSweepTimer ()
     {
       if (_sweepTimer.Enabled)
-        _sweepTimer.Stop();
+        _sweepTimer.Stop ();
     }
 
     #endregion
 
     #region Internal Methods
 
-    internal string Add(WebSocketService service)
+    internal string Add (WebSocketService service)
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
-        if (_isStopped)
+        if (_stopped)
           return null;
 
-        var id = createID();
-        _services.Add(id, service);
+        var id = createID ();
+        _services.Add (id, service);
 
         return id;
       }
     }
 
-    internal bool Remove(string id)
+    internal bool Remove (string id)
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
-        return _services.Remove(id);
+        return _services.Remove (id);
       }
     }
 
-    internal void Stop()
+    internal void Stop ()
     {
-      stop(0, null, true);
+      stop (0, null, true);
     }
 
-    internal void Stop(ushort code, string reason)
+    internal void Stop (ushort code, string reason)
     {
-      stop(code, reason, false);
+      stop (code, reason, false);
     }
 
-    internal void Stop(CloseStatusCode code, string reason)
+    internal void Stop (CloseStatusCode code, string reason)
     {
-      Stop((ushort)code, reason);
+      Stop ((ushort) code, reason);
     }
 
     #endregion
@@ -303,103 +308,113 @@ namespace WebSocketSharp.Server {
     #region Public Methods
 
     /// <summary>
-    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every <see cref="WebSocketService"/>
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every
+    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
     /// </param>
-    public void Broadcast(byte[] data)
+    public void Broadcast (byte [] data)
     {
-      if (_isStopped)
-        broadcast(data);
+      if (_stopped)
+        broadcast (data);
       else
-        broadcastAsync(data);
+        broadcastAsync (data);
     }
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/> to the clients of every <see cref="WebSocketService"/>
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Broadcasts the specified <see cref="string"/> to the clients of every
+    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
     /// </param>
-    public void Broadcast(string data)
+    public void Broadcast (string data)
     {
-      if (_isStopped)
-        broadcast(data);
+      if (_stopped)
+        broadcast (data);
       else
-        broadcastAsync(data);
+        broadcastAsync (data);
     }
 
     /// <summary>
-    /// Pings with the specified <see cref="string"/> to the clients of every <see cref="WebSocketService"/>
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Sends Pings with the specified <see cref="string"/> to the clients of every
+    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values
-    /// indicating whether each <see cref="WebSocketService"/> received a Pong in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values indicating
+    /// whether each <see cref="WebSocketService"/> instances received a Pong in a time.
     /// </returns>
     /// <param name="message">
-    /// A <see cref="string"/> that contains a message.
+    /// A <see cref="string"/> that contains a message to send.
     /// </param>
-    public Dictionary<string, bool> Broadping(string message)
+    public Dictionary<string, bool> Broadping (string message)
     {
-      var result = new Dictionary<string, bool>();
-      foreach (var session in copy())
-        result.Add(session.Key, session.Value.Ping(message));
+      var result = new Dictionary<string, bool> ();
+      foreach (var session in copy ())
+        result.Add (session.Key, session.Value.Ping (message));
 
       return result;
     }
 
     /// <summary>
-    /// Cleans up the inactive <see cref="WebSocketService"/> objects.
+    /// Cleans up the inactive <see cref="WebSocketService"/> instances.
     /// </summary>
-    public void Sweep()
+    public void Sweep ()
     {
-      if (_isStopped || _isSweeping || Count == 0)
+      if (_stopped || _sweeping || Count == 0)
         return;
 
       lock (_forSweep)
       {
-        _isSweeping = true;
+        _sweeping = true;
         foreach (var id in InactiveIDs)
         {
-          lock (_syncRoot)
+          lock (_sync)
           {
-            if (_isStopped)
+            if (_stopped)
             {
-              _isSweeping = false;
+              _sweeping = false;
               return;
             }
 
             WebSocketService service;
-            if (TryGetWebSocketService(id, out service))
-              service.Stop(CloseStatusCode.ABNORMAL, String.Empty);
+            if (_services.TryGetValue (id, out service))
+            {
+              var state = service.WebSocket.ReadyState;
+              if (state == WsState.OPEN)
+                service.Stop (CloseStatusCode.ABNORMAL, String.Empty);
+              else if (state == WsState.CLOSING)
+                continue;
+              else
+                _services.Remove (id);
+            }
           }
         }
 
-        _isSweeping = false;
+        _sweeping = false;
       }
     }
 
     /// <summary>
-    /// Tries to get the <see cref="WebSocketService"/> associated with the specified <paramref name="id"/>.
+    /// Tries to get the <see cref="WebSocketService"/> associated with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> manages the <see cref="WebSocketService"/> with the specified <paramref name="id"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> manages the <see cref="WebSocketService"/>
+    /// with <paramref name="id"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that contains the ID to find.
+    /// A <see cref="string"/> that contains an ID to find.
     /// </param>
     /// <param name="service">
-    /// When this method returns, contains the <see cref="WebSocketService"/> with the specified <paramref name="id"/>, if the <paramref name="id"/> is found; otherwise, <see langword="null"/>.
+    /// When this method returns, contains a <see cref="WebSocketService"/> with <paramref name="id"/>
+    /// if it is found; otherwise, <see langword="null"/>.
     /// </param>
-    public bool TryGetWebSocketService(string id, out WebSocketService service)
+    public bool TryGetWebSocketService (string id, out WebSocketService service)
     {
-      lock (_syncRoot)
+      lock (_sync)
       {
-        return _services.TryGetValue(id, out service);
+        return _services.TryGetValue (id, out service);
       }
     }
 
