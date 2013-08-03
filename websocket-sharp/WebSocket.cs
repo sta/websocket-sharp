@@ -500,7 +500,7 @@ namespace WebSocketSharp {
     private bool acceptHandshake ()
     {
       return processHandshakeRequest ()
-             ? send (createResponseHandshake ())
+             ? send (createHandshakeResponse ())
              : false;
     }
 
@@ -532,7 +532,7 @@ namespace WebSocketSharp {
         if (state == WsState.CONNECTING)
         {
           if (!_client)
-            args.WasClean = send (createResponseHandshake (HttpStatusCode.BadRequest));
+            args.WasClean = send (createHandshakeResponse (HttpStatusCode.BadRequest));
         }
         else
         {
@@ -709,19 +709,6 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private string createRequestExtensions()
-    {
-      var extensions = new StringBuilder(64);
-      var comp = createCompressionExtension(_compression);
-      if (comp.Length > 0)
-        extensions.Append(comp);
-
-      return extensions.Length > 0
-             ? extensions.ToString()
-             : String.Empty;
-    }
-
-    // As client
     private HandshakeRequest createHandshakeRequest ()
     {
       var path = _uri.PathAndQuery;
@@ -756,43 +743,56 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private ResponseHandshake createResponseHandshake()
+    private HandshakeResponse createHandshakeResponse ()
     {
-      var res = new ResponseHandshake();
-      res.AddHeader("Sec-WebSocket-Accept", createResponseKey());
+      var res = new HandshakeResponse ();
+      res.AddHeader ("Sec-WebSocket-Accept", createResponseKey ());
       if (_extensions.Length > 0)
-        res.AddHeader("Sec-WebSocket-Extensions", _extensions);
+        res.AddHeader ("Sec-WebSocket-Extensions", _extensions);
 
       if (_cookies.Count > 0)
-        res.SetCookies(_cookies);
+        res.SetCookies (_cookies);
 
       return res;
     }
 
     // As server
-    private ResponseHandshake createResponseHandshake(HttpStatusCode code)
+    private HandshakeResponse createHandshakeResponse (HttpStatusCode code)
     {
-      var res = ResponseHandshake.CreateCloseResponse(code);
-      res.AddHeader("Sec-WebSocket-Version", _version);
+      var res = HandshakeResponse.CreateCloseResponse (code);
+      res.AddHeader ("Sec-WebSocket-Version", _version);
 
       return res;
     }
 
-    private string createResponseKey()
+    // As client
+    private string createRequestExtensions ()
     {
-      var buffer = new StringBuilder(_base64key, 64);
-      buffer.Append(_guid);
-      SHA1 sha1 = new SHA1CryptoServiceProvider();
-      var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(buffer.ToString()));
+      var extensions = new StringBuilder (64);
+      var comp = createCompressionExtension (_compression);
+      if (comp.Length > 0)
+        extensions.Append (comp);
 
-      return Convert.ToBase64String(src);
+      return extensions.Length > 0
+             ? extensions.ToString ()
+             : String.Empty;
+    }
+
+    private string createResponseKey ()
+    {
+      var buffer = new StringBuilder (_base64key, 64);
+      buffer.Append (_guid);
+      SHA1 sha1 = new SHA1CryptoServiceProvider ();
+      var src = sha1.ComputeHash (Encoding.UTF8.GetBytes (buffer.ToString ()));
+
+      return Convert.ToBase64String (src);
     }
 
     // As client
     private bool doHandshake ()
     {
       setClientStream ();
-      return processResponseHandshake (sendHandshakeRequest ());
+      return processHandshakeResponse (sendHandshakeRequest ());
     }
 
     private void error(string message)
@@ -866,14 +866,14 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private bool isValidResponseHandshake(ResponseHandshake response)
+    private bool isValidHandshakeResponse (HandshakeResponse response)
     {
       return !response.IsWebSocketResponse
              ? false
-             : !response.ContainsHeader("Sec-WebSocket-Accept", createResponseKey())
+             : !response.ContainsHeader ("Sec-WebSocket-Accept", createResponseKey ())
                ? false
-               : !response.ContainsHeader("Sec-WebSocket-Version") ||
-                 response.ContainsHeader("Sec-WebSocket-Version", _version);
+               : !response.ContainsHeader ("Sec-WebSocket-Version") ||
+                 response.ContainsHeader ("Sec-WebSocket-Version", _version);
     }
 
     private void open()
@@ -1112,26 +1112,26 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private bool processResponseHandshake(ResponseHandshake response)
+    private bool processHandshakeResponse (HandshakeResponse response)
     {
       var msg = response.IsUnauthorized
-              ? String.Format("An HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
-              : !isValidResponseHandshake(response)
+              ? String.Format ("An HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
+              : !isValidHandshakeResponse (response)
                 ? "Invalid response to this WebSocket connection request."
                 : String.Empty;
 
       if (msg.Length > 0)
       {
-        _logger.Error(msg);
-        error(msg);
-        Close(CloseStatusCode.ABNORMAL, msg);
+        _logger.Error (msg);
+        error (msg);
+        Close (CloseStatusCode.ABNORMAL, msg);
 
         return false;
       }
 
-      processResponseProtocol(response.Headers["Sec-WebSocket-Protocol"]);
-      processResponseExtensions(response.Headers["Sec-WebSocket-Extensions"]);
-      processResponseCookies(response.Cookies);
+      processResponseProtocol (response.Headers ["Sec-WebSocket-Protocol"]);
+      processResponseExtensions (response.Headers ["Sec-WebSocket-Extensions"]);
+      processResponseCookies (response.Cookies);
 
       return true;
     }
@@ -1144,10 +1144,10 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private ResponseHandshake receiveResponseHandshake()
+    private HandshakeResponse receiveHandshakeResponse ()
     {
-      var res = ResponseHandshake.Parse(_stream.ReadHandshake());
-      _logger.Debug("Response handshake from server:\n" + res.ToString());
+      var res = HandshakeResponse.Parse (_stream.ReadHandshake ());
+      _logger.Debug ("A handshake response from the server:\n" + res.ToString ());
 
       return res;
     }
@@ -1160,9 +1160,9 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private bool send (ResponseHandshake response)
+    private bool send (HandshakeResponse response)
     {
-      _logger.Debug ("Response handshake to client:\n" + response.ToString ());
+      _logger.Debug ("A handshake response to a client:\n" + response.ToString ());
       return _stream.WriteHandshake (response);
     }
 
@@ -1301,7 +1301,7 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private ResponseHandshake sendHandshakeRequest ()
+    private HandshakeResponse sendHandshakeRequest ()
     {
       var req = createHandshakeRequest ();
       var res = sendHandshakeRequest (req);
@@ -1316,10 +1316,10 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private ResponseHandshake sendHandshakeRequest (HandshakeRequest request)
+    private HandshakeResponse sendHandshakeRequest (HandshakeRequest request)
     {
       send (request);
-      return receiveResponseHandshake ();
+      return receiveHandshakeResponse ();
     }
 
     // As client
@@ -1367,7 +1367,7 @@ namespace WebSocketSharp {
     internal void Close (HttpStatusCode code)
     {
       _readyState = WsState.CLOSING;
-      send (createResponseHandshake (code));
+      send (createHandshakeResponse (code));
       closeResources ();
       _readyState = WsState.CLOSED;
     }

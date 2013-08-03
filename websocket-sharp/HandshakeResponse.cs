@@ -1,6 +1,6 @@
 #region License
 /*
- * ResponseHandshake.cs
+ * HandshakeResponse.cs
  *
  * The MIT License
  *
@@ -33,18 +33,18 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class ResponseHandshake : HandshakeBase
+  internal class HandshakeResponse : HandshakeBase
   {
     #region Public Constructors
 
-    public ResponseHandshake ()
+    public HandshakeResponse ()
       : this (HttpStatusCode.SwitchingProtocols)
     {
       AddHeader ("Upgrade", "websocket");
       AddHeader ("Connection", "Upgrade");
     }
 
-    public ResponseHandshake (HttpStatusCode code)
+    public HandshakeResponse (HttpStatusCode code)
     {
       StatusCode = ((int) code).ToString ();
       Reason = code.GetDescription ();
@@ -101,15 +101,15 @@ namespace WebSocketSharp
 
     #region Public Methods
 
-    public static ResponseHandshake CreateCloseResponse (HttpStatusCode code)
+    public static HandshakeResponse CreateCloseResponse (HttpStatusCode code)
     {
-      var res = new ResponseHandshake (code);
+      var res = new HandshakeResponse (code);
       res.AddHeader ("Connection", "close");
 
       return res;
     }
 
-    public static ResponseHandshake Parse (string [] response)
+    public static HandshakeResponse Parse (string [] response)
     {
       var statusLine = response [0].Split (' ');
       if (statusLine.Length < 3)
@@ -123,7 +123,7 @@ namespace WebSocketSharp
       for (int i = 1; i < response.Length; i++)
         headers.SetInternal (response [i], true);
 
-      return new ResponseHandshake {
+      return new HandshakeResponse {
         Headers = headers,
         Reason = reason.ToString (),
         StatusCode = statusLine [1],
