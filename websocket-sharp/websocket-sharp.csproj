@@ -74,7 +74,6 @@
     <Compile Include="WsStream.cs" />
     <Compile Include="RequestHandshake.cs" />
     <Compile Include="ResponseHandshake.cs" />
-    <Compile Include="Handshake.cs" />
     <Compile Include="Net\AuthenticationSchemeSelector.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="LogData.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="HandshakeBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -35,8 +35,8 @@ using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Security;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   internal class WsStream : IDisposable
   {
     #region Private Const Fields
@@ -56,25 +56,25 @@ namespace WebSocketSharp {
 
     #region Private Constructors
 
-    private WsStream(Stream innerStream, bool secure)
+    private WsStream (Stream innerStream, bool secure)
     {
       _innerStream = innerStream;
       _secure = secure;
-      _forRead = new object();
-      _forWrite = new object();
+      _forRead = new object ();
+      _forWrite = new object ();
     }
 
     #endregion
 
     #region Internal Constructors
 
-    internal WsStream(NetworkStream innerStream)
-      : this(innerStream, false)
+    internal WsStream (NetworkStream innerStream)
+      : this (innerStream, false)
     {
     }
 
-    internal WsStream(SslStream innerStream)
-      : this(innerStream, true)
+    internal WsStream (SslStream innerStream)
+      : this (innerStream, true)
     {
     }
 
@@ -85,8 +85,8 @@ namespace WebSocketSharp {
     public bool DataAvailable {
       get {
         return _secure
-               ? ((SslStream)_innerStream).DataAvailable
-               : ((NetworkStream)_innerStream).DataAvailable;
+               ? ((SslStream) _innerStream).DataAvailable
+               : ((NetworkStream) _innerStream).DataAvailable;
       }
     }
 
@@ -100,12 +100,12 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private bool write(byte[] data)
+    private bool write (byte [] data)
     {
       lock (_forWrite)
       {
         try {
-          _innerStream.Write(data, 0, data.Length);
+          _innerStream.Write (data, 0, data.Length);
           return true;
         }
         catch {
@@ -118,93 +118,91 @@ namespace WebSocketSharp {
 
     #region Internal Methods
 
-    internal static WsStream CreateClientStream(
+    internal static WsStream CreateClientStream (
       TcpClient client,
       bool secure,
       string host,
       System.Net.Security.RemoteCertificateValidationCallback validationCallback
     )
     {
-      var netStream = client.GetStream();
+      var netStream = client.GetStream ();
       if (secure)
       {
         if (validationCallback == null)
           validationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
 
-        var sslStream = new SslStream(netStream, false, validationCallback);
-        sslStream.AuthenticateAsClient(host);
+        var sslStream = new SslStream (netStream, false, validationCallback);
+        sslStream.AuthenticateAsClient (host);
 
-        return new WsStream(sslStream);
+        return new WsStream (sslStream);
       }
 
-      return new WsStream(netStream);
+      return new WsStream (netStream);
     }
 
-    internal static WsStream CreateServerStream(TcpClient client, bool secure, X509Certificate cert)
+    internal static WsStream CreateServerStream (TcpClient client, bool secure, X509Certificate cert)
     {
-      var netStream = client.GetStream();
+      var netStream = client.GetStream ();
       if (secure)
       {
-        var sslStream = new SslStream(netStream, false);
-        sslStream.AuthenticateAsServer(cert);
+        var sslStream = new SslStream (netStream, false);
+        sslStream.AuthenticateAsServer (cert);
 
-        return new WsStream(sslStream);
+        return new WsStream (sslStream);
       }
 
-      return new WsStream(netStream);
+      return new WsStream (netStream);
     }
 
-    internal static WsStream CreateServerStream(HttpListenerContext context)
+    internal static WsStream CreateServerStream (HttpListenerContext context)
     {
       var conn = context.Connection;
-      return new WsStream(conn.Stream, conn.IsSecure);
+      return new WsStream (conn.Stream, conn.IsSecure);
     }
 
     #endregion
 
     #region Public Methods
 
-    public void Close()
+    public void Close ()
     {
-      _innerStream.Close();
+      _innerStream.Close ();
     }
 
-    public void Dispose()
+    public void Dispose ()
     {
-      _innerStream.Dispose();
+      _innerStream.Dispose ();
     }
 
-    public WsFrame ReadFrame()
+    public WsFrame ReadFrame ()
     {
       lock (_forRead)
       {
-        try
-        {
-          return WsFrame.Parse(_innerStream);
+        try {
+          return WsFrame.Parse (_innerStream);
         }
-        catch
-        {
+        catch {
           return null;
         }
       }
     }
 
-    public void ReadFrameAsync(Action<WsFrame> completed)
+    public void ReadFrameAsync (Action<WsFrame> completed)
     {
-      WsFrame.ParseAsync(_innerStream, completed);
+      WsFrame.ParseAsync (_innerStream, completed);
     }
 
-    public string[] ReadHandshake()
+    public string [] ReadHandshake ()
     {
       var read = false;
-      var buffer = new List<byte>();
-      Action<int> add = i => buffer.Add((byte)i);
+      var buffer = new List<byte> ();
+      Action<int> add = i => buffer.Add ((byte) i);
       while (buffer.Count < _handshakeLimitLen)
       {
-        if (_innerStream.ReadByte().EqualsWith('\r', add) &&
-            _innerStream.ReadByte().EqualsWith('\n', add) &&
-            _innerStream.ReadByte().EqualsWith('\r', add) &&
-            _innerStream.ReadByte().EqualsWith('\n', add))
+        if (_innerStream.ReadByte ().EqualsWith ('\r', add) &&
+            _innerStream.ReadByte ().EqualsWith ('\n', add) &&
+            _innerStream.ReadByte ().EqualsWith ('\r', add) &&
+            _innerStream.ReadByte ().EqualsWith ('\n', add))
         {
           read = true;
           break;
@@ -212,24 +210,24 @@ namespace WebSocketSharp {
       }
 
       if (!read)
-        throw new WebSocketException("The length of the handshake is greater than the limit length.");
+        throw new WebSocketException ("The length of the handshake is greater than the limit length.");
 
-      return Encoding.UTF8.GetString(buffer.ToArray())
-             .Replace("\r\n", "\n")
-             .Replace("\n ", " ")
-             .Replace("\n\t", " ")
-             .TrimEnd('\n')
-             .Split('\n');
+      return Encoding.UTF8.GetString (buffer.ToArray ())
+             .Replace ("\r\n", "\n")
+             .Replace ("\n ", " ")
+             .Replace ("\n\t", " ")
+             .TrimEnd ('\n')
+             .Split ('\n');
     }
 
-    public bool WriteFrame(WsFrame frame)
+    public bool WriteFrame (WsFrame frame)
     {
-      return write(frame.ToByteArray());
+      return write (frame.ToByteArray ());
     }
 
-    public bool WriteHandshake(Handshake handshake)
+    public bool WriteHandshake (HandshakeBase handshake)
     {
-      return write(handshake.ToByteArray());
+      return write (handshake.ToByteArray ());
     }
 
     #endregion

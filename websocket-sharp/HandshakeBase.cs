@@ -1,6 +1,6 @@
 #region License
 /*
- * Handshake.cs
+ * HandshakeBase.cs
  *
  * The MIT License
  *
@@ -31,10 +31,10 @@ using System.Collections.Specialized;
 using System.Text;
 using WebSocketSharp.Net;
 
-namespace WebSocketSharp {
-
-  internal abstract class Handshake {
-
+namespace WebSocketSharp
+{
+  internal abstract class HandshakeBase
+  {
     #region Protected Const Fields
 
     protected const string CrLf = "\r\n";
@@ -43,10 +43,10 @@ namespace WebSocketSharp {
 
     #region Protected Constructors
 
-    protected Handshake()
+    protected HandshakeBase ()
     {
       ProtocolVersion = HttpVersion.Version11;
-      Headers = new NameValueCollection();
+      Headers = new NameValueCollection ();
     }
 
     #endregion
@@ -65,29 +65,29 @@ namespace WebSocketSharp {
 
     #region Public Methods
 
-    public void AddHeader(string name, string value)
+    public void AddHeader (string name, string value)
     {
-      Headers.Add(name, value);
+      Headers.Add (name, value);
     }
 
-    public bool ContainsHeader(string name)
+    public bool ContainsHeader (string name)
     {
-      return Headers.Contains(name);
+      return Headers.Contains (name);
     }
 
-    public bool ContainsHeader(string name, string value)
+    public bool ContainsHeader (string name, string value)
     {
-      return Headers.Contains(name, value);
+      return Headers.Contains (name, value);
     }
 
-    public string[] GetHeaderValues(string name)
+    public string [] GetHeaderValues (string name)
     {
-      return Headers.GetValues(name);
+      return Headers.GetValues (name);
     }
 
-    public byte[] ToByteArray()
+    public byte [] ToByteArray ()
     {
-      return Encoding.UTF8.GetBytes(ToString());
+      return Encoding.UTF8.GetBytes (ToString ());
     }
     
     #endregion

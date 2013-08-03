@@ -31,24 +31,24 @@ using System.Collections.Specialized;
 using System.Text;
 using WebSocketSharp.Net;
 
-namespace WebSocketSharp {
-
-  internal class ResponseHandshake : Handshake
+namespace WebSocketSharp
+{
+  internal class ResponseHandshake : HandshakeBase
   {
     #region Public Constructors
 
-    public ResponseHandshake()
-      : this(HttpStatusCode.SwitchingProtocols)
+    public ResponseHandshake ()
+      : this (HttpStatusCode.SwitchingProtocols)
     {
-      AddHeader("Upgrade", "websocket");
-      AddHeader("Connection", "Upgrade");
+      AddHeader ("Upgrade", "websocket");
+      AddHeader ("Connection", "Upgrade");
     }
 
-    public ResponseHandshake(HttpStatusCode code)
+    public ResponseHandshake (HttpStatusCode code)
     {
-      StatusCode = ((int)code).ToString();
-      Reason = code.GetDescription();
-      AddHeader("Server", "websocket-sharp/1.0");
+      StatusCode = ((int) code).ToString ();
+      Reason = code.GetDescription ();
+      AddHeader ("Server", "websocket-sharp/1.0");
     }
 
     #endregion
@@ -57,15 +57,15 @@ namespace WebSocketSharp {
 
     public AuthenticationChallenge AuthChallenge {
       get {
-        return ContainsHeader("WWW-Authenticate")
-               ? AuthenticationChallenge.Parse(Headers["WWW-Authenticate"])
+        return ContainsHeader ("WWW-Authenticate")
+               ? AuthenticationChallenge.Parse (Headers ["WWW-Authenticate"])
                : null;
       }
     }
 
     public CookieCollection Cookies {
       get {
-        return Headers.GetCookies(true);
+        return Headers.GetCookies (true);
       }
     }
 
@@ -81,11 +81,11 @@ namespace WebSocketSharp {
                ? false
                : StatusCode != "101"
                  ? false
-                 : !ContainsHeader("Upgrade", "websocket")
+                 : !ContainsHeader ("Upgrade", "websocket")
                    ? false
-                   : !ContainsHeader("Connection", "Upgrade")
+                   : !ContainsHeader ("Connection", "Upgrade")
                      ? false
-                     : ContainsHeader("Sec-WebSocket-Accept");
+                     : ContainsHeader ("Sec-WebSocket-Accept");
       }
     }
 
@@ -101,54 +101,54 @@ namespace WebSocketSharp {
 
     #region Public Methods
 
-    public static ResponseHandshake CreateCloseResponse(HttpStatusCode code)
+    public static ResponseHandshake CreateCloseResponse (HttpStatusCode code)
     {
-      var res = new ResponseHandshake(code);
-      res.AddHeader("Connection", "close");
+      var res = new ResponseHandshake (code);
+      res.AddHeader ("Connection", "close");
 
       return res;
     }
 
-    public static ResponseHandshake Parse(string[] response)
+    public static ResponseHandshake Parse (string [] response)
     {
-      var statusLine = response[0].Split(' ');
+      var statusLine = response [0].Split (' ');
       if (statusLine.Length < 3)
-        throw new ArgumentException("Invalid status line.");
+        throw new ArgumentException ("Invalid status line.");
 
-      var reason = new StringBuilder(statusLine[2], 64);
+      var reason = new StringBuilder (statusLine [2], 64);
       for (int i = 3; i < statusLine.Length; i++)
-        reason.AppendFormat(" {0}", statusLine[i]);
+        reason.AppendFormat (" {0}", statusLine [i]);
 
-      var headers = new WebHeaderCollection();
+      var headers = new WebHeaderCollection ();
       for (int i = 1; i < response.Length; i++)
-        headers.SetInternal(response[i], true);
+        headers.SetInternal (response [i], true);
 
       return new ResponseHandshake {
         Headers = headers,
-        Reason = reason.ToString(),
-        StatusCode = statusLine[1],
-        ProtocolVersion = new Version(statusLine[0].Substring(5))
+        Reason = reason.ToString (),
+        StatusCode = statusLine [1],
+        ProtocolVersion = new Version (statusLine [0].Substring (5))
       };
     }
 
-    public void SetCookies(CookieCollection cookies)
+    public void SetCookies (CookieCollection cookies)
     {
       if (cookies == null || cookies.Count == 0)
         return;
 
       foreach (var cookie in cookies.Sorted)
-        AddHeader("Set-Cookie", cookie.ToResponseString());
+        AddHeader ("Set-Cookie", cookie.ToResponseString ());
     }
 
-    public override string ToString()
+    public override string ToString ()
     {
-      var buffer = new StringBuilder(64);
-      buffer.AppendFormat("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, CrLf);
+      var buffer = new StringBuilder (64);
+      buffer.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, CrLf);
       foreach (string key in Headers.AllKeys)
-        buffer.AppendFormat("{0}: {1}{2}", key, Headers[key], CrLf);
+        buffer.AppendFormat ("{0}: {1}{2}", key, Headers [key], CrLf);
 
-      buffer.Append(CrLf);
-      return buffer.ToString();
+      buffer.Append (CrLf);
+      return buffer.ToString ();
     }
 
     #endregion
