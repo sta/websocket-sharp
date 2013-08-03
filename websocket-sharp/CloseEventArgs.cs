@@ -29,15 +29,15 @@
 using System;
 using System.Text;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
   /// </summary>
   /// <remarks>
-  /// The <see cref="WebSocket.OnClose"/> event occurs when the WebSocket receives a close control frame or
-  /// the <c>WebSocket.Close</c> method is called. If you want to get the reason for closure, you should access
-  /// the <see cref="CloseEventArgs.Code"/> or <see cref="CloseEventArgs.Reason"/> properties.
+  /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been closed.
+  /// If you want to get the reason for closure, you use the <see cref="CloseEventArgs.Code"/> or
+  /// <see cref="CloseEventArgs.Reason"/> property.
   /// </remarks>
   public class CloseEventArgs : MessageEventArgs
   {
@@ -51,12 +51,12 @@ namespace WebSocketSharp {
 
     #region Constructors
 
-    internal CloseEventArgs(PayloadData data)
-      : base(Opcode.CLOSE, data)
+    internal CloseEventArgs (PayloadData data)
+      : base (Opcode.CLOSE, data)
     {
-      _code = getCodeFrom(data);
-      _reason = getReasonFrom(data);
-      _clean = false;
+      _code = getCodeFrom (data);
+      _reason = getReasonFrom (data);
+      _clean = true;
     }
 
     #endregion
@@ -67,7 +67,7 @@ namespace WebSocketSharp {
     /// Gets the status code for closure.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that contains a status code for closure.
+    /// A <see cref="ushort"/> that contains a status code for closure if any.
     /// </value>
     public ushort Code {
       get {
@@ -79,7 +79,7 @@ namespace WebSocketSharp {
     /// Gets the reason for closure.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains a reason for closure.
+    /// A <see cref="string"/> that contains the reason for closure if any.
     /// </value>
     public string Reason {
       get {
@@ -88,10 +88,10 @@ namespace WebSocketSharp {
     }
 
     /// <summary>
-    /// Indicates whether the WebSocket connection closed cleanly.
+    /// Indicates whether the WebSocket connection has been closed cleanly.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket connection closed cleanly; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket connection has been closed cleanly; otherwise, <c>false</c>.
     /// </value>
     public bool WasClean {
       get {
@@ -107,23 +107,23 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private static ushort getCodeFrom(PayloadData data)
+    private static ushort getCodeFrom (PayloadData data)
     {
       var appData = data.ApplicationData;
       return appData.Length >= 2
-             ? appData.SubArray(0, 2).To<ushort>(ByteOrder.BIG)
-             : (ushort)CloseStatusCode.NO_STATUS_CODE;
+             ? appData.SubArray (0, 2).To<ushort> (ByteOrder.BIG)
+             : (ushort) CloseStatusCode.NO_STATUS_CODE;
     }
 
-    private static string getReasonFrom(PayloadData data)
+    private static string getReasonFrom (PayloadData data)
     {
       var appData = data.ApplicationData;
       var appDataLen = appData.Length;
       if (appDataLen <= 2)
         return String.Empty;
 
-      var buffer = appData.SubArray(2, appDataLen - 2);
-      return Encoding.UTF8.GetString(buffer);
+      var reason = appData.SubArray (2, appDataLen - 2);
+      return Encoding.UTF8.GetString (reason);
     }
 
     #endregion

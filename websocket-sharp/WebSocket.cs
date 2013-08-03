@@ -473,7 +473,7 @@ namespace WebSocketSharp {
     #region Public Events
 
     /// <summary>
-    /// Occurs when the <see cref="WebSocket"/> receives a Close frame or the Close method is called.
+    /// Occurs when the WebSocket connection has been closed.
     /// </summary>
     public event EventHandler<CloseEventArgs> OnClose;
 
@@ -497,136 +497,109 @@ namespace WebSocketSharp {
     #region Private Methods
 
     // As server
-    private bool acceptHandshake()
+    private bool acceptHandshake ()
     {
-      if (!processRequestHandshake())
-        return false;
-
-      sendResponseHandshake();
-      return true;
+      return processRequestHandshake ()
+             ? send (createResponseHandshake ())
+             : false;
     }
 
-    private void close(CloseEventArgs eventArgs)
+    private void close (CloseEventArgs eventArgs)
     {
       if (!Thread.CurrentThread.IsBackground && _exitReceiving != null)
-        _exitReceiving.WaitOne(5 * 1000);
+        if (!_exitReceiving.WaitOne (5 * 1000))
+          eventArgs.WasClean = false;
 
-      if (!closeResources())
+      if (!closeResources ())
         eventArgs.WasClean = false;
 
-      OnClose.Emit(this, eventArgs);
+      _readyState = WsState.CLOSED;
+      OnClose.Emit (this, eventArgs);
     }
 
-    private void close(PayloadData data)
+    private void close (PayloadData data)
     {
-      _logger.Debug("Is this thread background?: " + Thread.CurrentThread.IsBackground);
-      lock(_forClose)
+      _logger.Debug ("Is this thread background?: " + Thread.CurrentThread.IsBackground);
+      CloseEventArgs args = null;
+      lock (_forClose)
       {
-        // Whether the closing handshake has been started already?
         if (_readyState == WsState.CLOSING || _readyState == WsState.CLOSED)
           return;
 
-        // Whether the closing handshake on server is started before the connection has been established?
-        if (_readyState == WsState.CONNECTING && !_client)
-        {
-          sendResponseHandshake(HttpStatusCode.BadRequest);
-          close(new CloseEventArgs(data));
-          
-          return;
-        }
-
+        var state = _readyState;
         _readyState = WsState.CLOSING;
+        args = new CloseEventArgs (data);
+        if (state == WsState.CONNECTING)
+        {
+          if (!_client)
+            args.WasClean = send (createResponseHandshake (HttpStatusCode.BadRequest));
+        }
+        else
+        {
+          if (!data.ContainsReservedCloseStatusCode)
+            args.WasClean = send (createControlFrame (Opcode.CLOSE, data, _client));
+        }
       }
 
-      // Whether a payload data contains the close status code which must not be set for send?
-      if (data.ContainsReservedCloseStatusCode)
-      {
-        close(new CloseEventArgs(data));
-        return;
-      }
-
-      closeHandshake(data);
-      _logger.Trace("Exit close method.");
+      close (args);
+      _logger.Trace ("Exit close method.");
     }
 
-    private void close(HttpStatusCode code)
+    private void close (ushort code, string reason)
     {
-      if (_readyState != WsState.CONNECTING || _client)
-        return;
-
-      sendResponseHandshake(code);
-      closeResources();
-    }
-
-    private void close(ushort code, string reason)
-    {
-      var data = code.Append(reason);
+      var data = code.Append (reason);
       if (data.Length > 125)
       {
         var msg = "The payload length of a Close frame must be 125 bytes or less.";
-        _logger.Error(msg);
-        error(msg);
+        _logger.Error (msg);
+        error (msg);
 
         return;
       }
 
-      close(new PayloadData(data));
-    }
-
-    private void closeHandshake(PayloadData data)
-    {
-      var args = new CloseEventArgs(data);
-      var frame = createControlFrame(Opcode.CLOSE, data, _client);
-      if (send(frame))
-        args.WasClean = true;
-
-      close(args);
-    }
-
-    private bool closeResources()
-    {
-      _readyState = WsState.CLOSED;
-
-      try
-      {
-        if (_client)
-          closeResourcesAsClient();
-        else
-          closeResourcesAsServer();
-
-        return true;
-      }
-      catch (Exception ex)
-      {
-        _logger.Fatal(ex.Message);
-        error("An exception has occured.");
-
-        return false;
-      }
+      close (new PayloadData (data));
     }
 
     // As client
-    private void closeResourcesAsClient()
+    private void closeClientResources ()
     {
       if (_stream != null)
       {
-        _stream.Dispose();
+        _stream.Dispose ();
         _stream = null;
       }
 
       if (_tcpClient != null)
       {
-        _tcpClient.Close();
+        _tcpClient.Close ();
         _tcpClient = null;
       }
     }
 
+    private bool closeResources ()
+    {
+      try {
+        if (_client)
+          closeClientResources ();
+        else
+          closeServerResources ();
+
+        return true;
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.Message);
+        error ("An exception has occured.");
+
+        return false;
+      }
+    }
+
     // As server
-    private void closeResourcesAsServer()
+    private void closeServerResources ()
     {
       if (_context != null && _closeContext != null)
       {
-        _closeContext();
+        _closeContext ();
         _stream = null;
         _context = null;
       }
@@ -1080,32 +1053,29 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private bool processRequestHandshake()
+    private bool processRequestHandshake ()
     {
-      var req = RequestHandshake.Parse(_context);
-      _logger.Debug("Request handshake from client:\n" + req.ToString());
-      if (!isValidRequesHandshake())
+      var req = RequestHandshake.Parse (_context);
+      _logger.Debug ("Request handshake from client:\n" + req.ToString ());
+      if (!isValidRequesHandshake ())
       {
         var msg = "Invalid WebSocket connection request.";
-        _logger.Error(msg);
-        error(msg);
-        close(HttpStatusCode.BadRequest);
+        _logger.Error (msg);
+        error (msg);
+        Close (HttpStatusCode.BadRequest);
 
         return false;
       }
 
       _base64key = _context.SecWebSocketKey;
-      processRequestProtocols(_context.Headers["Sec-WebSocket-Protocol"]);
-      processRequestExtensions(_context.Headers["Sec-WebSocket-Extensions"]);
+
+      var protocols = _context.Headers ["Sec-WebSocket-Protocol"];
+      if (!protocols.IsNullOrEmpty ())
+        _protocols = protocols;
+
+      processRequestExtensions (_context.Headers ["Sec-WebSocket-Extensions"]);
 
       return true;
-    }
-
-    // As server
-    private void processRequestProtocols(string protocols)
-    {
-      if (!protocols.IsNullOrEmpty())
-        _protocols = protocols;
     }
 
     // As client
@@ -1190,13 +1160,13 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private void send(ResponseHandshake response)
+    private bool send (ResponseHandshake response)
     {
-      _logger.Debug("Response handshake to client:\n" + response.ToString());
-      _stream.WriteHandshake(response);
+      _logger.Debug ("Response handshake to client:\n" + response.ToString ());
+      return _stream.WriteHandshake (response);
     }
 
-    private bool send(WsFrame frame)
+    private bool send (WsFrame frame)
     {
       lock (_forFrame)
       {
@@ -1211,13 +1181,13 @@ namespace WebSocketSharp {
         if (!ready)
         {
           var msg = "The WebSocket connection isn't established or has been closed.";
-          _logger.Error(msg);
-          error(msg);
+          _logger.Error (msg);
+          error (msg);
 
           return false;
         }
 
-        return _stream.WriteFrame(frame);
+        return _stream.WriteFrame (frame);
       }
     }
 
@@ -1346,24 +1316,10 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private ResponseHandshake sendRequestHandshake(RequestHandshake request)
+    private ResponseHandshake sendRequestHandshake (RequestHandshake request)
     {
-      send(request);
-      return receiveResponseHandshake();
-    }
-
-    // As server
-    private void sendResponseHandshake()
-    {
-      var res = createResponseHandshake();
-      send(res);
-    }
-
-    // As server
-    private void sendResponseHandshake(HttpStatusCode code)
-    {
-      var res = createResponseHandshake(code);
-      send(res);
+      send (request);
+      return receiveResponseHandshake ();
     }
 
     // As client
@@ -1375,35 +1331,32 @@ namespace WebSocketSharp {
       _stream = WsStream.CreateClientStream(_tcpClient, _secure, host, _certValidationCallback);
     }
 
-    private void startReceiving()
+    private void startReceiving ()
     {
-      _exitReceiving = new AutoResetEvent(false);
-      _receivePong   = new AutoResetEvent(false);
+      _exitReceiving = new AutoResetEvent (false);
+      _receivePong = new AutoResetEvent (false);
 
       Action<WsFrame> completed = null;
-      completed = (frame) =>
+      completed = frame =>
       {
-        try
-        {
-          processFrame(frame);
+        try {
+          processFrame (frame);
           if (_readyState == WsState.OPEN)
-            _stream.ReadFrameAsync(completed);
+            _stream.ReadFrameAsync (completed);
           else
-            _exitReceiving.Set();
+            _exitReceiving.Set ();
         }
-        catch (WebSocketException ex)
-        {
-          _logger.Fatal(ex.Message);
-          Close(ex.Code, ex.Message);
+        catch (WebSocketException ex) {
+          _logger.Fatal (ex.Message);
+          Close (ex.Code, ex.Message);
         }
-        catch (Exception ex)
-        {
-          _logger.Fatal(ex.Message);
-          Close(CloseStatusCode.ABNORMAL, "An exception has occured.");
+        catch (Exception ex) {
+          _logger.Fatal (ex.Message);
+          Close (CloseStatusCode.ABNORMAL, "An exception has occured.");
         }
       };
 
-      _stream.ReadFrameAsync(completed);
+      _stream.ReadFrameAsync (completed);
     }
 
     #endregion
@@ -1411,9 +1364,12 @@ namespace WebSocketSharp {
     #region Internal Methods
 
     // As server
-    internal void Close(HttpStatusCode code)
+    internal void Close (HttpStatusCode code)
     {
-      close(code);
+      _readyState = WsState.CLOSING;
+      send (createResponseHandshake (code));
+      closeResources ();
+      _readyState = WsState.CLOSED;
     }
 
     #endregion
@@ -1423,9 +1379,9 @@ namespace WebSocketSharp {
     /// <summary>
     /// Closes the WebSocket connection and releases all associated resources.
     /// </summary>
-    public void Close()
+    public void Close ()
     {
-      close(new PayloadData());
+      close (new PayloadData ());
     }
 
     /// <summary>
@@ -1439,9 +1395,9 @@ namespace WebSocketSharp {
     /// <param name="code">
     /// A <see cref="ushort"/> that indicates the status code for closure.
     /// </param>
-    public void Close(ushort code)
+    public void Close (ushort code)
     {
-      Close(code, String.Empty);
+      Close (code, String.Empty);
     }
 
     /// <summary>
@@ -1451,9 +1407,9 @@ namespace WebSocketSharp {
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> values that indicates the status code for closure.
     /// </param>
-    public void Close(CloseStatusCode code)
+    public void Close (CloseStatusCode code)
     {
-      close((ushort)code, String.Empty);
+      close ((ushort) code, String.Empty);
     }
 
     /// <summary>
@@ -1470,18 +1426,18 @@ namespace WebSocketSharp {
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for closure.
     /// </param>
-    public void Close(ushort code, string reason)
+    public void Close (ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode())
+      if (!code.IsCloseStatusCode ())
       {
-        var msg = String.Format("Invalid close status code: {0}", code);
-        _logger.Error(msg);
-        error(msg);
+        var msg = String.Format ("Invalid close status code: {0}", code);
+        _logger.Error (msg);
+        error (msg);
 
         return;
       }
 
-      close(code, reason);
+      close (code, reason);
     }
 
     /// <summary>
@@ -1494,9 +1450,9 @@ namespace WebSocketSharp {
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for closure.
     /// </param>
-    public void Close(CloseStatusCode code, string reason)
+    public void Close (CloseStatusCode code, string reason)
     {
-      close((ushort)code, reason);
+      close ((ushort) code, reason);
     }
 
     /// <summary>
