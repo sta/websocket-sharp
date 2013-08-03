@@ -33,8 +33,8 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net.WebSockets {
-
+namespace WebSocketSharp.Net.WebSockets
+{
   /// <summary>
   /// Provides access to the WebSocket connection request objects received by the <see cref="TcpListener"/>.
   /// </summary>
@@ -46,7 +46,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     private CookieCollection _cookies;
     private TcpClient        _client;
-    private RequestHandshake _request;
+    private HandshakeRequest _request;
     private bool             _secure;
     private WsStream         _stream;
     private WebSocket        _websocket;
@@ -55,13 +55,13 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #region Internal Constructors
 
-    internal TcpListenerWebSocketContext(TcpClient client, bool secure, X509Certificate cert)
+    internal TcpListenerWebSocketContext (TcpClient client, bool secure, X509Certificate cert)
     {
       _client = client;
       _secure = secure;
-      _stream = WsStream.CreateServerStream(client, secure, cert);
-      _request = RequestHandshake.Parse(_stream.ReadHandshake());
-      _websocket = new WebSocket(this);
+      _stream = WsStream.CreateServerStream (client, secure, cert);
+      _request = HandshakeRequest.Parse (_stream.ReadHandshake ());
+      _websocket = new WebSocket (this);
     }
 
     #endregion
@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </exception>
     public override bool IsAuthenticated {
       get {
-        throw new NotImplementedException();
+        throw new NotImplementedException ();
       }
     }
 
@@ -128,7 +128,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override bool IsLocal {
       get {
-        return UserEndPoint.Address.IsLocal();
+        return UserEndPoint.Address.IsLocal ();
       }
     }
 
@@ -154,9 +154,9 @@ namespace WebSocketSharp.Net.WebSockets {
       get {
         return !_request.IsWebSocketRequest
                ? false
-               : SecWebSocketKey.IsNullOrEmpty()
+               : SecWebSocketKey.IsNullOrEmpty ()
                  ? false
-                 : !SecWebSocketVersion.IsNullOrEmpty();
+                 : !SecWebSocketVersion.IsNullOrEmpty ();
       }
     }
 
@@ -168,7 +168,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string Origin {
       get {
-        return Headers["Origin"];
+        return Headers ["Origin"];
       }
     }
 
@@ -180,7 +180,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string Path {
       get {
-        return _request.RequestUri.GetAbsolutePath();
+        return _request.RequestUri.GetAbsolutePath ();
       }
     }
 
@@ -219,7 +219,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string SecWebSocketKey {
       get {
-        return Headers["Sec-WebSocket-Key"];
+        return Headers ["Sec-WebSocket-Key"];
       }
     }
 
@@ -234,7 +234,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        return Headers.GetValues("Sec-WebSocket-Protocol");
+        return Headers.GetValues ("Sec-WebSocket-Protocol");
       }
     }
 
@@ -249,7 +249,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string SecWebSocketVersion {
       get {
-        return Headers["Sec-WebSocket-Version"];
+        return Headers ["Sec-WebSocket-Version"];
       }
     }
 
@@ -261,7 +261,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint ServerEndPoint {
       get {
-        return (System.Net.IPEndPoint)_client.Client.LocalEndPoint;
+        return (System.Net.IPEndPoint) _client.Client.LocalEndPoint;
       }
     }
 
@@ -276,7 +276,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </exception>
     public override IPrincipal User {
       get {
-        throw new NotImplementedException();
+        throw new NotImplementedException ();
       }
     }
 
@@ -288,7 +288,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public virtual System.Net.IPEndPoint UserEndPoint {
       get {
-        return (System.Net.IPEndPoint)_client.Client.RemoteEndPoint;
+        return (System.Net.IPEndPoint) _client.Client.RemoteEndPoint;
       }
     }
 
@@ -308,10 +308,10 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #region Internal Methods
 
-    internal void Close()
+    internal void Close ()
     {
-      _stream.Close();
-      _client.Close();
+      _stream.Close ();
+      _client.Close ();
     }
 
     #endregion

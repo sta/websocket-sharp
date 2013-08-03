@@ -499,7 +499,7 @@ namespace WebSocketSharp {
     // As server
     private bool acceptHandshake ()
     {
-      return processRequestHandshake ()
+      return processHandshakeRequest ()
              ? send (createResponseHandshake ())
              : false;
     }
@@ -722,35 +722,35 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private RequestHandshake createRequestHandshake()
+    private HandshakeRequest createHandshakeRequest ()
     {
       var path = _uri.PathAndQuery;
       var host = _uri.Port == 80
                ? _uri.DnsSafeHost
                : _uri.Authority;
 
-      var req = new RequestHandshake(path);
-      req.AddHeader("Host", host);
+      var req = new HandshakeRequest (path);
+      req.AddHeader ("Host", host);
 
       if (_origin.Length > 0)
-        req.AddHeader("Origin", _origin);
+        req.AddHeader ("Origin", _origin);
 
-      req.AddHeader("Sec-WebSocket-Key", _base64key);
+      req.AddHeader ("Sec-WebSocket-Key", _base64key);
 
-      if (!_protocols.IsNullOrEmpty())
-        req.AddHeader("Sec-WebSocket-Protocol", _protocols);
+      if (!_protocols.IsNullOrEmpty ())
+        req.AddHeader ("Sec-WebSocket-Protocol", _protocols);
 
-      var extensions = createRequestExtensions();
+      var extensions = createRequestExtensions ();
       if (extensions.Length > 0)
-        req.AddHeader("Sec-WebSocket-Extensions", extensions);
+        req.AddHeader ("Sec-WebSocket-Extensions", extensions);
 
-      req.AddHeader("Sec-WebSocket-Version", _version);
+      req.AddHeader ("Sec-WebSocket-Version", _version);
 
       if (_preAuth && _credentials != null)
-        req.SetAuthorization(new AuthenticationResponse(_credentials));
+        req.SetAuthorization (new AuthenticationResponse (_credentials));
 
       if (_cookies.Count > 0)
-        req.SetCookies(_cookies);
+        req.SetCookies (_cookies);
 
       return req;
     }
@@ -789,10 +789,10 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private bool doHandshake()
+    private bool doHandshake ()
     {
-      setClientStream();
-      return processResponseHandshake(sendRequestHandshake());
+      setClientStream ();
+      return processResponseHandshake (sendHandshakeRequest ());
     }
 
     private void error(string message)
@@ -1053,10 +1053,10 @@ namespace WebSocketSharp {
     }
 
     // As server
-    private bool processRequestHandshake ()
+    private bool processHandshakeRequest ()
     {
-      var req = RequestHandshake.Parse (_context);
-      _logger.Debug ("Request handshake from client:\n" + req.ToString ());
+      var req = HandshakeRequest.Parse (_context);
+      _logger.Debug ("A handshake request from a client:\n" + req.ToString ());
       if (!isValidRequesHandshake ())
       {
         var msg = "Invalid WebSocket connection request.";
@@ -1153,10 +1153,10 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private void send(RequestHandshake request)
+    private void send (HandshakeRequest request)
     {
-      _logger.Debug("Request handshake to server:\n" + request.ToString());
-      _stream.WriteHandshake(request);
+      _logger.Debug ("A handshake Request to the server:\n" + request.ToString ());
+      _stream.WriteHandshake (request);
     }
 
     // As server
@@ -1301,34 +1301,34 @@ namespace WebSocketSharp {
     }
 
     // As client
-    private ResponseHandshake sendRequestHandshake()
+    private ResponseHandshake sendHandshakeRequest ()
     {
-      var req = createRequestHandshake();
-      var res = sendRequestHandshake(req);
+      var req = createHandshakeRequest ();
+      var res = sendHandshakeRequest (req);
       if (!_preAuth && res.IsUnauthorized && _credentials != null)
       {
         var challenge = res.AuthChallenge;
-        req.SetAuthorization(new AuthenticationResponse(_credentials, challenge));
-        res = sendRequestHandshake(req);
+        req.SetAuthorization (new AuthenticationResponse (_credentials, challenge));
+        res = sendHandshakeRequest (req);
       }
 
       return res;
     }
 
     // As client
-    private ResponseHandshake sendRequestHandshake (RequestHandshake request)
+    private ResponseHandshake sendHandshakeRequest (HandshakeRequest request)
     {
       send (request);
       return receiveResponseHandshake ();
     }
 
     // As client
-    private void setClientStream()
+    private void setClientStream ()
     {
       var host = _uri.DnsSafeHost;
       var port = _uri.Port;
-      _tcpClient = new TcpClient(host, port);
-      _stream = WsStream.CreateClientStream(_tcpClient, _secure, host, _certValidationCallback);
+      _tcpClient = new TcpClient (host, port);
+      _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
     }
 
     private void startReceiving ()

@@ -1,6 +1,6 @@
 #region License
 /*
- * RequestHandshake.cs
+ * HandshakeRequest.cs
  *
  * The MIT License
  *
@@ -35,7 +35,7 @@ using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp
 {
-  internal class RequestHandshake : HandshakeBase
+  internal class HandshakeRequest : HandshakeBase
   {
     #region Private Fields
 
@@ -45,7 +45,7 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private RequestHandshake ()
+    private HandshakeRequest ()
     {
     }
 
@@ -53,7 +53,7 @@ namespace WebSocketSharp
 
     #region Public Constructors
 
-    public RequestHandshake (string uriString)
+    public HandshakeRequest (string uriString)
     {
       HttpMethod = "GET";
       RequestUri = uriString.ToUri ();
@@ -137,7 +137,7 @@ namespace WebSocketSharp
 
     #region Public Methods
 
-    public static RequestHandshake Parse (string [] request)
+    public static HandshakeRequest Parse (string [] request)
     {
       var requestLine = request [0].Split (' ');
       if (requestLine.Length != 3)
@@ -150,7 +150,7 @@ namespace WebSocketSharp
       for (int i = 1; i < request.Length; i++)
         headers.SetInternal (request [i], false);
 
-      return new RequestHandshake {
+      return new HandshakeRequest {
         Headers = headers,
         HttpMethod = requestLine [0],
         RequestUri = requestLine [1].ToUri (),
@@ -158,9 +158,9 @@ namespace WebSocketSharp
       };
     }
 
-    public static RequestHandshake Parse (WebSocketContext context)
+    public static HandshakeRequest Parse (WebSocketContext context)
     {
-      return new RequestHandshake {
+      return new HandshakeRequest {
         Headers = context.Headers,
         HttpMethod = "GET",
         RequestUri = context.RequestUri,
