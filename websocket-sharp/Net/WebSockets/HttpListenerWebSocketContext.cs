@@ -31,10 +31,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net.WebSockets {
-
+namespace WebSocketSharp.Net.WebSockets
+{
   /// <summary>
-  /// Provides access to the WebSocket connection request objects received by the <see cref="HttpListener"/> class.
+  /// Provides access to the WebSocket connection request objects received by the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
   /// </remarks>
@@ -44,17 +44,17 @@ namespace WebSocketSharp.Net.WebSockets {
 
     private HttpListenerContext _context;
     private WebSocket           _websocket;
-    private WsStream            _wsStream;
+    private WsStream            _stream;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpListenerWebSocketContext(HttpListenerContext context)
+    internal HttpListenerWebSocketContext (HttpListenerContext context)
     {
-      _context   = context;
-      _wsStream  = WsStream.CreateServerStream(context);
-      _websocket = new WebSocket(this);
+      _context = context;
+      _stream = WsStream.CreateServerStream (context);
+      _websocket = new WebSocket (this);
     }
 
     #endregion
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net.WebSockets {
 
     internal WsStream Stream {
       get {
-        return _wsStream;
+        return _stream;
       }
     }
 
@@ -92,6 +92,18 @@ namespace WebSocketSharp.Net.WebSockets {
     public override NameValueCollection Headers {
       get {
         return _context.Request.Headers;
+      }
+    }
+
+    /// <summary>
+    /// Gets the value of the Host header field used in the WebSocket opening handshake.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the value of the Host header field.
+    /// </value>
+    public override string Host {
+      get {
+        return _context.Request.Headers ["Host"];
       }
     }
 
@@ -132,18 +144,14 @@ namespace WebSocketSharp.Net.WebSockets {
     }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection request is valid.
+    /// Gets a value indicating whether the request is a WebSocket connection request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
     /// </value>
-    public override bool IsValid {
+    public override bool IsWebSocketRequest {
       get {
-        return !_context.Request.IsWebSocketRequest
-               ? false
-               : SecWebSocketKey.IsNullOrEmpty()
-                 ? false
-                 : !SecWebSocketVersion.IsNullOrEmpty();
+        return _context.Request.IsWebSocketRequest;
       }
     }
 
@@ -155,7 +163,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string Origin {
       get {
-        return Headers["Origin"];
+        return _context.Request.Headers ["Origin"];
       }
     }
 
@@ -167,7 +175,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string Path {
       get {
-        return RequestUri.GetAbsolutePath();
+        return RequestUri.GetAbsolutePath ();
       }
     }
 
@@ -191,7 +199,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override Uri RequestUri {
       get {
-        return _context.Request.RawUrl.ToUri();
+        return _context.Request.RawUrl.ToUri ();
       }
     }
 
@@ -206,7 +214,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string SecWebSocketKey {
       get {
-        return Headers["Sec-WebSocket-Key"];
+        return _context.Request.Headers ["Sec-WebSocket-Key"];
       }
     }
 
@@ -221,7 +229,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        return Headers.GetValues("Sec-WebSocket-Protocol");
+        return _context.Request.Headers.GetValues ("Sec-WebSocket-Protocol");
       }
     }
 
@@ -236,7 +244,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// </value>
     public override string SecWebSocketVersion {
       get {
-        return Headers["Sec-WebSocket-Version"];
+        return _context.Request.Headers ["Sec-WebSocket-Version"];
       }
     }
 
@@ -246,7 +254,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// <value>
     /// A <see cref="System.Net.IPEndPoint"/> that contains the server endpoint.
     /// </value>
-    public virtual System.Net.IPEndPoint ServerEndPoint {
+    public override System.Net.IPEndPoint ServerEndPoint {
       get {
         return _context.Connection.LocalEndPoint;
       }
@@ -270,7 +278,7 @@ namespace WebSocketSharp.Net.WebSockets {
     /// <value>
     /// A <see cref="System.Net.IPEndPoint"/> that contains the client endpoint.
     /// </value>
-    public virtual System.Net.IPEndPoint UserEndPoint {
+    public override System.Net.IPEndPoint UserEndPoint {
       get {
         return _context.Connection.RemoteEndPoint;
       }
@@ -292,9 +300,24 @@ namespace WebSocketSharp.Net.WebSockets {
 
     #region Internal Methods
 
-    internal void Close()
+    internal void Close ()
     {
-      _context.Connection.Close(true);
+      _context.Connection.Close (true);
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Returns a <see cref="string"/> that represents the current <see cref="HttpListenerWebSocketContext"/>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> that represents the current <see cref="HttpListenerWebSocketContext"/>.
+    /// </returns>
+    public override string ToString ()
+    {
+      return _context.Request.ToString ();
     }
 
     #endregion

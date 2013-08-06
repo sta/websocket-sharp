@@ -225,6 +225,11 @@ namespace WebSocketSharp {
              : stream.ToByteArray();
     }
 
+    internal static bool Equals (this string value, CompressionMethod method)
+    {
+      return value == method.ToCompressionExtension ();
+    }
+
     // <summary>
     // Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
     // and invokes the specified Action&lt;int&gt; delegate at the same time.
@@ -287,6 +292,11 @@ namespace WebSocketSharp {
       this TcpClient client, bool secure, X509Certificate cert)
     {
       return new TcpListenerWebSocketContext(client, secure, cert);
+    }
+
+    internal static bool IsCompressionExtension (this string value)
+    {
+      return value.StartsWith ("permessage-");
     }
 
     // <summary>
@@ -512,6 +522,22 @@ namespace WebSocketSharp {
 
         return output.ToArray();
       }
+    }
+
+    internal static string ToCompressionExtension (this CompressionMethod method)
+    {
+      return method != CompressionMethod.NONE
+             ? String.Format ("permessage-{0}", method.ToString ().ToLower ())
+             : String.Empty;
+    }
+
+    internal static CompressionMethod ToCompressionMethod (this string value)
+    {
+      foreach (CompressionMethod method in Enum.GetValues (typeof (CompressionMethod)))
+        if (value.Equals (method))
+          return method;
+
+      return CompressionMethod.NONE;
     }
 
     internal static string Unquote(this string value)

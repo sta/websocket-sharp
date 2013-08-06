@@ -31,22 +31,22 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net.WebSockets {
-
+namespace WebSocketSharp.Net.WebSockets
+{
   /// <summary>
   /// Provides access to the WebSocket connection request objects.
   /// </summary>
   /// <remarks>
   /// The WebSocketContext class is an abstract class.
   /// </remarks>
-  public abstract class WebSocketContext {
-
+  public abstract class WebSocketContext
+  {
     #region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketSharp.Net.WebSockets.WebSocketContext"/> class.
     /// </summary>
-    protected WebSocketContext()
+    protected WebSocketContext ()
     {
     }
 
@@ -69,6 +69,14 @@ namespace WebSocketSharp.Net.WebSockets {
     /// A <see cref="System.Collections.Specialized.NameValueCollection"/> that contains the HTTP headers.
     /// </value>
     public abstract NameValueCollection Headers { get; }
+
+    /// <summary>
+    /// Gets the value of the Host header field used in the WebSocket opening handshake.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the value of the Host header field.
+    /// </value>
+    public abstract string Host { get; }
 
     /// <summary>
     /// Gets a value indicating whether the client is authenticated.
@@ -95,12 +103,12 @@ namespace WebSocketSharp.Net.WebSockets {
     public abstract bool IsSecureConnection { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection request is valid.
+    /// Gets a value indicating whether the request is a WebSocket connection request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket connection request is valid; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
     /// </value>
-    public abstract bool IsValid { get; }
+    public abstract bool IsWebSocketRequest { get; }
 
     /// <summary>
     /// Gets the value of the Origin header field used in the WebSocket opening handshake.
@@ -168,12 +176,28 @@ namespace WebSocketSharp.Net.WebSockets {
     public abstract string SecWebSocketVersion { get; }
 
     /// <summary>
+    /// Gets the server endpoint as an IP address and a port number.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPEndPoint"/> that contains the server endpoint.
+    /// </value>
+    public abstract System.Net.IPEndPoint ServerEndPoint { get; }
+
+    /// <summary>
     /// Gets the client information (identity, authentication information and security roles).
     /// </summary>
     /// <value>
     /// A <see cref="IPrincipal"/> that contains the client information.
     /// </value>
     public abstract IPrincipal User { get; }
+
+    /// <summary>
+    /// Gets the client endpoint as an IP address and a port number.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPEndPoint"/> that contains the client endpoint.
+    /// </value>
+    public abstract System.Net.IPEndPoint UserEndPoint { get; }
 
     /// <summary>
     /// Gets the WebSocket instance used for two-way communication between client and server.

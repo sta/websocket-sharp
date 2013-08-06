@@ -56,7 +56,7 @@ namespace WebSocketSharp
     {
       _code = getCodeFrom (data);
       _reason = getReasonFrom (data);
-      _clean = true;
+      _clean = false;
     }
 
     #endregion

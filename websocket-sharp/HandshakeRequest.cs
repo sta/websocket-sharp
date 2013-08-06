@@ -78,19 +78,10 @@ namespace WebSocketSharp
 
     public bool IsWebSocketRequest {
       get {
-        return HttpMethod != "GET"
-               ? false
-               : ProtocolVersion < HttpVersion.Version11
-                 ? false
-                 : !ContainsHeader ("Upgrade", "websocket")
-                   ? false
-                   : !ContainsHeader ("Connection", "Upgrade")
-                     ? false
-                     : !ContainsHeader ("Host")
-                       ? false
-                       : !ContainsHeader ("Sec-WebSocket-Key")
-                         ? false
-                         : ContainsHeader ("Sec-WebSocket-Version");
+        return HttpMethod == "GET" &&
+               ProtocolVersion >= HttpVersion.Version11 &&
+               Headers.Contains ("Upgrade", "websocket") &&
+               Headers.Contains ("Connection", "Upgrade");
       }
     }
 
@@ -155,16 +146,6 @@ namespace WebSocketSharp
         HttpMethod = requestLine [0],
         RequestUri = requestLine [1].ToUri (),
         ProtocolVersion = new Version (requestLine [2].Substring (5))
-      };
-    }
-
-    public static HandshakeRequest Parse (WebSocketContext context)
-    {
-      return new HandshakeRequest {
-        Headers = context.Headers,
-        HttpMethod = "GET",
-        RequestUri = context.RequestUri,
-        ProtocolVersion = HttpVersion.Version11
       };
     }
 

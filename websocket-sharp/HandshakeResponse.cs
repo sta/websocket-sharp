@@ -57,8 +57,9 @@ namespace WebSocketSharp
 
     public AuthenticationChallenge AuthChallenge {
       get {
-        return ContainsHeader ("WWW-Authenticate")
-               ? AuthenticationChallenge.Parse (Headers ["WWW-Authenticate"])
+        var challenge = Headers ["WWW-Authenticate"];
+        return !challenge.IsNullOrEmpty ()
+               ? AuthenticationChallenge.Parse (challenge)
                : null;
       }
     }
@@ -77,15 +78,11 @@ namespace WebSocketSharp
 
     public bool IsWebSocketResponse {
       get {
-        return ProtocolVersion < HttpVersion.Version11
-               ? false
-               : StatusCode != "101"
-                 ? false
-                 : !ContainsHeader ("Upgrade", "websocket")
-                   ? false
-                   : !ContainsHeader ("Connection", "Upgrade")
-                     ? false
-                     : ContainsHeader ("Sec-WebSocket-Accept");
+        return ProtocolVersion >= HttpVersion.Version11 &&
+               StatusCode == "101" &&
+               Headers.Contains ("Upgrade", "websocket") &&
+               Headers.Contains ("Connection", "Upgrade") &&
+               !Headers ["Sec-WebSocket-Accept"].IsNullOrEmpty ();
       }
     }
 

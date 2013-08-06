@@ -7,7 +7,7 @@
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -40,16 +40,16 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace WebSocketSharp.Net {
-
+namespace WebSocketSharp.Net
+{
 	/// <summary>
 	/// Provides access to a request to a <see cref="HttpListener"/> instance.
 	/// </summary>
 	/// <remarks>
 	/// The HttpListenerRequest class cannot be inherited.
 	/// </remarks>
-	public sealed class HttpListenerRequest {
-
+	public sealed class HttpListenerRequest
+	{
 		#region Private Static Fields
 
 		private static byte [] _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
@@ -282,19 +282,10 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public bool IsWebSocketRequest {
 			get {
-				return _method != "GET"
-					? false
-					: _version < HttpVersion.Version11
-						? false
-						: !_headers.Contains("Upgrade", "websocket")
-							? false
-							: !_headers.Contains("Connection", "Upgrade")
-								? false
-								: !_headers.Contains("Host")
-									? false
-									: !_headers.Contains("Sec-WebSocket-Key")
-										? false
-										: _headers.Contains("Sec-WebSocket-Version");
+				return _method == "GET" &&
+				       _version >= HttpVersion.Version11 &&
+				       _headers.Contains ("Upgrade", "websocket") &&
+				       _headers.Contains ("Connection", "Upgrade");
 			}
 		}
 
@@ -742,6 +733,23 @@ namespace WebSocketSharp.Net {
 		{
 			// TODO: Not Implemented.
 			throw new NotImplementedException ();
+		}
+
+		/// <summary>
+		/// Returns a <see cref="string"/> that represents the current <see cref="HttpListenerRequest"/>.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="string"/> that represents the current <see cref="HttpListenerRequest"/>.
+		/// </returns>
+		public override string ToString ()
+		{
+			var buffer = new StringBuilder (64);
+			buffer.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _rawUrl, _version);
+			foreach (string key in _headers.AllKeys)
+				buffer.AppendFormat ("{0}: {1}\r\n", key, _headers [key]);
+
+			buffer.Append ("\r\n");
+			return buffer.ToString ();
 		}
 
 		#endregion
