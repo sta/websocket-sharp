@@ -43,15 +43,15 @@ using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
         
-namespace WebSocketSharp.Net {
-
+namespace WebSocketSharp.Net
+{
 	/// <summary>
 	/// Provides a collection of the HTTP headers associated with a request or response.
 	/// </summary>
 	[Serializable]
 	[ComVisible (true)]
-	public class WebHeaderCollection : NameValueCollection, ISerializable {
-
+	public class WebHeaderCollection : NameValueCollection, ISerializable
+	{
 		#region Fields
 
 		static readonly Dictionary<string, HttpHeaderInfo> headers;
@@ -275,7 +275,7 @@ namespace WebSocketSharp.Net {
 		protected WebHeaderCollection (
 			SerializationInfo serializationInfo, StreamingContext streamingContext)
 		{
-			if (serializationInfo.IsNull ())
+			if (serializationInfo == null)
 				throw new ArgumentNullException ("serializationInfo");
 
 			try {
@@ -582,9 +582,7 @@ namespace WebSocketSharp.Net {
 		static bool TryGetHeaderInfo (string name, out HttpHeaderInfo info)
 		{
 			info = GetHeaderInfo (name);
-			return info.IsNull ()
-			       ? false
-			       : true;
+			return info != null;
 		}
 
 		#endregion
@@ -932,7 +930,7 @@ namespace WebSocketSharp.Net {
 		public override string [] GetValues (string header)
 		{
 			string [] values = base.GetValues (header);
-			return values.IsNull () || values.Length == 0
+			return values == null || values.Length == 0
 			       ? null
 			       : values;
 		}
@@ -949,7 +947,7 @@ namespace WebSocketSharp.Net {
 		public override string [] GetValues (int index)
 		{
 			string [] values = base.GetValues (index);
-			return values.IsNull () || values.Length == 0
+			return values == null || values.Length == 0
 			       ? null
 			       : values;
 		}
@@ -971,7 +969,7 @@ namespace WebSocketSharp.Net {
 		public override void GetObjectData (
 			SerializationInfo serializationInfo, StreamingContext streamingContext)
 		{
-			if (serializationInfo.IsNull ())
+			if (serializationInfo == null)
 				throw new ArgumentNullException ("serializationInfo");
 
 			serializationInfo.AddValue ("InternallyCreated", internallyCreated);

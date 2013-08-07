@@ -37,8 +37,8 @@ using System.Text;
 using System.Globalization;
 using System.Collections;
 
-namespace WebSocketSharp.Net {
-
+namespace WebSocketSharp.Net
+{
 	/// <summary>
 	/// Provides a set of properties and methods used to manage an HTTP Cookie.
 	/// </summary>
@@ -54,8 +54,8 @@ namespace WebSocketSharp.Net {
 	///   </para>
 	/// </remarks>
 	[Serializable]
-	public sealed class Cookie {
-
+	public sealed class Cookie
+	{
 		#region Static Private Fields
 
 		static char [] reservedCharsForName = new char [] {' ', '=', ';', ',', '\n', '\r', '\t'};
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public string Comment {
 			get { return comment; }
-			set { comment = value.IsNull () ? String.Empty : value; }
+			set { comment = value ?? String.Empty; }
 		}
 
 		/// <summary>
@@ -395,7 +395,7 @@ namespace WebSocketSharp.Net {
 		/// </value>
 		public string Path {
 			get { return path; }
-			set { path = value.IsNull () ? String.Empty : value; }
+			set { path = value ?? String.Empty; }
 		}
 
 		/// <summary>
@@ -480,9 +480,7 @@ namespace WebSocketSharp.Net {
 				if (!CanSetValue (value, out msg))
 					throw new CookieException (msg);
 
-				val = value.IsEmpty ()
-				    ? "\"\""
-				    : value;
+				val = value.Length == 0 ? "\"\"" : value;
 			}
 		}
 
@@ -528,7 +526,7 @@ namespace WebSocketSharp.Net {
 
 		static bool CanSetValue (string value, out string message)
 		{
-			if (value.IsNull ()) {
+			if (value == null) {
 				message = "Value must not be null.";
 				return false;
 			}
@@ -595,7 +593,7 @@ namespace WebSocketSharp.Net {
 			if (!comment.IsNullOrEmpty ())
 				result.AppendFormat ("; Comment={0}", comment.UrlEncode ());
 
-			if (!commentUri.IsNull ())
+			if (commentUri != null)
 				result.AppendFormat ("; CommentURL={0}", commentUri.OriginalString.Quote ());
 
 			if (discard)
@@ -614,7 +612,7 @@ namespace WebSocketSharp.Net {
 			for (int i = 0; i < values.Length; i++) {
 				tmp [i] = int.MinValue;
 				var v = values [i].Trim ();
-				if (v.IsEmpty ())
+				if (v.Length == 0)
 					continue;
 
 				if (!int.TryParse (v, out tmp [i])) {
@@ -636,7 +634,7 @@ namespace WebSocketSharp.Net {
 		// From client to server
 		internal string ToRequestString (Uri uri)
 		{
-			if (name.IsEmpty ())
+			if (name.Length == 0)
 				return String.Empty;
 
 			if (version == 0)
@@ -646,12 +644,12 @@ namespace WebSocketSharp.Net {
 			result.AppendFormat ("$Version={0}; {1}={2}", version, name, val);
 			if (!path.IsNullOrEmpty ())
 				result.AppendFormat ("; $Path={0}", path);
-			else if (!uri.IsNull ())
+			else if (uri != null)
 				result.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
 			else
 				result.Append ("; $Path=/");
 
-			bool append_domain = uri.IsNull () || uri.Host != domain;
+			bool append_domain = uri == null || uri.Host != domain;
 			if (append_domain && !domain.IsNullOrEmpty ())
 				result.AppendFormat ("; $Domain={0}", domain);
 
@@ -667,7 +665,7 @@ namespace WebSocketSharp.Net {
 		// From server to client
 		internal string ToResponseString ()
 		{
-			return name.IsEmpty ()
+			return name.Length == 0
 			       ? String.Empty
 			       : version == 0
 			         ? ToResponseStringVersion0 ()
@@ -691,12 +689,12 @@ namespace WebSocketSharp.Net {
 		public override bool Equals (Object comparand)
 		{
 			var cookie = comparand as Cookie;
-			return !cookie.IsNull() &&
-				name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
-				val.Equals (cookie.Value, StringComparison.InvariantCulture) &&
-				path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
-				domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
-				version == cookie.Version;
+			return cookie != null &&
+			       name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
+			       val.Equals (cookie.Value, StringComparison.InvariantCulture) &&
+			       path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
+			       domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
+			       version == cookie.Version;
 		}
 
 		/// <summary>

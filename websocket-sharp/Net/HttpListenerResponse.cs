@@ -36,8 +36,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace WebSocketSharp.Net {
-
+namespace WebSocketSharp.Net
+{
 	/// <summary>
 	/// Provides access to a response to a request being processed by a <see cref="HttpListener"/> instance.
 	/// </summary>
@@ -184,10 +184,10 @@ namespace WebSocketSharp.Net {
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
 
-				if (value.IsNull ())
+				if (value == null)
 					throw new ArgumentNullException ("value");
 
-				if (value.IsEmpty ())
+				if (value.Length == 0)
 					throw new ArgumentException ("Must not be empty.", "value");
 
 				content_type = value;
@@ -342,7 +342,7 @@ namespace WebSocketSharp.Net {
 				if (HeadersSent)
 					throw new InvalidOperationException ("Cannot be changed after headers are sent.");
 
-				if (value.IsEmpty ())
+				if (value.Length == 0)
 					throw new ArgumentException ("Must not be empty.", "value");
 
 				location = value;
@@ -758,7 +758,7 @@ namespace WebSocketSharp.Net {
 		/// </exception>
 		public void SetCookie (Cookie cookie)
 		{
-			if (cookie.IsNull())
+			if (cookie == null)
 				throw new ArgumentNullException ("cookie");
 
 			if (!CanAddOrUpdate (cookie))
