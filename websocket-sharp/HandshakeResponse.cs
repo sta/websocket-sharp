@@ -81,8 +81,7 @@ namespace WebSocketSharp
         return ProtocolVersion >= HttpVersion.Version11 &&
                StatusCode == "101" &&
                Headers.Contains ("Upgrade", "websocket") &&
-               Headers.Contains ("Connection", "Upgrade") &&
-               !Headers ["Sec-WebSocket-Accept"].IsNullOrEmpty ();
+               Headers.Contains ("Connection", "Upgrade");
       }
     }
 

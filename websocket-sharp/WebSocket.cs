@@ -1260,19 +1260,20 @@ namespace WebSocketSharp
     // As server
     private bool validateConnectionRequest (WebSocketContext context)
     {
+      string version;
       return context.IsWebSocketRequest &&
              validateHostHeader (context.Host) &&
              !context.SecWebSocketKey.IsNullOrEmpty () &&
-             context.Headers.Contains ("Sec-WebSocket-Version", _version);
+             ((version = context.SecWebSocketVersion) != null && version == _version);
     }
 
     // As client
     private bool validateConnectionResponse (HandshakeResponse response)
     {
+      string accept, version;
       return response.IsWebSocketResponse &&
-             response.Headers.Contains ("Sec-WebSocket-Accept", createResponseKey ()) &&
-             (!response.Headers.Contains ("Sec-WebSocket-Version") ||
-               response.Headers.Contains ("Sec-WebSocket-Version", _version));
+             ((accept = response.Headers ["Sec-WebSocket-Accept"]) != null && accept == createResponseKey ()) &&
+             ((version = response.Headers ["Sec-WebSocket-Version"]) == null || version == _version);
     }
 
     // As server
