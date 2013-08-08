@@ -71,9 +71,11 @@ namespace WebSocketSharp
                               _certValidationCallback;
     private bool              _client;
     private Action            _closeContext;
-    private CookieCollection  _cookies;
     private CompressionMethod _compression;
     private WebSocketContext  _context;
+    private CookieCollection  _cookies;
+    private Func<CookieCollection, CookieCollection, bool>
+                              _cookiesValidation;
     private WsCredential      _credentials;
     private string            _extensions;
     private AutoResetEvent    _exitReceiving;
@@ -222,9 +224,13 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
-    internal CookieCollection CookieCollection {
+    internal Func<CookieCollection, CookieCollection, bool> CookiesValidation {
       get {
-        return _cookies;
+        return _cookiesValidation;
+      }
+
+      set {
+        _cookiesValidation = value;
       }
     }
 
@@ -1264,7 +1270,8 @@ namespace WebSocketSharp
       return context.IsWebSocketRequest &&
              validateHostHeader (context.Host) &&
              !context.SecWebSocketKey.IsNullOrEmpty () &&
-             ((version = context.SecWebSocketVersion) != null && version == _version);
+             ((version = context.SecWebSocketVersion) != null && version == _version) &&
+             validateCookies (context.CookieCollection, _cookies);
     }
 
     // As client
@@ -1274,6 +1281,14 @@ namespace WebSocketSharp
       return response.IsWebSocketResponse &&
              ((accept = response.Headers ["Sec-WebSocket-Accept"]) != null && accept == createResponseKey ()) &&
              ((version = response.Headers ["Sec-WebSocket-Version"]) == null || version == _version);
+    }
+
+    // As server
+    private bool validateCookies (CookieCollection request, CookieCollection response)
+    {
+      return _cookiesValidation != null
+             ? _cookiesValidation (request, response)
+             : true;
     }
 
     // As server

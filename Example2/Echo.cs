@@ -3,24 +3,24 @@ using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 
-namespace Example2 {
-
+namespace Example2
+{
   public class Echo : WebSocketService
   {
-    protected override void OnMessage(MessageEventArgs e)
+    protected override void OnMessage (MessageEventArgs e)
     {
-      var msg = QueryString.Contains("name")
-              ? String.Format("'{0}' returns to {1}", e.Data, QueryString["name"])
+      var msg = QueryString.Contains ("name")
+              ? String.Format ("Returns '{0}' to {1}", e.Data, QueryString ["name"])
               : e.Data;
-      Send(msg);
+      Send (msg);
     }
 
-    protected override bool ProcessCookies(CookieCollection request, CookieCollection response)
+    protected override bool ValidateCookies (CookieCollection request, CookieCollection response)
     {
       foreach (Cookie cookie in request)
       {
         cookie.Expired = true;
-        response.Add(cookie);
+        response.Add (cookie);
       }
 
       return true;
