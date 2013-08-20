@@ -588,7 +588,7 @@ namespace WebSocketSharp
       if (data.Length > 125)
       {
         var msg = "The payload length of a Close frame must be 125 bytes or less.";
-        _logger.Error (msg);
+        _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
         error (msg);
 
         return;
@@ -1378,8 +1378,8 @@ namespace WebSocketSharp
     {
       if (!code.IsCloseStatusCode ())
       {
-        var msg = String.Format ("Invalid close status code: {0}", code);
-        _logger.Error (msg);
+        var msg = "Invalid close status code.";
+        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
         error (msg);
 
         return;

@@ -29,34 +29,56 @@
 using System;
 using System.Collections.Generic;
 
-namespace WebSocketSharp.Server {
-
-  internal class ServiceHostManager {
-  
+namespace WebSocketSharp.Server
+{
+  internal class ServiceHostManager
+  {
     #region Private Fields
 
-    private bool                             _keepClean;
-    private Dictionary<string, IServiceHost> _svcHosts;
+    private volatile bool                    _keepClean;
+    private Logger                           _logger;
+    private Dictionary<string, IServiceHost> _serviceHosts;
+    private object                           _sync;
 
     #endregion
 
     #region Public Constructors
 
-    public ServiceHostManager()
+    public ServiceHostManager ()
+      : this (new Logger ())
     {
+    }
+
+    public ServiceHostManager (Logger logger)
+    {
+      _logger = logger;
       _keepClean = true;
-      _svcHosts = new Dictionary<string, IServiceHost>();
+      _serviceHosts = new Dictionary<string, IServiceHost> ();
+      _sync = new object ();
     }
 
     #endregion
 
     #region Public Properties
 
+    public int ConnectionCount {
+      get {
+        var count = 0;
+        foreach (var host in ServiceHosts)
+          count += host.ConnectionCount;
+
+        return count;
+      }
+    }
+
     public int Count {
       get {
-        return _svcHosts.Count;
+        lock (_sync)
+        {
+          return _serviceHosts.Count;
+        }
       }
-    } 
+    }
 
     public bool KeepClean {
       get {
@@ -64,24 +86,45 @@ namespace WebSocketSharp.Server {
       }
 
       set {
-        if (_keepClean ^ value)
+        lock (_sync)
         {
-          _keepClean = value;
-          foreach (var svcHost in _svcHosts.Values)
-            svcHost.KeepClean = value;
+          if (_keepClean ^ value)
+          {
+            _keepClean = value;
+            foreach (var host in _serviceHosts.Values)
+              host.KeepClean = value;
+          }
         }
       }
     }
 
     public IEnumerable<string> Paths {
       get {
-        return _svcHosts.Keys;
+        lock (_sync)
+        {
+          return _serviceHosts.Keys;
+        }
       }
     }
 
     public IEnumerable<IServiceHost> ServiceHosts {
       get {
-        return _svcHosts.Values;
+        lock (_sync)
+        {
+          return _serviceHosts.Values;
+        }
+      }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private Dictionary<string, IServiceHost> copy ()
+    {
+      lock (_sync)
+      {
+        return new Dictionary<string, IServiceHost> (_serviceHosts);
       }
     }
 
@@ -89,28 +132,173 @@ namespace WebSocketSharp.Server {
 
     #region Public Methods
 
-    public void Add(string absPath, IServiceHost svcHost)
+    public void Add (string servicePath, IServiceHost serviceHost)
     {
-      _svcHosts.Add(absPath.UrlDecode(), svcHost);
+      lock (_sync)
+      {
+        IServiceHost host;
+        if (_serviceHosts.TryGetValue (servicePath, out host))
+        {
+          _logger.Error (
+            "The WebSocket service host with the specified path found.\npath: " + servicePath);
+          return;
+        }
+
+        _serviceHosts.Add (servicePath.UrlDecode (), serviceHost);
+      }
     }
 
-    public void Broadcast(string data)
+    public void Broadcast (byte [] data)
     {
-      foreach (var svcHost in _svcHosts.Values)
-        svcHost.Broadcast(data);
+      foreach (var host in ServiceHosts)
+        host.Broadcast (data);
     }
 
-    public void Stop()
+    public void Broadcast (string data)
     {
-      foreach (var svcHost in _svcHosts.Values)
-        svcHost.Stop();
-
-      _svcHosts.Clear();
+      foreach (var host in ServiceHosts)
+        host.Broadcast (data);
     }
 
-    public bool TryGetServiceHost(string absPath, out IServiceHost svcHost)
+    public bool BroadcastTo (string servicePath, byte [] data)
     {
-      return _svcHosts.TryGetValue(absPath, out svcHost);
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+      {
+        host.Broadcast (data);
+        return true;
+      }
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return false;
+    }
+
+    public bool BroadcastTo (string servicePath, string data)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+      {
+        host.Broadcast (data);
+        return true;
+      }
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return false;
+    }
+
+    public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
+    {
+      var result = new Dictionary<string, Dictionary<string, bool>> ();
+      foreach (var service in copy ())
+        result.Add (service.Key, service.Value.Broadping (message));
+
+      return result;
+    }
+
+    public Dictionary<string, bool> BroadpingTo (string servicePath, string message)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        return host.Broadping (message);
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return null;
+    }
+
+    public int GetConnectionCount (string servicePath)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        return host.ConnectionCount;
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return -1;
+    }
+
+    public bool PingTo (string servicePath, string id, string message)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        return host.PingTo (id, message);
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return false;
+    }
+
+    public bool Remove (string servicePath)
+    {
+      IServiceHost host;
+      lock (_sync)
+      {
+        if (!_serviceHosts.TryGetValue (servicePath, out host))
+        {
+          _logger.Error (
+            "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+          return false;
+        }
+
+        _serviceHosts.Remove (servicePath);
+      }
+
+      host.Stop ((ushort) CloseStatusCode.AWAY, String.Empty);
+      return true;
+    }
+
+    public bool SendTo (string servicePath, string id, byte [] data)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        return host.SendTo (id, data);
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return false;
+    }
+
+    public bool SendTo (string servicePath, string id, string data)
+    {
+      IServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        return host.SendTo (id, data);
+
+      _logger.Error (
+        "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+      return false;
+    }
+
+    public void Stop ()
+    {
+      lock (_sync)
+      {
+        foreach (var host in _serviceHosts.Values)
+          host.Stop ();
+
+        _serviceHosts.Clear ();
+      }
+    }
+
+    public void Stop (ushort code, string reason)
+    {
+      lock (_sync)
+      {
+        foreach (var host in _serviceHosts.Values)
+          host.Stop (code, reason);
+
+        _serviceHosts.Clear ();
+      }
+    }
+
+    public bool TryGetServiceHost (string servicePath, out IServiceHost serviceHost)
+    {
+      lock (_sync)
+      {
+        return _serviceHosts.TryGetValue (servicePath, out serviceHost);
+      }
     }
 
     #endregion
