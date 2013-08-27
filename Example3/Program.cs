@@ -1,5 +1,6 @@
 using System;
 using System.Configuration;
+using System.Security.Cryptography.X509Certificates;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -13,10 +14,14 @@ namespace Example3
     public static void Main (string [] args)
     {
       _httpsv = new HttpServer (4649);
+      //_httpsv = new HttpServer (4649, true);
       #if DEBUG
       _httpsv.Log.Level = LogLevel.TRACE;
       #endif
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
+      //var certFile = ConfigurationManager.AppSettings ["ServerCertFile"];
+      //var password = ConfigurationManager.AppSettings ["CertFilePassword"];
+      //_httpsv.Certificate = new X509Certificate2 (certFile, password);
       //_httpsv.KeepClean = false;
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
@@ -32,12 +37,16 @@ namespace Example3
       };
 
       _httpsv.Start ();
-      Console.WriteLine ("HTTP Server listening on port: {0} service path:", _httpsv.Port);
-      foreach (var path in _httpsv.ServicePaths)
-        Console.WriteLine ("  {0}", path);
-      Console.WriteLine ();
+      if (_httpsv.IsListening)
+      {
+        Console.WriteLine ("HTTP Server listening on port: {0} service path:", _httpsv.Port);
+        foreach (var path in _httpsv.ServicePaths)
+          Console.WriteLine ("  {0}", path);
 
-      Console.WriteLine ("Press enter key to stop the server...");
+        Console.WriteLine ();
+      }
+
+      Console.WriteLine ("Press Enter key to stop the server...");
       Console.ReadLine ();
 
       _httpsv.Stop ();       

@@ -298,6 +298,11 @@ namespace WebSocketSharp
       return value.StartsWith ("permessage-");
     }
 
+    internal static bool IsPortNumber (this int value)
+    {
+      return value > 0 && value < 65536;
+    }
+
     internal static bool IsText (this string value)
     {
       int len = value.Length;

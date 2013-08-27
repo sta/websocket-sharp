@@ -7,7 +7,7 @@
 //	Gonzalo Paniagua Javier (gonzalo@novell.com)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
-// Copyright (c) 2012-2013 sta.blockhead (sta.blockhead@gmail.com)
+// Copyright (c) 2012-2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -41,10 +41,10 @@ using System.Text;
 using System.Threading;
 using WebSocketSharp.Net.Security;
 
-namespace WebSocketSharp.Net {
-
-	internal sealed class HttpConnection {
-
+namespace WebSocketSharp.Net
+{
+	internal sealed class HttpConnection
+	{
 		#region Enums
 
 		enum InputState {
@@ -76,7 +76,6 @@ namespace WebSocketSharp.Net {
 		private EndPointListener    _epListener;
 		private InputState          _inputState;
 		private RequestStream       _inputStream;
-		private AsymmetricAlgorithm _key;
 		private HttpListener        _lastListener;
 		private LineState           _lineState;
 		private ResponseStream      _outputStream;
@@ -95,21 +94,23 @@ namespace WebSocketSharp.Net {
 		#region Public Constructors
 
 		public HttpConnection (
-			Socket              socket,
-			EndPointListener    listener,
-			bool                secure,
-			X509Certificate2    cert,
-			AsymmetricAlgorithm key)
+			Socket socket,
+			EndPointListener listener,
+			bool secure,
+			X509Certificate2 cert
+		)
 		{
 			_socket = socket;
 			_epListener = listener;
 			_secure = secure;
-			_key = key;
 
 			var netStream = new NetworkStream (socket, false);
-			if (!secure) {
+			if (!secure)
+			{
 				_stream = netStream;
-			} else {
+			}
+			else
+			{
 				var sslStream = new SslStream (netStream, false);
 				sslStream.AuthenticateAsServer (cert);
 				_stream = sslStream;
@@ -180,8 +181,10 @@ namespace WebSocketSharp.Net {
 
 			try {
 				_socket.Close ();
-			} catch {
-			} finally {
+			}
+			catch {
+			}
+			finally {
 				_socket = null;
 			}
 
@@ -201,11 +204,6 @@ namespace WebSocketSharp.Net {
 			_prefix = null;
 			_requestBuffer = new MemoryStream ();
 			_timeout = 90000; // 90k ms for first request, 15k ms from then on.
-		}
-
-		private AsymmetricAlgorithm OnPVKSelection (X509Certificate certificate, string targetHost)
-		{
-			return _key;
 		}
 
 		private static void OnRead (IAsyncResult asyncResult)

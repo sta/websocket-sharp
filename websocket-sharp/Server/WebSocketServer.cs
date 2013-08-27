@@ -246,7 +246,7 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds the specified typed WebSocket service.
+    /// Adds the specified typed WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.

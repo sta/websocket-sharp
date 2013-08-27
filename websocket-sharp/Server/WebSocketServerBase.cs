@@ -350,6 +350,7 @@ namespace WebSocketSharp.Server
         }
         catch (Exception ex)
         {
+          client.Close ();
           _logger.Fatal (ex.Message);
           error ("An exception has occured.");
         }

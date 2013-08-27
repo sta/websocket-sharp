@@ -7,6 +7,7 @@
 //	Oleg Mihailik (mihailik gmail co_m)
 //
 // Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
+// Copyright (c) 2012-2013 sta.blockhead
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -31,156 +32,177 @@
 using System;
 using System.Net;
 
-namespace WebSocketSharp.Net {
-
-	sealed class ListenerPrefix {
-
+namespace WebSocketSharp.Net
+{
+	internal sealed class ListenerPrefix
+	{
 		#region Private Fields
 
-		IPAddress [] addresses;
-		string       host;
-		string       original;
-		string       path;
-		ushort       port;
-		bool         secure;
+		IPAddress [] _addresses;
+		string       _host;
+		string       _original;
+		string       _path;
+		ushort       _port;
+		bool         _secure;
 
 		#endregion
 
-		#region Public Field
+		#region Public Fields
 
 		public HttpListener Listener;
 
 		#endregion
 
-		#region Constructor
+		#region Public Constructors
 
-		// Must be called after calling ListenerPrefix.CheckUri.
-		public ListenerPrefix (string prefix)
+		// Must be called after calling ListenerPrefix.CheckUriPrefix.
+		public ListenerPrefix (string uriPrefix)
 		{
-			original = prefix;
-			Parse (prefix);
+			_original = uriPrefix;
+			parse (uriPrefix);
 		}
 
 		#endregion
 
-		#region Properties
+		#region Public Properties
 
 		public IPAddress [] Addresses {
-			get { return addresses; }
-			set { addresses = value; }
+			get {
+				return _addresses;
+			}
+
+			set {
+				_addresses = value;
+			}
 		}
 
 		public string Host {
-			get { return host; }
-		}
-
-		public int Port {
-			get { return (int) port; }
+			get {
+				return _host;
+			}
 		}
 
 		public string Path {
-			get { return path; }
+			get {
+				return _path;
+			}
+		}
+
+		public int Port {
+			get {
+				return (int) _port;
+			}
 		}
 
 		public bool Secure {
-			get { return secure; }
+			get {
+				return _secure;
+			}
 		}
 
 		#endregion
 
-		#region Private Method
+		#region Private Methods
 
-		void Parse (string uri)
+		private void parse (string uriPrefix)
 		{
-			int default_port = (uri.StartsWith ("http://")) ? 80 : 443;
+			int default_port = uriPrefix.StartsWith ("http://") ? 80 : 443;
 			if (default_port == 443)
-				secure = true;
+				_secure = true;
 
-			int length = uri.Length;
-			int start_host = uri.IndexOf (':') + 3;
-			int colon = uri.IndexOf (':', start_host, length - start_host);
+			int length = uriPrefix.Length;
+			int start_host = uriPrefix.IndexOf (':') + 3;
+			int colon = uriPrefix.IndexOf (':', start_host, length - start_host);
 			int root;
-			if (colon > 0) {
-				host = uri.Substring (start_host, colon - start_host);
-				root = uri.IndexOf ('/', colon, length - colon);
-				port = (ushort) Int32.Parse (uri.Substring (colon + 1, root - colon - 1));
-				path = uri.Substring (root);
-			} else {
-				root = uri.IndexOf ('/', start_host, length - start_host);
-				host = uri.Substring (start_host, root - start_host);
-				path = uri.Substring (root);
-				port = (ushort) default_port;
+			if (colon > 0)
+			{
+				root = uriPrefix.IndexOf ('/', colon, length - colon);
+				_host = uriPrefix.Substring (start_host, colon - start_host);
+				_port = (ushort) Int32.Parse (uriPrefix.Substring (colon + 1, root - colon - 1));
+				_path = uriPrefix.Substring (root);
+			}
+			else
+			{
+				root = uriPrefix.IndexOf ('/', start_host, length - start_host);
+				_host = uriPrefix.Substring (start_host, root - start_host);
+				_port = (ushort) default_port;
+				_path = uriPrefix.Substring (root);
 			}
 
-			if (path.Length != 1)
-				path = path.Substring (0, path.Length - 1);
+			if (_path.Length != 1)
+				_path = _path.Substring (0, _path.Length - 1);
 		}
 
 		#endregion
 
 		#region public Methods
 
-		public static void CheckUri (string uri)
+		public static void CheckUriPrefix (string uriPrefix)
 		{
-			if (uri == null)
-				throw new ArgumentNullException ("uri");
+			if (uriPrefix == null)
+				throw new ArgumentNullException ("uriPrefix");
 
-			int default_port = (uri.StartsWith ("http://")) ? 80 : -1;
+			int default_port = uriPrefix.StartsWith ("http://") ? 80 : -1;
 			if (default_port == -1)
-				default_port = (uri.StartsWith ("https://")) ? 443 : -1;
+				default_port = uriPrefix.StartsWith ("https://") ? 443 : -1;
+
 			if (default_port == -1)
 				throw new ArgumentException ("Only 'http' and 'https' schemes are supported.");
 
-			int length = uri.Length;
-			int start_host = uri.IndexOf (':') + 3;
+			int length = uriPrefix.Length;
+			int start_host = uriPrefix.IndexOf (':') + 3;
 			if (start_host >= length)
 				throw new ArgumentException ("No host specified.");
 
-			int colon = uri.IndexOf (':', start_host, length - start_host);
+			int colon = uriPrefix.IndexOf (':', start_host, length - start_host);
 			if (start_host == colon)
 				throw new ArgumentException ("No host specified.");
 
 			int root;
-			if (colon > 0) {
-				root = uri.IndexOf ('/', colon, length - colon);
+			if (colon > 0)
+			{
+				root = uriPrefix.IndexOf ('/', colon, length - colon);
 				if (root == -1)
 					throw new ArgumentException ("No path specified.");
 
 				try {
-					int p = Int32.Parse (uri.Substring (colon + 1, root - colon - 1));
-					if (p <= 0 || p >= 65536)
+					int port = Int32.Parse (uriPrefix.Substring (colon + 1, root - colon - 1));
+					if (port <= 0 || port >= 65536)
 						throw new Exception ();
-				} catch {
+				}
+				catch {
 					throw new ArgumentException ("Invalid port.");
 				}
-			} else {
-				root = uri.IndexOf ('/', start_host, length - start_host);
+			}
+			else
+			{
+				root = uriPrefix.IndexOf ('/', start_host, length - start_host);
 				if (root == -1)
 					throw new ArgumentException ("No path specified.");
 			}
 
-			if (uri [uri.Length - 1] != '/')
-				throw new ArgumentException ("The prefix must end with '/'.");
+			if (uriPrefix [uriPrefix.Length - 1] != '/')
+				throw new ArgumentException ("The URI prefix must end with '/'.");
 		}
 
 		// Equals and GetHashCode are required to detect duplicates in HttpListenerPrefixCollection.
-		public override bool Equals (object o)
+		public override bool Equals (object obj)
 		{
-			var other = o as ListenerPrefix;
+			var other = obj as ListenerPrefix;
 			if (other == null)
 				return false;
 
-			return (original == other.original);
+			return _original == other._original;
 		}
 
 		public override int GetHashCode ()
 		{
-			return original.GetHashCode ();
+			return _original.GetHashCode ();
 		}
 
 		public override string ToString ()
 		{
-			return original;
+			return _original;
 		}
 
 		#endregion

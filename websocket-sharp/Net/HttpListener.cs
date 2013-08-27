@@ -32,6 +32,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 
 // TODO: logging
@@ -45,9 +46,11 @@ namespace WebSocketSharp.Net {
 		#region Private Fields
 
 		AuthenticationSchemes                                auth_schemes;
-		AuthenticationSchemeSelector                         auth_selector; 
+		AuthenticationSchemeSelector                         auth_selector;
+		string                                               cert_folder_path;
 		Dictionary<HttpConnection, HttpConnection>           connections;
 		List<HttpListenerContext>                            ctx_queue;
+		X509Certificate2                                     default_cert;
 		bool                                                 disposed;
 		bool                                                 ignore_write_exceptions;
 		bool                                                 listening;
@@ -118,6 +121,59 @@ namespace WebSocketSharp.Net {
 			set {
 				CheckDisposed ();
 				auth_selector = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the path to the folder stored the certificate files used to authenticate
+		/// the server on the secure connection.
+		/// </summary>
+		/// <remarks>
+		/// This property represents the path to the folder stored the certificate files associated with
+		/// the port number of each added URI prefix. A set of the certificate files is a pair of the
+		/// <c>'port number'.cer</c> (DER) and <c>'port number'.key</c> (DER, RSA Private Key).
+		/// </remarks>
+		/// <value>
+		/// A <see cref="string"/> that contains the path to the certificate folder. The default value is
+		/// the result of <c>Environment.GetFolderPath</c> (<see cref="Environment.SpecialFolder.ApplicationData"/>).
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
+		public string CertificateFolderPath {
+			get {
+				CheckDisposed ();
+				if (cert_folder_path.IsNullOrEmpty ())
+					cert_folder_path = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+
+				return cert_folder_path;
+			}
+
+			set {
+				CheckDisposed ();
+				cert_folder_path = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the default certificate used to authenticate the server on the secure connection.
+		/// </summary>
+		/// <value>
+		/// A <see cref="X509Certificate2"/> used to authenticate the server if the certificate associated with
+		/// the port number of each added URI prefix is not found in the <see cref="CertificateFolderPath"/>.
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This object has been closed.
+		/// </exception>
+		public X509Certificate2 DefaultCertificate {
+			get {
+				CheckDisposed ();
+				return default_cert;
+			}
+
+			set {
+				CheckDisposed ();
+				default_cert = value;
 			}
 		}
 

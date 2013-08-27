@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using WebSocketSharp.Net;
 
@@ -51,7 +52,8 @@ namespace WebSocketSharp.Server
     private int                _port;
     private Thread             _receiveRequestThread;
     private string             _rootPath;
-    private ServiceHostManager _svcHosts;
+    private bool               _secure;
+    private ServiceHostManager _serviceHosts;
     private bool               _windows;
 
     #endregion
@@ -74,15 +76,76 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
     public HttpServer (int port)
+      : this (port, port == 443 ? true : false)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for incoming requests
+    /// on the specified <paramref name="port"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <param name="port">
+    /// An <see cref="int"/> that contains a port number. 
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not.
+    /// (<c>true</c> indicates providing a secure connection.)
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </exception>
+    public HttpServer (int port, bool secure)
+    {
+      if (!port.IsPortNumber ())
+        throw new ArgumentOutOfRangeException ("port", "Invalid port number: " + port);
+
+      if (port == 80 && secure || port == 443 && !secure)
+        throw new ArgumentException (String.Format (
+          "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+
       _port = port;
+      _secure = secure;
       init ();
     }
 
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the certificate used to authenticate the server on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="X509Certificate2"/> used to authenticate the server.
+    /// </value>
+    public X509Certificate2 Certificate {
+      get {
+        return _listener.DefaultCertificate;
+      }
+
+      set {
+        if (_listening)
+        {
+          var msg = "The value of Certificate property cannot be changed because the server has already been started.";
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
+        if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
+          _logger.Warn ("Server certificate associated with the port number already exists.");
+
+        _listener.DefaultCertificate = value;
+      }
+    }
 
     /// <summary>
     /// Gets a value indicating whether the server has been started.
@@ -97,6 +160,18 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets a value indicating whether the server provides secure connection.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server provides secure connection; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsSecure {
+      get {
+        return _secure;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
     /// instances periodically.
     /// </summary>
@@ -106,11 +181,11 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _svcHosts.KeepClean;
+        return _serviceHosts.KeepClean;
       }
 
       set {
-        _svcHosts.KeepClean = value;
+        _serviceHosts.KeepClean = value;
       }
     }
 
@@ -152,12 +227,22 @@ namespace WebSocketSharp.Server
     /// </value>
     public string RootPath {
       get {
-        return _rootPath;
+        return _rootPath.IsNullOrEmpty ()
+               ? (_rootPath = "./Public")
+               : _rootPath;
       }
 
       set {
-        if (!_listening)
-          _rootPath = value;
+        if (_listening)
+        {
+          var msg = "The value of RootPath property cannot be changed because the server has already been started.";
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
+        _rootPath = value;
       }
     }
 
@@ -169,7 +254,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ServicePaths {
       get {
-        return _svcHosts.Paths;
+        return _serviceHosts.Paths;
       }
     }
 
@@ -241,15 +326,14 @@ namespace WebSocketSharp.Server
       _listener = new HttpListener ();
       _listening = false;
       _logger = new Logger ();
-      _rootPath = "./Public";
-      _svcHosts = new ServiceHostManager ();
+      _serviceHosts = new ServiceHostManager (_logger);
 
       _windows = false;
       var os = Environment.OSVersion;
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
         _windows = true;
 
-      var prefix = String.Format ("http{0}://*:{1}/", _port == 443 ? "s" : "", _port);
+      var prefix = String.Format ("http{0}://*:{1}/", _secure ? "s" : "", _port);
       _listener.Prefixes.Add (prefix);
     }
 
@@ -319,15 +403,15 @@ namespace WebSocketSharp.Server
       var wsContext = context.AcceptWebSocket ();
       var path = wsContext.Path.UrlDecode ();
 
-      IServiceHost svcHost;
-      if (!_svcHosts.TryGetServiceHost (path, out svcHost))
+      IServiceHost host;
+      if (!_serviceHosts.TryGetServiceHost (path, out host))
       {
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
         return false;
       }
 
       wsContext.WebSocket.Log = _logger;
-      svcHost.BindWebSocket (wsContext);
+      host.BindWebSocket (wsContext);
 
       return true;
     }
@@ -385,24 +469,49 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
+    private void stop (ushort code, string reason, bool ignoreArgs)
+    {
+      if (!ignoreArgs)
+      {
+        var data = code.Append (reason);
+        if (data.Length > 125)
+        {
+          var msg = "The payload length of a Close frame must be 125 bytes or less.";
+          _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
+          error (msg);
+
+          return;
+        }
+      }
+
+      _listener.Close ();
+      _receiveRequestThread.Join (5 * 1000);
+      if (ignoreArgs)
+        _serviceHosts.Stop ();
+      else
+        _serviceHosts.Stop (code, reason);
+
+      _listening = false;
+    }
+
     #endregion
 
     #region Public Methods
 
     /// <summary>
-    /// Adds the specified typed WebSocket service.
+    /// Adds the specified typed WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
-    /// <param name="absPath">
-    /// A <see cref="string"/> that contains an absolute path associated with the WebSocket service.
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
     /// </param>
     /// <typeparam name="T">
     /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
     /// </typeparam>
-    public void AddWebSocketService<T> (string absPath)
+    public void AddWebSocketService<T> (string servicePath)
       where T : WebSocketService, new ()
     {
       string msg;
-      if (!absPath.IsValidAbsolutePath (out msg))
+      if (!servicePath.IsValidAbsolutePath (out msg))
       {
         _logger.Error (msg);
         error (msg);
@@ -410,12 +519,12 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var svcHost = new WebSocketServiceHost<T> (_logger);
-      svcHost.Uri = absPath.ToUri ();
+      var host = new WebSocketServiceHost<T> (_logger);
+      host.Uri = servicePath.ToUri ();
       if (!KeepClean)
-        svcHost.KeepClean = false;
+        host.KeepClean = false;
 
-      _svcHosts.Add (absPath, svcHost);
+      _serviceHosts.Add (servicePath, host);
     }
 
     /// <summary>
@@ -430,7 +539,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public byte[] GetFile (string path)
     {
-      var filePath = _rootPath + path;
+      var filePath = RootPath + path;
       if (_windows)
         filePath = filePath.Replace ("/", "\\");
 
@@ -440,12 +549,47 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Removes the WebSocket service with the specified <paramref name="servicePath"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service is successfully found and removed; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public bool RemoveWebSocketService (string servicePath)
+    {
+      if (servicePath.IsNullOrEmpty ())
+      {
+        var msg = "'servicePath' must not be null or empty.";
+        _logger.Error (msg);
+        error (msg);
+
+        return false;
+      }
+
+      return _serviceHosts.Remove (servicePath);
+    }
+
+    /// <summary>
     /// Starts to receive the HTTP requests.
     /// </summary>
     public void Start ()
     {
       if (_listening)
         return;
+
+      if (_secure &&
+          !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
+          Certificate == null
+      )
+      {
+        var msg = "Secure connection requires a server certificate.";
+        _logger.Error (msg);
+        error (msg);
+
+        return;
+      }
 
       _listener.Start ();
       startReceiveRequestThread ();
@@ -460,10 +604,52 @@ namespace WebSocketSharp.Server
       if (!_listening)
         return;
 
-      _listener.Close ();
-      _receiveRequestThread.Join (5 * 1000);
-      _svcHosts.Stop ();
-      _listening = false;
+      stop (0, null, true);
+    }
+
+    /// <summary>
+    /// Stops receiving the HTTP requests with the specified <see cref="ushort"/> and
+    /// <see cref="string"/> used to stop the WebSocket services.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for stop.
+    /// </param>
+    public void Stop (ushort code, string reason)
+    {
+      if (!_listening)
+        return;
+
+      if (!code.IsCloseStatusCode ())
+      {
+        var msg = "Invalid status code for stop.";
+        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
+        error (msg);
+
+        return;
+      }
+
+      stop (code, reason, false);
+    }
+
+    /// <summary>
+    /// Stops receiving the HTTP requests with the specified <see cref="CloseStatusCode"/>
+    /// and <see cref="string"/> used to stop the WebSocket services.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for stop.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for stop.
+    /// </param>
+    public void Stop (CloseStatusCode code, string reason)
+    {
+      if (!_listening)
+        return;
+
+      stop ((ushort) code, reason, false);
     }
 
     #endregion
