@@ -46,15 +46,15 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private HttpListener       _listener;
-    private bool               _listening;
-    private Logger             _logger;
-    private int                _port;
-    private Thread             _receiveRequestThread;
-    private string             _rootPath;
-    private bool               _secure;
-    private ServiceHostManager _serviceHosts;
-    private bool               _windows;
+    private HttpListener                _listener;
+    private bool                        _listening;
+    private Logger                      _logger;
+    private int                         _port;
+    private Thread                      _receiveRequestThread;
+    private string                      _rootPath;
+    private bool                        _secure;
+    private WebSocketServiceHostManager _serviceHosts;
+    private bool                        _windows;
 
     #endregion
 
@@ -133,10 +133,7 @@ namespace WebSocketSharp.Server
       set {
         if (_listening)
         {
-          var msg = "The value of Certificate property cannot be changed because the server has already been started.";
-          _logger.Error (msg);
-          error (msg);
-
+          _logger.Error ("The value of Certificate property cannot be changed because the server has already been started.");
           return;
         }
 
@@ -235,10 +232,7 @@ namespace WebSocketSharp.Server
       set {
         if (_listening)
         {
-          var msg = "The value of RootPath property cannot be changed because the server has already been started.";
-          _logger.Error (msg);
-          error (msg);
-
+          _logger.Error ("The value of RootPath property cannot be changed because the server has already been started.");
           return;
         }
 
@@ -247,14 +241,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of paths associated with the every WebSocket services that the server provides.
+    /// Gets the functions for the WebSocket services that the server provides.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
+    /// A <see cref="WebSocketServiceHostManager"/> that manages the WebSocket services.
     /// </value>
-    public IEnumerable<string> ServicePaths {
+    public WebSocketServiceHostManager WebSocketServices {
       get {
-        return _serviceHosts.Paths;
+        return _serviceHosts;
       }
     }
 
@@ -271,11 +265,6 @@ namespace WebSocketSharp.Server
     /// Occurs when the server receives an HTTP DELETE request.
     /// </summary>
     public event EventHandler<HttpRequestEventArgs> OnDelete;
-
-    /// <summary>
-    /// Occurs when the server gets an error.
-    /// </summary>
-    public event EventHandler<ErrorEventArgs> OnError;
 
     /// <summary>
     /// Occurs when the server receives an HTTP GET request.
@@ -316,17 +305,12 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private void error (string message)
-    {
-      OnError.Emit (this, new ErrorEventArgs (message));
-    }
-
     private void init ()
     {
       _listener = new HttpListener ();
       _listening = false;
       _logger = new Logger ();
-      _serviceHosts = new ServiceHostManager (_logger);
+      _serviceHosts = new WebSocketServiceHostManager (_logger);
 
       _windows = false;
       var os = Environment.OSVersion;
@@ -435,7 +419,6 @@ namespace WebSocketSharp.Server
         }
         catch (Exception ex) {
           _logger.Fatal (ex.Message);
-          error ("An exception has occured.");
         }
       };
 
@@ -455,8 +438,6 @@ namespace WebSocketSharp.Server
         }
         catch (Exception ex) {
           _logger.Fatal (ex.Message);
-          error ("An exception has occured.");
-
           break;
         }
       }
@@ -476,10 +457,8 @@ namespace WebSocketSharp.Server
         var data = code.Append (reason);
         if (data.Length > 125)
         {
-          var msg = "The payload length of a Close frame must be 125 bytes or less.";
-          _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
-          error (msg);
-
+          _logger.Error (
+            String.Format ("The payload length of a Close frame must be 125 bytes or less.\ncode: {0}\nreason: {1}", code, reason));
           return;
         }
       }
@@ -514,8 +493,6 @@ namespace WebSocketSharp.Server
       if (!servicePath.IsValidAbsolutePath (out msg))
       {
         _logger.Error (msg);
-        error (msg);
-
         return;
       }
 
@@ -561,10 +538,7 @@ namespace WebSocketSharp.Server
     {
       if (servicePath.IsNullOrEmpty ())
       {
-        var msg = "'servicePath' must not be null or empty.";
-        _logger.Error (msg);
-        error (msg);
-
+        _logger.Error ("'servicePath' must not be null or empty.");
         return false;
       }
 
@@ -584,10 +558,7 @@ namespace WebSocketSharp.Server
           Certificate == null
       )
       {
-        var msg = "Secure connection requires a server certificate.";
-        _logger.Error (msg);
-        error (msg);
-
+        _logger.Error ("Secure connection requires a server certificate.");
         return;
       }
 
@@ -624,10 +595,7 @@ namespace WebSocketSharp.Server
 
       if (!code.IsCloseStatusCode ())
       {
-        var msg = "Invalid status code for stop.";
-        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
-        error (msg);
-
+        _logger.Error ("Invalid status code for stop.\ncode: " + code);
         return;
       }
 

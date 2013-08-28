@@ -303,21 +303,7 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Public Events
-
-    /// <summary>
-    /// Occurs when the server gets an error.
-    /// </summary>
-    public event EventHandler<ErrorEventArgs> OnError;
-
-    #endregion
-
     #region Private Methods
-
-    private void error (string message)
-    {
-      OnError.Emit (this, new ErrorEventArgs (message));
-    }
 
     private void init ()
     {
@@ -352,7 +338,6 @@ namespace WebSocketSharp.Server
         {
           client.Close ();
           _logger.Fatal (ex.Message);
-          error ("An exception has occured.");
         }
       };
 
@@ -372,8 +357,6 @@ namespace WebSocketSharp.Server
         }
         catch (Exception ex) {
           _logger.Fatal (ex.Message);
-          error ("An exception has occured.");
-
           break;
         }
       }
@@ -414,20 +397,6 @@ namespace WebSocketSharp.Server
     /// </param>
     protected abstract void AcceptWebSocket (TcpListenerWebSocketContext context);
 
-    /// <summary>
-    /// Occurs the <see cref="WebSocketServerBase.OnError"/> event with the specified <see cref="string"/>.
-    /// </summary>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains an error message.
-    /// </param>
-    protected virtual void Error (string message)
-    {
-      if (message.IsNullOrEmpty ())
-        return;
-
-      error (message);
-    }
-
     #endregion
 
     #region Public Methods
@@ -442,10 +411,7 @@ namespace WebSocketSharp.Server
 
       if (_secure && _cert == null)
       {
-        var msg = "Secure connection requires a server certificate.";
-        _logger.Error (msg);
-        error (msg);
-
+        _logger.Error ("Secure connection requires a server certificate.");
         return;
       }
 

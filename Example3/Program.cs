@@ -31,16 +31,11 @@ namespace Example3
         onGet (e);
       };
 
-      _httpsv.OnError += (sender, e) =>
-      {
-        Console.WriteLine (e.Message);
-      };
-
       _httpsv.Start ();
       if (_httpsv.IsListening)
       {
         Console.WriteLine ("HTTP Server listening on port: {0} service path:", _httpsv.Port);
-        foreach (var path in _httpsv.ServicePaths)
+        foreach (var path in _httpsv.WebSocketServices.ServicePaths)
           Console.WriteLine ("  {0}", path);
 
         Console.WriteLine ();

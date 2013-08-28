@@ -246,10 +246,8 @@ namespace WebSocketSharp.Server
       var data = code.Append (reason);
       if (data.Length > 125)
       {
-        var msg = "The payload length of a Close frame must be 125 bytes or less.";
-        Log.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
-        Error (msg);
-
+        Log.Error (String.Format (
+          "The payload length of a Close frame must be 125 bytes or less.\ncode: {0}\nreason: {1}", code, reason));
         return;
       }
 
@@ -299,10 +297,7 @@ namespace WebSocketSharp.Server
     {
       if (data == null)
       {
-        var msg = "'data' must not be null.";
-        Log.Error (msg);
-        Error (msg);
-
+        Log.Error ("'data' must not be null.");
         return;
       }
 
@@ -319,10 +314,7 @@ namespace WebSocketSharp.Server
     {
       if (data == null)
       {
-        var msg = "'data' must not be null.";
-        Log.Error (msg);
-        Error (msg);
-
+        Log.Error ("'data' must not be null.");
         return;
       }
 
@@ -347,10 +339,7 @@ namespace WebSocketSharp.Server
       var len = Encoding.UTF8.GetBytes (message).Length;
       if (len > 125)
       {
-        var msg = "The payload length of a Ping frame must be 125 bytes or less.";
-        Log.Error (msg);
-        Error (msg);
-
+        Log.Error ("The payload length of a Ping frame must be 125 bytes or less.");
         return null;
       }
 
@@ -379,13 +368,11 @@ namespace WebSocketSharp.Server
                 ? "'id' must not be null or empty."
                 : Encoding.UTF8.GetBytes (message).Length > 125
                   ? "The payload length of a Ping frame must be 125 bytes or less."
-                  : String.Empty;
+                  : null;
 
-      if (msg.Length > 0)
+      if (msg != null)
       {
         Log.Error (msg);
-        Error (msg);
-
         return false;
       }
 
@@ -411,13 +398,11 @@ namespace WebSocketSharp.Server
                 ? "'id' must not be null or empty."
                 : data == null
                   ? "'data' must not be null."
-                  : String.Empty;
+                  : null;
 
-      if (msg.Length > 0)
+      if (msg != null)
       {
         Log.Error (msg);
-        Error (msg);
-
         return false;
       }
 
@@ -443,13 +428,11 @@ namespace WebSocketSharp.Server
                 ? "'id' must not be null or empty."
                 : data == null
                   ? "'data' must not be null."
-                  : String.Empty;
+                  : null;
 
-      if (msg.Length > 0)
+      if (msg != null)
       {
         Log.Error (msg);
-        Error (msg);
-
         return false;
       }
 
@@ -479,10 +462,7 @@ namespace WebSocketSharp.Server
     {
       if (!code.IsCloseStatusCode ())
       {
-        var msg = "Invalid status code for stop.";
-        Log.Error (String.Format ("{0}\ncode: {1}", msg, code));
-        Error (msg);
-
+        Log.Error ("Invalid status code for stop.\ncode: " + code);
         return;
       }
 

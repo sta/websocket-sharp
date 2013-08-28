@@ -112,7 +112,6 @@
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
-    <Compile Include="Server\ServiceHostManager.cs" />
     <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Server\HttpRequestEventArgs.cs" />
     <Compile Include="Net\HttpHeaderType.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="HandshakeBase.cs" />
     <Compile Include="HandshakeRequest.cs" />
     <Compile Include="HandshakeResponse.cs" />
+    <Compile Include="Server\WebSocketServiceHostManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
