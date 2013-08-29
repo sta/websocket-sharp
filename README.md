@@ -204,7 +204,7 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-The `WebSocketServer`, `WebSocketServiceHost<T>` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
+The `WebSocketService`, `WebSocketServiceHost<T>` and `WebSocketServer` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
@@ -272,34 +272,13 @@ If you create a instance of the `WebSocketServer` class without the port number,
 
 #### Step 4 ####
 
-Setting the event.
-
-##### WebSocketServiceHost&lt;T>.OnError Event #####
-
-A `WebSocketServiceHost<T>.OnError` event occurs when the `WebSocketServiceHost<T>` gets an error.
-
-```cs
-wssv.OnError += (sender, e) =>
-{
-  ...
-};
-```
-
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains an error message, so you use it.
-
-##### WebSocketServer.OnError Event #####
-
-Same as the `WebSocketServiceHost<T>.OnError` event.
-
-#### Step 5 ####
-
 Starting the server.
 
 ```cs
 wssv.Start ();
 ```
 
-#### Step 6 ####
+#### Step 5 ####
 
 Stopping the server.
 
