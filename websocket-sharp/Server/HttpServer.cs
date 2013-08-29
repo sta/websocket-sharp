@@ -387,7 +387,7 @@ namespace WebSocketSharp.Server
       var wsContext = context.AcceptWebSocket ();
       var path = wsContext.Path.UrlDecode ();
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!_serviceHosts.TryGetServiceHost (path, out host))
       {
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;

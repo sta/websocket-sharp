@@ -361,12 +361,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <see cref="string"/> to the clients of every
+    /// Sends Pings with the specified <paramref name="message"/> to the clients of every
     /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of IDs and values indicating
-    /// whether each <see cref="WebSocketService"/> instances received a Pong in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the each <see cref="WebSocketService"/> instance received a Pong in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -381,28 +381,30 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <see cref="string"/> to the client of the <see cref="WebSocketService"/>
-    /// instance with the specified ID.
+    /// Sends a Ping with the specified <paramref name="message"/> to the client of
+    /// the <see cref="WebSocketService"/> instance with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance receives a Pong in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/> receives
+    /// a Pong in a time; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
-    /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
-    internal bool PingTo (string id, string message)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// </param>
+    internal bool PingTo (string message, string id)
     {
       WebSocketService service;
-      if (TryGetServiceInstance (id, out service))
-        return service.Ping (message);
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return false;
+      }
 
-      _logger.Error (
-        "The WebSocket service instance with the specified ID not found.\nID: " + id);
-      return false;
+      return service.Ping (message);
     }
 
     internal bool Remove (string id)
@@ -418,27 +420,26 @@ namespace WebSocketSharp.Server
     /// with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/>
-    /// is successfully found; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
-    internal bool SendTo (string id, byte [] data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    internal bool SendTo (byte [] data, string id)
     {
       WebSocketService service;
-      if (TryGetServiceInstance (id, out service))
+      if (!TryGetServiceInstance (id, out service))
       {
-        service.Send (data);
-        return true;
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return false;
       }
 
-      _logger.Error (
-        "The WebSocket service instance with the specified ID not found.\nID: " + id);
-      return false;
+      service.Send (data);
+      return true;
     }
 
     /// <summary>
@@ -446,27 +447,26 @@ namespace WebSocketSharp.Server
     /// with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/>
-    /// is successfully found; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
-    internal bool SendTo (string id, string data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    internal bool SendTo (string data, string id)
     {
       WebSocketService service;
-      if (TryGetServiceInstance (id, out service))
+      if (!TryGetServiceInstance (id, out service))
       {
-        service.Send (data);
-        return true;
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return false;
       }
 
-      _logger.Error (
-        "The WebSocket service instance with the specified ID not found.\nID: " + id);
-      return false;
+      service.Send (data);
+      return true;
     }
 
     internal void Stop ()
@@ -499,10 +499,7 @@ namespace WebSocketSharp.Server
           lock (_sync)
           {
             if (_stopped)
-            {
-              _sweeping = false;
-              return;
-            }
+              break;
 
             WebSocketService service;
             if (_services.TryGetValue (id, out service))

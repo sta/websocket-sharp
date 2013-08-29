@@ -39,10 +39,10 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                    _keepClean;
-    private Logger                           _logger;
-    private Dictionary<string, IServiceHost> _serviceHosts;
-    private object                           _sync;
+    private volatile bool                             _keepClean;
+    private Logger                                    _logger;
+    private Dictionary<string, IWebSocketServiceHost> _serviceHosts;
+    private object                                    _sync;
 
     #endregion
 
@@ -57,7 +57,7 @@ namespace WebSocketSharp.Server
     {
       _logger = logger;
       _keepClean = true;
-      _serviceHosts = new Dictionary<string, IServiceHost> ();
+      _serviceHosts = new Dictionary<string, IWebSocketServiceHost> ();
       _sync = new object ();
     }
 
@@ -133,7 +133,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal IEnumerable<IServiceHost> ServiceHosts {
+    internal IEnumerable<IWebSocketServiceHost> ServiceHosts {
       get {
         lock (_sync)
         {
@@ -146,11 +146,11 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private Dictionary<string, IServiceHost> copy ()
+    private Dictionary<string, IWebSocketServiceHost> copy ()
     {
       lock (_sync)
       {
-        return new Dictionary<string, IServiceHost> (_serviceHosts);
+        return new Dictionary<string, IWebSocketServiceHost> (_serviceHosts);
       }
     }
 
@@ -158,15 +158,15 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Add (string servicePath, IServiceHost serviceHost)
+    internal void Add (string servicePath, IWebSocketServiceHost serviceHost)
     {
       lock (_sync)
       {
-        IServiceHost host;
+        IWebSocketServiceHost host;
         if (_serviceHosts.TryGetValue (servicePath, out host))
         {
           _logger.Error (
-            "The WebSocket service host with the specified path already exists.\npath: " + servicePath);
+            "The WebSocket service with the specified path already exists.\npath: " + servicePath);
           return;
         }
 
@@ -176,13 +176,13 @@ namespace WebSocketSharp.Server
 
     internal bool Remove (string servicePath)
     {
-      IServiceHost host;
+      IWebSocketServiceHost host;
       lock (_sync)
       {
         if (!_serviceHosts.TryGetValue (servicePath, out host))
         {
           _logger.Error (
-            "The WebSocket service host with the specified path not found.\npath: " + servicePath);
+            "The WebSocket service with the specified path not found.\npath: " + servicePath);
           return false;
         }
 
@@ -215,7 +215,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal bool TryGetServiceHost (string servicePath, out IServiceHost serviceHost)
+    internal bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
     {
       lock (_sync)
       {
@@ -290,7 +290,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
@@ -328,7 +328,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
@@ -401,7 +401,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
@@ -429,7 +429,7 @@ namespace WebSocketSharp.Server
         return -1;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
@@ -458,16 +458,11 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string message, string id, string servicePath)
     {
-      if (message == null)
-        message = String.Empty;
-
-      var msg = Encoding.UTF8.GetBytes (message).Length > 125
-              ? "The payload length of a Ping frame must be 125 bytes or less."
-              : id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : servicePath.IsNullOrEmpty ()
-                  ? "'servicePath' must not be null or empty."
-                  : null;
+      var msg = id.IsNullOrEmpty ()
+              ? "'id' must not be null or empty."
+              : servicePath.IsNullOrEmpty ()
+                ? "'servicePath' must not be null or empty."
+                : null;
 
       if (msg != null)
       {
@@ -475,14 +470,14 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
       }
 
-      return host.PingTo (id, message);
+      return host.PingTo (message, id);
     }
 
     /// <summary>
@@ -517,14 +512,14 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
       }
 
-      return host.SendTo (id, data);
+      return host.SendTo (data, id);
     }
 
     /// <summary>
@@ -559,14 +554,14 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!TryGetServiceHost (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
       }
 
-      return host.SendTo (id, data);
+      return host.SendTo (data, id);
     }
 
     #endregion

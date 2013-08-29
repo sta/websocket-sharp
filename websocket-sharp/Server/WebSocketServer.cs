@@ -226,7 +226,7 @@ namespace WebSocketSharp.Server
       var path = context.Path.UrlDecode ();
 
       websocket.Log = Log;
-      IServiceHost host;
+      IWebSocketServiceHost host;
       if (!_serviceHosts.TryGetServiceHost (path, out host))
       {
         websocket.Close (HttpStatusCode.NotImplemented);

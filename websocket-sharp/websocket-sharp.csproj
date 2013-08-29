@@ -100,7 +100,6 @@
     <Compile Include="Net\HttpStatusCode.cs" />
     <Compile Include="Server\WebSocketServerBase.cs" />
     <Compile Include="Net\Security\SslStream.cs" />
-    <Compile Include="Server\IServiceHost.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="CloseStatusCode.cs" />
     <Compile Include="Fin.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="HandshakeRequest.cs" />
     <Compile Include="HandshakeResponse.cs" />
     <Compile Include="Server\WebSocketServiceHostManager.cs" />
+    <Compile Include="Server\IWebSocketServiceHost.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

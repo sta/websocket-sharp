@@ -47,7 +47,7 @@ namespace WebSocketSharp.Server
   /// The type of the WebSocket service that the server provides.
   /// The T must inherit the <see cref="WebSocketService"/> class.
   /// </typeparam>
-  public class WebSocketServiceHost<T> : WebSocketServerBase, IServiceHost
+  public class WebSocketServiceHost<T> : WebSocketServerBase, IWebSocketServiceHost
     where T : WebSocketService, new ()
   {
     #region Private Fields
@@ -267,20 +267,20 @@ namespace WebSocketSharp.Server
     /// </param>
     protected override void AcceptWebSocket (TcpListenerWebSocketContext context)
     {
-      var ws = context.WebSocket;
+      var websocket = context.WebSocket;
       var path = context.Path.UrlDecode ();
 
-      ws.Log = Log;
+      websocket.Log = Log;
       if (path != Uri.GetAbsolutePath ().UrlDecode ())
       {
-        ws.Close (HttpStatusCode.NotImplemented);
+        websocket.Close (HttpStatusCode.NotImplemented);
         return;
       }
 
       if (Uri.IsAbsoluteUri)
-        ws.Url = Uri;
+        websocket.Url = Uri;
 
-      ((IServiceHost) this).BindWebSocket (context);
+      ((IWebSocketServiceHost) this).BindWebSocket (context);
     }
 
     #endregion
@@ -322,11 +322,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <see cref="string"/> to all clients.
+    /// Sends Pings with the specified <paramref name="message"/> to all clients.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of session IDs and values
-    /// indicating whether the service host received the Pongs from each clients in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the service host received the Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -347,58 +347,48 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <see cref="string"/> to the client associated with
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
     /// the specified ID.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the service host receives a Pong from the client in a time; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
-    /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
-    public bool PingTo (string id, string message)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// </param>
+    public bool PingTo (string message, string id)
     {
-      if (message == null)
-        message = String.Empty;
-
-      var msg = id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : Encoding.UTF8.GetBytes (message).Length > 125
-                  ? "The payload length of a Ping frame must be 125 bytes or less."
-                  : null;
-
-      if (msg != null)
+      if (id.IsNullOrEmpty ())
       {
-        Log.Error (msg);
+        Log.Error ("'id' must not be null or empty.");
         return false;
       }
 
-      return _sessions.PingTo (id, message);
+      return _sessions.PingTo (message, id);
     }
 
     /// <summary>
     /// Sends a binary data to the client associated with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the client associated with <paramref name="id"/> is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
-    public bool SendTo (string id, byte [] data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    public bool SendTo (byte [] data, string id)
     {
-      var msg = id.IsNullOrEmpty ()
+      var msg = data == null
+              ? "'data' must not be null."
+              : id.IsNullOrEmpty ()
                 ? "'id' must not be null or empty."
-                : data == null
-                  ? "'data' must not be null."
-                  : null;
+                : null;
 
       if (msg != null)
       {
@@ -406,29 +396,28 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return _sessions.SendTo (id, data);
+      return _sessions.SendTo (data, id);
     }
 
     /// <summary>
     /// Sends a text data to the client associated with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the client associated with <paramref name="id"/> is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
-    public bool SendTo (string id, string data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    public bool SendTo (string data, string id)
     {
-      var msg = id.IsNullOrEmpty ()
+      var msg = data == null
+              ? "'data' must not be null."
+              : id.IsNullOrEmpty ()
                 ? "'id' must not be null or empty."
-                : data == null
-                  ? "'data' must not be null."
-                  : null;
+                : null;
 
       if (msg != null)
       {
@@ -436,7 +425,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return _sessions.SendTo (id, data);
+      return _sessions.SendTo (data, id);
     }
 
     /// <summary>
@@ -494,7 +483,7 @@ namespace WebSocketSharp.Server
     /// <param name="context">
     /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
     /// </param>
-    void IServiceHost.BindWebSocket (WebSocketContext context)
+    void IWebSocketServiceHost.BindWebSocket (WebSocketContext context)
     {
       T service = new T ();
       service.Bind (context, _sessions);
@@ -507,7 +496,7 @@ namespace WebSocketSharp.Server
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
     /// </param>
-    void IServiceHost.Broadcast (byte [] data)
+    void IWebSocketServiceHost.Broadcast (byte [] data)
     {
       _sessions.Broadcast (data);
     }
@@ -518,78 +507,76 @@ namespace WebSocketSharp.Server
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
     /// </param>
-    void IServiceHost.Broadcast (string data)
+    void IWebSocketServiceHost.Broadcast (string data)
     {
       _sessions.Broadcast (data);
     }
 
     /// <summary>
-    /// Sends Pings with the specified <see cref="string"/> to all clients.
+    /// Sends Pings with the specified <paramref name="message"/> to all clients.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of session IDs and values
-    /// indicating whether the service host received the Pongs from each clients in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the service host received the Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
-    Dictionary<string, bool> IServiceHost.Broadping (string message)
+    Dictionary<string, bool> IWebSocketServiceHost.Broadping (string message)
     {
       return _sessions.Broadping (message);
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <see cref="string"/> to the client associated with
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
     /// the specified ID.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the service host receives a Pong from the client in a time; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
-    /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
-    bool IServiceHost.PingTo (string id, string message)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// </param>
+    bool IWebSocketServiceHost.PingTo (string message, string id)
     {
-      return _sessions.PingTo (id, message);
+      return _sessions.PingTo (message, id);
     }
 
     /// <summary>
     /// Sends a binary data to the client associated with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the client associated with <paramref name="id"/> is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
-    bool IServiceHost.SendTo (string id, byte [] data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    bool IWebSocketServiceHost.SendTo (byte [] data, string id)
     {
-      return _sessions.SendTo (id, data);
+      return _sessions.SendTo (data, id);
     }
 
     /// <summary>
     /// Sends a text data to the client associated with the specified ID.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the client associated with <paramref name="id"/> is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
-    bool IServiceHost.SendTo (string id, string data)
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// </param>
+    bool IWebSocketServiceHost.SendTo (string data, string id)
     {
-      return _sessions.SendTo (id, data);
+      return _sessions.SendTo (data, id);
     }
 
     /// <summary>
@@ -602,7 +589,7 @@ namespace WebSocketSharp.Server
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for stop.
     /// </param>
-    void IServiceHost.Stop (ushort code, string reason)
+    void IWebSocketServiceHost.Stop (ushort code, string reason)
     {
       base.Stop ();
       _sessions.Stop (code, reason);
