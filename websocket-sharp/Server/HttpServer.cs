@@ -106,12 +106,13 @@ namespace WebSocketSharp.Server
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException ("port", "Invalid port number: " + port);
 
-      if (port == 80 && secure || port == 443 && !secure)
+      if ((port == 80 && secure) || (port == 443 && !secure))
         throw new ArgumentException (String.Format (
           "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
       _port = port;
       _secure = secure;
+
       init ();
     }
 

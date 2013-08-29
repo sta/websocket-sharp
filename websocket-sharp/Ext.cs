@@ -1538,8 +1538,13 @@ namespace WebSocketSharp
       var port = uri.Port;
       if (port > 0)
       {
-        if ((scheme == "ws"  && port == 443) ||
-            (scheme == "wss" && port == 80))
+        if (port > 65535)
+        {
+          message = "Invalid port number: " + port;
+          return false;
+        }
+
+        if ((scheme == "ws" && port == 443) || (scheme == "wss" && port == 80))
         {
           message = String.Format ("Invalid pair of scheme and port: {0}, {1}", scheme, port);
           return false;

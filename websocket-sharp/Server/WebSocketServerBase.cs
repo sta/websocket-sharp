@@ -135,6 +135,9 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentNullException">
     /// Either <paramref name="address"/> or <paramref name="absPath"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="absPath"/> is invalid.
@@ -154,20 +157,19 @@ namespace WebSocketSharp.Server
       if (absPath == null)
         throw new ArgumentNullException ("absPath");
 
+      if (!port.IsPortNumber ())
+        throw new ArgumentOutOfRangeException ("port", "Invalid port number: " + port);
+
       string msg;
       if (!absPath.IsValidAbsolutePath (out msg))
         throw new ArgumentException (msg, "absPath");
 
-      if ((port == 80 && secure) ||
-          (port == 443 && !secure))
-      {
-        msg = String.Format (
-          "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure);
-        throw new ArgumentException (msg);
-      }
+      if ((port == 80 && secure) || (port == 443 && !secure))
+        throw new ArgumentException (String.Format (
+          "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
       _address = address;
-      _port = port > 0 ? port : secure ? 443 : 80;
+      _port = port;
       _uri = absPath.ToUri ();
       _secure = secure;
 
@@ -322,8 +324,9 @@ namespace WebSocketSharp.Server
 
       _uri = uri;
       _address = addrs [0];
+      _port = port;
       _secure = scheme == "wss" ? true : false;
-      _port = port > 0 ? port : _secure ? 443 : 80;
+
       init ();
     }
 
