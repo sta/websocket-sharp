@@ -462,9 +462,9 @@ namespace WebSocketSharp.Server
         return;
       }
 
+      _serviceHosts.Stop (data);
       _listener.Close ();
       _receiveRequestThread.Join (5 * 1000);
-      _serviceHosts.Stop (code, reason);
       _listening = false;
     }
 
@@ -579,9 +579,9 @@ namespace WebSocketSharp.Server
       if (!_listening)
         return;
 
+      _serviceHosts.Stop ();
       _listener.Close ();
       _receiveRequestThread.Join (5 * 1000);
-      _serviceHosts.Stop ();
       _listening = false;
     }
 

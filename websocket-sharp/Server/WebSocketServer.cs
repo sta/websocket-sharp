@@ -207,7 +207,7 @@ namespace WebSocketSharp.Server
       }
 
       base.Stop ();
-      _serviceHosts.Stop (code, reason);
+      _serviceHosts.Stop (data);
     }
 
     #endregion

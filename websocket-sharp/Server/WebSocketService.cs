@@ -211,6 +211,11 @@ namespace WebSocketSharp.Server
       _websocket.SendAsync (data, completed);
     }
 
+    internal void Stop (byte [] data)
+    {
+      _websocket.Close (data);
+    }
+
     #endregion
 
     #region Protected Methods

@@ -193,7 +193,7 @@ namespace WebSocketSharp.Server
         _serviceHosts.Remove (servicePath);
       }
 
-      host.Stop ((ushort) CloseStatusCode.AWAY, String.Empty);
+      host.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
       return true;
     }
 
@@ -208,12 +208,12 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (ushort code, string reason)
+    internal void Stop (byte [] data)
     {
       lock (_sync)
       {
         foreach (var host in _serviceHosts.Values)
-          host.Stop (code, reason);
+          host.Stop (data);
 
         _serviceHosts.Clear ();
       }

@@ -201,14 +201,11 @@ namespace WebSocketSharp.Server
     void Stop ();
 
     /// <summary>
-    /// Stops the WebSocket service host with the specified <see cref="ushort"/> and <see cref="string"/>.
+    /// Stops the WebSocket service host with the specified array of <see cref="byte"/>.
     /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains the reason for stop.
     /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    void Stop (ushort code, string reason);
+    void Stop (byte [] data);
   }
 }

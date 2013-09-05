@@ -508,7 +508,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (ushort code, string reason)
+    internal void Stop (byte [] data)
     {
       stopSweepTimer ();
       lock (_sync)
@@ -518,7 +518,7 @@ namespace WebSocketSharp.Server
 
         _stopped = true;
         foreach (var service in copy ().Values)
-          service.Stop (code, reason);
+          service.Stop (data);
       }
     }
 
@@ -588,7 +588,7 @@ namespace WebSocketSharp.Server
             {
               var state = service.WebSocket.ReadyState;
               if (state == WebSocketState.OPEN)
-                service.Stop (CloseStatusCode.ABNORMAL, String.Empty);
+                service.Stop (((ushort) CloseStatusCode.ABNORMAL).ToByteArray (ByteOrder.BIG));
               else if (state == WebSocketState.CLOSING)
                 continue;
               else

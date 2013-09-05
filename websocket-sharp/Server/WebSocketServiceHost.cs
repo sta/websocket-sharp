@@ -280,7 +280,7 @@ namespace WebSocketSharp.Server
       }
 
       base.Stop ();
-      _sessions.Stop (code, reason);
+      _sessions.Stop (data);
     }
 
     #endregion
@@ -765,19 +765,15 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket connection requests with the specified <see cref="ushort"/> and
-    /// <see cref="string"/>.
+    /// Stops the WebSocket service host with the specified array of <see cref="byte"/>.
     /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains the reason for stop.
     /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    void IWebSocketServiceHost.Stop (ushort code, string reason)
+    void IWebSocketServiceHost.Stop (byte [] data)
     {
       base.Stop ();
-      _sessions.Stop (code, reason);
+      _sessions.Stop (data);
     }
 
     #endregion

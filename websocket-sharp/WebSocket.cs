@@ -586,9 +586,9 @@ namespace WebSocketSharp
     private void close (ushort code, string reason)
     {
       var data = code.Append (reason);
-      if (data.Length > 125)
+      var msg = data.CheckIfValidCloseData ();
+      if (msg != null)
       {
-        var msg = "The payload length of a Close frame must be 125 bytes or less.";
         _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
         error (msg);
 
@@ -1315,6 +1315,12 @@ namespace WebSocketSharp
     #region Internal Methods
 
     // As server
+    internal void Close (byte [] data)
+    {
+      close (new PayloadData (data));
+    }
+
+    // As server
     internal void Close (HttpStatusCode code)
     {
       _readyState = WebSocketState.CLOSING;
@@ -1346,7 +1352,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      Close (code, String.Empty);
+      Close (code, "");
     }
 
     /// <summary>
@@ -1358,7 +1364,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      close ((ushort) code, String.Empty);
+      close (new PayloadData (((ushort) code).ToByteArray (ByteOrder.BIG)));
     }
 
     /// <summary>
@@ -1377,9 +1383,9 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ())
+      var msg = code.CheckIfValidCloseStatusCode ();
+      if (msg != null)
       {
-        var msg = "Invalid close status code.";
         _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
         error (msg);
 
