@@ -134,7 +134,8 @@ namespace WebSocketSharp.Server
       set {
         if (_listening)
         {
-          _logger.Error ("The value of Certificate property cannot be changed because the server has already been started.");
+          _logger.Error (
+            "The value of Certificate property cannot be changed because the server has already been started.");
           return;
         }
 
@@ -233,7 +234,8 @@ namespace WebSocketSharp.Server
       set {
         if (_listening)
         {
-          _logger.Error ("The value of RootPath property cannot be changed because the server has already been started.");
+          _logger.Error (
+            "The value of RootPath property cannot be changed because the server has already been started.");
           return;
         }
 
@@ -386,10 +388,9 @@ namespace WebSocketSharp.Server
     private bool processWebSocketRequest (HttpListenerContext context)
     {
       var wsContext = context.AcceptWebSocket ();
-      var path = wsContext.Path.UrlDecode ();
 
       IWebSocketServiceHost host;
-      if (!_serviceHosts.TryGetServiceHost (path, out host))
+      if (!_serviceHosts.TryGetServiceHost (wsContext.Path, out host))
       {
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
         return false;
@@ -451,26 +452,19 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
-    private void stop (ushort code, string reason, bool ignoreArgs)
+    private void stop (ushort code, string reason)
     {
-      if (!ignoreArgs)
+      var data = code.Append (reason);
+      var msg = data.CheckIfValidCloseData ();
+      if (msg != null)
       {
-        var data = code.Append (reason);
-        if (data.Length > 125)
-        {
-          _logger.Error (
-            String.Format ("The payload length of a Close frame must be 125 bytes or less.\ncode: {0}\nreason: {1}", code, reason));
-          return;
-        }
+        _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
+        return;
       }
 
       _listener.Close ();
       _receiveRequestThread.Join (5 * 1000);
-      if (ignoreArgs)
-        _serviceHosts.Stop ();
-      else
-        _serviceHosts.Stop (code, reason);
-
+      _serviceHosts.Stop (code, reason);
       _listening = false;
     }
 
@@ -481,6 +475,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Adds the specified typed WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
+    /// <remarks>
+    /// This method converts <paramref name="servicePath"/> to URL-decoded string and
+    /// removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
+    /// </remarks>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
     /// </param>
@@ -490,10 +488,10 @@ namespace WebSocketSharp.Server
     public void AddWebSocketService<T> (string servicePath)
       where T : WebSocketService, new ()
     {
-      string msg;
-      if (!servicePath.IsValidAbsolutePath (out msg))
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
       {
-        _logger.Error (msg);
+        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return;
       }
 
@@ -529,6 +527,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Removes the WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
+    /// <remarks>
+    /// This method converts <paramref name="servicePath"/> to URL-decoded string and
+    /// removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
+    /// </remarks>
     /// <returns>
     /// <c>true</c> if the WebSocket service is successfully found and removed; otherwise, <c>false</c>.
     /// </returns>
@@ -537,9 +539,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool RemoveWebSocketService (string servicePath)
     {
-      if (servicePath.IsNullOrEmpty ())
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
       {
-        _logger.Error ("'servicePath' must not be null or empty.");
+        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return false;
       }
 
@@ -576,7 +579,10 @@ namespace WebSocketSharp.Server
       if (!_listening)
         return;
 
-      stop (0, null, true);
+      _listener.Close ();
+      _receiveRequestThread.Join (5 * 1000);
+      _serviceHosts.Stop ();
+      _listening = false;
     }
 
     /// <summary>
@@ -594,13 +600,14 @@ namespace WebSocketSharp.Server
       if (!_listening)
         return;
 
-      if (!code.IsCloseStatusCode ())
+      var msg = code.CheckIfValidCloseStatusCode ();
+      if (msg != null)
       {
-        _logger.Error ("Invalid status code for stop.\ncode: " + code);
+        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
         return;
       }
 
-      stop (code, reason, false);
+      stop (code, reason);
     }
 
     /// <summary>
@@ -618,7 +625,7 @@ namespace WebSocketSharp.Server
       if (!_listening)
         return;
 
-      stop ((ushort) code, reason, false);
+      stop ((ushort) code, reason);
     }
 
     #endregion

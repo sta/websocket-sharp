@@ -164,6 +164,59 @@ namespace WebSocketSharp
       }
     }
 
+    internal static string CheckIfValidCloseData (this byte [] data)
+    {
+      return data.Length > 125
+             ? "The payload length of a Close frame must be 125 bytes or less."
+             : null;
+    }
+
+    internal static string CheckIfValidCloseStatusCode (this ushort code)
+    {
+      return !code.IsCloseStatusCode ()
+             ? "Invalid close status code."
+             : null;
+    }
+
+    internal static string CheckIfValidPingMessage (this string message)
+    {
+      return message != null && message.Length > 0 && Encoding.UTF8.GetBytes (message).Length > 125
+             ? "The payload length of a Ping frame must be 125 bytes or less."
+             : null;
+    }
+
+    internal static string CheckIfValidSendData (this byte [] data)
+    {
+      return data == null
+             ? "'data' must not be null."
+             : null;
+    }
+
+    internal static string CheckIfValidSendData (this string data)
+    {
+      return data == null
+             ? "'data' must not be null."
+             : null;
+    }
+
+    internal static string CheckIfValidServicePath (this string servicePath)
+    {
+      return servicePath == null || servicePath.Length == 0
+             ? "'servicePath' must not be null or empty."
+             : servicePath [0] != '/'
+               ? "'servicePath' not absolute path."
+               : servicePath.IndexOfAny (new [] {'?', '#'}) != -1
+                 ? "'servicePath' must not contain either or both query and fragment components."
+                 : null;
+    }
+
+    internal static string CheckIfValidSessionID (this string id)
+    {
+      return id == null || id.Length == 0
+             ? "'id' must not be null or empty."
+             : null;
+    }
+
     internal static byte [] Compress (this byte [] value, CompressionMethod method)
     {
       return method == CompressionMethod.DEFLATE
@@ -230,26 +283,26 @@ namespace WebSocketSharp
       return value == method.ToCompressionExtension ();
     }
 
-    // <summary>
-    // Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
-    // and invokes the specified Action&lt;int&gt; delegate at the same time.
-    // </summary>
-    // <returns>
-    // <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>; otherwise, <c>false</c>.
-    // </returns>
-    // <param name="value">
-    // An <see cref="int"/> to compare.
-    // </param>
-    // <param name="c">
-    // A <see cref="char"/> to compare.
-    // </param>
-    // <param name="action">
-    // An Action&lt;int&gt; delegate that references the method(s) called at the same time as when comparing.
-    // An <see cref="int"/> parameter to pass to the method(s) is <paramref name="value"/>.
-    // </param>
-    // <exception cref="ArgumentOutOfRangeException">
-    // <paramref name="value"/> is less than 0, or greater than 255.
-    // </exception>
+    /// <summary>
+    /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
+    /// and invokes the specified Action&lt;int&gt; delegate at the same time.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="value">
+    /// An <see cref="int"/> to compare.
+    /// </param>
+    /// <param name="c">
+    /// A <see cref="char"/> to compare.
+    /// </param>
+    /// <param name="action">
+    /// An Action&lt;int&gt; delegate that references the method(s) called at the same time as when comparing.
+    /// An <see cref="int"/> parameter to pass to the method(s) is <paramref name="value"/>.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="value"/> is less than 0, or greater than 255.
+    /// </exception>
     internal static bool EqualsWith (this int value, char c, Action<int> action)
     {
       if (value < 0 || value > 255)
@@ -257,6 +310,31 @@ namespace WebSocketSharp
 
       action (value);
       return value == c - 0;
+    }
+
+    /// <summary>
+    /// Gets the absolute path from the specified <see cref="Uri"/>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> that contains the absolute path if it is successfully found;
+    /// otherwise, <see langword="null"/>.
+    /// </returns>
+    /// <param name="uri">
+    /// A <see cref="Uri"/> that contains a URI to get the absolute path from.
+    /// </param>
+    internal static string GetAbsolutePath (this Uri uri)
+    {
+      if (uri.IsAbsoluteUri)
+        return uri.AbsolutePath;
+
+      var original = uri.OriginalString;
+      if (original [0] != '/')
+        return null;
+
+      var i = original.IndexOfAny (new [] {'?', '#'});
+      return i > 0
+             ? original.Substring (0, i)
+             : original;
     }
 
     internal static string GetNameInternal (this string nameAndValue, string separator)
@@ -498,6 +576,14 @@ namespace WebSocketSharp
       return CompressionMethod.NONE;
     }
 
+    internal static string TrimEndSlash (this string value)
+    {
+      value = value.TrimEnd ('/');
+      return value.Length > 0
+             ? value
+             : "/";
+    }
+
     internal static string Unquote (this string value)
     {
       var start = value.IndexOf ('\"');
@@ -536,7 +622,7 @@ namespace WebSocketSharp
     /// </param>
     public static bool Contains (this string value, params char [] chars)
     {
-      return chars.Length == 0
+      return chars == null || chars.Length == 0
              ? true
              : value == null || value.Length == 0
                ? false
@@ -637,35 +723,6 @@ namespace WebSocketSharp
     {
       if (eventHandler != null)
         eventHandler (sender, e);
-    }
-
-    /// <summary>
-    /// Gets the absolute path from the specified <see cref="Uri"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that contains the absolute path if gets successfully;
-    /// otherwise, <see langword="null"/>.
-    /// </returns>
-    /// <param name="uri">
-    /// A <see cref="Uri"/> that contains a URI to get the absolute path from.
-    /// </param>
-    public static string GetAbsolutePath (this Uri uri)
-    {
-      if (uri == null)
-        return null;
-
-      if (uri.IsAbsoluteUri)
-        return uri.AbsolutePath;
-
-      var uriString = uri.OriginalString;
-      var i = uriString.IndexOf ('/');
-      if (i != 0)
-        return null;
-
-      i = uriString.IndexOfAny (new [] {'?', '#'});
-      return i > 0
-             ? uriString.Substring (0, i)
-             : uriString;
     }
 
     /// <summary>
@@ -851,25 +908,23 @@ namespace WebSocketSharp
     ///   </list>
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if <paramref name="code"/> is in the allowable range of the WebSocket close status code; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is in the allowable range of the WebSocket close status code;
+    /// otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="code">
+    /// <param name="value">
     /// A <see cref="ushort"/> to test.
     /// </param>
-    public static bool IsCloseStatusCode (this ushort code)
+    public static bool IsCloseStatusCode (this ushort value)
     {
-      return code < 1000
-             ? false
-             : code > 4999
-               ? false
-               : true;
+      return value > 999 && value < 5000;
     }
 
     /// <summary>
     /// Determines whether the specified <see cref="string"/> is enclosed in the specified <see cref="char"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is enclosed in <paramref name="c"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is enclosed in <paramref name="c"/>;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
@@ -879,9 +934,10 @@ namespace WebSocketSharp
     /// </param>
     public static bool IsEnclosedIn (this string value, char c)
     {
-      return value == null || value.Length == 0
-             ? false
-             : value [0] == c && value [value.Length - 1] == c;
+      return value != null &&
+             value.Length > 1 &&
+             value [0] == c &&
+             value [value.Length - 1] == c;
     }
 
     /// <summary>
@@ -1019,44 +1075,6 @@ namespace WebSocketSharp
 
       return request.Headers.Contains ("Upgrade", protocol) &&
              request.Headers.Contains ("Connection", "Upgrade");
-    }
-
-    /// <summary>
-    /// Determines whether the specified <see cref="string"/> is valid absolute path.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="absPath"/> is valid absolute path; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="absPath">
-    /// A <see cref="string"/> to test.
-    /// </param>
-    /// <param name="message">
-    /// A <see cref="string"/> that receives a message if <paramref name="absPath"/> is invalid.
-    /// </param>
-    public static bool IsValidAbsolutePath (this string absPath, out string message)
-    {
-      if (absPath == null || absPath.Length == 0)
-      {
-        message = "Must not be null or empty.";
-        return false;
-      }
-
-      var i = absPath.IndexOf ('/');
-      if (i != 0)
-      {
-        message = "Not absolute path: " + absPath;
-        return false;
-      }
-
-      i = absPath.IndexOfAny (new [] {'?', '#'});
-      if (i != -1)
-      {
-        message = "Must not contain either or both query and fragment components: " + absPath;
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
     }
 
     /// <summary>

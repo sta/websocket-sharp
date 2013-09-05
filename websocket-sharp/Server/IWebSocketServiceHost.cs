@@ -80,12 +80,21 @@ namespace WebSocketSharp.Server
     void Broadcast (string data);
 
     /// <summary>
+    /// Sends Pings to all clients of the WebSocket service host.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the WebSocket service host received a Pong from each client in a time.
+    /// </returns>
+    Dictionary<string, bool> Broadping ();
+
+    /// <summary>
     /// Sends Pings with the specified <paramref name="message"/> to all clients of
     /// the WebSocket service host.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the WebSocket service host received the Pong from each client in a time.
+    /// indicating whether the WebSocket service host received a Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -93,8 +102,58 @@ namespace WebSocketSharp.Server
     Dictionary<string, bool> Broadping (string message);
 
     /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void CloseSession (string id);
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void CloseSession (ushort code, string reason, string id);
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void CloseSession (CloseStatusCode code, string reason, string id);
+
+    /// <summary>
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    bool PingTo (string id);
+
+    /// <summary>
     /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
-    /// the specified ID.
+    /// the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
@@ -104,12 +163,12 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
     /// </param>
     bool PingTo (string message, string id);
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified ID.
+    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -118,12 +177,12 @@ namespace WebSocketSharp.Server
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     bool SendTo (byte [] data, string id);
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified ID.
+    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -132,14 +191,9 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     bool SendTo (string data, string id);
-
-    /// <summary>
-    /// Starts the WebSocket service host.
-    /// </summary>
-    void Start ();
 
     /// <summary>
     /// Stops the WebSocket service host.

@@ -52,6 +52,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
+    private string                  _servicePath;
     private WebSocketServiceManager _sessions;
 
     #endregion
@@ -111,43 +112,43 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/> and <paramref name="absPath"/>.
+    /// incoming connection attempts on the specified <paramref name="port"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
-    /// <param name="absPath">
+    /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
-    public WebSocketServiceHost (int port, string absPath)
-      : this (System.Net.IPAddress.Any, port, absPath)
+    public WebSocketServiceHost (int port, string servicePath)
+      : this (System.Net.IPAddress.Any, port, servicePath)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/>, <paramref name="absPath"/>
+    /// incoming connection attempts on the specified <paramref name="port"/>, <paramref name="servicePath"/>
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
-    /// <param name="absPath">
+    /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    public WebSocketServiceHost (int port, string absPath, bool secure)
-      : this (System.Net.IPAddress.Any, port, absPath, secure)
+    public WebSocketServiceHost (int port, string servicePath, bool secure)
+      : this (System.Net.IPAddress.Any, port, servicePath, secure)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
     /// incoming connection attempts on the specified <paramref name="address"/>, <paramref name="port"/>
-    /// and <paramref name="absPath"/>.
+    /// and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
@@ -155,18 +156,18 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
-    /// <param name="absPath">
+    /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
-    public WebSocketServiceHost (System.Net.IPAddress address, int port, string absPath)
-      : this (address, port, absPath, port == 443 ? true : false)
+    public WebSocketServiceHost (System.Net.IPAddress address, int port, string servicePath)
+      : this (address, port, servicePath, port == 443 ? true : false)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
     /// incoming connection attempts on the specified <paramref name="address"/>, <paramref name="port"/>,
-    /// <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// <paramref name="servicePath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
@@ -174,15 +175,15 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
-    /// <param name="absPath">
+    /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    public WebSocketServiceHost (System.Net.IPAddress address, int port, string absPath, bool secure)
-      : base (address, port, absPath, secure)
+    public WebSocketServiceHost (System.Net.IPAddress address, int port, string servicePath, bool secure)
+      : base (address, port, servicePath, secure)
     {
       _sessions = new WebSocketServiceManager (Log);
     }
@@ -208,8 +209,8 @@ namespace WebSocketSharp.Server
     /// the inactive <see cref="WebSocketService"/> instances periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive WebSocket service instances every 60 seconds;
-    /// otherwise, <c>false</c>. The default value is <c>true</c>.
+    /// <c>true</c> if the WebSocket service host cleans up the inactive WebSocket service instances
+    /// every 60 seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {
       get {
@@ -218,6 +219,33 @@ namespace WebSocketSharp.Server
 
       set {
         _sessions.KeepClean = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets the collection of the WebSocket sessions managed by the WebSocket service host.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketServiceManager"/> that contains a collection of the WebSocket sessions.
+    /// </value>
+    public WebSocketServiceManager Sessions {
+      get {
+        return _sessions;
+      }
+    }
+
+    /// <summary>
+    /// Gets the path to the WebSocket service that the WebSocket service host provides.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
+    /// </value>
+    public string ServicePath {
+      get {
+        if (_servicePath == null)
+          _servicePath = HttpUtility.UrlDecode (BaseUri.GetAbsolutePath ()).TrimEndSlash ();
+
+        return _servicePath;
       }
     }
 
@@ -244,10 +272,10 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       var data = code.Append (reason);
-      if (data.Length > 125)
+      var msg = data.CheckIfValidCloseData ();
+      if (msg != null)
       {
-        Log.Error (String.Format (
-          "The payload length of a Close frame must be 125 bytes or less.\ncode: {0}\nreason: {1}", code, reason));
+        Log.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
         return;
       }
 
@@ -268,17 +296,17 @@ namespace WebSocketSharp.Server
     protected override void AcceptWebSocket (TcpListenerWebSocketContext context)
     {
       var websocket = context.WebSocket;
-      var path = context.Path.UrlDecode ();
-
       websocket.Log = Log;
-      if (path != Uri.GetAbsolutePath ().UrlDecode ())
+
+      var path = HttpUtility.UrlDecode (context.Path).TrimEndSlash ();
+      if (path != ServicePath)
       {
         websocket.Close (HttpStatusCode.NotImplemented);
         return;
       }
 
-      if (Uri.IsAbsoluteUri)
-        websocket.Url = Uri;
+      if (BaseUri.IsAbsoluteUri)
+        websocket.Url = BaseUri;
 
       ((IWebSocketServiceHost) this).BindWebSocket (context);
     }
@@ -295,9 +323,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte [] data)
     {
-      if (data == null)
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
       {
-        Log.Error ("'data' must not be null.");
+        Log.Error (msg);
         return;
       }
 
@@ -312,9 +341,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (string data)
     {
-      if (data == null)
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
       {
-        Log.Error ("'data' must not be null.");
+        Log.Error (msg);
         return;
       }
 
@@ -322,24 +352,33 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends Pings to all clients.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the WebSocket service host received a Pong from each client in a time.
+    /// </returns>
+    public Dictionary<string, bool> Broadping ()
+    {
+      return _sessions.Broadping ();
+    }
+
+    /// <summary>
     /// Sends Pings with the specified <paramref name="message"/> to all clients.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the service host received the Pong from each client in a time.
+    /// indicating whether the WebSocket service host received a Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     public Dictionary<string, bool> Broadping (string message)
     {
-      if (message.IsNullOrEmpty ())
-        return _sessions.Broadping (String.Empty);
-
-      var len = Encoding.UTF8.GetBytes (message).Length;
-      if (len > 125)
+      var msg = message.CheckIfValidPingMessage ();
+      if (msg != null)
       {
-        Log.Error ("The payload length of a Ping frame must be 125 bytes or less.");
+        Log.Error (msg);
         return null;
       }
 
@@ -347,23 +386,115 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
-    /// the specified ID.
+    /// Close the WebSocket session with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        Log.Error (msg);
+        return;
+      }
+
+      _sessions.StopServiceInstance (id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (ushort code, string reason, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        Log.Error (msg);
+        return;
+      }
+
+      _sessions.StopServiceInstance (code, reason, id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (CloseStatusCode code, string reason, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        Log.Error (msg);
+        return;
+      }
+
+      _sessions.StopServiceInstance (code, reason, id);
+    }
+
+    /// <summary>
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the service host receives a Pong from the client in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    public bool PingTo (string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        Log.Error (msg);
+        return false;
+      }
+
+      return _sessions.PingTo (id);
+    }
+
+    /// <summary>
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
+    /// the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
     /// </param>
     public bool PingTo (string message, string id)
     {
-      if (id.IsNullOrEmpty ())
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
       {
-        Log.Error ("'id' must not be null or empty.");
+        Log.Error (msg);
         return false;
       }
 
@@ -371,7 +502,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified ID.
+    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -380,16 +511,11 @@ namespace WebSocketSharp.Server
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     public bool SendTo (byte [] data, string id)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : null;
-
+      var msg = id.CheckIfValidSessionID ();
       if (msg != null)
       {
         Log.Error (msg);
@@ -400,7 +526,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified ID.
+    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -409,16 +535,11 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     public bool SendTo (string data, string id)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : null;
-
+      var msg = id.CheckIfValidSessionID ();
       if (msg != null)
       {
         Log.Error (msg);
@@ -449,9 +570,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ())
+      var msg = code.CheckIfValidCloseStatusCode ();
+      if (msg != null)
       {
-        Log.Error ("Invalid status code for stop.\ncode: " + code);
+        Log.Error (String.Format ("{0}\ncode: {1}", msg, code));
         return;
       }
 
@@ -528,17 +650,80 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
-    /// the specified ID.
+    /// Close the WebSocket session with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void IWebSocketServiceHost.CloseSession (string id)
+    {
+      _sessions.StopServiceInstance (id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void IWebSocketServiceHost.CloseSession (ushort code, string reason, string id)
+    {
+      _sessions.StopServiceInstance (code, reason, id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    void IWebSocketServiceHost.CloseSession (CloseStatusCode code, string reason, string id)
+    {
+      _sessions.StopServiceInstance (code, reason, id);
+    }
+
+    /// <summary>
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the service host receives a Pong from the client in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    bool IWebSocketServiceHost.PingTo (string id)
+    {
+      return _sessions.PingTo (id);
+    }
+
+    /// <summary>
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
+    /// the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
     /// </param>
     bool IWebSocketServiceHost.PingTo (string message, string id)
     {
@@ -546,7 +731,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified ID.
+    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -555,7 +740,7 @@ namespace WebSocketSharp.Server
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     bool IWebSocketServiceHost.SendTo (byte [] data, string id)
     {
@@ -563,7 +748,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified ID.
+    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -572,7 +757,7 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     bool IWebSocketServiceHost.SendTo (string data, string id)
     {

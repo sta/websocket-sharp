@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
 {
@@ -59,56 +60,6 @@ namespace WebSocketSharp.Server
       _keepClean = true;
       _serviceHosts = new Dictionary<string, IWebSocketServiceHost> ();
       _sync = new object ();
-    }
-
-    #endregion
-
-    #region Public Properties
-
-    /// <summary>
-    /// Gets the connection count to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that contains the connection count.
-    /// </value>
-    public int ConnectionCount {
-      get {
-        var count = 0;
-        foreach (var host in ServiceHosts)
-          count += host.ConnectionCount;
-
-        return count;
-      }
-    }
-
-    /// <summary>
-    /// Gets the number of the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that contains the number of the WebSocket services.
-    /// </value>
-    public int ServiceCount {
-      get {
-        lock (_sync)
-        {
-          return _serviceHosts.Count;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets the collection of paths to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
-    /// </summary>
-    /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
-    /// </value>
-    public IEnumerable<string> ServicePaths {
-      get {
-        lock (_sync)
-        {
-          return _serviceHosts.Keys;
-        }
-      }
     }
 
     #endregion
@@ -144,6 +95,56 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Public Properties
+
+    /// <summary>
+    /// Gets the connection count to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains the connection count.
+    /// </value>
+    public int ConnectionCount {
+      get {
+        var count = 0;
+        foreach (var host in ServiceHosts)
+          count += host.ConnectionCount;
+
+        return count;
+      }
+    }
+
+    /// <summary>
+    /// Gets the number of the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains the number of the WebSocket services.
+    /// </value>
+    public int Count {
+      get {
+        lock (_sync)
+        {
+          return _serviceHosts.Count;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets the collection of paths to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// </summary>
+    /// <value>
+    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
+    /// </value>
+    public IEnumerable<string> ServicePaths {
+      get {
+        lock (_sync)
+        {
+          return _serviceHosts.Keys;
+        }
+      }
+    }
+
+    #endregion
+
     #region Private Methods
 
     private Dictionary<string, IWebSocketServiceHost> copy ()
@@ -160,6 +161,7 @@ namespace WebSocketSharp.Server
 
     internal void Add (string servicePath, IWebSocketServiceHost serviceHost)
     {
+      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
       lock (_sync)
       {
         IWebSocketServiceHost host;
@@ -170,12 +172,14 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _serviceHosts.Add (servicePath.UrlDecode (), serviceHost);
+        _serviceHosts.Add (servicePath, serviceHost);
       }
     }
 
     internal bool Remove (string servicePath)
     {
+      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
+
       IWebSocketServiceHost host;
       lock (_sync)
       {
@@ -217,6 +221,7 @@ namespace WebSocketSharp.Server
 
     internal bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
     {
+      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
       lock (_sync)
       {
         return _serviceHosts.TryGetValue (servicePath, out serviceHost);
@@ -228,16 +233,18 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket services.
+    /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket services
+    /// managed by the <see cref="WebSocketServiceHostManager"/>.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
     /// </param>
     public void Broadcast (byte [] data)
     {
-      if (data == null)
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
       {
-        _logger.Error ("'data' must not be null.");
+        _logger.Error (msg);
         return;
       }
 
@@ -246,16 +253,18 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket services.
+    /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket services
+    /// managed by the <see cref="WebSocketServiceHostManager"/>.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
     /// </param>
     public void Broadcast (string data)
     {
-      if (data == null)
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
       {
-        _logger.Error ("'data' must not be null.");
+        _logger.Error (msg);
         return;
       }
 
@@ -278,12 +287,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool BroadcastTo (byte [] data, string servicePath)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : servicePath.IsNullOrEmpty ()
-                ? "'servicePath' must not be null or empty."
-                : null;
-
+      var msg = data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -316,12 +320,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool BroadcastTo (string data, string servicePath)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : servicePath.IsNullOrEmpty ()
-                ? "'servicePath' must not be null or empty."
-                : null;
-
+      var msg = data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -340,26 +339,41 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket services.
+    /// Sends Pings to all clients of the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
     /// service paths and pairs of session ID and value indicating whether each WebSocket service
-    /// received the Pong from each client in a time.
+    /// received a Pong from each client in a time.
+    /// </returns>
+    public Dictionary<string, Dictionary<string, bool>> Broadping ()
+    {
+      var result = new Dictionary<string, Dictionary<string, bool>> ();
+      foreach (var service in copy ())
+        result.Add (service.Key, service.Value.Broadping ());
+
+      return result;
+    }
+
+    /// <summary>
+    /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket services
+    /// managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
+    /// service paths and pairs of session ID and value indicating whether each WebSocket service
+    /// received a Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
-      if (!message.IsNullOrEmpty ())
+      var msg = message.CheckIfValidPingMessage ();
+      if (msg != null)
       {
-        var len = Encoding.UTF8.GetBytes (message).Length;
-        if (len > 125)
-        {
-          _logger.Error ("The payload length of a Ping frame must be 125 bytes or less.");
-          return null;
-        }
+        _logger.Error (msg);
+        return null;
       }
 
       var result = new Dictionary<string, Dictionary<string, bool>> ();
@@ -370,12 +384,42 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends Pings to all clients of the WebSocket service with the specified <paramref name="servicePath"/>.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
+    /// If the WebSocket service is not found, returns <see langword="null"/>.
+    /// </returns>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public Dictionary<string, bool> BroadpingTo (string servicePath)
+    {
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return null;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return null;
+      }
+
+      return host.Broadping ();
+    }
+
+    /// <summary>
     /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket service
     /// with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the WebSocket service received the Pong from each client in a time.
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
     /// If the WebSocket service is not found, returns <see langword="null"/>.
     /// </returns>
     /// <param name="message">
@@ -386,15 +430,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> BroadpingTo (string message, string servicePath)
     {
-      if (message == null)
-        message = String.Empty;
-
-      var msg = Encoding.UTF8.GetBytes (message).Length > 125
-              ? "The payload length of a Ping frame must be 125 bytes or less."
-              : servicePath.IsNullOrEmpty ()
-                ? "'servicePath' must not be null or empty."
-                : null;
-
+      var msg = message.CheckIfValidPingMessage () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -412,20 +448,120 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="id"/> and
+    /// <paramref name="servicePath"/>.
+    /// </summary>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public void CloseSession (string id, string servicePath)
+    {
+      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return;
+      }
+
+      host.CloseSession (id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// <paramref name="id"/> and <paramref name="servicePath"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public void CloseSession (ushort code, string reason, string id, string servicePath)
+    {
+      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return;
+      }
+
+      host.CloseSession (code, reason, id);
+    }
+
+    /// <summary>
+    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// <paramref name="id"/> and <paramref name="servicePath"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public void CloseSession (CloseStatusCode code, string reason, string id, string servicePath)
+    {
+      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return;
+      }
+
+      host.CloseSession (code, reason, id);
+    }
+
+    /// <summary>
     /// Gets the connection count to the WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <returns>
-    /// An <see cref="int"/> that contains the connection count if the WebSocket service is successfully found;
-    /// otherwise, <c>-1</c>.
+    /// An <see cref="int"/> that contains the connection count if the WebSocket service is successfully
+    /// found; otherwise, <c>-1</c>.
     /// </returns>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
     public int GetConnectionCount (string servicePath)
     {
-      if (servicePath.IsNullOrEmpty ())
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
       {
-        _logger.Error ("'servicePath' must not be null or empty.");
+        _logger.Error (msg);
         return -1;
       }
 
@@ -440,6 +576,39 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/> and
+    /// <paramref name="servicePath"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service with <paramref name="servicePath"/> receives a Pong
+    /// from the client in a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public bool PingTo (string id, string servicePath)
+    {
+      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return false;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return false;
+      }
+
+      return host.PingTo (id);
+    }
+
+    /// <summary>
     /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
     /// the specified <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
@@ -451,18 +620,15 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a message to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
     /// </param>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
     public bool PingTo (string message, string id, string servicePath)
     {
-      var msg = id.IsNullOrEmpty ()
-              ? "'id' must not be null or empty."
-              : servicePath.IsNullOrEmpty ()
-                ? "'servicePath' must not be null or empty."
-                : null;
+      var msg = (message.CheckIfValidPingMessage () ?? id.CheckIfValidSessionID ()) ??
+                servicePath.CheckIfValidServicePath ();
 
       if (msg != null)
       {
@@ -491,20 +657,15 @@ namespace WebSocketSharp.Server
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
     public bool SendTo (byte [] data, string id, string servicePath)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : servicePath.IsNullOrEmpty ()
-                  ? "'servicePath' must not be null or empty."
-                  : null;
+      var msg = (data.CheckIfValidSendData () ?? id.CheckIfValidSessionID ()) ??
+                servicePath.CheckIfValidServicePath ();
 
       if (msg != null)
       {
@@ -533,20 +694,15 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
     public bool SendTo (string data, string id, string servicePath)
     {
-      var msg = data == null
-              ? "'data' must not be null."
-              : id.IsNullOrEmpty ()
-                ? "'id' must not be null or empty."
-                : servicePath.IsNullOrEmpty ()
-                  ? "'servicePath' must not be null or empty."
-                  : null;
+      var msg = (data.CheckIfValidSendData () ?? id.CheckIfValidSessionID ()) ??
+                servicePath.CheckIfValidServicePath ();
 
       if (msg != null)
       {

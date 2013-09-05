@@ -84,7 +84,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        return from result in Broadping (String.Empty)
+        return from result in Broadping ()
                where result.Value
                select result.Key;
       }
@@ -134,14 +134,14 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        return from result in Broadping (String.Empty)
+        return from result in Broadping ()
                where !result.Value
                select result.Key;
       }
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketService"/> instance with the specified ID
+    /// Gets the <see cref="WebSocketService"/> instance with the specified <paramref name="id"/>
     /// from the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <value>
@@ -153,9 +153,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public WebSocketService this [string id] {
       get {
-        if (id.IsNullOrEmpty ())
+        var msg = id.CheckIfValidSessionID ();
+        if (msg != null)
         {
-          _logger.Error ("'id' must not be null or empty.");
+          _logger.Error (msg);
           return null;
         }
 
@@ -289,23 +290,6 @@ namespace WebSocketSharp.Server
         _sweepTimer.Start ();
     }
 
-    private void stop (ushort code, string reason, bool ignoreArgs)
-    {
-      stopSweepTimer ();
-      lock (_sync)
-      {
-        if (_stopped)
-          return;
-
-        _stopped = true;
-        foreach (var service in copy ().Values)
-          if (ignoreArgs)
-            service.Stop ();
-          else
-            service.Stop (code, reason);
-      }
-    }
-
     private void stopSweepTimer ()
     {
       if (_sweepTimer.Enabled)
@@ -331,8 +315,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every
-    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
+    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every <see cref="WebSocketService"/>
+    /// instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
@@ -346,8 +330,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/> to the clients of every
-    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
+    /// Broadcasts the specified <see cref="string"/> to the clients of every <see cref="WebSocketService"/>
+    /// instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
@@ -361,12 +345,29 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to the clients of every
-    /// <see cref="WebSocketService"/> instances managed by the <see cref="WebSocketServiceManager"/>.
+    /// Sends Pings to the clients of every <see cref="WebSocketService"/> instances managed by
+    /// the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the each <see cref="WebSocketService"/> instance received a Pong in a time.
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of ID and value indicating
+    /// whether each <see cref="WebSocketService"/> instance received a Pong from the client in a time.
+    /// </returns>
+    internal Dictionary<string, bool> Broadping ()
+    {
+      var result = new Dictionary<string, bool> ();
+      foreach (var session in copy ())
+        result.Add (session.Key, session.Value.Ping ());
+
+      return result;
+    }
+
+    /// <summary>
+    /// Sends Pings with the specified <paramref name="message"/> to the clients of every <see cref="WebSocketService"/>
+    /// instances managed by the <see cref="WebSocketServiceManager"/>.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of ID and value indicating
+    /// whether each <see cref="WebSocketService"/> instance received a Pong from the client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -381,12 +382,36 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client of
-    /// the <see cref="WebSocketService"/> instance with the specified ID.
+    /// Sends a Ping to the client of the <see cref="WebSocketService"/> instance
+    /// with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/> receives
-    /// a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocketService"/> instance receives a Pong from the client
+    /// in a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
+    /// </param>
+    internal bool PingTo (string id)
+    {
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return false;
+      }
+
+      return service.Ping ();
+    }
+
+    /// <summary>
+    /// Sends a Ping with the specified <paramref name="message"/> to the client of the <see cref="WebSocketService"/>
+    /// instance with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the <see cref="WebSocketService"/> instance receives a Pong from the client
+    /// in a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -417,7 +442,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Sends a binary data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified ID.
+    /// with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -444,7 +469,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Sends a text data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified ID.
+    /// with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -471,12 +496,69 @@ namespace WebSocketSharp.Server
 
     internal void Stop ()
     {
-      stop (0, null, true);
+      stopSweepTimer ();
+      lock (_sync)
+      {
+        if (_stopped)
+          return;
+
+        _stopped = true;
+        foreach (var service in copy ().Values)
+          service.Stop ();
+      }
     }
 
     internal void Stop (ushort code, string reason)
     {
-      stop (code, reason, false);
+      stopSweepTimer ();
+      lock (_sync)
+      {
+        if (_stopped)
+          return;
+
+        _stopped = true;
+        foreach (var service in copy ().Values)
+          service.Stop (code, reason);
+      }
+    }
+
+    internal void StopServiceInstance (string id)
+    {
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      service.Stop ();
+    }
+
+    internal void StopServiceInstance (ushort code, string reason, string id)
+    {
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      service.Stop (code, reason);
+    }
+
+    internal void StopServiceInstance (CloseStatusCode code, string reason, string id)
+    {
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      service.Stop (code, reason);
     }
 
     #endregion
@@ -520,7 +602,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the <see cref="WebSocketService"/> instance with the specified ID.
+    /// Tries to get the <see cref="WebSocketService"/> instance with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/>

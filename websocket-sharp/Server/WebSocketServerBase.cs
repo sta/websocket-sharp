@@ -117,7 +117,7 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServerBase"/> class
     /// that listens for incoming connection attempts on the specified <paramref name="address"/>,
-    /// <paramref name="port"/>, <paramref name="absPath"/> and <paramref name="secure"/>.
+    /// <paramref name="port"/>, <paramref name="servicePath"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
     /// A <see cref="IPAddress"/> that contains a local IP address.
@@ -125,7 +125,7 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number. 
     /// </param>
-    /// <param name="absPath">
+    /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
     /// <param name="secure">
@@ -133,14 +133,14 @@ namespace WebSocketSharp.Server
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Either <paramref name="address"/> or <paramref name="absPath"/> is <see langword="null"/>.
+    /// Either <paramref name="address"/> or <paramref name="servicePath"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is 0 or less, or 65536 or greater.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="absPath"/> is invalid.
+    ///   <paramref name="servicePath"/> is invalid.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -149,20 +149,20 @@ namespace WebSocketSharp.Server
     ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
     ///   </para>
     /// </exception>
-    protected WebSocketServerBase (IPAddress address, int port, string absPath, bool secure)
+    protected WebSocketServerBase (IPAddress address, int port, string servicePath, bool secure)
     {
       if (address == null)
         throw new ArgumentNullException ("address");
 
-      if (absPath == null)
-        throw new ArgumentNullException ("absPath");
+      if (servicePath == null)
+        throw new ArgumentNullException ("servicePath");
 
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException ("port", "Invalid port number: " + port);
 
-      string msg;
-      if (!absPath.IsValidAbsolutePath (out msg))
-        throw new ArgumentException (msg, "absPath");
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+        throw new ArgumentException (msg, "servicePath");
 
       if ((port == 80 && secure) || (port == 443 && !secure))
         throw new ArgumentException (String.Format (
@@ -170,7 +170,7 @@ namespace WebSocketSharp.Server
 
       _address = address;
       _port = port;
-      _uri = absPath.ToUri ();
+      _uri = servicePath.ToUri ();
       _secure = secure;
 
       init ();

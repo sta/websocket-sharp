@@ -199,10 +199,10 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       var data = code.Append (reason);
-      if (data.Length > 125)
+      var msg = data.CheckIfValidCloseData ();
+      if (msg != null)
       {
-        Log.Error (String.Format (
-          "The payload length of a Close frame must be 125 bytes or less.\ncode: {0}\nreason: {1}", code, reason));
+        Log.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
         return;
       }
 
@@ -223,9 +223,9 @@ namespace WebSocketSharp.Server
     protected override void AcceptWebSocket (TcpListenerWebSocketContext context)
     {
       var websocket = context.WebSocket;
-      var path = context.Path.UrlDecode ();
-
       websocket.Log = Log;
+
+      var path = context.Path;
       IWebSocketServiceHost host;
       if (!_serviceHosts.TryGetServiceHost (path, out host))
       {
@@ -246,6 +246,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Adds the specified typed WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
+    /// <remarks>
+    /// This method converts <paramref name="servicePath"/> to URL-decoded string and
+    /// removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
+    /// </remarks>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
     /// </param>
@@ -255,10 +259,10 @@ namespace WebSocketSharp.Server
     public void AddWebSocketService<T> (string servicePath)
       where T : WebSocketService, new ()
     {
-      string msg;
-      if (!servicePath.IsValidAbsolutePath (out msg))
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
       {
-        Log.Error (msg);
+        Log.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return;
       }
 
@@ -276,6 +280,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Removes the WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
+    /// <remarks>
+    /// This method converts <paramref name="servicePath"/> to URL-decoded string and
+    /// removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
+    /// </remarks>
     /// <returns>
     /// <c>true</c> if the WebSocket service is successfully found and removed; otherwise, <c>false</c>.
     /// </returns>
@@ -284,9 +292,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool RemoveWebSocketService (string servicePath)
     {
-      if (servicePath.IsNullOrEmpty ())
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
       {
-        Log.Error ("'servicePath' must not be null or empty.");
+        Log.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return false;
       }
 
@@ -314,9 +323,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      if (!code.IsCloseStatusCode ())
+      var msg = code.CheckIfValidCloseStatusCode ();
+      if (msg != null)
       {
-        Log.Error ("Invalid status code for stop.\ncode: " + code);
+        Log.Error (String.Format ("{0}\ncode: {1}", msg, code));
         return;
       }
 
