@@ -66,33 +66,33 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private string            _base64key;
+    private string                  _base64key;
     private RemoteCertificateValidationCallback
-                              _certValidationCallback;
-    private bool              _client;
-    private Action            _closeContext;
-    private CompressionMethod _compression;
-    private WebSocketContext  _context;
-    private CookieCollection  _cookies;
+                                    _certValidationCallback;
+    private bool                    _client;
+    private Action                  _closeContext;
+    private CompressionMethod       _compression;
+    private WebSocketContext        _context;
+    private CookieCollection        _cookies;
     private Func<CookieCollection, CookieCollection, bool>
-                              _cookiesValidation;
-    private WsCredential      _credentials;
-    private string            _extensions;
-    private AutoResetEvent    _exitReceiving;
-    private object            _forClose;
-    private object            _forFrame;
-    private object            _forSend;
-    private volatile Logger   _logger;
-    private string            _origin;
-    private bool              _preAuth;
-    private string            _protocol;
-    private string            _protocols;
-    private volatile WsState  _readyState;
-    private AutoResetEvent    _receivePong;
-    private bool              _secure;
-    private WsStream          _stream;
-    private TcpClient         _tcpClient;
-    private Uri               _uri;
+                                    _cookiesValidation;
+    private WsCredential            _credentials;
+    private string                  _extensions;
+    private AutoResetEvent          _exitReceiving;
+    private object                  _forClose;
+    private object                  _forFrame;
+    private object                  _forSend;
+    private volatile Logger         _logger;
+    private string                  _origin;
+    private bool                    _preAuth;
+    private string                  _protocol;
+    private string                  _protocols;
+    private volatile WebSocketState _readyState;
+    private AutoResetEvent          _receivePong;
+    private bool                    _secure;
+    private WsStream                _stream;
+    private TcpClient               _tcpClient;
+    private Uri                     _uri;
 
     #endregion
 
@@ -110,7 +110,7 @@ namespace WebSocketSharp
       _origin = String.Empty;
       _preAuth = false;
       _protocol = String.Empty;
-      _readyState = WsState.CONNECTING;
+      _readyState = WebSocketState.CONNECTING;
     }
 
     #endregion
@@ -236,7 +236,7 @@ namespace WebSocketSharp
 
     internal bool IsOpened {
       get {
-        return _readyState == WsState.OPEN || _readyState == WsState.CLOSING;
+        return _readyState == WebSocketState.OPEN || _readyState == WebSocketState.CLOSING;
       }
     }
 
@@ -319,8 +319,8 @@ namespace WebSocketSharp
     /// </value>
     public bool IsAlive {
       get {
-        return _readyState == WsState.OPEN
-               ? ping(new byte [] {})
+        return _readyState == WebSocketState.OPEN
+               ? ping (new byte [] {})
                : false;
       }
     }
@@ -428,9 +428,10 @@ namespace WebSocketSharp
     /// Gets the state of the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.WsState"/> values. The default is <see cref="WsState.CONNECTING"/>.
+    /// One of the <see cref="WebSocketState"/> values.
+    /// The default value is <see cref="WebSocketState.CONNECTING"/>.
     /// </value>
-    public WsState ReadyState {
+    public WebSocketState ReadyState {
       get {
         return _readyState;
       }
@@ -469,7 +470,7 @@ namespace WebSocketSharp
       }
 
       internal set {
-        if (_readyState == WsState.CONNECTING && !_client)
+        if (_readyState == WebSocketState.CONNECTING && !_client)
           _uri = value;
       }
     }
@@ -539,7 +540,7 @@ namespace WebSocketSharp
       if (!closeResources ())
         eventArgs.WasClean = false;
 
-      _readyState = WsState.CLOSED;
+      _readyState = WebSocketState.CLOSED;
       OnClose.Emit (this, eventArgs);
     }
 
@@ -549,13 +550,13 @@ namespace WebSocketSharp
       CloseEventArgs args = null;
       lock (_forClose)
       {
-        if (_readyState == WsState.CLOSING || _readyState == WsState.CLOSED)
+        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
           return;
 
         var state = _readyState;
-        _readyState = WsState.CLOSING;
+        _readyState = WebSocketState.CLOSING;
         args = new CloseEventArgs (data);
-        if (state == WsState.CONNECTING)
+        if (state == WebSocketState.CONNECTING)
         {
           if (!_client)
           {
@@ -579,7 +580,7 @@ namespace WebSocketSharp
     {
       send (createHandshakeResponse (code));
       closeResources ();
-      _readyState = WsState.CLOSED;
+      _readyState = WebSocketState.CLOSED;
     }
 
     private void close (ushort code, string reason)
@@ -858,7 +859,7 @@ namespace WebSocketSharp
 
     private void open ()
     {
-      _readyState = WsState.OPEN;
+      _readyState = WebSocketState.OPEN;
       startReceiving ();
       OnOpen.Emit (this, EventArgs.Empty);
     }
@@ -1080,9 +1081,9 @@ namespace WebSocketSharp
       {
         var ready = _stream == null
                     ? false
-                    : _readyState == WsState.OPEN
+                    : _readyState == WebSocketState.OPEN
                       ? true
-                      : _readyState == WsState.CLOSING
+                      : _readyState == WebSocketState.CLOSING
                         ? frame.IsClose
                         : false;
 
@@ -1104,7 +1105,7 @@ namespace WebSocketSharp
       var data = stream;
       var compressed = false;
       try {
-        if (_readyState != WsState.OPEN)
+        if (_readyState != WebSocketState.OPEN)
         {
           var msg = "The WebSocket connection isn't established or has been closed.";
           _logger.Error (msg);
@@ -1245,7 +1246,7 @@ namespace WebSocketSharp
       {
         try {
           processFrame (frame);
-          if (_readyState == WsState.OPEN)
+          if (_readyState == WebSocketState.OPEN)
             _stream.ReadFrameAsync (completed);
           else
             _exitReceiving.Set ();
@@ -1316,7 +1317,7 @@ namespace WebSocketSharp
     // As server
     internal void Close (HttpStatusCode code)
     {
-      _readyState = WsState.CLOSING;
+      _readyState = WebSocketState.CLOSING;
       close (code);
     }
 

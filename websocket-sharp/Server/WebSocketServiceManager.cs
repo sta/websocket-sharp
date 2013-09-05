@@ -587,9 +587,9 @@ namespace WebSocketSharp.Server
             if (_services.TryGetValue (id, out service))
             {
               var state = service.WebSocket.ReadyState;
-              if (state == WsState.OPEN)
+              if (state == WebSocketState.OPEN)
                 service.Stop (CloseStatusCode.ABNORMAL, String.Empty);
-              else if (state == WsState.CLOSING)
+              else if (state == WebSocketState.CLOSING)
                 continue;
               else
                 _services.Remove (id);
