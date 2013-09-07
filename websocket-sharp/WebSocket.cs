@@ -535,6 +535,7 @@ namespace WebSocketSharp
     {
       _logger.Debug ("Is this thread background?: " + Thread.CurrentThread.IsBackground);
 
+      var sent = false;
       CloseEventArgs args = null;
       lock (_forClose)
       {
@@ -556,17 +557,16 @@ namespace WebSocketSharp
         else
         {
           if (!data.ContainsReservedCloseStatusCode)
-            args.WasClean = send (createControlFrame (Opcode.CLOSE, data, _client));
+            sent = send (createControlFrame (Opcode.CLOSE, data, _client));
         }
       }
 
-      if (!Thread.CurrentThread.IsBackground &&
-          _exitReceiving != null &&
-          !_exitReceiving.WaitOne (5 * 1000))
-        args.WasClean = false;
+      var received = Thread.CurrentThread.IsBackground ||
+                     (_exitReceiving != null && _exitReceiving.WaitOne (5 * 1000));
 
-      if (!closeResources ())
-        args.WasClean = false;
+      var released = closeResources ();
+      args.WasClean = sent && received && released;
+      _logger.Debug ("Was clean?: " + args.WasClean);
 
       _readyState = WebSocketState.CLOSED;
       OnClose.Emit (this, args);
