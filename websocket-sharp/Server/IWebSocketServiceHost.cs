@@ -89,17 +89,16 @@ namespace WebSocketSharp.Server
     Dictionary<string, bool> Broadping ();
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to all clients of
-    /// the WebSocket service host.
+    /// Sends Pings with the specified <paramref name="data"/> to all clients of the WebSocket service host.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
     /// indicating whether the WebSocket service host received a Pong from each client in a time.
     /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a message data to send.
     /// </param>
-    Dictionary<string, bool> Broadping (string message);
+    Dictionary<string, bool> Broadping (byte [] data);
 
     /// <summary>
     /// Close the WebSocket session with the specified <paramref name="id"/>.

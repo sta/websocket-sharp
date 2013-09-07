@@ -201,6 +201,11 @@ namespace WebSocketSharp.Server
       IsBound = true;
     }
 
+    internal bool Ping (byte [] data)
+    {
+      return _websocket.Ping (data);
+    }
+
     internal void SendAsync (byte [] data, Action completed)
     {
       _websocket.SendAsync (data, completed);
@@ -279,7 +284,7 @@ namespace WebSocketSharp.Server
     protected virtual Dictionary<string, bool> Broadping ()
     {
       return IsBound
-             ? _sessions.Broadping ()
+             ? _sessions.Broadping (new byte [] {})
              : null;
     }
 
@@ -299,7 +304,11 @@ namespace WebSocketSharp.Server
       if (!IsBound)
         return null;
 
-      var msg = message.CheckIfValidPingMessage ();
+      if (message == null || message.Length == 0)
+        return _sessions.Broadping (new byte [] {});
+
+      var data = Encoding.UTF8.GetBytes (message);
+      var msg = data.CheckIfValidPingData ();
       if (msg != null)
       {
         Log.Error (msg);
@@ -308,7 +317,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return _sessions.Broadping (message);
+      return _sessions.Broadping (data);
     }
 
     /// <summary>

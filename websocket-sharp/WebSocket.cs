@@ -320,7 +320,7 @@ namespace WebSocketSharp
     public bool IsAlive {
       get {
         return _readyState == WebSocketState.OPEN
-               ? ping (new byte [] {})
+               ? Ping (new byte [] {})
                : false;
       }
     }
@@ -531,32 +531,21 @@ namespace WebSocketSharp
       return send (createHandshakeResponse ());
     }
 
-    private void close (CloseEventArgs eventArgs)
-    {
-      if (!Thread.CurrentThread.IsBackground && _exitReceiving != null)
-        if (!_exitReceiving.WaitOne (5 * 1000))
-          eventArgs.WasClean = false;
-
-      if (!closeResources ())
-        eventArgs.WasClean = false;
-
-      _readyState = WebSocketState.CLOSED;
-      OnClose.Emit (this, eventArgs);
-    }
-
     private void close (PayloadData data)
     {
       _logger.Debug ("Is this thread background?: " + Thread.CurrentThread.IsBackground);
+
       CloseEventArgs args = null;
       lock (_forClose)
       {
         if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
           return;
 
-        var state = _readyState;
+        var current = _readyState;
         _readyState = WebSocketState.CLOSING;
+
         args = new CloseEventArgs (data);
-        if (state == WebSocketState.CONNECTING)
+        if (current == WebSocketState.CONNECTING)
         {
           if (!_client)
           {
@@ -571,7 +560,17 @@ namespace WebSocketSharp
         }
       }
 
-      close (args);
+      if (!Thread.CurrentThread.IsBackground &&
+          _exitReceiving != null &&
+          !_exitReceiving.WaitOne (5 * 1000))
+        args.WasClean = false;
+
+      if (!closeResources ())
+        args.WasClean = false;
+
+      _readyState = WebSocketState.CLOSED;
+      OnClose.Emit (this, args);
+
       _logger.Trace ("Exit close method.");
     }
 
@@ -579,7 +578,12 @@ namespace WebSocketSharp
     private void close (HttpStatusCode code)
     {
       send (createHandshakeResponse (code));
-      closeResources ();
+      try {
+        closeServerResources ();
+      }
+      catch {
+      }
+      
       _readyState = WebSocketState.CLOSED;
     }
 
@@ -635,12 +639,11 @@ namespace WebSocketSharp
     // As server
     private void closeServerResources ()
     {
-      if (_context != null && _closeContext != null)
-      {
+      if (_closeContext != null)
         _closeContext ();
-        _stream = null;
-        _context = null;
-      }
+
+      _stream = null;
+      _context = null;
     }
 
     private bool concatenateFragments (Stream dest)
@@ -862,16 +865,6 @@ namespace WebSocketSharp
       _readyState = WebSocketState.OPEN;
       startReceiving ();
       OnOpen.Emit (this, EventArgs.Empty);
-    }
-
-    private bool ping (byte [] data)
-    {
-      var frame = createControlFrame (Opcode.PING, new PayloadData (data), _client);
-      var timeOut = _client ? 5000 : 1000;
-
-      return send (frame)
-             ? _receivePong.WaitOne (timeOut)
-             : false;
     }
 
     private void pong (PayloadData data)
@@ -1327,6 +1320,16 @@ namespace WebSocketSharp
       close (code);
     }
 
+    internal bool Ping (byte [] data)
+    {
+      var frame = createControlFrame (Opcode.PING, new PayloadData (data), _client);
+      var timeOut = _client ? 5000 : 1000;
+
+      return send (frame)
+             ? _receivePong.WaitOne (timeOut)
+             : false;
+    }
+
     #endregion
 
     #region Public Methods
@@ -1352,7 +1355,16 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      Close (code, "");
+      var msg = code.CheckIfValidCloseStatusCode ();
+      if (msg != null)
+      {
+        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
+        error (msg);
+
+        return;
+      }
+
+      close (new PayloadData (code.ToByteArray (ByteOrder.BIG)));
     }
 
     /// <summary>
@@ -1451,38 +1463,40 @@ namespace WebSocketSharp
     /// Sends a Ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if a <see cref="WebSocket"/> instance receives a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> instance receives a Pong in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
     {
-      return ping (new byte [] {});
+      return Ping (new byte [] {});
     }
 
     /// <summary>
     /// Sends a Ping with the specified <paramref name="message"/> using the WebSocket connection.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send with a Ping.
+    /// A <see cref="string"/> that contains a message to send.
     /// </param>
     /// <returns>
-    /// <c>true</c> if a <see cref="WebSocket"/> instance receives a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> instance receives a Pong in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     public bool Ping (string message)
     {
-      if (message.IsNullOrEmpty ())
-        return ping (new byte [] {});
+      if (message == null || message.Length == 0)
+        return Ping (new byte [] {});
 
       var data = Encoding.UTF8.GetBytes (message);
-      if (data.Length > 125)
+      var msg = data.CheckIfValidPingData ();
+      if (msg != null)
       {
-        var msg = "The payload length of a Ping frame must be 125 bytes or less.";
         _logger.Error (msg);
         error (msg);
 
         return false;
       }
 
-      return ping (data);
+      return Ping (data);
     }
 
     /// <summary>

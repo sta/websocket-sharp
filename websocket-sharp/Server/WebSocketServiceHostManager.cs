@@ -176,6 +176,15 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal Dictionary<string, Dictionary<string, bool>> Broadping (byte [] data)
+    {
+      var result = new Dictionary<string, Dictionary<string, bool>> ();
+      foreach (var service in copy ())
+        result.Add (service.Key, service.Value.Broadping (data));
+
+      return result;
+    }
+
     internal bool Remove (string servicePath)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
@@ -348,11 +357,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
-      var result = new Dictionary<string, Dictionary<string, bool>> ();
-      foreach (var service in copy ())
-        result.Add (service.Key, service.Value.Broadping ());
-
-      return result;
+      return Broadping (new byte [] {});
     }
 
     /// <summary>
@@ -369,18 +374,18 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
-      var msg = message.CheckIfValidPingMessage ();
+      if (message == null || message.Length == 0)
+        return Broadping (new byte [] {});
+
+      var data = Encoding.UTF8.GetBytes (message);
+      var msg = data.CheckIfValidPingData ();
       if (msg != null)
       {
         _logger.Error (msg);
         return null;
       }
 
-      var result = new Dictionary<string, Dictionary<string, bool>> ();
-      foreach (var service in copy ())
-        result.Add (service.Key, service.Value.Broadping (message));
-
-      return result;
+      return Broadping (data);
     }
 
     /// <summary>
@@ -410,7 +415,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Broadping ();
+      return host.Broadping (new byte [] {});
     }
 
     /// <summary>
@@ -430,7 +435,11 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> BroadpingTo (string message, string servicePath)
     {
-      var msg = message.CheckIfValidPingMessage () ?? servicePath.CheckIfValidServicePath ();
+      if (message == null || message.Length == 0)
+        return BroadpingTo (servicePath);
+
+      var data = Encoding.UTF8.GetBytes (message);
+      var msg = data.CheckIfValidPingData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -444,7 +453,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Broadping (message);
+      return host.Broadping (data);
     }
 
     /// <summary>
@@ -459,7 +468,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string id, string servicePath)
     {
-      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -494,7 +503,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (ushort code, string reason, string id, string servicePath)
     {
-      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -529,7 +538,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (CloseStatusCode code, string reason, string id, string servicePath)
     {
-      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -591,7 +600,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string id, string servicePath)
     {
-      var msg = id.CheckIfValidSessionID () ?? servicePath.CheckIfValidServicePath ();
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -627,9 +636,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string message, string id, string servicePath)
     {
-      var msg = (message.CheckIfValidPingMessage () ?? id.CheckIfValidSessionID ()) ??
-                servicePath.CheckIfValidServicePath ();
-
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -664,9 +671,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (byte [] data, string id, string servicePath)
     {
-      var msg = (data.CheckIfValidSendData () ?? id.CheckIfValidSessionID ()) ??
-                servicePath.CheckIfValidServicePath ();
-
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -701,9 +706,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (string data, string id, string servicePath)
     {
-      var msg = (data.CheckIfValidSendData () ?? id.CheckIfValidSessionID ()) ??
-                servicePath.CheckIfValidServicePath ();
-
+      var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);

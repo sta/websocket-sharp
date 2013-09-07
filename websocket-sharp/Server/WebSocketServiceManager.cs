@@ -84,7 +84,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        return from result in Broadping ()
+        return from result in Broadping (new byte [] {})
                where result.Value
                select result.Key;
       }
@@ -134,7 +134,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        return from result in Broadping ()
+        return from result in Broadping (new byte [] {})
                where !result.Value
                select result.Key;
       }
@@ -345,38 +345,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings to the clients of every <see cref="WebSocketService"/> instances managed by
-    /// the <see cref="WebSocketServiceManager"/>.
-    /// </summary>
-    /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of ID and value indicating
-    /// whether each <see cref="WebSocketService"/> instance received a Pong from the client in a time.
-    /// </returns>
-    internal Dictionary<string, bool> Broadping ()
-    {
-      var result = new Dictionary<string, bool> ();
-      foreach (var session in copy ())
-        result.Add (session.Key, session.Value.Ping ());
-
-      return result;
-    }
-
-    /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to the clients of every <see cref="WebSocketService"/>
+    /// Sends Pings with the specified <paramref name="data"/> to the clients of every <see cref="WebSocketService"/>
     /// instances managed by the <see cref="WebSocketServiceManager"/>.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of ID and value indicating
     /// whether each <see cref="WebSocketService"/> instance received a Pong from the client in a time.
     /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a message data to send.
     /// </param>
-    internal Dictionary<string, bool> Broadping (string message)
+    internal Dictionary<string, bool> Broadping (byte [] data)
     {
       var result = new Dictionary<string, bool> ();
       foreach (var session in copy ())
-        result.Add (session.Key, session.Value.Ping (message));
+        result.Add (session.Key, session.Value.Ping (data));
 
       return result;
     }

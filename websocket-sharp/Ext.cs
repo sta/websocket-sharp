@@ -167,7 +167,7 @@ namespace WebSocketSharp
     internal static string CheckIfValidCloseData (this byte [] data)
     {
       return data.Length > 125
-             ? "The payload length of a Close frame must be 125 bytes or less."
+             ? "'reason' length must be less."
              : null;
     }
 
@@ -178,10 +178,10 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfValidPingMessage (this string message)
+    internal static string CheckIfValidPingData (this byte [] data)
     {
-      return message != null && message.Length > 0 && Encoding.UTF8.GetBytes (message).Length > 125
-             ? "The payload length of a Ping frame must be 125 bytes or less."
+      return data.Length > 125
+             ? "'message' length must be less."
              : null;
     }
 

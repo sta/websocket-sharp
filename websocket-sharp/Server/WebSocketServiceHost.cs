@@ -360,7 +360,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, bool> Broadping ()
     {
-      return _sessions.Broadping ();
+      return _sessions.Broadping (new byte [] {});
     }
 
     /// <summary>
@@ -375,14 +375,18 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> Broadping (string message)
     {
-      var msg = message.CheckIfValidPingMessage ();
+      if (message == null || message.Length == 0)
+        return _sessions.Broadping (new byte [] {});
+
+      var data = Encoding.UTF8.GetBytes (message);
+      var msg = data.CheckIfValidPingData ();
       if (msg != null)
       {
         Log.Error (msg);
         return null;
       }
 
-      return _sessions.Broadping (message);
+      return _sessions.Broadping (data);
     }
 
     /// <summary>
@@ -635,133 +639,18 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to all clients.
+    /// Sends Pings with the specified <paramref name="data"/> to all clients.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the service host received the Pong from each client in a time.
-    /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
-    /// </param>
-    Dictionary<string, bool> IWebSocketServiceHost.Broadping (string message)
-    {
-      return _sessions.Broadping (message);
-    }
-
-    /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID to find.
-    /// </param>
-    void IWebSocketServiceHost.CloseSession (string id)
-    {
-      _sessions.StopServiceInstance (id);
-    }
-
-    /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
-    /// and <paramref name="id"/>.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for closure.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID to find.
-    /// </param>
-    void IWebSocketServiceHost.CloseSession (ushort code, string reason, string id)
-    {
-      _sessions.StopServiceInstance (code, reason, id);
-    }
-
-    /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
-    /// and <paramref name="id"/>.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for closure.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID to find.
-    /// </param>
-    void IWebSocketServiceHost.CloseSession (CloseStatusCode code, string reason, string id)
-    {
-      _sessions.StopServiceInstance (code, reason, id);
-    }
-
-    /// <summary>
-    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
-    /// </param>
-    bool IWebSocketServiceHost.PingTo (string id)
-    {
-      return _sessions.PingTo (id);
-    }
-
-    /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
-    /// the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the WebSocket service host receives a Pong from the client in a time;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
-    /// </param>
-    bool IWebSocketServiceHost.PingTo (string message, string id)
-    {
-      return _sessions.PingTo (message, id);
-    }
-
-    /// <summary>
-    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
+    /// indicating whether the WebSocket service host received a Pong from each client in a time.
     /// </returns>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// An array of <see cref="byte"/> that contains a message data to send.
     /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
-    /// </param>
-    bool IWebSocketServiceHost.SendTo (byte [] data, string id)
+    Dictionary<string, bool> IWebSocketServiceHost.Broadping (byte [] data)
     {
-      return _sessions.SendTo (data, id);
-    }
-
-    /// <summary>
-    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
-    /// </param>
-    bool IWebSocketServiceHost.SendTo (string data, string id)
-    {
-      return _sessions.SendTo (data, id);
+      return _sessions.Broadping (data);
     }
 
     /// <summary>
