@@ -283,11 +283,11 @@ namespace WebSocketSharp.Net
 				state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
 
 				int count = serializationInfo.GetInt32 ("Count");
-				count.Times (i => {
+				for (int i = 0; i < count; i++) {
 					base.Add (
 						serializationInfo.GetString (i.ToString ()),
 						serializationInfo.GetString ((count + i).ToString ()));
-				});
+				}
 			} catch (SerializationException ex) {
 				throw new ArgumentException (ex.Message, "serializationInfo", ex);
 			}
