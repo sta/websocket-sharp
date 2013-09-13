@@ -9,9 +9,11 @@ namespace Example2
   {
     protected override void OnMessage (MessageEventArgs e)
     {
-      var msg = QueryString.Contains ("name")
-              ? String.Format ("Returns '{0}' to {1}", e.Data, QueryString ["name"])
+      var name = Context.QueryString ["name"];
+      var msg = name != null
+              ? String.Format ("Returns '{0}' to {1}", e.Data, name)
               : e.Data;
+
       Send (msg);
     }
 

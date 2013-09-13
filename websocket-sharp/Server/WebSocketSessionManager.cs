@@ -1,6 +1,6 @@
 #region License
 /*
- * WebSocketServiceManager.cs
+ * WebSocketSessionManager.cs
  *
  * The MIT License
  *
@@ -34,15 +34,15 @@ using System.Timers;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Manages the collection of <see cref="WebSocketService"/> instances.
+  /// Manages the sessions to the Websocket service.
   /// </summary>
-  public class WebSocketServiceManager
+  public class WebSocketSessionManager
   {
     #region Private Fields
 
     private object                               _forSweep;
     private Logger                               _logger;
-    private Dictionary<string, WebSocketService> _services;
+    private Dictionary<string, WebSocketService> _sessions;
     private volatile bool                        _stopped;
     private volatile bool                        _sweeping;
     private Timer                                _sweepTimer;
@@ -52,16 +52,16 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceManager ()
+    internal WebSocketSessionManager ()
       : this (new Logger ())
     {
     }
 
-    internal WebSocketServiceManager (Logger logger)
+    internal WebSocketSessionManager (Logger logger)
     {
       _logger = logger;
       _forSweep = new object ();
-      _services = new Dictionary<string, WebSocketService> ();
+      _sessions = new Dictionary<string, WebSocketService> ();
       _stopped = false;
       _sweeping = false;
       _sync = new object ();
@@ -72,15 +72,26 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Internal Properties
+
+    internal IEnumerable<WebSocketService> ServiceInstances {
+      get {
+        lock (_sync)
+        {
+          return _sessions.Values.ToList ();
+        }
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
-    /// Gets the collection of IDs of active <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Gets the collection of every ID of the active sessions to the Websocket service.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
-    /// of active <see cref="WebSocketService"/> instances.
+    /// An IEnumerable&lt;string&gt; that contains the collection of every ID of the active sessions.
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
@@ -91,46 +102,40 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the number of <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Gets the number of the sessions to the Websocket service.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains the number of <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// An <see cref="int"/> that contains the number of the sessions.
     /// </value>
     public int Count {
       get {
         lock (_sync)
         {
-          return _services.Count;
+          return _sessions.Count;
         }
       }
     }
 
     /// <summary>
-    /// Gets the collection of IDs of <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Gets the collection of every ID of the sessions to the Websocket service.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
-    /// of <see cref="WebSocketService"/> instances.
+    /// An IEnumerable&lt;string&gt; that contains the collection of every ID of the sessions.
     /// </value>
     public IEnumerable<string> IDs {
       get {
         lock (_sync)
         {
-          return _services.Keys;
+          return _sessions.Keys.ToList ();
         }
       }
     }
 
     /// <summary>
-    /// Gets the collection of IDs of inactive <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Gets the collection of every ID of the inactive sessions to the Websocket service.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of IDs
-    /// of inactive <see cref="WebSocketService"/> instances.
+    /// An IEnumerable&lt;string&gt; that contains the collection of every ID of the inactive sessions.
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
@@ -141,17 +146,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketService"/> instance with the specified <paramref name="id"/>
-    /// from the <see cref="WebSocketServiceManager"/>.
+    /// Gets the session information with the specified <paramref name="id"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketService"/> instance with <paramref name="id"/> if it is successfully found;
+    /// A <see cref="IWebSocketSession"/> instance with <paramref name="id"/> if it is successfully found;
     /// otherwise, <see langword="null"/>.
     /// </value>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID to find.
+    /// A <see cref="string"/> that contains a session ID to find.
     /// </param>
-    public WebSocketService this [string id] {
+    public IWebSocketSession this [string id] {
       get {
         var msg = id.CheckIfValidSessionID ();
         if (msg != null)
@@ -163,7 +167,7 @@ namespace WebSocketSharp.Server
         lock (_sync)
         {
           try {
-            return _services [id];
+            return _sessions [id];
           }
           catch {
             _logger.Error ("'id' not found.\nid: " + id);
@@ -174,12 +178,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="WebSocketServiceManager"/> cleans up
-    /// the inactive <see cref="WebSocketService"/> instances periodically.
+    /// Gets a value indicating whether the manager cleans up the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocketServiceManager"/> cleans up the inactive
-    /// <see cref="WebSocketService"/> instances every 60 seconds; otherwise, <c>false</c>.
+    /// <c>true</c> if the manager cleans up the inactive sessions every 60 seconds;
+    /// otherwise, <c>false</c>.
     /// </value>
     public bool KeepClean {
       get {
@@ -198,19 +201,15 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of the <see cref="WebSocketService"/> instances
-    /// managed by the <see cref="WebSocketServiceManager"/>.
+    /// Gets the collection of the session informations to the Websocket service.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;WebSocketService&gt; that contains the collection of
-    /// the <see cref="WebSocketService"/> instances.
+    /// An IEnumerable&lt;IWebSocketSession&gt; that contains the collection of the session informations.
     /// </value>
-    public IEnumerable<WebSocketService> ServiceInstances {
+    public IEnumerable<IWebSocketSession> Sessions {
       get {
-        lock (_sync)
-        {
-          return _services.Values;
-        }
+        return from IWebSocketSession session in ServiceInstances
+               select session;
       }
     }
 
@@ -232,9 +231,7 @@ namespace WebSocketSharp.Server
 
     private void broadcastAsync (byte [] data)
     {
-      var copied = copy ();
-      var services = copied.Values.GetEnumerator ();
-
+      var services = ServiceInstances.GetEnumerator ();
       Action completed = null;
       completed = () =>
       {
@@ -248,9 +245,7 @@ namespace WebSocketSharp.Server
 
     private void broadcastAsync (string data)
     {
-      var copied = copy ();
-      var services = copied.Values.GetEnumerator ();
-
+      var services = ServiceInstances.GetEnumerator ();
       Action completed = null;
       completed = () =>
       {
@@ -260,14 +255,6 @@ namespace WebSocketSharp.Server
 
       if (services.MoveNext ())
         services.Current.SendAsync (data, completed);
-    }
-
-    private Dictionary<string, WebSocketService> copy ()
-    {
-      lock (_sync)
-      {
-        return new Dictionary<string, WebSocketService> (_services);
-      }
     }
 
     private static string createID ()
@@ -300,7 +287,7 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal string Add (WebSocketService service)
+    internal string Add (WebSocketService session)
     {
       lock (_sync)
       {
@@ -308,19 +295,12 @@ namespace WebSocketSharp.Server
           return null;
 
         var id = createID ();
-        _services.Add (id, service);
+        _sessions.Add (id, session);
 
         return id;
       }
     }
 
-    /// <summary>
-    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances managed by the <see cref="WebSocketServiceManager"/>.
-    /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> to broadcast.
-    /// </param>
     internal void Broadcast (byte [] data)
     {
       if (_stopped)
@@ -329,13 +309,6 @@ namespace WebSocketSharp.Server
         broadcastAsync (data);
     }
 
-    /// <summary>
-    /// Broadcasts the specified <see cref="string"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances managed by the <see cref="WebSocketServiceManager"/>.
-    /// </summary>
-    /// <param name="data">
-    /// A <see cref="string"/> to broadcast.
-    /// </param>
     internal void Broadcast (string data)
     {
       if (_stopped)
@@ -344,71 +317,35 @@ namespace WebSocketSharp.Server
         broadcastAsync (data);
     }
 
-    /// <summary>
-    /// Sends Pings with the specified <paramref name="data"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances managed by the <see cref="WebSocketServiceManager"/>.
-    /// </summary>
-    /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of ID and value indicating
-    /// whether each <see cref="WebSocketService"/> instance received a Pong from the client in a time.
-    /// </returns>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a message data to send.
-    /// </param>
     internal Dictionary<string, bool> Broadping (byte [] data)
     {
       var result = new Dictionary<string, bool> ();
-      foreach (var session in copy ())
-        result.Add (session.Key, session.Value.Ping (data));
+      foreach (var service in ServiceInstances)
+        result.Add (service.ID, service.Ping (data));
 
       return result;
     }
 
-    /// <summary>
-    /// Sends a Ping to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance receives a Pong from the client
-    /// in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
-    /// </param>
     internal bool PingTo (string id)
     {
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
       return service.Ping ();
     }
 
-    /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client of the <see cref="WebSocketService"/>
-    /// instance with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance receives a Pong from the client
-    /// in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the Ping.
-    /// </param>
     internal bool PingTo (string message, string id)
     {
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -419,30 +356,17 @@ namespace WebSocketSharp.Server
     {
       lock (_sync)
       {
-        return _services.Remove (id);
+        return _sessions.Remove (id);
       }
     }
 
-    /// <summary>
-    /// Sends a binary data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     internal bool SendTo (byte [] data, string id)
     {
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -450,26 +374,13 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    /// <summary>
-    /// Sends a text data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains an ID that represents the destination for the data.
-    /// </param>
     internal bool SendTo (string data, string id)
     {
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -486,7 +397,7 @@ namespace WebSocketSharp.Server
           return;
 
         _stopped = true;
-        foreach (var service in copy ().Values)
+        foreach (var service in ServiceInstances)
           service.Stop ();
       }
     }
@@ -500,7 +411,7 @@ namespace WebSocketSharp.Server
           return;
 
         _stopped = true;
-        foreach (var service in copy ().Values)
+        foreach (var service in ServiceInstances)
           service.Stop (data);
       }
     }
@@ -511,7 +422,7 @@ namespace WebSocketSharp.Server
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
@@ -524,7 +435,7 @@ namespace WebSocketSharp.Server
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
@@ -537,11 +448,19 @@ namespace WebSocketSharp.Server
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error (
-          "The WebSocket service instance with the specified ID not found.\nID: " + id);
+          "The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
       service.Stop (code, reason);
+    }
+
+    internal bool TryGetServiceInstance (string id, out WebSocketService service)
+    {
+      lock (_sync)
+      {
+        return _sessions.TryGetValue (id, out service);
+      }
     }
 
     #endregion
@@ -549,7 +468,7 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Cleans up the inactive <see cref="WebSocketService"/> instances.
+    /// Cleans up the inactive sessions.
     /// </summary>
     public void Sweep ()
     {
@@ -567,15 +486,15 @@ namespace WebSocketSharp.Server
               break;
 
             WebSocketService service;
-            if (_services.TryGetValue (id, out service))
+            if (_sessions.TryGetValue (id, out service))
             {
-              var state = service.WebSocket.ReadyState;
+              var state = service.State;
               if (state == WebSocketState.OPEN)
                 service.Stop (((ushort) CloseStatusCode.ABNORMAL).ToByteArray (ByteOrder.BIG));
               else if (state == WebSocketState.CLOSING)
                 continue;
               else
-                _services.Remove (id);
+                _sessions.Remove (id);
             }
           }
         }
@@ -585,25 +504,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the <see cref="WebSocketService"/> instance with the specified <paramref name="id"/>.
+    /// Tries to get the session information with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/>
-    /// is successfully found; otherwise, <c>false</c>.
+    /// <c>true</c> if the session information is successfully found;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that contains an ID to find.
+    /// A <see cref="string"/> that contains a session ID to find.
     /// </param>
-    /// <param name="service">
-    /// When this method returns, contains a <see cref="WebSocketService"/> instance with <param name="id"/>
-    /// if it is successfully found; otherwise, <see langword="null"/>.
+    /// <param name="session">
+    /// When this method returns, a <see cref="IWebSocketSession"/> instance that contains the session
+    /// information if it is successfully found; otherwise, <see langword="null"/>.
     /// </param>
-    public bool TryGetServiceInstance (string id, out WebSocketService service)
+    public bool TryGetSession (string id, out IWebSocketSession session)
     {
-      lock (_sync)
-      {
-        return _services.TryGetValue (id, out service);
-      }
+      WebSocketService service;
+      var result = TryGetServiceInstance (id, out service);
+      session = service;
+
+      return result;
     }
 
     #endregion

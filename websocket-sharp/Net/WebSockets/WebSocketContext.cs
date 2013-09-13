@@ -44,7 +44,7 @@ namespace WebSocketSharp.Net.WebSockets
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketSharp.Net.WebSockets.WebSocketContext"/> class.
+    /// Initializes a new instance of the <see cref="WebSocketContext"/> class.
     /// </summary>
     protected WebSocketContext ()
     {

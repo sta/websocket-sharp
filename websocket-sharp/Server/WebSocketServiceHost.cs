@@ -53,7 +53,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private string                  _servicePath;
-    private WebSocketServiceManager _sessions;
+    private WebSocketSessionManager _sessions;
 
     #endregion
 
@@ -62,7 +62,7 @@ namespace WebSocketSharp.Server
     internal WebSocketServiceHost (Logger logger)
       : base (logger)
     {
-      _sessions = new WebSocketServiceManager (logger);
+      _sessions = new WebSocketSessionManager (logger);
     }
 
     #endregion
@@ -91,7 +91,7 @@ namespace WebSocketSharp.Server
     public WebSocketServiceHost (string url)
       : base (url)
     {
-      _sessions = new WebSocketServiceManager (Log);
+      _sessions = new WebSocketSessionManager (Log);
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ namespace WebSocketSharp.Server
     public WebSocketServiceHost (System.Net.IPAddress address, int port, string servicePath, bool secure)
       : base (address, port, servicePath, secure)
     {
-      _sessions = new WebSocketServiceManager (Log);
+      _sessions = new WebSocketSessionManager (Log);
     }
 
     #endregion
@@ -206,10 +206,10 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets a value indicating whether the WebSocket service host cleans up
-    /// the inactive <see cref="WebSocketService"/> instances periodically.
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive WebSocket service instances
+    /// <c>true</c> if the WebSocket service host cleans up the inactive sessions
     /// every 60 seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {
@@ -219,18 +219,6 @@ namespace WebSocketSharp.Server
 
       set {
         _sessions.KeepClean = value;
-      }
-    }
-
-    /// <summary>
-    /// Gets the collection of the WebSocket sessions managed by the WebSocket service host.
-    /// </summary>
-    /// <value>
-    /// A <see cref="WebSocketServiceManager"/> that contains a collection of the WebSocket sessions.
-    /// </value>
-    public WebSocketServiceManager Sessions {
-      get {
-        return _sessions;
       }
     }
 
@@ -246,6 +234,18 @@ namespace WebSocketSharp.Server
           _servicePath = HttpUtility.UrlDecode (BaseUri.GetAbsolutePath ()).TrimEndSlash ();
 
         return _servicePath;
+      }
+    }
+
+    /// <summary>
+    /// Gets the manager of the sessions to the WebSocket service host.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
+    /// </value>
+    public WebSocketSessionManager Sessions {
+      get {
+        return _sessions;
       }
     }
 
@@ -390,7 +390,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="id"/>.
+    /// Close the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that contains a session ID to find.
@@ -408,7 +408,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>
     /// and <paramref name="id"/>.
     /// </summary>
     /// <param name="code">
@@ -433,7 +433,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>
     /// and <paramref name="id"/>.
     /// </summary>
     /// <param name="code">
@@ -506,7 +506,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
+    /// Sends a binary <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -530,7 +531,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
+    /// Sends a text <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -654,7 +656,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops the WebSocket service host with the specified array of <see cref="byte"/>.
+    /// Stops receiving the WebSocket connection requests with the specified array of <see cref="byte"/>.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains the reason for stop.

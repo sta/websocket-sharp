@@ -171,11 +171,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
-    /// instances periodically.
+    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket sessions
+    /// periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+    /// <c>true</c> if the server cleans up the inactive WebSocket sessions every 60 seconds;
     /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {

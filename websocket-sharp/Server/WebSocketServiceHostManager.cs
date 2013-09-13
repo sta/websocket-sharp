@@ -28,13 +28,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Manages the collection of the WebSocket service hosts.
+  /// Manages the WebSocket services provided by the <see cref="HttpServer"/> and
+  /// <see cref="WebSocketServer"/>.
   /// </summary>
   public class WebSocketServiceHostManager
   {
@@ -88,7 +90,7 @@ namespace WebSocketSharp.Server
       get {
         lock (_sync)
         {
-          return _serviceHosts.Values;
+          return _serviceHosts.Values.ToList ();
         }
       }
     }
@@ -98,10 +100,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the connection count to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// Gets the connection count to the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains the connection count.
+    /// An <see cref="int"/> that contains the connection count to the WebSocket services.
     /// </value>
     public int ConnectionCount {
       get {
@@ -114,7 +116,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the number of the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// Gets the number of the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <value>
     /// An <see cref="int"/> that contains the number of the WebSocket services.
@@ -129,16 +131,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of paths to the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// Gets the collection of each path to the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
+    /// An IEnumerable&lt;string&gt; that contains the collection of each path to the WebSocket services.
     /// </value>
     public IEnumerable<string> ServicePaths {
       get {
         lock (_sync)
         {
-          return _serviceHosts.Keys;
+          return _serviceHosts.Keys.ToList ();
         }
       }
     }
@@ -243,7 +245,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket services
-    /// managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// provided by the WebSocket server.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
@@ -263,7 +265,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket services
-    /// managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// provided by the WebSocket server.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
@@ -348,7 +350,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings to all clients of the WebSocket services managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// Sends Pings to all clients of the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
@@ -362,12 +364,13 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket services
-    /// managed by the <see cref="WebSocketServiceHostManager"/>.
+    /// provided by the WebSocket server.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
     /// service paths and pairs of session ID and value indicating whether each WebSocket service
     /// received a Pong from each client in a time.
+    /// If <paramref name="message"/> is invalid, returns <see langword="null"/>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -457,7 +460,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="id"/> and
+    /// Close the session with the specified <paramref name="id"/> and
     /// <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="id">
@@ -486,7 +489,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="code">
@@ -521,7 +524,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="code">
@@ -582,6 +585,35 @@ namespace WebSocketSharp.Server
       }
 
       return host.ConnectionCount;
+    }
+
+    /// <summary>
+    /// Gets the manager of the sessions to the WebSocket service with the specified <paramref name="servicePath"/>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="WebSocketSessionManager"/> if the WebSocket service is successfully found;
+    /// otherwise, <see langword="null"/>.
+    /// </returns>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// </param>
+    public WebSocketSessionManager GetSessions (string servicePath)
+    {
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return null;
+      }
+
+      IWebSocketServiceHost host;
+      if (!TryGetServiceHost (servicePath, out host))
+      {
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+        return null;
+      }
+
+      return host.Sessions;
     }
 
     /// <summary>
@@ -654,8 +686,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified <paramref name="id"/> and
-    /// <paramref name="servicePath"/>.
+    /// Sends a binary <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -689,8 +721,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified <paramref name="id"/> and
-    /// <paramref name="servicePath"/>.
+    /// Sends a text <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.

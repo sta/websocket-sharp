@@ -37,18 +37,19 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides the basic functions of the WebSocket service managed by the WebSocket service host.
+  /// Provides the basic functions of the WebSocket service used by the WebSocket service host.
   /// </summary>
   /// <remarks>
   /// The WebSocketService class is an abstract class.
   /// </remarks>
-  public abstract class WebSocketService
+  public abstract class WebSocketService : IWebSocketSession
   {
     #region Private Fields
 
     private WebSocket               _websocket;
     private WebSocketContext        _context;
-    private WebSocketServiceManager _sessions;
+    private WebSocketSessionManager _sessions;
+    private DateTime                _start;
 
     #endregion
 
@@ -59,18 +60,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     public WebSocketService ()
     {
-      ID = String.Empty;
       IsBound = false;
-    }
-
-    #endregion
-
-    #region Internal Properties
-
-    internal WebSocket WebSocket {
-      get {
-        return _websocket;
-      }
+      _start = DateTime.MaxValue;
     }
 
     #endregion
@@ -99,32 +90,17 @@ namespace WebSocketSharp.Server
           _websocket.Log = value;
       }
     }
-
+    
     /// <summary>
-    /// Gets the collection of query string variables used in the WebSocket connection request.
+    /// Gets the manager of the sessions to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions
+    /// to the WebSocket service.
     /// </value>
-    protected NameValueCollection QueryString {
+    protected WebSocketSessionManager Sessions {
       get {
-        return IsBound
-               ? _context.QueryString
-               : null;
-      }
-    }
-
-    /// <summary>
-    /// Gets the collection of the WebSocket sessions managed by the WebSocket service host.
-    /// </summary>
-    /// <value>
-    /// A <see cref="WebSocketServiceManager"/> that contains a collection of the WebSocket sessions.
-    /// </value>
-    protected WebSocketServiceManager Sessions {
-      get {
-        return IsBound
-               ? _sessions
-               : null;
+        return _sessions;
       }
     }
 
@@ -133,10 +109,22 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the session ID of the current <see cref="WebSocketService"/> instance.
+    /// Gets the WebSocket connection request information.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains a session ID.
+    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request information.
+    /// </value>
+    public WebSocketContext Context {
+      get {
+        return _context;
+      }
+    }
+
+    /// <summary>
+    /// Gets the unique ID of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains the unique ID.
     /// </value>
     public string ID {
       get; private set;
@@ -154,12 +142,42 @@ namespace WebSocketSharp.Server
       get; private set;
     }
 
+    /// <summary>
+    /// Gets the time that the current <see cref="WebSocketService"/> instance has been started.
+    /// </summary>
+    /// <value>
+    /// A <see cref="DateTime"/> that represents the time that the current <see cref="WebSocketService"/>
+    /// instance has been started.
+    /// </value>
+    public DateTime StartTime {
+      get {
+        return _start;
+      }
+    }
+
+    /// <summary>
+    /// Gets the state of the WebSocket connection.
+    /// </summary>
+    /// <value>
+    /// One of the <see cref="WebSocketState"/> values.
+    /// </value>
+    public WebSocketState State {
+      get {
+        return IsBound
+               ? _websocket.ReadyState
+               : WebSocketState.CONNECTING;
+      }
+    }
+
     #endregion
 
     #region Private Methods
 
     private void onClose (object sender, CloseEventArgs e)
     {
+      if (ID == null)
+        return;
+
       _sessions.Remove (ID);
       OnClose (e);
     }
@@ -177,6 +195,13 @@ namespace WebSocketSharp.Server
     private void onOpen (object sender, EventArgs e)
     {
       ID = _sessions.Add (this);
+      if (ID == null)
+      {
+        _websocket.Close (CloseStatusCode.AWAY);
+        return;
+      }
+
+      _start = DateTime.Now;
       OnOpen ();
     }
 
@@ -184,7 +209,7 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Bind (WebSocketContext context, WebSocketServiceManager sessions)
+    internal void Bind (WebSocketContext context, WebSocketSessionManager sessions)
     {
       if (IsBound)
         return;
@@ -206,16 +231,6 @@ namespace WebSocketSharp.Server
       return _websocket.Ping (data);
     }
 
-    internal void SendAsync (byte [] data, Action completed)
-    {
-      _websocket.SendAsync (data, completed);
-    }
-
-    internal void SendAsync (string data, Action completed)
-    {
-      _websocket.SendAsync (data, completed);
-    }
-
     internal void Stop (byte [] data)
     {
       _websocket.Close (data);
@@ -226,8 +241,7 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Broadcasts the specified array of <see cref="byte"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances in the <see cref="WebSocketService.Sessions"/>.
+    /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
@@ -250,8 +264,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts the specified <see cref="string"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances in the <see cref="WebSocketService.Sessions"/>.
+    /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
@@ -274,12 +287,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings to the clients of every <see cref="WebSocketService"/> instances
-    /// in the <see cref="WebSocketService.Sessions"/>.
+    /// Sends Pings to all clients of the WebSocket service.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the each <see cref="WebSocketService"/> instance received a Pong in a time.
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
     /// </returns>
     protected virtual Dictionary<string, bool> Broadping ()
     {
@@ -289,12 +301,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to the clients of every <see cref="WebSocketService"/>
-    /// instances in the <see cref="WebSocketService.Sessions"/>.
+    /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket service.
     /// </summary>
     /// <returns>
     /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
-    /// indicating whether the each <see cref="WebSocketService"/> instance received a Pong in a time.
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -374,12 +385,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/> receives
-    /// a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
     /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
@@ -402,12 +412,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client of
-    /// the <see cref="WebSocketService"/> instance with the specified <paramref name="id"/>.
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
+    /// the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocketService"/> instance with <paramref name="id"/> receives
-    /// a Pong in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket service receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -433,8 +443,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
+    /// Sends a binary <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -463,8 +473,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client of the <see cref="WebSocketService"/> instance
-    /// with the specified <paramref name="id"/>.
+    /// Sends a text <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -523,8 +533,8 @@ namespace WebSocketSharp.Server
     /// Sends a Ping to the client of the current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
+    /// from the client in a time; otherwise, <c>false</c>.
     /// </returns>
     public virtual bool Ping ()
     {
@@ -538,8 +548,8 @@ namespace WebSocketSharp.Server
     /// the current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
+    /// from the client in a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that contains a message to send.
@@ -552,7 +562,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data to the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a binary <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
@@ -564,7 +575,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text data to the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
@@ -573,6 +585,40 @@ namespace WebSocketSharp.Server
     {
       if (IsBound)
         _websocket.Send (data);
+    }
+
+    /// <summary>
+    /// Sends a binary <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance asynchronously.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
+    /// </param>
+    public virtual void SendAsync (byte [] data, Action completed)
+    {
+      if (IsBound)
+        _websocket.SendAsync (data, completed);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance asynchronously.
+    /// </summary>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An <see cref="Action"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
+    /// </param>
+    public virtual void SendAsync (string data, Action completed)
+    {
+      if (IsBound)
+        _websocket.SendAsync (data, completed);
     }
 
     /// <summary>

@@ -46,14 +46,22 @@ namespace WebSocketSharp.Server
     int ConnectionCount { get; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service host cleans up the inactive service
-    /// instances periodically.
+    /// Gets or sets a value indicating whether the WebSocket service host cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive service instances periodically;
+    /// <c>true</c> if the WebSocket service host cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
     bool KeepClean { get; set; }
+
+    /// <summary>
+    /// Gets the manager of the sessions to the WebSocket service host.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
+    /// </value>
+    WebSocketSessionManager Sessions { get; }
 
     /// <summary>
     /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
@@ -101,7 +109,7 @@ namespace WebSocketSharp.Server
     Dictionary<string, bool> Broadping (byte [] data);
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="id"/>.
+    /// Close the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that contains a session ID to find.
@@ -109,7 +117,7 @@ namespace WebSocketSharp.Server
     void CloseSession (string id);
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>
     /// and <paramref name="id"/>.
     /// </summary>
     /// <param name="code">
@@ -124,7 +132,7 @@ namespace WebSocketSharp.Server
     void CloseSession (ushort code, string reason, string id);
 
     /// <summary>
-    /// Close the WebSocket session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>
     /// and <paramref name="id"/>.
     /// </summary>
     /// <param name="code">
@@ -167,7 +175,8 @@ namespace WebSocketSharp.Server
     bool PingTo (string message, string id);
 
     /// <summary>
-    /// Sends a binary data to the client associated with the specified <paramref name="id"/>.
+    /// Sends a binary <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
@@ -181,7 +190,8 @@ namespace WebSocketSharp.Server
     bool SendTo (byte [] data, string id);
 
     /// <summary>
-    /// Sends a text data to the client associated with the specified <paramref name="id"/>.
+    /// Sends a text <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.

@@ -146,11 +146,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive WebSocket service
-    /// instances periodically.
+    /// Gets or sets a value indicating whether the server cleans up the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive WebSocket service instances every 60 seconds;
+    /// <c>true</c> if the server cleans up the inactive sessions every 60 seconds;
     /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {
@@ -164,10 +163,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of paths to the WebSocket services that the server provides.
+    /// Gets the collection of each path to the WebSocket services that the server provides.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of paths.
+    /// An IEnumerable&lt;string&gt; that contains the collection of each path to the WebSocket services.
     /// </value>
     public IEnumerable<string> ServicePaths {
       get {

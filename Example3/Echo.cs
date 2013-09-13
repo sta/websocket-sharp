@@ -2,16 +2,18 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Example3 {
-
+namespace Example3
+{
   public class Echo : WebSocketService
   {
-    protected override void OnMessage(MessageEventArgs e)
+    protected override void OnMessage (MessageEventArgs e)
     {
-      var msg = QueryString.Contains("name")
-              ? String.Format("'{0}' returns to {1}", e.Data, QueryString["name"])
+      var name = Context.QueryString ["name"];
+      var msg = name != null
+              ? String.Format ("Returns '{0}' to {1}", e.Data, name)
               : e.Data;
-      Send(msg);
+
+      Send (msg);
     }
   }
 }
