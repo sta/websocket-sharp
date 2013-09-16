@@ -131,10 +131,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of each path to the WebSocket services provided by the WebSocket server.
+    /// Gets the collection of every path to the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of each path to the WebSocket services.
+    /// An IEnumerable&lt;string&gt; that contains the collection of every path to the WebSocket services.
     /// </value>
     public IEnumerable<string> ServicePaths {
       get {
@@ -148,6 +148,15 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Private Methods
+
+    private Dictionary<string, Dictionary<string, bool>> broadping (byte [] data)
+    {
+      var result = new Dictionary<string, Dictionary<string, bool>> ();
+      foreach (var service in copy ())
+        result.Add (service.Key, service.Value.Sessions.BroadpingInternally (data));
+
+      return result;
+    }
 
     private Dictionary<string, IWebSocketServiceHost> copy ()
     {
@@ -178,15 +187,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal Dictionary<string, Dictionary<string, bool>> Broadping (byte [] data)
-    {
-      var result = new Dictionary<string, Dictionary<string, bool>> ();
-      foreach (var service in copy ())
-        result.Add (service.Key, service.Value.Broadping (data));
-
-      return result;
-    }
-
     internal bool Remove (string servicePath)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
@@ -204,7 +204,7 @@ namespace WebSocketSharp.Server
         _serviceHosts.Remove (servicePath);
       }
 
-      host.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
+      host.Sessions.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
       return true;
     }
 
@@ -213,7 +213,7 @@ namespace WebSocketSharp.Server
       lock (_sync)
       {
         foreach (var host in _serviceHosts.Values)
-          host.Stop ();
+          host.Sessions.Stop ();
 
         _serviceHosts.Clear ();
       }
@@ -224,7 +224,7 @@ namespace WebSocketSharp.Server
       lock (_sync)
       {
         foreach (var host in _serviceHosts.Values)
-          host.Stop (data);
+          host.Sessions.Stop (data);
 
         _serviceHosts.Clear ();
       }
@@ -260,7 +260,7 @@ namespace WebSocketSharp.Server
       }
 
       foreach (var host in ServiceHosts)
-        host.Broadcast (data);
+        host.Sessions.BroadcastInternally (data);
     }
 
     /// <summary>
@@ -280,7 +280,7 @@ namespace WebSocketSharp.Server
       }
 
       foreach (var host in ServiceHosts)
-        host.Broadcast (data);
+        host.Sessions.BroadcastInternally (data);
     }
 
     /// <summary>
@@ -312,7 +312,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      host.Broadcast (data);
+      host.Sessions.BroadcastInternally (data);
       return true;
     }
 
@@ -345,7 +345,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      host.Broadcast (data);
+      host.Sessions.BroadcastInternally (data);
       return true;
     }
 
@@ -359,7 +359,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
-      return Broadping (new byte [] {});
+      return broadping (new byte [] {});
     }
 
     /// <summary>
@@ -378,7 +378,7 @@ namespace WebSocketSharp.Server
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
       if (message == null || message.Length == 0)
-        return Broadping (new byte [] {});
+        return broadping (new byte [] {});
 
       var data = Encoding.UTF8.GetBytes (message);
       var msg = data.CheckIfValidPingData ();
@@ -388,7 +388,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (data);
+      return broadping (data);
     }
 
     /// <summary>
@@ -418,7 +418,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Broadping (new byte [] {});
+      return host.Sessions.BroadpingInternally (new byte [] {});
     }
 
     /// <summary>
@@ -456,11 +456,11 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Broadping (data);
+      return host.Sessions.BroadpingInternally (data);
     }
 
     /// <summary>
-    /// Close the session with the specified <paramref name="id"/> and
+    /// Closes the session with the specified <paramref name="id"/> and
     /// <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="id">
@@ -485,11 +485,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      host.CloseSession (id);
+      host.Sessions.CloseSession (id);
     }
 
     /// <summary>
-    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// Closes the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="code">
@@ -520,11 +520,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      host.CloseSession (code, reason, id);
+      host.Sessions.CloseSession (code, reason, id);
     }
 
     /// <summary>
-    /// Close the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
+    /// Closes the session with the specified <paramref name="code"/>, <paramref name="reason"/>,
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="code">
@@ -555,7 +555,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      host.CloseSession (code, reason, id);
+      host.Sessions.CloseSession (code, reason, id);
     }
 
     /// <summary>
@@ -646,7 +646,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return host.PingTo (id);
+      return host.Sessions.PingTo (id);
     }
 
     /// <summary>
@@ -682,7 +682,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return host.PingTo (message, id);
+      return host.Sessions.PingTo (message, id);
     }
 
     /// <summary>
@@ -717,7 +717,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return host.SendTo (data, id);
+      return host.Sessions.SendTo (data, id);
     }
 
     /// <summary>
@@ -752,7 +752,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return host.SendTo (data, id);
+      return host.Sessions.SendTo (data, id);
     }
 
     #endregion

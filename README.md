@@ -237,7 +237,7 @@ public class Chat : WebSocketService
 {
   protected override void OnMessage (MessageEventArgs e)
   {
-    Broadcast (e.Data);
+    Sessions.Broadcast (e.Data);
   }
 }
 ```

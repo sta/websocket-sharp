@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Timers;
 
 namespace WebSocketSharp.Server
@@ -95,7 +96,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        return from result in Broadping (new byte [] {})
+        return from result in BroadpingInternally (new byte [] {})
                where result.Value
                select result.Key;
       }
@@ -139,7 +140,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        return from result in Broadping (new byte [] {})
+        return from result in BroadpingInternally (new byte [] {})
                where !result.Value
                select result.Key;
       }
@@ -170,7 +171,8 @@ namespace WebSocketSharp.Server
             return _sessions [id];
           }
           catch {
-            _logger.Error ("'id' not found.\nid: " + id);
+            _logger.Error (
+              "The WebSocket session with the specified ID not found.\nID: " + id);
             return null;
           }
         }
@@ -301,7 +303,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Broadcast (byte [] data)
+    internal void BroadcastInternally (byte [] data)
     {
       if (_stopped)
         broadcast (data);
@@ -309,7 +311,7 @@ namespace WebSocketSharp.Server
         broadcastAsync (data);
     }
 
-    internal void Broadcast (string data)
+    internal void BroadcastInternally (string data)
     {
       if (_stopped)
         broadcast (data);
@@ -317,39 +319,13 @@ namespace WebSocketSharp.Server
         broadcastAsync (data);
     }
 
-    internal Dictionary<string, bool> Broadping (byte [] data)
+    internal Dictionary<string, bool> BroadpingInternally (byte [] data)
     {
       var result = new Dictionary<string, bool> ();
-      foreach (var service in ServiceInstances)
-        result.Add (service.ID, service.Ping (data));
+      foreach (var session in ServiceInstances)
+        result.Add (session.ID, session.Context.WebSocket.Ping (data));
 
       return result;
-    }
-
-    internal bool PingTo (string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
-      }
-
-      return service.Ping ();
-    }
-
-    internal bool PingTo (string message, string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
-      }
-
-      return service.Ping (message);
     }
 
     internal bool Remove (string id)
@@ -358,34 +334,6 @@ namespace WebSocketSharp.Server
       {
         return _sessions.Remove (id);
       }
-    }
-
-    internal bool SendTo (byte [] data, string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
-      }
-
-      service.Send (data);
-      return true;
-    }
-
-    internal bool SendTo (string data, string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
-      }
-
-      service.Send (data);
-      return true;
     }
 
     internal void Stop ()
@@ -397,8 +345,8 @@ namespace WebSocketSharp.Server
           return;
 
         _stopped = true;
-        foreach (var service in ServiceInstances)
-          service.Stop ();
+        foreach (var session in ServiceInstances)
+          session.Context.WebSocket.Close ();
       }
     }
 
@@ -411,48 +359,9 @@ namespace WebSocketSharp.Server
           return;
 
         _stopped = true;
-        foreach (var service in ServiceInstances)
-          service.Stop (data);
+        foreach (var session in ServiceInstances)
+          session.Context.WebSocket.Close (data);
       }
-    }
-
-    internal void StopServiceInstance (string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return;
-      }
-
-      service.Stop ();
-    }
-
-    internal void StopServiceInstance (ushort code, string reason, string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return;
-      }
-
-      service.Stop (code, reason);
-    }
-
-    internal void StopServiceInstance (CloseStatusCode code, string reason, string id)
-    {
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
-      {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
-        return;
-      }
-
-      service.Stop (code, reason);
     }
 
     internal bool TryGetServiceInstance (string id, out WebSocketService service)
@@ -466,6 +375,304 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Public Methods
+
+    /// <summary>
+    /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket service.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> to broadcast.
+    /// </param>
+    public void Broadcast (byte [] data)
+    {
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      BroadcastInternally (data);
+    }
+
+    /// <summary>
+    /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket service.
+    /// </summary>
+    /// <param name="data">
+    /// A <see cref="string"/> to broadcast.
+    /// </param>
+    public void Broadcast (string data)
+    {
+      var msg = data.CheckIfValidSendData ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      BroadcastInternally (data);
+    }
+
+    /// <summary>
+    /// Sends Pings to all clients of the WebSocket service.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
+    /// </returns>
+    public Dictionary<string, bool> Broadping ()
+    {
+      return BroadpingInternally (new byte [] {});
+    }
+
+    /// <summary>
+    /// Sends Pings with the specified <paramref name="message"/> to all clients of the WebSocket service.
+    /// </summary>
+    /// <returns>
+    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of session ID and value
+    /// indicating whether the WebSocket service received a Pong from each client in a time.
+    /// </returns>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains a message to send.
+    /// </param>
+    public Dictionary<string, bool> Broadping (string message)
+    {
+      if (message == null || message.Length == 0)
+        return BroadpingInternally (new byte [] {});
+
+      var data = Encoding.UTF8.GetBytes (message);
+      var msg = data.CheckIfValidPingData ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return null;
+      }
+
+      return BroadpingInternally (data);
+    }
+
+    /// <summary>
+    /// Closes the session with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      session.Context.WebSocket.Close ();
+    }
+
+    /// <summary>
+    /// Closes the session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (ushort code, string reason, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      session.Context.WebSocket.Close (code, reason);
+    }
+
+    /// <summary>
+    /// Closes the session with the specified <paramref name="code"/>, <paramref name="reason"/>
+    /// and <paramref name="id"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for closure.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID to find.
+    /// </param>
+    public void CloseSession (CloseStatusCode code, string reason, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return;
+      }
+
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return;
+      }
+
+      session.Context.WebSocket.Close (code, reason);
+    }
+
+    /// <summary>
+    /// Sends a Ping to the client associated with the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    public bool PingTo (string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return false;
+      }
+
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return false;
+      }
+
+      return session.Context.WebSocket.Ping ();
+    }
+
+    /// <summary>
+    /// Sends a Ping with the specified <paramref name="message"/> to the client associated with
+    /// the specified <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service receives a Pong from the client in a time;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains a message to send.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the Ping.
+    /// </param>
+    public bool PingTo (string message, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return false;
+      }
+
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return false;
+      }
+
+      return session.Context.WebSocket.Ping (message);
+    }
+
+    /// <summary>
+    /// Sends a binary <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
+    /// </param>
+    public bool SendTo (byte [] data, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return false;
+      }
+
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return false;
+      }
+
+      service.Send (data);
+      return true;
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> to the client associated with the specified
+    /// <paramref name="id"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
+    /// </param>
+    public bool SendTo (string data, string id)
+    {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return false;
+      }
+
+      WebSocketService service;
+      if (!TryGetServiceInstance (id, out service))
+      {
+        _logger.Error (
+          "The WebSocket session with the specified ID not found.\nID: " + id);
+        return false;
+      }
+
+      service.Send (data);
+      return true;
+    }
 
     /// <summary>
     /// Cleans up the inactive sessions.
@@ -490,7 +697,7 @@ namespace WebSocketSharp.Server
             {
               var state = service.State;
               if (state == WebSocketState.OPEN)
-                service.Stop (((ushort) CloseStatusCode.ABNORMAL).ToByteArray (ByteOrder.BIG));
+                service.Context.WebSocket.Close (CloseStatusCode.ABNORMAL);
               else if (state == WebSocketState.CLOSING)
                 continue;
               else

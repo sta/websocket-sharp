@@ -28,12 +28,12 @@ namespace Example3
 
     protected override void OnMessage (MessageEventArgs e)
     {
-      Broadcast (String.Format ("{0}: {1}", _name, e.Data));
+      Sessions.Broadcast (String.Format ("{0}: {1}", _name, e.Data));
     }
 
     protected override void OnClose (CloseEventArgs e)
     {
-      Broadcast (String.Format ("{0} got logged off...", _name));
+      Sessions.Broadcast (String.Format ("{0} got logged off...", _name));
     }
   }
 }
