@@ -154,7 +154,7 @@ namespace WebSocketSharp.Server
     /// otherwise, <see langword="null"/>.
     /// </value>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID to find.
+    /// A <see cref="string"/> that contains the ID of the session information to get.
     /// </param>
     public IWebSocketSession this [string id] {
       get {
@@ -165,17 +165,11 @@ namespace WebSocketSharp.Server
           return null;
         }
 
-        lock (_sync)
-        {
-          try {
-            return _sessions [id];
-          }
-          catch {
-            _logger.Error (
-              "The WebSocket session with the specified ID not found.\nID: " + id);
-            return null;
-          }
-        }
+        WebSocketService session;
+        if (!TryGetServiceInstance (id, out session))
+          _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
+
+        return session;
       }
     }
 
@@ -468,8 +462,7 @@ namespace WebSocketSharp.Server
       WebSocketService session;
       if (!TryGetServiceInstance (id, out session))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
@@ -501,8 +494,7 @@ namespace WebSocketSharp.Server
       WebSocketService session;
       if (!TryGetServiceInstance (id, out session))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
@@ -534,8 +526,7 @@ namespace WebSocketSharp.Server
       WebSocketService session;
       if (!TryGetServiceInstance (id, out session))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
@@ -564,8 +555,7 @@ namespace WebSocketSharp.Server
       WebSocketService session;
       if (!TryGetServiceInstance (id, out session))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -598,8 +588,7 @@ namespace WebSocketSharp.Server
       WebSocketService session;
       if (!TryGetServiceInstance (id, out session))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -631,8 +620,7 @@ namespace WebSocketSharp.Server
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -665,8 +653,7 @@ namespace WebSocketSharp.Server
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
-        _logger.Error (
-          "The WebSocket session with the specified ID not found.\nID: " + id);
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return false;
       }
 
@@ -692,12 +679,12 @@ namespace WebSocketSharp.Server
             if (_stopped)
               break;
 
-            WebSocketService service;
-            if (_sessions.TryGetValue (id, out service))
+            WebSocketService session;
+            if (_sessions.TryGetValue (id, out session))
             {
-              var state = service.State;
+              var state = session.State;
               if (state == WebSocketState.OPEN)
-                service.Context.WebSocket.Close (CloseStatusCode.ABNORMAL);
+                session.Context.WebSocket.Close (CloseStatusCode.ABNORMAL);
               else if (state == WebSocketState.CLOSING)
                 continue;
               else
@@ -718,18 +705,30 @@ namespace WebSocketSharp.Server
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID to find.
+    /// A <see cref="string"/> that contains the ID of the session information to get.
     /// </param>
     /// <param name="session">
     /// When this method returns, a <see cref="IWebSocketSession"/> instance that contains the session
     /// information if it is successfully found; otherwise, <see langword="null"/>.
+    /// This parameter is passed uninitialized.
     /// </param>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
+      var msg = id.CheckIfValidSessionID ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        session = null;
+
+        return false;
+      }
+
       WebSocketService service;
       var result = TryGetServiceInstance (id, out service);
-      session = service;
+      if (!result)
+        _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
 
+      session = service;
       return result;
     }
 
