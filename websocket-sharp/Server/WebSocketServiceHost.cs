@@ -223,7 +223,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the path to the WebSocket service that the WebSocket service host provides.
+    /// Gets the path to the WebSocket service provided by the WebSocket service host.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.

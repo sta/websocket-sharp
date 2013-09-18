@@ -56,6 +56,14 @@ namespace WebSocketSharp.Server
     bool KeepClean { get; set; }
 
     /// <summary>
+    /// Gets the path to the WebSocket service provided by the WebSocket service host.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
+    /// </value>
+    string ServicePath { get; }
+
+    /// <summary>
     /// Gets the manager of the sessions to the WebSocket service host.
     /// </summary>
     /// <value>

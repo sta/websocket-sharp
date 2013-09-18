@@ -66,44 +66,13 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Internal Properties
-
-    internal bool KeepClean {
-      get {
-        return _keepClean;
-      }
-
-      set {
-        lock (_sync)
-        {
-          if (_keepClean ^ value)
-          {
-            _keepClean = value;
-            foreach (var host in _serviceHosts.Values)
-              host.KeepClean = value;
-          }
-        }
-      }
-    }
-
-    internal IEnumerable<IWebSocketServiceHost> ServiceHosts {
-      get {
-        lock (_sync)
-        {
-          return _serviceHosts.Values.ToList ();
-        }
-      }
-    }
-
-    #endregion
-
     #region Public Properties
 
     /// <summary>
-    /// Gets the connection count to the WebSocket services provided by the WebSocket server.
+    /// Gets the connection count to the every WebSocket service provided by the WebSocket server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains the connection count to the WebSocket services.
+    /// An <see cref="int"/> that contains the connection count to the every WebSocket service.
     /// </value>
     public int ConnectionCount {
       get {
@@ -131,6 +100,76 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets the WebSocket service host with the specified <paramref name="servicePath"/>.
+    /// </summary>
+    /// <value>
+    /// A <see cref="IWebSocketServiceHost"/> instance that represents the WebSocket service host
+    /// if it is successfully found; otherwise, <see langword="null"/>.
+    /// </value>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service managed by
+    /// the WebSocket service host to get.
+    /// </param>
+    public IWebSocketServiceHost this [string servicePath] {
+      get {
+        var msg = servicePath.CheckIfValidServicePath ();
+        if (msg != null)
+        {
+          _logger.Error (msg);
+          return null;
+        }
+
+        IWebSocketServiceHost host;
+        if (!TryGetServiceHostInternally (servicePath, out host))
+          _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+
+        return host;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the manager cleans up periodically the every inactive session
+    /// to the WebSocket services provided by the WebSocket server.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the manager cleans up periodically the every inactive session to the WebSocket
+    /// services; otherwise, <c>false</c>.
+    /// </value>
+    public bool KeepClean {
+      get {
+        return _keepClean;
+      }
+
+      internal set {
+        lock (_sync)
+        {
+          if (_keepClean ^ value)
+          {
+            _keepClean = value;
+            foreach (var host in _serviceHosts.Values)
+              host.KeepClean = value;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets the collection of the WebSocket service hosts managed by the WebSocket server.
+    /// </summary>
+    /// <value>
+    /// An IEnumerable&lt;IWebSocketServiceHost&gt; that contains the collection of the WebSocket
+    /// service hosts.
+    /// </value>
+    public IEnumerable<IWebSocketServiceHost> ServiceHosts {
+      get {
+        lock (_sync)
+        {
+          return _serviceHosts.Values.ToList ();
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets the collection of every path to the WebSocket services provided by the WebSocket server.
     /// </summary>
     /// <value>
@@ -152,18 +191,10 @@ namespace WebSocketSharp.Server
     private Dictionary<string, Dictionary<string, bool>> broadping (byte [] data)
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
-      foreach (var service in copy ())
-        result.Add (service.Key, service.Value.Sessions.BroadpingInternally (data));
+      foreach (var host in ServiceHosts)
+        result.Add (host.ServicePath, host.Sessions.BroadpingInternally (data));
 
       return result;
-    }
-
-    private Dictionary<string, IWebSocketServiceHost> copy ()
-    {
-      lock (_sync)
-      {
-        return new Dictionary<string, IWebSocketServiceHost> (_serviceHosts);
-      }
     }
 
     #endregion
@@ -190,7 +221,6 @@ namespace WebSocketSharp.Server
     internal bool Remove (string servicePath)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
-
       IWebSocketServiceHost host;
       lock (_sync)
       {
@@ -230,7 +260,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
+    internal bool TryGetServiceHostInternally (string servicePath, out IWebSocketServiceHost serviceHost)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
       lock (_sync)
@@ -306,7 +336,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
@@ -339,7 +369,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
@@ -412,7 +442,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return null;
@@ -450,7 +480,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return null;
@@ -479,7 +509,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return;
@@ -514,7 +544,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return;
@@ -549,71 +579,13 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return;
       }
 
       host.Sessions.CloseSession (code, reason, id);
-    }
-
-    /// <summary>
-    /// Gets the connection count to the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="int"/> that contains the connection count if the WebSocket service is successfully
-    /// found; otherwise, <c>-1</c>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
-    /// </param>
-    public int GetConnectionCount (string servicePath)
-    {
-      var msg = servicePath.CheckIfValidServicePath ();
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        return -1;
-      }
-
-      IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
-      {
-        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return -1;
-      }
-
-      return host.ConnectionCount;
-    }
-
-    /// <summary>
-    /// Gets the manager of the sessions to the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="WebSocketSessionManager"/> if the WebSocket service is successfully found;
-    /// otherwise, <see langword="null"/>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
-    /// </param>
-    public WebSocketSessionManager GetSessions (string servicePath)
-    {
-      var msg = servicePath.CheckIfValidServicePath ();
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        return null;
-      }
-
-      IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
-      {
-        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return null;
-      }
-
-      return host.Sessions;
     }
 
     /// <summary>
@@ -640,7 +612,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
@@ -676,7 +648,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
@@ -711,7 +683,7 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
@@ -746,13 +718,46 @@ namespace WebSocketSharp.Server
       }
 
       IWebSocketServiceHost host;
-      if (!TryGetServiceHost (servicePath, out host))
+      if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
         return false;
       }
 
       return host.Sessions.SendTo (data, id);
+    }
+
+    /// <summary>
+    /// Tries to get the WebSocket service host with the specified <paramref name="servicePath"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the WebSocket service host is successfully found; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service managed by
+    /// the WebSocket service host to get.
+    /// </param>
+    /// <param name="serviceHost">
+    /// When this method returns, a <see cref="IWebSocketServiceHost"/> instance that represents
+    /// the WebSocket service host if it is successfully found; otherwise, <see langword="null"/>.
+    /// This parameter is passed uninitialized.
+    /// </param>
+    public bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
+    {
+      var msg = servicePath.CheckIfValidServicePath ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        serviceHost = null;
+
+        return false;
+      }
+
+      var result = TryGetServiceHostInternally (servicePath, out serviceHost);
+      if (!result)
+        _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
+
+      return result;
     }
 
     #endregion
