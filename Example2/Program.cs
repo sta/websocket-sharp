@@ -4,10 +4,10 @@ using System.Security.Cryptography.X509Certificates;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace Example2 {
-
-  public class Program {
-
+namespace Example2
+{
+  public class Program
+  {
     public static void Main (string [] args)
     {
       /* Single service server
@@ -53,12 +53,12 @@ namespace Example2 {
 
       wssv.Start ();
       Console.WriteLine (
-        "WebSocket Server listening on port: {0} service path:", wssv.Port);
-      foreach (var path in wssv.ServicePaths)
+        "A WebSocket Server listening on port: {0} service path:", wssv.Port);
+      foreach (var path in wssv.WebSocketServices.ServicePaths)
         Console.WriteLine ("  {0}", path);
 
       Console.WriteLine ();
-      Console.WriteLine ("Press enter key to stop server...");
+      Console.WriteLine ("Press Enter key to stop server...");
       Console.ReadLine ();
 
       wssv.Stop ();

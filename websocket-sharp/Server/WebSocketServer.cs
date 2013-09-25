@@ -169,23 +169,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of each path to the WebSocket services that the server provides.
-    /// </summary>
-    /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of each path to the WebSocket services.
-    /// </value>
-    public IEnumerable<string> ServicePaths {
-      get {
-        var url = BaseUri.IsAbsoluteUri
-                ? BaseUri.ToString ().TrimEnd ('/')
-                : String.Empty;
-
-        foreach (var path in _serviceHosts.ServicePaths)
-          yield return url + path;
-      }
-    }
-
-    /// <summary>
     /// Gets the functions for the WebSocket services that the server provides.
     /// </summary>
     /// <value>
