@@ -42,9 +42,10 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private object                               _forSweep;
+    private volatile bool                        _keepClean;
     private Logger                               _logger;
     private Dictionary<string, WebSocketService> _sessions;
-    private volatile bool                        _stopped;
+    private volatile ServerState                 _state;
     private volatile bool                        _sweeping;
     private Timer                                _sweepTimer;
     private object                               _sync;
@@ -62,21 +63,30 @@ namespace WebSocketSharp.Server
     {
       _logger = logger;
       _forSweep = new object ();
+      _keepClean = true;
       _sessions = new Dictionary<string, WebSocketService> ();
-      _stopped = false;
+      _state = ServerState.READY;
       _sweeping = false;
       _sync = new object ();
 
-      setSweepTimer ();
-      startSweepTimer ();
+      setSweepTimer (60 * 1000);
     }
 
     #endregion
 
     #region Internal Properties
 
+    internal ServerState State {
+      get {
+        return _state;
+      }
+    }
+
     internal IEnumerable<WebSocketService> ServiceInstances {
       get {
+        if (_state != ServerState.START)
+          return new List<WebSocketService> ();
+
         lock (_sync)
         {
           return _sessions.Values.ToList ();
@@ -158,7 +168,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public IWebSocketSession this [string id] {
       get {
-        var msg = id.CheckIfValidSessionID ();
+        var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
         if (msg != null)
         {
           _logger.Error (msg);
@@ -182,17 +192,16 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _sweepTimer.Enabled;
+        return _keepClean;
       }
 
       internal set {
-        if (value)
-        {
-          if (!_stopped)
-            startSweepTimer ();
-        }
-        else
-          stopSweepTimer ();
+        if (!(value ^ _keepClean))
+          return;
+
+        _keepClean = value;
+        if (_state == ServerState.START)
+          _sweepTimer.Enabled = value;
       }
     }
 
@@ -213,70 +222,18 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private void broadcast (byte [] data)
-    {
-      foreach (var service in ServiceInstances)
-        service.Send (data);
-    }
-
-    private void broadcast (string data)
-    {
-      foreach (var service in ServiceInstances)
-        service.Send (data);
-    }
-
-    private void broadcastAsync (byte [] data)
-    {
-      var services = ServiceInstances.GetEnumerator ();
-      Action completed = null;
-      completed = () =>
-      {
-        if (services.MoveNext ())
-          services.Current.SendAsync (data, completed);
-      };
-
-      if (services.MoveNext ())
-        services.Current.SendAsync (data, completed);
-    }
-
-    private void broadcastAsync (string data)
-    {
-      var services = ServiceInstances.GetEnumerator ();
-      Action completed = null;
-      completed = () =>
-      {
-        if (services.MoveNext ())
-          services.Current.SendAsync (data, completed);
-      };
-
-      if (services.MoveNext ())
-        services.Current.SendAsync (data, completed);
-    }
-
     private static string createID ()
     {
       return Guid.NewGuid ().ToString ("N");
     }
 
-    private void setSweepTimer ()
+    private void setSweepTimer (double interval)
     {
-      _sweepTimer = new Timer (60 * 1000);
+      _sweepTimer = new Timer (interval);
       _sweepTimer.Elapsed += (sender, e) =>
       {
         Sweep ();
       };
-    }
-
-    private void startSweepTimer ()
-    {
-      if (!_sweepTimer.Enabled)
-        _sweepTimer.Start ();
-    }
-
-    private void stopSweepTimer ()
-    {
-      if (_sweepTimer.Enabled)
-        _sweepTimer.Stop ();
     }
 
     #endregion
@@ -287,7 +244,7 @@ namespace WebSocketSharp.Server
     {
       lock (_sync)
       {
-        if (_stopped)
+        if (_state != ServerState.START)
           return null;
 
         var id = createID ();
@@ -299,25 +256,42 @@ namespace WebSocketSharp.Server
 
     internal void BroadcastInternally (byte [] data)
     {
-      if (_stopped)
-        broadcast (data);
-      else
-        broadcastAsync (data);
+      var services = ServiceInstances.GetEnumerator ();
+      Action completed = null;
+      completed = () =>
+      {
+        if (_state == ServerState.START && services.MoveNext ())
+          services.Current.SendAsync (data, completed);
+      };
+
+      if (_state == ServerState.START && services.MoveNext ())
+        services.Current.SendAsync (data, completed);
     }
 
     internal void BroadcastInternally (string data)
     {
-      if (_stopped)
-        broadcast (data);
-      else
-        broadcastAsync (data);
+      var services = ServiceInstances.GetEnumerator ();
+      Action completed = null;
+      completed = () =>
+      {
+        if (_state == ServerState.START && services.MoveNext ())
+          services.Current.SendAsync (data, completed);
+      };
+
+      if (_state == ServerState.START && services.MoveNext ())
+        services.Current.SendAsync (data, completed);
     }
 
     internal Dictionary<string, bool> BroadpingInternally (byte [] data)
     {
       var result = new Dictionary<string, bool> ();
       foreach (var session in ServiceInstances)
+      {
+        if (_state != ServerState.START)
+          break;
+
         result.Add (session.ID, session.Context.WebSocket.Ping (data));
+      }
 
       return result;
     }
@@ -330,31 +304,37 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal void Start ()
+    {
+      _sweepTimer.Enabled = _keepClean;
+      _state = ServerState.START;
+    }
+
     internal void Stop ()
     {
-      stopSweepTimer ();
       lock (_sync)
       {
-        if (_stopped)
-          return;
+        _state = ServerState.SHUTDOWN;
 
-        _stopped = true;
-        foreach (var session in ServiceInstances)
+        _sweepTimer.Enabled = false;
+        foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close ();
+
+        _state = ServerState.STOP;
       }
     }
 
     internal void Stop (byte [] data)
     {
-      stopSweepTimer ();
       lock (_sync)
       {
-        if (_stopped)
-          return;
+        _state = ServerState.SHUTDOWN;
 
-        _stopped = true;
-        foreach (var session in ServiceInstances)
+        _sweepTimer.Enabled = false;
+        foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close (data);
+
+        _state = ServerState.STOP;
       }
     }
 
@@ -378,7 +358,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte [] data)
     {
-      var msg = data.CheckIfValidSendData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -396,7 +376,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = data.CheckIfValidSendData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -415,6 +395,13 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, bool> Broadping ()
     {
+      var msg = _state.CheckIfStarted ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return null;
+      }
+
       return BroadpingInternally (new byte [] {});
     }
 
@@ -431,10 +418,10 @@ namespace WebSocketSharp.Server
     public Dictionary<string, bool> Broadping (string message)
     {
       if (message == null || message.Length == 0)
-        return BroadpingInternally (new byte [] {});
+        return Broadping ();
 
       var data = Encoding.UTF8.GetBytes (message);
-      var msg = data.CheckIfValidPingData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidPingData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -452,7 +439,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -484,7 +471,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (ushort code, string reason, string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -516,7 +503,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (CloseStatusCode code, string reason, string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -545,7 +532,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -578,7 +565,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string message, string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -610,7 +597,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (byte [] data, string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -643,7 +630,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (string data, string id)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -666,7 +653,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Sweep ()
     {
-      if (_stopped || _sweeping || Count == 0)
+      if (_state != ServerState.START || _sweeping || Count == 0)
         return;
 
       lock (_forSweep)
@@ -674,11 +661,11 @@ namespace WebSocketSharp.Server
         _sweeping = true;
         foreach (var id in InactiveIDs)
         {
+          if (_state != ServerState.START)
+            break;
+
           lock (_sync)
           {
-            if (_stopped)
-              break;
-
             WebSocketService session;
             if (_sessions.TryGetValue (id, out session))
             {
@@ -714,7 +701,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
-      var msg = id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);

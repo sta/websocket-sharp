@@ -54,6 +54,8 @@ namespace WebSocketSharp.Server
 
     private string                  _servicePath;
     private WebSocketSessionManager _sessions;
+    private volatile ServerState    _state;
+    private object                  _sync;
 
     #endregion
 
@@ -63,6 +65,8 @@ namespace WebSocketSharp.Server
       : base (logger)
     {
       _sessions = new WebSocketSessionManager (logger);
+      _state = ServerState.READY;
+      _sync = new object ();
     }
 
     #endregion
@@ -92,6 +96,8 @@ namespace WebSocketSharp.Server
       : base (url)
     {
       _sessions = new WebSocketSessionManager (Log);
+      _state = ServerState.READY;
+      _sync = new object ();
     }
 
     /// <summary>
@@ -186,6 +192,8 @@ namespace WebSocketSharp.Server
       : base (address, port, servicePath, secure)
     {
       _sessions = new WebSocketSessionManager (Log);
+      _state = ServerState.READY;
+      _sync = new object ();
     }
 
     #endregion
@@ -267,25 +275,29 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Private Methods
+    #region Protected Methods
 
-    private void stop (ushort code, string reason)
+    /// <summary>
+    /// Aborts receiving the WebSocket connection requests.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when an exception occurs while receiving the WebSocket connection requests.
+    /// </remarks>
+    protected override void Abort ()
     {
-      var data = code.Append (reason);
-      var msg = data.CheckIfValidCloseData ();
-      if (msg != null)
+      lock (_sync)
       {
-        Log.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
-        return;
+        if (_state != ServerState.START)
+          return;
+
+        _state = ServerState.SHUTDOWN;
       }
 
-      base.Stop ();
-      _sessions.Stop (data);
+      StopListener ();
+      _sessions.Stop (((ushort) CloseStatusCode.SERVER_ERROR).ToByteArray (ByteOrder.BIG));
+
+      _state = ServerState.STOP;
     }
-
-    #endregion
-
-    #region Protected Methods
 
     /// <summary>
     /// Accepts a WebSocket connection request.
@@ -316,12 +328,53 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
+    /// Starts to receive the WebSocket connection requests.
+    /// </summary>
+    public override void Start ()
+    {
+      lock (_sync)
+      {
+        var msg = _state.CheckIfStopped ();
+        if (msg != null)
+        {
+          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          return;
+        }
+
+        _sessions.Start ();
+
+        base.Start ();
+        if (!IsListening)
+        {
+          _sessions.Stop ();
+          return;
+        }
+
+        _state = ServerState.START;
+      }
+    }
+
+    /// <summary>
     /// Stops receiving the WebSocket connection requests.
     /// </summary>
     public override void Stop ()
     {
+      lock (_sync)
+      {
+        var msg = _state.CheckIfStarted ();
+        if (msg != null)
+        {
+          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
+      }
+
       base.Stop ();
       _sessions.Stop ();
+
+      _state = ServerState.STOP;
     }
 
     /// <summary>
@@ -336,14 +389,26 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      var msg = code.CheckIfValidCloseStatusCode ();
-      if (msg != null)
+      byte [] data = null;
+      lock (_sync)
       {
-        Log.Error (String.Format ("{0}\ncode: {1}", msg, code));
-        return;
+        var msg = _state.CheckIfStarted () ??
+                  code.CheckIfValidCloseStatusCode () ??
+                  (data = code.Append (reason)).CheckIfValidCloseData ();
+
+        if (msg != null)
+        {
+          Log.Error (String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
       }
 
-      stop (code, reason);
+      base.Stop ();
+      _sessions.Stop (data);
+
+      _state = ServerState.STOP;
     }
 
     /// <summary>
@@ -351,14 +416,33 @@ namespace WebSocketSharp.Server
     /// and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for stop.
+    /// One of the <see cref="CloseStatusCode"/> values that represent the status codes indicating
+    /// the reasons for stop.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for stop.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
-      stop ((ushort) code, reason);
+      byte [] data = null;
+      lock (_sync)
+      {
+        var msg = _state.CheckIfStarted () ??
+                  (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+
+        if (msg != null)
+        {
+          Log.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
+      }
+
+      base.Stop ();
+      _sessions.Stop (data);
+
+      _state = ServerState.STOP;
     }
 
     #endregion

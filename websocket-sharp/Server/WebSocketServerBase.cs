@@ -48,7 +48,7 @@ namespace WebSocketSharp.Server
 
     private IPAddress        _address;
     private X509Certificate2 _cert;
-    private bool             _listening;
+    private volatile bool    _listening;
     private Logger           _logger;
     private int              _port;
     private Thread           _receiveRequestThread;
@@ -339,8 +339,8 @@ namespace WebSocketSharp.Server
         }
         catch (Exception ex)
         {
+          _logger.Fatal (ex.ToString ());
           client.Close ();
-          _logger.Fatal (ex.Message);
         }
       };
 
@@ -354,15 +354,18 @@ namespace WebSocketSharp.Server
         try {
           processRequestAsync (_listener.AcceptTcpClient ());
         }
-        catch (SocketException) {
-          _logger.Info ("TcpListener has been stopped.");
+        catch (SocketException ex) {
+          _logger.Warn (String.Format ("Receiving has been stopped.\nreason: {0}.", ex.Message));
           break;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.Message);
+          _logger.Fatal (ex.ToString ());
           break;
         }
       }
+
+      if (_listening)
+        Abort ();
     }
 
     private void startReceiveRequestThread ()
@@ -393,12 +396,32 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
+    /// Aborts receiving the WebSocket connection requests.
+    /// </summary>
+    /// <remarks>
+    /// This method is called when an exception occurs while receiving the WebSocket connection requests.
+    /// </remarks>
+    protected abstract void Abort ();
+
+    /// <summary>
     /// Accepts a WebSocket connection request.
     /// </summary>
     /// <param name="context">
     /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
     /// </param>
     protected abstract void AcceptWebSocket (TcpListenerWebSocketContext context);
+
+    /// <summary>
+    /// Stops the inner <see cref="TcpListener"/> used to receive the WebSocket connection requests.
+    /// </summary>
+    protected void StopListener ()
+    {
+      if (!_listening)
+        return;
+
+      _listening = false;
+      _listener.Stop ();
+    }
 
     #endregion
 
@@ -414,7 +437,7 @@ namespace WebSocketSharp.Server
 
       if (_secure && _cert == null)
       {
-        _logger.Error ("Secure connection requires a server certificate.");
+        _logger.Error ("The secure connection requires a server certificate.");
         return;
       }
 
@@ -431,9 +454,9 @@ namespace WebSocketSharp.Server
       if (!_selfHost || !_listening)
         return;
 
+      _listening = false;
       _listener.Stop ();
       _receiveRequestThread.Join (5 * 1000);
-      _listening = false;
     }
 
     #endregion

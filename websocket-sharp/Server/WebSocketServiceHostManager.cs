@@ -45,6 +45,7 @@ namespace WebSocketSharp.Server
     private volatile bool                             _keepClean;
     private Logger                                    _logger;
     private Dictionary<string, IWebSocketServiceHost> _serviceHosts;
+    private volatile ServerState                      _state;
     private object                                    _sync;
 
     #endregion
@@ -61,6 +62,7 @@ namespace WebSocketSharp.Server
       _logger = logger;
       _keepClean = true;
       _serviceHosts = new Dictionary<string, IWebSocketServiceHost> ();
+      _state = ServerState.READY;
       _sync = new object ();
     }
 
@@ -78,7 +80,12 @@ namespace WebSocketSharp.Server
       get {
         var count = 0;
         foreach (var host in ServiceHosts)
+        {
+          if (_state != ServerState.START)
+            break;
+
           count += host.ConnectionCount;
+        }
 
         return count;
       }
@@ -143,12 +150,12 @@ namespace WebSocketSharp.Server
       internal set {
         lock (_sync)
         {
-          if (_keepClean ^ value)
-          {
-            _keepClean = value;
-            foreach (var host in _serviceHosts.Values)
-              host.KeepClean = value;
-          }
+          if (!(value ^ _keepClean))
+            return;
+
+          _keepClean = value;
+          foreach (var host in _serviceHosts.Values)
+            host.KeepClean = value;
         }
       }
     }
@@ -192,7 +199,12 @@ namespace WebSocketSharp.Server
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
       foreach (var host in ServiceHosts)
+      {
+        if (_state != ServerState.START)
+          break;
+
         result.Add (host.ServicePath, host.Sessions.BroadpingInternally (data));
+      }
 
       return result;
     }
@@ -214,6 +226,9 @@ namespace WebSocketSharp.Server
           return;
         }
 
+        if (_state == ServerState.START)
+          serviceHost.Sessions.Start ();
+
         _serviceHosts.Add (servicePath, serviceHost);
       }
     }
@@ -234,18 +249,33 @@ namespace WebSocketSharp.Server
         _serviceHosts.Remove (servicePath);
       }
 
-      host.Sessions.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
+      if (host.Sessions.State == ServerState.START)
+        host.Sessions.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
+
       return true;
+    }
+
+    internal void Start ()
+    {
+      lock (_sync)
+      {
+        foreach (var host in _serviceHosts.Values)
+          host.Sessions.Start ();
+
+        _state = ServerState.START;
+      }
     }
 
     internal void Stop ()
     {
       lock (_sync)
       {
+        _state = ServerState.SHUTDOWN;
         foreach (var host in _serviceHosts.Values)
           host.Sessions.Stop ();
 
         _serviceHosts.Clear ();
+        _state = ServerState.STOP;
       }
     }
 
@@ -253,10 +283,12 @@ namespace WebSocketSharp.Server
     {
       lock (_sync)
       {
+        _state = ServerState.SHUTDOWN;
         foreach (var host in _serviceHosts.Values)
           host.Sessions.Stop (data);
 
         _serviceHosts.Clear ();
+        _state = ServerState.STOP;
       }
     }
 
@@ -282,7 +314,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte [] data)
     {
-      var msg = data.CheckIfValidSendData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -290,7 +322,12 @@ namespace WebSocketSharp.Server
       }
 
       foreach (var host in ServiceHosts)
+      {
+        if (_state != ServerState.START)
+          break;
+
         host.Sessions.BroadcastInternally (data);
+      }
     }
 
     /// <summary>
@@ -302,7 +339,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = data.CheckIfValidSendData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -310,7 +347,12 @@ namespace WebSocketSharp.Server
       }
 
       foreach (var host in ServiceHosts)
+      {
+        if (_state != ServerState.START)
+          break;
+
         host.Sessions.BroadcastInternally (data);
+      }
     }
 
     /// <summary>
@@ -328,7 +370,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool BroadcastTo (byte [] data, string servicePath)
     {
-      var msg = data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -361,7 +403,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool BroadcastTo (string data, string servicePath)
     {
-      var msg = data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -389,6 +431,13 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
+      var msg = _state.CheckIfStarted ();
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        return null;
+      }
+
       return broadping (new byte [] {});
     }
 
@@ -408,10 +457,10 @@ namespace WebSocketSharp.Server
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
       if (message == null || message.Length == 0)
-        return broadping (new byte [] {});
+        return Broadping ();
 
       var data = Encoding.UTF8.GetBytes (message);
-      var msg = data.CheckIfValidPingData ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidPingData ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -434,7 +483,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> BroadpingTo (string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -472,7 +521,7 @@ namespace WebSocketSharp.Server
         return BroadpingTo (servicePath);
 
       var data = Encoding.UTF8.GetBytes (message);
-      var msg = data.CheckIfValidPingData () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? data.CheckIfValidPingData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -501,7 +550,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -536,7 +585,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (ushort code, string reason, string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -571,7 +620,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (CloseStatusCode code, string reason, string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -604,7 +653,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -640,7 +689,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string message, string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -675,7 +724,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (byte [] data, string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -710,7 +759,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool SendTo (string data, string id, string servicePath)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -744,7 +793,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);

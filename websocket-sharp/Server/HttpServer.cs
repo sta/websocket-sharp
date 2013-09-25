@@ -47,13 +47,15 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private HttpListener                _listener;
-    private bool                        _listening;
+    private volatile bool               _listening;
     private Logger                      _logger;
     private int                         _port;
     private Thread                      _receiveRequestThread;
     private string                      _rootPath;
     private bool                        _secure;
     private WebSocketServiceHostManager _serviceHosts;
+    private volatile ServerState        _state;
+    private object                      _sync;
     private bool                        _windows;
 
     #endregion
@@ -308,12 +310,40 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
+    private void abort ()
+    {
+      lock (_sync)
+      {
+        if (_state != ServerState.START)
+          return;
+
+        _state = ServerState.SHUTDOWN;
+      }
+
+      _listening = false;
+      _serviceHosts.Stop (((ushort) CloseStatusCode.SERVER_ERROR).ToByteArray (ByteOrder.BIG));
+      _listener.Abort ();
+
+      _state = ServerState.STOP;
+    }
+
+    private string checkIfCertExists ()
+    {
+      return _secure &&
+             !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
+             Certificate == null
+             ? "The secure connection requires a server certificate."
+             : null;
+    }
+
     private void init ()
     {
       _listener = new HttpListener ();
       _listening = false;
       _logger = new Logger ();
       _serviceHosts = new WebSocketServiceHostManager (_logger);
+      _state = ServerState.READY;
+      _sync = new object ();
 
       _windows = false;
       var os = Environment.OSVersion;
@@ -420,7 +450,8 @@ namespace WebSocketSharp.Server
           context.Response.Close ();
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.Message);
+          _logger.Fatal (ex.ToString ());
+          context.Connection.Close (true);
         }
       };
 
@@ -434,15 +465,18 @@ namespace WebSocketSharp.Server
         try {
           processRequestAsync (_listener.GetContext ());
         }
-        catch (HttpListenerException) {
-          _logger.Info ("HttpListener has been stopped.");
+        catch (HttpListenerException ex) {
+          _logger.Warn (String.Format ("Receiving has been stopped.\nreason: {0}.", ex.Message));
           break;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.Message);
+          _logger.Fatal (ex.ToString ());
           break;
         }
       }
+
+      if (_listening)
+        abort ();
     }
 
     private void startReceiveRequestThread ()
@@ -452,20 +486,14 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
-    private void stop (ushort code, string reason)
+    private void stopListener ()
     {
-      var data = code.Append (reason);
-      var msg = data.CheckIfValidCloseData ();
-      if (msg != null)
-      {
-        _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
+      if (!_listening)
         return;
-      }
 
-      _serviceHosts.Stop (data);
+      _listening = false;
       _listener.Close ();
       _receiveRequestThread.Join (5 * 1000);
-      _listening = false;
     }
 
     #endregion
@@ -554,21 +582,22 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Start ()
     {
-      if (_listening)
-        return;
-
-      if (_secure &&
-          !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
-          Certificate == null
-      )
+      lock (_sync)
       {
-        _logger.Error ("Secure connection requires a server certificate.");
-        return;
-      }
+        var msg = _state.CheckIfStopped () ?? checkIfCertExists ();
+        if (msg != null)
+        {
+          _logger.Error (String.Format ("{0}\nstate: {1}\nsecure: {2}", msg, _state, _secure));
+          return;
+        }
 
-      _listener.Start ();
-      startReceiveRequestThread ();
-      _listening = true;
+        _serviceHosts.Start ();
+        _listener.Start ();
+        startReceiveRequestThread ();
+        _listening = true;
+
+        _state = ServerState.START;
+      }
     }
 
     /// <summary>
@@ -576,13 +605,22 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Stop ()
     {
-      if (!_listening)
-        return;
+      lock (_sync)
+      {
+        var msg = _state.CheckIfStarted ();
+        if (msg != null)
+        {
+          _logger.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
+      }
 
       _serviceHosts.Stop ();
-      _listener.Close ();
-      _receiveRequestThread.Join (5 * 1000);
-      _listening = false;
+      stopListener ();
+
+      _state = ServerState.STOP;
     }
 
     /// <summary>
@@ -597,17 +635,26 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      if (!_listening)
-        return;
-
-      var msg = code.CheckIfValidCloseStatusCode ();
-      if (msg != null)
+      byte [] data = null;
+      lock (_sync)
       {
-        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
-        return;
+        var msg = _state.CheckIfStarted () ??
+                  code.CheckIfValidCloseStatusCode () ??
+                  (data = code.Append (reason)).CheckIfValidCloseData ();
+
+        if (msg != null)
+        {
+          _logger.Error (String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
       }
 
-      stop (code, reason);
+      _serviceHosts.Stop (data);
+      stopListener ();
+
+      _state = ServerState.STOP;
     }
 
     /// <summary>
@@ -615,17 +662,33 @@ namespace WebSocketSharp.Server
     /// and <see cref="string"/> used to stop the WebSocket services.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="CloseStatusCode"/> that contains a status code indicating the reason for stop.
+    /// One of the <see cref="CloseStatusCode"/> values that represent the status codes indicating
+    /// the reasons for stop.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that contains the reason for stop.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
-      if (!_listening)
-        return;
+      byte [] data = null;
+      lock (_sync)
+      {
+        var msg = _state.CheckIfStarted () ??
+                  (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
 
-      stop ((ushort) code, reason);
+        if (msg != null)
+        {
+          _logger.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
+          return;
+        }
+
+        _state = ServerState.SHUTDOWN;
+      }
+
+      _serviceHosts.Stop (data);
+      stopListener ();
+
+      _state = ServerState.STOP;
     }
 
     #endregion

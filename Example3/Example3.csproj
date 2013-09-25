@@ -8,7 +8,7 @@
     <ProjectGuid>{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Example3</RootNamespace>
-    <AssemblyName>Example3</AssemblyName>
+    <AssemblyName>example3</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
