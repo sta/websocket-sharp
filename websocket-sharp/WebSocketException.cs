@@ -28,32 +28,33 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
-  /// Represents the exception that occurred when attempting to perform an operation on the WebSocket connection.
+  /// Represents the exception that occurred when attempting to perform an operation on
+  /// the WebSocket connection.
   /// </summary>
   public class WebSocketException : Exception
   {
     #region Internal Constructors
 
-    internal WebSocketException()
-      : this(CloseStatusCode.ABNORMAL)
+    internal WebSocketException ()
+      : this (CloseStatusCode.ABNORMAL)
     {
     }
 
-    internal WebSocketException(CloseStatusCode code)
-      : this(code, code.GetMessage())
+    internal WebSocketException (CloseStatusCode code)
+      : this (code, code.GetMessage ())
     {
     }
 
-    internal WebSocketException(string message)
-      : this(CloseStatusCode.NO_STATUS_CODE, message)
+    internal WebSocketException (string message)
+      : this (CloseStatusCode.NO_STATUS_CODE, message)
     {
     }
 
-    internal WebSocketException(CloseStatusCode code, string message)
-      : base(message)
+    internal WebSocketException (CloseStatusCode code, string message)
+      : base (message)
     {
       Code = code;
     }
@@ -63,10 +64,11 @@ namespace WebSocketSharp {
     #region Public Properties
 
     /// <summary>
-    /// Gets the <see cref="CloseStatusCode"/> associated with a <see cref="WebSocketException"/>.
+    /// Gets the <see cref="CloseStatusCode"/> associated with the <see cref="WebSocketException"/>.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CloseStatusCode"/> values that indicates the cause of the exception.
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the causes of
+    /// the <see cref="WebSocketException"/>.
     /// </value>
     public CloseStatusCode Code {
       get; private set;
