@@ -586,66 +586,58 @@ namespace WebSocketSharp.Server
     /// Sends a binary <paramref name="data"/> to the client associated with the specified
     /// <paramref name="id"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     /// <param name="id">
     /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
-    public bool SendTo (byte [] data, string id)
+    public void SendTo (byte [] data, string id)
     {
       var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
+        return;
       }
 
       service.Send (data);
-      return true;
     }
 
     /// <summary>
     /// Sends a text <paramref name="data"/> to the client associated with the specified
     /// <paramref name="id"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
     /// <param name="id">
     /// A <see cref="string"/> that contains a session ID that represents the destination for the data.
     /// </param>
-    public bool SendTo (string data, string id)
+    public void SendTo (string data, string id)
     {
       var msg = _state.CheckIfStarted () ?? id.CheckIfValidSessionID ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       WebSocketService service;
       if (!TryGetServiceInstance (id, out service))
       {
         _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
-        return false;
+        return;
       }
 
       service.Send (data);
-      return true;
     }
 
     /// <summary>

@@ -359,66 +359,58 @@ namespace WebSocketSharp.Server
     /// Broadcasts the specified array of <see cref="byte"/> to all clients of the WebSocket service
     /// with the specified <paramref name="servicePath"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is broadcasted; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// An array of <see cref="byte"/> to broadcast.
     /// </param>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
-    public bool BroadcastTo (byte [] data, string servicePath)
+    public void BroadcastTo (byte [] data, string servicePath)
     {
       var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       IWebSocketServiceHost host;
       if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return false;
+        return;
       }
 
       host.Sessions.BroadcastInternally (data);
-      return true;
     }
 
     /// <summary>
     /// Broadcasts the specified <see cref="string"/> to all clients of the WebSocket service
     /// with the specified <paramref name="servicePath"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is broadcasted; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// A <see cref="string"/> to broadcast.
     /// </param>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
-    public bool BroadcastTo (string data, string servicePath)
+    public void BroadcastTo (string data, string servicePath)
     {
       var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       IWebSocketServiceHost host;
       if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return false;
+        return;
       }
 
       host.Sessions.BroadcastInternally (data);
-      return true;
     }
 
     /// <summary>
@@ -710,9 +702,6 @@ namespace WebSocketSharp.Server
     /// Sends a binary <paramref name="data"/> to the client associated with the specified
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
@@ -722,32 +711,29 @@ namespace WebSocketSharp.Server
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
-    public bool SendTo (byte [] data, string id, string servicePath)
+    public void SendTo (byte [] data, string id, string servicePath)
     {
       var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       IWebSocketServiceHost host;
       if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return false;
+        return;
       }
 
-      return host.Sessions.SendTo (data, id);
+      host.Sessions.SendTo (data, id);
     }
 
     /// <summary>
     /// Sends a text <paramref name="data"/> to the client associated with the specified
     /// <paramref name="id"/> and <paramref name="servicePath"/>.
     /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="data"/> is successfully sent; otherwise, <c>false</c>.
-    /// </returns>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
@@ -757,23 +743,23 @@ namespace WebSocketSharp.Server
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
     /// </param>
-    public bool SendTo (string data, string id, string servicePath)
+    public void SendTo (string data, string id, string servicePath)
     {
       var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
-        return false;
+        return;
       }
 
       IWebSocketServiceHost host;
       if (!TryGetServiceHostInternally (servicePath, out host))
       {
         _logger.Error ("The WebSocket service with the specified path not found.\npath: " + servicePath);
-        return false;
+        return;
       }
 
-      return host.Sessions.SendTo (data, id);
+      host.Sessions.SendTo (data, id);
     }
 
     /// <summary>
