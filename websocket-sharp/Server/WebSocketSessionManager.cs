@@ -106,7 +106,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        return from result in BroadpingInternally (new byte [] {})
+        return from result in BroadpingInternally ()
                where result.Value
                select result.Key;
       }
@@ -150,7 +150,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        return from result in BroadpingInternally (new byte [] {})
+        return from result in BroadpingInternally ()
                where !result.Value
                select result.Key;
       }
@@ -282,7 +282,12 @@ namespace WebSocketSharp.Server
         services.Current.SendAsync (data, completed);
     }
 
-    internal Dictionary<string, bool> BroadpingInternally (byte [] data)
+    internal Dictionary<string, bool> BroadpingInternally ()
+    {
+      return BroadpingInternally (WsFrame.CreatePingFrame (Mask.UNMASK).ToByteArray (), 1000);
+    }
+
+    internal Dictionary<string, bool> BroadpingInternally (byte [] frameAsBytes, int timeOut)
     {
       var result = new Dictionary<string, bool> ();
       foreach (var session in ServiceInstances)
@@ -290,7 +295,7 @@ namespace WebSocketSharp.Server
         if (_state != ServerState.START)
           break;
 
-        result.Add (session.ID, session.Context.WebSocket.Ping (data));
+        result.Add (session.ID, session.Context.WebSocket.Ping (frameAsBytes, timeOut));
       }
 
       return result;
@@ -310,21 +315,18 @@ namespace WebSocketSharp.Server
       _state = ServerState.START;
     }
 
-    internal void Stop ()
+    internal void Stop (byte [] data, bool send)
     {
-      lock (_sync)
-      {
-        _state = ServerState.SHUTDOWN;
+      var payload = new PayloadData (data);
+      var args = new CloseEventArgs (payload);
+      var frameAsBytes = send
+                       ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                       : null;
 
-        _sweepTimer.Enabled = false;
-        foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close ();
-
-        _state = ServerState.STOP;
-      }
+      Stop (args, frameAsBytes);
     }
 
-    internal void Stop (byte [] data)
+    internal void Stop (CloseEventArgs args, byte [] frameAsBytes)
     {
       lock (_sync)
       {
@@ -332,7 +334,7 @@ namespace WebSocketSharp.Server
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (data);
+          session.Context.WebSocket.Close (args, frameAsBytes, 1000);
 
         _state = ServerState.STOP;
       }
@@ -402,7 +404,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return BroadpingInternally (new byte [] {});
+      return BroadpingInternally ();
     }
 
     /// <summary>
@@ -428,7 +430,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return BroadpingInternally (data);
+      return BroadpingInternally (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
     }
 
     /// <summary>

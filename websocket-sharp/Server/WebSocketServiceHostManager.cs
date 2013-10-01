@@ -195,7 +195,7 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private Dictionary<string, Dictionary<string, bool>> broadping (byte [] data)
+    private Dictionary<string, Dictionary<string, bool>> broadping (byte [] frameAsBytes, int timeOut)
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
       foreach (var host in ServiceHosts)
@@ -203,7 +203,7 @@ namespace WebSocketSharp.Server
         if (_state != ServerState.START)
           break;
 
-        result.Add (host.ServicePath, host.Sessions.BroadpingInternally (data));
+        result.Add (host.ServicePath, host.Sessions.BroadpingInternally (frameAsBytes, timeOut));
       }
 
       return result;
@@ -250,7 +250,7 @@ namespace WebSocketSharp.Server
       }
 
       if (host.Sessions.State == ServerState.START)
-        host.Sessions.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG));
+        host.Sessions.Stop (((ushort) CloseStatusCode.AWAY).ToByteArray (ByteOrder.BIG), true);
 
       return true;
     }
@@ -266,28 +266,23 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop ()
+    internal void Stop (byte [] data, bool send)
     {
       lock (_sync)
       {
         _state = ServerState.SHUTDOWN;
+
+        var payload = new PayloadData (data);
+        var args = new CloseEventArgs (payload);
+        var frameAsBytes = send
+                         ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                         : null;
+
         foreach (var host in _serviceHosts.Values)
-          host.Sessions.Stop ();
+          host.Sessions.Stop (args, frameAsBytes);
 
         _serviceHosts.Clear ();
-        _state = ServerState.STOP;
-      }
-    }
 
-    internal void Stop (byte [] data)
-    {
-      lock (_sync)
-      {
-        _state = ServerState.SHUTDOWN;
-        foreach (var host in _serviceHosts.Values)
-          host.Sessions.Stop (data);
-
-        _serviceHosts.Clear ();
         _state = ServerState.STOP;
       }
     }
@@ -430,7 +425,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (new byte [] {});
+      return broadping (WsFrame.CreatePingFrame (Mask.UNMASK).ToByteArray (), 1000);
     }
 
     /// <summary>
@@ -459,7 +454,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (data);
+      return broadping (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
     }
 
     /// <summary>
@@ -489,7 +484,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Sessions.BroadpingInternally (new byte [] {});
+      return host.Sessions.BroadpingInternally ();
     }
 
     /// <summary>
@@ -527,7 +522,8 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return host.Sessions.BroadpingInternally (data);
+      return host.Sessions.BroadpingInternally (
+        WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
     }
 
     /// <summary>

@@ -29,8 +29,8 @@
 using System;
 using System.Text;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
   /// </summary>
@@ -51,16 +51,16 @@ namespace WebSocketSharp {
 
     #region Internal Constructors
 
-    internal MessageEventArgs(Opcode opcode, byte[] rawData)
+    internal MessageEventArgs (Opcode opcode, byte[] rawData)
     {
-      if ((ulong)rawData.LongLength > PayloadData.MaxLength)
-        throw new WebSocketException(CloseStatusCode.TOO_BIG);
+      if ((ulong) rawData.LongLength > PayloadData.MaxLength)
+        throw new WebSocketException (CloseStatusCode.TOO_BIG);
 
       _opcode = opcode;
       _rawData = rawData;
     }
 
-    internal MessageEventArgs(Opcode opcode, PayloadData data)
+    internal MessageEventArgs (Opcode opcode, PayloadData data)
     {
       _opcode = opcode;
       _rawData = data.ApplicationData;
@@ -82,8 +82,8 @@ namespace WebSocketSharp {
           _data = _rawData.LongLength == 0
                 ? String.Empty
                 : _opcode == Opcode.TEXT
-                  ? Encoding.UTF8.GetString(_rawData)
-                  : _opcode.ToString();
+                  ? Encoding.UTF8.GetString (_rawData)
+                  : _opcode.ToString ();
 
         return _data;
       }
@@ -95,7 +95,7 @@ namespace WebSocketSharp {
     /// <value>
     /// An array of <see cref="byte"/> that contains the received data.
     /// </value>
-    public byte[] RawData {
+    public byte [] RawData {
       get {
         return _rawData;
       }
@@ -105,7 +105,7 @@ namespace WebSocketSharp {
     /// Gets the type of the received data.
     /// </summary>
     /// <value>
-    /// One of the <see cref="Opcode"/> values that indicates the type of the received data.
+    /// One of the <see cref="Opcode"/> values, indicates the type of the received data.
     /// </value>
     public Opcode Type {
       get {

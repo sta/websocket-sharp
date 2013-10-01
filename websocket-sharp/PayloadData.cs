@@ -33,11 +33,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   internal class PayloadData : IEnumerable<byte>
   {
-    #region Public Fields
+    #region Public Const Fields
 
     public const ulong MaxLength = long.MaxValue;
 
@@ -45,35 +45,35 @@ namespace WebSocketSharp {
 
     #region Public Constructors
 
-    public PayloadData()
-      : this(new byte[]{})
+    public PayloadData ()
+      : this (new byte []{})
     {
     }
 
-    public PayloadData(byte[] appData)
-      : this(new byte[]{}, appData)
+    public PayloadData (byte [] appData)
+      : this (new byte []{}, appData)
     {
     }
 
-    public PayloadData(string appData)
-      : this(Encoding.UTF8.GetBytes(appData))
+    public PayloadData (string appData)
+      : this (Encoding.UTF8.GetBytes (appData))
     {
     }
 
-    public PayloadData(byte[] appData, bool masked)
-      : this(new byte[]{}, appData, masked)
+    public PayloadData (byte [] appData, bool masked)
+      : this (new byte []{}, appData, masked)
     {
     }
 
-    public PayloadData(byte[] extData, byte[] appData)
-      : this(extData, appData, false)
+    public PayloadData (byte [] extData, byte [] appData)
+      : this (extData, appData, false)
     {
     }
 
-    public PayloadData(byte[] extData, byte[] appData, bool masked)
+    public PayloadData (byte [] extData, byte [] appData, bool masked)
     {
-      if ((ulong)extData.LongLength + (ulong)appData.LongLength > MaxLength)
-        throw new ArgumentOutOfRangeException(
+      if ((ulong) extData.LongLength + (ulong) appData.LongLength > MaxLength)
+        throw new ArgumentOutOfRangeException (
           "The length of 'extData' plus 'appData' must be less than MaxLength.");
 
       ExtensionData = extData;
@@ -87,17 +87,9 @@ namespace WebSocketSharp {
 
     internal bool ContainsReservedCloseStatusCode {
       get {
-        if (Length >= 2)
-        {
-          var code = ToByteArray().SubArray(0, 2).To<ushort>(ByteOrder.BIG);
-          if (code == (ushort)CloseStatusCode.UNDEFINED ||
-              code == (ushort)CloseStatusCode.NO_STATUS_CODE ||
-              code == (ushort)CloseStatusCode.ABNORMAL ||
-              code == (ushort)CloseStatusCode.TLS_HANDSHAKE_FAILURE)
-            return true;
-        }
-
-        return false;
+        return ApplicationData.Length > 1
+               ? ApplicationData.SubArray (0, 2).To<ushort> (ByteOrder.BIG).IsReserved ()
+               : false;
       }
     }
 
@@ -105,32 +97,32 @@ namespace WebSocketSharp {
       get; private set;
     }
 
-    internal ulong Length {
-      get {
-        return (ulong)(ExtensionData.LongLength + ApplicationData.LongLength);
-      }
-    }
-
     #endregion
 
     #region Public Properties
 
-    public byte[] ExtensionData {
+    public byte [] ExtensionData {
       get; private set;
     }
 
-    public byte[] ApplicationData {
+    public byte [] ApplicationData {
       get; private set;
+    }
+
+    public ulong Length {
+      get {
+        return (ulong) (ExtensionData.LongLength + ApplicationData.LongLength);
+      }
     }
 
     #endregion
 
     #region Private Methods
 
-    private static void mask(byte[] src, byte[] key)
+    private static void mask (byte [] src, byte [] key)
     {
       for (long i = 0; i < src.LongLength; i++)
-        src[i] = (byte)(src[i] ^ key[i % 4]);
+        src [i] = (byte) (src [i] ^ key [i % 4]);
     }
 
     #endregion
@@ -141,7 +133,7 @@ namespace WebSocketSharp {
 
     #region Public Methods
 
-    public IEnumerator<byte> GetEnumerator()
+    public IEnumerator<byte> GetEnumerator ()
     {
       foreach (byte b in ExtensionData)
         yield return b;
@@ -150,36 +142,36 @@ namespace WebSocketSharp {
         yield return b;
     }
 
-    public void Mask(byte[] maskingKey)
+    public void Mask (byte [] maskingKey)
     {
       if (ExtensionData.LongLength > 0)
-        mask(ExtensionData, maskingKey);
+        mask (ExtensionData, maskingKey);
 
       if (ApplicationData.LongLength > 0)
-        mask(ApplicationData, maskingKey);
+        mask (ApplicationData, maskingKey);
 
       IsMasked = !IsMasked;
     }
 
-    public byte[] ToByteArray()
+    public byte [] ToByteArray ()
     {
       return ExtensionData.LongLength > 0
-             ? this.ToArray()
+             ? this.ToArray ()
              : ApplicationData;
     }
 
-    public override string ToString()
+    public override string ToString ()
     {
-      return BitConverter.ToString(ToByteArray());
+      return BitConverter.ToString (ToByteArray ());
     }
 
     #endregion
 
     #region Explicitly Implemented Interface Members
 
-    IEnumerator IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator ()
     {
-      return GetEnumerator();
+      return GetEnumerator ();
     }
 
     #endregion

@@ -98,24 +98,6 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Private Methods
-
-    private bool write (byte [] data)
-    {
-      lock (_forWrite)
-      {
-        try {
-          _innerStream.Write (data, 0, data.Length);
-          return true;
-        }
-        catch {
-          return false;
-        }
-      }
-    }
-
-    #endregion
-
     #region Internal Methods
 
     internal static WsStream CreateClientStream (
@@ -158,6 +140,20 @@ namespace WebSocketSharp
     {
       var conn = context.Connection;
       return new WsStream (conn.Stream, conn.IsSecure);
+    }
+
+    internal bool Write (byte [] data)
+    {
+      lock (_forWrite)
+      {
+        try {
+          _innerStream.Write (data, 0, data.Length);
+          return true;
+        }
+        catch {
+          return false;
+        }
+      }
     }
 
     #endregion
@@ -222,12 +218,12 @@ namespace WebSocketSharp
 
     public bool WriteFrame (WsFrame frame)
     {
-      return write (frame.ToByteArray ());
+      return Write (frame.ToByteArray ());
     }
 
     public bool WriteHandshake (HandshakeBase handshake)
     {
-      return write (handshake.ToByteArray ());
+      return Write (handshake.ToByteArray ());
     }
 
     #endregion

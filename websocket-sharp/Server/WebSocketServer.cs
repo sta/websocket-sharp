@@ -201,7 +201,7 @@ namespace WebSocketSharp.Server
       }
 
       StopListener ();
-      _serviceHosts.Stop (((ushort) CloseStatusCode.SERVER_ERROR).ToByteArray (ByteOrder.BIG));
+      _serviceHosts.Stop (((ushort) CloseStatusCode.SERVER_ERROR).ToByteArray (ByteOrder.BIG), true);
 
       _state = ServerState.STOP;
     }
@@ -313,7 +313,7 @@ namespace WebSocketSharp.Server
         base.Start ();
         if (!IsListening)
         {
-          _serviceHosts.Stop ();
+          _serviceHosts.Stop (new byte []{}, false);
           return;
         }
 
@@ -339,7 +339,7 @@ namespace WebSocketSharp.Server
       }
 
       base.Stop ();
-      _serviceHosts.Stop ();
+      _serviceHosts.Stop (new byte []{}, true);
 
       _state = ServerState.STOP;
     }
@@ -373,7 +373,7 @@ namespace WebSocketSharp.Server
       }
 
       base.Stop ();
-      _serviceHosts.Stop (data);
+      _serviceHosts.Stop (data, !code.IsReserved ());
 
       _state = ServerState.STOP;
     }
@@ -407,7 +407,7 @@ namespace WebSocketSharp.Server
       }
 
       base.Stop ();
-      _serviceHosts.Stop (data);
+      _serviceHosts.Stop (data, !code.IsReserved ());
 
       _state = ServerState.STOP;
     }

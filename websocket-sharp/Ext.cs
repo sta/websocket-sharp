@@ -168,7 +168,7 @@ namespace WebSocketSharp
     internal static string CheckIfStarted (this ServerState state)
     {
       return state != ServerState.START
-             ? "Not started, on shutdown or stopped."
+             ? "Any of not started, on shutdown or stopped."
              : null;
     }
 
@@ -394,6 +394,22 @@ namespace WebSocketSharp
     internal static bool IsPortNumber (this int value)
     {
       return value > 0 && value < 65536;
+    }
+
+    internal static bool IsReserved (this ushort code)
+    {
+      return code == (ushort) CloseStatusCode.UNDEFINED ||
+             code == (ushort) CloseStatusCode.NO_STATUS_CODE ||
+             code == (ushort) CloseStatusCode.ABNORMAL ||
+             code == (ushort) CloseStatusCode.TLS_HANDSHAKE_FAILURE;
+    }
+
+    internal static bool IsReserved (this CloseStatusCode code)
+    {
+      return code == CloseStatusCode.UNDEFINED ||
+             code == CloseStatusCode.NO_STATUS_CODE ||
+             code == CloseStatusCode.ABNORMAL ||
+             code == CloseStatusCode.TLS_HANDSHAKE_FAILURE;
     }
 
     internal static bool IsText (this string value)

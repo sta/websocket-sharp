@@ -80,7 +80,6 @@ namespace WebSocketSharp
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forClose;
-    private object                  _forFrame;
     private object                  _forSend;
     private volatile Logger         _logger;
     private string                  _origin;
@@ -104,7 +103,6 @@ namespace WebSocketSharp
       _cookies = new CookieCollection ();
       _extensions = String.Empty;
       _forClose = new object ();
-      _forFrame = new object ();
       _forSend = new object ();
       _logger = new Logger ();
       _origin = String.Empty;
@@ -319,9 +317,7 @@ namespace WebSocketSharp
     /// </value>
     public bool IsAlive {
       get {
-        return _readyState == WebSocketState.OPEN
-               ? Ping (new byte [] {})
-               : false;
+        return Ping ();
       }
     }
 
@@ -531,23 +527,13 @@ namespace WebSocketSharp
       return send (createHandshakeResponse ());
     }
 
-    // As server
-    private void close (HttpStatusCode code)
+    private void close (CloseStatusCode code, string reason, bool wait)
     {
-      send (createHandshakeResponse (code));
-      try {
-        closeServerResources ();
-      }
-      catch {
-      }
-      
-      _readyState = WebSocketState.CLOSED;
+      close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
     }
 
-    private void close (PayloadData data, bool received)
+    private void close (PayloadData payload, bool send, bool wait)
     {
-      var sent = false;
-      CloseEventArgs args = null;
       lock (_forClose)
       {
         if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
@@ -555,60 +541,53 @@ namespace WebSocketSharp
 
         _logger.Trace ("Start closing handshake.");
 
-        var current = _readyState;
         _readyState = WebSocketState.CLOSING;
-        if (current == WebSocketState.CONNECTING && !_client)
-        {
-          close (HttpStatusCode.BadRequest);
-          return;
-        }
-
-        args = new CloseEventArgs (data);
-        if (current == WebSocketState.OPEN && !data.ContainsReservedCloseStatusCode)
-          sent = send (createControlFrame (Opcode.CLOSE, data, _client));
       }
 
-      received = received || (sent && _exitReceiving != null && _exitReceiving.WaitOne (5 * 1000));
-      var released = closeResources ();
-      args.WasClean = sent && received && released;
-      _logger.Debug (String.Format (
-        "Was clean?: {0}\nsent: {1} received: {2} released: {3}", args.WasClean, sent, received, released));
+      var args = new CloseEventArgs (payload);
+      args.WasClean = _client
+                    ? close (
+                        send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray () : null,
+                        wait ? 5000 : 0,
+                        closeClientResources)
+                    : close (
+                        send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray () : null,
+                        wait ? 1000 : 0,
+                        closeServerResources);
 
       _readyState = WebSocketState.CLOSED;
-      _logger.Trace ("End closing handshake.");
 
+      _logger.Trace ("End closing handshake.");
       OnClose.Emit (this, args);
     }
 
-    private void close (CloseStatusCode code, string reason, bool received)
+    private bool close (byte [] frameAsBytes, int timeOut, Func<bool> release)
     {
-      var data = ((ushort) code).Append (reason);
-      close (new PayloadData (data), received);
+      var sent = frameAsBytes != null && _stream.Write (frameAsBytes);
+      var received = timeOut == 0 || (sent && _exitReceiving.WaitOne (timeOut));
+      var released = release ();
+      var result = sent && received && released;
+      _logger.Debug (String.Format (
+        "Was clean?: {0}\nsent: {1} received: {2} released: {3}", result, sent, received, released));
+
+      return result;
     }
 
     // As client
-    private void closeClientResources ()
-    {
-      if (_stream != null)
-      {
-        _stream.Dispose ();
-        _stream = null;
-      }
-
-      if (_tcpClient != null)
-      {
-        _tcpClient.Close ();
-        _tcpClient = null;
-      }
-    }
-
-    private bool closeResources ()
+    private bool closeClientResources ()
     {
       try {
-        if (_client)
-          closeClientResources ();
-        else
-          closeServerResources ();
+        if (_stream != null)
+        {
+          _stream.Dispose ();
+          _stream = null;
+        }
+
+        if (_tcpClient != null)
+        {
+          _tcpClient.Close ();
+          _tcpClient = null;
+        }
 
         return true;
       }
@@ -621,13 +600,23 @@ namespace WebSocketSharp
     }
 
     // As server
-    private void closeServerResources ()
+    private bool closeServerResources ()
     {
-      if (_closeContext != null)
-        _closeContext ();
+      try {
+        if (_closeContext != null)
+          _closeContext ();
 
-      _stream = null;
-      _context = null;
+        _stream = null;
+        _context = null;
+
+        return true;
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occured.");
+
+        return false;
+      }
     }
 
     private bool concatenateFragments (Stream dest)
@@ -695,23 +684,6 @@ namespace WebSocketSharp
       rand.NextBytes (src);
 
       return Convert.ToBase64String (src);
-    }
-
-    private static WsFrame createControlFrame (Opcode opcode, PayloadData payloadData, bool client)
-    {
-      var mask = client ? Mask.MASK : Mask.UNMASK;
-      var frame = new WsFrame (Fin.FINAL, opcode, mask, payloadData);
-
-      return frame;
-    }
-
-    private static WsFrame createFrame (
-      Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool client)
-    {
-      var mask = client ? Mask.MASK : Mask.UNMASK;
-      var frame = new WsFrame (fin, opcode, mask, payloadData, compressed);
-
-      return frame;
     }
 
     // As client
@@ -851,23 +823,19 @@ namespace WebSocketSharp
       OnOpen.Emit (this, EventArgs.Empty);
     }
 
-    private void pong (PayloadData data)
-    {
-      var frame = createControlFrame (Opcode.PONG, data, _client);
-      send (frame);
-    }
-
     private bool processAbnormalFrame ()
     {
       var code = CloseStatusCode.ABNORMAL;
-      close (code, code.GetMessage (), true);
+      close (code, code.GetMessage (), false);
 
       return false;
     }
 
     private bool processCloseFrame (WsFrame frame)
     {
-      close (frame.PayloadData, true);
+      var payload = frame.PayloadData;
+      close (payload, !payload.ContainsReservedCloseStatusCode, false);
+
       return false;
     }
 
@@ -937,22 +905,23 @@ namespace WebSocketSharp
 
     private bool processIncorrectFrame ()
     {
-      close (CloseStatusCode.INCORRECT_DATA, null, true);
+      close (CloseStatusCode.INCORRECT_DATA, null, false);
       return false;
     }
 
     private bool processPingFrame (WsFrame frame)
     {
-      _logger.Trace ("Return Pong.");
-      pong (frame.PayloadData);
+      if (send (WsFrame.CreatePongFrame (
+            _client ? Mask.MASK : Mask.UNMASK, frame.PayloadData).ToByteArray ()))
+        _logger.Trace ("Returned Pong.");
 
       return true;
     }
 
     private bool processPongFrame ()
     {
-      _logger.Trace ("Receive Pong.");
       _receivePong.Set ();
+      _logger.Trace ("Received Pong.");
 
       return true;
     }
@@ -1012,11 +981,25 @@ namespace WebSocketSharp
       return res;
     }
 
+    private bool send (byte [] frameAsBytes)
+    {
+      if (_readyState != WebSocketState.OPEN)
+      {
+        var msg = "A WebSocket connection isn't established or has been closed.";
+        _logger.Error (msg);
+        error (msg);
+
+        return false;
+      }
+
+      return _stream.Write (frameAsBytes);
+    }
+
     // As client
     private void send (HandshakeRequest request)
     {
-      _logger.Debug (String.Format ("A WebSocket connection request to {0}:\n{1}",
-        _uri, request));
+      _logger.Debug (String.Format (
+        "A WebSocket connection request to {0}:\n{1}", _uri, request));
       _stream.WriteHandshake (request);
     }
 
@@ -1029,23 +1012,16 @@ namespace WebSocketSharp
 
     private bool send (WsFrame frame)
     {
-      lock (_forFrame)
+      if (_readyState != WebSocketState.OPEN)
       {
-        var ready = _stream != null &&
-                    (_readyState == WebSocketState.OPEN ||
-                     (_readyState == WebSocketState.CLOSING && frame.IsClose));
+        var msg = "A WebSocket connection isn't established or has been closed.";
+        _logger.Error (msg);
+        error (msg);
 
-        if (!ready)
-        {
-          var msg = "A WebSocket connection isn't established or has been closed.";
-          _logger.Error (msg);
-          error (msg);
-
-          return false;
-        }
-
-        return _stream.WriteFrame (frame);
+        return false;
       }
+
+      return _stream.WriteFrame (frame);
     }
 
     private void send (Opcode opcode, Stream stream)
@@ -1091,8 +1067,8 @@ namespace WebSocketSharp
 
     private bool send (Fin fin, Opcode opcode, byte [] data, bool compressed)
     {
-      var frame = createFrame (fin, opcode, new PayloadData (data), compressed, _client);
-      return send (frame);
+      return send (
+        WsFrame.CreateFrame (fin, opcode, _client ? Mask.MASK : Mask.UNMASK, data, compressed));
     }
 
     private void sendAsync (Opcode opcode, Stream stream, Action completed)
@@ -1201,12 +1177,12 @@ namespace WebSocketSharp
         catch (WebSocketException ex) {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
-          close (ex.Code, ex.Message, true);
+          close (ex.Code, ex.Message, false);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
-          close (CloseStatusCode.ABNORMAL, null, true);
+          close (CloseStatusCode.ABNORMAL, null, false);
         }
       };
 
@@ -1264,26 +1240,38 @@ namespace WebSocketSharp
     #region Internal Methods
 
     // As server
-    internal void Close (byte [] data)
-    {
-      close (new PayloadData (data), false);
-    }
-
-    // As server
     internal void Close (HttpStatusCode code)
     {
       _readyState = WebSocketState.CLOSING;
-      close (code);
+
+      send (createHandshakeResponse (code));
+      closeServerResources ();
+      
+      _readyState = WebSocketState.CLOSED;
     }
 
-    internal bool Ping (byte [] data)
+    // As server
+    internal void Close (CloseEventArgs args, byte [] frameAsBytes, int waitTimeOut)
     {
-      var frame = createControlFrame (Opcode.PING, new PayloadData (data), _client);
-      var timeOut = _client ? 5000 : 1000;
+      lock (_forClose)
+      {
+        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
+          return;
 
-      return send (frame)
-             ? _receivePong.WaitOne (timeOut)
-             : false;
+        _readyState = WebSocketState.CLOSING;
+      }
+
+      args.WasClean = close (frameAsBytes, waitTimeOut, closeServerResources);
+
+      _readyState = WebSocketState.CLOSED;
+
+      OnClose.Emit (this, args);
+    }
+
+    internal bool Ping (byte [] frameAsBytes, int timeOut)
+    {
+      return send (frameAsBytes) &&
+             _receivePong.WaitOne (timeOut);
     }
 
     #endregion
@@ -1295,7 +1283,7 @@ namespace WebSocketSharp
     /// </summary>
     public void Close ()
     {
-      close (new PayloadData (), false);
+      close (new PayloadData (), _readyState == WebSocketState.OPEN, true);
     }
 
     /// <summary>
@@ -1320,7 +1308,8 @@ namespace WebSocketSharp
         return;
       }
 
-      close (new PayloadData (code.ToByteArray (ByteOrder.BIG)), false);
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      close (new PayloadData (code.ToByteArray (ByteOrder.BIG)), send, true);
     }
 
     /// <summary>
@@ -1332,7 +1321,8 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      close (new PayloadData (((ushort) code).ToByteArray (ByteOrder.BIG)), false);
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      close (new PayloadData (((ushort) code).ToByteArray (ByteOrder.BIG)), send, true);
     }
 
     /// <summary>
@@ -1364,7 +1354,8 @@ namespace WebSocketSharp
         return;
       }
 
-      close (new PayloadData (data), false);
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      close (new PayloadData (data), send, true);
     }
 
     /// <summary>
@@ -1393,7 +1384,8 @@ namespace WebSocketSharp
         return;
       }
 
-      close (new PayloadData (data), false);
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      close (new PayloadData (data), send, true);
     }
 
     /// <summary>
@@ -1417,7 +1409,10 @@ namespace WebSocketSharp
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
         error ("An exception has occured.");
-        Close (CloseStatusCode.ABNORMAL);
+        if (_client)
+          Close (CloseStatusCode.ABNORMAL);
+        else
+          Close (HttpStatusCode.BadRequest);
       }
     }
 
@@ -1441,7 +1436,9 @@ namespace WebSocketSharp
     /// </returns>
     public bool Ping ()
     {
-      return Ping (new byte [] {});
+      return _client
+             ? Ping (WsFrame.CreatePingFrame (Mask.MASK).ToByteArray (), 5000)
+             : Ping (WsFrame.CreatePingFrame (Mask.UNMASK).ToByteArray (), 1000);
     }
 
     /// <summary>
@@ -1457,7 +1454,7 @@ namespace WebSocketSharp
     public bool Ping (string message)
     {
       if (message == null || message.Length == 0)
-        return Ping (new byte [] {});
+        return Ping ();
 
       var data = Encoding.UTF8.GetBytes (message);
       var msg = data.CheckIfValidPingData ();
@@ -1469,7 +1466,9 @@ namespace WebSocketSharp
         return false;
       }
 
-      return Ping (data);
+      return _client
+             ? Ping (WsFrame.CreatePingFrame (Mask.MASK, data).ToByteArray (), 5000)
+             : Ping (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
     }
 
     /// <summary>

@@ -41,7 +41,7 @@ namespace WebSocketSharp
   /// </remarks>
   public class CloseEventArgs : MessageEventArgs
   {
-    #region Fields
+    #region Private Fields
 
     private bool   _clean;
     private ushort _code;
@@ -49,19 +49,19 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Constructors
+    #region Internal Constructors
 
-    internal CloseEventArgs (PayloadData data)
-      : base (Opcode.CLOSE, data)
+    internal CloseEventArgs (PayloadData payload)
+      : base (Opcode.CLOSE, payload)
     {
-      _code = getCodeFrom (data);
-      _reason = getReasonFrom (data);
+      _code = getCodeFrom (RawData);
+      _reason = getReasonFrom (RawData);
       _clean = false;
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the status code for closure.
@@ -107,23 +107,19 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static ushort getCodeFrom (PayloadData data)
+    private static ushort getCodeFrom (byte [] data)
     {
-      var appData = data.ApplicationData;
-      return appData.Length >= 2
-             ? appData.SubArray (0, 2).To<ushort> (ByteOrder.BIG)
-             : (ushort) CloseStatusCode.NO_STATUS_CODE;
+      return data.Length > 1
+             ? data.SubArray (0, 2).To<ushort> (ByteOrder.BIG)
+             : (ushort) 0;
     }
 
-    private static string getReasonFrom (PayloadData data)
+    private static string getReasonFrom (byte [] data)
     {
-      var appData = data.ApplicationData;
-      var appDataLen = appData.Length;
-      if (appDataLen <= 2)
-        return String.Empty;
-
-      var reason = appData.SubArray (2, appDataLen - 2);
-      return Encoding.UTF8.GetString (reason);
+      var len = data.Length;
+      return len > 2
+             ? Encoding.UTF8.GetString (data.SubArray (2, len - 2))
+             : String.Empty;
     }
 
     #endregion
