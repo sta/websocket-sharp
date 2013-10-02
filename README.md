@@ -45,7 +45,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 
 #### Step 2 ####
 
-Creating a instance of the `WebSocket` class with the specified WebSocket URL to connect.
+Creating an instance of the `WebSocket` class with the specified WebSocket URL to connect.
 
 ```cs
 using (var ws = new WebSocket ("ws://example.com"))
@@ -187,7 +187,8 @@ namespace Example
   {
     public static void Main (string [] args)
     {
-      var wssv = new WebSocketServiceHost<Laputa> ("ws://dragonsnest.far/Laputa");
+      var wssv = new WebSocketServer ("ws://dragonsnest.far");
+      wssv.AddWebSocketService<Laputa> ("/Laputa");
       wssv.Start ();
       Console.ReadKey (true);
       wssv.Stop ();
@@ -204,11 +205,11 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-The `WebSocketService`, `WebSocketServiceHost<T>` and `WebSocketServer` classes exist in the `WebSocketSharp.Server` namespace.
+The `WebSocketService` and `WebSocketServer` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
-Creating a class that inherits the `WebSocketService` class.
+Creating the class that inherits the `WebSocketService` class.
 
 For example, if you want to provide an echo service,
 
@@ -226,7 +227,7 @@ public class Echo : WebSocketService
 }
 ```
 
-Or if you want to provide a chat service,
+And if you want to provide a chat service,
 
 ```cs
 using System;
@@ -235,9 +236,21 @@ using WebSocketSharp.Server;
 
 public class Chat : WebSocketService
 {
+  private string _suffix;
+
+  public Chat ()
+    : this (String.Empty)
+  {
+  }
+
+  public Chat (string suffix)
+  {
+    _suffix = suffix;
+  }
+
   protected override void OnMessage (MessageEventArgs e)
   {
-    Sessions.Broadcast (e.Data);
+    Sessions.Broadcast (e.Data + _suffix);
   }
 }
 ```
@@ -248,25 +261,23 @@ In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each
 
 #### Step 3 ####
 
-Creating a instance of the `WebSocketServiceHost<T>` class if you want the single WebSocket service server.
-
-```cs
-var wssv = new WebSocketServiceHost<Echo> ("ws://example.com:4649");
-```
-
-Or creating a instance of the `WebSocketServer` class if you want the multi WebSocket service server.
+Creating an instance of the `WebSocketServer` class.
 
 ```cs
 var wssv = new WebSocketServer (4649);
 wssv.AddWebSocketService<Echo> ("/Echo");
-wssv.AddWebSocketService<Chat> ("/Chat");
+wssv.AddWebSocketService<Chat> ("/Chat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service with a specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<T>` method.
+You can add any WebSocket service with a specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
 
-The type of `T` inherits `WebSocketService` class, so you can use a class that was created in **Step 2**.
+The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
-If you create a instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it is necessary to run with root permission.
+The type of `T` must inherit `WebSocketService` class.
+
+So you can use the classes created in **Step 2**.
+
+If you create an instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
 
@@ -290,18 +301,19 @@ wssv.Stop ();
 
 I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.
 
-You can add any WebSocket service with a specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<T>` method.
+You can add any WebSocket service with a specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
 
 ```cs
 var httpsv = new HttpServer (4649);
-httpsv.AddWebSocketService<Echo> ("/");
+httpsv.AddWebSocketService<Echo> ("/Echo");
+httpsv.AddWebSocketService<Chat> ("/Chat", () => new Chat (" Nice boat."));
 ```
 
 For more information, could you see **[Example3]**?
 
 ### Secure Connection ###
 
-As a **WebSocket Client**, creating a instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
+As a **WebSocket Client**, creating an instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
 
 ```cs
 using (var ws = new WebSocket ("wss://example.com"))
@@ -322,7 +334,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 
 If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.
 
-As a **WebSocket Server**, creating and setting a instance of the WebSocket server with some settings for the secure connection.
+As a **WebSocket Server**, creating and setting an instance of the WebSocket server with some settings for the secure connection.
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
@@ -349,7 +361,7 @@ And if you want to output a log, you use some output methods. The following outp
 ws.Log.Debug ("This is a debug message.");
 ```
 
-The `WebSocketServiceHost<T>`, `WebSocketServer` and `HttpServer` classes include the same logging functions.
+The `WebSocketServer` and `HttpServer` classes include the same logging functions.
 
 ## Examples ##
 

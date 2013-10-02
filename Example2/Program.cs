@@ -10,19 +10,19 @@ namespace Example2
   {
     public static void Main (string [] args)
     {
-      /* Single service server
-      var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649");
-      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/Echo");
-      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/エコー");
-      //var wssv = new WebSocketServiceHost<Echo> (4649);
-      //var wssv = new WebSocketServiceHost<Echo> (4649, "/Echo");
-      //var wssv = new WebSocketServiceHost<Echo> (4649, "/エコー");
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649");
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/Chat");
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/チャット");
-      //var wssv = new WebSocketServiceHost<Chat> (4649);
-      //var wssv = new WebSocketServiceHost<Chat> (4649, "/Chat");
-      //var wssv = new WebSocketServiceHost<Chat> (4649, "/チャット");
+      /* Single service server 
+      var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649", () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/Echo", () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/エコー", () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Echo> (4649, () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Echo> (4649, "/Echo", () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Echo> (4649, "/エコー", () => new Echo ());
+      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649", () => new Chat ());
+      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/Chat", () => new Chat ());
+      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/チャット", () => new Chat ());
+      //var wssv = new WebSocketServiceHost<Chat> (4649, () => new Chat ());
+      //var wssv = new WebSocketServiceHost<Chat> (4649, "/Chat", () => new Chat ());
+      //var wssv = new WebSocketServiceHost<Chat> (4649, "/チャット", () => new Chat ());
       #if DEBUG
       wssv.Log.Level = LogLevel.TRACE;
       #endif
@@ -30,7 +30,7 @@ namespace Example2
 
       wssv.Start ();
       Console.WriteLine (
-        "WebSocket Service Host (url: {0})\n  listening on address: {1} port: {2}\n",
+        "A WebSocket Service Host (url: {0})\n  listening on address: {1} port: {2}\n",
         wssv.Uri, wssv.Address, wssv.Port);
        */
 
@@ -48,6 +48,7 @@ namespace Example2
       //wssv.KeepClean = false;
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
+      //wssv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
       //wssv.AddWebSocketService<Echo> ("/エコー");
       //wssv.AddWebSocketService<Chat> ("/チャット");
 
@@ -56,6 +57,7 @@ namespace Example2
         "A WebSocket Server listening on port: {0} service path:", wssv.Port);
       foreach (var path in wssv.WebSocketServices.ServicePaths)
         Console.WriteLine ("  {0}", path);
+       
 
       Console.WriteLine ();
       Console.WriteLine ("Press Enter key to stop server...");

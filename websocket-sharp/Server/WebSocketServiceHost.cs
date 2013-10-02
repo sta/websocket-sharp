@@ -28,6 +28,13 @@
  */
 #endregion
 
+#region Thanks
+/*
+ * Thanks:
+ *   Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
@@ -48,10 +55,11 @@ namespace WebSocketSharp.Server
   /// The T must inherit the <see cref="WebSocketService"/> class.
   /// </typeparam>
   public class WebSocketServiceHost<T> : WebSocketServerBase, IWebSocketServiceHost
-    where T : WebSocketService, new ()
+    where T : WebSocketService
   {
     #region Private Fields
 
+    private Func<T>                 _serviceConstructor;
     private string                  _servicePath;
     private WebSocketSessionManager _sessions;
     private volatile ServerState    _state;
@@ -61,9 +69,10 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (Logger logger)
+    internal WebSocketServiceHost (Func<T> serviceConstructor, Logger logger)
       : base (logger)
     {
+      _serviceConstructor = serviceConstructor;
       _sessions = new WebSocketSessionManager (logger);
       _state = ServerState.READY;
       _sync = new object ();
@@ -80,8 +89,18 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
-    public WebSocketServiceHost (int port)
-      : this (port, "/")
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    public WebSocketServiceHost (int port, Func<T> serviceConstructor)
+      : this (port, "/", serviceConstructor)
     {
     }
 
@@ -92,9 +111,31 @@ namespace WebSocketSharp.Server
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL.
     /// </param>
-    public WebSocketServiceHost (string url)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="url"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="url"/> is invalid.
+    /// </exception>
+    public WebSocketServiceHost (string url, Func<T> serviceConstructor)
       : base (url)
     {
+      if (serviceConstructor == null)
+        throw new ArgumentNullException ("serviceConstructor");
+
+      _serviceConstructor = serviceConstructor;
       _sessions = new WebSocketSessionManager (Log);
       _state = ServerState.READY;
       _sync = new object ();
@@ -111,14 +152,28 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    public WebSocketServiceHost (int port, bool secure)
-      : this (port, "/", secure)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </exception>
+    public WebSocketServiceHost (int port, bool secure, Func<T> serviceConstructor)
+      : this (port, "/", secure, serviceConstructor)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/> and <paramref name="servicePath"/>.
+    /// incoming connection attempts on the specified <paramref name="port"/> and
+    /// <paramref name="servicePath"/>.
     /// </summary>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
@@ -126,8 +181,29 @@ namespace WebSocketSharp.Server
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
-    public WebSocketServiceHost (int port, string servicePath)
-      : this (System.Net.IPAddress.Any, port, servicePath)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="servicePath"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="servicePath"/> is invalid.
+    /// </exception>
+    public WebSocketServiceHost (int port, string servicePath, Func<T> serviceConstructor)
+      : this (System.Net.IPAddress.Any, port, servicePath, serviceConstructor)
     {
     }
 
@@ -146,8 +222,37 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    public WebSocketServiceHost (int port, string servicePath, bool secure)
-      : this (System.Net.IPAddress.Any, port, servicePath, secure)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="servicePath"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="servicePath"/> is invalid.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   </para>
+    /// </exception>
+    public WebSocketServiceHost (int port, string servicePath, bool secure, Func<T> serviceConstructor)
+      : this (System.Net.IPAddress.Any, port, servicePath, secure, serviceConstructor)
     {
     }
 
@@ -165,8 +270,36 @@ namespace WebSocketSharp.Server
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path.
     /// </param>
-    public WebSocketServiceHost (System.Net.IPAddress address, int port, string servicePath)
-      : this (address, port, servicePath, port == 443 ? true : false)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="address"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="servicePath"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="servicePath"/> is invalid.
+    /// </exception>
+    public WebSocketServiceHost (
+      System.Net.IPAddress address, int port, string servicePath, Func<T> serviceConstructor)
+      : this (address, port, servicePath, port == 443 ? true : false, serviceConstructor)
     {
     }
 
@@ -188,9 +321,49 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    public WebSocketServiceHost (System.Net.IPAddress address, int port, string servicePath, bool secure)
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="address"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="servicePath"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="servicePath"/> is invalid.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   </para>
+    /// </exception>
+    public WebSocketServiceHost (
+      System.Net.IPAddress address, int port, string servicePath, bool secure, Func<T> serviceConstructor)
       : base (address, port, servicePath, secure)
     {
+      if (serviceConstructor == null)
+        throw new ArgumentNullException ("serviceConstructor");
+
+      _serviceConstructor = serviceConstructor;
       _sessions = new WebSocketSessionManager (Log);
       _state = ServerState.READY;
       _sync = new object ();
@@ -450,14 +623,14 @@ namespace WebSocketSharp.Server
     #region Explicit Interface Implementation
 
     /// <summary>
-    /// Binds the specified <see cref="WebSocketContext"/> to a <see cref="WebSocketService"/> instance.
+    /// Binds the specified <see cref="WebSocketContext"/> to a WebSocket service instance.
     /// </summary>
     /// <param name="context">
     /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
     /// </param>
     void IWebSocketServiceHost.BindWebSocket (WebSocketContext context)
     {
-      T service = new T ();
+      T service = _serviceConstructor ();
       service.Bind (context, _sessions);
       service.Start ();
     }

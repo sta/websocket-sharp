@@ -2,6 +2,8 @@
 /*
  * HttpServer.cs
  *
+ * A simple HTTP server that allows to accept the WebSocket connection requests.
+ *
  * The MIT License
  *
  * Copyright (c) 2012-2013 sta.blockhead
@@ -23,6 +25,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ */
+#endregion
+
+#region Thanks
+/*
+ * Thanks:
+ *   Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  */
 #endregion
 
@@ -510,20 +519,53 @@ namespace WebSocketSharp.Server
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
     /// </param>
+    /// <typeparam name="TWithNew">
+    /// The type of the WebSocket service. The TWithNew must inherit the <see cref="WebSocketService"/> class and
+    /// must have a public parameterless constructor.
+    /// </typeparam>
+    public void AddWebSocketService<TWithNew> (string servicePath)
+      where TWithNew : WebSocketService, new ()
+    {
+      AddWebSocketService<TWithNew> (servicePath, () => new TWithNew ());
+    }
+
+    /// <summary>
+    /// Adds the specified typed WebSocket service with the specified <paramref name="servicePath"/> and
+    /// <paramref name="serviceConstructor"/>.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method converts <paramref name="servicePath"/> to URL-decoded string and
+    ///   removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="serviceConstructor"/> returns a initialized specified typed WebSocket service
+    ///   instance.
+    ///   </para>
+    /// </remarks>
+    /// <param name="servicePath">
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
+    /// </param>
+    /// <param name="serviceConstructor">
+    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
+    /// instance (a new WebSocket session).
+    /// </param>
     /// <typeparam name="T">
     /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/> class.
     /// </typeparam>
-    public void AddWebSocketService<T> (string servicePath)
-      where T : WebSocketService, new ()
+    public void AddWebSocketService<T> (string servicePath, Func<T> serviceConstructor)
+      where T : WebSocketService
     {
-      var msg = servicePath.CheckIfValidServicePath ();
+      var msg = servicePath.CheckIfValidServicePath () ??
+                (serviceConstructor == null ? "'serviceConstructor' must not be null." : null);
+
       if (msg != null)
       {
         _logger.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return;
       }
 
-      var host = new WebSocketServiceHost<T> (_logger);
+      var host = new WebSocketServiceHost<T> (serviceConstructor, _logger);
       host.Uri = servicePath.ToUri ();
       if (!KeepClean)
         host.KeepClean = false;

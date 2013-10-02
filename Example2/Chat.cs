@@ -10,10 +10,21 @@ namespace Example2
     private static int _num = 0;
 
     private string _name;
+    private string _prefix;
+
+    public Chat ()
+      : this ("anon#")
+    {
+    }
+
+    public Chat (string prefix)
+    {
+      _prefix = prefix;
+    }
 
     private string getName ()
     {
-      return Context.QueryString ["name"] ?? ("anon#" + getNum ());
+      return Context.QueryString ["name"] ?? (_prefix + getNum ());
     }
 
     private int getNum ()
