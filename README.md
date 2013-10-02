@@ -266,7 +266,8 @@ Creating an instance of the `WebSocketServer` class.
 ```cs
 var wssv = new WebSocketServer (4649);
 wssv.AddWebSocketService<Echo> ("/Echo");
-wssv.AddWebSocketService<Chat> ("/Chat", () => new Chat (" Nice boat."));
+wssv.AddWebSocketService<Chat> ("/Chat");
+wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
 You can add any WebSocket service with a specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
@@ -306,7 +307,8 @@ You can add any WebSocket service with a specified path to the service to your `
 ```cs
 var httpsv = new HttpServer (4649);
 httpsv.AddWebSocketService<Echo> ("/Echo");
-httpsv.AddWebSocketService<Chat> ("/Chat", () => new Chat (" Nice boat."));
+httpsv.AddWebSocketService<Chat> ("/Chat");
+httpsv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
 For more information, could you see **[Example3]**?
