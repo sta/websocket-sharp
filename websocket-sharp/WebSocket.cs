@@ -58,9 +58,8 @@ namespace WebSocketSharp
   {
     #region Private Const Fields
 
-    private const int    _fragmentLen = 1016; // Max value is int.MaxValue - 14.
-    private const string _guid        = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-    private const string _version     = "13";
+    private const string _guid    = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private const string _version = "13";
 
     #endregion
 
@@ -92,6 +91,12 @@ namespace WebSocketSharp
     private WsStream                _stream;
     private TcpClient               _tcpClient;
     private Uri                     _uri;
+
+    #endregion
+
+    #region Internal Const Fields
+
+    internal const int FragmentLength = 1016; // Max value is int.MaxValue - 14.
 
     #endregion
 
@@ -1044,13 +1049,15 @@ namespace WebSocketSharp
           compressed = true;
         }
 
-        var length = data.Length;
         lock (_forSend)
         {
-          if (length <= _fragmentLen)
-            send (Fin.FINAL, opcode, data.ReadBytes ((int) length), compressed);
+          var mask = _client ? Mask.MASK : Mask.UNMASK;
+          var length = data.Length;
+          if (length <= FragmentLength)
+            send (WsFrame.CreateFrame (
+              Fin.FINAL, opcode, mask, data.ReadBytes ((int) length), compressed));
           else
-            sendFragmented (opcode, data, compressed);
+            sendFragmented (opcode, data, mask, compressed);
         }
       }
       catch (Exception ex) {
@@ -1063,12 +1070,6 @@ namespace WebSocketSharp
 
         stream.Dispose ();
       }
-    }
-
-    private bool send (Fin fin, Opcode opcode, byte [] data, bool compressed)
-    {
-      return send (
-        WsFrame.CreateFrame (fin, opcode, _client ? Mask.MASK : Mask.UNMASK, data, compressed));
     }
 
     private void sendAsync (Opcode opcode, Stream stream, Action completed)
@@ -1091,29 +1092,42 @@ namespace WebSocketSharp
       sender.BeginInvoke (opcode, stream, callback, null);
     }
 
-    private long sendFragmented (Opcode opcode, Stream stream, bool compressed)
+    private long sendFragmented (Opcode opcode, Stream stream, Mask mask, bool compressed)
     {
       var length = stream.Length;
-      var quo    = length / _fragmentLen;
-      var rem    = length % _fragmentLen;
+      var quo    = length / FragmentLength;
+      var rem    = length % FragmentLength;
       var count  = rem == 0 ? quo - 2 : quo - 1;
 
       long readLen = 0;
-      var tmpLen = 0;
-      var buffer = new byte [_fragmentLen];
+      int tmpLen = 0;
+      byte [] buffer = null;
+
+      // Not fragmented
+      if (quo == 0)
+      {
+        buffer = new byte [rem];
+        tmpLen = stream.Read (buffer, 0, buffer.Length);
+        if (send (WsFrame.CreateFrame (Fin.FINAL, opcode, mask, buffer, compressed)))
+          readLen = tmpLen;
+
+        return readLen;
+      }
+
+      buffer = new byte [FragmentLength];
 
       // First
-      tmpLen = stream.Read (buffer, 0, _fragmentLen);
-      if (send (Fin.MORE, opcode, buffer, compressed))
-        readLen += tmpLen;
+      tmpLen = stream.Read (buffer, 0, FragmentLength);
+      if (send (WsFrame.CreateFrame (Fin.MORE, opcode, mask, buffer, compressed)))
+        readLen = tmpLen;
       else
         return 0;
 
       // Mid
       for (long i = 0; i < count; i++)
       {
-        tmpLen = stream.Read (buffer, 0, _fragmentLen);
-        if (send (Fin.MORE, Opcode.CONT, buffer, compressed))
+        tmpLen = stream.Read (buffer, 0, FragmentLength);
+        if (send (WsFrame.CreateFrame (Fin.MORE, Opcode.CONT, mask, buffer, compressed)))
           readLen += tmpLen;
         else
           return readLen;
@@ -1123,7 +1137,7 @@ namespace WebSocketSharp
       if (rem != 0)
         buffer = new byte [rem];
       tmpLen = stream.Read (buffer, 0, buffer.Length);
-      if (send (Fin.FINAL, Opcode.CONT, buffer, compressed))
+      if (send (WsFrame.CreateFrame (Fin.FINAL, Opcode.CONT, mask, buffer, compressed)))
         readLen += tmpLen;
 
       return readLen;
@@ -1272,6 +1286,57 @@ namespace WebSocketSharp
     {
       return send (frameAsBytes) &&
              _receivePong.WaitOne (timeOut);
+    }
+
+    // As server, used to broadcast
+    internal void Send (Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
+    {
+      try {
+        byte [] cached;
+        if (!cache.TryGetValue (_compression, out cached))
+        {
+          cached = WsFrame.CreateFrame (
+            Fin.FINAL,
+            opcode,
+            Mask.UNMASK,
+            data.Compress (_compression),
+            _compression != CompressionMethod.NONE).ToByteArray ();
+
+          cache.Add (_compression, cached);
+        }
+
+        lock (_forSend)
+        {
+          send (cached);
+        }
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occured.");
+      }
+    }
+
+    // As server, used to broadcast
+    internal void Send (Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
+    {
+      try {
+        Stream cached;
+        if (!cache.TryGetValue (_compression, out cached))
+        {
+          cached = stream.Compress (_compression);
+          cache.Add (_compression, cached);
+        }
+
+        lock (_forSend)
+        {
+          cached.Position = 0;
+          sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
+        }
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occured.");
+      }
     }
 
     #endregion

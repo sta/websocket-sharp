@@ -28,8 +28,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
@@ -195,6 +197,59 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
+    private void broadcast (Opcode opcode, byte [] data)
+    {
+      WaitCallback callback = state =>
+      {
+        var cache = new Dictionary<CompressionMethod, byte []> ();
+        try {
+          foreach (var host in ServiceHosts)
+          {
+            if (_state != ServerState.START)
+              break;
+
+            host.Sessions.BroadcastInternally (opcode, data, cache);
+          }
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+        }
+        finally {
+          cache.Clear ();
+        }
+      };
+
+      ThreadPool.QueueUserWorkItem (callback);
+    }
+
+    private void broadcast (Opcode opcode, Stream stream)
+    {
+      WaitCallback callback = state =>
+      {
+        var cache = new Dictionary<CompressionMethod, Stream> ();
+        try {
+          foreach (var host in ServiceHosts)
+          {
+            if (_state != ServerState.START)
+              break;
+
+            host.Sessions.BroadcastInternally (opcode, stream, cache);
+          }
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+        }
+        finally {
+          foreach (var cached in cache.Values)
+            cached.Dispose ();
+
+          cache.Clear ();
+        }
+      };
+
+      ThreadPool.QueueUserWorkItem (callback);
+    }
+
     private Dictionary<string, Dictionary<string, bool>> broadping (byte [] frameAsBytes, int timeOut)
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
@@ -316,13 +371,10 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      foreach (var host in ServiceHosts)
-      {
-        if (_state != ServerState.START)
-          break;
-
-        host.Sessions.BroadcastInternally (data);
-      }
+      if (data.LongLength <= WebSocket.FragmentLength)
+        broadcast (Opcode.BINARY, data);
+      else
+        broadcast (Opcode.BINARY, new MemoryStream (data));
     }
 
     /// <summary>
@@ -341,13 +393,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      foreach (var host in ServiceHosts)
-      {
-        if (_state != ServerState.START)
-          break;
-
-        host.Sessions.BroadcastInternally (data);
-      }
+      var rawData = Encoding.UTF8.GetBytes (data);
+      if (rawData.LongLength <= WebSocket.FragmentLength)
+        broadcast (Opcode.TEXT, rawData);
+      else
+        broadcast (Opcode.TEXT, new MemoryStream (rawData));
     }
 
     /// <summary>
@@ -362,7 +412,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (byte [] data, string servicePath)
     {
-      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -376,7 +426,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      host.Sessions.BroadcastInternally (data);
+      host.Sessions.Broadcast (data);
     }
 
     /// <summary>
@@ -391,7 +441,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (string data, string servicePath)
     {
-      var msg = _state.CheckIfStarted () ?? data.CheckIfValidSendData () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
         _logger.Error (msg);
@@ -405,7 +455,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      host.Sessions.BroadcastInternally (data);
+      host.Sessions.Broadcast (data);
     }
 
     /// <summary>

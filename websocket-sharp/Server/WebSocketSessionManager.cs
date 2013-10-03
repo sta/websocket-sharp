@@ -28,8 +28,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Timers;
 
 namespace WebSocketSharp.Server
@@ -47,7 +49,7 @@ namespace WebSocketSharp.Server
     private Dictionary<string, WebSocketService> _sessions;
     private volatile ServerState                 _state;
     private volatile bool                        _sweeping;
-    private Timer                                _sweepTimer;
+    private System.Timers.Timer                  _sweepTimer;
     private object                               _sync;
 
     #endregion
@@ -229,7 +231,7 @@ namespace WebSocketSharp.Server
 
     private void setSweepTimer (double interval)
     {
-      _sweepTimer = new Timer (interval);
+      _sweepTimer = new System.Timers.Timer (interval);
       _sweepTimer.Elapsed += (sender, e) =>
       {
         Sweep ();
@@ -254,32 +256,69 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void BroadcastInternally (byte [] data)
+    internal void BroadcastInternally (Opcode opcode, byte [] data)
     {
-      var services = ServiceInstances.GetEnumerator ();
-      Action completed = null;
-      completed = () =>
+      WaitCallback callback = state =>
       {
-        if (_state == ServerState.START && services.MoveNext ())
-          services.Current.SendAsync (data, completed);
+        var cache = new Dictionary<CompressionMethod, byte []> ();
+        try {
+          BroadcastInternally (opcode, data, cache);
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+        }
+        finally {
+          cache.Clear ();
+        }
       };
 
-      if (_state == ServerState.START && services.MoveNext ())
-        services.Current.SendAsync (data, completed);
+      ThreadPool.QueueUserWorkItem (callback);
     }
 
-    internal void BroadcastInternally (string data)
+    internal void BroadcastInternally (Opcode opcode, Stream stream)
     {
-      var services = ServiceInstances.GetEnumerator ();
-      Action completed = null;
-      completed = () =>
+      WaitCallback callback = state =>
       {
-        if (_state == ServerState.START && services.MoveNext ())
-          services.Current.SendAsync (data, completed);
+        var cache = new Dictionary <CompressionMethod, Stream> ();
+        try {
+          BroadcastInternally (opcode, stream, cache);
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+        }
+        finally {
+          foreach (var cached in cache.Values)
+            cached.Dispose ();
+
+          cache.Clear ();
+        }
       };
 
-      if (_state == ServerState.START && services.MoveNext ())
-        services.Current.SendAsync (data, completed);
+      ThreadPool.QueueUserWorkItem (callback);
+    }
+
+    internal void BroadcastInternally (
+      Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
+    {
+      foreach (var session in ServiceInstances)
+      {
+        if (_state != ServerState.START)
+          break;
+
+        session.Context.WebSocket.Send (opcode, data, cache);
+      }
+    }
+
+    internal void BroadcastInternally (
+      Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
+    {
+      foreach (var session in ServiceInstances)
+      {
+        if (_state != ServerState.START)
+          break;
+
+        session.Context.WebSocket.Send (opcode, stream, cache);
+      }
     }
 
     internal Dictionary<string, bool> BroadpingInternally ()
@@ -367,7 +406,10 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      BroadcastInternally (data);
+      if (data.LongLength <= WebSocket.FragmentLength)
+        BroadcastInternally (Opcode.BINARY, data);
+      else
+        BroadcastInternally (Opcode.BINARY, new MemoryStream (data));
     }
 
     /// <summary>
@@ -385,7 +427,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      BroadcastInternally (data);
+      var rawData = Encoding.UTF8.GetBytes (data);
+      if (rawData.LongLength <= WebSocket.FragmentLength)
+        BroadcastInternally (Opcode.TEXT, rawData);
+      else
+        BroadcastInternally (Opcode.TEXT, new MemoryStream (rawData));
     }
 
     /// <summary>
