@@ -165,6 +165,22 @@ namespace WebSocketSharp
       }
     }
 
+    internal static string CheckIfCanRead (this Stream stream)
+    {
+      return stream == null
+             ? "'stream' must not be null."
+             : !stream.CanRead
+               ? "'stream' cannot be read."
+               : null;
+    }
+
+    internal static string CheckIfOpen (this WebSocketState state)
+    {
+      return state != WebSocketState.OPEN
+             ? "A WebSocket connection isn't established or has been closed."
+             : null;
+    }
+
     internal static string CheckIfStarted (this ServerState state)
     {
       return state != ServerState.START
@@ -456,7 +472,7 @@ namespace WebSocketSharp
       var buffer = new byte [length];
       var readLen = stream.Read (buffer, 0, length);
       if (readLen <= 0)
-        return new byte [] {};
+        return new byte []{};
 
       var tmpLen = 0;
       while (readLen < length)
@@ -1148,7 +1164,7 @@ namespace WebSocketSharp
     public static byte [] ReadBytes (this Stream stream, int length)
     {
       return stream == null || length < 1
-             ? new byte [] {}
+             ? new byte []{}
              : stream.ReadBytesInternal (length);
     }
 
@@ -1168,7 +1184,7 @@ namespace WebSocketSharp
     public static byte [] ReadBytes (this Stream stream, long length)
     {
       return stream == null || length < 1
-             ? new byte [] {}
+             ? new byte []{}
              : length > 1024
                ? stream.ReadBytesInternal (length, 1024)
                : stream.ReadBytesInternal ((int) length);
@@ -1439,7 +1455,7 @@ namespace WebSocketSharp
                                    ? BitConverter.GetBytes ((UInt32)(object) value)
                                    : type == typeof (UInt64)
                                      ? BitConverter.GetBytes ((UInt64)(object) value)
-                                     : new byte [] {};
+                                     : new byte []{};
 
       return buffer.Length <= 1 || order.IsHostOrder ()
              ? buffer
