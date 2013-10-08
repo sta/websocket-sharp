@@ -330,7 +330,8 @@ namespace WebSocketSharp.Server
       }
 
       _listening = false;
-      _serviceHosts.Stop (((ushort) CloseStatusCode.SERVER_ERROR).ToByteArray (ByteOrder.BIG), true);
+      _serviceHosts.Stop (
+        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
       _listener.Abort ();
 
       _state = ServerState.STOP;

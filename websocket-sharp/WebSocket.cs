@@ -1420,7 +1420,7 @@ namespace WebSocketSharp
       }
 
       var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (code.ToByteArray (ByteOrder.BIG)), send, true);
+      close (new PayloadData (code.ToByteArrayInternally (ByteOrder.BIG)), send, true);
     }
 
     /// <summary>
@@ -1433,7 +1433,7 @@ namespace WebSocketSharp
     public void Close (CloseStatusCode code)
     {
       var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (((ushort) code).ToByteArray (ByteOrder.BIG)), send, true);
+      close (new PayloadData (((ushort) code).ToByteArrayInternally (ByteOrder.BIG)), send, true);
     }
 
     /// <summary>
@@ -1671,7 +1671,7 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfOpen () ??
                 stream.CheckIfCanRead () ??
                 (length < 1 ? "'length' must be greater than 0." : null) ??
-                ((readLen = (data = stream.ReadBytesInternal (length)).Length) == 0
+                ((readLen = (data = stream.ReadBytes (length)).Length) == 0
                    ? "A data cannot be read from 'stream'." : null);
 
       if (msg != null)
@@ -1796,13 +1796,9 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (Stream stream, int length, bool dispose, Action completed)
     {
-      byte [] data = null;
-      int readLen = 0;
       var msg = _readyState.CheckIfOpen () ??
                 stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' must be greater than 0." : null) ??
-                ((readLen = (data = stream.ReadBytesInternal (length)).Length) == 0
-                   ? "A data cannot be read from 'stream'." : null);
+                (length < 1 ? "'length' must be greater than 0." : null);
 
       if (msg != null)
       {
@@ -1812,17 +1808,40 @@ namespace WebSocketSharp
         return;
       }
 
-      if (readLen != length)
-        _logger.Warn (String.Format (
-          "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}", length, readLen));
+      Action<byte []> result = data =>
+      {
+        var readLen = data.Length;
+        if (readLen == 0)
+        {
+          var err = "A data cannot be read from 'stream'.";
+          _logger.Error (err);
+          error (err);
 
-      if (dispose)
-        stream.Dispose ();
+          return;
+        }
 
-      if (readLen <= FragmentLength)
-        sendAsync (Opcode.BINARY, data, completed);
-      else
-        sendAsync (Opcode.BINARY, new MemoryStream (data), completed);
+        if (readLen != length)
+          _logger.Warn (String.Format (
+            "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
+            length,
+            readLen));
+
+        if (dispose)
+          stream.Dispose ();
+
+        if (readLen <= FragmentLength)
+          sendAsync (Opcode.BINARY, data, completed);
+        else
+          sendAsync (Opcode.BINARY, new MemoryStream (data), completed);
+      };
+
+      Action<Exception> exception = ex =>
+      {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occured.");        
+      };
+
+      stream.ReadBytesAsync (length, result, exception);
     }
 
     /// <summary>

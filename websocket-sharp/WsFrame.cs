@@ -87,8 +87,8 @@ namespace WebSocketSharp
       ExtPayloadLen = payloadLen < 126
                     ? new byte []{}
                     : payloadLen == 126
-                      ? ((ushort) dataLen).ToByteArray (ByteOrder.BIG)
-                      : dataLen.ToByteArray (ByteOrder.BIG);
+                      ? ((ushort) dataLen).ToByteArrayInternally (ByteOrder.BIG)
+                      : dataLen.ToByteArrayInternally (ByteOrder.BIG);
 
       /* MaskingKey */
 
@@ -399,7 +399,7 @@ namespace WebSocketSharp
                    : 8;
 
       var extPayloadLen = extLen > 0
-                        ? stream.ReadBytesInternal (extLen)
+                        ? stream.ReadBytes (extLen)
                         : new byte []{};
 
       if (extLen > 0 && extPayloadLen.Length != extLen)
@@ -414,7 +414,7 @@ namespace WebSocketSharp
 
       var masked = mask == Mask.MASK;
       var maskingKey = masked
-                     ? stream.ReadBytesInternal (4)
+                     ? stream.ReadBytes (4)
                      : new byte []{};
 
       if (masked && maskingKey.Length != 4)
@@ -430,8 +430,8 @@ namespace WebSocketSharp
       ulong dataLen = payloadLen < 126
                     ? payloadLen
                     : payloadLen == 126
-                      ? extPayloadLen.To<ushort> (ByteOrder.BIG)
-                      : extPayloadLen.To<ulong> (ByteOrder.BIG);
+                      ? extPayloadLen.ToUInt16 (ByteOrder.BIG)
+                      : extPayloadLen.ToUInt64 (ByteOrder.BIG);
 
       byte [] data = null;
       if (dataLen > 0)
@@ -442,9 +442,9 @@ namespace WebSocketSharp
           return CreateCloseFrame (Mask.UNMASK, code, code.GetMessage ());
         }
 
-        data = dataLen > 1024
-             ? stream.ReadBytesInternal ((long) dataLen, 1024)
-             : stream.ReadBytesInternal ((int) dataLen);
+        data = payloadLen > 126
+             ? stream.ReadBytes ((long) dataLen, 1024)
+             : stream.ReadBytes ((int) dataLen);
 
         if (data.LongLength != (long) dataLen)
           return CreateCloseFrame (
@@ -473,9 +473,9 @@ namespace WebSocketSharp
     {
       var len = frame.ExtPayloadLen.Length;
       var extPayloadLen = len == 2
-                        ? frame.ExtPayloadLen.To<ushort> (ByteOrder.BIG).ToString ()
+                        ? frame.ExtPayloadLen.ToUInt16 (ByteOrder.BIG).ToString ()
                         : len == 8
-                          ? frame.ExtPayloadLen.To<ulong> (ByteOrder.BIG).ToString ()
+                          ? frame.ExtPayloadLen.ToUInt64 (ByteOrder.BIG).ToString ()
                           : String.Empty;
 
       var masked = frame.IsMasked;
@@ -584,7 +584,7 @@ namespace WebSocketSharp
       WsFrame frame = null;
       try
       {
-        var header = stream.ReadBytesInternal (2);
+        var header = stream.ReadBytes (2);
         frame = header.Length == 2
               ? parse (header, stream, unmask)
               : CreateCloseFrame (
@@ -672,7 +672,7 @@ namespace WebSocketSharp
         header = (header << 4) + (int) Opcode;
         header = (header << 1) + (int) Mask;
         header = (header << 7) + (int) PayloadLen;
-        buffer.Write (((ushort) header).ToByteArray (ByteOrder.BIG), 0, 2);
+        buffer.Write (((ushort) header).ToByteArrayInternally (ByteOrder.BIG), 0, 2);
 
         if (PayloadLen > 125)
           buffer.Write (ExtPayloadLen, 0, ExtPayloadLen.Length);

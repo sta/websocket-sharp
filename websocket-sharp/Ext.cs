@@ -138,6 +138,37 @@ namespace WebSocketSharp
       }
     }
 
+    private static byte [] readBytes (this Stream stream, byte [] buffer, int offset, int length)
+    {
+      var readLen = stream.Read (buffer, offset, length);
+      if (readLen < 1)
+        return buffer.SubArray (0, offset);
+
+      var tmpLen = 0;
+      while (readLen < length)
+      {
+        tmpLen = stream.Read (buffer, offset + readLen, length - readLen);
+        if (tmpLen < 1)
+          break;
+
+        readLen += tmpLen;
+      }
+
+      return readLen < length
+             ? buffer.SubArray (0, offset + readLen)
+             : buffer;
+    }
+
+    private static bool readBytes (
+      this Stream stream, byte [] buffer, int offset, int length, Stream dest)
+    {
+      var bytes = stream.readBytes (buffer, offset, length);
+      var len = bytes.Length;
+      dest.Write (bytes, 0, len);
+
+      return len == offset + length;
+    }
+
     private static void times (this ulong n, Action act)
     {
       for (ulong i = 0; i < n; i++)
@@ -152,7 +183,7 @@ namespace WebSocketSharp
     {
       using (var buffer = new MemoryStream ())
       {
-        var tmp = code.ToByteArray (ByteOrder.BIG);
+        var tmp = code.ToByteArrayInternally (ByteOrder.BIG);
         buffer.Write (tmp, 0, 2);
         if (reason != null && reason.Length > 0)
         {
@@ -467,74 +498,61 @@ namespace WebSocketSharp
              : String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
     }
 
-    internal static byte [] ReadBytesInternal (this Stream stream, int length)
+    internal static byte [] ReadBytes (this Stream stream, int length)
     {
-      var buffer = new byte [length];
-      var readLen = stream.Read (buffer, 0, length);
-      if (readLen <= 0)
-        return new byte []{};
-
-      var tmpLen = 0;
-      while (readLen < length)
-      {
-        tmpLen = stream.Read (buffer, readLen, length - readLen);
-        if (tmpLen <= 0)
-          break;
-
-        readLen += tmpLen;
-      }
-
-      return readLen == length
-             ? buffer
-             : buffer.SubArray (0, readLen);
+      return stream.readBytes (new byte [length], 0, length);
     }
 
-    internal static byte [] ReadBytesInternal (this Stream stream, long length, int bufferLength)
+    internal static byte [] ReadBytes (this Stream stream, long length, int bufferLength)
     {
-      var count = length / bufferLength;
-      var rem   = length % bufferLength;
-      using (var readData = new MemoryStream ())
+      using (var result = new MemoryStream ())
       {
-        var readLen = 0;
-        var bufferLen = 0;
-        var tmpLen = 0;
-        Func<byte [], bool> read = buffer =>
-        {
-          bufferLen = buffer.Length;
-          readLen = stream.Read (buffer, 0, bufferLen);
-          if (readLen <= 0)
-            return false;
+        var count = length / bufferLength;
+        var rem = (int) (length % bufferLength);
 
-          while (readLen < bufferLen)
-          {
-            tmpLen = stream.Read (buffer, readLen, bufferLen - readLen);
-            if (tmpLen <= 0)
-              break;
-
-            readLen += tmpLen;
-          }
-
-          readData.Write (buffer, 0, readLen);
-          return readLen == bufferLen;
-        };
-
-        var readBuffer = new byte [bufferLength];
-        var readEnd = false;
+        var buffer = new byte [bufferLength];
+        var end = false;
         for (long i = 0; i < count; i++)
         {
-          if (!read (readBuffer))
+          if (!stream.readBytes (buffer, 0, bufferLength, result))
           {
-            readEnd = true;
+            end = true;
             break;
           }
         }
 
-        if (!readEnd && rem > 0)
-          read (new byte [rem]);
+        if (!end && rem > 0)
+          stream.readBytes (new byte [rem], 0, rem, result);
 
-        readData.Close ();
-        return readData.ToArray ();
+        result.Close ();
+        return result.ToArray ();
       }
+    }
+
+    internal static void ReadBytesAsync (
+      this Stream stream, int length, Action<byte []> completed, Action<Exception> error)
+    {
+      var buffer = new byte [length];
+      AsyncCallback callback = ar =>
+      {
+        try {
+          var readLen = stream.EndRead (ar);
+          var result = readLen < 1
+                     ? new byte []{}
+                     : readLen < length
+                       ? stream.readBytes (buffer, readLen, length - readLen)
+                       : buffer;
+
+          if (completed != null)
+            completed (result);
+        }
+        catch (Exception ex) {
+          if (error != null)
+            error (ex);
+        }
+      };
+
+      stream.BeginRead (buffer, 0, length, callback, null);
     }
 
     internal static string RemovePrefix (this string value, params string [] prefixes)
@@ -607,6 +625,22 @@ namespace WebSocketSharp
       }
     }
 
+    internal static byte [] ToByteArrayInternally (this ushort value, ByteOrder order)
+    {
+      var buffer = BitConverter.GetBytes (value);
+      return order.IsHostOrder ()
+             ? buffer
+             : buffer.Reverse ().ToArray ();
+    }
+
+    internal static byte [] ToByteArrayInternally (this ulong value, ByteOrder order)
+    {
+      var buffer = BitConverter.GetBytes (value);
+      return order.IsHostOrder ()
+             ? buffer
+             : buffer.Reverse ().ToArray ();
+    }
+
     internal static string ToCompressionExtension (this CompressionMethod method)
     {
       return method != CompressionMethod.NONE
@@ -621,6 +655,16 @@ namespace WebSocketSharp
           return method;
 
       return CompressionMethod.NONE;
+    }
+
+    internal static ushort ToUInt16 (this byte [] src, ByteOrder srcOrder)
+    {
+      return BitConverter.ToUInt16 (src.ToHostOrder (srcOrder), 0);
+    }
+
+    internal static ulong ToUInt64 (this byte [] src, ByteOrder srcOrder)
+    {
+      return BitConverter.ToUInt64 (src.ToHostOrder (srcOrder), 0);
     }
 
     internal static string TrimEndSlash (this string value)
@@ -1149,48 +1193,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Reads a block of bytes from the specified <see cref="Stream"/>
-    /// and returns the read data in an array of <see cref="byte"/>.
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="byte"/> that receives the read data.
-    /// </returns>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> that contains the data to read.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to read.
-    /// </param>
-    public static byte [] ReadBytes (this Stream stream, int length)
-    {
-      return stream == null || length < 1
-             ? new byte []{}
-             : stream.ReadBytesInternal (length);
-    }
-
-    /// <summary>
-    /// Reads a block of bytes from the specified <see cref="Stream"/>
-    /// and returns the read data in an array of <see cref="byte"/>.
-    /// </summary>
-    /// <returns>
-    /// An array of <see cref="byte"/> that receives the read data.
-    /// </returns>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> that contains the data to read.
-    /// </param>
-    /// <param name="length">
-    /// A <see cref="long"/> that contains the number of bytes to read.
-    /// </param>
-    public static byte [] ReadBytes (this Stream stream, long length)
-    {
-      return stream == null || length < 1
-             ? new byte []{}
-             : length > 1024
-               ? stream.ReadBytesInternal (length, 1024)
-               : stream.ReadBytesInternal ((int) length);
-    }
-
-    /// <summary>
     /// Retrieves a sub-array from the specified <paramref name="array"/>.
     /// A sub-array starts at the specified element position.
     /// </summary>
@@ -1212,13 +1214,13 @@ namespace WebSocketSharp
     public static T [] SubArray<T> (this T [] array, int startIndex, int length)
     {
       if (array == null || array.Length == 0)
-        return new T [] {};
+        return new T []{};
 
       if (startIndex < 0 || length <= 0)
-        return new T [] {};
+        return new T []{};
 
       if (startIndex + length > array.Length)
-        return new T [] {};
+        return new T []{};
 
       if (startIndex == 0 && array.Length == length)
         return array;
