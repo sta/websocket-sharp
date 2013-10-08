@@ -1028,65 +1028,72 @@ namespace WebSocketSharp
       return _stream.Write (frame.ToByteArray ());
     }
 
-    private void send (Opcode opcode, byte [] data)
+    private bool send (Opcode opcode, byte [] data)
     {
       lock (_forSend)
       {
+        var sent = false;
         try {
-          var comped = false;
+          var compressed = false;
           if (_compression != CompressionMethod.NONE)
           {
             data = data.Compress (_compression);
-            comped = true;
+            compressed = true;
           }
-          
-          send (WsFrame.CreateFrame (
-            Fin.FINAL, opcode, _client ? Mask.MASK : Mask.UNMASK, data, comped));
+
+          sent = send (WsFrame.CreateFrame (
+            Fin.FINAL, opcode, _client ? Mask.MASK : Mask.UNMASK, data, compressed));
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
         }
+
+        return sent;
       }
     }
 
-    private void send (Opcode opcode, Stream stream)
+    private bool send (Opcode opcode, Stream stream)
     {
       lock (_forSend)
       {
-        var comp = stream;
-        var comped = false;
+        var sent = false;
+
+        var src = stream;
+        var compressed = false;
         try {
           if (_compression != CompressionMethod.NONE)
           {
-            comp = stream.Compress (_compression);
-            comped = true;
+            stream = stream.Compress (_compression);
+            compressed = true;
           }
 
-          sendFragmented (opcode, comp, _client ? Mask.MASK : Mask.UNMASK, comped);
+          sent = sendFragmented (opcode, stream, _client ? Mask.MASK : Mask.UNMASK, compressed);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
         }
         finally {
-          if (comped)
-            comp.Dispose ();
+          if (compressed)
+            stream.Dispose ();
 
-          stream.Dispose ();
+          src.Dispose ();
         }
+
+        return sent;
       }
     }
 
-    private void sendAsync (Opcode opcode, byte [] data, Action completed)
+    private void send (Opcode opcode, byte [] data, Action<bool> completed)
     {
-      Action<Opcode, byte []> sender = send;
+      Func<Opcode, byte [], bool> sender = send;
       AsyncCallback callback = ar =>
       {
         try {
-          sender.EndInvoke (ar);
+          var sent = sender.EndInvoke (ar);
           if (completed != null)
-            completed ();
+            completed (sent);
         }
         catch (Exception ex)
         {
@@ -1098,15 +1105,15 @@ namespace WebSocketSharp
       sender.BeginInvoke (opcode, data, callback, null);
     }
 
-    private void sendAsync (Opcode opcode, Stream stream, Action completed)
+    private void send (Opcode opcode, Stream stream, Action<bool> completed)
     {
-      Action<Opcode, Stream> sender = send;
+      Func<Opcode, Stream, bool> sender = send;
       AsyncCallback callback = ar =>
       {
         try {
-          sender.EndInvoke (ar);
+          var sent = sender.EndInvoke (ar);
           if (completed != null)
-            completed ();
+            completed (sent);
         }
         catch (Exception ex)
         {
@@ -1585,10 +1592,62 @@ namespace WebSocketSharp
     /// <summary>
     /// Sends a binary <paramref name="data"/> using the WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains a binary data to send.
     /// </param>
     public void Send (byte[] data)
+    {
+      Send (data, null);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> using the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    public void Send (string data)
+    {
+      Send (data, null);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// using the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="file">
+    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// </param>
+    public void Send (FileInfo file)
+    {
+      Send (file, null);
+    }
+
+    /// <summary>
+    /// Sends a binary <paramref name="data"/> using the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
+    /// successfully; otherwise, <c>false</c>.
+    /// </param>
+    public void Send (byte [] data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null)
@@ -1600,18 +1659,27 @@ namespace WebSocketSharp
       }
 
       if (data.LongLength <= FragmentLength)
-        send (Opcode.BINARY, data);
+        send (Opcode.BINARY, data, completed);
       else
-        send (Opcode.BINARY, new MemoryStream (data));
+        send (Opcode.BINARY, new MemoryStream (data), completed);
     }
 
     /// <summary>
     /// Sends a text <paramref name="data"/> using the WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
     /// <param name="data">
     /// A <see cref="string"/> that contains a text data to send.
     /// </param>
-    public void Send (string data)
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
+    /// successfully; otherwise, <c>false</c>.
+    /// </param>
+    public void Send (string data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null)
@@ -1624,18 +1692,28 @@ namespace WebSocketSharp
 
       var rawData = Encoding.UTF8.GetBytes (data);
       if (rawData.LongLength <= FragmentLength)
-        send (Opcode.TEXT, rawData);
+        send (Opcode.TEXT, rawData, completed);
       else
-        send (Opcode.TEXT, new MemoryStream (rawData));
+        send (Opcode.TEXT, new MemoryStream (rawData), completed);
     }
 
     /// <summary>
-    /// Sends a binary data using the WebSocket connection.
+    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// using the WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> that contains a binary data to send.
+    /// A <see cref="FileInfo"/> from which contains a binary data to send.
     /// </param>
-    public void Send (FileInfo file)
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
+    /// successfully; otherwise, <c>false</c>.
+    /// </param>
+    public void Send (FileInfo file, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ??
                 (file == null ? "'file' must not be null." : null);
@@ -1648,12 +1726,16 @@ namespace WebSocketSharp
         return;
       }
 
-      send (Opcode.BINARY, file.OpenRead ());
+      send (Opcode.BINARY, file.OpenRead (), completed);
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> using the WebSocket connection.
+    /// Sends a binary data from the specified <see cref="Stream"/>
+    /// using the WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
     /// <param name="stream">
     /// A <see cref="Stream"/> object from which contains a binary data to send.
     /// </param>
@@ -1666,120 +1748,16 @@ namespace WebSocketSharp
     /// </param>
     public void Send (Stream stream, int length, bool dispose)
     {
-      byte [] data = null;
-      int readLen = 0;
-      var msg = _readyState.CheckIfOpen () ??
-                stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' must be greater than 0." : null) ??
-                ((readLen = (data = stream.ReadBytes (length)).Length) == 0
-                   ? "A data cannot be read from 'stream'." : null);
-
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      if (readLen != length)
-        _logger.Warn (String.Format (
-          "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}", length, readLen));
-
-      if (dispose)
-        stream.Dispose ();
-
-      if (readLen <= FragmentLength)
-        send (Opcode.BINARY, data);
-      else
-        send (Opcode.BINARY, new MemoryStream (data));
+      Send (stream, length, dispose, null);
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously using the WebSocket connection.
-    /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
-    /// </param>
-    public void SendAsync (byte [] data, Action completed)
-    {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      if (data.LongLength <= FragmentLength)
-        sendAsync (Opcode.BINARY, data, completed);
-      else
-        sendAsync (Opcode.BINARY, new MemoryStream (data), completed);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously using the WebSocket connection.
-    /// </summary>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
-    /// </param>
-    public void SendAsync (string data, Action completed)
-    {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      var rawData = Encoding.UTF8.GetBytes (data);
-      if (rawData.LongLength <= FragmentLength)
-        sendAsync (Opcode.TEXT, rawData, completed);
-      else
-        sendAsync (Opcode.TEXT, new MemoryStream (rawData), completed);
-    }
-
-    /// <summary>
-    /// Sends a binary data asynchronously using the WebSocket connection.
-    /// </summary>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> that contains a binary data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
-    /// </param>
-    public void SendAsync (FileInfo file, Action completed)
-    {
-      var msg = _readyState.CheckIfOpen () ??
-                (file == null ? "'file' must not be null." : null);
-
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      sendAsync (Opcode.BINARY, file.OpenRead (), completed);
-    }
-
-    /// <summary>
-    /// Sends a binary data asynchronously from the specified <see cref="Stream"/>
+    /// Sends a binary data from the specified <see cref="Stream"/>
     /// using the WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
     /// <param name="stream">
     /// A <see cref="Stream"/> object from which contains a binary data to send.
     /// </param>
@@ -1791,10 +1769,12 @@ namespace WebSocketSharp
     /// otherwise, <c>false</c>.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
+    /// successfully; otherwise, <c>false</c>.
     /// </param>
-    public void SendAsync (Stream stream, int length, bool dispose, Action completed)
+    public void Send (Stream stream, int length, bool dispose, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ??
                 stream.CheckIfCanRead () ??
@@ -1829,10 +1809,12 @@ namespace WebSocketSharp
         if (dispose)
           stream.Dispose ();
 
-        if (readLen <= FragmentLength)
-          sendAsync (Opcode.BINARY, data, completed);
-        else
-          sendAsync (Opcode.BINARY, new MemoryStream (data), completed);
+        var sent = readLen <= FragmentLength
+                 ? send (Opcode.BINARY, data)
+                 : send (Opcode.BINARY, new MemoryStream (data));
+
+        if (completed != null)
+          completed (sent);
       };
 
       Action<Exception> exception = ex =>

@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
@@ -225,6 +226,11 @@ namespace WebSocketSharp.Server
       IsBound = true;
     }
 
+    internal void Start ()
+    {
+      _websocket.Connect ();
+    }
+
     #endregion
 
     #region Protected Methods
@@ -235,7 +241,7 @@ namespace WebSocketSharp.Server
     /// <param name="message">
     /// A <see cref="string"/> that contains an error message.
     /// </param>
-    protected virtual void Error (string message)
+    protected void Error (string message)
     {
       if (!message.IsNullOrEmpty ())
         OnError (new ErrorEventArgs (message));
@@ -283,6 +289,246 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends a Ping to the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
+    /// from the client in a time; otherwise, <c>false</c>.
+    /// </returns>
+    protected bool Ping ()
+    {
+      return IsBound
+             ? _websocket.Ping ()
+             : false;
+    }
+
+    /// <summary>
+    /// Sends a Ping with the specified <paramref name="message"/> to the client of
+    /// the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
+    /// from the client in a time; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="message">
+    /// A <see cref="string"/> that contains a message to send.
+    /// </param>
+    protected bool Ping (string message)
+    {
+      return IsBound
+             ? _websocket.Ping (message)
+             : false;
+    }
+
+    /// <summary>
+    /// Sends a binary <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    protected void Send (byte [] data)
+    {
+      if (IsBound)
+        _websocket.Send (data, null);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    protected void Send (string data)
+    {
+      if (IsBound)
+        _websocket.Send (data, null);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="FileInfo"/> to
+    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="file">
+    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// </param>
+    protected void Send (FileInfo file)
+    {
+      if (IsBound)
+        _websocket.Send (file, null);
+    }
+
+    /// <summary>
+    /// Sends a binary <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
+    /// </param>
+    protected void Send (byte [] data, Action<bool> completed)
+    {
+      if (IsBound)
+        _websocket.Send (data, completed);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
+    /// </param>
+    protected void Send (string data, Action<bool> completed)
+    {
+      if (IsBound)
+        _websocket.Send (data, completed);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="FileInfo"/> to
+    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="file">
+    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
+    /// </param>
+    protected void Send (FileInfo file, Action<bool> completed)
+    {
+      if (IsBound)
+        _websocket.Send (file, completed);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="Stream"/> to
+    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that contains the number of bytes to send.
+    /// </param>
+    /// <param name="dispose">
+    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
+    /// otherwise, <c>false</c>.
+    /// </param>
+    protected void Send (Stream stream, int length, bool dispose)
+    {
+      if (IsBound)
+        _websocket.Send (stream, length, dispose, null);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="Stream"/> to
+    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that contains the number of bytes to send.
+    /// </param>
+    /// <param name="dispose">
+    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
+    /// otherwise, <c>false</c>.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
+    /// </param>
+    protected void Send (Stream stream, int length, bool dispose, Action<bool> completed)
+    {
+      if (IsBound)
+        _websocket.Send (stream, length, dispose, completed);
+    }
+
+    /// <summary>
+    /// Stops the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    protected void Stop ()
+    {
+      if (IsBound)
+        _websocket.Close ();
+    }
+
+    /// <summary>
+    /// Stops the current <see cref="WebSocketService"/> instance with the specified
+    /// <see cref="ushort"/> and <see cref="string"/>.
+    /// </summary>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for stop.
+    /// </param>
+    protected void Stop (ushort code, string reason)
+    {
+      if (IsBound)
+        _websocket.Close (code, reason);
+    }
+
+    /// <summary>
+    /// Stops the current <see cref="WebSocketService"/> instance with the specified
+    /// <see cref="CloseStatusCode"/> and <see cref="string"/>.
+    /// </summary>
+    /// <param name="code">
+    /// One of the <see cref="CloseStatusCode"/> values that indicates a status code
+    /// indicating the reason for stop.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that contains the reason for stop.
+    /// </param>
+    protected void Stop (CloseStatusCode code, string reason)
+    {
+      if (IsBound)
+        _websocket.Close (code, reason);
+    }
+
+    /// <summary>
     /// Validates the cookies used in the WebSocket connection request.
     /// </summary>
     /// <remarks>
@@ -303,153 +549,6 @@ namespace WebSocketSharp.Server
     protected virtual bool ValidateCookies (CookieCollection request, CookieCollection response)
     {
       return true;
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    /// <summary>
-    /// Sends a Ping to the client of the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
-    /// from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    public bool Ping ()
-    {
-      return IsBound
-             ? _websocket.Ping ()
-             : false;
-    }
-
-    /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client of
-    /// the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
-    /// from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
-    /// </param>
-    public bool Ping (string message)
-    {
-      return IsBound
-             ? _websocket.Ping (message)
-             : false;
-    }
-
-    /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
-    /// </param>
-    public virtual void Send (byte [] data)
-    {
-      if (IsBound)
-        _websocket.Send (data);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    public virtual void Send (string data)
-    {
-      if (IsBound)
-        _websocket.Send (data);
-    }
-
-    /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance asynchronously.
-    /// </summary>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
-    /// </param>
-    public virtual void SendAsync (byte [] data, Action completed)
-    {
-      if (IsBound)
-        _websocket.SendAsync (data, completed);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance asynchronously.
-    /// </summary>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
-    /// </param>
-    public virtual void SendAsync (string data, Action completed)
-    {
-      if (IsBound)
-        _websocket.SendAsync (data, completed);
-    }
-
-    /// <summary>
-    /// Starts the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    public void Start ()
-    {
-      if (IsBound)
-        _websocket.Connect ();
-    }
-
-    /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    public void Stop ()
-    {
-      if (IsBound)
-        _websocket.Close ();
-    }
-
-    /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the specified
-    /// <see cref="ushort"/> and <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    public void Stop (ushort code, string reason)
-    {
-      if (IsBound)
-        _websocket.Close (code, reason);
-    }
-
-    /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the specified
-    /// <see cref="CloseStatusCode"/> and <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicates a status code
-    /// indicating the reason for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    public void Stop (CloseStatusCode code, string reason)
-    {
-      if (IsBound)
-        _websocket.Close (code, reason);
     }
 
     #endregion

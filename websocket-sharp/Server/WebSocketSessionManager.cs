@@ -649,14 +649,14 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
       {
         _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
-      service.Send (data);
+      session.Context.WebSocket.Send (data, null);
     }
 
     /// <summary>
@@ -678,14 +678,14 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      WebSocketService service;
-      if (!TryGetServiceInstance (id, out service))
+      WebSocketService session;
+      if (!TryGetServiceInstance (id, out session))
       {
         _logger.Error ("The WebSocket session with the specified ID not found.\nID: " + id);
         return;
       }
 
-      service.Send (data);
+      session.Context.WebSocket.Send (data, null);
     }
 
     /// <summary>
