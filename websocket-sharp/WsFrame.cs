@@ -36,6 +36,21 @@ namespace WebSocketSharp
 {
   internal class WsFrame : IEnumerable<byte>
   {
+    #region Internal Static Fields
+
+    internal static readonly byte [] EmptyUnmaskPingData;
+
+    #endregion
+
+    #region Static Constructor
+
+    static WsFrame ()
+    {
+      EmptyUnmaskPingData = CreatePingFrame (Mask.UNMASK).ToByteArray ();
+    }
+
+    #endregion
+
     #region Private Constructors
 
     private WsFrame ()

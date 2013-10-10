@@ -1381,8 +1381,9 @@ namespace WebSocketSharp
             cached = stream.Compress (_compression);
             cache.Add (_compression, cached);
           }
+          else
+            cached.Position = 0;
 
-          cached.Position = 0;
           sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
         }
         catch (Exception ex) {
@@ -1556,7 +1557,7 @@ namespace WebSocketSharp
     {
       return _client
              ? Ping (WsFrame.CreatePingFrame (Mask.MASK).ToByteArray (), 5000)
-             : Ping (WsFrame.CreatePingFrame (Mask.UNMASK).ToByteArray (), 1000);
+             : Ping (WsFrame.EmptyUnmaskPingData, 1000);
     }
 
     /// <summary>
