@@ -61,7 +61,6 @@ namespace WebSocketSharp.Server
     /// </summary>
     public WebSocketService ()
     {
-      IsBound = false;
       _start = DateTime.MaxValue;
     }
 
@@ -81,13 +80,13 @@ namespace WebSocketSharp.Server
     /// </value>
     protected Logger Log {
       get {
-        return IsBound
+        return _websocket != null
                ? _websocket.Log
                : null;
       }
 
       set {
-        if (IsBound)
+        if (_websocket != null)
           _websocket.Log = value;
       }
     }
@@ -131,18 +130,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the current <see cref="WebSocketService"/> instance
-    /// has been bound to a <see cref="WebSocket"/>.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance has been bound to
-    /// a <see cref="WebSocket"/>; otherwise, <c>false</c>.
-    /// </value>
-    public bool IsBound {
-      get; private set;
-    }
-
-    /// <summary>
     /// Gets the time that the current <see cref="WebSocketService"/> instance has been started.
     /// </summary>
     /// <value>
@@ -163,7 +150,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public WebSocketState State {
       get {
-        return IsBound
+        return _websocket != null
                ? _websocket.ReadyState
                : WebSocketState.CONNECTING;
       }
@@ -209,11 +196,8 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Bind (WebSocketContext context, WebSocketSessionManager sessions)
+    internal void Start (WebSocketContext context, WebSocketSessionManager sessions)
     {
-      if (IsBound)
-        return;
-
       _context = context;
       _sessions = sessions;
       _websocket = context.WebSocket;
@@ -223,11 +207,6 @@ namespace WebSocketSharp.Server
       _websocket.OnError += onError;
       _websocket.OnClose += onClose;
 
-      IsBound = true;
-    }
-
-    internal void Start ()
-    {
       _websocket.Connect ();
     }
 
@@ -297,7 +276,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     protected bool Ping ()
     {
-      return IsBound
+      return _websocket != null
              ? _websocket.Ping ()
              : false;
     }
@@ -315,7 +294,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected bool Ping (string message)
     {
-      return IsBound
+      return _websocket != null
              ? _websocket.Ping (message)
              : false;
     }
@@ -332,7 +311,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (byte [] data)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (data, null);
     }
 
@@ -348,7 +327,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (string data)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (data, null);
     }
 
@@ -364,7 +343,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (FileInfo file)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (file, null);
     }
 
@@ -386,7 +365,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (byte [] data, Action<bool> completed)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (data, completed);
     }
 
@@ -408,7 +387,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (string data, Action<bool> completed)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (data, completed);
     }
 
@@ -430,7 +409,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (FileInfo file, Action<bool> completed)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (file, completed);
     }
 
@@ -453,7 +432,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (Stream stream, int length, bool dispose)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (stream, length, dispose, null);
     }
 
@@ -482,7 +461,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (Stream stream, int length, bool dispose, Action<bool> completed)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Send (stream, length, dispose, completed);
     }
 
@@ -491,7 +470,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     protected void Stop ()
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Close ();
     }
 
@@ -507,7 +486,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Stop (ushort code, string reason)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Close (code, reason);
     }
 
@@ -524,7 +503,7 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Stop (CloseStatusCode code, string reason)
     {
-      if (IsBound)
+      if (_websocket != null)
         _websocket.Close (code, reason);
     }
 

@@ -430,7 +430,7 @@ namespace WebSocketSharp.Server
       var wsContext = context.AcceptWebSocket ();
 
       var path = wsContext.Path;
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (path == null || !_serviceHosts.TryGetServiceHostInternally (path, out host))
       {
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
@@ -438,7 +438,7 @@ namespace WebSocketSharp.Server
       }
 
       wsContext.WebSocket.Log = _logger;
-      host.BindWebSocket (wsContext);
+      host.StartSession (wsContext);
 
       return true;
     }
@@ -567,12 +567,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var host = new WebSocketServiceHost<T> (serviceConstructor, _logger);
-      host.Uri = servicePath.ToUri ();
+      var host = new WebSocketServiceHost<T> (servicePath, serviceConstructor, _logger);
       if (!KeepClean)
         host.KeepClean = false;
 
-      _serviceHosts.Add (servicePath, host);
+      _serviceHosts.Add (host.ServicePath, host);
     }
 
     /// <summary>

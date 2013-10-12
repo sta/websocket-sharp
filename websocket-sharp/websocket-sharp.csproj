@@ -125,7 +125,6 @@
     <Compile Include="HandshakeRequest.cs" />
     <Compile Include="HandshakeResponse.cs" />
     <Compile Include="Server\WebSocketServiceHostManager.cs" />
-    <Compile Include="Server\IWebSocketServiceHost.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />

@@ -44,11 +44,11 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private volatile bool                             _keepClean;
-    private Logger                                    _logger;
-    private Dictionary<string, IWebSocketServiceHost> _serviceHosts;
-    private volatile ServerState                      _state;
-    private object                                    _sync;
+    private volatile bool                            _keepClean;
+    private Logger                                   _logger;
+    private Dictionary<string, WebSocketServiceHost> _serviceHosts;
+    private volatile ServerState                     _state;
+    private object                                   _sync;
 
     #endregion
 
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Server
     {
       _logger = logger;
       _keepClean = true;
-      _serviceHosts = new Dictionary<string, IWebSocketServiceHost> ();
+      _serviceHosts = new Dictionary<string, WebSocketServiceHost> ();
       _state = ServerState.READY;
       _sync = new object ();
     }
@@ -71,27 +71,6 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// Gets the connection count to the every WebSocket service provided by the WebSocket server.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that contains the connection count to the every WebSocket service.
-    /// </value>
-    public int ConnectionCount {
-      get {
-        var count = 0;
-        foreach (var host in ServiceHosts)
-        {
-          if (_state != ServerState.START)
-            break;
-
-          count += host.ConnectionCount;
-        }
-
-        return count;
-      }
-    }
 
     /// <summary>
     /// Gets the number of the WebSocket services provided by the WebSocket server.
@@ -112,15 +91,15 @@ namespace WebSocketSharp.Server
     /// Gets a WebSocket service host with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="IWebSocketServiceHost"/> instance that represents the service host
+    /// A <see cref="WebSocketServiceHost"/> instance that represents the service host
     /// if the service is successfully found; otherwise, <see langword="null"/>.
     /// </value>
     /// <param name="servicePath">
     /// A <see cref="string"/> that contains an absolute path to the service to find.
     /// </param>
-    public IWebSocketServiceHost this [string servicePath] {
+    public WebSocketServiceHost this [string servicePath] {
       get {
-        IWebSocketServiceHost host;
+        WebSocketServiceHost host;
         TryGetServiceHost (servicePath, out host);
 
         return host;
@@ -157,10 +136,10 @@ namespace WebSocketSharp.Server
     /// Gets the collection of the WebSocket service hosts managed by the WebSocket server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;IWebSocketServiceHost&gt; that contains the collection of the WebSocket
+    /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of the WebSocket
     /// service hosts.
     /// </value>
-    public IEnumerable<IWebSocketServiceHost> ServiceHosts {
+    public IEnumerable<WebSocketServiceHost> ServiceHosts {
       get {
         lock (_sync)
         {
@@ -181,6 +160,28 @@ namespace WebSocketSharp.Server
         {
           return _serviceHosts.Keys.ToList ();
         }
+      }
+    }
+
+    /// <summary>
+    /// Gets the number of the sessions to the every WebSocket service
+    /// provided by the WebSocket server.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains the session count of the WebSocket server.
+    /// </value>
+    public int SessionCount {
+      get {
+        var count = 0;
+        foreach (var host in ServiceHosts)
+        {
+          if (_state != ServerState.START)
+            break;
+
+          count += host.SessionCount;
+        }
+
+        return count;
       }
     }
 
@@ -275,12 +276,11 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Add (string servicePath, IWebSocketServiceHost serviceHost)
+    internal void Add (string servicePath, WebSocketServiceHost serviceHost)
     {
-      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
       lock (_sync)
       {
-        IWebSocketServiceHost host;
+        WebSocketServiceHost host;
         if (_serviceHosts.TryGetValue (servicePath, out host))
         {
           _logger.Error (
@@ -298,7 +298,7 @@ namespace WebSocketSharp.Server
     internal bool Remove (string servicePath)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       lock (_sync)
       {
         if (!_serviceHosts.TryGetValue (servicePath, out host))
@@ -349,7 +349,7 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal bool TryGetServiceHostInternally (string servicePath, out IWebSocketServiceHost serviceHost)
+    internal bool TryGetServiceHostInternally (string servicePath, out WebSocketServiceHost serviceHost)
     {
       servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
       bool result;
@@ -599,7 +599,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (string servicePath, byte [] data, Action completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.Broadcast (data, completed);
     }
@@ -623,7 +623,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (string servicePath, string data, Action completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.Broadcast (data, completed);
     }
@@ -680,7 +680,7 @@ namespace WebSocketSharp.Server
     public void BroadcastTo (
       string servicePath, Stream stream, int length, bool dispose, Action completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.Broadcast (stream, length, dispose, completed);
     }
@@ -750,7 +750,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> BroadpingTo (string servicePath)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       return TryGetServiceHost (servicePath, out host)
              ? host.Sessions.Broadping ()
              : null;
@@ -773,7 +773,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> BroadpingTo (string servicePath, string message)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       return TryGetServiceHost (servicePath, out host)
              ? host.Sessions.Broadping (message)
              : null;
@@ -791,7 +791,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string servicePath, string id)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.CloseSession (id);
     }
@@ -814,7 +814,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string servicePath, string id, ushort code, string reason)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.CloseSession (id, code, reason);
     }
@@ -837,7 +837,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void CloseSession (string servicePath, string id, CloseStatusCode code, string reason)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.CloseSession (id, code, reason);
     }
@@ -859,7 +859,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string servicePath, string id)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       return TryGetServiceHost (servicePath, out host) && host.Sessions.PingTo (id);
     }
 
@@ -883,7 +883,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool PingTo (string servicePath, string id, string message)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       return TryGetServiceHost (servicePath, out host) && host.Sessions.PingTo (id, message);
     }
 
@@ -956,7 +956,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void SendTo (string servicePath, string id, byte [] data, Action<bool> completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.SendTo (id, data, completed);
     }
@@ -986,7 +986,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void SendTo (string servicePath, string id, string data, Action<bool> completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.SendTo (id, data, completed);
     }
@@ -1053,7 +1053,7 @@ namespace WebSocketSharp.Server
     public void SendTo (
       string servicePath, string id, Stream stream, int length, bool dispose, Action<bool> completed)
     {
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
         host.Sessions.SendTo (id, stream, length, dispose, completed);
     }
@@ -1068,11 +1068,11 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that contains an absolute path to the service to find.
     /// </param>
     /// <param name="serviceHost">
-    /// When this method returns, a <see cref="IWebSocketServiceHost"/> instance that represents
+    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that represents
     /// the service host if the service is successfully found; otherwise, <see langword="null"/>.
     /// This parameter is passed uninitialized.
     /// </param>
-    public bool TryGetServiceHost (string servicePath, out IWebSocketServiceHost serviceHost)
+    public bool TryGetServiceHost (string servicePath, out WebSocketServiceHost serviceHost)
     {
       var msg = _state.CheckIfStarted () ?? servicePath.CheckIfValidServicePath ();
       if (msg != null)

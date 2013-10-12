@@ -77,6 +77,9 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
     public WebSocketServer (int port)
       : this (System.Net.IPAddress.Any, port)
     {
@@ -89,6 +92,12 @@ namespace WebSocketSharp.Server
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="url"/> is invalid.
+    /// </exception>
     public WebSocketServer (string url)
       : base (url)
     {
@@ -111,6 +120,12 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </exception>
     public WebSocketServer (int port, bool secure)
       : this (System.Net.IPAddress.Any, port, secure)
     {
@@ -126,6 +141,12 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port)
       : this (address, port, port == 443 ? true : false)
     {
@@ -146,6 +167,15 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
       : base (address, port, "/", secure)
     {
@@ -226,7 +256,7 @@ namespace WebSocketSharp.Server
       websocket.Log = Log;
 
       var path = context.Path;
-      IWebSocketServiceHost host;
+      WebSocketServiceHost host;
       if (path == null || !_serviceHosts.TryGetServiceHostInternally (path, out host))
       {
         websocket.Close (HttpStatusCode.NotImplemented);
@@ -236,7 +266,7 @@ namespace WebSocketSharp.Server
       if (BaseUri.IsAbsoluteUri)
         websocket.Url = new Uri (BaseUri, path);
 
-      host.BindWebSocket (context);
+      host.StartSession (context);
     }
 
     #endregion
@@ -299,15 +329,11 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var host = new WebSocketServiceHost<T> (serviceConstructor, Log);
-      host.Uri = BaseUri.IsAbsoluteUri
-               ? new Uri (BaseUri, servicePath)
-               : servicePath.ToUri ();
-
+      var host = new WebSocketServiceHost<T> (servicePath, serviceConstructor, Log);
       if (!KeepClean)
         host.KeepClean = false;
 
-      _serviceHosts.Add (servicePath, host);
+      _serviceHosts.Add (host.ServicePath, host);
     }
 
     /// <summary>

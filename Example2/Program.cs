@@ -10,31 +10,6 @@ namespace Example2
   {
     public static void Main (string [] args)
     {
-      /* Single service server 
-      var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649", () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/Echo", () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Echo> ("ws://localhost:4649/エコー", () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Echo> (4649, () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Echo> (4649, "/Echo", () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Echo> (4649, "/エコー", () => new Echo ());
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649", () => new Chat ());
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/Chat", () => new Chat ());
-      //var wssv = new WebSocketServiceHost<Chat> ("ws://localhost:4649/チャット", () => new Chat ());
-      //var wssv = new WebSocketServiceHost<Chat> (4649, () => new Chat ());
-      //var wssv = new WebSocketServiceHost<Chat> (4649, "/Chat", () => new Chat ());
-      //var wssv = new WebSocketServiceHost<Chat> (4649, "/チャット", () => new Chat ());
-      #if DEBUG
-      wssv.Log.Level = LogLevel.TRACE;
-      #endif
-      //wssv.KeepClean = false;
-
-      wssv.Start ();
-      Console.WriteLine (
-        "A WebSocket Service Host (url: {0})\n  listening on address: {1} port: {2}\n",
-        wssv.Uri, wssv.Address, wssv.Port);
-       */
-
-      /* Multi services server */
       var wssv = new WebSocketServer (4649);
       //var wssv = new WebSocketServer (4649, true);
       //var wssv = new WebSocketServer ("ws://localhost:4649");
@@ -57,10 +32,8 @@ namespace Example2
         "A WebSocket Server listening on port: {0} service path:", wssv.Port);
       foreach (var path in wssv.WebSocketServices.ServicePaths)
         Console.WriteLine ("  {0}", path);
-       
 
-      Console.WriteLine ();
-      Console.WriteLine ("Press Enter key to stop server...");
+      Console.WriteLine ("\nPress Enter key to stop server...");
       Console.ReadLine ();
 
       wssv.Stop ();

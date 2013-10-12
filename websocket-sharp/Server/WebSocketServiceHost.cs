@@ -2,8 +2,6 @@
 /*
  * WebSocketServiceHost.cs
  *
- * A C# implementation of the WebSocket protocol server.
- *
  * The MIT License
  *
  * Copyright (c) 2012-2013 sta.blockhead
@@ -37,336 +35,23 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides the functions of the server that receives the WebSocket connection requests.
+  /// Provides the methods and properties for the WebSocket service host.
   /// </summary>
-  /// <remarks>
-  /// The WebSocketServiceHost&lt;T&gt; class provides the single WebSocket service.
-  /// </remarks>
-  /// <typeparam name="T">
-  /// The type of the WebSocket service that the server provides.
-  /// The T must inherit the <see cref="WebSocketService"/> class.
-  /// </typeparam>
-  public class WebSocketServiceHost<T> : WebSocketServerBase, IWebSocketServiceHost
-    where T : WebSocketService
+  public abstract class WebSocketServiceHost
   {
-    #region Private Fields
-
-    private Func<T>                 _serviceConstructor;
-    private string                  _servicePath;
-    private WebSocketSessionManager _sessions;
-    private volatile ServerState    _state;
-    private object                  _sync;
-
-    #endregion
-
-    #region Internal Constructors
-
-    internal WebSocketServiceHost (Func<T> serviceConstructor, Logger logger)
-      : base (logger)
-    {
-      _serviceConstructor = serviceConstructor;
-      _sessions = new WebSocketSessionManager (logger);
-      _state = ServerState.READY;
-      _sync = new object ();
-    }
-
-    #endregion
-
-    #region Public Constructors
+    #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class.
     /// </summary>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    public WebSocketServiceHost (int port, Func<T> serviceConstructor)
-      : this (port, "/", serviceConstructor)
+    protected WebSocketServiceHost ()
     {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified WebSocket URL.
-    /// </summary>
-    /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL.
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="url"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is invalid.
-    /// </exception>
-    public WebSocketServiceHost (string url, Func<T> serviceConstructor)
-      : base (url)
-    {
-      if (serviceConstructor == null)
-        throw new ArgumentNullException ("serviceConstructor");
-
-      _serviceConstructor = serviceConstructor;
-      _sessions = new WebSocketSessionManager (Log);
-      _state = ServerState.READY;
-      _sync = new object ();
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/> and <paramref name="secure"/>.
-    /// </summary>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not.
-    /// (<c>true</c> indicates providing a secure connection.)
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
-    /// </exception>
-    public WebSocketServiceHost (int port, bool secure, Func<T> serviceConstructor)
-      : this (port, "/", secure, serviceConstructor)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/> and
-    /// <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path.
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="servicePath"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="servicePath"/> is invalid.
-    /// </exception>
-    public WebSocketServiceHost (int port, string servicePath, Func<T> serviceConstructor)
-      : this (System.Net.IPAddress.Any, port, servicePath, serviceConstructor)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="port"/>, <paramref name="servicePath"/>
-    /// and <paramref name="secure"/>.
-    /// </summary>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path.
-    /// </param>
-    /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not.
-    /// (<c>true</c> indicates providing a secure connection.)
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="servicePath"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="servicePath"/> is invalid.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
-    ///   </para>
-    /// </exception>
-    public WebSocketServiceHost (int port, string servicePath, bool secure, Func<T> serviceConstructor)
-      : this (System.Net.IPAddress.Any, port, servicePath, secure, serviceConstructor)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="address"/>, <paramref name="port"/>
-    /// and <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
-    /// </param>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path.
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="address"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="servicePath"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="servicePath"/> is invalid.
-    /// </exception>
-    public WebSocketServiceHost (
-      System.Net.IPAddress address, int port, string servicePath, Func<T> serviceConstructor)
-      : this (address, port, servicePath, port == 443 ? true : false, serviceConstructor)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the WebSocketServiceHost&lt;T&gt; class that listens for
-    /// incoming connection attempts on the specified <paramref name="address"/>, <paramref name="port"/>,
-    /// <paramref name="servicePath"/> and <paramref name="secure"/>.
-    /// </summary>
-    /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
-    /// </param>
-    /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
-    /// </param>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path.
-    /// </param>
-    /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not.
-    /// (<c>true</c> indicates providing a secure connection.)
-    /// </param>
-    /// <param name="serviceConstructor">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new WebSocket service
-    /// instance (a new WebSocket session).
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="address"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="servicePath"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="serviceConstructor"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="servicePath"/> is invalid.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
-    ///   </para>
-    /// </exception>
-    public WebSocketServiceHost (
-      System.Net.IPAddress address, int port, string servicePath, bool secure, Func<T> serviceConstructor)
-      : base (address, port, servicePath, secure)
-    {
-      if (serviceConstructor == null)
-        throw new ArgumentNullException ("serviceConstructor");
-
-      _serviceConstructor = serviceConstructor;
-      _sessions = new WebSocketSessionManager (Log);
-      _state = ServerState.READY;
-      _sync = new object ();
     }
 
     #endregion
@@ -374,16 +59,106 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the connection count to the WebSocket service host.
+    /// Gets or sets a value indicating whether the WebSocket service host cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains the connection count.
+    /// <c>true</c> if the WebSocket service host cleans up the inactive sessions periodically;
+    /// otherwise, <c>false</c>.
     /// </value>
-    public int ConnectionCount {
-      get {
-        return _sessions.Count;
-      }
+    public abstract bool KeepClean { get; set; }
+
+    /// <summary>
+    /// Gets the path to the WebSocket service managed by the WebSocket service host.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
+    /// </value>
+    public abstract string ServicePath { get; }
+
+    /// <summary>
+    /// Gets the number of the sessions to the WebSocket service.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains the session count.
+    /// </value>
+    public abstract int SessionCount { get; }
+
+    /// <summary>
+    /// Gets the manager of the sessions to the WebSocket service.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
+    /// </value>
+    public abstract WebSocketSessionManager Sessions { get; }
+
+    #endregion
+
+    #region Internal Methods
+
+    /// <summary>
+    /// Starts a new session to the WebSocket service using the specified <see cref="WebSocketContext"/>.
+    /// </summary>
+    /// <param name="context">
+    /// A <see cref="WebSocketContext"/> that contains a WebSocket connection request objects.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="context"/> is <see langword="null"/>.
+    /// </exception>
+    internal void StartSession (WebSocketContext context)
+    {
+      if (context == null)
+        throw new ArgumentNullException ("context");
+
+      var session = CreateSession ();
+      session.Start (context, Sessions);
     }
+
+    #endregion
+
+    #region Protected Methods
+
+    /// <summary>
+    /// Creates a new session to the WebSocket service.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="WebSocketService"/> instance that represents a new session.
+    /// </returns>
+    protected abstract WebSocketService CreateSession ();
+
+    #endregion
+  }
+
+  /// <summary>
+  /// Provides the methods and properties for the WebSocket service host.
+  /// </summary>
+  /// <typeparam name="T">
+  /// The type of the WebSocket service provided by the server.
+  /// The T must inherit the <see cref="WebSocketService"/> class.
+  /// </typeparam>
+  internal class WebSocketServiceHost<T> : WebSocketServiceHost
+    where T : WebSocketService
+  {
+    #region Private Fields
+
+    private Func<T>                 _constructor;
+    private string                  _path;
+    private WebSocketSessionManager _sessions;
+
+    #endregion
+
+    #region Internal Constructors
+
+    internal WebSocketServiceHost (string path, Func<T> constructor, Logger logger)
+    {
+      _path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      _constructor = constructor;
+      _sessions = new WebSocketSessionManager (logger);
+    }
+
+    #endregion
+
+    #region Public Properties
 
     /// <summary>
     /// Gets or sets a value indicating whether the WebSocket service host cleans up
@@ -393,7 +168,7 @@ namespace WebSocketSharp.Server
     /// <c>true</c> if the WebSocket service host cleans up the inactive sessions
     /// every 60 seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
-    public bool KeepClean {
+    public override bool KeepClean {
       get {
         return _sessions.KeepClean;
       }
@@ -404,45 +179,38 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the path to the WebSocket service provided by the WebSocket service host.
+    /// Gets the path to the WebSocket service managed by the WebSocket service host.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
     /// </value>
-    public string ServicePath {
+    public override string ServicePath {
       get {
-        if (_servicePath == null)
-          _servicePath = HttpUtility.UrlDecode (BaseUri.GetAbsolutePath ()).TrimEndSlash ();
-
-        return _servicePath;
+        return _path;
       }
     }
 
     /// <summary>
-    /// Gets the manager of the sessions to the WebSocket service host.
+    /// Gets the number of the sessions to the WebSocket service.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains the session count.
+    /// </value>
+    public override int SessionCount {
+      get {
+        return _sessions.Count;
+      }
+    }
+
+    /// <summary>
+    /// Gets the manager of the sessions to the WebSocket service.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
     /// </value>
-    public WebSocketSessionManager Sessions {
+    public override WebSocketSessionManager Sessions {
       get {
         return _sessions;
-      }
-    }
-
-    /// <summary>
-    /// Gets the WebSocket URL on which to listen for incoming connection attempts.
-    /// </summary>
-    /// <value>
-    /// A <see cref="Uri"/> that contains a WebSocket URL.
-    /// </value>
-    public Uri Uri {
-      get {
-        return BaseUri;
-      }
-
-      internal set {
-        BaseUri = value;
       }
     }
 
@@ -451,189 +219,14 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Aborts receiving the WebSocket connection requests.
+    /// Creates a new session to the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// This method is called when an exception occurs while receiving the WebSocket connection requests.
-    /// </remarks>
-    protected override void Abort ()
+    /// <returns>
+    /// A <see cref="WebSocketService"/> instance that represents a new session.
+    /// </returns>
+    protected override WebSocketService CreateSession ()
     {
-      lock (_sync)
-      {
-        if (_state != ServerState.START)
-          return;
-
-        _state = ServerState.SHUTDOWN;
-      }
-
-      StopListener ();
-      _sessions.Stop (
-        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
-
-      _state = ServerState.STOP;
-    }
-
-    /// <summary>
-    /// Accepts a WebSocket connection request.
-    /// </summary>
-    /// <param name="context">
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
-    /// </param>
-    protected override void AcceptWebSocket (TcpListenerWebSocketContext context)
-    {
-      var websocket = context.WebSocket;
-      websocket.Log = Log;
-
-      var path = HttpUtility.UrlDecode (context.Path).TrimEndSlash ();
-      if (path != ServicePath)
-      {
-        websocket.Close (HttpStatusCode.NotImplemented);
-        return;
-      }
-
-      if (BaseUri.IsAbsoluteUri)
-        websocket.Url = BaseUri;
-
-      ((IWebSocketServiceHost) this).BindWebSocket (context);
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    /// <summary>
-    /// Starts to receive the WebSocket connection requests.
-    /// </summary>
-    public override void Start ()
-    {
-      lock (_sync)
-      {
-        var msg = _state.CheckIfStopped ();
-        if (msg != null)
-        {
-          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
-          return;
-        }
-
-        _sessions.Start ();
-
-        base.Start ();
-        if (!IsListening)
-        {
-          _sessions.Stop (new byte []{}, false);
-          return;
-        }
-
-        _state = ServerState.START;
-      }
-    }
-
-    /// <summary>
-    /// Stops receiving the WebSocket connection requests.
-    /// </summary>
-    public override void Stop ()
-    {
-      lock (_sync)
-      {
-        var msg = _state.CheckIfStarted ();
-        if (msg != null)
-        {
-          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
-          return;
-        }
-
-        _state = ServerState.SHUTDOWN;
-      }
-
-      base.Stop ();
-      _sessions.Stop (new byte []{}, true);
-
-      _state = ServerState.STOP;
-    }
-
-    /// <summary>
-    /// Stops receiving the WebSocket connection requests with the specified <see cref="ushort"/> and
-    /// <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    public void Stop (ushort code, string reason)
-    {
-      byte [] data = null;
-      lock (_sync)
-      {
-        var msg = _state.CheckIfStarted () ??
-                  code.CheckIfValidCloseStatusCode () ??
-                  (data = code.Append (reason)).CheckIfValidCloseData ();
-
-        if (msg != null)
-        {
-          Log.Error (String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
-          return;
-        }
-
-        _state = ServerState.SHUTDOWN;
-      }
-
-      base.Stop ();
-      _sessions.Stop (data, !code.IsReserved ());
-
-      _state = ServerState.STOP;
-    }
-
-    /// <summary>
-    /// Stops receiving the WebSocket connection requests with the specified <see cref="CloseStatusCode"/>
-    /// and <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that represent the status codes indicating
-    /// the reasons for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
-    /// </param>
-    public void Stop (CloseStatusCode code, string reason)
-    {
-      byte [] data = null;
-      lock (_sync)
-      {
-        var msg = _state.CheckIfStarted () ??
-                  (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
-
-        if (msg != null)
-        {
-          Log.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
-          return;
-        }
-
-        _state = ServerState.SHUTDOWN;
-      }
-
-      base.Stop ();
-      _sessions.Stop (data, !code.IsReserved ());
-
-      _state = ServerState.STOP;
-    }
-
-    #endregion
-
-    #region Explicit Interface Implementation
-
-    /// <summary>
-    /// Binds the specified <see cref="WebSocketContext"/> to a WebSocket service instance.
-    /// </summary>
-    /// <param name="context">
-    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request objects to bind.
-    /// </param>
-    void IWebSocketServiceHost.BindWebSocket (WebSocketContext context)
-    {
-      T service = _serviceConstructor ();
-      service.Bind (context, _sessions);
-      service.Start ();
+      return _constructor ();
     }
 
     #endregion
