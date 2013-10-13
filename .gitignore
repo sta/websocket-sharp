@@ -27,6 +27,11 @@ TestResult.xml
 _ReSharper.*
 *.resharper
 
+# Upgrade
+Backup/*
+_UpgradeReport*
+UpgradeLog.*
+
 # Nupkg artifacts
 *.nupkg
 

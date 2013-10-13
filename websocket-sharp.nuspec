@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/diegodfsd/websocket-sharp</projectUrl>
     <iconUrl>https://github.com/diegodfsd/websocket-sharp/blob/master/websocket-sharp.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>websocket-sharp is a C# implementation of the WebSocket protocol client and server.</description>
+    <description>websocket-sharp is a CSharp implementation of the WebSocket protocol client and server.</description>
     <tags>websocket</tags>
   </metadata>
 </package>
