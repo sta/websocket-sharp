@@ -610,10 +610,10 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> Broadping (string message)
     {
-      if (message == null || message.Length == 0)
+      if (string.IsNullOrEmpty(message))
         return Broadping ();
 
-      byte [] data;
+      var data = new byte[] {};
       var msg = _state.CheckIfStarted () ??
                 (data = Encoding.UTF8.GetBytes (message)).CheckIfValidPingData ();
 
