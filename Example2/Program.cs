@@ -17,9 +17,9 @@ namespace Example2
       #if DEBUG
       wssv.Log.Level = LogLevel.TRACE;
       #endif
-      //var file = ConfigurationManager.AppSettings ["ServerCertFile"];
+      //var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
       //var password = ConfigurationManager.AppSettings ["CertFilePassword"];
-      //wssv.Certificate = new X509Certificate2 (file, password);
+      //wssv.Certificate = new X509Certificate2 (cert, password);
       //wssv.KeepClean = false;
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
@@ -28,10 +28,14 @@ namespace Example2
       //wssv.AddWebSocketService<Chat> ("/チャット");
 
       wssv.Start ();
-      Console.WriteLine (
-        "A WebSocket Server listening on port: {0} service path:", wssv.Port);
-      foreach (var path in wssv.WebSocketServices.ServicePaths)
-        Console.WriteLine ("  {0}", path);
+      if (wssv.IsListening)
+      {
+        Console.WriteLine (
+          "A WebSocket Server listening on port: {0} service paths:", wssv.Port);
+
+        foreach (var path in wssv.WebSocketServices.ServicePaths)
+          Console.WriteLine ("  {0}", path);
+      }
 
       Console.WriteLine ("\nPress Enter key to stop server...");
       Console.ReadLine ();

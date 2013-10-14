@@ -109,7 +109,6 @@ namespace WebSocketSharp
       _extensions = String.Empty;
       _forClose = new object ();
       _forSend = new object ();
-      _logger = new Logger ();
       _origin = String.Empty;
       _preAuth = false;
       _protocol = String.Empty;
@@ -154,7 +153,7 @@ namespace WebSocketSharp
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is not valid WebSocket URL.
+    /// <paramref name="url"/> is invalid.
     /// </exception>
     public WebSocket (string url, params string[] protocols)
       : this ()
@@ -162,16 +161,15 @@ namespace WebSocketSharp
       if (url == null)
         throw new ArgumentNullException ("url");
 
-      Uri uri;
       string msg;
-      if (!url.TryCreateWebSocketUri (out uri, out msg))
+      if (!url.TryCreateWebSocketUri (out _uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      _uri = uri;
       _protocols = protocols.ToString (", ");
+      _secure = _uri.Scheme == "wss" ? true : false;
       _client = true;
-      _secure = uri.Scheme == "wss" ? true : false;
       _base64key = createBase64Key ();
+      _logger = new Logger ();
     }
 
     /// <summary>

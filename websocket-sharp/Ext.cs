@@ -657,6 +657,17 @@ namespace WebSocketSharp
       return CompressionMethod.NONE;
     }
 
+    internal static System.Net.IPAddress ToIPAddress (this string hostNameOrAddress)
+    {
+      try {
+        var addrs = System.Net.Dns.GetHostAddresses (hostNameOrAddress);
+        return addrs [0];
+      }
+      catch {
+        return null;
+      }
+    }
+
     internal static ushort ToUInt16 (this byte [] src, ByteOrder srcOrder)
     {
       return BitConverter.ToUInt16 (src.ToHostOrder (srcOrder), 0);
@@ -673,6 +684,81 @@ namespace WebSocketSharp
       return value.Length > 0
              ? value
              : "/";
+    }
+
+    /// <summary>
+    /// Tries to create a <see cref="Uri"/> for WebSocket with the specified <paramref name="uriString"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the <see cref="Uri"/> is successfully created; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="uriString">
+    /// A <see cref="string"/> that contains a WebSocket URL to try.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns, a <see cref="Uri"/> that represents the WebSocket URL
+    /// if <paramref name="uriString"/> is valid; otherwise, <see langword="null"/>.
+    /// </param>
+    /// <param name="message">
+    /// When this method returns, a <see cref="string"/> that contains an error message
+    /// if <paramref name="uriString"/> is invalid; otherwise, <c>String.Empty</c>.
+    /// </param>
+    internal static bool TryCreateWebSocketUri (this string uriString, out Uri result, out string message)
+    {
+      result = null;
+      if (uriString.Length == 0)
+      {
+        message = "Must not be empty.";
+        return false;
+      }
+
+      var uri = uriString.ToUri ();
+      if (!uri.IsAbsoluteUri)
+      {
+        message = "Must be the absolute URI: " + uriString;
+        return false;
+      }
+
+      var scheme = uri.Scheme;
+      if (scheme != "ws" && scheme != "wss")
+      {
+        message = "The scheme part must be 'ws' or 'wss': " + scheme;
+        return false;
+      }
+
+      var fragment = uri.Fragment;
+      if (fragment.Length != 0)
+      {
+        message = "Must not contain the fragment component: " + uriString;
+        return false;
+      }
+
+      var port = uri.Port;
+      if (port > 0)
+      {
+        if (port > 65535)
+        {
+          message = "The port part must be between 1 and 65535: " + port;
+          return false;
+        }
+
+        if ((scheme == "ws" && port == 443) || (scheme == "wss" && port == 80))
+        {
+          message = String.Format ("Invalid pair of scheme and port: {0}, {1}", scheme, port);
+          return false;
+        }
+      }
+      else
+      {
+        port = scheme == "ws" ? 80 : 443;
+        var url = String.Format ("{0}://{1}:{2}{3}", scheme, uri.Host, port, uri.PathAndQuery);
+        uri = url.ToUri ();
+      }
+
+      result = uri;
+      message = String.Empty;
+
+      return true;
     }
 
     internal static string Unquote (this string value)
@@ -1048,10 +1134,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="System.Net.IPAddress"/> represents a local IP address.
+    /// Determines whether the specified <see cref="System.Net.IPAddress"/> represents
+    /// the local IP address.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="address"/> represents a local IP address; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="address"/> represents the local IP address;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> to test.
@@ -1064,7 +1152,8 @@ namespace WebSocketSharp
       if (address == null)
         throw new ArgumentNullException ("address");
 
-      if (System.Net.IPAddress.IsLoopback (address))
+      if (address.Equals (System.Net.IPAddress.Any) ||
+          System.Net.IPAddress.IsLoopback (address))
         return true;
 
       var host = System.Net.Dns.GetHostName ();
@@ -1547,87 +1636,6 @@ namespace WebSocketSharp
              : uriString.MaybeUri ()
                ? new Uri (uriString)
                : new Uri (uriString, UriKind.Relative);
-    }
-
-    /// <summary>
-    /// Tries to create a new WebSocket <see cref="Uri"/> with the specified <paramref name="uriString"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if a WebSocket <see cref="Uri"/> is successfully created; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="uriString">
-    /// A <see cref="string"/> that contains a WebSocket URI.
-    /// </param>
-    /// <param name="result">
-    /// When this method returns, contains a created WebSocket <see cref="Uri"/>
-    /// if <paramref name="uriString"/> is valid WebSocket URI; otherwise, <see langword="null"/>.
-    /// </param>
-    /// <param name="message">
-    /// When this method returns, contains a error message <see cref="string"/>
-    /// if <paramref name="uriString"/> is invalid WebSocket URI; otherwise, <c>String.Empty</c>.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="uriString"/> is <see langword="null"/>.
-    /// </exception>
-    public static bool TryCreateWebSocketUri (this string uriString, out Uri result, out string message)
-    {
-      if (uriString == null)
-        throw new ArgumentNullException ("uriString");
-
-      result = null;
-      if (uriString.Length == 0)
-      {
-        message = "Must not be empty.";
-        return false;
-      }
-
-      var uri = uriString.ToUri ();
-      if (!uri.IsAbsoluteUri)
-      {
-        message = "Not absolute URI: " + uriString;
-        return false;
-      }
-
-      var scheme = uri.Scheme;
-      if (scheme != "ws" && scheme != "wss")
-      {
-        message = "Unsupported scheme: " + scheme;
-        return false;
-      }
-
-      var fragment = uri.Fragment;
-      if (fragment != null && fragment.Length != 0)
-      {
-        message = "Must not contain the fragment component: " + uriString;
-        return false;
-      }
-
-      var port = uri.Port;
-      if (port > 0)
-      {
-        if (port > 65535)
-        {
-          message = "Invalid port number: " + port;
-          return false;
-        }
-
-        if ((scheme == "ws" && port == 443) || (scheme == "wss" && port == 80))
-        {
-          message = String.Format ("Invalid pair of scheme and port: {0}, {1}", scheme, port);
-          return false;
-        }
-      }
-      else
-      {
-        port = scheme == "ws" ? 80 : 443;
-        var url = String.Format ("{0}://{1}:{2}{3}", scheme, uri.Host, port, uri.PathAndQuery);
-        uri = url.ToUri ();
-      }
-
-      result = uri;
-      message = String.Empty;
-
-      return true;
     }
 
     /// <summary>

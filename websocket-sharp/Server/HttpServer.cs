@@ -56,7 +56,6 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private HttpListener                _listener;
-    private volatile bool               _listening;
     private Logger                      _logger;
     private int                         _port;
     private Thread                      _receiveRequestThread;
@@ -72,8 +71,8 @@ namespace WebSocketSharp.Server
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for incoming requests
-    /// on port 80.
+    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for
+    /// incoming requests on port 80.
     /// </summary>
     public HttpServer ()
       : this (80)
@@ -81,14 +80,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for incoming requests
-    /// on the specified <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for
+    /// incoming requests on the specified <paramref name="port"/>.
     /// </summary>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number. 
+    /// An <see cref="int"/> that contains a port number.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
     /// </exception>
     public HttpServer (int port)
       : this (port, port == 443 ? true : false)
@@ -96,18 +95,18 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for incoming requests
-    /// on the specified <paramref name="port"/> and <paramref name="secure"/>.
+    /// Initializes a new instance of the <see cref="HttpServer"/> class that listens for
+    /// incoming requests on the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number. 
+    /// An <see cref="int"/> that contains a port number.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
@@ -115,7 +114,7 @@ namespace WebSocketSharp.Server
     public HttpServer (int port, bool secure)
     {
       if (!port.IsPortNumber ())
-        throw new ArgumentOutOfRangeException ("port", "Invalid port number: " + port);
+        throw new ArgumentOutOfRangeException ("port", "Must be between 1 and 65535: " + port);
 
       if ((port == 80 && secure) || (port == 443 && !secure))
         throw new ArgumentException (String.Format (
@@ -143,15 +142,16 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (_listening)
+        if (_state == ServerState.START || _state == ServerState.SHUTDOWN)
         {
           _logger.Error (
             "The value of Certificate property cannot be changed because the server has already been started.");
+
           return;
         }
 
         if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
-          _logger.Warn ("Server certificate associated with the port number already exists.");
+          _logger.Warn ("The server certificate associated with the port number already exists.");
 
         _listener.DefaultCertificate = value;
       }
@@ -165,7 +165,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool IsListening {
       get {
-        return _listening;
+        return _state == ServerState.START;
       }
     }
 
@@ -243,10 +243,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (_listening)
+        if (_state == ServerState.START || _state == ServerState.SHUTDOWN)
         {
           _logger.Error (
             "The value of RootPath property cannot be changed because the server has already been started.");
+
           return;
         }
 
@@ -323,13 +324,12 @@ namespace WebSocketSharp.Server
     {
       lock (_sync)
       {
-        if (_state != ServerState.START)
+        if (!IsListening)
           return;
 
         _state = ServerState.SHUTDOWN;
       }
 
-      _listening = false;
       _serviceHosts.Stop (
         ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
       _listener.Abort ();
@@ -349,7 +349,6 @@ namespace WebSocketSharp.Server
     private void init ()
     {
       _listener = new HttpListener ();
-      _listening = false;
       _logger = new Logger ();
       _serviceHosts = new WebSocketServiceHostManager (_logger);
       _state = ServerState.READY;
@@ -366,59 +365,59 @@ namespace WebSocketSharp.Server
 
     private void processHttpRequest (HttpListenerContext context)
     {
-      var eventArgs = new HttpRequestEventArgs (context);
+      var args = new HttpRequestEventArgs (context);
       var method = context.Request.HttpMethod;
       if (method == "GET" && OnGet != null)
       {
-        OnGet (this, eventArgs);
+        OnGet (this, args);
         return;
       }
 
       if (method == "HEAD" && OnHead != null)
       {
-        OnHead (this, eventArgs);
+        OnHead (this, args);
         return;
       }
 
       if (method == "POST" && OnPost != null)
       {
-        OnPost (this, eventArgs);
+        OnPost (this, args);
         return;
       }
 
       if (method == "PUT" && OnPut != null)
       {
-        OnPut (this, eventArgs);
+        OnPut (this, args);
         return;
       }
 
       if (method == "DELETE" && OnDelete != null)
       {
-        OnDelete (this, eventArgs);
+        OnDelete (this, args);
         return;
       }
 
       if (method == "OPTIONS" && OnOptions != null)
       {
-        OnOptions (this, eventArgs);
+        OnOptions (this, args);
         return;
       }
 
       if (method == "TRACE" && OnTrace != null)
       {
-        OnTrace (this, eventArgs);
+        OnTrace (this, args);
         return;
       }
 
       if (method == "CONNECT" && OnConnect != null)
       {
-        OnConnect (this, eventArgs);
+        OnConnect (this, args);
         return;
       }
 
       if (method == "PATCH" && OnPatch != null)
       {
-        OnPatch (this, eventArgs);
+        OnPatch (this, args);
         return;
       }
 
@@ -486,7 +485,7 @@ namespace WebSocketSharp.Server
         }
       }
 
-      if (_listening)
+      if (IsListening)
         abort ();
     }
 
@@ -497,14 +496,10 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
-    private void stopListener ()
+    private void stopListener (int timeOut)
     {
-      if (!_listening)
-        return;
-
-      _listening = false;
       _listener.Close ();
-      _receiveRequestThread.Join (5 * 1000);
+      _receiveRequestThread.Join (timeOut);
     }
 
     #endregion
@@ -637,7 +632,6 @@ namespace WebSocketSharp.Server
         _serviceHosts.Start ();
         _listener.Start ();
         startReceiveRequestThread ();
-        _listening = true;
 
         _state = ServerState.START;
       }
@@ -661,7 +655,7 @@ namespace WebSocketSharp.Server
       }
 
       _serviceHosts.Stop (new byte []{}, true);
-      stopListener ();
+      stopListener (5000);
 
       _state = ServerState.STOP;
     }
@@ -687,7 +681,9 @@ namespace WebSocketSharp.Server
 
         if (msg != null)
         {
-          _logger.Error (String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+          _logger.Error (String.Format (
+            "{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+
           return;
         }
 
@@ -695,7 +691,7 @@ namespace WebSocketSharp.Server
       }
 
       _serviceHosts.Stop (data, !code.IsReserved ());
-      stopListener ();
+      stopListener (5000);
 
       _state = ServerState.STOP;
     }
@@ -729,7 +725,7 @@ namespace WebSocketSharp.Server
       }
 
       _serviceHosts.Stop (data, !code.IsReserved ());
-      stopListener ();
+      stopListener (5000);
 
       _state = ServerState.STOP;
     }

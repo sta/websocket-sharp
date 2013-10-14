@@ -38,7 +38,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
@@ -50,20 +52,29 @@ namespace WebSocketSharp.Server
   /// <remarks>
   /// The WebSocketServer class provides the multi WebSocket service.
   /// </remarks>
-  public class WebSocketServer : WebSocketServerBase
+  public class WebSocketServer
   {
     #region Private Fields
 
+    private System.Net.IPAddress        _address;
+    private X509Certificate2            _cert;
+    private TcpListener                 _listener;
+    private Logger                      _logger;
+    private int                         _port;
+    private Thread                      _receiveRequestThread;
+    private bool                        _secure;
     private WebSocketServiceHostManager _serviceHosts;
     private volatile ServerState        _state;
     private object                      _sync;
+    private Uri                         _uri;
 
     #endregion
 
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class that listens for
+    /// incoming requests on port 80.
     /// </summary>
     public WebSocketServer ()
       : this (80)
@@ -78,7 +89,7 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that contains a port number.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
     /// </exception>
     public WebSocketServer (int port)
       : this (System.Net.IPAddress.Any, port)
@@ -99,14 +110,24 @@ namespace WebSocketSharp.Server
     /// <paramref name="url"/> is invalid.
     /// </exception>
     public WebSocketServer (string url)
-      : base (url)
     {
-      if (BaseUri.AbsolutePath != "/")
-        throw new ArgumentException ("Must not contain the path component: " + url, "url");
+      if (url == null)
+        throw new ArgumentNullException ("url");
 
-      _serviceHosts = new WebSocketServiceHostManager (Log);
-      _state = ServerState.READY;
-      _sync = new object ();
+      string msg;
+      if (!tryCreateUri (url, out _uri, out msg))
+        throw new ArgumentException (msg, "url");
+
+      var host = _uri.DnsSafeHost;
+      _address = host.ToIPAddress ();
+      if (_address == null || !_address.IsLocal ())
+        throw new ArgumentException (String.Format (
+          "The host part must be the local host name: {0}", host), "url");
+
+      _port = _uri.Port;
+      _secure = _uri.Scheme == "wss" ? true : false;
+
+      init ();
     }
 
     /// <summary>
@@ -121,7 +142,7 @@ namespace WebSocketSharp.Server
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
@@ -136,7 +157,7 @@ namespace WebSocketSharp.Server
     /// incoming connection attempts on the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
@@ -145,7 +166,10 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="address"/> is not the local IP address.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port)
       : this (address, port, port == 443 ? true : false)
@@ -158,7 +182,7 @@ namespace WebSocketSharp.Server
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that contains a local IP address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that contains a port number.
@@ -171,22 +195,103 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is 0 or less, or 65536 or greater.
+    /// <paramref name="port"/> is not between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   <para>
+    ///   <paramref name="address"/> is not the local IP address.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   </para>
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
-      : base (address, port, "/", secure)
     {
-      _serviceHosts = new WebSocketServiceHostManager (Log);
-      _state = ServerState.READY;
-      _sync = new object ();
+      if (!address.IsLocal ())
+        throw new ArgumentException (String.Format (
+          "Must be the local IP address: {0}", address), "address");
+
+      if (!port.IsPortNumber ())
+        throw new ArgumentOutOfRangeException ("port", "Must be between 1 and 65535: " + port);
+
+      if ((port == 80 && secure) || (port == 443 && !secure))
+        throw new ArgumentException (String.Format (
+          "Invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+
+      _address = address;
+      _port = port;
+      _secure = secure;
+      _uri = "/".ToUri ();
+
+      init ();
     }
 
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets the local IP address on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
+    /// </value>
+    public System.Net.IPAddress Address {
+      get {
+        return _address;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the certificate used to authenticate the server on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="X509Certificate2"/> used to authenticate the server.
+    /// </value>
+    public X509Certificate2 Certificate {
+      get {
+        return _cert;
+      }
+
+      set {
+        if (_state == ServerState.START || _state == ServerState.SHUTDOWN)
+        {
+          _logger.Error (
+            "The value of Certificate property cannot be changed because the server has already been started.");
+
+          return;
+        }
+
+        _cert = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the server has been started.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server has been started; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsListening {
+      get {
+        return _state == ServerState.START;
+      }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the server provides secure connection.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server provides secure connection; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsSecure {
+      get {
+        return _secure;
+      }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the server cleans up the inactive sessions periodically.
@@ -206,7 +311,36 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the functions for the WebSocket services that the server provides.
+    /// Gets the logging functions.
+    /// </summary>
+    /// <remarks>
+    /// The default logging level is the <see cref="LogLevel.ERROR"/>.
+    /// If you want to change the current logging level, you set the <c>Log.Level</c> property
+    /// to one of the <see cref="LogLevel"/> values which you want.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging functions.
+    /// </value>
+    public Logger Log {
+      get {
+        return _logger;
+      }
+    }
+
+    /// <summary>
+    /// Gets the port on which to listen for incoming connection attempts.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> that contains a port number.
+    /// </value>
+    public int Port {
+      get {
+        return _port;
+      }
+    }
+
+    /// <summary>
+    /// Gets the functions for the WebSocket services provided by the server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketServiceHostManager"/> that manages the WebSocket services.
@@ -219,41 +353,29 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Protected Methods
+    #region Private Methods
 
-    /// <summary>
-    /// Aborts receiving the WebSocket connection requests.
-    /// </summary>
-    /// <remarks>
-    /// This method is called when an exception occurs while receiving the WebSocket connection requests.
-    /// </remarks>
-    protected override void Abort ()
+    private void abort ()
     {
       lock (_sync)
       {
-        if (_state != ServerState.START)
+        if (!IsListening)
           return;
 
         _state = ServerState.SHUTDOWN;
       }
 
-      StopListener ();
+      _listener.Stop ();
       _serviceHosts.Stop (
         ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
 
       _state = ServerState.STOP;
     }
 
-    /// <summary>
-    /// Accepts a WebSocket connection request.
-    /// </summary>
-    /// <param name="context">
-    /// A <see cref="TcpListenerWebSocketContext"/> that contains the WebSocket connection request objects.
-    /// </param>
-    protected override void AcceptWebSocket (TcpListenerWebSocketContext context)
+    private void acceptWebSocket (TcpListenerWebSocketContext context)
     {
       var websocket = context.WebSocket;
-      websocket.Log = Log;
+      websocket.Log = _logger;
 
       var path = context.Path;
       WebSocketServiceHost host;
@@ -263,10 +385,93 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (BaseUri.IsAbsoluteUri)
-        websocket.Url = new Uri (BaseUri, path);
+      if (_uri.IsAbsoluteUri)
+        websocket.Url = new Uri (_uri, path);
 
       host.StartSession (context);
+    }
+
+    private string checkIfCertExists ()
+    {
+      return _secure && _cert == null
+             ? "The secure connection requires a server certificate."
+             : null;
+    }
+
+    private void init ()
+    {
+      _listener = new TcpListener (_address, _port);
+      _logger = new Logger ();
+      _serviceHosts = new WebSocketServiceHostManager (_logger);
+      _state = ServerState.READY;
+      _sync = new object ();
+    }
+
+    private void processRequestAsync (TcpClient client)
+    {
+      WaitCallback callback = state =>
+      {
+        try {
+          acceptWebSocket (client.GetWebSocketContext (_secure, _cert));
+        }
+        catch (Exception ex)
+        {
+          _logger.Fatal (ex.ToString ());
+          client.Close ();
+        }
+      };
+
+      ThreadPool.QueueUserWorkItem (callback);
+    }
+
+    private void receiveRequest ()
+    {
+      while (true)
+      {
+        try {
+          processRequestAsync (_listener.AcceptTcpClient ());
+        }
+        catch (SocketException ex) {
+          _logger.Warn (String.Format ("Receiving has been stopped.\nreason: {0}.", ex.Message));
+          break;
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+          break;
+        }
+      }
+
+      if (IsListening)
+        abort ();
+    }
+
+    private void startReceiveRequestThread ()
+    {
+      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest)); 
+      _receiveRequestThread.IsBackground = true;
+      _receiveRequestThread.Start ();
+    }
+
+    private void stopListener (int timeOut)
+    {
+      _listener.Stop ();
+      _receiveRequestThread.Join (timeOut);
+    }
+
+    private static bool tryCreateUri (string uriString, out Uri result, out string message)
+    {
+      if (!uriString.TryCreateWebSocketUri (out result, out message))
+        return false;
+
+      if (result.PathAndQuery != "/")
+      {
+        result = null;
+        message = "Must not contain the path or query component: " + uriString;
+
+        return false;
+      }
+
+      return true;
     }
 
     #endregion
@@ -325,11 +530,11 @@ namespace WebSocketSharp.Server
 
       if (msg != null)
       {
-        Log.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
+        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return;
       }
 
-      var host = new WebSocketServiceHost<T> (servicePath, serviceConstructor, Log);
+      var host = new WebSocketServiceHost<T> (servicePath, serviceConstructor, _logger);
       if (!KeepClean)
         host.KeepClean = false;
 
@@ -354,7 +559,7 @@ namespace WebSocketSharp.Server
       var msg = servicePath.CheckIfValidServicePath ();
       if (msg != null)
       {
-        Log.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
+        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, servicePath ?? ""));
         return false;
       }
 
@@ -364,25 +569,20 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Starts to receive the WebSocket connection requests.
     /// </summary>
-    public override void Start ()
+    public void Start ()
     {
       lock (_sync)
       {
-        var msg = _state.CheckIfStopped ();
+        var msg = _state.CheckIfStopped () ?? checkIfCertExists ();
         if (msg != null)
         {
-          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          _logger.Error (String.Format ("{0}\nstate: {1}\nsecure: {2}", msg, _state, _secure));
           return;
         }
 
         _serviceHosts.Start ();
-
-        base.Start ();
-        if (!IsListening)
-        {
-          _serviceHosts.Stop (new byte []{}, false);
-          return;
-        }
+        _listener.Start ();
+        startReceiveRequestThread ();
 
         _state = ServerState.START;
       }
@@ -391,21 +591,21 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Stops receiving the WebSocket connection requests.
     /// </summary>
-    public override void Stop ()
+    public void Stop ()
     {
       lock (_sync)
       {
         var msg = _state.CheckIfStarted ();
         if (msg != null)
         {
-          Log.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          _logger.Error (String.Format ("{0}\nstate: {1}", msg, _state));
           return;
         }
 
         _state = ServerState.SHUTDOWN;
       }
 
-      base.Stop ();
+      stopListener (5000);
       _serviceHosts.Stop (new byte []{}, true);
 
       _state = ServerState.STOP;
@@ -432,14 +632,16 @@ namespace WebSocketSharp.Server
 
         if (msg != null)
         {
-          Log.Error (String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+          _logger.Error (String.Format (
+            "{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
+
           return;
         }
 
         _state = ServerState.SHUTDOWN;
       }
 
-      base.Stop ();
+      stopListener (5000);
       _serviceHosts.Stop (data, !code.IsReserved ());
 
       _state = ServerState.STOP;
@@ -466,14 +668,14 @@ namespace WebSocketSharp.Server
 
         if (msg != null)
         {
-          Log.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
+          _logger.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
           return;
         }
 
         _state = ServerState.SHUTDOWN;
       }
 
-      base.Stop ();
+      stopListener (5000);
       _serviceHosts.Stop (data, !code.IsReserved ());
 
       _state = ServerState.STOP;
