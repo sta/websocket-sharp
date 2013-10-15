@@ -316,22 +316,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    protected void Send (string data)
-    {
-      if (_websocket != null)
-        _websocket.Send (data, null);
-    }
-
-    /// <summary>
     /// Sends a binary data from the specified <see cref="FileInfo"/> to
     /// the client of the current <see cref="WebSocketService"/> instance.
     /// </summary>
@@ -345,6 +329,22 @@ namespace WebSocketSharp.Server
     {
       if (_websocket != null)
         _websocket.Send (file, null);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    protected void Send (string data)
+    {
+      if (_websocket != null)
+        _websocket.Send (data, null);
     }
 
     /// <summary>
@@ -364,28 +364,6 @@ namespace WebSocketSharp.Server
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
     protected void Send (byte [] data, Action<bool> completed)
-    {
-      if (_websocket != null)
-        _websocket.Send (data, completed);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
-    /// </param>
-    protected void Send (string data, Action<bool> completed)
     {
       if (_websocket != null)
         _websocket.Send (data, completed);
@@ -414,26 +392,25 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> to
-    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a text <paramref name="data"/> to the client of the current
+    /// <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
     /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    protected void Send (Stream stream, int length, bool dispose)
+    protected void Send (string data, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (stream, length, dispose, null);
+        _websocket.Send (data, completed);
     }
 
     /// <summary>
@@ -449,9 +426,24 @@ namespace WebSocketSharp.Server
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
+    protected void Send (Stream stream, int length)
+    {
+      if (_websocket != null)
+        _websocket.Send (stream, length, null);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="Stream"/> to
+    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -459,10 +451,10 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    protected void Send (Stream stream, int length, bool dispose, Action<bool> completed)
+    protected void Send (Stream stream, int length, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (stream, length, dispose, completed);
+        _websocket.Send (stream, length, completed);
     }
 
     /// <summary>

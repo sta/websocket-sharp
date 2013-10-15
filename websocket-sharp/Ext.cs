@@ -140,22 +140,22 @@ namespace WebSocketSharp
 
     private static byte [] readBytes (this Stream stream, byte [] buffer, int offset, int length)
     {
-      var readLen = stream.Read (buffer, offset, length);
-      if (readLen < 1)
+      var len = stream.Read (buffer, offset, length);
+      if (len < 1)
         return buffer.SubArray (0, offset);
 
-      var tmpLen = 0;
-      while (readLen < length)
+      var tmp = 0;
+      while (len < length)
       {
-        tmpLen = stream.Read (buffer, offset + readLen, length - readLen);
-        if (tmpLen < 1)
+        tmp = stream.Read (buffer, offset + len, length - len);
+        if (tmp < 1)
           break;
 
-        readLen += tmpLen;
+        len += tmp;
       }
 
-      return readLen < length
-             ? buffer.SubArray (0, offset + readLen)
+      return len < length
+             ? buffer.SubArray (0, offset + len)
              : buffer;
     }
 
@@ -536,15 +536,15 @@ namespace WebSocketSharp
       AsyncCallback callback = ar =>
       {
         try {
-          var readLen = stream.EndRead (ar);
-          var result = readLen < 1
-                     ? new byte []{}
-                     : readLen < length
-                       ? stream.readBytes (buffer, readLen, length - readLen)
-                       : buffer;
+          var len = stream.EndRead (ar);
+          var bytes = len < 1
+                    ? new byte []{}
+                    : len < length
+                      ? stream.readBytes (buffer, len, length - len)
+                      : buffer;
 
           if (completed != null)
-            completed (result);
+            completed (bytes);
         }
         catch (Exception ex) {
           if (error != null)

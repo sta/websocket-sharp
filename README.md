@@ -147,7 +147,13 @@ ws.Send (data);
 
 The `Send` method is overloaded.
 
-The types of `data` are `string`, `byte []` and `FileInfo` class.
+The types of `data` are `string`, `byte []` and `System.IO.FileInfo` class.
+
+In addition, the `Send (stream, length)` method exists, too.
+
+These methods don't wait for the send to be complete. This means that these methods behave asynchronously.
+
+If you want to do something when the send is complete, you use any of some `Send (data, completed)` methods.
 
 #### Step 6 ####
 
@@ -159,9 +165,11 @@ ws.Close (code, reason);
 
 If you want to close the WebSocket connection explicitly, you use the `Close` method.
 
-The `Close` method is overloaded. The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, the type of `reason` is `string`.
+The `Close` method is overloaded.
 
-In addition, the `Close ()` and `Close (code)` methods exist.
+The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, and the type of `reason` is `string`.
+
+In addition, the `Close ()` and `Close (code)` methods exist, too.
 
 ### WebSocket Server ###
 

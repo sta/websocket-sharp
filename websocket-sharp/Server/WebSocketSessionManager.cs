@@ -504,13 +504,9 @@ namespace WebSocketSharp.Server
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to broadcast.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data broadcasted;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public void Broadcast (Stream stream, int length, bool dispose)
+    public void Broadcast (Stream stream, int length)
     {
-      Broadcast (stream, length, dispose, null);
+      Broadcast (stream, length, null);
     }
 
     /// <summary>
@@ -526,15 +522,11 @@ namespace WebSocketSharp.Server
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to broadcast.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data broadcasted;
-    /// otherwise, <c>false</c>.
-    /// </param>
     /// <param name="completed">
     /// A <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
-    public void Broadcast (Stream stream, int length, bool dispose, Action completed)
+    public void Broadcast (Stream stream, int length, Action completed)
     {
       var msg = _state.CheckIfStarted () ??
                 stream.CheckIfCanRead () ??
@@ -546,36 +538,32 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      Action<byte []> result = data =>
-      {
-        var readLen = data.Length;
-        if (readLen == 0)
+      stream.ReadBytesAsync (
+        length,
+        data =>
         {
-          _logger.Error ("A data cannot be read from 'stream'.");
-          return;
-        }
+          var len = data.Length;
+          if (len == 0)
+          {
+            _logger.Error ("A data cannot be read from 'stream'.");
+            return;
+          }
 
-        if (readLen != length)
-          _logger.Warn (String.Format (
-            "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
-            length,
-            readLen));
+          if (len < length)
+            _logger.Warn (String.Format (
+              "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
+              length,
+              len));
 
-        if (dispose)
-          stream.Dispose ();
-
-        if (readLen <= WebSocket.FragmentLength)
-          Broadcast (Opcode.BINARY, data, completed);
-        else
-          Broadcast (Opcode.BINARY, new MemoryStream (data), completed);
-      };
-
-      Action<Exception> exception = ex =>
-      {
-        _logger.Fatal (ex.ToString ());
-      };
-
-      stream.ReadBytesAsync (length, result, exception);
+          if (len <= WebSocket.FragmentLength)
+            Broadcast (Opcode.BINARY, data, completed);
+          else
+            Broadcast (Opcode.BINARY, new MemoryStream (data), completed);
+        },
+        ex =>
+        {
+          _logger.Fatal (ex.ToString ());
+        });
     }
 
     /// <summary>
@@ -826,13 +814,9 @@ namespace WebSocketSharp.Server
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public void SendTo (string id, Stream stream, int length, bool dispose)
+    public void SendTo (string id, Stream stream, int length)
     {
-      SendTo (id, stream, length, dispose, null);
+      SendTo (id, stream, length, null);
     }
 
     /// <summary>
@@ -852,10 +836,6 @@ namespace WebSocketSharp.Server
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
-    /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
     /// the send is complete.
@@ -863,11 +843,11 @@ namespace WebSocketSharp.Server
     /// successfully; otherwise, <c>false</c>.
     /// </param>
     public void SendTo (
-      string id, Stream stream, int length, bool dispose, Action<bool> completed)
+      string id, Stream stream, int length, Action<bool> completed)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
-        session.Context.WebSocket.Send (stream, length, dispose, completed);
+        session.Context.WebSocket.Send (stream, length, completed);
     }
 
     /// <summary>

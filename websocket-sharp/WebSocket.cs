@@ -202,7 +202,7 @@ namespace WebSocketSharp
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is not valid WebSocket URL.
+    /// <paramref name="url"/> is invalid.
     /// </exception>
     public WebSocket (
       string                         url,
@@ -1603,20 +1603,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> using the WebSocket connection.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
-    /// </param>
-    public void Send (string data)
-    {
-      Send (data, null);
-    }
-
-    /// <summary>
     /// Sends a binary data from the specified <see cref="FileInfo"/>
     /// using the WebSocket connection.
     /// </summary>
@@ -1629,6 +1615,20 @@ namespace WebSocketSharp
     public void Send (FileInfo file)
     {
       Send (file, null);
+    }
+
+    /// <summary>
+    /// Sends a text <paramref name="data"/> using the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="data">
+    /// A <see cref="string"/> that contains a text data to send.
+    /// </param>
+    public void Send (string data)
+    {
+      Send (data, null);
     }
 
     /// <summary>
@@ -1661,6 +1661,38 @@ namespace WebSocketSharp
         send (Opcode.BINARY, data, completed);
       else
         send (Opcode.BINARY, new MemoryStream (data), completed);
+    }
+
+    /// <summary>
+    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// using the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="file">
+    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// </param>
+    /// <param name="completed">
+    /// An Action&lt;bool&gt; delegate that references the method(s) called when
+    /// the send is complete.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
+    /// successfully; otherwise, <c>false</c>.
+    /// </param>
+    public void Send (FileInfo file, Action<bool> completed)
+    {
+      var msg = _readyState.CheckIfOpen () ??
+                (file == null ? "'file' must not be null." : null);
+
+      if (msg != null)
+      {
+        _logger.Error (msg);
+        error (msg);
+
+        return;
+      }
+
+      send (Opcode.BINARY, file.OpenRead (), completed);
     }
 
     /// <summary>
@@ -1697,35 +1729,21 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// Sends a binary data from the specified <see cref="Stream"/>
     /// using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// <param name="stream">
+    /// A <see cref="Stream"/> object from which contains a binary data to send.
     /// </param>
-    /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
-    /// successfully; otherwise, <c>false</c>.
+    /// <param name="length">
+    /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
-    public void Send (FileInfo file, Action<bool> completed)
+    public void Send (Stream stream, int length)
     {
-      var msg = _readyState.CheckIfOpen () ??
-                (file == null ? "'file' must not be null." : null);
-
-      if (msg != null)
-      {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      send (Opcode.BINARY, file.OpenRead (), completed);
+      Send (stream, length, null);
     }
 
     /// <summary>
@@ -1741,39 +1759,13 @@ namespace WebSocketSharp
     /// <param name="length">
     /// An <see cref="int"/> that contains the number of bytes to send.
     /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public void Send (Stream stream, int length, bool dispose)
-    {
-      Send (stream, length, dispose, null);
-    }
-
-    /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/>
-    /// using the WebSocket connection.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
-    /// </param>
-    /// <param name="dispose">
-    /// <c>true</c> if <paramref name="stream"/> is disposed after a binary data read;
-    /// otherwise, <c>false</c>.
-    /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
     /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
-    /// successfully; otherwise, <c>false</c>.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    public void Send (Stream stream, int length, bool dispose, Action<bool> completed)
+    public void Send (Stream stream, int length, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ??
                 stream.CheckIfCanRead () ??
@@ -1787,42 +1779,38 @@ namespace WebSocketSharp
         return;
       }
 
-      Action<byte []> result = data =>
-      {
-        var readLen = data.Length;
-        if (readLen == 0)
+      stream.ReadBytesAsync (
+        length,
+        data =>
         {
-          var err = "A data cannot be read from 'stream'.";
-          _logger.Error (err);
-          error (err);
+          var len = data.Length;
+          if (len == 0)
+          {
+            var err = "A data cannot be read from 'stream'.";
+            _logger.Error (err);
+            error (err);
 
-          return;
-        }
+            return;
+          }
 
-        if (readLen != length)
-          _logger.Warn (String.Format (
-            "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
-            length,
-            readLen));
+          if (len < length)
+            _logger.Warn (String.Format (
+              "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
+              length,
+              len));
 
-        if (dispose)
-          stream.Dispose ();
+          var sent = len <= FragmentLength
+                   ? send (Opcode.BINARY, data)
+                   : send (Opcode.BINARY, new MemoryStream (data));
 
-        var sent = readLen <= FragmentLength
-                 ? send (Opcode.BINARY, data)
-                 : send (Opcode.BINARY, new MemoryStream (data));
-
-        if (completed != null)
-          completed (sent);
-      };
-
-      Action<Exception> exception = ex =>
-      {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occured.");        
-      };
-
-      stream.ReadBytesAsync (length, result, exception);
+          if (completed != null)
+            completed (sent);
+        },
+        ex =>
+        {
+          _logger.Fatal (ex.ToString ());
+          error ("An exception has occured.");        
+        });
     }
 
     /// <summary>
