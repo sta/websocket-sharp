@@ -832,8 +832,9 @@ namespace WebSocketSharp
     private void open ()
     {
       _readyState = WebSocketState.OPEN;
+
+	  OnOpen.Emit(this, EventArgs.Empty);
       startReceiving ();
-      OnOpen.Emit (this, EventArgs.Empty);
     }
 
     private bool processAbnormalFrame ()
@@ -1235,34 +1236,35 @@ namespace WebSocketSharp
       _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
     }
 
-    private void startReceiving ()
-    {
-      _exitReceiving = new AutoResetEvent (false);
-      _receivePong = new AutoResetEvent (false);
+	private void startReceiving()
+	{
+		_exitReceiving = new AutoResetEvent(false);
+		_receivePong = new AutoResetEvent(false);
 
-      Action<WsFrame> completed = null;
-      completed = frame =>
-      {
-        try {
-          if (processFrame (frame))
-            _stream.ReadFrameAsync (completed);
-          else
-            _exitReceiving.Set ();
-        }
-        catch (WebSocketException ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
-          close (ex.Code, ex.Message, false);
-        }
-        catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
-          close (CloseStatusCode.ABNORMAL, null, false);
-        }
-      };
+		Action receive = null;
+		receive = () => _stream.ReadFrameAsync(
+		  frame =>
+		  {
+			  if (processFrame(frame))
+				  receive();
+			  else
+				  _exitReceiving.Set();
+		  },
+		  ex =>
+		  {
+			  _logger.Fatal(ex.ToString());
+			  error("An exception has occured.");
+			  if (ex.GetType() == typeof(WebSocketException))
+			  {
+				  var wsex = (WebSocketException)ex;
+				  close(wsex.Code, wsex.Message, false);
+			  }
+			  else
+				  close(CloseStatusCode.ABNORMAL, null, false);
+		  });
 
-      _stream.ReadFrameAsync (completed);
-    }
+		receive();
+	}
 
     // As server
     private bool validateConnectionRequest (WebSocketContext context)
