@@ -833,7 +833,7 @@ namespace WebSocketSharp
     {
       _readyState = WebSocketState.OPEN;
 
-      OnOpen.Emit(this, EventArgs.Empty);
+      OnOpen.Emit (this, EventArgs.Empty);
       startReceiving ();
     }
 
@@ -1236,34 +1236,34 @@ namespace WebSocketSharp
       _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
     }
 
-    private void startReceiving()
+    private void startReceiving ()
     {
-      _exitReceiving = new AutoResetEvent(false);
-      _receivePong = new AutoResetEvent(false);
+      _exitReceiving = new AutoResetEvent (false);
+      _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
-      receive = () => _stream.ReadFrameAsync(
+      receive = () => _stream.ReadFrameAsync (
         frame =>
         {
           if (processFrame(frame))
             receive();
           else
-            _exitReceiving.Set();
+            _exitReceiving.Set ();
         },
         ex =>
         {
-          _logger.Fatal(ex.ToString());
-          error("An exception has occured.");
-          if (ex.GetType() == typeof(WebSocketException))
+          _logger.Fatal (ex.ToString ());
+          error ("An exception has occured.");
+          if (ex.GetType () == typeof (WebSocketException))
           {
-            var wsex = (WebSocketException)ex;
-            close(wsex.Code, wsex.Message, false);
+            var wsex = (WebSocketException) ex;
+            close (wsex.Code, wsex.Message, false);
           }
           else
-            close(CloseStatusCode.ABNORMAL, null, false);
+            close (CloseStatusCode.ABNORMAL, null, false);
         });
 
-      receive();
+      receive ();
     }
 
     // As server
