@@ -174,18 +174,26 @@ namespace WebSocketSharp
     {
       lock (_forRead)
       {
-        try {
-          return WsFrame.Parse (_innerStream);
-        }
-        catch {
-          return null;
-        }
+        return WsFrame.Parse (_innerStream, null);
+      }
+    }
+
+    public WsFrame ReadFrame (Action<Exception> error)
+    {
+      lock (_forRead)
+      {
+        return WsFrame.Parse (_innerStream, error);
       }
     }
 
     public void ReadFrameAsync (Action<WsFrame> completed)
     {
-      WsFrame.ParseAsync (_innerStream, completed);
+      WsFrame.ParseAsync (_innerStream, completed, null);
+    }
+
+    public void ReadFrameAsync (Action<WsFrame> completed, Action<Exception> error)
+    {
+      WsFrame.ParseAsync (_innerStream, completed, error);
     }
 
     public string [] ReadHandshake ()

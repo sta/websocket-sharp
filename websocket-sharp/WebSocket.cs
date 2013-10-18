@@ -822,8 +822,9 @@ namespace WebSocketSharp
     private void open ()
     {
       _readyState = WebSocketState.OPEN;
-      startReceiving ();
+
       OnOpen.Emit (this, EventArgs.Empty);
+      startReceiving ();
     }
 
     private bool processAbnormalFrame ()
@@ -1230,28 +1231,29 @@ namespace WebSocketSharp
       _exitReceiving = new AutoResetEvent (false);
       _receivePong = new AutoResetEvent (false);
 
-      Action<WsFrame> completed = null;
-      completed = frame =>
-      {
-        try {
+      Action receive = null;
+      receive = () => _stream.ReadFrameAsync (
+        frame =>
+        {
           if (processFrame (frame))
-            _stream.ReadFrameAsync (completed);
+            receive ();
           else
             _exitReceiving.Set ();
-        }
-        catch (WebSocketException ex) {
+        },
+        ex =>
+        {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
-          close (ex.Code, ex.Message, false);
-        }
-        catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
-          close (CloseStatusCode.ABNORMAL, null, false);
-        }
-      };
+          if (ex.GetType () == typeof (WebSocketException))
+          {
+            var wsex = (WebSocketException) ex;
+            close (wsex.Code, wsex.Message, false);
+          }
+          else
+            close (CloseStatusCode.ABNORMAL, null, false);
+        });
 
-      _stream.ReadFrameAsync (completed);
+      receive ();
     }
 
     // As server

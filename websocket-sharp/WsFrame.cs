@@ -573,42 +573,45 @@ namespace WebSocketSharp
 
     public static WsFrame Parse (byte [] src)
     {
-      return Parse (src, true);
+      return Parse (src, true, null);
     }
 
     public static WsFrame Parse (Stream stream)
     {
-      return Parse (stream, true);
+      return Parse (stream, true, null);
     }
 
-    public static WsFrame Parse (byte [] src, bool unmask)
+    public static WsFrame Parse (byte [] src, Action<Exception> error)
+    {
+      return Parse (src, true, error);
+    }
+
+    public static WsFrame Parse (Stream stream, Action<Exception> error)
+    {
+      return Parse (stream, true, error);
+    }
+
+    public static WsFrame Parse (byte [] src, bool unmask, Action<Exception> error)
     {
       using (var stream = new MemoryStream (src))
       {
-        return Parse (stream, unmask);
+        return Parse (stream, unmask, error);
       }
-    }
-
-    public static WsFrame Parse (Stream stream, bool unmask)
-    {
-      return Parse (stream, unmask, null);
     }
 
     public static WsFrame Parse (Stream stream, bool unmask, Action<Exception> error)
     {
       WsFrame frame = null;
-      try
-      {
+      try {
         var header = stream.ReadBytes (2);
         frame = header.Length == 2
               ? parse (header, stream, unmask)
               : CreateCloseFrame (
                   Mask.UNMASK,
                   CloseStatusCode.ABNORMAL,
-                  "'Header' of a frame cannot be read from the data stream.");
+                  "The header part of a frame cannot be read from the 'stream'.");
       }
-      catch (Exception ex)
-      {
+      catch (Exception ex) {
         if (error != null)
           error (ex);
       }
@@ -629,43 +632,25 @@ namespace WebSocketSharp
     public static void ParseAsync (
       Stream stream, bool unmask, Action<WsFrame> completed, Action<Exception> error)
     {
-      var header = new byte [2];
-      AsyncCallback callback = ar =>
-      {
-        WsFrame frame = null;
-        try
+      stream.ReadBytesAsync (
+        2,
+        header =>
         {
-          var readLen = stream.EndRead (ar);
-          if (readLen == 1)
-          {
-            var tmp = stream.ReadByte ();
-            if (tmp > -1)
-            {
-              header [1] = (byte) tmp;
-              readLen++;
-            }
-          }
+          var frame = header.Length == 2
+                    ? parse (header, stream, unmask)
+                    : CreateCloseFrame (
+                        Mask.UNMASK,
+                        CloseStatusCode.ABNORMAL,
+                        "The header part of a frame cannot be read from the 'stream'.");
 
-          frame = readLen == 2
-                ? parse (header, stream, unmask)
-                : CreateCloseFrame (
-                    Mask.UNMASK,
-                    CloseStatusCode.ABNORMAL,
-                    "'Header' of a frame cannot be read from the data stream.");
-        }
-        catch (Exception ex)
+          if (completed != null)
+            completed (frame);
+        },
+        ex =>
         {
           if (error != null)
             error (ex);
-        }
-        finally
-        {
-          if (completed != null)
-            completed (frame);
-        }
-      };
-
-      stream.BeginRead (header, 0, 2, callback, null);
+        });
     }
 
     public void Print (bool dumped)
