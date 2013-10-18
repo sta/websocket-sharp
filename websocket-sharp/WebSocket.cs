@@ -245,6 +245,9 @@ namespace WebSocketSharp
 
     #region Public Properties
 
+	// TODO: Submit pull request
+	public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
+
     /// <summary>
     /// Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
     /// </summary>
@@ -714,6 +717,14 @@ namespace WebSocketSharp
 
       req.AddHeader ("Sec-WebSocket-Version", _version);
 
+	  if (CustomHeaders != null)
+	  {
+		  foreach (var header in CustomHeaders)
+		  {
+			  req.AddHeader(header.Key, header.Value);
+		  }
+	  }
+
       if (_preAuth && _credentials != null)
         req.SetAuthorization (new AuthenticationResponse (_credentials));
 
@@ -822,9 +833,8 @@ namespace WebSocketSharp
     private void open ()
     {
       _readyState = WebSocketState.OPEN;
-
-      OnOpen.Emit (this, EventArgs.Empty);
       startReceiving ();
+      OnOpen.Emit (this, EventArgs.Empty);
     }
 
     private bool processAbnormalFrame ()
@@ -1231,29 +1241,28 @@ namespace WebSocketSharp
       _exitReceiving = new AutoResetEvent (false);
       _receivePong = new AutoResetEvent (false);
 
-      Action receive = null;
-      receive = () => _stream.ReadFrameAsync (
-        frame =>
-        {
+      Action<WsFrame> completed = null;
+      completed = frame =>
+      {
+        try {
           if (processFrame (frame))
-            receive ();
+            _stream.ReadFrameAsync (completed);
           else
             _exitReceiving.Set ();
-        },
-        ex =>
-        {
+        }
+        catch (WebSocketException ex) {
           _logger.Fatal (ex.ToString ());
           error ("An exception has occured.");
-          if (ex.GetType () == typeof (WebSocketException))
-          {
-            var wsex = (WebSocketException) ex;
-            close (wsex.Code, wsex.Message, false);
-          }
-          else
-            close (CloseStatusCode.ABNORMAL, null, false);
-        });
+          close (ex.Code, ex.Message, false);
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+          error ("An exception has occured.");
+          close (CloseStatusCode.ABNORMAL, null, false);
+        }
+      };
 
-      receive ();
+      _stream.ReadFrameAsync (completed);
     }
 
     // As server
