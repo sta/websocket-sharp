@@ -245,7 +245,6 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-	// TODO: Submit pull request
 	public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
 
     /// <summary>
