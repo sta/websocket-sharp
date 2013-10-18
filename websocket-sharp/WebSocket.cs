@@ -1245,8 +1245,8 @@ namespace WebSocketSharp
       receive = () => _stream.ReadFrameAsync (
         frame =>
         {
-          if (processFrame(frame))
-            receive();
+          if (processFrame (frame))
+            receive ();
           else
             _exitReceiving.Set ();
         },
