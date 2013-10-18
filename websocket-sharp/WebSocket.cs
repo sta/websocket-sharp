@@ -245,7 +245,7 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-	public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
+    public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
 
     /// <summary>
     /// Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
@@ -716,13 +716,13 @@ namespace WebSocketSharp
 
       req.AddHeader ("Sec-WebSocket-Version", _version);
 
-	  if (CustomHeaders != null)
-	  {
-		  foreach (var header in CustomHeaders)
-		  {
-			  req.AddHeader(header.Key, header.Value);
-		  }
-	  }
+      if (CustomHeaders != null)
+      {
+        foreach (var header in CustomHeaders)
+        {
+          req.AddHeader(header.Key, header.Value);
+        }
+      }
 
       if (_preAuth && _credentials != null)
         req.SetAuthorization (new AuthenticationResponse (_credentials));
@@ -833,7 +833,7 @@ namespace WebSocketSharp
     {
       _readyState = WebSocketState.OPEN;
 
-	  OnOpen.Emit(this, EventArgs.Empty);
+      OnOpen.Emit(this, EventArgs.Empty);
       startReceiving ();
     }
 
@@ -1236,35 +1236,35 @@ namespace WebSocketSharp
       _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
     }
 
-	private void startReceiving()
-	{
-		_exitReceiving = new AutoResetEvent(false);
-		_receivePong = new AutoResetEvent(false);
+    private void startReceiving()
+    {
+      _exitReceiving = new AutoResetEvent(false);
+      _receivePong = new AutoResetEvent(false);
 
-		Action receive = null;
-		receive = () => _stream.ReadFrameAsync(
-		  frame =>
-		  {
-			  if (processFrame(frame))
-				  receive();
-			  else
-				  _exitReceiving.Set();
-		  },
-		  ex =>
-		  {
-			  _logger.Fatal(ex.ToString());
-			  error("An exception has occured.");
-			  if (ex.GetType() == typeof(WebSocketException))
-			  {
-				  var wsex = (WebSocketException)ex;
-				  close(wsex.Code, wsex.Message, false);
-			  }
-			  else
-				  close(CloseStatusCode.ABNORMAL, null, false);
-		  });
+      Action receive = null;
+      receive = () => _stream.ReadFrameAsync(
+        frame =>
+        {
+          if (processFrame(frame))
+            receive();
+          else
+            _exitReceiving.Set();
+        },
+        ex =>
+        {
+          _logger.Fatal(ex.ToString());
+          error("An exception has occured.");
+          if (ex.GetType() == typeof(WebSocketException))
+          {
+            var wsex = (WebSocketException)ex;
+            close(wsex.Code, wsex.Message, false);
+          }
+          else
+            close(CloseStatusCode.ABNORMAL, null, false);
+        });
 
-		receive();
-	}
+      receive();
+    }
 
     // As server
     private bool validateConnectionRequest (WebSocketContext context)
