@@ -421,7 +421,7 @@ namespace WebSocketSharp
         return CreateCloseFrame (
           Mask.UNMASK,
           CloseStatusCode.ABNORMAL,
-          "'Extended Payload Length' of a frame cannot be read from the data stream.");
+          "The 'Extended Payload Length' part of a frame cannot be read from the data source.");
 
       frame.ExtPayloadLen = extPayloadLen;
 
@@ -436,7 +436,7 @@ namespace WebSocketSharp
         return CreateCloseFrame (
           Mask.UNMASK,
           CloseStatusCode.ABNORMAL,
-          "'Masking Key' of a frame cannot be read from the data stream.");
+          "The 'Masking Key' part of a frame cannot be read from the data source.");
 
       frame.MaskingKey = maskingKey;
 
@@ -465,7 +465,7 @@ namespace WebSocketSharp
           return CreateCloseFrame (
             Mask.UNMASK,
             CloseStatusCode.ABNORMAL,
-            "'Payload Data' of a frame cannot be read from the data stream.");
+            "The 'Payload Data' part of a frame cannot be read from the data source.");
       }
       else
       {
@@ -609,7 +609,7 @@ namespace WebSocketSharp
               : CreateCloseFrame (
                   Mask.UNMASK,
                   CloseStatusCode.ABNORMAL,
-                  "The header part of a frame cannot be read from the 'stream'.");
+                  "The header part of a frame cannot be read from the data source.");
       }
       catch (Exception ex) {
         if (error != null)
@@ -641,16 +641,12 @@ namespace WebSocketSharp
                     : CreateCloseFrame (
                         Mask.UNMASK,
                         CloseStatusCode.ABNORMAL,
-                        "The header part of a frame cannot be read from the 'stream'.");
+                        "The header part of a frame cannot be read from the data source.");
 
           if (completed != null)
             completed (frame);
         },
-        ex =>
-        {
-          if (error != null)
-            error (ex);
-        });
+        error);
     }
 
     public void Print (bool dumped)
