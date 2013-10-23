@@ -85,8 +85,9 @@ namespace WebSocketSharp.Net {
 		/// Gets or sets the scheme used to authenticate the clients.
 		/// </summary>
 		/// <value>
-		/// One of the <see cref="AuthenticationSchemes"/> values that indicates the scheme used to
-		/// authenticate the clients. The default value is <see cref="AuthenticationSchemes.Anonymous"/>.
+		/// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> values that indicates
+		/// the scheme used to authenticate the clients.
+		/// The default value is <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
 		/// </value>
 		/// <exception cref="ObjectDisposedException">
 		/// This object has been closed.
