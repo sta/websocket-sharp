@@ -26,9 +26,9 @@
  */
 #endregion
 
-#region Thanks
+#region Contributors
 /*
- * Thanks:
+ * Contributors:
  *   Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  */
 #endregion

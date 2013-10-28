@@ -447,29 +447,26 @@ Thanks for translating to japanese.
 
 ## License ##
 
-Copyright &copy; 2010 - 2013 sta.blockhead
-
-Licensed under the **[MIT License]**.
+**websocket-sharp** is provided under **[The MIT License](LICENSE.txt)**.
 
 
 [Audio Data delivery server]: http://agektmr.node-ninja.com:3000/
-[branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
-[branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
 [Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example1]: https://github.com/sta/websocket-sharp/tree/master/Example1
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
-[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
-[hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
-[hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
-[MIT License]: http://www.opensource.org/licenses/mit-license.php
 [Mono]: http://www.mono-project.com/
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
 [The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
+[branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
+[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
+[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
+[hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
+[hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [websocket-sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
