@@ -414,6 +414,17 @@ C# **3.0**, .NET **3.5** compatible or later.
 - **[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 ( **[hybi-00]** ).
 - **[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 ( **[hixie-75]** ).
 
+**websocket-sharp** is based on the following WebSocket references.
+
+- **[The WebSocket Protocol]**
+- **[The WebSocket API]**
+- **[Compression Extensions for WebSocket][compression]**
+
+Thanks for translating to japanese.
+
+- **[The WebSocket Protocol 日本語訳]**
+- **[The WebSocket API 日本語訳]**
+
 ## Supported WebSocket Extensions ##
 
 ### Per-message Compression ###
@@ -433,17 +444,6 @@ Sec-WebSocket-Extensions: permessage-deflate
 ```
 
 If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
-
-## WebSocket References ##
-
-- **[The WebSocket Protocol]**
-- **[The WebSocket API]**
-- **[Compression Extensions for WebSocket][compression]**
-
-Thanks for translating to japanese.
-
-- **[The WebSocket Protocol 日本語訳]**
-- **[The WebSocket API 日本語訳]**
 
 ## License ##
 
