@@ -187,6 +187,7 @@ namespace Example
       var msg = e.Data.ToLower () == "balus"
               ? "I've been balused already..."
               : "I'm not available now.";
+
       Send (msg);
     }
   }
@@ -321,6 +322,26 @@ httpsv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice bo
 
 For more information, could you see **[Example3]**?
 
+### WebSocket Extensions ###
+
+#### Per-message Compression ####
+
+**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But, does not support with [extension parameters].)
+
+If you want to enable this extension as a WebSocket client, you should do like the following.
+
+```cs
+ws.Compression = CompressionMethod.DEFLATE;
+```
+
+And then your client sends the following header in the opening handshake to a WebSocket server.
+
+```
+Sec-WebSocket-Extensions: permessage-deflate
+```
+
+If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
+
 ### Secure Connection ###
 
 As a **WebSocket Client**, creating an instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
@@ -373,6 +394,10 @@ ws.Log.Debug ("This is a debug message.");
 
 The `WebSocketServer` and `HttpServer` classes include the same logging functions.
 
+## Required Environment ##
+
+C# **3.0**, .NET **3.5** compatible or later.
+
 ## Examples ##
 
 Examples using **websocket-sharp**.
@@ -403,10 +428,6 @@ Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 - **[websocket-sharp for Unity]**
 
-## Required Environment ##
-
-C# **3.0**, .NET **3.5** compatible or later.
-
 ## Supported WebSocket Specifications ##
 
 **websocket-sharp** supports **[RFC 6455]**.
@@ -424,26 +445,6 @@ Thanks for translating to japanese.
 
 - **[The WebSocket Protocol 日本語訳]**
 - **[The WebSocket API 日本語訳]**
-
-## Supported WebSocket Extensions ##
-
-### Per-message Compression ###
-
-**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But, does not support with [extension parameters].)
-
-If you want to enable this extension as a WebSocket client, you should do like the following.
-
-```cs
-ws.Compression = CompressionMethod.DEFLATE;
-```
-
-And then your client sends the following header in the opening handshake to a WebSocket server.
-
-```
-Sec-WebSocket-Extensions: permessage-deflate
-```
-
-If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
 
 ## License ##
 
