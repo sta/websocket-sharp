@@ -35,9 +35,10 @@ namespace WebSocketSharp
   /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
   /// </summary>
   /// <remarks>
-  /// The <see cref="WebSocket.OnMessage"/> event occurs when the WebSocket receives a text or binary data frame.
-  /// If you want to get the received data, you should access the <see cref="MessageEventArgs.Data"/> or
-  /// <see cref="MessageEventArgs.RawData"/> properties.
+  /// A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
+  /// a text or binary data frame.
+  /// If you want to get the received data, you access the <see cref="MessageEventArgs.Data"/> or
+  /// <see cref="MessageEventArgs.RawData"/> property.
   /// </remarks>
   public class MessageEventArgs : EventArgs
   {
@@ -51,19 +52,21 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal MessageEventArgs (Opcode opcode, byte[] rawData)
+    internal MessageEventArgs (Opcode opcode, byte[] data)
     {
-      if ((ulong) rawData.LongLength > PayloadData.MaxLength)
+      if ((ulong) data.LongLength > PayloadData.MaxLength)
         throw new WebSocketException (CloseStatusCode.TOO_BIG);
 
       _opcode = opcode;
-      _rawData = rawData;
+      _rawData = data;
+      _data = convertToString (opcode, data);
     }
 
-    internal MessageEventArgs (Opcode opcode, PayloadData data)
+    internal MessageEventArgs (Opcode opcode, PayloadData payload)
     {
       _opcode = opcode;
-      _rawData = data.ApplicationData;
+      _rawData = payload.ApplicationData;
+      _data = convertToString (opcode, _rawData);
     }
 
     #endregion
@@ -78,13 +81,6 @@ namespace WebSocketSharp
     /// </value>
     public string Data {
       get {
-        if (_data == null)
-          _data = _rawData.LongLength == 0
-                ? String.Empty
-                : _opcode == Opcode.TEXT
-                  ? Encoding.UTF8.GetString (_rawData)
-                  : _opcode.ToString ();
-
         return _data;
       }
     }
@@ -111,6 +107,19 @@ namespace WebSocketSharp
       get {
         return _opcode;
       }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private static string convertToString (Opcode opcode, byte [] data)
+    {
+      return data.LongLength == 0
+             ? String.Empty
+             : opcode == Opcode.TEXT
+               ? Encoding.UTF8.GetString (data)
+               : opcode.ToString ();
     }
 
     #endregion

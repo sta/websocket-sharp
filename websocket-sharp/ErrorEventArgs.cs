@@ -28,20 +28,20 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
-  /// Contains the event data associated with a error event.
+  /// Contains the event data associated with a <see cref="WebSocket.OnError"/> event.
   /// </summary>
   /// <remarks>
-  /// The error event occurs when this event sender gets an error.
-  /// If you want to get the error message, you should access the <see cref="ErrorEventArgs.Message"/> property.
+  /// A <see cref="WebSocket.OnError"/> event occurs when the <see cref="WebSocket"/> gets an error.
+  /// If you want to get the error message, you access the <see cref="ErrorEventArgs.Message"/> property.
   /// </remarks>
   public class ErrorEventArgs : EventArgs
   {
     #region Internal Constructors
 
-    internal ErrorEventArgs(string message)
+    internal ErrorEventArgs (string message)
     {
       Message = message;
     }
@@ -54,7 +54,7 @@ namespace WebSocketSharp {
     /// Gets the error message.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains a error message.
+    /// A <see cref="string"/> that contains an error message.
     /// </value>
     public string Message { get; private set; }
 

@@ -250,11 +250,11 @@ namespace WebSocketSharp
       return key;
     }
 
-    private static void dump (WsFrame frame)
+    private static string dump (WsFrame frame)
     {
       var len = frame.Length;
       var count = (long) (len / 4);
-      var remainder = (int) (len % 4);
+      var rem = (int) (len % 4);
 
       int countDigit;
       string countFmt;
@@ -280,44 +280,44 @@ namespace WebSocketSharp
       }
 
       var spFmt = String.Format ("{{0,{0}}}", countDigit);
-      var headerFmt = String.Format (@"
- {0} 01234567 89ABCDEF 01234567 89ABCDEF
- {0}+--------+--------+--------+--------+", spFmt);
-      var footerFmt = String.Format (" {0}+--------+--------+--------+--------+", spFmt);
+      var headerFmt = String.Format (
+@"{0} 01234567 89ABCDEF 01234567 89ABCDEF
+{0}+--------+--------+--------+--------+\n", spFmt);
+      var footerFmt = String.Format ("{0}+--------+--------+--------+--------+", spFmt);
 
+      var buffer = new StringBuilder (64);
       Func<Action<string, string, string, string>> linePrinter = () =>
       {
         long lineCount = 0;
-        var lineFmt = String.Format (" {0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|", countFmt);
+        var lineFmt = String.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", countFmt);
         return (arg1, arg2, arg3, arg4) =>
-        {
-          Console.WriteLine (lineFmt, ++lineCount, arg1, arg2, arg3, arg4);
-        };
+          buffer.AppendFormat (lineFmt, ++lineCount, arg1, arg2, arg3, arg4);
       };
       var printLine = linePrinter ();
 
-      Console.WriteLine (headerFmt, String.Empty);
+      buffer.AppendFormat (headerFmt, String.Empty);
 
-      var buffer = frame.ToByteArray ();
+      var frameAsBytes = frame.ToByteArray ();
       int i, j;
       for (i = 0; i <= count; i++)
       {
         j = i * 4;
         if (i < count)
           printLine (
-            Convert.ToString (buffer [j],     2).PadLeft (8, '0'),
-            Convert.ToString (buffer [j + 1], 2).PadLeft (8, '0'),
-            Convert.ToString (buffer [j + 2], 2).PadLeft (8, '0'),
-            Convert.ToString (buffer [j + 3], 2).PadLeft (8, '0'));
-        else if (remainder > 0)
+            Convert.ToString (frameAsBytes [j],     2).PadLeft (8, '0'),
+            Convert.ToString (frameAsBytes [j + 1], 2).PadLeft (8, '0'),
+            Convert.ToString (frameAsBytes [j + 2], 2).PadLeft (8, '0'),
+            Convert.ToString (frameAsBytes [j + 3], 2).PadLeft (8, '0'));
+        else if (rem > 0)
           printLine (
-            Convert.ToString (buffer [j], 2).PadLeft (8, '0'),
-            remainder >= 2 ? Convert.ToString (buffer [j + 1], 2).PadLeft (8, '0') : String.Empty,
-            remainder == 3 ? Convert.ToString (buffer [j + 2], 2).PadLeft (8, '0') : String.Empty,
+            Convert.ToString (frameAsBytes [j], 2).PadLeft (8, '0'),
+            rem >= 2 ? Convert.ToString (frameAsBytes [j + 1], 2).PadLeft (8, '0') : String.Empty,
+            rem == 3 ? Convert.ToString (frameAsBytes [j + 2], 2).PadLeft (8, '0') : String.Empty,
             String.Empty);
       }
 
-      Console.WriteLine (footerFmt, String.Empty);
+      buffer.AppendFormat (footerFmt, String.Empty);
+      return buffer.ToString ();
     }
 
     private static bool isBinary (Opcode opcode)
@@ -389,11 +389,21 @@ namespace WebSocketSharp
       // Payload len
       var payloadLen = (byte) (header [1] & 0x7f);
 
+      // Check if correct frame.
+      var incorrect = isControl (opcode) && fin == Fin.MORE
+                    ? "A control frame is fragmented."
+                    : !isData (opcode) && rsv1 == Rsv.ON
+                      ? "A non data frame is compressed."
+                      : null;
+
+      if (incorrect != null)
+        throw new WebSocketException (CloseStatusCode.INCORRECT_DATA, incorrect);
+
+      // Check if consistent frame.
       if (isControl (opcode) && payloadLen > 125)
-        return CreateCloseFrame (
-          Mask.UNMASK,
+        throw new WebSocketException (
           CloseStatusCode.INCONSISTENT_DATA,
-          "The payload length of a control frame must be 125 bytes or less.");
+          "The payload data length of a control frame is greater than 125 bytes.");
 
       var frame = new WsFrame {
         Fin = fin,
@@ -418,10 +428,8 @@ namespace WebSocketSharp
                         : new byte []{};
 
       if (extLen > 0 && extPayloadLen.Length != extLen)
-        return CreateCloseFrame (
-          Mask.UNMASK,
-          CloseStatusCode.ABNORMAL,
-          "The 'Extended Payload Length' part of a frame cannot be read from the data source.");
+        throw new WebSocketException (
+          "The 'Extended Payload Length' of a frame cannot be read from the data source.");
 
       frame.ExtPayloadLen = extPayloadLen;
 
@@ -433,10 +441,8 @@ namespace WebSocketSharp
                      : new byte []{};
 
       if (masked && maskingKey.Length != 4)
-        return CreateCloseFrame (
-          Mask.UNMASK,
-          CloseStatusCode.ABNORMAL,
-          "The 'Masking Key' part of a frame cannot be read from the data source.");
+        throw new WebSocketException (
+          "The 'Masking Key' of a frame cannot be read from the data source.");
 
       frame.MaskingKey = maskingKey;
 
@@ -451,21 +457,17 @@ namespace WebSocketSharp
       byte [] data = null;
       if (dataLen > 0)
       {
+        // Check if allowable payload data length.
         if (payloadLen > 126 && dataLen > PayloadData.MaxLength)
-        {
-          var code = CloseStatusCode.TOO_BIG;
-          return CreateCloseFrame (Mask.UNMASK, code, code.GetMessage ());
-        }
+          throw new WebSocketException (CloseStatusCode.TOO_BIG);
 
         data = payloadLen > 126
              ? stream.ReadBytes ((long) dataLen, 1024)
              : stream.ReadBytes ((int) dataLen);
 
         if (data.LongLength != (long) dataLen)
-          return CreateCloseFrame (
-            Mask.UNMASK,
-            CloseStatusCode.ABNORMAL,
-            "The 'Payload Data' part of a frame cannot be read from the data source.");
+          throw new WebSocketException (
+            "The 'Payload Data' of a frame cannot be read from the data source.");
       }
       else
       {
@@ -484,41 +486,67 @@ namespace WebSocketSharp
       return frame;
     }
 
-    private static void print (WsFrame frame)
+    private static string print (WsFrame frame)
     {
-      var len = frame.ExtPayloadLen.Length;
-      var extPayloadLen = len == 2
-                        ? frame.ExtPayloadLen.ToUInt16 (ByteOrder.BIG).ToString ()
-                        : len == 8
-                          ? frame.ExtPayloadLen.ToUInt64 (ByteOrder.BIG).ToString ()
-                          : String.Empty;
+      /* Opcode */
+
+      var opcode = frame.Opcode.ToString ();
+
+      /* Payload Len */
+
+      var payloadLen = frame.PayloadLen;
+
+      /* Extended Payload Len */
+
+      var ext = frame.ExtPayloadLen;
+      var size = ext.Length;
+      var extLen = size == 2
+                 ? ext.ToUInt16 (ByteOrder.BIG).ToString ()
+                 : size == 8
+                   ? ext.ToUInt64 (ByteOrder.BIG).ToString ()
+                   : String.Empty;
+
+      /* Masking Key */
 
       var masked = frame.IsMasked;
-      var maskingKey = masked
-                     ? BitConverter.ToString (frame.MaskingKey)
-                     : String.Empty;
+      var key = masked
+              ? BitConverter.ToString (frame.MaskingKey)
+              : String.Empty;
 
-      var opcode = frame.Opcode;
-      var payloadData = frame.PayloadData.Length == 0
-                      ? String.Empty
-                      : masked || frame.IsFragmented || frame.IsBinary || frame.IsClose
-                        ? BitConverter.ToString (frame.PayloadData.ToByteArray ())
-                        : Encoding.UTF8.GetString (frame.PayloadData.ToByteArray ());
+      /* Payload Data */
 
-      var format = @"
- FIN: {0}
- RSV1: {1}
- RSV2: {2}
- RSV3: {3}
- Opcode: {4}
- MASK: {5}
- Payload Len: {6}
- Extended Payload Len: {7}
- Masking Key: {8}
- Payload Data: {9}";
+      var data = payloadLen == 0
+               ? String.Empty
+               : size > 0
+                 ? String.Format ("A {0} data with {1} bytes.", opcode.ToLower (), extLen)
+                 : masked || frame.IsFragmented || frame.IsBinary || frame.IsClose
+                   ? BitConverter.ToString (frame.PayloadData.ToByteArray ())
+                   : Encoding.UTF8.GetString (frame.PayloadData.ApplicationData);
 
-      Console.WriteLine (
-        format, frame.Fin, frame.Rsv1, frame.Rsv2, frame.Rsv3, opcode, frame.Mask, frame.PayloadLen, extPayloadLen, maskingKey, payloadData);
+      var format =
+@"                 FIN: {0}
+                RSV1: {1}
+                RSV2: {2}
+                RSV3: {3}
+              Opcode: {4}
+                MASK: {5}
+         Payload Len: {6}
+Extended Payload Len: {7}
+         Masking Key: {8}
+        Payload Data: {9}";
+
+      return String.Format (
+        format,
+        frame.Fin,
+        frame.Rsv1,
+        frame.Rsv2,
+        frame.Rsv3,
+        opcode,
+        frame.Mask,
+        payloadLen,
+        extLen,
+        key,
+        data);
     }
 
     #endregion
@@ -573,50 +601,30 @@ namespace WebSocketSharp
 
     public static WsFrame Parse (byte [] src)
     {
-      return Parse (src, true, null);
+      return Parse (src, true);
     }
 
     public static WsFrame Parse (Stream stream)
     {
-      return Parse (stream, true, null);
+      return Parse (stream, true);
     }
 
-    public static WsFrame Parse (byte [] src, Action<Exception> error)
-    {
-      return Parse (src, true, error);
-    }
-
-    public static WsFrame Parse (Stream stream, Action<Exception> error)
-    {
-      return Parse (stream, true, error);
-    }
-
-    public static WsFrame Parse (byte [] src, bool unmask, Action<Exception> error)
+    public static WsFrame Parse (byte [] src, bool unmask)
     {
       using (var stream = new MemoryStream (src))
       {
-        return Parse (stream, unmask, error);
+        return Parse (stream, unmask);
       }
     }
 
-    public static WsFrame Parse (Stream stream, bool unmask, Action<Exception> error)
+    public static WsFrame Parse (Stream stream, bool unmask)
     {
-      WsFrame frame = null;
-      try {
-        var header = stream.ReadBytes (2);
-        frame = header.Length == 2
-              ? parse (header, stream, unmask)
-              : CreateCloseFrame (
-                  Mask.UNMASK,
-                  CloseStatusCode.ABNORMAL,
-                  "The header part of a frame cannot be read from the data source.");
-      }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
-      }
+      var header = stream.ReadBytes (2);
+      if (header.Length != 2)
+        throw new WebSocketException (
+          "The header part of a frame cannot be read from the data source.");
 
-      return frame;
+      return parse (header, stream, unmask);
     }
 
     public static void ParseAsync (Stream stream, Action<WsFrame> completed)
@@ -636,13 +644,11 @@ namespace WebSocketSharp
         2,
         header =>
         {
-          var frame = header.Length == 2
-                    ? parse (header, stream, unmask)
-                    : CreateCloseFrame (
-                        Mask.UNMASK,
-                        CloseStatusCode.ABNORMAL,
-                        "The header part of a frame cannot be read from the data source.");
+          if (header.Length != 2)
+            throw new WebSocketException (
+              "The header part of a frame cannot be read from the data source.");
 
+          var frame = parse (header, stream, unmask);
           if (completed != null)
             completed (frame);
         },
@@ -651,10 +657,12 @@ namespace WebSocketSharp
 
     public void Print (bool dumped)
     {
-      if (dumped)
-        dump (this);
-      else
-        print (this);
+      Console.WriteLine (dumped ? dump (this) : print (this));
+    }
+
+    public string PrintToString (bool dumped)
+    {
+      return dumped ? dump (this) : print (this);
     }
 
     public byte [] ToByteArray()

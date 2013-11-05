@@ -47,8 +47,7 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private Object _forRead;
-    private Object _forWrite;
+    private object _forWrite;
     private Stream _innerStream;
     private bool   _secure;
 
@@ -60,7 +59,6 @@ namespace WebSocketSharp
     {
       _innerStream = innerStream;
       _secure = secure;
-      _forRead = new object ();
       _forWrite = new object ();
     }
 
@@ -172,28 +170,12 @@ namespace WebSocketSharp
 
     public WsFrame ReadFrame ()
     {
-      lock (_forRead)
-      {
-        return WsFrame.Parse (_innerStream, null);
-      }
-    }
-
-    public WsFrame ReadFrame (Action<Exception> error)
-    {
-      lock (_forRead)
-      {
-        return WsFrame.Parse (_innerStream, error);
-      }
-    }
-
-    public void ReadFrameAsync (Action<WsFrame> completed)
-    {
-      WsFrame.ParseAsync (_innerStream, completed, null);
+      return WsFrame.Parse (_innerStream, true);
     }
 
     public void ReadFrameAsync (Action<WsFrame> completed, Action<Exception> error)
     {
-      WsFrame.ParseAsync (_innerStream, completed, error);
+      WsFrame.ParseAsync (_innerStream, true, completed, error);
     }
 
     public string [] ReadHandshake ()

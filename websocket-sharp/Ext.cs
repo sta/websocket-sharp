@@ -300,6 +300,14 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
+    internal static T [] Copy<T> (this T [] src, long length)
+    {
+      var dest = new T [length];
+      Array.Copy (src, 0, dest, 0, length);
+
+      return dest;
+    }
+
     internal static void CopyTo (this Stream src, Stream dest)
     {
       src.CopyTo (dest, false);
@@ -399,6 +407,17 @@ namespace WebSocketSharp
              : original;
     }
 
+    internal static string GetErrorMessage (this CloseStatusCode code)
+    {
+      return code == CloseStatusCode.INCORRECT_DATA
+             ? "An incorrect data has been received."
+             : code == CloseStatusCode.INCONSISTENT_DATA
+               ? "An inconsistent data has been received."
+               : code == CloseStatusCode.TOO_BIG
+                 ? "A too big data has been received."
+                 : "A WebSocket exception has occured.";
+    }
+
     internal static string GetNameInternal (this string nameAndValue, string separator)
     {
       int i = nameAndValue.IndexOf (separator);
@@ -407,16 +426,15 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string GetMessage (this CloseStatusCode code)
+    internal static string GetReason (this CloseStatusCode code)
     {
-      if (code == CloseStatusCode.ABNORMAL)
-        return "What we've got here is a failure to communicate in the WebSocket protocol.";
-
-      if (code == CloseStatusCode.TOO_BIG)
-        return String.Format ("The size of received payload data is bigger than the allowable value ({0} bytes).",
-          PayloadData.MaxLength);
-
-      return String.Empty;
+      return code == CloseStatusCode.ABNORMAL
+             ? "A WebSocket exception has occured."
+             : code == CloseStatusCode.TOO_BIG
+               ? String.Format (
+                   "The payload data length is greater than the allowable length ({0} bytes).",
+                   PayloadData.MaxLength)
+               : String.Empty;
     }
 
     internal static string GetValueInternal (this string nameAndValue, string separator)

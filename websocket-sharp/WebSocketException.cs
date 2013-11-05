@@ -44,17 +44,17 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (CloseStatusCode code)
-      : this (code, code.GetMessage ())
+      : this (code, code.GetReason ())
     {
     }
 
-    internal WebSocketException (string message)
-      : this (CloseStatusCode.NO_STATUS_CODE, message)
+    internal WebSocketException (string reason)
+      : this (CloseStatusCode.ABNORMAL, reason)
     {
     }
 
-    internal WebSocketException (CloseStatusCode code, string message)
-      : base (message)
+    internal WebSocketException (CloseStatusCode code, string reason)
+      : base (reason)
     {
       Code = code;
     }
@@ -67,8 +67,7 @@ namespace WebSocketSharp
     /// Gets the <see cref="CloseStatusCode"/> associated with the <see cref="WebSocketException"/>.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the causes of
-    /// the <see cref="WebSocketException"/>.
+    /// One of the <see cref="CloseStatusCode"/> values, indicates the causes of the <see cref="WebSocketException"/>.
     /// </value>
     public CloseStatusCode Code {
       get; private set;

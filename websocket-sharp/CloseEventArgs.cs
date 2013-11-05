@@ -36,10 +36,10 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been closed.
-  /// If you want to get the reason for closure, you use the <see cref="CloseEventArgs.Code"/> or
+  /// If you want to get the reason for closure, you access the <see cref="CloseEventArgs.Code"/> or
   /// <see cref="CloseEventArgs.Reason"/> property.
   /// </remarks>
-  public class CloseEventArgs : MessageEventArgs
+  public class CloseEventArgs : EventArgs
   {
     #region Private Fields
 
@@ -52,10 +52,10 @@ namespace WebSocketSharp
     #region Internal Constructors
 
     internal CloseEventArgs (PayloadData payload)
-      : base (Opcode.CLOSE, payload)
     {
-      _code = getCodeFrom (RawData);
-      _reason = getReasonFrom (RawData);
+      var data = payload.ApplicationData;
+      _code = getCodeFrom (data);
+      _reason = getReasonFrom (data);
       _clean = false;
     }
 
@@ -67,7 +67,7 @@ namespace WebSocketSharp
     /// Gets the status code for closure.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that contains a status code for closure if any.
+    /// A <see cref="ushort"/> that indicates the status code for closure if any.
     /// </value>
     public ushort Code {
       get {
@@ -88,10 +88,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Indicates whether the WebSocket connection has been closed cleanly.
+    /// Gets a value indicating whether the WebSocket connection has been closed cleanly.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket connection has been closed cleanly; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection has been closed cleanly; otherwise, <c>false</c>.
     /// </value>
     public bool WasClean {
       get {
@@ -111,7 +111,7 @@ namespace WebSocketSharp
     {
       return data.Length > 1
              ? data.SubArray (0, 2).ToUInt16 (ByteOrder.BIG)
-             : (ushort) 0;
+             : (ushort) CloseStatusCode.NO_STATUS_CODE;
     }
 
     private static string getReasonFrom (byte [] data)

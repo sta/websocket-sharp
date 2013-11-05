@@ -316,7 +316,7 @@ namespace WebSocketSharp
     /// Gets a value indicating whether the WebSocket connection is alive.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket connection is alive; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
     /// </value>
     public bool IsAlive {
       get {
@@ -627,11 +627,6 @@ namespace WebSocketSharp
       while (true)
       {
         var frame = _stream.ReadFrame ();
-        if (frame == null)
-          return processAbnormalFrame ();
-
-        if (frame.IsCompressed)
-          return processIncorrectFrame ();
 
         // MORE & CONT
         if (!frame.IsFinal && frame.IsContinuation)
@@ -666,7 +661,7 @@ namespace WebSocketSharp
           return processCloseFrame (frame);
 
         // ?
-        return processIncorrectFrame ();
+        return processIncorrectFrame (frame, null);
       }
 
       return true;
@@ -827,14 +822,6 @@ namespace WebSocketSharp
       startReceiving ();
     }
 
-    private bool processAbnormalFrame ()
-    {
-      var code = CloseStatusCode.ABNORMAL;
-      close (code, code.GetMessage (), false);
-
-      return false;
-    }
-
     private bool processCloseFrame (WsFrame frame)
     {
       var payload = frame.PayloadData;
@@ -854,13 +841,30 @@ namespace WebSocketSharp
       return true;
     }
 
+    private void processException (Exception exception)
+    {
+      _logger.Fatal (exception.ToString ());
+
+      var code = CloseStatusCode.ABNORMAL;
+      var reason = "An exception has occured.";
+      var msg = reason;
+      if (exception.GetType () == typeof (WebSocketException))
+      {
+        var wsex = (WebSocketException) exception;
+        code = wsex.Code;
+        reason = wsex.Message;
+        msg = code.GetErrorMessage ();
+      }
+
+      error (msg);
+      close (code, reason, false);
+    }
+
     private bool processFragmentedFrame (WsFrame frame)
     {
       return frame.IsContinuation // Not first fragment
              ? true
-             : frame.IsData
-               ? processFragments (frame)
-               : processIncorrectFrame ();
+             : processFragments (frame);
     }
 
     private bool processFragments (WsFrame first)
@@ -889,27 +893,27 @@ namespace WebSocketSharp
 
     private bool processFrame (WsFrame frame)
     {
-      return frame == null
-             ? processAbnormalFrame ()
-             : (!frame.IsData && frame.IsCompressed) ||
-               (frame.IsCompressed && _compression == CompressionMethod.NONE)
-               ? processIncorrectFrame ()
-               : frame.IsFragmented
-                 ? processFragmentedFrame (frame)
-                 : frame.IsData
-                   ? processDataFrame (frame)
-                   : frame.IsPing
-                     ? processPingFrame (frame)
-                     : frame.IsPong
-                       ? processPongFrame ()
-                       : frame.IsClose
-                         ? processCloseFrame (frame)
-                         : processIncorrectFrame ();
+      return frame.IsCompressed && _compression == CompressionMethod.NONE
+             ? processIncorrectFrame (frame, "A compressed frame without available decompression method.")
+             : frame.IsFragmented
+               ? processFragmentedFrame (frame)
+               : frame.IsData
+                 ? processDataFrame (frame)
+                 : frame.IsPing
+                   ? processPingFrame (frame)
+                   : frame.IsPong
+                     ? processPongFrame ()
+                     : frame.IsClose
+                       ? processCloseFrame (frame)
+                       : processIncorrectFrame (frame, null);
     }
 
-    private bool processIncorrectFrame ()
+    private bool processIncorrectFrame (WsFrame frame, string reason)
     {
-      close (CloseStatusCode.INCORRECT_DATA, null, false);
+      _logger.Debug ("Incorrect frame:\n" + frame.PrintToString (false));
+      processException (new WebSocketException (
+        CloseStatusCode.INCORRECT_DATA, reason ?? String.Empty));
+
       return false;
     }
 
@@ -1240,18 +1244,7 @@ namespace WebSocketSharp
           else
             _exitReceiving.Set ();
         },
-        ex =>
-        {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
-          if (ex.GetType () == typeof (WebSocketException))
-          {
-            var wsex = (WebSocketException) ex;
-            close (wsex.Code, wsex.Message, false);
-          }
-          else
-            close (CloseStatusCode.ABNORMAL, null, false);
-        });
+        processException);
 
       receive ();
     }
@@ -1659,8 +1652,12 @@ namespace WebSocketSharp
         return;
       }
 
-      if (data.LongLength <= FragmentLength)
-        send (Opcode.BINARY, data, completed);
+      var len = data.LongLength;
+      if (len <= FragmentLength)
+        send (
+          Opcode.BINARY,
+          len > 0 && _client && _compression == CompressionMethod.NONE ? data.Copy (len) : data,
+          completed);
       else
         send (Opcode.BINARY, new MemoryStream (data), completed);
     }
