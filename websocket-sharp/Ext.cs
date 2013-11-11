@@ -367,11 +367,11 @@ namespace WebSocketSharp
     /// A <see cref="char"/> to compare.
     /// </param>
     /// <param name="action">
-    /// An Action&lt;int&gt; delegate that references the method(s) called at the same time as when comparing.
+    /// An Action&lt;int&gt; delegate that references the method(s) called at the same time as comparing.
     /// An <see cref="int"/> parameter to pass to the method(s) is <paramref name="value"/>.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="value"/> is less than 0, or greater than 255.
+    /// <paramref name="value"/> is not between 0 and 255.
     /// </exception>
     internal static bool EqualsWith (this int value, char c, Action<int> action)
     {
@@ -407,15 +407,27 @@ namespace WebSocketSharp
              : original;
     }
 
-    internal static string GetErrorMessage (this CloseStatusCode code)
+    internal static string GetMessage (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.INCORRECT_DATA
-             ? "An incorrect data has been received."
-             : code == CloseStatusCode.INCONSISTENT_DATA
-               ? "An inconsistent data has been received."
-               : code == CloseStatusCode.TOO_BIG
-                 ? "A too big data has been received."
-                 : "A WebSocket exception has occured.";
+      return code == CloseStatusCode.PROTOCOL_ERROR
+             ? "A WebSocket protocol error has occurred."
+             : code == CloseStatusCode.INCORRECT_DATA
+               ? "An incorrect data has been received."
+               : code == CloseStatusCode.ABNORMAL
+                 ? "An exception has occurred."
+                 : code == CloseStatusCode.INCONSISTENT_DATA
+                   ? "An inconsistent data has been received."
+                   : code == CloseStatusCode.POLICY_VIOLATION
+                     ? "A policy violation data has been received."
+                     : code == CloseStatusCode.TOO_BIG
+                       ? "A too big data has been received."
+                       : code == CloseStatusCode.IGNORE_EXTENSION
+                         ? "WebSocket client did not receive expected extension(s)."
+                         : code == CloseStatusCode.SERVER_ERROR
+                           ? "WebSocket server got an internal error."
+                           : code == CloseStatusCode.TLS_HANDSHAKE_FAILURE
+                             ? "An error has occurred while handshaking."
+                             : String.Empty;
     }
 
     internal static string GetNameInternal (this string nameAndValue, string separator)
@@ -424,17 +436,6 @@ namespace WebSocketSharp
       return i > 0
              ? nameAndValue.Substring (0, i).Trim ()
              : null;
-    }
-
-    internal static string GetReason (this CloseStatusCode code)
-    {
-      return code == CloseStatusCode.ABNORMAL
-             ? "A WebSocket exception has occured."
-             : code == CloseStatusCode.TOO_BIG
-               ? String.Format (
-                   "The payload data length is greater than the allowable length ({0} bytes).",
-                   PayloadData.MaxLength)
-               : String.Empty;
     }
 
     internal static string GetValueInternal (this string nameAndValue, string separator)
@@ -791,9 +792,9 @@ namespace WebSocketSharp
 
     internal static void WriteBytes (this Stream stream, byte [] value)
     {
-      using (var input = new MemoryStream (value))
+      using (var src = new MemoryStream (value))
       {
-        input.CopyTo (stream);
+        src.CopyTo (stream);
       }
     }
 

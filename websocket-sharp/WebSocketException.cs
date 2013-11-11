@@ -44,7 +44,7 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (CloseStatusCode code)
-      : this (code, code.GetReason ())
+      : this (code, code.GetMessage ())
     {
     }
 
@@ -54,7 +54,7 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (CloseStatusCode code, string reason)
-      : base (reason)
+      : base (reason ?? code.GetMessage ())
     {
       Code = code;
     }

@@ -32,6 +32,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.Security;
 
@@ -42,6 +43,7 @@ namespace WebSocketSharp
     #region Private Const Fields
 
     private const int _handshakeLimitLen = 8192;
+    private const int _handshakeTimeout = 90000;
 
     #endregion
 
@@ -181,22 +183,53 @@ namespace WebSocketSharp
     public string [] ReadHandshake ()
     {
       var read = false;
+      var exception = false;
+
       var buffer = new List<byte> ();
       Action<int> add = i => buffer.Add ((byte) i);
-      while (buffer.Count < _handshakeLimitLen)
-      {
-        if (_innerStream.ReadByte ().EqualsWith ('\r', add) &&
-            _innerStream.ReadByte ().EqualsWith ('\n', add) &&
-            _innerStream.ReadByte ().EqualsWith ('\r', add) &&
-            _innerStream.ReadByte ().EqualsWith ('\n', add))
+
+      var timeout = false;
+      var timer = new Timer (
+        state =>
         {
-          read = true;
-          break;
+          timeout = true;
+          _innerStream.Close ();
+        },
+        null,
+        _handshakeTimeout,
+        -1);
+
+      try {
+        while (buffer.Count < _handshakeLimitLen)
+        {
+          if (_innerStream.ReadByte ().EqualsWith ('\r', add) &&
+              _innerStream.ReadByte ().EqualsWith ('\n', add) &&
+              _innerStream.ReadByte ().EqualsWith ('\r', add) &&
+              _innerStream.ReadByte ().EqualsWith ('\n', add))
+          {
+            read = true;
+            break;
+          }
         }
       }
+      catch {
+        exception = true;
+      }
+      finally {
+        timer.Change (-1, -1);
+        timer.Dispose ();
+      }
 
-      if (!read)
-        throw new WebSocketException ("The length of the handshake is greater than the limit length.");
+      var reason = timeout
+                 ? "A timeout has occurred while receiving a handshake."
+                 : exception
+                   ? "An exception has occurred while receiving a handshake."
+                   : !read
+                     ? "A handshake length is greater than the limit length."
+                     : null;
+
+      if (reason != null)
+        throw new WebSocketException (reason);
 
       return Encoding.UTF8.GetString (buffer.ToArray ())
              .Replace ("\r\n", "\n")

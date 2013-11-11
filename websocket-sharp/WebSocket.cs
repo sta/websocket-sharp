@@ -505,14 +505,14 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (String.Format ("A WebSocket connection request from {0}:\n{1}",
-        _context.UserEndPoint, _context));
+      _logger.Debug (String.Format (
+        "A WebSocket connection request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       if (!validateConnectionRequest (_context))
       {
-        var msg = "Invalid WebSocket connection request.";
-        _logger.Error (msg);
-        error (msg);
+        _logger.Error ("An invalid WebSocket connection request.");
+
+        error ("An error has occurred while handshaking.");
         Close (HttpStatusCode.BadRequest);
 
         return false;
@@ -542,10 +542,10 @@ namespace WebSocketSharp
         if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
           return;
 
-        _logger.Trace ("Start closing handshake.");
-
         _readyState = WebSocketState.CLOSING;
       }
+
+      _logger.Trace ("Start closing handshake.");
 
       var args = new CloseEventArgs (payload);
       args.WasClean = _client
@@ -559,9 +559,9 @@ namespace WebSocketSharp
                         closeServerResources);
 
       _readyState = WebSocketState.CLOSED;
+      OnClose.Emit (this, args);
 
       _logger.Trace ("End closing handshake.");
-      OnClose.Emit (this, args);
     }
 
     private bool close (byte [] frameAsBytes, int timeOut, Func<bool> release)
@@ -596,7 +596,7 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occured.");
+        error ("An exception has occurred.");
 
         return false;
       }
@@ -616,13 +616,13 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occured.");
+        error ("An exception has occurred.");
 
         return false;
       }
     }
 
-    private bool concatenateFragments (Stream dest)
+    private bool concatenateFragmentsInto (Stream dest)
     {
       while (true)
       {
@@ -661,7 +661,7 @@ namespace WebSocketSharp
           return processCloseFrame (frame);
 
         // ?
-        return processIncorrectFrame (frame, null);
+        return processUnsupportedFrame (frame, CloseStatusCode.INCORRECT_DATA, null);
       }
 
       return true;
@@ -772,23 +772,25 @@ namespace WebSocketSharp
     {
       setClientStream ();
       var res = sendHandshakeRequest ();
-      var msg = res.IsUnauthorized
+      var err = res.IsUnauthorized
               ? String.Format ("An HTTP {0} authorization is required.", res.AuthChallenge.Scheme)
               : !validateConnectionResponse (res)
-                ? "Invalid response to this WebSocket connection request."
-                : String.Empty;
+                ? "An invalid response to this WebSocket connection request."
+                : null;
 
-      if (msg.Length > 0)
+      if (err != null)
       {
-        _logger.Error (msg);
+        _logger.Error (err);
+
+        var msg = "An error has occurred while handshaking.";
         error (msg);
-        Close (CloseStatusCode.ABNORMAL);
+        close (CloseStatusCode.ABNORMAL, msg, false);
 
         return false;
       }
 
       var protocol = res.Headers ["Sec-WebSocket-Protocol"];
-      if (protocol != null && protocol.Length > 0)
+      if (!protocol.IsNullOrEmpty ())
         _protocol = protocol;
 
       processRespondedExtensions (res.Headers ["Sec-WebSocket-Extensions"]);
@@ -841,23 +843,34 @@ namespace WebSocketSharp
       return true;
     }
 
-    private void processException (Exception exception)
+    private void processException (Exception exception, string reason)
     {
-      _logger.Fatal (exception.ToString ());
-
       var code = CloseStatusCode.ABNORMAL;
-      var reason = "An exception has occured.";
-      var msg = reason;
+      var msg = reason ?? code.GetMessage ();
+
       if (exception.GetType () == typeof (WebSocketException))
       {
         var wsex = (WebSocketException) exception;
         code = wsex.Code;
         reason = wsex.Message;
-        msg = code.GetErrorMessage ();
+      }
+
+      if (code == CloseStatusCode.ABNORMAL)
+      {
+        _logger.Fatal (exception.ToString ());
+        reason = msg;
+      }
+      else
+      {
+        _logger.Error (reason);
+        msg = code.GetMessage ();
       }
 
       error (msg);
-      close (code, reason, false);
+      if (_readyState == WebSocketState.CONNECTING && !_client)
+        Close (HttpStatusCode.BadRequest);
+      else
+        close (code, reason, false);
     }
 
     private bool processFragmentedFrame (WsFrame frame)
@@ -872,7 +885,7 @@ namespace WebSocketSharp
       using (var concatenated = new MemoryStream ())
       {
         concatenated.WriteBytes (first.PayloadData.ApplicationData);
-        if (!concatenateFragments (concatenated))
+        if (!concatenateFragmentsInto (concatenated))
           return false;
 
         byte [] data;
@@ -894,7 +907,10 @@ namespace WebSocketSharp
     private bool processFrame (WsFrame frame)
     {
       return frame.IsCompressed && _compression == CompressionMethod.NONE
-             ? processIncorrectFrame (frame, "A compressed frame without available decompression method.")
+             ? processUnsupportedFrame (
+                 frame,
+                 CloseStatusCode.INCORRECT_DATA,
+                 "A compressed data has been received without available decompression method.")
              : frame.IsFragmented
                ? processFragmentedFrame (frame)
                : frame.IsData
@@ -905,16 +921,7 @@ namespace WebSocketSharp
                      ? processPongFrame ()
                      : frame.IsClose
                        ? processCloseFrame (frame)
-                       : processIncorrectFrame (frame, null);
-    }
-
-    private bool processIncorrectFrame (WsFrame frame, string reason)
-    {
-      _logger.Debug ("Incorrect frame:\n" + frame.PrintToString (false));
-      processException (new WebSocketException (
-        CloseStatusCode.INCORRECT_DATA, reason ?? String.Empty));
-
-      return false;
+                       : processUnsupportedFrame (frame, CloseStatusCode.POLICY_VIOLATION, null);
     }
 
     private bool processPingFrame (WsFrame frame)
@@ -977,6 +984,14 @@ namespace WebSocketSharp
 
       if (comp && !hasComp)
         _compression = CompressionMethod.NONE;
+    }
+
+    private bool processUnsupportedFrame (WsFrame frame, CloseStatusCode code, string reason)
+    {
+      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
+      processException (new WebSocketException (code, reason), null);
+
+      return false;
     }
 
     // As client
@@ -1049,7 +1064,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
 
         return sent;
@@ -1075,7 +1090,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
         finally {
           if (compressed)
@@ -1101,7 +1116,7 @@ namespace WebSocketSharp
         catch (Exception ex)
         {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
       };
 
@@ -1121,7 +1136,7 @@ namespace WebSocketSharp
         catch (Exception ex)
         {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
       };
 
@@ -1244,7 +1259,8 @@ namespace WebSocketSharp
           else
             _exitReceiving.Set ();
         },
-        processException);
+        ex => processException (
+          ex, "An exception has occurred while receiving a message."));
 
       receive ();
     }
@@ -1357,7 +1373,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
       }
     }
@@ -1381,7 +1397,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");
+          error ("An exception has occurred.");
         }
       }
     }
@@ -1519,12 +1535,7 @@ namespace WebSocketSharp
           open ();
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occured.");
-        if (_client)
-          Close (CloseStatusCode.ABNORMAL);
-        else
-          Close (HttpStatusCode.BadRequest);
+        processException (ex, "An exception has occurred while connecting or opening.");
       }
     }
 
@@ -1808,7 +1819,7 @@ namespace WebSocketSharp
         ex =>
         {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occured.");        
+          error ("An exception has occurred.");        
         });
     }
 

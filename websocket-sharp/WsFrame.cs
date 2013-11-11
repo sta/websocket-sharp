@@ -459,7 +459,8 @@ namespace WebSocketSharp
       {
         // Check if allowable payload data length.
         if (payloadLen > 126 && dataLen > PayloadData.MaxLength)
-          throw new WebSocketException (CloseStatusCode.TOO_BIG);
+          throw new WebSocketException (
+            CloseStatusCode.TOO_BIG, "The 'Payload Data' length is greater than the allowable length.");
 
         data = payloadLen > 126
              ? stream.ReadBytes ((long) dataLen, 1024)
