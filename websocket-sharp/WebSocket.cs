@@ -846,8 +846,7 @@ namespace WebSocketSharp
     private void processException (Exception exception, string reason)
     {
       var code = CloseStatusCode.ABNORMAL;
-      var msg = reason ?? code.GetMessage ();
-
+      var msg = reason;
       if (exception.GetType () == typeof (WebSocketException))
       {
         var wsex = (WebSocketException) exception;
@@ -855,7 +854,8 @@ namespace WebSocketSharp
         reason = wsex.Message;
       }
 
-      if (code == CloseStatusCode.ABNORMAL)
+      if (code == CloseStatusCode.ABNORMAL ||
+          code == CloseStatusCode.TLS_HANDSHAKE_FAILURE)
       {
         _logger.Fatal (exception.ToString ());
         reason = msg;
@@ -863,14 +863,14 @@ namespace WebSocketSharp
       else
       {
         _logger.Error (reason);
-        msg = code.GetMessage ();
+        msg = null;
       }
 
-      error (msg);
+      error (msg ?? code.GetMessage ());
       if (_readyState == WebSocketState.CONNECTING && !_client)
         Close (HttpStatusCode.BadRequest);
       else
-        close (code, reason, false);
+        close (code, reason ?? code.GetMessage (), false);
     }
 
     private bool processFragmentedFrame (WsFrame frame)

@@ -31,8 +31,8 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Represents the exception that occurred when attempting to perform an operation on
-  /// the WebSocket connection.
+  /// Represents the exception that occurred when attempting to perform an operation
+  /// on the WebSocket connection.
   /// </summary>
   public class WebSocketException : Exception
   {
@@ -44,7 +44,7 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (CloseStatusCode code)
-      : this (code, code.GetMessage ())
+      : this (code, null)
     {
     }
 
