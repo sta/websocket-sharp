@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>websocket-sharp by sta</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>websocket-sharp</h1>
+        <h2>A C# implementation of the WebSocket protocol client and server</h2>
+        <a href="https://github.com/sta/websocket-sharp" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a name="websocket-client" class="anchor" href="#websocket-client"><span class="octicon octicon-link"></span></a>WebSocket Client</h3>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Example</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
+  <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span> <span class="p">(</span><span class="kt">string</span> <span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://dragonsnest.far/Laputa"</span><span class="p">))</span>
+      <span class="p">{</span>
+        <span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
+        <span class="p">{</span>
+          <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="s">"Laputa says: "</span> <span class="p">+</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span><span class="p">);</span>
+        <span class="p">};</span>
+
+        <span class="n">ws</span><span class="p">.</span><span class="n">Connect</span> <span class="p">();</span>
+        <span class="n">ws</span><span class="p">.</span><span class="n">Send</span> <span class="p">(</span><span class="s">"BALUS"</span><span class="p">);</span>
+        <span class="n">Console</span><span class="p">.</span><span class="n">ReadKey</span> <span class="p">(</span><span class="k">true</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="step-1" class="anchor" href="#step-1"><span class="octicon octicon-link"></span></a>Step 1</h4>
+
+<p>Required namespace.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
+</pre></div>
+
+<p>The <code>WebSocket</code> class exists in the <code>WebSocketSharp</code> namespace.</p>
+
+<h4>
+<a name="step-2" class="anchor" href="#step-2"><span class="octicon octicon-link"></span></a>Step 2</h4>
+
+<p>Creating an instance of the <code>WebSocket</code> class with the specified WebSocket URL to connect.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://example.com"</span><span class="p">))</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>The <code>WebSocket</code> class inherits the <code>IDisposable</code> interface, so you can use the <code>using</code> statement.</p>
+
+<h4>
+<a name="step-3" class="anchor" href="#step-3"><span class="octicon octicon-link"></span></a>Step 3</h4>
+
+<p>Setting the <code>WebSocket</code> events.</p>
+
+<h5>
+<a name="websocketonopen-event" class="anchor" href="#websocketonopen-event"><span class="octicon octicon-link"></span></a>WebSocket.OnOpen Event</h5>
+
+<p>A <code>WebSocket.OnOpen</code> event occurs when the WebSocket connection has been established.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnOpen</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+</pre></div>
+
+<p><code>e</code> has passed as <code>EventArgs.Empty</code>, so you don't use <code>e</code>.</p>
+
+<h5>
+<a name="websocketonmessage-event" class="anchor" href="#websocketonmessage-event"><span class="octicon octicon-link"></span></a>WebSocket.OnMessage Event</h5>
+
+<p>A <code>WebSocket.OnMessage</code> event occurs when the <code>WebSocket</code> receives a WebSocket data frame.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+</pre></div>
+
+<p><code>e.Type</code> (<code>WebSocketSharp.MessageEventArgs.Type</code>, its type is <code>WebSocketSharp.Opcode</code>) indicates the type of a received data. So by checking it, you determine which item you should use.</p>
+
+<p>If <code>e.Type</code> equals <code>Opcode.TEXT</code>, you use <code>e.Data</code> (<code>WebSocketSharp.MessageEventArgs.Data</code>, its type is <code>string</code>) that contains a received <strong>Text</strong> data.</p>
+
+<p>If <code>e.Type</code> equals <code>Opcode.BINARY</code>, you use <code>e.RawData</code> (<code>WebSocketSharp.MessageEventArgs.RawData</code>, its type is <code>byte []</code>) that contains a received <strong>Binary</strong> data.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">TEXT</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Do something with e.Data</span>
+  <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">BINARY</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="c1">// Do something with e.RawData</span>
+  <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>
+<a name="websocketonerror-event" class="anchor" href="#websocketonerror-event"><span class="octicon octicon-link"></span></a>WebSocket.OnError Event</h5>
+
+<p>A <code>WebSocket.OnError</code> event occurs when the <code>WebSocket</code> gets an error.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnError</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+</pre></div>
+
+<p><code>e.Message</code> (<code>WebSocketSharp.ErrorEventArgs.Message</code>, its type is <code>string</code>) contains an error message, so you use it.</p>
+
+<h5>
+<a name="websocketonclose-event" class="anchor" href="#websocketonclose-event"><span class="octicon octicon-link"></span></a>WebSocket.OnClose Event</h5>
+
+<p>A <code>WebSocket.OnClose</code> event occurs when the WebSocket connection has been closed.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnClose</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">};</span>
+</pre></div>
+
+<p><code>e.Code</code> (<code>WebSocketSharp.CloseEventArgs.Code</code>, its type is <code>ushort</code>) contains a status code indicating the reason for closure and <code>e.Reason</code> (<code>WebSocketSharp.CloseEventArgs.Reason</code>, its type is <code>string</code>) contains the reason for closure, so you use them.</p>
+
+<h4>
+<a name="step-4" class="anchor" href="#step-4"><span class="octicon octicon-link"></span></a>Step 4</h4>
+
+<p>Connecting to the WebSocket server.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Connect</span> <span class="p">();</span>
+</pre></div>
+
+<h4>
+<a name="step-5" class="anchor" href="#step-5"><span class="octicon octicon-link"></span></a>Step 5</h4>
+
+<p>Sending a data.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Send</span> <span class="p">(</span><span class="n">data</span><span class="p">);</span>
+</pre></div>
+
+<p>The <code>Send</code> method is overloaded.</p>
+
+<p>The types of <code>data</code> are <code>string</code>, <code>byte []</code> and <code>System.IO.FileInfo</code> class.</p>
+
+<p>In addition, the <code>Send (stream, length)</code> method exists, too.</p>
+
+<p>These methods don't wait for the send to be complete. This means that these methods behave asynchronously.</p>
+
+<p>If you want to do something when the send is complete, you use any of some <code>Send (data, completed)</code> methods.</p>
+
+<h4>
+<a name="step-6" class="anchor" href="#step-6"><span class="octicon octicon-link"></span></a>Step 6</h4>
+
+<p>Closing the WebSocket connection.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Close</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">);</span>
+</pre></div>
+
+<p>If you want to close the WebSocket connection explicitly, you use the <code>Close</code> method.</p>
+
+<p>The <code>Close</code> method is overloaded.</p>
+
+<p>The types of <code>code</code> are <code>WebSocketSharp.CloseStatusCode</code> and <code>ushort</code>, and the type of <code>reason</code> is <code>string</code>.</p>
+
+<p>In addition, the <code>Close ()</code> and <code>Close (code)</code> methods exist, too.</p>
+
+<h3>
+<a name="websocket-server" class="anchor" href="#websocket-server"><span class="octicon octicon-link"></span></a>WebSocket Server</h3>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp.Server</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">Example</span>
+<span class="p">{</span>
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">Laputa</span> <span class="p">:</span> <span class="n">WebSocketService</span>
+  <span class="p">{</span>
+    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="kt">var</span> <span class="n">msg</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">ToLower</span> <span class="p">()</span> <span class="p">==</span> <span class="s">"balus"</span>
+              <span class="p">?</span> <span class="s">"I've been balused already..."</span>
+              <span class="p">:</span> <span class="s">"I'm not available now."</span><span class="p">;</span>
+
+      <span class="n">Send</span> <span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="k">class</span> <span class="nc">Program</span>
+  <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span> <span class="p">(</span><span class="kt">string</span> <span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="kt">var</span> <span class="n">wssv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocketServer</span> <span class="p">(</span><span class="s">"ws://dragonsnest.far"</span><span class="p">);</span>
+      <span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Laputa</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Laputa"</span><span class="p">);</span>
+      <span class="n">wssv</span><span class="p">.</span><span class="n">Start</span> <span class="p">();</span>
+      <span class="n">Console</span><span class="p">.</span><span class="n">ReadKey</span> <span class="p">(</span><span class="k">true</span><span class="p">);</span>
+      <span class="n">wssv</span><span class="p">.</span><span class="n">Stop</span> <span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<h4>
+<a name="step-1-1" class="anchor" href="#step-1-1"><span class="octicon octicon-link"></span></a>Step 1</h4>
+
+<p>Required namespace.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">WebSocketSharp.Server</span><span class="p">;</span>
+</pre></div>
+
+<p>The <code>WebSocketService</code> and <code>WebSocketServer</code> classes exist in the <code>WebSocketSharp.Server</code> namespace.</p>
+
+<h4>
+<a name="step-2-1" class="anchor" href="#step-2-1"><span class="octicon octicon-link"></span></a>Step 2</h4>
+
+<p>Creating the class that inherits the <code>WebSocketService</code> class.</p>
+
+<p>For example, if you want to provide an echo service,</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp.Server</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Echo</span> <span class="p">:</span> <span class="n">WebSocketService</span>
+<span class="p">{</span>
+  <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">Send</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Data</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>And if you want to provide a chat service,</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">WebSocketSharp.Server</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Chat</span> <span class="p">:</span> <span class="n">WebSocketService</span>
+<span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">_suffix</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="nf">Chat</span> <span class="p">()</span>
+    <span class="p">:</span> <span class="k">this</span> <span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="n">Empty</span><span class="p">)</span>
+  <span class="p">{</span>
+  <span class="p">}</span>
+
+  <span class="k">public</span> <span class="nf">Chat</span> <span class="p">(</span><span class="kt">string</span> <span class="n">suffix</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">_suffix</span> <span class="p">=</span> <span class="n">suffix</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">Sessions</span><span class="p">.</span><span class="n">Broadcast</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Data</span> <span class="p">+</span> <span class="n">_suffix</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>If you override the <code>OnMessage</code> method, it is bound to the server side <code>WebSocket.OnMessage</code> event.</p>
+
+<p>In addition, if you override the <code>OnOpen</code>, <code>OnError</code> and <code>OnClose</code> methods, each of them is bound to each server side event of <code>WebSocket.OnOpen</code>, <code>WebSocket.OnError</code> and <code>WebSocket.OnClose</code>.</p>
+
+<h4>
+<a name="step-3-1" class="anchor" href="#step-3-1"><span class="octicon octicon-link"></span></a>Step 3</h4>
+
+<p>Creating an instance of the <code>WebSocketServer</code> class.</p>
+
+<div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">wssv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocketServer</span> <span class="p">(</span><span class="m">4649</span><span class="p">);</span>
+<span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Echo</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Echo"</span><span class="p">);</span>
+<span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Chat"</span><span class="p">);</span>
+<span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/ChatWithNiceBoat"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Chat</span> <span class="p">(</span><span class="s">" Nice boat."</span><span class="p">));</span>
+</pre></div>
+
+<p>You can add any WebSocket service with a specified path to the service to your <code>WebSocketServer</code> by using the <code>WebSocketServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>WebSocketServer.AddWebSocketService&lt;T&gt;</code> method.</p>
+
+<p>The type of <code>TWithNew</code> must inherit the <code>WebSocketService</code> class and must have a public parameterless constructor.</p>
+
+<p>The type of <code>T</code> must inherit <code>WebSocketService</code> class.</p>
+
+<p>So you can use the classes created in <strong>Step 2</strong>.</p>
+
+<p>If you create an instance of the <code>WebSocketServer</code> class without the port number, the <code>WebSocketServer</code> set the port number to <strong>80</strong> automatically. So it is necessary to run with root permission.</p>
+
+<pre><code>$ sudo mono example2.exe
+</code></pre>
+
+<h4>
+<a name="step-4-1" class="anchor" href="#step-4-1"><span class="octicon octicon-link"></span></a>Step 4</h4>
+
+<p>Starting the server.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">wssv</span><span class="p">.</span><span class="n">Start</span> <span class="p">();</span>
+</pre></div>
+
+<h4>
+<a name="step-5-1" class="anchor" href="#step-5-1"><span class="octicon octicon-link"></span></a>Step 5</h4>
+
+<p>Stopping the server.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">wssv</span><span class="p">.</span><span class="n">Stop</span> <span class="p">();</span>
+</pre></div>
+
+<h3>
+<a name="http-server-with-the-websocket" class="anchor" href="#http-server-with-the-websocket"><span class="octicon octicon-link"></span></a>HTTP Server with the WebSocket</h3>
+
+<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code> and some other classes of <a href="http://www.mono-project.com/">Mono</a> to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.</p>
+
+<p>You can add any WebSocket service with a specified path to the service to your <code>HttpServer</code> by using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>HttpServer.AddWebSocketService&lt;T&gt;</code> method.</p>
+
+<div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">httpsv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpServer</span> <span class="p">(</span><span class="m">4649</span><span class="p">);</span>
+<span class="n">httpsv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Echo</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Echo"</span><span class="p">);</span>
+<span class="n">httpsv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Chat"</span><span class="p">);</span>
+<span class="n">httpsv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/ChatWithNiceBoat"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Chat</span> <span class="p">(</span><span class="s">" Nice boat."</span><span class="p">));</span>
+</pre></div>
+
+<p>For more information, could you see <strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a></strong>?</p>
+
+<h3>
+<a name="websocket-extensions" class="anchor" href="#websocket-extensions"><span class="octicon octicon-link"></span></a>WebSocket Extensions</h3>
+
+<h4>
+<a name="per-message-compression" class="anchor" href="#per-message-compression"><span class="octicon octicon-link"></span></a>Per-message Compression</h4>
+
+<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Per-message Compression</a></strong> extension. (But, does not support with <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1">extension parameters</a>.)</p>
+
+<p>If you want to enable this extension as a WebSocket client, you should do like the following.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Compression</span> <span class="p">=</span> <span class="n">CompressionMethod</span><span class="p">.</span><span class="n">DEFLATE</span><span class="p">;</span>
+</pre></div>
+
+<p>And then your client sends the following header in the opening handshake to a WebSocket server.</p>
+
+<pre><code>Sec-WebSocket-Extensions: permessage-deflate
+</code></pre>
+
+<p>If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.</p>
+
+<h3>
+<a name="secure-connection" class="anchor" href="#secure-connection"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
+
+<p>As a <strong>WebSocket Client</strong>, creating an instance of the <code>WebSocket</code> class with the WebSocket URL with <strong>wss</strong> scheme.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"wss://example.com"</span><span class="p">))</span>
+<span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>If you want to set the custom validation for the server certificate, you use the <code>WebSocket.ServerCertificateValidationCallback</code> property.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">ServerCertificateValidationCallback</span> <span class="p">=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">sslPolicyErrors</span><span class="p">)</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+  <span class="c1">// Do something to validate the server certificate.</span>
+  <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="c1">// The server certificate is valid.</span>
+<span class="p">};</span>
+</pre></div>
+
+<p>If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.</p>
+
+<p>As a <strong>WebSocket Server</strong>, creating an instance of the <code>WebSocketServer</code> or <code>HttpServer</code> class with some settings for the secure connection.</p>
+
+<div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">wssv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocketServer</span> <span class="p">(</span><span class="m">4649</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="n">wssv</span><span class="p">.</span><span class="n">Certificate</span> <span class="p">=</span> <span class="k">new</span> <span class="n">X509Certificate2</span> <span class="p">(</span><span class="s">"/path/to/cert.pfx"</span><span class="p">,</span> <span class="s">"password for cert.pfx"</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="logging" class="anchor" href="#logging"><span class="octicon octicon-link"></span></a>Logging</h3>
+
+<p>The <code>WebSocket</code> class includes own logging functions.</p>
+
+<p>The <code>WebSocket.Log</code> property provides the logging functions.</p>
+
+<p>If you want to change the current logging level (the default is <code>LogLevel.ERROR</code>), you use the <code>WebSocket.Log.Level</code> property.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Level</span> <span class="p">=</span> <span class="n">LogLevel</span><span class="p">.</span><span class="n">DEBUG</span><span class="p">;</span>
+</pre></div>
+
+<p>The above means that the logging outputs with a less than <code>LogLevel.DEBUG</code> are not outputted.</p>
+
+<p>And if you want to output a log, you use any of some output methods. The following outputs a log with <code>LogLevel.DEBUG</code>.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Debug</span> <span class="p">(</span><span class="s">"This is a debug message."</span><span class="p">);</span>
+</pre></div>
+
+<p>The <code>WebSocketServer</code> and <code>HttpServer</code> classes include the same logging functions.</p>
+
+<h2>
+<a name="required-environment" class="anchor" href="#required-environment"><span class="octicon octicon-link"></span></a>Required Environment</h2>
+
+<p>C# <strong>3.0</strong>, .NET <strong>3.5</strong> compatible or later.</p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p>Examples using <strong>websocket-sharp</strong>.</p>
+
+<h3>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h3>
+
+<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example">Example</a> connects to the <a href="http://www.websocket.org/echo.html">Echo server</a> using the WebSocket.</p>
+
+<h3>
+<a name="example1" class="anchor" href="#example1"><span class="octicon octicon-link"></span></a>Example1</h3>
+
+<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> connects to the <a href="http://agektmr.node-ninja.com:3000/">Audio Data delivery server</a> using the WebSocket (<a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> is only implemented the chat feature, still unfinished).</p>
+
+<p>And <a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> uses <a href="http://james.newtonking.com/projects/json-net.aspx">Json.NET</a>.</p>
+
+<h3>
+<a name="example2" class="anchor" href="#example2"><span class="octicon octicon-link"></span></a>Example2</h3>
+
+<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example2">Example2</a> starts a WebSocket server.</p>
+
+<h3>
+<a name="example3" class="anchor" href="#example3"><span class="octicon octicon-link"></span></a>Example3</h3>
+
+<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a> starts an HTTP server that can upgrade the connection to the WebSocket connection.</p>
+
+<p>Could you access to <a href="http://localhost:4649">http://localhost:4649</a> to do <strong>WebSocket Echo Test</strong> with your web browser after <a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a> running?</p>
+
+<h2>
+<a name="websocket-sharp-for-unity" class="anchor" href="#websocket-sharp-for-unity"><span class="octicon octicon-link"></span></a>websocket-sharp for Unity</h2>
+
+<p><strong>websocket-sharp</strong> has now been displayed on the <strong>Unity Asset Store</strong>!</p>
+
+<ul>
+<li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
+</ul><h2>
+<a name="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications"><span class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
+
+<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>.</p>
+
+<ul>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">branch: hybi-00</a></strong> supports older draft-ietf-hybi-thewebsocketprotocol-00 ( <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">hybi-00</a></strong> ).</li>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/draft75">branch: draft75</a></strong> supports even more old draft-hixie-thewebsocketprotocol-75 ( <strong><a href="http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75">hixie-75</a></strong> ).</li>
+</ul><p><strong>websocket-sharp</strong> is based on the following WebSocket references.</p>
+
+<ul>
+<li><strong><a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a></strong></li>
+<li><strong><a href="http://www.w3.org/TR/websockets/">The WebSocket API</a></strong></li>
+<li><strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression Extensions for WebSocket</a></strong></li>
+</ul><p>Thanks for translating to japanese.</p>
+
+<ul>
+<li><strong><a href="http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html">The WebSocket Protocol 日本語訳</a></strong></li>
+<li><strong><a href="http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html">The WebSocket API 日本語訳</a></strong></li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><strong>websocket-sharp</strong> is provided under <strong><a href="LICENSE.txt">The MIT License</a></strong>.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/sta/websocket-sharp/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/sta/websocket-sharp/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/sta/websocket-sharp"></a> is maintained by <a href="https://github.com/sta">sta</a>.</p>
+
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
