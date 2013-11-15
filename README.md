@@ -21,7 +21,7 @@ namespace Example
       {
         ws.OnMessage += (sender, e) =>
         {
-          Console.WriteLine ("Laputa says: {0}", e.Data);
+          Console.WriteLine ("Laputa says: " + e.Data);
         };
 
         ws.Connect ();
@@ -71,7 +71,7 @@ ws.OnOpen += (sender, e) =>
 };
 ```
 
-`e` has come across as `EventArgs.Empty`, so you don't use `e`.
+`e` has passed as `EventArgs.Empty`, so you don't use `e`.
 
 ##### WebSocket.OnMessage Event #####
 
@@ -84,7 +84,7 @@ ws.OnMessage += (sender, e) =>
 };
 ```
 
-`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Opcode`) indicates the **Frame Type** of a received WebSocket frame. So by checking it, you determine which item you should use.
+`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Opcode`) indicates the type of a received data. So by checking it, you determine which item you should use.
 
 If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`) that contains a received **Text** data.
 
@@ -266,7 +266,7 @@ public class Chat : WebSocketService
 
 If you override the `OnMessage` method, it is bound to the server side `WebSocket.OnMessage` event.
 
-In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each of them is bound to the `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose` events.
+In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
 
 #### Step 3 ####
 
@@ -365,7 +365,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 
 If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.
 
-As a **WebSocket Server**, creating and setting an instance of the WebSocket server with some settings for the secure connection.
+As a **WebSocket Server**, creating an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection.
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
@@ -386,7 +386,7 @@ ws.Log.Level = LogLevel.DEBUG;
 
 The above means that the logging outputs with a less than `LogLevel.DEBUG` are not outputted.
 
-And if you want to output a log, you use some output methods. The following outputs a log with `LogLevel.DEBUG`.
+And if you want to output a log, you use any of some output methods. The following outputs a log with `LogLevel.DEBUG`.
 
 ```cs
 ws.Log.Debug ("This is a debug message.");
