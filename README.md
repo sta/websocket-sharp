@@ -9,6 +9,32 @@
 
 websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the **MonoDevelop**.
 
+## Install ##
+
+### Self Build ###
+
+You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you build it yourself to the library references of your project.
+
+### NuGet Gallery ###
+
+**websocket-sharp** has now been displayed on the **[NuGet Gallery]**, as still a prerelease version.
+
+- **[NuGet Gallery: websocket-sharp]**
+
+You can add websocket-sharp to your project using the **NuGet Package Manager**, like the follwing command in the **Package Manager Console**.
+
+```
+PM> Install-Package WebSocketSharp -Pre
+```
+
+### Unity Asset Store ###
+
+**websocket-sharp** has now been displayed on the **Unity Asset Store**.
+
+- **[websocket-sharp for Unity]**
+
+That's priced at **15 US$**. I think that your 15 $ makes this project more better and accelerated, Thank you!
+
 ## Usage ##
 
 ### WebSocket Client ###
@@ -428,12 +454,6 @@ And [Example1] uses [Json.NET].
 
 Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after [Example3] running?
 
-## websocket-sharp for Unity ##
-
-**websocket-sharp** has now been displayed on the **Unity Asset Store**!
-
-- **[websocket-sharp for Unity]**
-
 ## Supported WebSocket Specifications ##
 
 **websocket-sharp** supports **[RFC 6455]**.
@@ -466,6 +486,8 @@ Thanks for translating to japanese.
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [Mono]: http://www.mono-project.com/
 [MonoDevelop]: http://monodevelop.com
+[NuGet Gallery]: http://www.nuget.org
+[NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
