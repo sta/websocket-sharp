@@ -15,7 +15,7 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you build it yourself to the library references of your project.
 
-If you use websocket-sharp.dll in your [Unity] project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+If you use websocket-sharp.dll in your **[Unity]** project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
 
 ### NuGet Gallery ###
 
