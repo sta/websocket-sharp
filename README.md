@@ -35,6 +35,10 @@ PM> Install-Package WebSocketSharp -Pre
 
 That's priced at **15 US$**. I think that your 15 $ makes this project more better and accelerated, Thank you!
 
+## Supported .NET framework ##
+
+**websocket-sharp** supports .NET **3.5** compatible or later.
+
 ## Usage ##
 
 ### WebSocket Client ###
@@ -425,10 +429,6 @@ ws.Log.Debug ("This is a debug message.");
 ```
 
 The `WebSocketServer` and `HttpServer` classes include the same logging functions.
-
-## Required Environment ##
-
-C# **3.0**, .NET **3.5** compatible or later.
 
 ## Examples ##
 
