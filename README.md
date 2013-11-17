@@ -15,13 +15,15 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you build it yourself to the library references of your project.
 
+If you use websocket-sharp.dll in your [Unity] project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+
 ### NuGet Gallery ###
 
 **websocket-sharp** has now been displayed on the **[NuGet Gallery]**, as still a **prerelease** version.
 
 - **[NuGet Gallery: websocket-sharp]**
 
-You can add websocket-sharp to your project using the **NuGet Package Manager**, like the follwing command in the **Package Manager Console**.
+You can add websocket-sharp to your project using the **NuGet Package Manager**, like the following command in the **Package Manager Console**.
 
 ```
 PM> Install-Package WebSocketSharp -Pre
@@ -493,6 +495,7 @@ Thanks for translating to japanese.
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
 [The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[Unity]: http://unity3d.com
 [branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
 [branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
