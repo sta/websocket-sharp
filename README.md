@@ -3,6 +3,12 @@
 
 **websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server.
 
+## Build ##
+
+**websocket-sharp** is built as a single assembly, **websocket-sharp.dll**.
+
+websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the **MonoDevelop**.
+
 ## Usage ##
 
 ### WebSocket Client ###
@@ -459,6 +465,7 @@ Thanks for translating to japanese.
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [Mono]: http://www.mono-project.com/
+[MonoDevelop]: http://monodevelop.com
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
 [The WebSocket API]: http://www.w3.org/TR/websockets/
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
