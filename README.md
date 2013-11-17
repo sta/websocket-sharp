@@ -279,7 +279,7 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service with a specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
+You can add any WebSocket service with the specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
@@ -311,7 +311,7 @@ wssv.Stop ();
 
 I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.
 
-You can add any WebSocket service with a specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
+You can add any WebSocket service with the specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
 
 ```cs
 var httpsv = new HttpServer (4649);
