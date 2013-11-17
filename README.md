@@ -33,11 +33,11 @@ PM> Install-Package WebSocketSharp -Pre
 
 - **[websocket-sharp for Unity]**
 
-That's priced at **15 US$**. I think that your 15 $ makes this project more better and accelerated, Thank you!
+That's priced at **US$15**. I think that your $15 makes this project more better and accelerated, Thank you!
 
 ## Supported .NET framework ##
 
-**websocket-sharp** supports .NET **3.5** compatible or later.
+**websocket-sharp** supports .NET **3.5** (includes compatible) or later.
 
 ## Usage ##
 
@@ -220,7 +220,7 @@ namespace Example
   {
     protected override void OnMessage (MessageEventArgs e)
     {
-      var msg = e.Data.ToLower () == "balus"
+      var msg = e.Data == "BALUS"
               ? "I've been balused already..."
               : "I'm not available now.";
 
@@ -477,19 +477,19 @@ Thanks for translating to japanese.
 **websocket-sharp** is provided under **[The MIT License](LICENSE.txt)**.
 
 
-[Audio Data delivery server]: http://agektmr.node-ninja.com:3000/
+[Audio Data delivery server]: http://agektmr.node-ninja.com:3000
 [Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
 [Example1]: https://github.com/sta/websocket-sharp/tree/master/Example1
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
 [Json.NET]: http://james.newtonking.com/projects/json-net.aspx
-[Mono]: http://www.mono-project.com/
+[Mono]: http://www.mono-project.com
 [MonoDevelop]: http://monodevelop.com
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [RFC 6455]: http://tools.ietf.org/html/rfc6455
-[The WebSocket API]: http://www.w3.org/TR/websockets/
+[The WebSocket API]: http://www.w3.org/TR/websockets
 [The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
 [The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
