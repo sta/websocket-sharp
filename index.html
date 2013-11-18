@@ -29,6 +29,49 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h2>
+<a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
+
+<p><strong>websocket-sharp</strong> is built as a single assembly, <strong>websocket-sharp.dll</strong>.</p>
+
+<p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So the simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the MonoDevelop.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<h3>
+<a name="self-build" class="anchor" href="#self-build"><span class="octicon octicon-link"></span></a>Self Build</h3>
+
+<p>You should add <strong>websocket-sharp.dll</strong> (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you build it yourself to the library references of your project.</p>
+
+<p>If you use websocket-sharp.dll in your <strong><a href="http://unity3d.com">Unity</a></strong> project, you should add it to any folder of your project (e.g. Assets/Plugins) in the <strong>Unity Editor</strong>.</p>
+
+<h3>
+<a name="nuget-gallery" class="anchor" href="#nuget-gallery"><span class="octicon octicon-link"></span></a>NuGet Gallery</h3>
+
+<p><strong>websocket-sharp</strong> has now been displayed on the <strong><a href="http://www.nuget.org">NuGet Gallery</a></strong>, as still a <strong>prerelease</strong> version.</p>
+
+<ul>
+<li><strong><a href="http://www.nuget.org/packages/WebSocketSharp">NuGet Gallery: websocket-sharp</a></strong></li>
+</ul><p>You can add websocket-sharp to your project using the <strong>NuGet Package Manager</strong>, like the following command in the <strong>Package Manager Console</strong>.</p>
+
+<pre><code>PM&gt; Install-Package WebSocketSharp -Pre
+</code></pre>
+
+<h3>
+<a name="unity-asset-store" class="anchor" href="#unity-asset-store"><span class="octicon octicon-link"></span></a>Unity Asset Store</h3>
+
+<p><strong>websocket-sharp</strong> has now been displayed on the <strong>Unity Asset Store</strong>.</p>
+
+<ul>
+<li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
+</ul><p>That's priced at <strong>US$15</strong>. I think that your $15 makes this project more better and accelerated, Thank you!</p>
+
+<h2>
+<a name="supported-net-framework" class="anchor" href="#supported-net-framework"><span class="octicon octicon-link"></span></a>Supported .NET framework</h2>
+
+<p><strong>websocket-sharp</strong> supports .NET <strong>3.5</strong> (includes compatible) or later.</p>
+
+<h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
@@ -211,7 +254,7 @@
   <span class="p">{</span>
     <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
     <span class="p">{</span>
-      <span class="kt">var</span> <span class="n">msg</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">ToLower</span> <span class="p">()</span> <span class="p">==</span> <span class="s">"balus"</span>
+      <span class="kt">var</span> <span class="n">msg</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span> <span class="p">==</span> <span class="s">"BALUS"</span>
               <span class="p">?</span> <span class="s">"I've been balused already..."</span>
               <span class="p">:</span> <span class="s">"I'm not available now."</span><span class="p">;</span>
 
@@ -305,7 +348,7 @@
 <span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/ChatWithNiceBoat"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Chat</span> <span class="p">(</span><span class="s">" Nice boat."</span><span class="p">));</span>
 </pre></div>
 
-<p>You can add any WebSocket service with a specified path to the service to your <code>WebSocketServer</code> by using the <code>WebSocketServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>WebSocketServer.AddWebSocketService&lt;T&gt;</code> method.</p>
+<p>You can add any WebSocket service with the specified path to the service to your <code>WebSocketServer</code> by using the <code>WebSocketServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>WebSocketServer.AddWebSocketService&lt;T&gt;</code> method.</p>
 
 <p>The type of <code>TWithNew</code> must inherit the <code>WebSocketService</code> class and must have a public parameterless constructor.</p>
 
@@ -337,9 +380,9 @@
 <h3>
 <a name="http-server-with-the-websocket" class="anchor" href="#http-server-with-the-websocket"><span class="octicon octicon-link"></span></a>HTTP Server with the WebSocket</h3>
 
-<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code> and some other classes of <a href="http://www.mono-project.com/">Mono</a> to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.</p>
+<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code> and some other classes of <a href="http://www.mono-project.com">Mono</a> to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.</p>
 
-<p>You can add any WebSocket service with a specified path to the service to your <code>HttpServer</code> by using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>HttpServer.AddWebSocketService&lt;T&gt;</code> method.</p>
+<p>You can add any WebSocket service with the specified path to the service to your <code>HttpServer</code> by using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>HttpServer.AddWebSocketService&lt;T&gt;</code> method.</p>
 
 <div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">httpsv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpServer</span> <span class="p">(</span><span class="m">4649</span><span class="p">);</span>
 <span class="n">httpsv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Echo</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Echo"</span><span class="p">);</span>
@@ -419,11 +462,6 @@
 <p>The <code>WebSocketServer</code> and <code>HttpServer</code> classes include the same logging functions.</p>
 
 <h2>
-<a name="required-environment" class="anchor" href="#required-environment"><span class="octicon octicon-link"></span></a>Required Environment</h2>
-
-<p>C# <strong>3.0</strong>, .NET <strong>3.5</strong> compatible or later.</p>
-
-<h2>
 <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
 <p>Examples using <strong>websocket-sharp</strong>.</p>
@@ -436,7 +474,7 @@
 <h3>
 <a name="example1" class="anchor" href="#example1"><span class="octicon octicon-link"></span></a>Example1</h3>
 
-<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> connects to the <a href="http://agektmr.node-ninja.com:3000/">Audio Data delivery server</a> using the WebSocket (<a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> is only implemented the chat feature, still unfinished).</p>
+<p><a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> connects to the <a href="http://agektmr.node-ninja.com:3000">Audio Data delivery server</a> using the WebSocket (<a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> is only implemented the chat feature, still unfinished).</p>
 
 <p>And <a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a> uses <a href="http://james.newtonking.com/projects/json-net.aspx">Json.NET</a>.</p>
 
@@ -453,13 +491,6 @@
 <p>Could you access to <a href="http://localhost:4649">http://localhost:4649</a> to do <strong>WebSocket Echo Test</strong> with your web browser after <a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a> running?</p>
 
 <h2>
-<a name="websocket-sharp-for-unity" class="anchor" href="#websocket-sharp-for-unity"><span class="octicon octicon-link"></span></a>websocket-sharp for Unity</h2>
-
-<p><strong>websocket-sharp</strong> has now been displayed on the <strong>Unity Asset Store</strong>!</p>
-
-<ul>
-<li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
-</ul><h2>
 <a name="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications"><span class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
 
 <p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>.</p>
@@ -473,7 +504,7 @@
 
 <ul>
 <li><strong><a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a></strong></li>
-<li><strong><a href="http://www.w3.org/TR/websockets/">The WebSocket API</a></strong></li>
+<li><strong><a href="http://www.w3.org/TR/websockets">The WebSocket API</a></strong></li>
 <li><strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression Extensions for WebSocket</a></strong></li>
 </ul><p>Thanks for translating to japanese.</p>
 
