@@ -1,4 +1,3 @@
-<!-- # websocket-sharp # -->
 ![Logo](websocket-sharp.png)
 
 **websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server.
@@ -13,7 +12,7 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 ### Self Build ###
 
-You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you build it yourself to the library references of your project.
+You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you built it yourself to the library references of your project.
 
 If you use websocket-sharp.dll in your **[Unity]** project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
 
@@ -458,25 +457,25 @@ Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 ## Supported WebSocket Specifications ##
 
-**websocket-sharp** supports **[RFC 6455]**.
+**websocket-sharp** supports **[RFC 6455][rfc6455]**.
 
 - **[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 ( **[hybi-00]** ).
 - **[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 ( **[hixie-75]** ).
 
 **websocket-sharp** is based on the following WebSocket references.
 
-- **[The WebSocket Protocol]**
-- **[The WebSocket API]**
+- **[The WebSocket Protocol][rfc6455]**
+- **[The WebSocket API][api]**
 - **[Compression Extensions for WebSocket][compression]**
 
 Thanks for translating to japanese.
 
-- **[The WebSocket Protocol 日本語訳]**
-- **[The WebSocket API 日本語訳]**
+- **[The WebSocket Protocol 日本語訳][rfc6455_ja]**
+- **[The WebSocket API 日本語訳][api_ja]**
 
 ## License ##
 
-**websocket-sharp** is provided under **[The MIT License](LICENSE.txt)**.
+**websocket-sharp** is provided under **[The MIT License]**.
 
 
 [Audio Data delivery server]: http://agektmr.node-ninja.com:3000
@@ -490,16 +489,16 @@ Thanks for translating to japanese.
 [MonoDevelop]: http://monodevelop.com
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
-[RFC 6455]: http://tools.ietf.org/html/rfc6455
-[The WebSocket API]: http://www.w3.org/TR/websockets
-[The WebSocket API 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[The WebSocket Protocol]: http://tools.ietf.org/html/rfc6455
-[The WebSocket Protocol 日本語訳]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
+[The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
+[api]: http://www.w3.org/TR/websockets
+[api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
 [branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
 [extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
+[rfc6455]: http://tools.ietf.org/html/rfc6455
+[rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
 [websocket-sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
