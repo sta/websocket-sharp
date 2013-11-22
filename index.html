@@ -225,15 +225,15 @@
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Send</span> <span class="p">(</span><span class="n">data</span><span class="p">);</span>
 </pre></div>
 
-<p>The <code>Send</code> method is overloaded.</p>
+<p>The <code>WebSocket.Send</code> method is overloaded.</p>
 
-<p>The types of <code>data</code> are <code>string</code>, <code>byte []</code> and <code>System.IO.FileInfo</code> class.</p>
+<p>The types of <code>data</code> are <code>string</code>, <code>byte []</code> and <code>System.IO.FileInfo</code>.</p>
 
-<p>In addition, the <code>Send (stream, length)</code> method exists, too.</p>
+<p>In addition, the <code>WebSocket.Send (stream, length)</code> method exists, too.</p>
 
 <p>These methods don't wait for the send to be complete. This means that these methods behave asynchronously.</p>
 
-<p>If you want to do something when the send is complete, you use any of some <code>Send (data, completed)</code> methods.</p>
+<p>If you do something when the send is complete, you use any of some <code>WebSocket.Send (data, completed)</code> methods.</p>
 
 <h4>
 <a name="step-6" class="anchor" href="#step-6"><span class="octicon octicon-link"></span></a>Step 6</h4>
@@ -243,13 +243,13 @@
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Close</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">);</span>
 </pre></div>
 
-<p>If you want to close the WebSocket connection explicitly, you use the <code>Close</code> method.</p>
+<p>If you close the WebSocket connection explicitly, you use the <code>WebSocket.Close</code> method.</p>
 
-<p>The <code>Close</code> method is overloaded.</p>
+<p>The <code>WebSocket.Close</code> method is overloaded.</p>
 
 <p>The types of <code>code</code> are <code>WebSocketSharp.CloseStatusCode</code> and <code>ushort</code>, and the type of <code>reason</code> is <code>string</code>.</p>
 
-<p>In addition, the <code>Close ()</code> and <code>Close (code)</code> methods exist, too.</p>
+<p>In addition, the <code>WebSocket.Close ()</code> and <code>WebSocket.Close (code)</code> methods exist, too.</p>
 
 <h3>
 <a name="websocket-server" class="anchor" href="#websocket-server"><span class="octicon octicon-link"></span></a>WebSocket Server</h3>
@@ -301,7 +301,7 @@
 
 <p>Creating the class that inherits the <code>WebSocketService</code> class.</p>
 
-<p>For example, if you want to provide an echo service,</p>
+<p>For example, if you provide an echo service,</p>
 
 <div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
 <span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
@@ -316,7 +316,7 @@
 <span class="p">}</span>
 </pre></div>
 
-<p>And if you want to provide a chat service,</p>
+<p>And if you provide a chat service,</p>
 
 <div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
 <span class="k">using</span> <span class="nn">WebSocketSharp</span><span class="p">;</span>
@@ -343,9 +343,9 @@
 <span class="p">}</span>
 </pre></div>
 
-<p>If you override the <code>OnMessage</code> method, it is bound to the server side <code>WebSocket.OnMessage</code> event.</p>
+<p>If you override the <code>WebSocketService.OnMessage</code> method, it's bound to the server side <code>WebSocket.OnMessage</code> event.</p>
 
-<p>In addition, if you override the <code>OnOpen</code>, <code>OnError</code> and <code>OnClose</code> methods, each of them is bound to each server side event of <code>WebSocket.OnOpen</code>, <code>WebSocket.OnError</code> and <code>WebSocket.OnClose</code>.</p>
+<p>And if you override the <code>WebSocketService.OnOpen</code>, <code>WebSocketService.OnError</code> and <code>WebSocketService.OnClose</code> methods, each of them is bound to each server side event of <code>WebSocket.OnOpen</code>, <code>WebSocket.OnError</code> and <code>WebSocket.OnClose</code>.</p>
 
 <p>The <code>WebSocketService.Send</code> method sends a data to the client of the current session to the WebSocket service.</p>
 
@@ -396,7 +396,7 @@
 <h3>
 <a name="http-server-with-the-websocket" class="anchor" href="#http-server-with-the-websocket"><span class="octicon octicon-link"></span></a>HTTP Server with the WebSocket</h3>
 
-<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code> and some other classes of <a href="http://www.mono-project.com">Mono</a> to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.</p>
+<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code> and some other classes of <a href="http://www.mono-project.com">Mono</a> to create the HTTP server that can upgrade the connection to the WebSocket connection when it receives a WebSocket connection request.</p>
 
 <p>You can add any WebSocket service with the specified path to the service to your <code>HttpServer</code> by using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt;</code> or <code>HttpServer.AddWebSocketService&lt;T&gt;</code> method.</p>
 
@@ -439,7 +439,7 @@
 <span class="p">}</span>
 </pre></div>
 
-<p>If you want to set the custom validation for the server certificate, you use the <code>WebSocket.ServerCertificateValidationCallback</code> property.</p>
+<p>If you set the custom validation for the server certificate, you use the <code>WebSocket.ServerCertificateValidationCallback</code> property.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">ServerCertificateValidationCallback</span> <span class="p">=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">sslPolicyErrors</span><span class="p">)</span> <span class="p">=&gt;</span>
 <span class="p">{</span>
@@ -463,14 +463,14 @@
 
 <p>The <code>WebSocket.Log</code> property provides the logging functions.</p>
 
-<p>If you want to change the current logging level (the default is <code>LogLevel.ERROR</code>), you use the <code>WebSocket.Log.Level</code> property.</p>
+<p>If you change the current logging level (the default is <code>LogLevel.ERROR</code>), you use the <code>WebSocket.Log.Level</code> property.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Level</span> <span class="p">=</span> <span class="n">LogLevel</span><span class="p">.</span><span class="n">DEBUG</span><span class="p">;</span>
 </pre></div>
 
 <p>The above means that the logging outputs with a less than <code>LogLevel.DEBUG</code> are not outputted.</p>
 
-<p>And if you want to output a log, you use any of some output methods. The following outputs a log with <code>LogLevel.DEBUG</code>.</p>
+<p>And if you output a log, you use any of some output methods. The following outputs a log with <code>LogLevel.DEBUG</code>.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Debug</span> <span class="p">(</span><span class="s">"This is a debug message."</span><span class="p">);</span>
 </pre></div>
