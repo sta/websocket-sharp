@@ -29,6 +29,16 @@
       <div class="inner clearfix">
         <section id="main-content">
           <h2>
+<a name="branches" class="anchor" href="#branches"><span class="octicon octicon-link"></span></a>Branches</h2>
+
+<ul>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/master">master</a></strong>: Main branch.</li>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">hybi-00</a></strong>: A branch for older <a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">draft-ietf-hybi-thewebsocketprotocol-00</a>. No longer maintained.</li>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/draft75">draft75</a></strong>: A branch for even more old <a href="http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75">draft-hixie-thewebsocketprotocol-75</a>. No longer maintained.</li>
+</ul><h2>
 <a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
 
 <p><strong>websocket-sharp</strong> is built as a single assembly, <strong>websocket-sharp.dll</strong>.</p>
@@ -52,7 +62,7 @@
 
 <ul>
 <li><strong><a href="http://www.nuget.org/packages/WebSocketSharp">NuGet Gallery: websocket-sharp</a></strong></li>
-</ul><p>You can add websocket-sharp to your project using the <strong>NuGet Package Manager</strong>, like the following command in the <strong>Package Manager Console</strong>.</p>
+</ul><p>You can add websocket-sharp to your project using the <strong>NuGet Package Manager</strong>, the following command in the <strong>Package Manager Console</strong>.</p>
 
 <pre><code>PM&gt; Install-Package WebSocketSharp -Pre
 </code></pre>
@@ -64,7 +74,7 @@
 
 <ul>
 <li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
-</ul><p>That's priced at <strong>US$15</strong>. I think that your $15 makes this project more better and accelerated, Thank you!</p>
+</ul><p>That's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, Thank you!</p>
 
 <h2>
 <a name="supported-net-framework" class="anchor" href="#supported-net-framework"><span class="octicon octicon-link"></span></a>Supported .NET framework</h2>
@@ -337,6 +347,12 @@
 
 <p>In addition, if you override the <code>OnOpen</code>, <code>OnError</code> and <code>OnClose</code> methods, each of them is bound to each server side event of <code>WebSocket.OnOpen</code>, <code>WebSocket.OnError</code> and <code>WebSocket.OnClose</code>.</p>
 
+<p>The <code>WebSocketService.Send</code> method sends a data to the client of the current session to the WebSocket service.</p>
+
+<p>The <code>WebSocketService.Sessions</code> (its type is <code>WebSocketSharp.Server.WebSocketSessionManager</code>) property provides some functions for the sessions to the WebSocket service.</p>
+
+<p>The <code>WebSocketService.Sessions.Broadcast</code> method sends a data to all client of the WebSocket service.</p>
+
 <h4>
 <a name="step-3-1" class="anchor" href="#step-3-1"><span class="octicon octicon-link"></span></a>Step 3</h4>
 
@@ -398,19 +414,19 @@
 <h4>
 <a name="per-message-compression" class="anchor" href="#per-message-compression"><span class="octicon octicon-link"></span></a>Per-message Compression</h4>
 
-<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Per-message Compression</a></strong> extension. (But, does not support with <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1">extension parameters</a>.)</p>
+<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Per-message Compression</a></strong> extension. (But it doesn't support with <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1">extension parameters</a>.)</p>
 
-<p>If you want to enable this extension as a WebSocket client, you should do like the following.</p>
+<p>If you enable this extension as a WebSocket client, you should do the following.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Compression</span> <span class="p">=</span> <span class="n">CompressionMethod</span><span class="p">.</span><span class="n">DEFLATE</span><span class="p">;</span>
 </pre></div>
 
-<p>And then your client sends the following header in the opening handshake to a WebSocket server.</p>
+<p>And then your WebSocket client sends the following header in the opening handshake to a WebSocket server.</p>
 
 <pre><code>Sec-WebSocket-Extensions: permessage-deflate
 </code></pre>
 
-<p>If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.</p>
+<p>If the server supports this extension, it responds the same header. And when your client receives the header, it enables this extension.</p>
 
 <h3>
 <a name="secure-connection" class="anchor" href="#secure-connection"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
@@ -493,14 +509,7 @@
 <h2>
 <a name="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications"><span class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
 
-<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>.</p>
-
-<ul>
-<li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">branch: hybi-00</a></strong> supports older draft-ietf-hybi-thewebsocketprotocol-00 ( <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">hybi-00</a></strong> ).</li>
-<li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/draft75">branch: draft75</a></strong> supports even more old draft-hixie-thewebsocketprotocol-75 ( <strong><a href="http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75">hixie-75</a></strong> ).</li>
-</ul><p><strong>websocket-sharp</strong> is based on the following WebSocket references.</p>
+<p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong> and is based on the following WebSocket references.</p>
 
 <ul>
 <li><strong><a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a></strong></li>
