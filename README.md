@@ -30,9 +30,7 @@ If you use websocket-sharp.dll in your **[Unity]** project, you should add it to
 
 You can add websocket-sharp to your project using the **NuGet Package Manager**, the following command in the **Package Manager Console**.
 
-```
-PM> Install-Package WebSocketSharp -Pre
-```
+    PM> Install-Package WebSocketSharp -Pre
 
 ### Unity Asset Store ###
 
@@ -157,6 +155,7 @@ ws.OnError += (sender, e) =>
   ...
 };
 ```
+
 `e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains an error message, so you use it.
 
 ##### WebSocket.OnClose Event #####
@@ -188,15 +187,15 @@ Sending a data.
 ws.Send (data);
 ```
 
-The `Send` method is overloaded.
+The `WebSocket.Send` method is overloaded.
 
 The types of `data` are `string`, `byte []` and `System.IO.FileInfo` class.
 
-In addition, the `Send (stream, length)` method exists, too.
+In addition, the `WebSocket.Send (stream, length)` method exists, too.
 
 These methods don't wait for the send to be complete. This means that these methods behave asynchronously.
 
-If you want to do something when the send is complete, you use any of some `Send (data, completed)` methods.
+If you do something when the send is complete, you use any of some `WebSocket.Send (data, completed)` methods.
 
 #### Step 6 ####
 
@@ -206,13 +205,13 @@ Closing the WebSocket connection.
 ws.Close (code, reason);
 ```
 
-If you want to close the WebSocket connection explicitly, you use the `Close` method.
+If you close the WebSocket connection explicitly, you use the `WebSocket.Close` method.
 
-The `Close` method is overloaded.
+The `WebSocket.Close` method is overloaded.
 
 The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, and the type of `reason` is `string`.
 
-In addition, the `Close ()` and `Close (code)` methods exist, too.
+In addition, the `WebSocket.Close ()` and `WebSocket.Close (code)` methods exist, too.
 
 ### WebSocket Server ###
 
@@ -263,7 +262,7 @@ The `WebSocketService` and `WebSocketServer` classes exist in the `WebSocketShar
 
 Creating the class that inherits the `WebSocketService` class.
 
-For example, if you want to provide an echo service,
+For example, if you provide an echo service,
 
 ```cs
 using System;
@@ -279,7 +278,7 @@ public class Echo : WebSocketService
 }
 ```
 
-And if you want to provide a chat service,
+And if you provide a chat service,
 
 ```cs
 using System;
@@ -307,9 +306,9 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `OnMessage` method, it is bound to the server side `WebSocket.OnMessage` event.
+If you override the `WebSocketService.OnMessage` method, it's bound to the server side `WebSocket.OnMessage` event.
 
-In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
+And if you override the `WebSocketService.OnOpen`, `WebSocketService.OnError` and `WebSocketService.OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
 
 The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
 
@@ -358,7 +357,7 @@ wssv.Stop ();
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when receives a WebSocket connection request.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when it receives a WebSocket connection request.
 
 You can add any WebSocket service with the specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
 
@@ -385,9 +384,7 @@ ws.Compression = CompressionMethod.DEFLATE;
 
 And then your WebSocket client sends the following header in the opening handshake to a WebSocket server.
 
-```
-Sec-WebSocket-Extensions: permessage-deflate
-```
+    Sec-WebSocket-Extensions: permessage-deflate
 
 If the server supports this extension, it responds the same header. And when your client receives the header, it enables this extension.
 
@@ -402,7 +399,7 @@ using (var ws = new WebSocket ("wss://example.com"))
 }
 ```
 
-If you want to set the custom validation for the server certificate, you use the `WebSocket.ServerCertificateValidationCallback` property.
+If you set the custom validation for the server certificate, you use the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
@@ -427,7 +424,7 @@ The `WebSocket` class includes own logging functions.
 
 The `WebSocket.Log` property provides the logging functions.
 
-If you want to change the current logging level (the default is `LogLevel.ERROR`), you use the `WebSocket.Log.Level` property.
+If you change the current logging level (the default is `LogLevel.ERROR`), you use the `WebSocket.Log.Level` property.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
@@ -435,7 +432,7 @@ ws.Log.Level = LogLevel.DEBUG;
 
 The above means that the logging outputs with a less than `LogLevel.DEBUG` are not outputted.
 
-And if you want to output a log, you use any of some output methods. The following outputs a log with `LogLevel.DEBUG`.
+And if you output a log, you use any of some output methods. The following outputs a log with `LogLevel.DEBUG`.
 
 ```cs
 ws.Log.Debug ("This is a debug message.");
