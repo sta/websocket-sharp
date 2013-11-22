@@ -189,7 +189,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-The types of `data` are `string`, `byte []` and `System.IO.FileInfo` class.
+The types of `data` are `string`, `byte []` and `System.IO.FileInfo`.
 
 In addition, the `WebSocket.Send (stream, length)` method exists, too.
 
