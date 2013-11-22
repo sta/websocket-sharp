@@ -2,6 +2,12 @@
 
 **websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server.
 
+## Branches ##
+
+- **[master]**: Main branch.
+- **[hybi-00]**: A branch for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
+- **[draft75]**: A branch for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
+
 ## Build ##
 
 **websocket-sharp** is built as a single assembly, **websocket-sharp.dll**.
@@ -22,7 +28,7 @@ If you use websocket-sharp.dll in your **[Unity]** project, you should add it to
 
 - **[NuGet Gallery: websocket-sharp]**
 
-You can add websocket-sharp to your project using the **NuGet Package Manager**, like the following command in the **Package Manager Console**.
+You can add websocket-sharp to your project using the **NuGet Package Manager**, the following command in the **Package Manager Console**.
 
 ```
 PM> Install-Package WebSocketSharp -Pre
@@ -34,7 +40,7 @@ PM> Install-Package WebSocketSharp -Pre
 
 - **[websocket-sharp for Unity]**
 
-That's priced at **US$15**. I think that your $15 makes this project more better and accelerated, Thank you!
+That's priced at **US$15**. I think your $15 makes this project more better and accelerated, Thank you!
 
 ## Supported .NET framework ##
 
@@ -305,6 +311,12 @@ If you override the `OnMessage` method, it is bound to the server side `WebSocke
 
 In addition, if you override the `OnOpen`, `OnError` and `OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
 
+The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
+
+The `WebSocketService.Sessions` (its type is `WebSocketSharp.Server.WebSocketSessionManager`) property provides some functions for the sessions to the WebSocket service.
+
+The `WebSocketService.Sessions.Broadcast` method sends a data to all client of the WebSocket service.
+
 #### Step 3 ####
 
 Creating an instance of the `WebSocketServer` class.
@@ -363,21 +375,21 @@ For more information, could you see **[Example3]**?
 
 #### Per-message Compression ####
 
-**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But, does not support with [extension parameters].)
+**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But it doesn't support with [extension parameters].)
 
-If you want to enable this extension as a WebSocket client, you should do like the following.
+If you enable this extension as a WebSocket client, you should do the following.
 
 ```cs
 ws.Compression = CompressionMethod.DEFLATE;
 ```
 
-And then your client sends the following header in the opening handshake to a WebSocket server.
+And then your WebSocket client sends the following header in the opening handshake to a WebSocket server.
 
 ```
 Sec-WebSocket-Extensions: permessage-deflate
 ```
 
-If the server supports this extension, responds the same header. And when your client receives the header, enables this extension.
+If the server supports this extension, it responds the same header. And when your client receives the header, it enables this extension.
 
 ### Secure Connection ###
 
@@ -457,12 +469,7 @@ Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 ## Supported WebSocket Specifications ##
 
-**websocket-sharp** supports **[RFC 6455][rfc6455]**.
-
-- **[branch: hybi-00]** supports older draft-ietf-hybi-thewebsocketprotocol-00 ( **[hybi-00]** ).
-- **[branch: draft75]** supports even more old draft-hixie-thewebsocketprotocol-75 ( **[hixie-75]** ).
-
-**websocket-sharp** is based on the following WebSocket references.
+**websocket-sharp** supports **[RFC 6455][rfc6455]** and is based on the following WebSocket references.
 
 - **[The WebSocket Protocol][rfc6455]**
 - **[The WebSocket API][api]**
@@ -493,12 +500,13 @@ Thanks for translating to japanese.
 [Unity]: http://unity3d.com
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[branch: draft75]: https://github.com/sta/websocket-sharp/tree/draft75
-[branch: hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
+[draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
+[draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
+[draft75]: https://github.com/sta/websocket-sharp/tree/draft75
 [extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
-[hixie-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
-[hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
+[hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
+[master]: https://github.com/sta/websocket-sharp/tree/master
 [rfc6455]: http://tools.ietf.org/html/rfc6455
 [rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
 [websocket-sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
