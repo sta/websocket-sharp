@@ -33,7 +33,7 @@
 
 <ul>
 <li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/master">master</a></strong>: Main branch.</li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/master">master</a></strong>: Master branch supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>.</li>
 <li>
 <strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">hybi-00</a></strong>: A branch for older <a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">draft-ietf-hybi-thewebsocketprotocol-00</a>. No longer maintained.</li>
 <li>
@@ -351,7 +351,7 @@
 
 <p>The <code>WebSocketService.Sessions</code> (its type is <code>WebSocketSharp.Server.WebSocketSessionManager</code>) property provides some functions for the sessions to the WebSocket service.</p>
 
-<p>The <code>WebSocketService.Sessions.Broadcast</code> method sends a data to all client of the WebSocket service.</p>
+<p>The <code>WebSocketService.Sessions.Broadcast</code> method sends a data to all clients of the WebSocket service.</p>
 
 <h4>
 <a name="step-3-1" class="anchor" href="#step-3-1"><span class="octicon octicon-link"></span></a>Step 3</h4>
@@ -372,7 +372,7 @@
 
 <p>So you can use the classes created in <strong>Step 2</strong>.</p>
 
-<p>If you create an instance of the <code>WebSocketServer</code> class without the port number, the <code>WebSocketServer</code> set the port number to <strong>80</strong> automatically. So it is necessary to run with root permission.</p>
+<p>If you create an instance of the <code>WebSocketServer</code> class without the port number, the <code>WebSocketServer</code> set the port number to <strong>80</strong> automatically. So it's necessary to run with root permission.</p>
 
 <pre><code>$ sudo mono example2.exe
 </code></pre>
@@ -444,7 +444,7 @@
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">ServerCertificateValidationCallback</span> <span class="p">=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">sslPolicyErrors</span><span class="p">)</span> <span class="p">=&gt;</span>
 <span class="p">{</span>
   <span class="c1">// Do something to validate the server certificate.</span>
-  <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="c1">// The server certificate is valid.</span>
+  <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="c1">// If the server certificate is valid.</span>
 <span class="p">};</span>
 </pre></div>
 
