@@ -4,7 +4,7 @@
 
 ## Branches ##
 
-- **[master]**: Main branch.
+- **[master]**: Master branch supports **[RFC 6455][rfc6455]**.
 - **[hybi-00]**: A branch for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
 - **[draft75]**: A branch for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
 
@@ -314,7 +314,7 @@ The `WebSocketService.Send` method sends a data to the client of the current ses
 
 The `WebSocketService.Sessions` (its type is `WebSocketSharp.Server.WebSocketSessionManager`) property provides some functions for the sessions to the WebSocket service.
 
-The `WebSocketService.Sessions.Broadcast` method sends a data to all client of the WebSocket service.
+The `WebSocketService.Sessions.Broadcast` method sends a data to all clients of the WebSocket service.
 
 #### Step 3 ####
 
@@ -335,7 +335,7 @@ The type of `T` must inherit `WebSocketService` class.
 
 So you can use the classes created in **Step 2**.
 
-If you create an instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it is necessary to run with root permission.
+If you create an instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it's necessary to run with root permission.
 
     $ sudo mono example2.exe
 
@@ -405,7 +405,7 @@ If you set the custom validation for the server certificate, you use the `WebSoc
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
 {
   // Do something to validate the server certificate.
-  return true; // The server certificate is valid.
+  return true; // If the server certificate is valid.
 };
 ```
 
