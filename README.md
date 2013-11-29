@@ -1,12 +1,17 @@
 ![Logo](websocket-sharp.png)
 
-**websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server.
+**websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server, and supports the followings.
+
+- **[RFC 6455][rfc6455]**
+- **[Per-message Compression Extension](#per-message-compression)**
+- **[Secure Connection](#secure-connection)**
+- .NET **3.5** (includes compatible) or later
 
 ## Branches ##
 
-- **[master]**: Master branch supports **[RFC 6455][rfc6455]**.
-- **[hybi-00]**: A branch for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
-- **[draft75]**: A branch for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
+- **[master]** for production releases.
+- **[hybi-00]** for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
+- **[draft75]** for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
 
 ## Build ##
 
@@ -39,10 +44,6 @@ You can add websocket-sharp to your project using the **NuGet Package Manager**,
 - **[websocket-sharp for Unity]**
 
 That's priced at **US$15**. I think your $15 makes this project more better and accelerated, Thank you!
-
-## Supported .NET framework ##
-
-**websocket-sharp** supports .NET **3.5** (includes compatible) or later.
 
 ## Usage ##
 
