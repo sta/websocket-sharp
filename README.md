@@ -2,8 +2,8 @@
 
 **websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server, and supports the followings.
 
-- **[RFC 6455][rfc6455]**
-- **[Per-message Compression Extension](#per-message-compression)**
+- **[RFC 6455](#supported-websocket-specifications)**
+- **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
 - .NET **3.5** (includes compatible) or later
 
