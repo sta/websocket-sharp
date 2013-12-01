@@ -38,7 +38,7 @@
 <li>
 <strong><a href="#per-message-compression">Per-message Compression</a></strong> extension</li>
 <li><strong><a href="#secure-connection">Secure Connection</a></strong></li>
-<li>.NET <strong>3.5</strong> (includes compatible) or later</li>
+<li>.NET <strong>3.5</strong> or later (includes compatible)</li>
 </ul><h2>
 <a name="branches" class="anchor" href="#branches"><span class="octicon octicon-link"></span></a>Branches</h2>
 
@@ -85,7 +85,7 @@
 
 <ul>
 <li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
-</ul><p>That's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, Thank you!</p>
+</ul><p>It's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, <strong>Thank you!</strong></p>
 
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
@@ -422,7 +422,7 @@
 
 <p><strong>websocket-sharp</strong> supports <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Per-message Compression</a></strong> extension. (But it doesn't support with <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1">extension parameters</a>.)</p>
 
-<p>If you enable this extension as a WebSocket client, you should do the following.</p>
+<p>If you enable this extension as a WebSocket client, you should do like the following.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Compression</span> <span class="p">=</span> <span class="n">CompressionMethod</span><span class="p">.</span><span class="n">DEFLATE</span><span class="p">;</span>
 </pre></div>
@@ -437,7 +437,7 @@
 <h3>
 <a name="secure-connection" class="anchor" href="#secure-connection"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
 
-<p>As a <strong>WebSocket Client</strong>, creating an instance of the <code>WebSocket</code> class with the WebSocket URL with <strong>wss</strong> scheme.</p>
+<p>As a <strong>WebSocket Client</strong>, creating an instance of the <code>WebSocket</code> class with the specified <strong>wss</strong> scheme URL to connect.</p>
 
 <div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"wss://example.com"</span><span class="p">))</span>
 <span class="p">{</span>
@@ -454,7 +454,7 @@
 <span class="p">};</span>
 </pre></div>
 
-<p>If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.</p>
+<p>If you set this property to nothing, the validation does nothing with the server certificate and returns valid.</p>
 
 <p>As a <strong>WebSocket Server</strong>, creating an instance of the <code>WebSocketServer</code> or <code>HttpServer</code> class with some settings for the secure connection.</p>
 
