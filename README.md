@@ -1,11 +1,11 @@
 ![Logo](websocket-sharp.png)
 
-**websocket-sharp** is a C# implementation of the **WebSocket** protocol client and server, and supports the followings.
+**websocket-sharp** supports the followings.
 
 - **[RFC 6455](#supported-websocket-specifications)**
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
-- .NET **3.5** (includes compatible) or later
+- .NET **3.5** or later (includes compatible)
 
 ## Branches ##
 
@@ -43,7 +43,7 @@ You can add websocket-sharp to your project using the **NuGet Package Manager**,
 
 - **[websocket-sharp for Unity]**
 
-That's priced at **US$15**. I think your $15 makes this project more better and accelerated, Thank you!
+It's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
 ## Usage ##
 
@@ -377,7 +377,7 @@ For more information, could you see **[Example3]**?
 
 **websocket-sharp** supports **[Per-message Compression][compression]** extension. (But it doesn't support with [extension parameters].)
 
-If you enable this extension as a WebSocket client, you should do the following.
+If you enable this extension as a WebSocket client, you should do like the following.
 
 ```cs
 ws.Compression = CompressionMethod.DEFLATE;
@@ -391,7 +391,7 @@ If the server supports this extension, it responds the same header. And when you
 
 ### Secure Connection ###
 
-As a **WebSocket Client**, creating an instance of the `WebSocket` class with the WebSocket URL with **wss** scheme.
+As a **WebSocket Client**, creating an instance of the `WebSocket` class with the specified **wss** scheme URL to connect.
 
 ```cs
 using (var ws = new WebSocket ("wss://example.com"))
@@ -410,7 +410,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 };
 ```
 
-If you set this property to nothing, the validation does nothing with the server certificate, always returns valid.
+If you set this property to nothing, the validation does nothing with the server certificate and returns valid.
 
 As a **WebSocket Server**, creating an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection.
 
