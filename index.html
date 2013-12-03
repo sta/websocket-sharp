@@ -34,6 +34,9 @@
 <p><strong>websocket-sharp</strong> supports the followings.</p>
 
 <ul>
+<li>
+<strong><a href="#websocket-client">WebSocket Client</a></strong> and <strong><a href="#websocket-server">Server</a></strong>
+</li>
 <li><strong><a href="#supported-websocket-specifications">RFC 6455</a></strong></li>
 <li>
 <strong><a href="#per-message-compression">Per-message Compression</a></strong> extension</li>
@@ -237,7 +240,7 @@
 
 <p>In addition, the <code>WebSocket.Send (stream, length)</code> method exists, too.</p>
 
-<p>These methods don't wait for the send to be complete. This means that these methods behave asynchronously.</p>
+<p>These methods don't wait for the send to be complete. It means these methods behave asynchronously.</p>
 
 <p>If you do something when the send is complete, you use any of some <code>WebSocket.Send (data, completed)</code> methods.</p>
 
@@ -249,7 +252,7 @@
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Close</span> <span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">reason</span><span class="p">);</span>
 </pre></div>
 
-<p>If you close the WebSocket connection explicitly, you use the <code>WebSocket.Close</code> method.</p>
+<p>If you explicitly close the WebSocket connection, you use the <code>WebSocket.Close</code> method.</p>
 
 <p>The <code>WebSocket.Close</code> method is overloaded.</p>
 
