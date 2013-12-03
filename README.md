@@ -294,13 +294,13 @@ public class Chat : WebSocketService
   private string _suffix;
 
   public Chat ()
-    : this (String.Empty)
+    : this (null)
   {
   }
 
   public Chat (string suffix)
   {
-    _suffix = suffix;
+    _suffix = suffix ?? String.Empty;
   }
 
   protected override void OnMessage (MessageEventArgs e)

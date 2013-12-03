@@ -13,13 +13,13 @@ namespace Example2
     private string _prefix;
 
     public Chat ()
-      : this ("anon#")
+      : this (null)
     {
     }
 
     public Chat (string prefix)
     {
-      _prefix = prefix;
+      _prefix = prefix ?? "anon#";
     }
 
     private string getName ()
