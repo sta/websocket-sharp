@@ -336,13 +336,13 @@
   <span class="k">private</span> <span class="kt">string</span> <span class="n">_suffix</span><span class="p">;</span>
 
   <span class="k">public</span> <span class="nf">Chat</span> <span class="p">()</span>
-    <span class="p">:</span> <span class="k">this</span> <span class="p">(</span><span class="n">String</span><span class="p">.</span><span class="n">Empty</span><span class="p">)</span>
+    <span class="p">:</span> <span class="k">this</span> <span class="p">(</span><span class="k">null</span><span class="p">)</span>
   <span class="p">{</span>
   <span class="p">}</span>
 
   <span class="k">public</span> <span class="nf">Chat</span> <span class="p">(</span><span class="kt">string</span> <span class="n">suffix</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="n">_suffix</span> <span class="p">=</span> <span class="n">suffix</span><span class="p">;</span>
+    <span class="n">_suffix</span> <span class="p">=</span> <span class="n">suffix</span> <span class="p">??</span> <span class="n">String</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
   <span class="p">}</span>
 
   <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
