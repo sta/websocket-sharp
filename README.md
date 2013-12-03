@@ -1,7 +1,10 @@
 ![Logo](websocket-sharp.png)
 
+## Welcome to websocket-sharp! ##
+
 **websocket-sharp** supports the followings.
 
+- **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
 - **[RFC 6455](#supported-websocket-specifications)**
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
@@ -194,7 +197,7 @@ The types of `data` are `string`, `byte []` and `System.IO.FileInfo`.
 
 In addition, the `WebSocket.Send (stream, length)` method exists, too.
 
-These methods don't wait for the send to be complete. This means that these methods behave asynchronously.
+These methods don't wait for the send to be complete. It means these methods behave asynchronously.
 
 If you do something when the send is complete, you use any of some `WebSocket.Send (data, completed)` methods.
 
@@ -206,7 +209,7 @@ Closing the WebSocket connection.
 ws.Close (code, reason);
 ```
 
-If you close the WebSocket connection explicitly, you use the `WebSocket.Close` method.
+If you explicitly close the WebSocket connection, you use the `WebSocket.Close` method.
 
 The `WebSocket.Close` method is overloaded.
 
