@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 using WebSocketSharp;
+using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 
 namespace Example2
@@ -17,10 +18,28 @@ namespace Example2
       #if DEBUG
       wssv.Log.Level = LogLevel.TRACE;
       #endif
-      //var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
-      //var password = ConfigurationManager.AppSettings ["CertFilePassword"];
-      //wssv.Certificate = new X509Certificate2 (cert, password);
+
+      // HTTP Basic/Digest Authentication
+      /*
+      wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
+      wssv.Realm = "WebSocket Test";
+      wssv.UserCredentialsFinder = identity => {
+        var name = identity.Name;
+        return name == "nobita"
+               ? new NetworkCredential (name, "password")
+               : null;
+      };
+       */
+
+      // Secure Connection
+      /*
+      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
+      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
+      wssv.Certificate = new X509Certificate2 (cert, password);
+       */
+
       //wssv.KeepClean = false;
+
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
       //wssv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
@@ -28,8 +47,7 @@ namespace Example2
       //wssv.AddWebSocketService<Chat> ("/チャット");
 
       wssv.Start ();
-      if (wssv.IsListening)
-      {
+      if (wssv.IsListening) {
         Console.WriteLine (
           "A WebSocket Server listening on port: {0} service paths:", wssv.Port);
 

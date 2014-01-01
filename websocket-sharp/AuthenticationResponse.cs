@@ -5,7 +5,7 @@
  * The MIT License
  *
  * Copyright (c) 2013 sta.blockhead
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,56 +27,81 @@
 #endregion
 
 using System;
-using System.Security.Cryptography;
+using System.Collections.Specialized;
+using System.Security.Principal;
 using System.Text;
+using WebSocketSharp.Net;
 
-namespace WebSocketSharp {
-
-  internal class AuthenticationResponse {
-
+namespace WebSocketSharp
+{
+  internal class AuthenticationResponse
+  {
     #region Private Fields
 
-    private string _algorithm;
-    private string _cnonce;
-    private string _method;
-    private string _nc;
-    private string _nonce;
-    private string _opaque;
-    private string _password;
-    private string _qop;
-    private string _realm;
-    private string _response;
-    private string _scheme;
-    private string _uri;
-    private string _userName;
+    private uint                _nonceCount;
+    private NameValueCollection _params;
+    private string              _scheme;
 
     #endregion
 
     #region Private Constructors
 
-    private AuthenticationResponse()
+    private AuthenticationResponse (
+      string authScheme, NameValueCollection authParams)
     {
+      _scheme = authScheme;
+      _params = authParams;
     }
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public AuthenticationResponse(WsCredential credential)
+    internal AuthenticationResponse (NetworkCredential credentials)
+      : this ("Basic", new NameValueCollection (), credentials, 0)
     {
-      _userName = credential.UserName;
-      _password = credential.Password;
-      _scheme = "Basic";
     }
 
-    public AuthenticationResponse(WsCredential credential, AuthenticationChallenge challenge)
+    internal AuthenticationResponse (
+      AuthenticationChallenge challenge,
+      NetworkCredential credentials,
+      uint nonceCount)
+      : this (challenge.Scheme, challenge.Params, credentials, nonceCount)
     {
-      _userName = credential.UserName;
-      _password = credential.Password;
-      _scheme = challenge.Scheme;
-      _realm = challenge.Realm;
-      if (_scheme == "Digest")
-        initForDigest(credential, challenge);
+    }
+
+    internal AuthenticationResponse (
+      string authScheme,
+      NameValueCollection authParams,
+      NetworkCredential credentials,
+      uint nonceCount)
+    {
+      _scheme = authScheme.ToLower ();
+      _params = authParams;
+      _params ["username"] = credentials.UserName;
+      _params ["password"] = credentials.Password;
+      _params ["uri"] = credentials.Domain;
+      _nonceCount = nonceCount;
+      if (_scheme == "digest")
+        initAsDigest ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal uint NonceCount {
+      get {
+        return _nonceCount < UInt32.MaxValue
+               ? _nonceCount
+               : 0;
+      }
+    }
+
+    internal NameValueCollection Params {
+      get {
+        return _params;
+      }
     }
 
     #endregion
@@ -85,111 +110,73 @@ namespace WebSocketSharp {
 
     public string Algorithm {
       get {
-        return _algorithm ?? String.Empty;
-      }
-
-      private set {
-        _algorithm = value;
+        return _params ["algorithm"];
       }
     }
 
     public string Cnonce {
       get {
-        return _cnonce ?? String.Empty;
-      }
-
-      private set {
-        _cnonce = value;
+        return _params ["cnonce"];
       }
     }
 
     public string Nc {
       get {
-        return _nc ?? String.Empty;
-      }
-
-      private set {
-        _nc = value;
+        return _params ["nc"];
       }
     }
 
     public string Nonce {
       get {
-        return _nonce ?? String.Empty;
-      }
-
-      private set {
-        _nonce = value;
+        return _params ["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _opaque ?? String.Empty;
+        return _params ["opaque"];
       }
+    }
 
-      private set {
-        _opaque = value;
+    public string Password {
+      get {
+        return _params ["password"];
       }
     }
 
     public string Qop {
       get {
-        return _qop ?? String.Empty;
-      }
-
-      private set {
-        _qop = value;
+        return _params ["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _realm ?? String.Empty;
-      }
-
-      private set {
-        _realm = value;
+        return _params ["realm"];
       }
     }
 
     public string Response {
       get {
-        return _response ?? String.Empty;
-      }
-
-      private set {
-        _response = value;
+        return _params ["response"];
       }
     }
 
     public string Scheme {
       get {
-        return _scheme ?? String.Empty;
-      }
-
-      private set {
-        _scheme = value;
+        return _scheme;
       }
     }
 
     public string Uri {
       get {
-        return _uri ?? String.Empty;
-      }
-
-      private set {
-        _uri = value;
+        return _params ["uri"];
       }
     }
 
     public string UserName {
       get {
-        return _userName ?? String.Empty;
-      }
-
-      private set {
-        _userName = value;
+        return _params ["username"];
       }
     }
 
@@ -197,130 +184,77 @@ namespace WebSocketSharp {
 
     #region Private Methods
 
-    private string a1()
+    private static bool contains (string [] array, string item)
     {
-      var result = String.Format("{0}:{1}:{2}", _userName, _realm, _password);
-      return _algorithm != null && _algorithm.ToLower() == "md5-sess"
-             ? String.Format("{0}:{1}:{2}", hash(result), _nonce, _cnonce)
-             : result;
+      foreach (var i in array)
+        if (i.Trim ().ToLower () == item)
+          return true;
+
+      return false;
     }
 
-    private string a2()
+    private void initAsDigest ()
     {
-      return String.Format("{0}:{1}", _method, _uri);
-    }
-
-    private static string createNonceValue()
-    {
-      var src = new byte[16];
-      var rand = new Random();
-      rand.NextBytes(src);
-      var nonce = new StringBuilder(32);
-      foreach (var b in src)
-        nonce.Append(b.ToString("x2"));
-
-      return nonce.ToString();
-    }
-
-    private string createRequestDigest()
-    {
-      if (Qop == "auth")
-      {
-        var data = String.Format("{0}:{1}:{2}:{3}:{4}",
-          _nonce, _nc, _cnonce, _qop, hash(a2()));
-        return kd(hash(a1()), data);
-      }
-
-      return kd(hash(a1()), String.Format("{0}:{1}", _nonce, hash(a2())));
-    }
-
-    private static string hash(string value)
-    {
-      var md5 = MD5.Create();
-      var src = Encoding.UTF8.GetBytes(value);
-      var hashed = md5.ComputeHash(src);
-      var result = new StringBuilder(64);
-      foreach (var b in hashed)
-        result.Append(b.ToString("x2"));
-
-      return result.ToString();
-    }
-
-    private void initForDigest(WsCredential credential, AuthenticationChallenge challenge)
-    {
-      _nonce = challenge.Nonce;
-      _method = "GET";
-      _uri = credential.Domain;
-      _algorithm = challenge.Algorithm;
-      _opaque = challenge.Opaque;
-      foreach (var qop in challenge.Qop.Split(','))
-      {
-        if (qop.Trim().ToLower() == "auth")
-        {
-          _qop = "auth";
-          _nc = "00000001";
-          break;
+      var qops = _params ["qop"];
+      if (qops != null) {
+        var qop = "auth";
+        if (contains (qops.Split (','), qop)) {
+          _params ["qop"] = qop;
+          _params ["nc"] = String.Format ("{0:x8}", ++_nonceCount);
+          _params ["cnonce"] = HttpUtility.CreateNonceValue ();
         }
+        else
+          _params ["qop"] = null;
       }
 
-      _cnonce = createNonceValue();
-      _response = createRequestDigest();
-    }
-
-    private static string kd(string secret, string data)
-    {
-      var concatenated = String.Format("{0}:{1}", secret, data);
-      return hash(concatenated);
-    }
-
-    private string toBasicCredentials()
-    {
-      var userPass = String.Format("{0}:{1}", _userName, _password);
-      var base64UserPass = Convert.ToBase64String(Encoding.UTF8.GetBytes(userPass));
-
-      return "Basic " + base64UserPass;
-    }
-
-    private string toDigestCredentials()
-    {
-      var digestResponse = new StringBuilder(64);
-      digestResponse.AppendFormat("username={0}", _userName.Quote());
-      digestResponse.AppendFormat(", realm={0}", _realm.Quote());
-      digestResponse.AppendFormat(", nonce={0}", _nonce.Quote());
-      digestResponse.AppendFormat(", uri={0}", _uri.Quote());
-      digestResponse.AppendFormat(", response={0}", _response.Quote());
-      if (!_algorithm.IsNullOrEmpty())
-        digestResponse.AppendFormat(", algorithm={0}", _algorithm);
-
-      if (!_opaque.IsNullOrEmpty())
-        digestResponse.AppendFormat(", opaque={0}", _opaque.Quote());
-
-      if (!_qop.IsNullOrEmpty())
-        digestResponse.AppendFormat(", qop={0}", _qop);
-
-      if (!_nc.IsNullOrEmpty())
-        digestResponse.AppendFormat(", nc={0}", _nc);
-
-      if (!_qop.IsNullOrEmpty())
-        digestResponse.AppendFormat(", cnonce={0}", _cnonce.Quote());
-
-      return "Digest " + digestResponse.ToString();
+      _params ["method"] = "GET";
+      _params ["response"] = HttpUtility.CreateRequestDigest (_params);
     }
 
     #endregion
 
     #region Public Methods
 
-    public static AuthenticationResponse Parse(string response)
+    public static AuthenticationResponse Parse (string value)
     {
-      throw new NotImplementedException();
+      try {
+        var credentials = value.Split (new char [] { ' ' }, 2);
+        if (credentials.Length != 2)
+          return null;
+
+        var scheme = credentials [0].ToLower ();
+        return scheme == "basic"
+               ? new AuthenticationResponse (
+                   scheme, credentials [1].ParseBasicAuthResponseParams ())
+               : scheme == "digest"
+                 ? new AuthenticationResponse (
+                     scheme, credentials [1].ParseAuthParams ())
+                 : null;
+      }
+      catch {
+      }
+
+      return null;
     }
 
-    public override string ToString()
+    public IIdentity ToIdentity ()
     {
-      return _scheme == "Basic"
-             ? toBasicCredentials()
-             : toDigestCredentials();
+      return _scheme == "basic"
+             ? new HttpBasicIdentity (
+                 _params ["username"], _params ["password"]) as IIdentity
+             : _scheme == "digest"
+               ? new HttpDigestIdentity (_params)
+               : null;
+    }
+
+    public override string ToString ()
+    {
+      return _scheme == "basic"
+             ? HttpUtility.CreateBasicAuthCredentials (
+                 _params ["username"], _params ["password"])
+             : _scheme == "digest"
+               ? HttpUtility.CreateDigestAuthCredentials (_params)
+               : String.Empty;
     }
 
     #endregion

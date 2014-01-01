@@ -1,23 +1,22 @@
 #region License
 /*
  * Ext.cs
- *  IsPredefinedScheme and MaybeUri methods are derived from System.Uri.cs
- *  GetStatusDescription method is derived from System.Net.HttpListenerResponse.cs
+ *
+ * Some part of this code are derived from Mono (http://www.mono-project.com).
+ *
+ * ParseBasicAuthResponseParams is derived from System.Net.HttpListenerContext.cs
+ * GetStatusDescription is derived from System.Net.HttpListenerResponse.cs
+ * IsPredefinedScheme and MaybeUri are derived from System.Uri.cs
  *
  * The MIT License
  *
+ * Copyright (c) 2001 Garrett Rooney
+ * Copyright (c) 2003 Ian MacLean
+ * Copyright (c) 2003 Ben Maurer
+ * Copyright (c) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
+ * Copyright (c) 2009 Stephane Delcroix
  * Copyright (c) 2010-2013 sta.blockhead
  *
- * System.Uri.cs
- *  (C) 2001 Garrett Rooney
- *  (C) 2003 Ian MacLean
- *  (C) 2003 Ben Maurer
- *  Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
- *  Copyright (c) 2009 Stephane Delcroix
- *
- * System.Net.HttpListenerResponse.cs
- *  Copyright (C) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
- * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -27,7 +26,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -279,6 +278,20 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static void Close (
+      this HttpListenerResponse response, HttpStatusCode code)
+    {
+      response.StatusCode = (int) code;
+      response.OutputStream.Close ();
+    }
+
+    internal static void CloseWithAuthChallenge (
+      this HttpListenerResponse response, string challenge)
+    {
+      response.Headers.SetInternal ("WWW-Authenticate", challenge, true);
+      response.Close (HttpStatusCode.Unauthorized);
+    }
+
     internal static byte [] Compress (this byte [] value, CompressionMethod method)
     {
       return method == CompressionMethod.DEFLATE
@@ -447,9 +460,9 @@ namespace WebSocketSharp
     }
 
     internal static TcpListenerWebSocketContext GetWebSocketContext (
-      this TcpClient client, bool secure, X509Certificate cert)
+      this TcpClient client, X509Certificate cert, bool secure, Logger logger)
     {
-      return new TcpListenerWebSocketContext (client, secure, cert);
+      return new TcpListenerWebSocketContext (client, cert, secure, logger);
     }
 
     internal static bool IsCompressionExtension (this string value)
@@ -515,6 +528,57 @@ namespace WebSocketSharp
       return value.IsToken ()
              ? value
              : String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
+    }
+
+    internal static NameValueCollection ParseBasicAuthResponseParams (
+      this string value)
+    {
+      // HTTP Basic Authentication response is a formatted Base64 string.
+      var userPass = Encoding.Default.GetString (
+        Convert.FromBase64String (value));
+
+      // The format is [<domain>\]<username>:<password>.
+      // 'domain' is optional.
+      var i = userPass.IndexOf (':');
+      var username = userPass.Substring (0, i);
+      var password = i < userPass.Length - 1
+                     ? userPass.Substring (i + 1)
+                     : String.Empty;
+
+      // Check if 'domain' exists.
+      i = username.IndexOf ('\\');
+      if (i > 0)
+        username = username.Substring (i + 1);
+
+      var result = new NameValueCollection ();
+      result ["username"] = username;
+      result ["password"] = password;
+
+      return result;
+    }
+
+    internal static NameValueCollection ParseAuthParams (this string value)
+    {
+      var result = new NameValueCollection ();
+      var i = 0;
+      string name, val;
+      foreach (var param in value.SplitHeaderValue (',')) {
+        i = param.IndexOf ('=');
+        if (i > 0) {
+          name = param.Substring (0, i).Trim ();
+          val = i < param.Length - 1
+              ? param.Substring (i + 1).Trim ().Trim ('"')
+              : String.Empty;
+        }
+        else {
+          name = param;
+          val = String.Empty;
+        }
+
+        result.Add (name, val);
+      }
+
+      return result;
     }
 
     internal static byte [] ReadBytes (this Stream stream, int length)
@@ -1642,8 +1706,9 @@ namespace WebSocketSharp
     /// Converts the specified <see cref="string"/> to a <see cref="Uri"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="Uri"/> converted from <paramref name="uriString"/>, or <see langword="null"/>
-    /// if <paramref name="uriString"/> is <see langword="null"/> or <see cref="String.Empty"/>.
+    /// A <see cref="Uri"/> converted from <paramref name="uriString"/>, or
+    /// <see langword="null"/> if <paramref name="uriString"/> is
+    /// <see langword="null"/> or empty.
     /// </returns>
     /// <param name="uriString">
     /// A <see cref="string"/> to convert.

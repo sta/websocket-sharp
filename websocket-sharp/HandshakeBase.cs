@@ -5,7 +5,7 @@
  * The MIT License
  *
  * Copyright (c) 2012-2013 sta.blockhead
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,6 +35,13 @@ namespace WebSocketSharp
 {
   internal abstract class HandshakeBase
   {
+    #region Private Fields
+
+    private NameValueCollection _headers;
+    private Version             _version;
+
+    #endregion
+
     #region Protected Const Fields
 
     protected const string CrLf = "\r\n";
@@ -45,8 +52,8 @@ namespace WebSocketSharp
 
     protected HandshakeBase ()
     {
-      ProtocolVersion = HttpVersion.Version11;
-      Headers = new NameValueCollection ();
+      _version = HttpVersion.Version11;
+      _headers = new NameValueCollection ();
     }
 
     #endregion
@@ -54,36 +61,28 @@ namespace WebSocketSharp
     #region Public Properties
 
     public NameValueCollection Headers {
-      get; protected set;
+      get {
+        return _headers;
+      }
+
+      protected set {
+        _headers = value;
+      }
     }
 
     public Version ProtocolVersion {
-      get; protected set;
+      get {
+        return _version;
+      }
+
+      protected set {
+        _version = value;
+      }
     }
 
     #endregion
 
     #region Public Methods
-
-    public void AddHeader (string name, string value)
-    {
-      Headers.Add (name, value);
-    }
-
-    public bool ContainsHeader (string name)
-    {
-      return Headers.Contains (name);
-    }
-
-    public bool ContainsHeader (string name, string value)
-    {
-      return Headers.Contains (name, value);
-    }
-
-    public string [] GetHeaderValues (string name)
-    {
-      return Headers.GetValues (name);
-    }
 
     public byte [] ToByteArray ()
     {

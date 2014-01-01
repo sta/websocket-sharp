@@ -122,6 +122,7 @@ namespace Example {
         //};
         //ws.SetCookie(new Cookie("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie(new Cookie("dora", "tanuki"));
+        //ws.SetCredentials ("nobita", "password", false);
         ws.Connect();
         //Console.WriteLine("Compression: {0}", ws.Compression);
 

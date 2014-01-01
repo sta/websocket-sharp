@@ -1,14 +1,14 @@
 #region License
 /*
- * AuthenticationSchemes.cs
+ * HttpBasicIdentity.cs
  *
- * This code is derived from System.Net.AuthenticationSchemes.cs of Mono
+ * This code is derived from System.Net.HttpListenerBasicIdentity.cs of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,35 +33,49 @@
 #region Authors
 /*
  * Authors:
- *   Atsushi Enomoto <atsushi@ximian.com>
+ *   Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
-using System;
+using System.Security.Principal;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Contains the values of the schemes for authentication.
+  /// Holds the user name and password from an HTTP Basic authentication request.
   /// </summary>
-  [Flags]
-  public enum AuthenticationSchemes
+  public class HttpBasicIdentity : GenericIdentity
   {
+    #region Private Fields
+
+    private string _password;
+
+    #endregion
+
+    #region internal Constructors
+
+    internal HttpBasicIdentity (string username, string password)
+      : base (username, "Basic")
+    {
+      _password = password;
+    }
+
+    #endregion
+
+    #region Public Properties
+
     /// <summary>
-    /// Indicates that no authentication is allowed.
+    /// Gets the password from an HTTP Basic authentication request.
     /// </summary>
-    None,
-    /// <summary>
-    /// Indicates digest authentication.
-    /// </summary>
-    Digest = 1,
-    /// <summary>
-    /// Indicates basic authentication.
-    /// </summary>
-    Basic = 8,
-    /// <summary>
-    /// Indicates anonymous authentication.
-    /// </summary>
-    Anonymous = 0x8000,
+    /// <value>
+    /// A <see cref="string"/> that represents the password.
+    /// </value>
+    public virtual string Password {
+      get {
+        return _password;
+      }
+    }
+
+    #endregion
   }
 }

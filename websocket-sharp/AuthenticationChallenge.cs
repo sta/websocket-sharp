@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013 sta.blockhead
- * 
+ * Copyright (c) 2013-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,29 +27,36 @@
 #endregion
 
 using System;
+using System.Collections.Specialized;
 using System.Text;
 
-namespace WebSocketSharp {
-
-  internal class AuthenticationChallenge {
-
+namespace WebSocketSharp
+{
+  internal class AuthenticationChallenge
+  {
     #region Private Fields
 
-    private string _algorithm;
-    private string _domain;
-    private string _nonce;
-    private string _opaque;
-    private string _qop;
-    private string _realm;
-    private string _scheme;
-    private string _stale;
+    private NameValueCollection _params;
+    private string              _scheme;
 
     #endregion
 
-    #region Private Constructors
+    #region Internal Constructors
 
-    private AuthenticationChallenge()
+    internal AuthenticationChallenge (string authScheme, string authParams)
     {
+      _scheme = authScheme;
+      _params = authParams.ParseAuthParams ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal NameValueCollection Params {
+      get {
+        return _params;
+      }
     }
 
     #endregion
@@ -58,81 +65,49 @@ namespace WebSocketSharp {
 
     public string Algorithm {
       get {
-        return _algorithm ?? String.Empty;
-      }
-
-      private set {
-        _algorithm = value;
+        return _params ["algorithm"];
       }
     }
 
     public string Domain {
       get {
-        return _domain ?? String.Empty;
-      }
-
-      private set {
-        _domain = value;
+        return _params ["domain"];
       }
     }
 
     public string Nonce {
       get {
-        return _nonce ?? String.Empty;
-      }
-
-      private set {
-        _nonce = value;
+        return _params ["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _opaque ?? String.Empty;
-      }
-
-      private set {
-        _opaque = value;
+        return _params ["opaque"];
       }
     }
 
     public string Qop {
       get {
-        return _qop ?? String.Empty;
-      }
-
-      private set {
-        _qop = value;
+        return _params ["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _realm ?? String.Empty;
-      }
-
-      private set {
-        _realm = value;
+        return _params ["realm"];
       }
     }
 
     public string Scheme {
       get {
-        return _scheme ?? String.Empty;
-      }
-
-      private set {
-        _scheme = value;
+        return _scheme;
       }
     }
 
     public string Stale {
       get {
-        return _stale ?? String.Empty;
-      }
-
-      private set {
-        _stale = value;
+        return _params ["stale"];
       }
     }
 
@@ -140,64 +115,13 @@ namespace WebSocketSharp {
 
     #region Public Methods
 
-    public static AuthenticationChallenge Parse(string challenge)
+    public static AuthenticationChallenge Parse (string value)
     {
-      var authChallenge = new AuthenticationChallenge();
-      if (challenge.StartsWith("basic", StringComparison.OrdinalIgnoreCase))
-      {
-        authChallenge.Scheme = "Basic";
-        authChallenge.Realm = challenge.Substring(6).GetValueInternal("=").Trim('"');
-
-        return authChallenge;
-      }
-
-      foreach (var p in challenge.SplitHeaderValue(','))
-      {
-        var param = p.Trim();
-        if (param.StartsWith("digest", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Scheme = "Digest";
-          authChallenge.Realm = param.Substring(7).GetValueInternal("=").Trim('"');
-
-          continue;
-        }
-
-        var value = param.GetValueInternal("=").Trim('"');
-        if (param.StartsWith("domain", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Domain = value;
-          continue;
-        }
-
-        if (param.StartsWith("nonce", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Nonce = value;
-          continue;
-        }
-
-        if (param.StartsWith("opaque", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Opaque = value;
-          continue;
-        }
-
-        if (param.StartsWith("stale", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Stale = value;
-          continue;
-        }
-
-        if (param.StartsWith("algorithm", StringComparison.OrdinalIgnoreCase))
-        {
-          authChallenge.Algorithm = value;
-          continue;
-        }
-
-        if (param.StartsWith("qop", StringComparison.OrdinalIgnoreCase))
-          authChallenge.Qop = value;
-      }
-
-      return authChallenge;
+      var challenge = value.Split (new char [] {' '}, 2);
+      var scheme = challenge [0].ToLower ();
+      return scheme == "basic" || scheme == "digest"
+             ? new AuthenticationChallenge (scheme, challenge [1])
+             : null;
     }
 
     #endregion

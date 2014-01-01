@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,20 +35,34 @@ namespace WebSocketSharp
 {
   internal class HandshakeResponse : HandshakeBase
   {
-    #region Public Constructors
+    #region Private Fields
 
-    public HandshakeResponse ()
-      : this (HttpStatusCode.SwitchingProtocols)
+    private string _code;
+    private string _reason;
+
+    #endregion
+
+    #region Private Constructors
+
+    private HandshakeResponse ()
     {
-      AddHeader ("Upgrade", "websocket");
-      AddHeader ("Connection", "Upgrade");
     }
+
+    #endregion
+
+    #region Public Constructors
 
     public HandshakeResponse (HttpStatusCode code)
     {
-      StatusCode = ((int) code).ToString ();
-      Reason = code.GetDescription ();
-      AddHeader ("Server", "websocket-sharp/1.0");
+      _code = ((int) code).ToString ();
+      _reason = code.GetDescription ();
+
+      var headers = Headers;
+      headers ["Server"] = "websocket-sharp/1.0";
+      if (code == HttpStatusCode.SwitchingProtocols) {
+        headers ["Upgrade"] = "websocket";
+        headers ["Connection"] = "Upgrade";
+      }
     }
 
     #endregion
@@ -72,25 +86,38 @@ namespace WebSocketSharp
 
     public bool IsUnauthorized {
       get {
-        return StatusCode == "401";
+        return _code == "401";
       }
     }
 
     public bool IsWebSocketResponse {
       get {
+        var headers = Headers;
         return ProtocolVersion >= HttpVersion.Version11 &&
-               StatusCode == "101" &&
-               Headers.Contains ("Upgrade", "websocket") &&
-               Headers.Contains ("Connection", "Upgrade");
+               _code == "101" &&
+               headers.Contains ("Upgrade", "websocket") &&
+               headers.Contains ("Connection", "Upgrade");
       }
     }
 
     public string Reason {
-      get; private set;
+      get {
+        return _reason;
+      }
+
+      private set {
+        _reason = value;
+      }
     }
 
     public string StatusCode {
-      get; private set;
+      get {
+        return _code;
+      }
+
+      private set {
+        _code = value;
+      }
     }
 
     #endregion
@@ -100,7 +127,7 @@ namespace WebSocketSharp
     public static HandshakeResponse CreateCloseResponse (HttpStatusCode code)
     {
       var res = new HandshakeResponse (code);
-      res.AddHeader ("Connection", "close");
+      res.Headers ["Connection"] = "close";
 
       return res;
     }
@@ -132,16 +159,20 @@ namespace WebSocketSharp
       if (cookies == null || cookies.Count == 0)
         return;
 
+      var headers = Headers;
       foreach (var cookie in cookies.Sorted)
-        AddHeader ("Set-Cookie", cookie.ToResponseString ());
+        headers.Add ("Set-Cookie", cookie.ToResponseString ());
     }
 
     public override string ToString ()
     {
       var buffer = new StringBuilder (64);
-      buffer.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, StatusCode, Reason, CrLf);
-      foreach (string key in Headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}{2}", key, Headers [key], CrLf);
+      buffer.AppendFormat (
+        "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
+
+      var headers = Headers;
+      foreach (var key in headers.AllKeys)
+        buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
       buffer.Append (CrLf);
       return buffer.ToString ();

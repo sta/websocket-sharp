@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2010-2013 sta.blockhead
- * 
+ * Copyright (c) 2010-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -122,11 +122,11 @@ namespace WebSocketSharp
       return new WsStream (netStream);
     }
 
-    internal static WsStream CreateServerStream (TcpClient client, bool secure, X509Certificate cert)
+    internal static WsStream CreateServerStream (
+      TcpClient client, X509Certificate cert, bool secure)
     {
       var netStream = client.GetStream ();
-      if (secure)
-      {
+      if (secure) {
         var sslStream = new SslStream (netStream, false);
         sslStream.AuthenticateAsServer (cert);
 

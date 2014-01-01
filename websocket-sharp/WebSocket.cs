@@ -3,13 +3,15 @@
  * WebSocket.cs
  *
  * A C# implementation of the WebSocket interface.
- * This code derived from WebSocket.java (http://github.com/adamac/Java-WebSocket-client).
+ *
+ * This code is derived from WebSocket.java
+ * (http://github.com/adamac/Java-WebSocket-client).
  *
  * The MIT License
  *
  * Copyright (c) 2009 Adam MacBeth
- * Copyright (c) 2010-2013 sta.blockhead
- * 
+ * Copyright (c) 2010-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -19,7 +21,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -51,8 +53,9 @@ namespace WebSocketSharp
   /// Implements the WebSocket interface.
   /// </summary>
   /// <remarks>
-  /// The WebSocket class provides a set of methods and properties for two-way communication
-  /// using the WebSocket protocol (<see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>).
+  /// The WebSocket class provides a set of methods and properties for two-way
+  /// communication using the WebSocket protocol
+  /// (<see href="http://tools.ietf.org/html/rfc6455">RFC 6455</see>).
   /// </remarks>
   public class WebSocket : IDisposable
   {
@@ -65,6 +68,7 @@ namespace WebSocketSharp
 
     #region Private Fields
 
+    private AuthenticationChallenge _authChallenge;
     private string                  _base64key;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
@@ -75,12 +79,13 @@ namespace WebSocketSharp
     private CookieCollection        _cookies;
     private Func<CookieCollection, CookieCollection, bool>
                                     _cookiesValidation;
-    private WsCredential            _credentials;
+    private NetworkCredential       _credentials;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forClose;
     private object                  _forSend;
     private volatile Logger         _logger;
+    private uint                    _nonceCount;
     private string                  _origin;
     private bool                    _preAuth;
     private string                  _protocol;
@@ -109,8 +114,6 @@ namespace WebSocketSharp
       _extensions = String.Empty;
       _forClose = new object ();
       _forSend = new object ();
-      _origin = String.Empty;
-      _preAuth = false;
       _protocol = String.Empty;
       _readyState = WebSocketState.CONNECTING;
     }
@@ -119,20 +122,20 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal WebSocket (HttpListenerWebSocketContext context)
+    internal WebSocket (HttpListenerWebSocketContext context, Logger logger)
       : this ()
     {
       _stream = context.Stream;
-      _closeContext = () => context.Close ();
-      init (context);
+      _closeContext = context.Close;
+      init (context, logger);
     }
 
-    internal WebSocket (TcpListenerWebSocketContext context)
+    internal WebSocket (TcpListenerWebSocketContext context, Logger logger)
       : this ()
     {
       _stream = context.Stream;
-      _closeContext = () => context.Close ();
-      init (context);
+      _closeContext = context.Close;
+      init (context, logger);
     }
 
     #endregion
@@ -140,14 +143,15 @@ namespace WebSocketSharp
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL
-    /// and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with the
+    /// specified WebSocket URL and subprotocols.
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL to connect.
     /// </param>
     /// <param name="protocols">
-    /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
+    /// An array of <see cref="string"/> that contains the WebSocket subprotocols
+    /// if any.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
@@ -173,12 +177,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified WebSocket URL,
-    /// OnOpen, OnMessage, OnError, OnClose event handlers and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with the
+    /// specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event
+    /// handlers and subprotocols.
     /// </summary>
     /// <remarks>
-    /// This constructor initializes a new instance of the <see cref="WebSocket"/> class and
-    /// establishes a WebSocket connection.
+    /// This constructor initializes a new instance of the <see cref="WebSocket"/>
+    /// class and establishes a WebSocket connection.
     /// </remarks>
     /// <param name="url">
     /// A <see cref="string"/> that contains a WebSocket URL to connect.
@@ -196,7 +201,8 @@ namespace WebSocketSharp
     /// An <see cref="OnClose"/> event handler.
     /// </param>
     /// <param name="protocols">
-    /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
+    /// An array of <see cref="string"/> that contains the WebSocket subprotocols
+    /// if any.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
@@ -237,7 +243,8 @@ namespace WebSocketSharp
 
     internal bool IsOpened {
       get {
-        return _readyState == WebSocketState.OPEN || _readyState == WebSocketState.CLOSING;
+        return _readyState == WebSocketState.OPEN ||
+               _readyState == WebSocketState.CLOSING;
       }
     }
 
@@ -246,11 +253,13 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the compression method used to compress the payload data of the WebSocket Data frame.
+    /// Gets or sets the compression method used to compress the payload data of
+    /// the WebSocket Data frame.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CompressionMethod"/> values that indicates the compression method to use.
-    /// The default is <see cref="CompressionMethod.NONE"/>.
+    /// One of the <see cref="CompressionMethod"/> values that represents the
+    /// compression method to use.
+    /// The default value is <see cref="CompressionMethod.NONE"/>.
     /// </value>
     public CompressionMethod Compression {
       get {
@@ -258,9 +267,13 @@ namespace WebSocketSharp
       }
 
       set {
-        if (IsOpened)
-        {
-          var msg = "A WebSocket connection has already been established.";
+        var msg = !_client
+                ? "Set operation of Compression isn't available as a server."
+                : IsOpened
+                  ? "A WebSocket connection has already been established."
+                  : null;
+
+        if (msg != null) {
           _logger.Error (msg);
           error (msg);
 
@@ -272,16 +285,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the cookies used in the WebSocket opening handshake.
+    /// Gets the cookies used in the WebSocket connection request.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which supports the iteration
-    /// over the collection of cookies.
+    /// An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which
+    /// supports the iteration over the collection of cookies.
     /// </value>
     public IEnumerable<Cookie> Cookies {
       get {
-        lock (_cookies.SyncRoot)
-        {
+        lock (_cookies.SyncRoot) {
           return from Cookie cookie in _cookies
                  select cookie;
         }
@@ -292,9 +304,10 @@ namespace WebSocketSharp
     /// Gets the credentials for HTTP authentication (Basic/Digest).
     /// </summary>
     /// <value>
-    /// A <see cref="WsCredential"/> that contains the credentials for HTTP authentication.
+    /// A <see cref="NetworkCredential"/> that represents the credentials for
+    /// HTTP authentication. The default value is <see langword="null"/>.
     /// </value>
-    public WsCredential Credentials {
+    public NetworkCredential Credentials {
       get {
         return _credentials;
       }
@@ -304,7 +317,8 @@ namespace WebSocketSharp
     /// Gets the WebSocket extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the extensions if any. The default is <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that represents the WebSocket extensions if any.
+    /// The default value is <see cref="String.Empty"/>.
     /// </value>
     public string Extensions {
       get {
@@ -340,9 +354,9 @@ namespace WebSocketSharp
     /// Gets the logging functions.
     /// </summary>
     /// <remarks>
-    /// The default logging level is the <see cref="LogLevel.ERROR"/>.
-    /// If you want to change the current logging level, you set the <c>Log.Level</c> property
-    /// to one of the <see cref="LogLevel"/> values which you want.
+    /// The default logging level is the <see cref="LogLevel.ERROR"/>. If you
+    /// change the current logging level, you set the <c>Log.Level</c> property
+    /// to any of the <see cref="LogLevel"/> values.
     /// </remarks>
     /// <value>
     /// A <see cref="Logger"/> that provides the logging functions.
@@ -361,19 +375,22 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the value of the Origin header used in the WebSocket opening handshake.
+    /// Gets or sets the value of the Origin header used in the WebSocket
+    /// connection request.
     /// </summary>
     /// <remarks>
-    /// A <see cref="WebSocket"/> instance does not send the Origin header in the WebSocket opening handshake
-    /// if the value of this property is <see cref="String.Empty"/>.
+    /// The <see cref="WebSocket"/> sends the Origin header if this property has
+    /// any.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that contains the value of the <see href="http://tools.ietf.org/html/rfc6454#section-7">HTTP Origin header</see> to send.
-    ///   The default is <see cref="String.Empty"/>.
+    ///   A <see cref="string"/> that represents the value of the
+    ///   <see href="http://tools.ietf.org/html/rfc6454#section-7">HTTP Origin
+    ///   header</see> to send. The default value is <see langword="null"/>.
     ///   </para>
     ///   <para>
-    ///   The value of the Origin header has the following syntax: <c>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</c>
+    ///   The Origin header has the following syntax:
+    ///   <c>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</c>
     ///   </para>
     /// </value>
     public string Origin {
@@ -383,24 +400,22 @@ namespace WebSocketSharp
 
       set {
         string msg = null;
-        if (IsOpened)
-        {
+        if (!_client)
+          msg = "Set operation of Origin isn't available as a server.";
+        else if (IsOpened)
           msg = "A WebSocket connection has already been established.";
-        }
-        else if (value.IsNullOrEmpty ())
-        {
-          _origin = String.Empty;
+        else if (value.IsNullOrEmpty ()) {
+          _origin = value;
           return;
         }
-        else
-        {
-          var origin = new Uri (value);
-          if (!origin.IsAbsoluteUri || origin.Segments.Length > 1)
-            msg = "The syntax of value of Origin must be '<scheme>://<host>[:<port>]'.";
+        else {
+          Uri origin;
+          if (!Uri.TryCreate (value, UriKind.Absolute, out origin) ||
+              origin.Segments.Length > 1)
+            msg = "The syntax of Origin must be '<scheme>://<host>[:<port>]'.";
         }
 
-        if (msg != null)
-        {
+        if (msg != null) {
           _logger.Error (msg);
           error (msg);
 
@@ -415,7 +430,8 @@ namespace WebSocketSharp
     /// Gets the WebSocket subprotocol selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the subprotocol if any. The default is <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that represents the subprotocol if any.
+    /// The default value is <see cref="String.Empty"/>.
     /// </value>
     public string Protocol {
       get {
@@ -437,15 +453,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the callback used to validate the certificate supplied by the server.
+    /// Gets or sets the callback used to validate the certificate supplied by
+    /// the server.
     /// </summary>
     /// <remarks>
-    /// If the value of this property is <see langword="null"/>, the validation does nothing
-    /// with the server certificate, always returns valid.
+    /// If the value of this property is <see langword="null"/>, the validation
+    /// does nothing with the server certificate, always returns valid.
     /// </remarks>
     /// <value>
-    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method(s)
-    /// used to validate the server certificate. The default is <see langword="null"/>.
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that
+    /// references the method(s) used to validate the server certificate.
+    /// The default value is <see langword="null"/>.
     /// </value>
     public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
       get {
@@ -453,6 +471,19 @@ namespace WebSocketSharp
       }
 
       set {
+        var msg = !_client
+                ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
+                : IsOpened
+                  ? "A WebSocket connection has already been established."
+                  : null;
+
+        if (msg != null) {
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
         _certValidationCallback = value;
       }
     }
@@ -461,7 +492,7 @@ namespace WebSocketSharp
     /// Gets the WebSocket URL to connect.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that contains the WebSocket URL to connect.
+    /// A <see cref="Uri"/> that represents the WebSocket URL to connect.
     /// </value>
     public Uri Url {
       get {
@@ -469,8 +500,7 @@ namespace WebSocketSharp
       }
 
       internal set {
-        if (_readyState == WebSocketState.CONNECTING && !_client)
-          _uri = value;
+        _uri = value;
       }
     }
 
@@ -685,6 +715,18 @@ namespace WebSocketSharp
     }
 
     // As client
+    private string createExtensionsRequest ()
+    {
+      var extensions = new StringBuilder (64);
+      if (_compression != CompressionMethod.NONE)
+        extensions.Append (_compression.ToCompressionExtension ());
+
+      return extensions.Length > 0
+             ? extensions.ToString ()
+             : String.Empty;
+    }
+
+    // As client
     private HandshakeRequest createHandshakeRequest ()
     {
       var path = _uri.PathAndQuery;
@@ -693,24 +735,35 @@ namespace WebSocketSharp
                : _uri.Authority;
 
       var req = new HandshakeRequest (path);
-      req.AddHeader ("Host", host);
+      var headers = req.Headers;
 
-      if (_origin.Length > 0)
-        req.AddHeader ("Origin", _origin);
+      headers ["Host"] = host;
 
-      req.AddHeader ("Sec-WebSocket-Key", _base64key);
+      if (!_origin.IsNullOrEmpty ())
+        headers ["Origin"] = _origin;
+
+      headers ["Sec-WebSocket-Key"] = _base64key;
 
       if (!_protocols.IsNullOrEmpty ())
-        req.AddHeader ("Sec-WebSocket-Protocol", _protocols);
+        headers ["Sec-WebSocket-Protocol"] = _protocols;
 
-      var extensions = createRequestExtensions ();
+      var extensions = createExtensionsRequest ();
       if (extensions.Length > 0)
-        req.AddHeader ("Sec-WebSocket-Extensions", extensions);
+        headers ["Sec-WebSocket-Extensions"] = extensions;
 
-      req.AddHeader ("Sec-WebSocket-Version", _version);
+      headers ["Sec-WebSocket-Version"] = _version;
 
-      if (_preAuth && _credentials != null)
-        req.SetAuthorization (new AuthenticationResponse (_credentials));
+      AuthenticationResponse authRes = null;
+      if (_authChallenge != null && _credentials != null) {
+        authRes = new AuthenticationResponse (
+          _authChallenge, _credentials, _nonceCount);
+        _nonceCount = authRes.NonceCount;
+      }
+      else if (_preAuth)
+        authRes = new AuthenticationResponse (_credentials);
+
+      if (authRes != null)
+        headers ["Authorization"] = authRes.ToString ();
 
       if (_cookies.Count > 0)
         req.SetCookies (_cookies);
@@ -721,14 +774,16 @@ namespace WebSocketSharp
     // As server
     private HandshakeResponse createHandshakeResponse ()
     {
-      var res = new HandshakeResponse ();
-      res.AddHeader ("Sec-WebSocket-Accept", createResponseKey ());
+      var res = new HandshakeResponse (HttpStatusCode.SwitchingProtocols);
+      var headers = res.Headers;
+
+      headers ["Sec-WebSocket-Accept"] = createResponseKey ();
 
       if (_protocol.Length > 0)
-        res.AddHeader ("Sec-WebSocket-Protocol", _protocol);
+        headers ["Sec-WebSocket-Protocol"] = _protocol;
 
       if (_extensions.Length > 0)
-        res.AddHeader ("Sec-WebSocket-Extensions", _extensions);
+        headers ["Sec-WebSocket-Extensions"] = _extensions;
 
       if (_cookies.Count > 0)
         res.SetCookies (_cookies);
@@ -740,21 +795,9 @@ namespace WebSocketSharp
     private HandshakeResponse createHandshakeResponse (HttpStatusCode code)
     {
       var res = HandshakeResponse.CreateCloseResponse (code);
-      res.AddHeader ("Sec-WebSocket-Version", _version);
+      res.Headers ["Sec-WebSocket-Version"] = _version;
 
       return res;
-    }
-
-    // As client
-    private string createRequestExtensions ()
-    {
-      var extensions = new StringBuilder (64);
-      if (_compression != CompressionMethod.NONE)
-        extensions.Append (_compression.ToCompressionExtension ());
-
-      return extensions.Length > 0
-             ? extensions.ToString ()
-             : String.Empty;
     }
 
     private string createResponseKey ()
@@ -808,12 +851,12 @@ namespace WebSocketSharp
     }
 
     // As server
-    private void init (WebSocketContext context)
+    private void init (WebSocketContext context, Logger logger)
     {
       _context = context;
-      _uri = context.Path.ToUri ();
+      _logger = logger;
+      _uri = context.RequestUri;
       _secure = context.IsSecureConnection;
-      _client = false;
     }
 
     private void open ()
@@ -1168,7 +1211,7 @@ namespace WebSocketSharp
       int readLen = 0;
       byte [] buffer = null;
 
-      // Not fragmented
+      // Not fragment
       if (quo == 0)
       {
         buffer = new byte [rem];
@@ -1219,11 +1262,21 @@ namespace WebSocketSharp
     {
       var req = createHandshakeRequest ();
       var res = sendHandshakeRequest (req);
-      if (!_preAuth && res.IsUnauthorized && _credentials != null)
-      {
-        var challenge = res.AuthChallenge;
-        req.SetAuthorization (new AuthenticationResponse (_credentials, challenge));
-        res = sendHandshakeRequest (req);
+      if (res.IsUnauthorized) {
+        _authChallenge = res.AuthChallenge;
+        if (_credentials != null &&
+            (!_preAuth || _authChallenge.Scheme == "digest")) {
+          if (res.Headers.Contains ("Connection", "close")) {
+            closeClientResources ();
+            setClientStream ();
+          }
+
+          var authRes = new AuthenticationResponse (
+            _authChallenge, _credentials, _nonceCount);
+          _nonceCount = authRes.NonceCount;
+          req.Headers ["Authorization"] = authRes.ToString ();
+          res = sendHandshakeRequest (req);
+        }
       }
 
       return res;
@@ -1316,14 +1369,20 @@ namespace WebSocketSharp
     #region Internal Methods
 
     // As server
-    internal void Close (HttpStatusCode code)
+    internal void Close (HandshakeResponse response)
     {
       _readyState = WebSocketState.CLOSING;
 
-      send (createHandshakeResponse (code));
+      send (response);
       closeServerResources ();
-      
+
       _readyState = WebSocketState.CLOSED;
+    }
+
+    // As server
+    internal void Close (HttpStatusCode code)
+    {
+      Close (createHandshakeResponse (code));
     }
 
     // As server
@@ -1824,78 +1883,79 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets a <see cref="Cookie"/> used in the WebSocket opening handshake.
+    /// Sets a <see cref="Cookie"/> used in the WebSocket connection request.
     /// </summary>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> that contains an HTTP Cookie to set.
+    /// A <see cref="Cookie"/> that represents an HTTP Cookie to set.
     /// </param>
     public void SetCookie (Cookie cookie)
     {
-      var msg = IsOpened
-              ? "A WebSocket connection has already been established."
-              : cookie == null
-                ? "'cookie' must not be null."
-                : null;
+      var msg = !_client
+              ? "SetCookie isn't available as a server."
+              : IsOpened
+                ? "A WebSocket connection has already been established."
+                : cookie == null
+                  ? "'cookie' must not be null."
+                  : null;
 
-      if (msg != null)
-      {
+      if (msg != null) {
         _logger.Error (msg);
         error (msg);
 
         return;
       }
 
-      lock (_cookies.SyncRoot)
-      {
+      lock (_cookies.SyncRoot) {
         _cookies.SetOrRemove (cookie);
       }
     }
 
     /// <summary>
-    /// Sets the credentials for HTTP authentication (Basic/Digest).
+    /// Sets a pair of the <paramref name="username"/> and
+    /// <paramref name="password"/> for HTTP authentication (Basic/Digest).
     /// </summary>
-    /// <param name="userName">
-    /// A <see cref="string"/> that contains a user name associated with the credentials.
+    /// <param name="username">
+    /// A <see cref="string"/> that represents the user name used to authenticate.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that contains a password for <paramref name="userName"/> associated with the credentials.
+    /// A <see cref="string"/> that represents the password for
+    /// <paramref name="username"/> used to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if sends the credentials as a Basic authorization with the first request handshake;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends a Basic authentication
+    /// credentials with the first connection request; otherwise, <c>false</c>.
     /// </param>
-    public void SetCredentials (string userName, string password, bool preAuth)
+    public void SetCredentials (string username, string password, bool preAuth)
     {
       string msg = null;
-      if (IsOpened)
-      {
+      if (!_client)
+        msg = "SetCredentials isn't available as a server.";
+      else if (IsOpened)
         msg = "A WebSocket connection has already been established.";
-      }
-      else if (userName == null)
-      {
+      else if (username.IsNullOrEmpty ()) {
         _credentials = null;
         _preAuth = false;
+        _logger.Warn ("Credentials was set back to the default.");
 
         return;
       }
-      else
-      {
-        msg = userName.Length > 0 && (userName.Contains (':') || !userName.IsText ())
-            ? "'userName' contains an invalid character."
+      else {
+        msg = username.Contains (':') || !username.IsText ()
+            ? "'username' contains an invalid character."
             : !password.IsNullOrEmpty () && !password.IsText ()
               ? "'password' contains an invalid character."
               : null;
       }
 
-      if (msg != null)
-      {
+      if (msg != null) {
         _logger.Error (msg);
         error (msg);
 
         return;
       }
 
-      _credentials = new WsCredential (userName, password, _uri.PathAndQuery);
+      _credentials = new NetworkCredential (
+        username, password, _uri.PathAndQuery);
       _preAuth = preAuth;
     }
 

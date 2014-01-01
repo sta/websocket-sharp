@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,7 +31,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp
 {
@@ -39,7 +38,10 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private string              _method;
     private NameValueCollection _queryString;
+    private string              _rawUrl;
+    private Uri                 _uri;
 
     #endregion
 
@@ -55,16 +57,30 @@ namespace WebSocketSharp
 
     public HandshakeRequest (string uriString)
     {
-      HttpMethod = "GET";
-      RequestUri = uriString.ToUri ();
-      AddHeader ("User-Agent", "websocket-sharp/1.0");
-      AddHeader ("Upgrade", "websocket");
-      AddHeader ("Connection", "Upgrade");
+      _method = "GET";
+      _uri = uriString.ToUri ();
+      _rawUrl = _uri.IsAbsoluteUri
+              ? _uri.PathAndQuery
+              : uriString;
+
+      var headers = Headers;
+      headers ["User-Agent"] = "websocket-sharp/1.0";
+      headers ["Upgrade"] = "websocket";
+      headers ["Connection"] = "Upgrade";
     }
 
     #endregion
 
     #region Public Properties
+
+    public AuthenticationResponse AuthResponse {
+      get {
+        var response = Headers ["Authorization"];
+        return !response.IsNullOrEmpty ()
+               ? AuthenticationResponse.Parse (response)
+               : null;
+      }
+    }
 
     public CookieCollection Cookies {
       get {
@@ -73,33 +89,36 @@ namespace WebSocketSharp
     }
 
     public string HttpMethod {
-      get; private set;
+      get {
+        return _method;
+      }
+
+      private set {
+        _method = value;
+      }
     }
 
     public bool IsWebSocketRequest {
       get {
-        return HttpMethod == "GET" &&
+        var headers = Headers;
+        return _method == "GET" &&
                ProtocolVersion >= HttpVersion.Version11 &&
-               Headers.Contains ("Upgrade", "websocket") &&
-               Headers.Contains ("Connection", "Upgrade");
+               headers.Contains ("Upgrade", "websocket") &&
+               headers.Contains ("Connection", "Upgrade");
       }
     }
 
     public NameValueCollection QueryString {
       get {
-        if (_queryString == null)
-        {
+        if (_queryString == null) {
           _queryString = new NameValueCollection ();
           var i = RawUrl.IndexOf ('?');
-          if (i > 0)
-          {
+          if (i > 0) {
             var query = RawUrl.Substring (i + 1);
             var components = query.Split ('&');
-            foreach (var c in components)
-            {
+            foreach (var c in components) {
               var nv = c.GetNameAndValue ("=");
-              if (nv.Key != null)
-              {
+              if (nv.Key != null) {
                 var name = nv.Key.UrlDecode ();
                 var val = nv.Value.UrlDecode ();
                 _queryString.Add (name, val);
@@ -114,14 +133,22 @@ namespace WebSocketSharp
 
     public string RawUrl {
       get {
-        return RequestUri.IsAbsoluteUri
-               ? RequestUri.PathAndQuery
-               : RequestUri.OriginalString;
+        return _rawUrl;
+      }
+
+      private set {
+        _rawUrl = value;
       }
     }
 
     public Uri RequestUri {
-      get; private set;
+      get {
+        return _uri;
+      }
+
+      private set {
+        _uri = value;
+      }
     }
 
     #endregion
@@ -132,10 +159,8 @@ namespace WebSocketSharp
     {
       var requestLine = request [0].Split (' ');
       if (requestLine.Length != 3)
-      {
-        var msg = "Invalid HTTP Request-Line: " + request [0];
-        throw new ArgumentException (msg, "request");
-      }
+        throw new ArgumentException (
+          "Invalid HTTP Request-Line: " + request [0], "request");
 
       var headers = new WebHeaderCollection ();
       for (int i = 1; i < request.Length; i++)
@@ -144,8 +169,9 @@ namespace WebSocketSharp
       return new HandshakeRequest {
         Headers = headers,
         HttpMethod = requestLine [0],
-        RequestUri = requestLine [1].ToUri (),
-        ProtocolVersion = new Version (requestLine [2].Substring (5))
+        ProtocolVersion = new Version (requestLine [2].Substring (5)),
+        RawUrl = requestLine [1],
+        RequestUri = requestLine [1].ToUri ()
       };
     }
 
@@ -160,21 +186,17 @@ namespace WebSocketSharp
         if (!sorted [i].Expired)
           header.AppendFormat ("; {0}", sorted [i].ToString ());
 
-      AddHeader ("Cookie", header.ToString ());
-    }
-
-    public void SetAuthorization (AuthenticationResponse response)
-    {
-      var credentials = response.ToString ();
-      AddHeader ("Authorization", credentials);
+      Headers ["Cookie"] = header.ToString ();
     }
 
     public override string ToString ()
     {
       var buffer = new StringBuilder (64);
-      buffer.AppendFormat ("{0} {1} HTTP/{2}{3}", HttpMethod, RawUrl, ProtocolVersion, CrLf);
-      foreach (string key in Headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}{2}", key, Headers [key], CrLf);
+      buffer.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _rawUrl, ProtocolVersion, CrLf);
+
+      var headers = Headers;
+      foreach (var key in headers.AllKeys)
+        buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
       buffer.Append (CrLf);
       return buffer.ToString ();

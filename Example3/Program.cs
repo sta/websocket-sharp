@@ -19,24 +19,39 @@ namespace Example3
       _httpsv.Log.Level = LogLevel.TRACE;
       #endif
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
-      //var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
-      //var password = ConfigurationManager.AppSettings ["CertFilePassword"];
-      //_httpsv.Certificate = new X509Certificate2 (cert, password);
+
+      // HTTP Basic/Digest Authentication
+      /*
+      _httpsv.AuthenticationSchemes = AuthenticationSchemes.Digest;
+      _httpsv.Realm = "WebSocket Test";
+      _httpsv.UserCredentialsFinder = identity => {
+        var name = identity.Name;
+        return name == "nobita"
+               ? new NetworkCredential (name, "password")
+               : null;
+      };
+       */
+
+      // Secure Connection
+      /*
+      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
+      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
+      _httpsv.Certificate = new X509Certificate2 (cert, password);
+       */
+
       //_httpsv.KeepClean = false;
+
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
       //_httpsv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
 
-      _httpsv.OnGet += (sender, e) =>
-      {
-        onGet (e);
-      };
+      _httpsv.OnGet += (sender, e) => onGet (e);
 
       _httpsv.Start ();
-      if (_httpsv.IsListening)
-      {
+      if (_httpsv.IsListening) {
         Console.WriteLine (
-          "An HTTP Server listening on port: {0} WebSocket service paths:", _httpsv.Port);
+          "An HTTP Server listening on port: {0} WebSocket service paths:",
+          _httpsv.Port);
 
         foreach (var path in _httpsv.WebSocketServices.ServicePaths)
           Console.WriteLine ("  {0}", path);
@@ -61,8 +76,7 @@ namespace Example3
       var request = eventArgs.Request;
       var response = eventArgs.Response;
       var content = getContent (request.RawUrl);
-      if (content != null)
-      {
+      if (content != null) {
         response.WriteContent (content);
         return;
       }
