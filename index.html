@@ -65,14 +65,14 @@
 <h3>
 <a name="self-build" class="anchor" href="#self-build"><span class="octicon octicon-link"></span></a>Self Build</h3>
 
-<p>You should add <strong>websocket-sharp.dll</strong> (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you built it yourself to the library references of your project.</p>
+<p>You should add <strong>websocket-sharp.dll</strong> (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) built yourself to the library references of your project.</p>
 
-<p>If you use websocket-sharp.dll in your <strong><a href="http://unity3d.com">Unity</a></strong> project, you should add it to any folder of your project (e.g. Assets/Plugins) in the <strong>Unity Editor</strong>.</p>
+<p>If you use that websocket-sharp.dll in your <strong><a href="http://unity3d.com">Unity</a></strong> project, you should add it to any folder of your project (e.g. Assets/Plugins) in the <strong>Unity Editor</strong>.</p>
 
 <h3>
 <a name="nuget-gallery" class="anchor" href="#nuget-gallery"><span class="octicon octicon-link"></span></a>NuGet Gallery</h3>
 
-<p><strong>websocket-sharp</strong> has now been displayed on the <strong><a href="http://www.nuget.org">NuGet Gallery</a></strong>, as still a <strong>prerelease</strong> version.</p>
+<p><strong>websocket-sharp</strong> is available on the <strong><a href="http://www.nuget.org">NuGet Gallery</a></strong>, as still a <strong>prerelease</strong> version.</p>
 
 <ul>
 <li><strong><a href="http://www.nuget.org/packages/WebSocketSharp">NuGet Gallery: websocket-sharp</a></strong></li>
@@ -84,7 +84,7 @@
 <h3>
 <a name="unity-asset-store" class="anchor" href="#unity-asset-store"><span class="octicon octicon-link"></span></a>Unity Asset Store</h3>
 
-<p><strong>websocket-sharp</strong> has now been displayed on the <strong>Unity Asset Store</strong>.</p>
+<p><strong>websocket-sharp</strong> is available on the <strong>Unity Asset Store</strong>.</p>
 
 <ul>
 <li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">websocket-sharp for Unity</a></strong></li>
@@ -105,10 +105,8 @@
   <span class="p">{</span>
     <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Main</span> <span class="p">(</span><span class="kt">string</span> <span class="p">[]</span> <span class="n">args</span><span class="p">)</span>
     <span class="p">{</span>
-      <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://dragonsnest.far/Laputa"</span><span class="p">))</span>
-      <span class="p">{</span>
-        <span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
-        <span class="p">{</span>
+      <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://dragonsnest.far/Laputa"</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
           <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span> <span class="p">(</span><span class="s">"Laputa says: "</span> <span class="p">+</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span><span class="p">);</span>
         <span class="p">};</span>
 
@@ -136,8 +134,7 @@
 
 <p>Creating an instance of the <code>WebSocket</code> class with the specified WebSocket URL to connect.</p>
 
-<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://example.com"</span><span class="p">))</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://example.com"</span><span class="p">))</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
@@ -154,8 +151,7 @@
 
 <p>A <code>WebSocket.OnOpen</code> event occurs when the WebSocket connection has been established.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnOpen</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnOpen</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">};</span>
 </pre></div>
@@ -167,8 +163,7 @@
 
 <p>A <code>WebSocket.OnMessage</code> event occurs when the <code>WebSocket</code> receives a WebSocket data frame.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">};</span>
 </pre></div>
@@ -179,14 +174,12 @@
 
 <p>If <code>e.Type</code> equals <code>Opcode.BINARY</code>, you use <code>e.RawData</code> (<code>WebSocketSharp.MessageEventArgs.RawData</code>, its type is <code>byte []</code>) that contains a received <strong>Binary</strong> data.</p>
 
-<div class="highlight highlight-cs"><pre><span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">TEXT</span><span class="p">)</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">TEXT</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something with e.Data</span>
   <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">BINARY</span><span class="p">)</span>
-<span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">BINARY</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something with e.RawData</span>
   <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
@@ -197,8 +190,7 @@
 
 <p>A <code>WebSocket.OnError</code> event occurs when the <code>WebSocket</code> gets an error.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnError</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnError</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">};</span>
 </pre></div>
@@ -210,8 +202,7 @@
 
 <p>A <code>WebSocket.OnClose</code> event occurs when the WebSocket connection has been closed.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnClose</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnClose</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">};</span>
 </pre></div>
@@ -442,16 +433,14 @@
 
 <p>As a <strong>WebSocket Client</strong>, creating an instance of the <code>WebSocket</code> class with the specified <strong>wss</strong> scheme URL to connect.</p>
 
-<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"wss://example.com"</span><span class="p">))</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"wss://example.com"</span><span class="p">))</span> <span class="p">{</span>
   <span class="p">...</span>
 <span class="p">}</span>
 </pre></div>
 
 <p>If you set the custom validation for the server certificate, you use the <code>WebSocket.ServerCertificateValidationCallback</code> property.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">ServerCertificateValidationCallback</span> <span class="p">=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">sslPolicyErrors</span><span class="p">)</span> <span class="p">=&gt;</span>
-<span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">ServerCertificateValidationCallback</span> <span class="p">=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">certificate</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">sslPolicyErrors</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="c1">// Do something to validate the server certificate.</span>
   <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="c1">// If the server certificate is valid.</span>
 <span class="p">};</span>
@@ -547,7 +536,7 @@
 
           <p class="repo-owner"><a href="https://github.com/sta/websocket-sharp"></a> is maintained by <a href="https://github.com/sta">sta</a>.</p>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
     </div>
