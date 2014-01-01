@@ -26,13 +26,13 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 ### Self Build ###
 
-You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) that you built it yourself to the library references of your project.
+You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) built yourself to the library references of your project.
 
-If you use websocket-sharp.dll in your **[Unity]** project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+If you use that websocket-sharp.dll in your **[Unity]** project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
 
 ### NuGet Gallery ###
 
-**websocket-sharp** has now been displayed on the **[NuGet Gallery]**, as still a **prerelease** version.
+**websocket-sharp** is available on the **[NuGet Gallery]**, as still a **prerelease** version.
 
 - **[NuGet Gallery: websocket-sharp]**
 
@@ -42,7 +42,7 @@ You can add websocket-sharp to your project using the **NuGet Package Manager**,
 
 ### Unity Asset Store ###
 
-**websocket-sharp** has now been displayed on the **Unity Asset Store**.
+**websocket-sharp** is available on the **Unity Asset Store**.
 
 - **[websocket-sharp for Unity]**
 
@@ -62,10 +62,8 @@ namespace Example
   {
     public static void Main (string [] args)
     {
-      using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa"))
-      {
-        ws.OnMessage += (sender, e) =>
-        {
+      using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
+        ws.OnMessage += (sender, e) => {
           Console.WriteLine ("Laputa says: " + e.Data);
         };
 
@@ -93,8 +91,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 Creating an instance of the `WebSocket` class with the specified WebSocket URL to connect.
 
 ```cs
-using (var ws = new WebSocket ("ws://example.com"))
-{
+using (var ws = new WebSocket ("ws://example.com")) {
   ...
 }
 ```
@@ -110,8 +107,7 @@ Setting the `WebSocket` events.
 A `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
 
 ```cs
-ws.OnOpen += (sender, e) =>
-{
+ws.OnOpen += (sender, e) => {
   ...
 };
 ```
@@ -123,8 +119,7 @@ ws.OnOpen += (sender, e) =>
 A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a WebSocket data frame.
 
 ```cs
-ws.OnMessage += (sender, e) =>
-{
+ws.OnMessage += (sender, e) => {
   ...
 };
 ```
@@ -136,14 +131,12 @@ If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEvent
 If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte []`) that contains a received **Binary** data.
 
 ```cs
-if (e.Type == Opcode.TEXT)
-{
+if (e.Type == Opcode.TEXT) {
   // Do something with e.Data
   return;
 }
 
-if (e.Type == Opcode.BINARY)
-{
+if (e.Type == Opcode.BINARY) {
   // Do something with e.RawData
   return;
 }
@@ -154,8 +147,7 @@ if (e.Type == Opcode.BINARY)
 A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
 
 ```cs
-ws.OnError += (sender, e) =>
-{
+ws.OnError += (sender, e) => {
   ...
 };
 ```
@@ -167,8 +159,7 @@ ws.OnError += (sender, e) =>
 A `WebSocket.OnClose` event occurs when the WebSocket connection has been closed.
 
 ```cs
-ws.OnClose += (sender, e) =>
-{
+ws.OnClose += (sender, e) => {
   ...
 };
 ```
@@ -397,8 +388,7 @@ If the server supports this extension, it responds the same header. And when you
 As a **WebSocket Client**, creating an instance of the `WebSocket` class with the specified **wss** scheme URL to connect.
 
 ```cs
-using (var ws = new WebSocket ("wss://example.com"))
-{
+using (var ws = new WebSocket ("wss://example.com")) {
   ...
 }
 ```
@@ -406,8 +396,7 @@ using (var ws = new WebSocket ("wss://example.com"))
 If you set the custom validation for the server certificate, you use the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
-ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
-{
+ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
   // Do something to validate the server certificate.
   return true; // If the server certificate is valid.
 };
