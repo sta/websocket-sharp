@@ -122,20 +122,30 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
+    // As server
     internal WebSocket (HttpListenerWebSocketContext context, Logger logger)
       : this ()
     {
-      _stream = context.Stream;
+      _context = context;
+      _logger = logger;
+
       _closeContext = context.Close;
-      init (context, logger);
+      _secure = context.IsSecureConnection;
+      _stream = context.Stream;
+      _uri = context.RequestUri;
     }
 
+    // As server
     internal WebSocket (TcpListenerWebSocketContext context, Logger logger)
       : this ()
     {
-      _stream = context.Stream;
+      _context = context;
+      _logger = logger;
+
       _closeContext = context.Close;
-      init (context, logger);
+      _secure = context.IsSecureConnection;
+      _stream = context.Stream;
+      _uri = context.RequestUri;
     }
 
     #endregion
@@ -147,17 +157,17 @@ namespace WebSocketSharp
     /// specified WebSocket URL and subprotocols.
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL to connect.
+    /// A <see cref="string"/> that represents the WebSocket URL to connect.
     /// </param>
     /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols
     /// if any.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="url"/> is invalid.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     public WebSocket (string url, params string[] protocols)
       : this ()
@@ -170,61 +180,11 @@ namespace WebSocketSharp
         throw new ArgumentException (msg, "url");
 
       _protocols = protocols.ToString (", ");
-      _secure = _uri.Scheme == "wss" ? true : false;
-      _client = true;
+
       _base64key = createBase64Key ();
+      _client = true;
       _logger = new Logger ();
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocket"/> class with the
-    /// specified WebSocket URL, OnOpen, OnMessage, OnError, OnClose event
-    /// handlers and subprotocols.
-    /// </summary>
-    /// <remarks>
-    /// This constructor initializes a new instance of the <see cref="WebSocket"/>
-    /// class and establishes a WebSocket connection.
-    /// </remarks>
-    /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL to connect.
-    /// </param>
-    /// <param name="onOpen">
-    /// An <see cref="OnOpen"/> event handler.
-    /// </param>
-    /// <param name="onMessage">
-    /// An <see cref="OnMessage"/> event handler.
-    /// </param>
-    /// <param name="onError">
-    /// An <see cref="OnError"/> event handler.
-    /// </param>
-    /// <param name="onClose">
-    /// An <see cref="OnClose"/> event handler.
-    /// </param>
-    /// <param name="protocols">
-    /// An array of <see cref="string"/> that contains the WebSocket subprotocols
-    /// if any.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is invalid.
-    /// </exception>
-    public WebSocket (
-      string                         url,
-      EventHandler                   onOpen,
-      EventHandler<MessageEventArgs> onMessage,
-      EventHandler<ErrorEventArgs>   onError,
-      EventHandler<CloseEventArgs>   onClose,
-      params string []               protocols)
-      : this (url, protocols)
-    {
-      OnOpen    = onOpen;
-      OnMessage = onMessage;
-      OnError   = onError;
-      OnClose   = onClose;
-
-      Connect ();
+      _secure = _uri.Scheme == "wss";
     }
 
     #endregion
@@ -848,15 +808,6 @@ namespace WebSocketSharp
     private void error (string message)
     {
       OnError.Emit (this, new ErrorEventArgs (message));
-    }
-
-    // As server
-    private void init (WebSocketContext context, Logger logger)
-    {
-      _context = context;
-      _logger = logger;
-      _uri = context.RequestUri;
-      _secure = context.IsSecureConnection;
     }
 
     private void open ()
