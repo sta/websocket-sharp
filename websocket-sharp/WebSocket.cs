@@ -169,7 +169,7 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
-    public WebSocket (string url, params string[] protocols)
+    public WebSocket (string url, params string [] protocols)
       : this ()
     {
       if (url == null)
