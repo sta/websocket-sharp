@@ -27,7 +27,7 @@ namespace Example2
       return Context.QueryString ["name"] ?? (_prefix + getNum ());
     }
 
-    private int getNum ()
+    private static int getNum ()
     {
       return Interlocked.Increment (ref _num);
     }
