@@ -20,8 +20,6 @@ namespace Example3
       _httpsv.Log.Level = LogLevel.TRACE;
 #endif
 
-      _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
-
       /* Secure Connection
       var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
       var password = ConfigurationManager.AppSettings ["CertFilePassword"];
@@ -40,6 +38,8 @@ namespace Example3
        */
 
       //_httpsv.KeepClean = false;
+
+      _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
 
       _httpsv.OnGet += (sender, e) => onGet (e);
 
