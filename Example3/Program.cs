@@ -14,15 +14,22 @@ namespace Example3
     public static void Main (string [] args)
     {
       _httpsv = new HttpServer (4649);
-      //_httpsv = new HttpServer (4649, true);
-      #if DEBUG
+      //_httpsv = new HttpServer (4649, true) // Secure;
+
+#if DEBUG
       _httpsv.Log.Level = LogLevel.TRACE;
-      #endif
+#endif
+
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
 
-      // HTTP Basic/Digest Authentication
-      /*
-      _httpsv.AuthenticationSchemes = AuthenticationSchemes.Digest;
+      /* Secure Connection
+      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
+      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
+      _httpsv.Certificate = new X509Certificate2 (cert, password);
+       */
+
+      /* HTTP Authentication (Basic/Digest)
+      _httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       _httpsv.Realm = "WebSocket Test";
       _httpsv.UserCredentialsFinder = identity => {
         var name = identity.Name;
@@ -32,25 +39,18 @@ namespace Example3
       };
        */
 
-      // Secure Connection
-      /*
-      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
-      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
-      _httpsv.Certificate = new X509Certificate2 (cert, password);
-       */
-
       //_httpsv.KeepClean = false;
+
+      _httpsv.OnGet += (sender, e) => onGet (e);
 
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
       //_httpsv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
 
-      _httpsv.OnGet += (sender, e) => onGet (e);
-
       _httpsv.Start ();
       if (_httpsv.IsListening) {
         Console.WriteLine (
-          "An HTTP Server listening on port: {0} WebSocket service paths:",
+          "An HTTP server listening on port: {0} WebSocket service paths:",
           _httpsv.Port);
 
         foreach (var path in _httpsv.WebSocketServices.ServicePaths)
@@ -60,7 +60,7 @@ namespace Example3
       Console.WriteLine ("\nPress Enter key to stop the server...");
       Console.ReadLine ();
 
-      _httpsv.Stop ();       
+      _httpsv.Stop ();
     }
 
     private static byte [] getContent (string path)
@@ -73,15 +73,15 @@ namespace Example3
 
     private static void onGet (HttpRequestEventArgs eventArgs)
     {
-      var request = eventArgs.Request;
-      var response = eventArgs.Response;
-      var content = getContent (request.RawUrl);
+      var req = eventArgs.Request;
+      var res = eventArgs.Response;
+      var content = getContent (req.RawUrl);
       if (content != null) {
-        response.WriteContent (content);
+        res.WriteContent (content);
         return;
       }
 
-      response.StatusCode = (int) HttpStatusCode.NotFound;
+      res.StatusCode = (int) HttpStatusCode.NotFound;
     }
   }
 }
