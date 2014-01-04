@@ -105,26 +105,10 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Private Constructors
-
-    private WebSocket ()
-    {
-      _compression = CompressionMethod.NONE;
-      _cookies = new CookieCollection ();
-      _extensions = String.Empty;
-      _forClose = new object ();
-      _forSend = new object ();
-      _protocol = String.Empty;
-      _readyState = WebSocketState.CONNECTING;
-    }
-
-    #endregion
-
     #region Internal Constructors
 
     // As server
     internal WebSocket (HttpListenerWebSocketContext context, Logger logger)
-      : this ()
     {
       _context = context;
       _logger = logger;
@@ -133,11 +117,12 @@ namespace WebSocketSharp
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _uri = context.RequestUri;
+
+      init ();
     }
 
     // As server
     internal WebSocket (TcpListenerWebSocketContext context, Logger logger)
-      : this ()
     {
       _context = context;
       _logger = logger;
@@ -146,6 +131,8 @@ namespace WebSocketSharp
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _uri = context.RequestUri;
+
+      init ();
     }
 
     #endregion
@@ -170,7 +157,6 @@ namespace WebSocketSharp
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     public WebSocket (string url, params string [] protocols)
-      : this ()
     {
       if (url == null)
         throw new ArgumentNullException ("url");
@@ -185,6 +171,8 @@ namespace WebSocketSharp
       _client = true;
       _logger = new Logger ();
       _secure = _uri.Scheme == "wss";
+
+      init ();
     }
 
     #endregion
@@ -808,6 +796,17 @@ namespace WebSocketSharp
     private void error (string message)
     {
       OnError.Emit (this, new ErrorEventArgs (message));
+    }
+
+    private void init ()
+    {
+      _compression = CompressionMethod.NONE;
+      _cookies = new CookieCollection ();
+      _extensions = String.Empty;
+      _forClose = new object ();
+      _forSend = new object ();
+      _protocol = String.Empty;
+      _readyState = WebSocketState.CONNECTING;
     }
 
     private void open ()
