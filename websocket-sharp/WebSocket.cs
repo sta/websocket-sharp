@@ -1577,6 +1577,9 @@ namespace WebSocketSharp
     /// <summary>
     /// Establishes a WebSocket connection asynchronously.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't wait for the connect to be complete.
+    /// </remarks>
     public void ConnectAsync ()
     {
       if (IsOpened) {
