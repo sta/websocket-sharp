@@ -200,14 +200,14 @@ namespace WebSocketSharp.Server
     {
       _context = context;
       _sessions = sessions;
+
       _websocket = context.WebSocket;
       _websocket.CookiesValidation = ValidateCookies;
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;
       _websocket.OnError += onError;
       _websocket.OnClose += onClose;
-
-      _websocket.Connect ();
+      _websocket.ConnectAsServer ();
     }
 
     #endregion

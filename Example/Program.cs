@@ -124,6 +124,7 @@ namespace Example {
         //ws.SetCookie(new Cookie("dora", "tanuki"));
         //ws.SetCredentials ("nobita", "password", false);
         ws.Connect();
+        //ws.ConnectAsync();
         //Console.WriteLine("Compression: {0}", ws.Compression);
 
         Thread.Sleep(500);

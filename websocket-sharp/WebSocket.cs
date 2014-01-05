@@ -83,6 +83,7 @@ namespace WebSocketSharp
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forClose;
+    private object                  _forConnect;
     private object                  _forSend;
     private volatile Logger         _logger;
     private uint                    _nonceCount;
@@ -206,7 +207,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// One of the <see cref="CompressionMethod"/> values that represents the
-    /// compression method to use.
+    /// compression method used to compress.
     /// The default value is <see cref="CompressionMethod.NONE"/>.
     /// </value>
     public CompressionMethod Compression {
@@ -215,20 +216,22 @@ namespace WebSocketSharp
       }
 
       set {
-        var msg = !_client
-                ? "Set operation of Compression isn't available as a server."
-                : IsOpened
-                  ? "A WebSocket connection has already been established."
-                  : null;
+        lock (_forConnect) {
+          var msg = !_client
+                  ? "Set operation of Compression isn't available as a server."
+                  : IsOpened
+                    ? "A WebSocket connection has already been established."
+                    : null;
 
-        if (msg != null) {
-          _logger.Error (msg);
-          error (msg);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (msg);
 
-          return;
+            return;
+          }
+
+          _compression = value;
         }
-
-        _compression = value;
       }
     }
 
@@ -315,9 +318,6 @@ namespace WebSocketSharp
       }
 
       internal set {
-        if (value == null)
-          return;
-
         _logger = value;
       }
     }
@@ -347,30 +347,32 @@ namespace WebSocketSharp
       }
 
       set {
-        string msg = null;
-        if (!_client)
-          msg = "Set operation of Origin isn't available as a server.";
-        else if (IsOpened)
-          msg = "A WebSocket connection has already been established.";
-        else if (value.IsNullOrEmpty ()) {
-          _origin = value;
-          return;
-        }
-        else {
-          Uri origin;
-          if (!Uri.TryCreate (value, UriKind.Absolute, out origin) ||
-              origin.Segments.Length > 1)
-            msg = "The syntax of Origin must be '<scheme>://<host>[:<port>]'.";
-        }
+        lock (_forConnect) {
+          string msg = null;
+          if (!_client)
+            msg = "Set operation of Origin isn't available as a server.";
+          else if (IsOpened)
+            msg = "A WebSocket connection has already been established.";
+          else if (value.IsNullOrEmpty ()) {
+            _origin = value;
+            return;
+          }
+          else {
+            Uri origin;
+            if (!Uri.TryCreate (value, UriKind.Absolute, out origin) ||
+                origin.Segments.Length > 1)
+              msg = "The syntax of Origin must be '<scheme>://<host>[:<port>]'.";
+          }
 
-        if (msg != null) {
-          _logger.Error (msg);
-          error (msg);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (msg);
 
-          return;
+            return;
+          }
+
+          _origin = value.TrimEnd ('/');
         }
-
-        _origin = value.TrimEnd ('/');
       }
     }
 
@@ -419,20 +421,22 @@ namespace WebSocketSharp
       }
 
       set {
-        var msg = !_client
-                ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
-                : IsOpened
-                  ? "A WebSocket connection has already been established."
-                  : null;
+        lock (_forConnect) {
+          var msg = !_client
+                  ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
+                  : IsOpened
+                    ? "A WebSocket connection has already been established."
+                    : null;
 
-        if (msg != null) {
-          _logger.Error (msg);
-          error (msg);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (msg);
 
-          return;
+            return;
+          }
+
+          _certValidationCallback = value;
         }
-
-        _certValidationCallback = value;
       }
     }
 
@@ -645,11 +649,26 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool connect ()
+    private void connect ()
     {
-      return _client
-             ? doHandshake ()
-             : acceptHandshake ();
+      lock (_forConnect) {
+        if (IsOpened) {
+          var msg = "A WebSocket connection has already been established.";
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
+        try {
+          if (_client ? doHandshake () : acceptHandshake ())
+            open ();
+        }
+        catch (Exception ex) {
+          processException (
+            ex, "An exception has occurred while connecting or opening.");
+        }
+      }
     }
 
     // As client
@@ -804,6 +823,7 @@ namespace WebSocketSharp
       _cookies = new CookieCollection ();
       _extensions = String.Empty;
       _forClose = new object ();
+      _forConnect = new object ();
       _forSend = new object ();
       _protocol = String.Empty;
       _readyState = WebSocketState.CONNECTING;
@@ -1353,6 +1373,19 @@ namespace WebSocketSharp
       OnClose.Emit (this, args);
     }
 
+    // As server
+    internal void ConnectAsServer ()
+    {
+      try {
+        if (acceptHandshake ())
+          open ();
+      }
+      catch (Exception ex) {
+        processException (
+          ex, "An exception has occurred while connecting or opening.");
+      }
+    }
+
     internal bool Ping (byte [] frameAsBytes, int timeOut)
     {
       return send (frameAsBytes) &&
@@ -1530,8 +1563,7 @@ namespace WebSocketSharp
     /// </summary>
     public void Connect ()
     {
-      if (IsOpened)
-      {
+      if (IsOpened) {
         var msg = "A WebSocket connection has already been established.";
         _logger.Error (msg);
         error (msg);
@@ -1539,13 +1571,24 @@ namespace WebSocketSharp
         return;
       }
 
-      try {
-        if (connect ())
-          open ();
+      connect ();
+    }
+
+    /// <summary>
+    /// Establishes a WebSocket connection asynchronously.
+    /// </summary>
+    public void ConnectAsync ()
+    {
+      if (IsOpened) {
+        var msg = "A WebSocket connection has already been established.";
+        _logger.Error (msg);
+        error (msg);
+
+        return;
       }
-      catch (Exception ex) {
-        processException (ex, "An exception has occurred while connecting or opening.");
-      }
+
+      Action connector = connect;
+      connector.BeginInvoke (ar => connector.EndInvoke (ar), null);
     }
 
     /// <summary>
@@ -1840,23 +1883,25 @@ namespace WebSocketSharp
     /// </param>
     public void SetCookie (Cookie cookie)
     {
-      var msg = !_client
-              ? "SetCookie isn't available as a server."
-              : IsOpened
-                ? "A WebSocket connection has already been established."
-                : cookie == null
-                  ? "'cookie' must not be null."
-                  : null;
+      lock (_forConnect) {
+        var msg = !_client
+                ? "SetCookie isn't available as a server."
+                : IsOpened
+                  ? "A WebSocket connection has already been established."
+                  : cookie == null
+                    ? "'cookie' must not be null."
+                    : null;
 
-      if (msg != null) {
-        _logger.Error (msg);
-        error (msg);
+        if (msg != null) {
+          _logger.Error (msg);
+          error (msg);
 
-        return;
-      }
+          return;
+        }
 
-      lock (_cookies.SyncRoot) {
-        _cookies.SetOrRemove (cookie);
+        lock (_cookies.SyncRoot) {
+          _cookies.SetOrRemove (cookie);
+        }
       }
     }
 
@@ -1877,36 +1922,38 @@ namespace WebSocketSharp
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
-      string msg = null;
-      if (!_client)
-        msg = "SetCredentials isn't available as a server.";
-      else if (IsOpened)
-        msg = "A WebSocket connection has already been established.";
-      else if (username.IsNullOrEmpty ()) {
-        _credentials = null;
-        _preAuth = false;
-        _logger.Warn ("Credentials was set back to the default.");
+      lock (_forConnect) {
+        string msg = null;
+        if (!_client)
+          msg = "SetCredentials isn't available as a server.";
+        else if (IsOpened)
+          msg = "A WebSocket connection has already been established.";
+        else if (username.IsNullOrEmpty ()) {
+          _credentials = null;
+          _preAuth = false;
+          _logger.Warn ("Credentials was set back to the default.");
 
-        return;
+          return;
+        }
+        else {
+          msg = username.Contains (':') || !username.IsText ()
+              ? "'username' contains an invalid character."
+              : !password.IsNullOrEmpty () && !password.IsText ()
+                ? "'password' contains an invalid character."
+                : null;
+        }
+
+        if (msg != null) {
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
+        _credentials = new NetworkCredential (
+          username, password, _uri.PathAndQuery);
+        _preAuth = preAuth;
       }
-      else {
-        msg = username.Contains (':') || !username.IsText ()
-            ? "'username' contains an invalid character."
-            : !password.IsNullOrEmpty () && !password.IsText ()
-              ? "'password' contains an invalid character."
-              : null;
-      }
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error (msg);
-
-        return;
-      }
-
-      _credentials = new NetworkCredential (
-        username, password, _uri.PathAndQuery);
-      _preAuth = preAuth;
     }
 
     #endregion
