@@ -692,6 +692,7 @@ namespace WebSocketSharp
       return true;
     }
 
+    // As client
     private bool connect ()
     {
       lock (_forConnect) {
@@ -704,7 +705,7 @@ namespace WebSocketSharp
         }
 
         try {
-          if (_client ? doHandshake () : acceptHandshake ()) {
+          if (doHandshake ()) {
             _readyState = WebSocketState.OPEN;
             return true;
           }
@@ -1592,8 +1593,13 @@ namespace WebSocketSharp
     /// </summary>
     public void Connect ()
     {
-      if (IsOpened) {
-        var msg = "A WebSocket connection has already been established.";
+      var msg = !_client
+              ? "Connect isn't available as a server."
+              : IsOpened
+                ? "A WebSocket connection has already been established."
+                : null;
+
+      if (msg != null) {
         _logger.Error (msg);
         error (msg);
 
@@ -1612,8 +1618,13 @@ namespace WebSocketSharp
     /// </remarks>
     public void ConnectAsync ()
     {
-      if (IsOpened) {
-        var msg = "A WebSocket connection has already been established.";
+      var msg = !_client
+              ? "ConnectAsync isn't available as a server."
+              : IsOpened
+                ? "A WebSocket connection has already been established."
+                : null;
+
+      if (msg != null) {
         _logger.Error (msg);
         error (msg);
 
