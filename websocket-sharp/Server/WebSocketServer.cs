@@ -485,6 +485,9 @@ namespace WebSocketSharp.Server
         return;
       }
 
+      if (_uri.IsAbsoluteUri)
+        context.WebSocket.Url = new Uri (_uri, path);
+
       host.StartSession (context);
     }
 

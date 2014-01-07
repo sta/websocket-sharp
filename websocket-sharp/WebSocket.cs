@@ -117,7 +117,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _uri = context.RequestUri;
+      _uri = context.Path.ToUri ();
 
       init ();
     }
@@ -131,7 +131,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _uri = context.RequestUri;
+      _uri = context.Path.ToUri ();
 
       init ();
     }
@@ -1317,7 +1317,8 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool validateCookies (CookieCollection request, CookieCollection response)
+    private bool validateCookies (
+      CookieCollection request, CookieCollection response)
     {
       return _cookiesValidation != null
              ? _cookiesValidation (request, response)
@@ -1335,11 +1336,11 @@ namespace WebSocketSharp
 
       var i = value.IndexOf (':');
       var host = i > 0 ? value.Substring (0, i) : value;
-      var type = Uri.CheckHostName (host);
+      var expected = _uri.DnsSafeHost;
 
-      return type != UriHostNameType.Dns ||
-             Uri.CheckHostName (_uri.DnsSafeHost) != UriHostNameType.Dns ||
-             host == _uri.DnsSafeHost;
+      return Uri.CheckHostName (host) != UriHostNameType.Dns ||
+             Uri.CheckHostName (expected) != UriHostNameType.Dns ||
+             host == expected;
     }
 
     #endregion
