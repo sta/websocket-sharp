@@ -555,6 +555,17 @@ namespace WebSocketSharp
                    : null;
     }
 
+    private void close (CloseEventArgs args)
+    {
+      try {
+        OnClose.Emit (this, args);
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occurred while OnClose.");
+      }
+    }
+
     private void close (CloseStatusCode code, string reason, bool wait)
     {
       close (
@@ -576,10 +587,10 @@ namespace WebSocketSharp
         _readyState = WebSocketState.CLOSING;
       }
 
-      _logger.Trace ("Start closing handshake.");
-
+      var args = new CloseEventArgs (payload);
       try {
-        var args = new CloseEventArgs (payload);
+        _logger.Trace ("Start closing handshake.");
+
         args.WasClean =
           _client
           ? close (
@@ -593,77 +604,66 @@ namespace WebSocketSharp
               wait ? 1000 : 0,
               closeServerResources);
 
-        _readyState = WebSocketState.CLOSED;
-        OnClose.Emit (this, args);
+        _logger.Trace ("End closing handshake.");
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
         error ("An exception has occurred while closing.");
       }
 
-      _logger.Trace ("End closing handshake.");
+      _readyState = WebSocketState.CLOSED;
+      close (args);
     }
 
-    private bool close (byte [] frameAsBytes, int timeOut, Func<bool> release)
+    private bool close (byte [] frameAsBytes, int timeOut, Action release)
     {
       var sent = frameAsBytes != null && _stream.Write (frameAsBytes);
       var received = timeOut == 0 ||
                      (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeOut));
-      var released = release ();
-      var result = sent && received && released;
+
+      release ();
+      if (_receivePong != null) {
+        _receivePong.Close ();
+        _receivePong = null;
+      }
+
+      if (_exitReceiving != null) {
+        _exitReceiving.Close ();
+        _exitReceiving = null;
+      }
+
+      var result = sent && received;
       _logger.Debug (
         String.Format (
-          "Was clean?: {0}\nsent: {1} received: {2} released: {3}",
-          result,
-          sent,
-          received,
-          released));
+          "Was clean?: {0}\nsent: {1} received: {2}", result, sent, received));
 
       return result;
     }
 
     // As client
-    private bool closeClientResources ()
+    private void closeClientResources ()
     {
-      try {
-        if (_stream != null) {
-          _stream.Dispose ();
-          _stream = null;
-        }
-
-        if (_tcpClient != null) {
-          _tcpClient.Close ();
-          _tcpClient = null;
-        }
-
-        return true;
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while releasing resources.");
+      if (_stream != null) {
+        _stream.Dispose ();
+        _stream = null;
       }
 
-      return false;
+      if (_tcpClient != null) {
+        _tcpClient.Close ();
+        _tcpClient = null;
+      }
     }
 
     // As server
-    private bool closeServerResources ()
+    private void closeServerResources ()
     {
-      try {
-        if (_closeContext != null)
-          _closeContext ();
+      if (_closeContext == null)
+        return;
 
-        _stream = null;
-        _context = null;
-
-        return true;
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while releasing resources.");
-      }
-
-      return false;
+      _closeContext ();
+      _closeContext = null;
+      _stream = null;
+      _context = null;
     }
 
     private bool concatenateFragmentsInto (Stream dest)
@@ -1397,12 +1397,13 @@ namespace WebSocketSharp
 
       try {
         args.WasClean = close (frameAsBytes, waitTimeOut, closeServerResources);
-        _readyState = WebSocketState.CLOSED;
-        OnClose.Emit (this, args);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
       }
+
+      _readyState = WebSocketState.CLOSED;
+      close (args);
     }
 
     // As server
