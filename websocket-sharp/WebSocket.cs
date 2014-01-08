@@ -82,8 +82,7 @@ namespace WebSocketSharp
     private NetworkCredential       _credentials;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
-    private object                  _forClose;
-    private object                  _forConnect;
+    private object                  _forConn;
     private object                  _forSend;
     private volatile Logger         _logger;
     private uint                    _nonceCount;
@@ -190,7 +189,7 @@ namespace WebSocketSharp
       }
     }
 
-    internal bool IsOpened {
+    internal bool IsConnected {
       get {
         return _readyState == WebSocketState.OPEN ||
                _readyState == WebSocketState.CLOSING;
@@ -216,10 +215,10 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConnect) {
+        lock (_forConn) {
           var msg = !_client
                   ? "Set operation of Compression isn't available as a server."
-                  : IsOpened
+                  : IsConnected
                     ? "A WebSocket connection has already been established."
                     : null;
 
@@ -347,11 +346,11 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConnect) {
+        lock (_forConn) {
           string msg = null;
           if (!_client)
             msg = "Set operation of Origin isn't available as a server.";
-          else if (IsOpened)
+          else if (IsConnected)
             msg = "A WebSocket connection has already been established.";
           else if (value.IsNullOrEmpty ()) {
             _origin = value;
@@ -421,12 +420,13 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConnect) {
-          var msg = !_client
-                  ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
-                  : IsOpened
-                    ? "A WebSocket connection has already been established."
-                    : null;
+        lock (_forConn) {
+          var msg =
+            !_client
+            ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
+            : IsConnected
+              ? "A WebSocket connection has already been established."
+              : null;
 
           if (msg != null) {
             _logger.Error (msg);
@@ -576,7 +576,7 @@ namespace WebSocketSharp
 
     private void close (PayloadData payload, bool send, bool wait)
     {
-      lock (_forClose) {
+      lock (_forConn) {
         var msg = _readyState.CheckIfCanClose ();
         if (msg != null) {
           _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
@@ -638,6 +638,13 @@ namespace WebSocketSharp
           "Was clean?: {0}\nsent: {1} received: {2}", result, sent, received));
 
       return result;
+    }
+
+    private void closeAsync (PayloadData payload, bool send, bool wait)
+    {
+      Action<PayloadData, bool, bool> closer = close;
+      closer.BeginInvoke (
+        payload, send, wait, ar => closer.EndInvoke (ar), null);
     }
 
     // As client
@@ -714,8 +721,8 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
-      lock (_forConnect) {
-        if (IsOpened) {
+      lock (_forConn) {
+        if (IsConnected) {
           var msg = "A WebSocket connection has already been established.";
           _logger.Error (msg);
           error (msg);
@@ -863,8 +870,7 @@ namespace WebSocketSharp
       _compression = CompressionMethod.NONE;
       _cookies = new CookieCollection ();
       _extensions = String.Empty;
-      _forClose = new object ();
-      _forConnect = new object ();
+      _forConn = new object ();
       _forSend = new object ();
       _protocol = String.Empty;
       _readyState = WebSocketState.CONNECTING;
@@ -1384,7 +1390,7 @@ namespace WebSocketSharp
     internal void Close (
       CloseEventArgs args, byte [] frameAsBytes, int waitTimeOut)
     {
-      lock (_forClose) {
+      lock (_forConn) {
         var msg = _readyState.CheckIfCanClose ();
         if (msg != null) {
           _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
@@ -1619,13 +1625,152 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Closes the WebSocket connection asynchronously, and releases all
+    /// associated resources.
+    /// </summary>
+    /// <remarks>
+    /// This method doesn't wait for the close to be complete.
+    /// </remarks>
+    public void CloseAsync ()
+    {
+      var msg = _readyState.CheckIfCanClose ();
+      if (msg != null) {
+        _logger.Error (String.Format ("{0}\nstate: {1}", msg, _readyState));
+        error (msg);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.OPEN;
+      closeAsync (new PayloadData (), send, send);
+    }
+
+    /// <summary>
+    /// Closes the WebSocket connection asynchronously with the specified
+    /// <see cref="ushort"/>, and releases all associated resources.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method doesn't wait for the close to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/>
+    ///   isn't in the allowable range of the WebSocket close status code.
+    ///   </para>
+    /// </remarks>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// </param>
+    public void CloseAsync (ushort code)
+    {
+      CloseAsync (code, null);
+    }
+
+    /// <summary>
+    /// Closes the WebSocket connection asynchronously with the specified
+    /// <see cref="CloseStatusCode"/>, and releases all associated resources.
+    /// </summary>
+    /// <remarks>
+    /// This method doesn't wait for the close to be complete.
+    /// </remarks>
+    /// <param name="code">
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
+    /// codes for closure.
+    /// </param>
+    public void CloseAsync (CloseStatusCode code)
+    {
+      CloseAsync (code, null);
+    }
+
+    /// <summary>
+    /// Closes the WebSocket connection asynchronously with the specified
+    /// <see cref="ushort"/> and <see cref="string"/>, and releases all
+    /// associated resources.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method doesn't wait for the close to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/>
+    ///   isn't in the allowable range of the WebSocket close status code or the
+    ///   length of <paramref name="reason"/> is greater than 123 bytes.
+    ///   </para>
+    /// </remarks>
+    /// <param name="code">
+    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that represents the reason for closure.
+    /// </param>
+    public void CloseAsync (ushort code, string reason)
+    {
+      byte [] data = null;
+      var msg = _readyState.CheckIfCanClose () ??
+                code.CheckIfValidCloseStatusCode () ??
+                (data = code.Append (reason)).CheckIfValidCloseData ();
+
+      if (msg != null) {
+        _logger.Error (
+          String.Format (
+            "{0}\nstate: {1} code: {2} reason: {3}", msg, _readyState, code, reason));
+        error (msg);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      closeAsync (new PayloadData (data), send, send);
+    }
+
+    /// <summary>
+    /// Closes the WebSocket connection asynchronously with the specified
+    /// <see cref="CloseStatusCode"/> and <see cref="string"/>, and releases all
+    /// associated resources.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method doesn't wait for the close to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method emits a <see cref="OnError"/> event if the length of
+    ///   <paramref name="reason"/> is greater than 123 bytes.
+    ///   </para>
+    /// </remarks>
+    /// <param name="code">
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
+    /// codes for closure.
+    /// </param>
+    /// <param name="reason">
+    /// A <see cref="string"/> that represents the reason for closure.
+    /// </param>
+    public void CloseAsync (CloseStatusCode code, string reason)
+    {
+      byte [] data = null;
+      var msg = _readyState.CheckIfCanClose () ??
+                (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+
+      if (msg != null) {
+        _logger.Error (
+          String.Format (
+            "{0}\nstate: {1} reason: {2}", msg, _readyState, reason));
+        error (msg);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      closeAsync (new PayloadData (data), send, send);
+    }
+
+    /// <summary>
     /// Establishes a WebSocket connection.
     /// </summary>
     public void Connect ()
     {
       var msg = !_client
               ? "Connect isn't available as a server."
-              : IsOpened
+              : IsConnected
                 ? "A WebSocket connection has already been established."
                 : null;
 
@@ -1650,7 +1795,7 @@ namespace WebSocketSharp
     {
       var msg = !_client
               ? "ConnectAsync isn't available as a server."
-              : IsOpened
+              : IsConnected
                 ? "A WebSocket connection has already been established."
                 : null;
 
@@ -1963,10 +2108,10 @@ namespace WebSocketSharp
     /// </param>
     public void SetCookie (Cookie cookie)
     {
-      lock (_forConnect) {
+      lock (_forConn) {
         var msg = !_client
                 ? "SetCookie isn't available as a server."
-                : IsOpened
+                : IsConnected
                   ? "A WebSocket connection has already been established."
                   : cookie == null
                     ? "'cookie' must not be null."
@@ -2002,11 +2147,11 @@ namespace WebSocketSharp
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
-      lock (_forConnect) {
+      lock (_forConn) {
         string msg = null;
         if (!_client)
           msg = "SetCredentials isn't available as a server.";
-        else if (IsOpened)
+        else if (IsConnected)
           msg = "A WebSocket connection has already been established.";
         else if (username.IsNullOrEmpty ()) {
           _credentials = null;
