@@ -180,12 +180,10 @@ namespace WebSocketSharp
 
     internal static byte [] Append (this ushort code, string reason)
     {
-      using (var buffer = new MemoryStream ())
-      {
+      using (var buffer = new MemoryStream ()) {
         var tmp = code.ToByteArrayInternally (ByteOrder.BIG);
         buffer.Write (tmp, 0, 2);
-        if (reason != null && reason.Length > 0)
-        {
+        if (reason != null && reason.Length > 0) {
           tmp = Encoding.UTF8.GetBytes (reason);
           buffer.Write (tmp, 0, tmp.Length);
         }
@@ -193,6 +191,13 @@ namespace WebSocketSharp
         buffer.Close ();
         return buffer.ToArray ();
       }
+    }
+
+    internal static string CheckIfCanClose (this WebSocketState state)
+    {
+      return state == WebSocketState.CLOSING || state == WebSocketState.CLOSED
+             ? "While closing the WebSocket connection, or already closed."
+             : null;
     }
 
     internal static string CheckIfCanRead (this Stream stream)
@@ -1149,8 +1154,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="ushort"/> is in the allowable range of
-    /// the WebSocket close status code.
+    /// Determines whether the specified <see cref="ushort"/> is in the allowable
+    /// range of the WebSocket close status code.
     /// </summary>
     /// <remarks>
     /// Not allowable ranges are the followings.
@@ -1162,14 +1167,15 @@ namespace WebSocketSharp
     ///     </item>
     ///     <item>
     ///       <term>
-    ///       Numbers which are greater than 4999 are out of the reserved close status code ranges.
+    ///       Numbers which are greater than 4999 are out of the reserved close
+    ///       status code ranges.
     ///       </term>
     ///     </item>
     ///   </list>
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is in the allowable range of the WebSocket close status code;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is in the allowable range of the
+    /// WebSocket close status code; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="ushort"/> to test.

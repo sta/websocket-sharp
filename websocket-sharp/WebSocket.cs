@@ -557,34 +557,49 @@ namespace WebSocketSharp
 
     private void close (CloseStatusCode code, string reason, bool wait)
     {
-      close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
+      close (
+        new PayloadData (((ushort) code).Append (reason)),
+        !code.IsReserved (),
+        wait);
     }
 
     private void close (PayloadData payload, bool send, bool wait)
     {
-      lock (_forClose)
-      {
-        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
+      lock (_forClose) {
+        var msg = _readyState.CheckIfCanClose ();
+        if (msg != null) {
+          _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
+
           return;
+        }
 
         _readyState = WebSocketState.CLOSING;
       }
 
       _logger.Trace ("Start closing handshake.");
 
-      var args = new CloseEventArgs (payload);
-      args.WasClean = _client
-                    ? close (
-                        send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray () : null,
-                        wait ? 5000 : 0,
-                        closeClientResources)
-                    : close (
-                        send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray () : null,
-                        wait ? 1000 : 0,
-                        closeServerResources);
+      try {
+        var args = new CloseEventArgs (payload);
+        args.WasClean =
+          _client
+          ? close (
+              send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray ()
+                   : null,
+              wait ? 5000 : 0,
+              closeClientResources)
+          : close (
+              send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                   : null,
+              wait ? 1000 : 0,
+              closeServerResources);
 
-      _readyState = WebSocketState.CLOSED;
-      OnClose.Emit (this, args);
+        _readyState = WebSocketState.CLOSED;
+        OnClose.Emit (this, args);
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occurred while closing.");
+      }
 
       _logger.Trace ("End closing handshake.");
     }
@@ -592,11 +607,17 @@ namespace WebSocketSharp
     private bool close (byte [] frameAsBytes, int timeOut, Func<bool> release)
     {
       var sent = frameAsBytes != null && _stream.Write (frameAsBytes);
-      var received = timeOut == 0 || (sent && _exitReceiving.WaitOne (timeOut));
+      var received = timeOut == 0 ||
+                     (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeOut));
       var released = release ();
       var result = sent && received && released;
-      _logger.Debug (String.Format (
-        "Was clean?: {0}\nsent: {1} received: {2} released: {3}", result, sent, received, released));
+      _logger.Debug (
+        String.Format (
+          "Was clean?: {0}\nsent: {1} received: {2} released: {3}",
+          result,
+          sent,
+          received,
+          released));
 
       return result;
     }
@@ -605,14 +626,12 @@ namespace WebSocketSharp
     private bool closeClientResources ()
     {
       try {
-        if (_stream != null)
-        {
+        if (_stream != null) {
           _stream.Dispose ();
           _stream = null;
         }
 
-        if (_tcpClient != null)
-        {
+        if (_tcpClient != null) {
           _tcpClient.Close ();
           _tcpClient = null;
         }
@@ -621,10 +640,10 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred.");
-
-        return false;
+        error ("An exception has occurred while releasing resources.");
       }
+
+      return false;
     }
 
     // As server
@@ -641,10 +660,10 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred.");
-
-        return false;
+        error ("An exception has occurred while releasing resources.");
       }
+
+      return false;
     }
 
     private bool concatenateFragmentsInto (Stream dest)
@@ -886,21 +905,18 @@ namespace WebSocketSharp
     {
       var code = CloseStatusCode.ABNORMAL;
       var msg = reason;
-      if (exception.GetType () == typeof (WebSocketException))
-      {
+      if (exception is WebSocketException) {
         var wsex = (WebSocketException) exception;
         code = wsex.Code;
         reason = wsex.Message;
       }
 
       if (code == CloseStatusCode.ABNORMAL ||
-          code == CloseStatusCode.TLS_HANDSHAKE_FAILURE)
-      {
+          code == CloseStatusCode.TLS_HANDSHAKE_FAILURE) {
         _logger.Fatal (exception.ToString ());
         reason = msg;
       }
-      else
-      {
+      else {
         _logger.Error (reason);
         msg = null;
       }
@@ -1365,21 +1381,28 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs args, byte [] frameAsBytes, int waitTimeOut)
+    internal void Close (
+      CloseEventArgs args, byte [] frameAsBytes, int waitTimeOut)
     {
-      lock (_forClose)
-      {
-        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED)
+      lock (_forClose) {
+        var msg = _readyState.CheckIfCanClose ();
+        if (msg != null) {
+          _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
+
           return;
+        }
 
         _readyState = WebSocketState.CLOSING;
       }
 
-      args.WasClean = close (frameAsBytes, waitTimeOut, closeServerResources);
-
-      _readyState = WebSocketState.CLOSED;
-
-      OnClose.Emit (this, args);
+      try {
+        args.WasClean = close (frameAsBytes, waitTimeOut, closeServerResources);
+        _readyState = WebSocketState.CLOSED;
+        OnClose.Emit (this, args);
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+      }
     }
 
     // As server
@@ -1480,11 +1503,20 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Closes the WebSocket connection and releases all associated resources.
+    /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     public void Close ()
     {
-      close (new PayloadData (), _readyState == WebSocketState.OPEN, true);
+      var msg = _readyState.CheckIfCanClose ();
+      if (msg != null) {
+        _logger.Error (String.Format ("{0}\nstate: {1}", msg, _readyState));
+        error (msg);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.OPEN;
+      close (new PayloadData (), send, send);
     }
 
     /// <summary>
@@ -1492,25 +1524,15 @@ namespace WebSocketSharp
     /// and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method emits a <see cref="OnError"/> event if <paramref name="code"/> is not
-    /// in the allowable range of the WebSocket close status code.
+    /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
+    /// isn't in the allowable range of the WebSocket close status code.
     /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that indicates the status code for closure.
     /// </param>
     public void Close (ushort code)
     {
-      var msg = code.CheckIfValidCloseStatusCode ();
-      if (msg != null)
-      {
-        _logger.Error (String.Format ("{0}\ncode: {1}", msg, code));
-        error (msg);
-
-        return;
-      }
-
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (code.ToByteArrayInternally (ByteOrder.BIG)), send, true);
+      Close (code, null);
     }
 
     /// <summary>
@@ -1518,75 +1540,81 @@ namespace WebSocketSharp
     /// and releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
+    /// codes for closure.
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (((ushort) code).ToByteArrayInternally (ByteOrder.BIG)), send, true);
+      Close (code, null);
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <see cref="ushort"/> and <see cref="string"/>,
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <see cref="ushort"/>
+    /// and <see cref="string"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method emits a <see cref="OnError"/> event if <paramref name="code"/> is not
-    /// in the allowable range of the WebSocket close status code
-    /// or the length of <paramref name="reason"/> is greater than 123 bytes.
+    /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
+    /// isn't in the allowable range of the WebSocket close status code or the
+    /// length of <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that indicates the status code for closure.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for closure.
+    /// A <see cref="string"/> that represents the reason for closure.
     /// </param>
     public void Close (ushort code, string reason)
     {
       byte [] data = null;
-      var msg = code.CheckIfValidCloseStatusCode () ??
+      var msg = _readyState.CheckIfCanClose () ??
+                code.CheckIfValidCloseStatusCode () ??
                 (data = code.Append (reason)).CheckIfValidCloseData ();
 
-      if (msg != null)
-      {
-        _logger.Error (String.Format ("{0}\ncode: {1}\nreason: {2}", msg, code, reason));
+      if (msg != null) {
+        _logger.Error (
+          String.Format (
+            "{0}\nstate: {1} code: {2} reason: {3}", msg, _readyState, code, reason));
         error (msg);
 
         return;
       }
 
       var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (data), send, true);
+      close (new PayloadData (data), send, send);
     }
 
     /// <summary>
-    /// Closes the WebSocket connection with the specified <see cref="CloseStatusCode"/> and
-    /// <see cref="string"/>, and releases all associated resources.
+    /// Closes the WebSocket connection with the specified <see cref="CloseStatusCode"/>
+    /// and <see cref="string"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method emits a <see cref="OnError"/> event if the length of <paramref name="reason"/>
-    /// is greater than 123 bytes.
+    /// This method emits a <see cref="OnError"/> event if the length of
+    /// <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
+    /// codes for closure.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for closure.
+    /// A <see cref="string"/> that represents the reason for closure.
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      var data = ((ushort) code).Append (reason);
-      var msg = data.CheckIfValidCloseData ();
-      if (msg != null)
-      {
-        _logger.Error (String.Format ("{0}\nreason: {1}", msg, reason));
+      byte [] data = null;
+      var msg = _readyState.CheckIfCanClose () ??
+                (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+
+      if (msg != null) {
+        _logger.Error (
+          String.Format (
+            "{0}\nstate: {1} reason: {2}", msg, _readyState, reason));
         error (msg);
 
         return;
       }
 
       var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
-      close (new PayloadData (data), send, true);
+      close (new PayloadData (data), send, send);
     }
 
     /// <summary>
@@ -1642,14 +1670,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection and releases all associated resources.
+    /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method closes the WebSocket connection with the <see cref="CloseStatusCode.AWAY"/>.
+    /// This method closes the WebSocket connection with the
+    /// <see cref="CloseStatusCode.AWAY"/>.
     /// </remarks>
     public void Dispose ()
     {
-      Close (CloseStatusCode.AWAY);
+      Close (CloseStatusCode.AWAY, null);
     }
 
     /// <summary>
