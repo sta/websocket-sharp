@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -868,166 +868,149 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client associated with the specified
-    /// <paramref name="servicePath"/> and <paramref name="id"/>.
+    /// Sends a binary <paramref name="data"/> to the client associated with the
+    /// specified <paramref name="servicePath"/> and <paramref name="id"/>.
     /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
+    /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
+    /// A <see cref="string"/> that represents the session ID that represents the
+    /// destination for the data.
     /// </param>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// An array of <see cref="byte"/> that contains the binary data to send.
     /// </param>
     public void SendTo (string servicePath, string id, byte [] data)
     {
-      SendTo (servicePath, id, data, null);
+      WebSocketServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        host.Sessions.SendTo (id, data);
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client associated with the specified
-    /// <paramref name="servicePath"/> and <paramref name="id"/>.
+    /// Sends a text <paramref name="data"/> to the client associated with the
+    /// specified <paramref name="servicePath"/> and <paramref name="id"/>.
     /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
+    /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
+    /// A <see cref="string"/> that represents the session ID that represents the
+    /// destination for the data.
     /// </param>
     /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     public void SendTo (string servicePath, string id, string data)
     {
-      SendTo (servicePath, id, data, null);
+      WebSocketServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        host.Sessions.SendTo (id, data);
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client associated with the specified
-    /// <paramref name="servicePath"/> and <paramref name="id"/>.
+    /// Sends a binary <paramref name="data"/> asynchronously to the client
+    /// associated with the specified <paramref name="servicePath"/> and
+    /// <paramref name="id"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
+    /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
+    /// A <see cref="string"/> that represents the session ID that represents the
+    /// destination for the data.
     /// </param>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// An array of <see cref="byte"/> that contains the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
     /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
-    /// successfully; otherwise, <c>false</c>.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    public void SendTo (string servicePath, string id, byte [] data, Action<bool> completed)
+    public void SendToAsync (
+      string servicePath, string id, byte [] data, Action<bool> completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendTo (id, data, completed);
+        host.Sessions.SendToAsync (id, data, completed);
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client associated with the specified
-    /// <paramref name="servicePath"/> and <paramref name="id"/>.
+    /// Sends a text <paramref name="data"/> asynchronously to the client
+    /// associated with the specified <paramref name="servicePath"/> and
+    /// <paramref name="id"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
+    /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
+    /// A <see cref="string"/> that represents the session ID that represents the
+    /// destination for the data.
     /// </param>
     /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
     /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
-    /// successfully; otherwise, <c>false</c>.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    public void SendTo (string servicePath, string id, string data, Action<bool> completed)
+    public void SendToAsync (
+      string servicePath, string id, string data, Action<bool> completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendTo (id, data, completed);
+        host.Sessions.SendToAsync (id, data, completed);
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> to the client associated with
-    /// the specified <paramref name="servicePath"/> and <paramref name="id"/>.
+    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
+    /// to the client associated with the specified <paramref name="servicePath"/>
+    /// and <paramref name="id"/>.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
+    /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
+    /// A <see cref="string"/> that represents the session ID that represents the
+    /// destination for the data.
     /// </param>
     /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// A <see cref="Stream"/> object from which contains the binary data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
-    /// </param>
-    public void SendTo (string servicePath, string id, Stream stream, int length)
-    {
-      SendTo (servicePath, id, stream, length, null);
-    }
-
-    /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> to the client associated with
-    /// the specified <paramref name="servicePath"/> and <paramref name="id"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that contains a session ID that represents the destination
-    /// for the data.
-    /// </param>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
+    /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
     /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is complete
-    /// successfully; otherwise, <c>false</c>.
+    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
+    /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    public void SendTo (
+    public void SendToAsync (
       string servicePath, string id, Stream stream, int length, Action<bool> completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendTo (id, stream, length, completed);
+        host.Sessions.SendToAsync (id, stream, length, completed);
     }
 
     /// <summary>

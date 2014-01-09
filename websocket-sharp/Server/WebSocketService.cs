@@ -5,7 +5,7 @@
  * The MIT License
  *
  * Copyright (c) 2012-2014 sta.blockhead
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -182,8 +182,7 @@ namespace WebSocketSharp.Server
     private void onOpen (object sender, EventArgs e)
     {
       ID = _sessions.Add (this);
-      if (ID == null)
-      {
+      if (ID == null) {
         _websocket.Close (CloseStatusCode.AWAY);
         return;
       }
@@ -303,59 +302,50 @@ namespace WebSocketSharp.Server
     /// Sends a binary <paramref name="data"/> to the client of the current
     /// <see cref="WebSocketService"/> instance.
     /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// An array of <see cref="byte"/> that contains the binary data to send.
     /// </param>
     protected void Send (byte [] data)
     {
       if (_websocket != null)
-        _websocket.Send (data, null);
+        _websocket.Send (data);
     }
 
     /// <summary>
     /// Sends a binary data from the specified <see cref="FileInfo"/> to
     /// the client of the current <see cref="WebSocketService"/> instance.
     /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// A <see cref="FileInfo"/> from which contains the binary data to send.
     /// </param>
     protected void Send (FileInfo file)
     {
       if (_websocket != null)
-        _websocket.Send (file, null);
+        _websocket.Send (file);
     }
 
     /// <summary>
     /// Sends a text <paramref name="data"/> to the client of the current
     /// <see cref="WebSocketService"/> instance.
     /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     protected void Send (string data)
     {
       if (_websocket != null)
-        _websocket.Send (data, null);
+        _websocket.Send (data);
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
+    /// Sends a binary <paramref name="data"/> asynchronously to the client of the
+    /// current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains a binary data to send.
+    /// An array of <see cref="byte"/> that contains the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -363,21 +353,22 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    protected void Send (byte [] data, Action<bool> completed)
+    protected void SendAsync (byte [] data, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (data, completed);
+        _websocket.SendAsync (data, completed);
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/> to
-    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// asynchronously to the client of the current <see cref="WebSocketService"/>
+    /// instance.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains a binary data to send.
+    /// A <see cref="FileInfo"/> from which contains the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -385,21 +376,21 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    protected void Send (FileInfo file, Action<bool> completed)
+    protected void SendAsync (FileInfo file, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (file, completed);
+        _websocket.SendAsync (file, completed);
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
+    /// Sends a text <paramref name="data"/> asynchronously to the client of the
+    /// current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that contains a text data to send.
+    /// A <see cref="string"/> that contains the text data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -407,43 +398,24 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    protected void Send (string data, Action<bool> completed)
+    protected void SendAsync (string data, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (data, completed);
+        _websocket.SendAsync (data, completed);
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> to
-    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
+    /// to the client of the current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
+    /// A <see cref="Stream"/> object from which contains the binary data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
-    /// </param>
-    protected void Send (Stream stream, int length)
-    {
-      if (_websocket != null)
-        _websocket.Send (stream, length, null);
-    }
-
-    /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> to
-    /// the client of the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <remarks>
-    /// This method does not wait for the send to be complete.
-    /// </remarks>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains a binary data to send.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that contains the number of bytes to send.
+    /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -451,10 +423,10 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
     /// complete successfully; otherwise, <c>false</c>.
     /// </param>
-    protected void Send (Stream stream, int length, Action<bool> completed)
+    protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       if (_websocket != null)
-        _websocket.Send (stream, length, completed);
+        _websocket.SendAsync (stream, length, completed);
     }
 
     /// <summary>
