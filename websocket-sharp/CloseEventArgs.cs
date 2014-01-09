@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,12 +32,13 @@ using System.Text;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
+  /// Contains the event data associated with a <see cref="WebSocket.OnClose"/>
+  /// event.
   /// </summary>
   /// <remarks>
-  /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been closed.
-  /// If you want to get the reason for closure, you access the <see cref="CloseEventArgs.Code"/> or
-  /// <see cref="CloseEventArgs.Reason"/> property.
+  /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection
+  /// has been closed. If you want to get the reason for closure, you access the
+  /// <see cref="Code"/> or <see cref="Reason"/> property.
   /// </remarks>
   public class CloseEventArgs : EventArgs
   {
@@ -79,7 +80,7 @@ namespace WebSocketSharp
     /// Gets the reason for closure.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the reason for closure if any.
+    /// A <see cref="string"/> that represents the reason for closure if any.
     /// </value>
     public string Reason {
       get {
@@ -88,10 +89,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection has been closed cleanly.
+    /// Gets a value indicating whether the WebSocket connection has been closed
+    /// cleanly.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection has been closed cleanly; otherwise, <c>false</c>.
+    /// <c>true</c> if the WebSocket connection has been closed cleanly;
+    /// otherwise, <c>false</c>.
     /// </value>
     public bool WasClean {
       get {

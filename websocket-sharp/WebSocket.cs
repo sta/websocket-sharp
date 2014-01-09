@@ -555,17 +555,6 @@ namespace WebSocketSharp
                    : null;
     }
 
-    private void close (CloseEventArgs args)
-    {
-      try {
-        OnClose.Emit (this, args);
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while OnClose.");
-      }
-    }
-
     private void close (CloseStatusCode code, string reason, bool wait)
     {
       close (
@@ -587,35 +576,56 @@ namespace WebSocketSharp
         _readyState = WebSocketState.CLOSING;
       }
 
+      _logger.Trace ("Start closing handshake.");
+
       var args = new CloseEventArgs (payload);
+      args.WasClean =
+        _client
+        ? closeHandshake (
+            send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray ()
+                 : null,
+            wait ? 5000 : 0,
+            closeClientResources)
+        : closeHandshake (
+            send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                 : null,
+            wait ? 1000 : 0,
+            closeServerResources);
+
+      _logger.Trace ("End closing handshake.");
+
+      _readyState = WebSocketState.CLOSED;
       try {
-        _logger.Trace ("Start closing handshake.");
-
-        args.WasClean =
-          _client
-          ? close (
-              send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray ()
-                   : null,
-              wait ? 5000 : 0,
-              closeClientResources)
-          : close (
-              send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
-                   : null,
-              wait ? 1000 : 0,
-              closeServerResources);
-
-        _logger.Trace ("End closing handshake.");
+        OnClose.Emit (this, args);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while closing.");
+        error ("An exception has occurred while OnClose.");
       }
-
-      _readyState = WebSocketState.CLOSED;
-      close (args);
     }
 
-    private bool close (byte [] frameAsBytes, int timeOut, Action release)
+    private void closeAsync (PayloadData payload, bool send, bool wait)
+    {
+      Action<PayloadData, bool, bool> closer = close;
+      closer.BeginInvoke (
+        payload, send, wait, ar => closer.EndInvoke (ar), null);
+    }
+
+    // As client
+    private void closeClientResources ()
+    {
+      if (_stream != null) {
+        _stream.Dispose ();
+        _stream = null;
+      }
+
+      if (_tcpClient != null) {
+        _tcpClient.Close ();
+        _tcpClient = null;
+      }
+    }
+
+    private bool closeHandshake (byte [] frameAsBytes, int timeOut, Action release)
     {
       var sent = frameAsBytes != null && _stream.Write (frameAsBytes);
       var received = timeOut == 0 ||
@@ -638,27 +648,6 @@ namespace WebSocketSharp
           "Was clean?: {0}\nsent: {1} received: {2}", result, sent, received));
 
       return result;
-    }
-
-    private void closeAsync (PayloadData payload, bool send, bool wait)
-    {
-      Action<PayloadData, bool, bool> closer = close;
-      closer.BeginInvoke (
-        payload, send, wait, ar => closer.EndInvoke (ar), null);
-    }
-
-    // As client
-    private void closeClientResources ()
-    {
-      if (_stream != null) {
-        _stream.Dispose ();
-        _stream = null;
-      }
-
-      if (_tcpClient != null) {
-        _tcpClient.Close ();
-        _tcpClient = null;
-      }
     }
 
     // As server
@@ -1401,15 +1390,16 @@ namespace WebSocketSharp
         _readyState = WebSocketState.CLOSING;
       }
 
+      args.WasClean = closeHandshake (
+        frameAsBytes, waitTimeOut, closeServerResources);
+
+      _readyState = WebSocketState.CLOSED;
       try {
-        args.WasClean = close (frameAsBytes, waitTimeOut, closeServerResources);
+        OnClose.Emit (this, args);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
       }
-
-      _readyState = WebSocketState.CLOSED;
-      close (args);
     }
 
     // As server
