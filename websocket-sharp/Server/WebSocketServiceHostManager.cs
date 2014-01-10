@@ -134,7 +134,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of the WebSocket service hosts managed by the server.
+    /// Gets the collection of the WebSocket service hosts managed by the manager.
     /// </summary>
     /// <value>
     /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of
@@ -165,11 +165,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the number of the sessions to the every WebSocket service provided by
-    /// the server.
+    /// Gets the number of the WebSocket sessions to the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the session count of the server.
+    /// An <see cref="int"/> that represents the number of the sessions to the
+    /// server.
     /// </value>
     public int SessionCount {
       get {
@@ -509,18 +509,13 @@ namespace WebSocketSharp.Server
           else
             broadcast (Opcode.BINARY, new MemoryStream (data), completed);
         },
-        ex => {
-          _logger.Fatal (ex.ToString ());
-        });
+        ex => _logger.Fatal (ex.ToString ()));
     }
 
     /// <summary>
     /// Broadcasts a binary <paramref name="data"/> to all clients of the
     /// WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
-    /// </remarks>
     /// <param name="servicePath">
     /// A <see cref="string"/> that represents the absolute path to the WebSocket
     /// service to find.
@@ -530,16 +525,15 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (string servicePath, byte [] data)
     {
-      BroadcastTo (servicePath, data, null);
+      WebSocketServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        host.Sessions.Broadcast (data);
     }
 
     /// <summary>
     /// Broadcasts a text <paramref name="data"/> to all clients of the WebSocket
     /// service with the specified <paramref name="servicePath"/>.
     /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
-    /// </remarks>
     /// <param name="servicePath">
     /// A <see cref="string"/> that represents the absolute path to the WebSocket
     /// service to find.
@@ -549,12 +543,14 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastTo (string servicePath, string data)
     {
-      BroadcastTo (servicePath, data, null);
+      WebSocketServiceHost host;
+      if (TryGetServiceHost (servicePath, out host))
+        host.Sessions.Broadcast (data);
     }
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> to all clients of the
-    /// WebSocket service with the specified <paramref name="servicePath"/>.
+    /// Broadcasts a binary <paramref name="data"/> asynchronously to all clients
+    /// of the WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
@@ -570,16 +566,17 @@ namespace WebSocketSharp.Server
     /// A <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
-    public void BroadcastTo (string servicePath, byte [] data, Action completed)
+    public void BroadcastToAsync (
+      string servicePath, byte [] data, Action completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.Broadcast (data, completed);
+        host.Sessions.BroadcastAsync (data, completed);
     }
 
     /// <summary>
-    /// Broadcasts a text <paramref name="data"/> to all clients of the WebSocket
-    /// service with the specified <paramref name="servicePath"/>.
+    /// Broadcasts a text <paramref name="data"/> asynchronously to all clients of
+    /// the WebSocket service with the specified <paramref name="servicePath"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
@@ -595,16 +592,18 @@ namespace WebSocketSharp.Server
     /// A <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
-    public void BroadcastTo (string servicePath, string data, Action completed)
+    public void BroadcastToAsync (
+      string servicePath, string data, Action completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.Broadcast (data, completed);
+        host.Sessions.BroadcastAsync (data, completed);
     }
 
     /// <summary>
-    /// Broadcasts a binary data from the specified <see cref="Stream"/> to all
-    /// clients of the WebSocket service with the specified <paramref name="servicePath"/>.
+    /// Broadcasts a binary data from the specified <see cref="Stream"/>
+    /// asynchronously to all clients of the WebSocket service with the specified
+    /// <paramref name="servicePath"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
@@ -624,12 +623,12 @@ namespace WebSocketSharp.Server
     /// A <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
-    public void BroadcastTo (
+    public void BroadcastToAsync (
       string servicePath, Stream stream, int length, Action completed)
     {
       WebSocketServiceHost host;
       if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.Broadcast (stream, length, completed);
+        host.Sessions.BroadcastAsync (stream, length, completed);
     }
 
     /// <summary>
@@ -741,7 +740,7 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID to find.
+    /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
     public void CloseSession (string servicePath, string id)
     {
@@ -759,10 +758,10 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID to find.
+    /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -784,7 +783,7 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID to find.
+    /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> values that indicate the status
@@ -814,8 +813,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the Ping.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// Ping to.
     /// </param>
     public bool PingTo (string servicePath, string id)
     {
@@ -838,8 +837,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the Ping.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// Ping to.
     /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
@@ -860,8 +859,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the data.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// data to.
     /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains the binary data to send.
@@ -882,8 +881,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the data.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// data to.
     /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
@@ -908,8 +907,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the data.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// data to.
     /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that contains the binary data to send.
@@ -941,8 +940,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the data.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// data to.
     /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
@@ -974,8 +973,8 @@ namespace WebSocketSharp.Server
     /// service to find.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the session ID that represents the
-    /// destination for the data.
+    /// A <see cref="string"/> that represents the ID of the session to send the
+    /// data to.
     /// </param>
     /// <param name="stream">
     /// A <see cref="Stream"/> object from which contains the binary data to send.
