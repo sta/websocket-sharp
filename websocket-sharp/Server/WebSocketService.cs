@@ -27,18 +27,15 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
-using System.Text;
-using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides the basic functions of the WebSocket service used by the WebSocket service host.
+  /// Provides the basic functions of the WebSocket service provided by the
+  /// <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketService class is an abstract class.
@@ -54,12 +51,12 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Public Constructors
+    #region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketService"/> class.
     /// </summary>
-    public WebSocketService ()
+    protected WebSocketService ()
     {
       _start = DateTime.MaxValue;
     }
@@ -72,8 +69,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the logging functions.
     /// </summary>
     /// <remarks>
-    /// If you want to change the current logger to the service own logger, you set this property
-    /// to a new <see cref="Logger"/> instance that you created.
+    /// If you want to change the current logger to the service own logger, you
+    /// set this property to a new <see cref="Logger"/> instance that you created.
     /// </remarks>
     /// <value>
     /// A <see cref="Logger"/> that provides the logging functions.
@@ -95,7 +92,8 @@ namespace WebSocketSharp.Server
     /// Gets the manager of the sessions to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions to the WebSocket service.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions to the
+    /// WebSocket service.
     /// </value>
     protected WebSocketSessionManager Sessions {
       get {
@@ -111,7 +109,8 @@ namespace WebSocketSharp.Server
     /// Gets the WebSocket connection request information.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that contains the WebSocket connection request information.
+    /// A <see cref="WebSocketContext"/> that represents the WebSocket connection
+    /// request.
     /// </value>
     public WebSocketContext Context {
       get {
@@ -123,18 +122,20 @@ namespace WebSocketSharp.Server
     /// Gets the unique ID of the current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the unique ID.
+    /// A <see cref="string"/> that represents the unique ID of the current
+    /// <see cref="WebSocketService"/> instance.
     /// </value>
     public string ID {
       get; private set;
     }
 
     /// <summary>
-    /// Gets the time that the current <see cref="WebSocketService"/> instance has been started.
+    /// Gets the time that the current <see cref="WebSocketService"/> instance
+    /// has been started.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time that the current <see cref="WebSocketService"/>
-    /// instance has been started.
+    /// A <see cref="DateTime"/> that represents the time that the current
+    /// <see cref="WebSocketService"/> instance has been started.
     /// </value>
     public DateTime StartTime {
       get {
@@ -146,7 +147,8 @@ namespace WebSocketSharp.Server
     /// Gets the state of the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> values.
+    /// One of the <see cref="WebSocketState"/> values that indicate the state of
+    /// the WebSocket connection.
     /// </value>
     public WebSocketState State {
       get {
@@ -214,14 +216,15 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Calls the <see cref="OnError"/> method with the specified <paramref name="message"/>.
+    /// Calls the <see cref="OnError"/> method with the specified
+    /// <paramref name="message"/>.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that contains an error message.
+    /// A <see cref="string"/> that represents the error message.
     /// </param>
     protected void Error (string message)
     {
-      if (!message.IsNullOrEmpty ())
+      if (message != null && message.Length > 0)
         OnError (new ErrorEventArgs (message));
     }
 
@@ -229,20 +232,20 @@ namespace WebSocketSharp.Server
     /// Is called when the WebSocket connection has been closed.
     /// </summary>
     /// <param name="e">
-    /// A <see cref="CloseEventArgs"/> that contains an event data associated with
-    /// an inner <see cref="WebSocket.OnClose"/> event.
+    /// A <see cref="CloseEventArgs"/> that contains the event data associated
+    /// with an inner <see cref="WebSocket.OnClose"/> event.
     /// </param>
     protected virtual void OnClose (CloseEventArgs e)
     {
     }
 
     /// <summary>
-    /// Is called when the inner <see cref="WebSocket"/> or current <see cref="WebSocketService"/>
-    /// gets an error.
+    /// Is called when the inner <see cref="WebSocket"/> or current
+    /// <see cref="WebSocketService"/> gets an error.
     /// </summary>
     /// <param name="e">
-    /// An <see cref="ErrorEventArgs"/> that contains an event data associated with
-    /// an inner <see cref="WebSocket.OnError"/> event.
+    /// An <see cref="ErrorEventArgs"/> that contains the event data associated
+    /// with an inner <see cref="WebSocket.OnError"/> event.
     /// </param>
     protected virtual void OnError (ErrorEventArgs e)
     {
@@ -252,8 +255,8 @@ namespace WebSocketSharp.Server
     /// Is called when the inner <see cref="WebSocket"/> receives a data frame.
     /// </summary>
     /// <param name="e">
-    /// A <see cref="MessageEventArgs"/> that contains an event data associated with
-    /// an inner <see cref="WebSocket.OnMessage"/> event.
+    /// A <see cref="MessageEventArgs"/> that contains the event data associated
+    /// with an inner <see cref="WebSocket.OnMessage"/> event.
     /// </param>
     protected virtual void OnMessage (MessageEventArgs e)
     {
@@ -267,11 +270,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping to the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends a Ping to the client of the current <see cref="WebSocketService"/>
+    /// instance.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
-    /// from the client in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance
+    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
     /// </returns>
     protected bool Ping ()
     {
@@ -281,15 +285,15 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client of
-    /// the current <see cref="WebSocketService"/> instance.
+    /// Sends a Ping with the specified <paramref name="message"/> to the client
+    /// of the current <see cref="WebSocketService"/> instance.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance receives a Pong
-    /// from the client in a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the current <see cref="WebSocketService"/> instance
+    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
+    /// A <see cref="string"/> that represents the message to send.
     /// </param>
     protected bool Ping (string message)
     {
@@ -390,7 +394,7 @@ namespace WebSocketSharp.Server
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that contains the text data to send.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
@@ -439,14 +443,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the specified
-    /// <see cref="ushort"/> and <see cref="string"/>.
+    /// Stops the current <see cref="WebSocketService"/> instance with the
+    /// specified <see cref="ushort"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason for stop.
+    /// A <see cref="ushort"/> that represents the status code for stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
+    /// A <see cref="string"/> that represents the reason for stop.
     /// </param>
     protected void Stop (ushort code, string reason)
     {
@@ -455,15 +459,15 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the specified
-    /// <see cref="CloseStatusCode"/> and <see cref="string"/>.
+    /// Stops the current <see cref="WebSocketService"/> instance with the
+    /// specified <see cref="CloseStatusCode"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicates a status code
-    /// indicating the reason for stop.
+    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
+    /// codes for stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
+    /// A <see cref="string"/> that represents the reason for stop.
     /// </param>
     protected void Stop (CloseStatusCode code, string reason)
     {
@@ -472,24 +476,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Validates the cookies used in the WebSocket connection request.
+    /// Validates the HTTP Cookies used in the WebSocket connection request.
     /// </summary>
     /// <remarks>
     /// This method is called when the inner <see cref="WebSocket"/> validates
     /// the WebSocket connection request.
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the cookies is valid; otherwise, <c>false</c>.
-    /// The default returns <c>true</c>.
+    /// <c>true</c> if the cookies is valid; otherwise, <c>false</c>. This method
+    /// returns <c>true</c> as default.
     /// </returns>
     /// <param name="request">
-    /// A <see cref="CookieCollection"/> that contains a collection of the HTTP Cookies
-    /// to validate.
+    /// A <see cref="CookieCollection"/> that contains the collection of the
+    /// cookies to validate.
     /// </param>
     /// <param name="response">
-    /// A <see cref="CookieCollection"/> that receives the HTTP Cookies to send to the client.
+    /// A <see cref="CookieCollection"/> that receives the cookies to send to the
+    /// client.
     /// </param>
-    protected virtual bool ValidateCookies (CookieCollection request, CookieCollection response)
+    protected virtual bool ValidateCookies (
+      CookieCollection request, CookieCollection response)
     {
       return true;
     }
