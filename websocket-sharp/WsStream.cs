@@ -104,12 +104,10 @@ namespace WebSocketSharp
       TcpClient client,
       bool secure,
       string host,
-      System.Net.Security.RemoteCertificateValidationCallback validationCallback
-    )
+      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
     {
       var netStream = client.GetStream ();
-      if (secure)
-      {
+      if (secure) {
         if (validationCallback == null)
           validationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
 
@@ -144,8 +142,7 @@ namespace WebSocketSharp
 
     internal bool Write (byte [] data)
     {
-      lock (_forWrite)
-      {
+      lock (_forWrite) {
         try {
           _innerStream.Write (data, 0, data.Length);
           return true;
@@ -182,16 +179,15 @@ namespace WebSocketSharp
 
     public string [] ReadHandshake ()
     {
-      var read = false;
       var exception = false;
+      var read = false;
+      var timeout = false;
 
       var buffer = new List<byte> ();
       Action<int> add = i => buffer.Add ((byte) i);
 
-      var timeout = false;
       var timer = new Timer (
-        state =>
-        {
+        state => {
           timeout = true;
           _innerStream.Close ();
         },
@@ -200,13 +196,11 @@ namespace WebSocketSharp
         -1);
 
       try {
-        while (buffer.Count < _handshakeLimitLen)
-        {
+        while (buffer.Count < _handshakeLimitLen) {
           if (_innerStream.ReadByte ().EqualsWith ('\r', add) &&
               _innerStream.ReadByte ().EqualsWith ('\n', add) &&
               _innerStream.ReadByte ().EqualsWith ('\r', add) &&
-              _innerStream.ReadByte ().EqualsWith ('\n', add))
-          {
+              _innerStream.ReadByte ().EqualsWith ('\n', add)) {
             read = true;
             break;
           }

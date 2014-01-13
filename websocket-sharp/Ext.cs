@@ -193,13 +193,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal static string CheckIfCanClose (this WebSocketState state)
-    {
-      return state == WebSocketState.CLOSING || state == WebSocketState.CLOSED
-             ? "While closing the WebSocket connection, or already closed."
-             : null;
-    }
-
     internal static string CheckIfCanRead (this Stream stream)
     {
       return stream == null
@@ -209,11 +202,24 @@ namespace WebSocketSharp
                : null;
     }
 
+    internal static string CheckIfClosable (this WebSocketState state)
+    {
+      return state == WebSocketState.CLOSING
+             ? "While closing the WebSocket connection."
+             : state == WebSocketState.CLOSED
+               ? "The WebSocket connection has already been closed."
+               : null;
+    }
+
     internal static string CheckIfOpen (this WebSocketState state)
     {
-      return state != WebSocketState.OPEN
-             ? "A WebSocket connection isn't established or has been closed."
-             : null;
+      return state == WebSocketState.CONNECTING
+             ? "A WebSocket connection isn't established."
+             : state == WebSocketState.CLOSING
+               ? "While closing the WebSocket connection."
+               : state == WebSocketState.CLOSED
+                 ? "The WebSocket connection has already been closed."
+                 : null;
     }
 
     internal static string CheckIfStarted (this ServerState state)

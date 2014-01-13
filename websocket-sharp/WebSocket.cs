@@ -484,6 +484,74 @@ namespace WebSocketSharp
 
     #region Private Methods
 
+    private bool acceptCloseFrame (WsFrame frame)
+    {
+      var payload = frame.PayloadData;
+      close (payload, !payload.ContainsReservedCloseStatusCode, false);
+
+      return false;
+    }
+
+    private bool acceptDataFrame (WsFrame frame)
+    {
+      var args = frame.IsCompressed
+               ? new MessageEventArgs (
+                   frame.Opcode,
+                   frame.PayloadData.ApplicationData.Decompress (_compression))
+               : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+
+      OnMessage.Emit (this, args);
+      return true;
+    }
+
+    private bool acceptFragmentedFrame (WsFrame frame)
+    {
+      return frame.IsContinuation // Not first fragment
+             ? true
+             : acceptFragments (frame);
+    }
+
+    private bool acceptFragments (WsFrame first)
+    {
+      using (var concatenated = new MemoryStream ()) {
+        concatenated.WriteBytes (first.PayloadData.ApplicationData);
+        if (!concatenateFragmentsInto (concatenated))
+          return false;
+
+        byte [] data;
+        if (_compression != CompressionMethod.NONE) {
+          data = concatenated.DecompressToArray (_compression);
+        }
+        else {
+          concatenated.Close ();
+          data = concatenated.ToArray ();
+        }
+
+        OnMessage.Emit (this, new MessageEventArgs (first.Opcode, data));
+        return true;
+      }
+    }
+
+    private bool acceptFrame (WsFrame frame)
+    {
+      return frame.IsCompressed && _compression == CompressionMethod.NONE
+             ? acceptUnsupportedFrame (
+                 frame,
+                 CloseStatusCode.INCORRECT_DATA,
+                 "A compressed data has been received without available decompression method.")
+             : frame.IsFragmented
+               ? acceptFragmentedFrame (frame)
+               : frame.IsData
+                 ? acceptDataFrame (frame)
+                 : frame.IsPing
+                   ? acceptPingFrame (frame)
+                   : frame.IsPong
+                     ? acceptPongFrame (frame)
+                     : frame.IsClose
+                       ? acceptCloseFrame (frame)
+                       : acceptUnsupportedFrame (frame, CloseStatusCode.POLICY_VIOLATION, null);
+    }
+
     // As server
     private bool acceptHandshake ()
     {
@@ -514,6 +582,32 @@ namespace WebSocketSharp
         processRequestedExtensions (extensions);
 
       return send (createHandshakeResponse ());
+    }
+
+    private bool acceptPingFrame (WsFrame frame)
+    {
+      var mask = _client ? Mask.MASK : Mask.UNMASK;
+      if (send (WsFrame.CreatePongFrame (mask, frame.PayloadData)))
+        _logger.Trace ("Returned a Pong.");
+
+      return true;
+    }
+
+    private bool acceptPongFrame (WsFrame frame)
+    {
+      _receivePong.Set ();
+      _logger.Trace ("Received a Pong.");
+
+      return true;
+    }
+
+    private bool acceptUnsupportedFrame (
+      WsFrame frame, CloseStatusCode code, string reason)
+    {
+      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
+      processException (new WebSocketException (code, reason), null);
+
+      return false;
     }
 
     // As server
@@ -566,10 +660,10 @@ namespace WebSocketSharp
     private void close (PayloadData payload, bool send, bool wait)
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfCanClose ();
-        if (msg != null) {
-          _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
-
+        if (_readyState == WebSocketState.CLOSING ||
+            _readyState == WebSocketState.CLOSED) {
+          _logger.Info (
+            "Closing the WebSocket connection has already been done.");
           return;
         }
 
@@ -664,47 +758,39 @@ namespace WebSocketSharp
 
     private bool concatenateFragmentsInto (Stream dest)
     {
-      while (true)
-      {
-        var frame = _stream.ReadFrame ();
+      var frame = _stream.ReadFrame ();
 
-        // MORE & CONT
-        if (!frame.IsFinal && frame.IsContinuation)
-        {
-          dest.WriteBytes (frame.PayloadData.ApplicationData);
-          continue;
-        }
-
-        // FINAL & CONT
-        if (frame.IsFinal && frame.IsContinuation)
-        {
-          dest.WriteBytes (frame.PayloadData.ApplicationData);
-          break;
-        }
-
-        // FINAL & PING
-        if (frame.IsFinal && frame.IsPing)
-        {
-          processPingFrame (frame);
-          continue;
-        }
-
-        // FINAL & PONG
-        if (frame.IsFinal && frame.IsPong)
-        {
-          processPongFrame ();
-          continue;
-        }
-
-        // FINAL & CLOSE
-        if (frame.IsFinal && frame.IsClose)
-          return processCloseFrame (frame);
-
-        // ?
-        return processUnsupportedFrame (frame, CloseStatusCode.INCORRECT_DATA, null);
+      // MORE & CONT
+      if (!frame.IsFinal && frame.IsContinuation) {
+        dest.WriteBytes (frame.PayloadData.ApplicationData);
+        return concatenateFragmentsInto (dest);
       }
 
-      return true;
+      // FINAL & CONT
+      if (frame.IsFinal && frame.IsContinuation) {
+        dest.WriteBytes (frame.PayloadData.ApplicationData);
+        return true;
+      }
+
+      // FINAL & PING
+      if (frame.IsFinal && frame.IsPing) {
+        acceptPingFrame (frame);
+        return concatenateFragmentsInto (dest);
+      }
+
+      // FINAL & PONG
+      if (frame.IsFinal && frame.IsPong) {
+        acceptPongFrame (frame);
+        return concatenateFragmentsInto (dest);
+      }
+
+      // FINAL & CLOSE
+      if (frame.IsFinal && frame.IsClose)
+        return acceptCloseFrame (frame);
+
+      // ?
+      return acceptUnsupportedFrame (
+        frame, CloseStatusCode.INCORRECT_DATA, null);
     }
 
     // As client
@@ -869,31 +955,13 @@ namespace WebSocketSharp
     {
       try {
         OnOpen.Emit (this, EventArgs.Empty);
-        startReceiving ();
+        if (_readyState == WebSocketState.OPEN)
+          startReceiving ();
       }
       catch (Exception ex) {
         processException (
           ex, "An exception has occurred while opening.");
       }
-    }
-
-    private bool processCloseFrame (WsFrame frame)
-    {
-      var payload = frame.PayloadData;
-      close (payload, !payload.ContainsReservedCloseStatusCode, false);
-
-      return false;
-    }
-
-    private bool processDataFrame (WsFrame frame)
-    {
-      var args = frame.IsCompressed
-               ? new MessageEventArgs (
-                   frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-               : new MessageEventArgs (frame.Opcode, frame.PayloadData);
-
-      OnMessage.Emit (this, args);
-      return true;
     }
 
     private void processException (Exception exception, string reason)
@@ -923,87 +991,17 @@ namespace WebSocketSharp
         close (code, reason ?? code.GetMessage (), false);
     }
 
-    private bool processFragmentedFrame (WsFrame frame)
-    {
-      return frame.IsContinuation // Not first fragment
-             ? true
-             : processFragments (frame);
-    }
-
-    private bool processFragments (WsFrame first)
-    {
-      using (var concatenated = new MemoryStream ())
-      {
-        concatenated.WriteBytes (first.PayloadData.ApplicationData);
-        if (!concatenateFragmentsInto (concatenated))
-          return false;
-
-        byte [] data;
-        if (_compression != CompressionMethod.NONE)
-        {
-          data = concatenated.DecompressToArray (_compression);
-        }
-        else
-        {
-          concatenated.Close ();
-          data = concatenated.ToArray ();
-        }
-
-        OnMessage.Emit (this, new MessageEventArgs (first.Opcode, data));
-        return true;
-      }
-    }
-
-    private bool processFrame (WsFrame frame)
-    {
-      return frame.IsCompressed && _compression == CompressionMethod.NONE
-             ? processUnsupportedFrame (
-                 frame,
-                 CloseStatusCode.INCORRECT_DATA,
-                 "A compressed data has been received without available decompression method.")
-             : frame.IsFragmented
-               ? processFragmentedFrame (frame)
-               : frame.IsData
-                 ? processDataFrame (frame)
-                 : frame.IsPing
-                   ? processPingFrame (frame)
-                   : frame.IsPong
-                     ? processPongFrame ()
-                     : frame.IsClose
-                       ? processCloseFrame (frame)
-                       : processUnsupportedFrame (frame, CloseStatusCode.POLICY_VIOLATION, null);
-    }
-
-    private bool processPingFrame (WsFrame frame)
-    {
-      if (send (WsFrame.CreatePongFrame (_client ? Mask.MASK : Mask.UNMASK, frame.PayloadData)))
-        _logger.Trace ("Returned Pong.");
-
-      return true;
-    }
-
-    private bool processPongFrame ()
-    {
-      _receivePong.Set ();
-      _logger.Trace ("Received Pong.");
-
-      return true;
-    }
-
     // As server
     private void processRequestedExtensions (string extensions)
     {
       var comp = false;
       var buffer = new List<string> ();
-      foreach (var e in extensions.SplitHeaderValue (','))
-      {
+      foreach (var e in extensions.SplitHeaderValue (',')) {
         var extension = e.Trim ();
         var tmp = extension.RemovePrefix ("x-webkit-");
-        if (!comp && tmp.IsCompressionExtension ())
-        {
+        if (!comp && tmp.IsCompressionExtension ()) {
           var method = tmp.ToCompressionMethod ();
-          if (method != CompressionMethod.NONE)
-          {
+          if (method != CompressionMethod.NONE) {
             _compression = method;
             comp = true;
             buffer.Add (extension);
@@ -1020,10 +1018,8 @@ namespace WebSocketSharp
     {
       var comp = _compression != CompressionMethod.NONE ? true : false;
       var hasComp = false;
-      if (extensions != null && extensions.Length > 0)
-      {
-        foreach (var e in extensions.SplitHeaderValue (','))
-        {
+      if (extensions != null && extensions.Length > 0) {
+        foreach (var e in extensions.SplitHeaderValue (',')) {
           var extension = e.Trim ();
           if (comp && !hasComp && extension.Equals (_compression))
             hasComp = true;
@@ -1034,14 +1030,6 @@ namespace WebSocketSharp
 
       if (comp && !hasComp)
         _compression = CompressionMethod.NONE;
-    }
-
-    private bool processUnsupportedFrame (WsFrame frame, CloseStatusCode code, string reason)
-    {
-      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
-      processException (new WebSocketException (code, reason), null);
-
-      return false;
     }
 
     // As client
@@ -1055,15 +1043,17 @@ namespace WebSocketSharp
 
     private bool send (byte [] frameAsBytes)
     {
-      if (_readyState != WebSocketState.OPEN) {
-        var msg = "A WebSocket connection isn't established or has been closed.";
-        _logger.Error (msg);
-        error (msg);
+      lock (_forConn) {
+        if (_readyState != WebSocketState.OPEN) {
+          var msg = "The WebSocket connection isn't available.";
+          _logger.Error (msg);
+          error (msg);
 
-        return false;
+          return false;
+        }
+
+        return _stream.Write (frameAsBytes);
       }
-
-      return _stream.Write (frameAsBytes);
     }
 
     // As client
@@ -1087,15 +1077,17 @@ namespace WebSocketSharp
 
     private bool send (WsFrame frame)
     {
-      if (_readyState != WebSocketState.OPEN) {
-        var msg = "A WebSocket connection isn't established or has been closed.";
-        _logger.Error (msg);
-        error (msg);
+      lock (_forConn) {
+        if (_readyState != WebSocketState.OPEN) {
+          var msg = "The WebSocket connection isn't available.";
+          _logger.Error (msg);
+          error (msg);
 
-        return false;
+          return false;
+        }
+
+        return _stream.Write (frame.ToByteArray ());
       }
-
-      return _stream.Write (frame.ToByteArray ());
     }
 
     private bool send (Opcode opcode, byte [] data)
@@ -1304,21 +1296,19 @@ namespace WebSocketSharp
       var host = _uri.DnsSafeHost;
       var port = _uri.Port;
       _tcpClient = new TcpClient (host, port);
-      _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
+      _stream = WsStream.CreateClientStream (
+        _tcpClient, _secure, host, _certValidationCallback);
     }
 
     private void startReceiving ()
     {
-      if (_readyState != WebSocketState.OPEN)
-        return;
-
       _exitReceiving = new AutoResetEvent (false);
       _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
       receive = () => _stream.ReadFrameAsync (
         frame => {
-          if (processFrame (frame))
+          if (acceptFrame (frame))
             receive ();
           else
             _exitReceiving.Set ();
@@ -1382,10 +1372,10 @@ namespace WebSocketSharp
       CloseEventArgs args, byte [] frameAsBytes, int waitTimeOut)
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfCanClose ();
-        if (msg != null) {
-          _logger.Info (String.Format ("{0}\nstate: {1}", msg, _readyState));
-
+        if (_readyState == WebSocketState.CLOSING ||
+            _readyState == WebSocketState.CLOSED) {
+          _logger.Info (
+            "Closing the WebSocket connection has already been done.");
           return;
         }
 
@@ -1446,14 +1436,13 @@ namespace WebSocketSharp
     }
 
     // As server, used to broadcast
-    internal void Send (Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
+    internal void Send (
+      Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
     {
-      lock (_forSend)
-      {
+      lock (_forSend) {
         try {
           byte [] cached;
-          if (!cache.TryGetValue (_compression, out cached))
-          {
+          if (!cache.TryGetValue (_compression, out cached)) {
             cached = WsFrame.CreateFrame (
               Fin.FINAL,
               opcode,
@@ -1468,31 +1457,31 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred.");
+          error ("An exception has occurred while sending a data.");
         }
       }
     }
 
     // As server, used to broadcast
-    internal void Send (Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
+    internal void Send (
+      Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
     {
-      lock (_forSend)
-      {
+      lock (_forSend) {
         try {
           Stream cached;
-          if (!cache.TryGetValue (_compression, out cached))
-          {
+          if (!cache.TryGetValue (_compression, out cached)) {
             cached = stream.Compress (_compression);
             cache.Add (_compression, cached);
           }
           else
             cached.Position = 0;
 
-          sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
+          sendFragmented (
+            opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred.");
+          error ("An exception has occurred while sending a data.");
         }
       }
     }
@@ -1506,9 +1495,9 @@ namespace WebSocketSharp
     /// </summary>
     public void Close ()
     {
-      var msg = _readyState.CheckIfCanClose ();
+      var msg = _readyState.CheckIfClosable ();
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\nstate: {1}", msg, _readyState));
+        _logger.Error (msg);
         error (msg);
 
         return;
@@ -1565,14 +1554,13 @@ namespace WebSocketSharp
     public void Close (ushort code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfCanClose () ??
+      var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
                 (data = code.Append (reason)).CheckIfValidCloseData ();
 
       if (msg != null) {
         _logger.Error (
-          String.Format (
-            "{0}\nstate: {1} code: {2} reason: {3}", msg, _readyState, code, reason));
+          String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
         error (msg);
 
         return;
@@ -1600,13 +1588,12 @@ namespace WebSocketSharp
     public void Close (CloseStatusCode code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfCanClose () ??
+      var msg = _readyState.CheckIfClosable () ??
                 (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
 
       if (msg != null) {
         _logger.Error (
-          String.Format (
-            "{0}\nstate: {1} reason: {2}", msg, _readyState, reason));
+          String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
         error (msg);
 
         return;
@@ -1625,9 +1612,9 @@ namespace WebSocketSharp
     /// </remarks>
     public void CloseAsync ()
     {
-      var msg = _readyState.CheckIfCanClose ();
+      var msg = _readyState.CheckIfClosable ();
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\nstate: {1}", msg, _readyState));
+        _logger.Error (msg);
         error (msg);
 
         return;
@@ -1698,14 +1685,13 @@ namespace WebSocketSharp
     public void CloseAsync (ushort code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfCanClose () ??
+      var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
                 (data = code.Append (reason)).CheckIfValidCloseData ();
 
       if (msg != null) {
         _logger.Error (
-          String.Format (
-            "{0}\nstate: {1} code: {2} reason: {3}", msg, _readyState, code, reason));
+          String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
         error (msg);
 
         return;
@@ -1739,13 +1725,12 @@ namespace WebSocketSharp
     public void CloseAsync (CloseStatusCode code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfCanClose () ??
+      var msg = _readyState.CheckIfClosable () ??
                 (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
 
       if (msg != null) {
         _logger.Error (
-          String.Format (
-            "{0}\nstate: {1} reason: {2}", msg, _readyState, reason));
+          String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
         error (msg);
 
         return;
@@ -1850,8 +1835,7 @@ namespace WebSocketSharp
 
       var data = Encoding.UTF8.GetBytes (message);
       var msg = data.CheckIfValidPingData ();
-      if (msg != null)
-      {
+      if (msg != null) {
         _logger.Error (msg);
         error (msg);
 
