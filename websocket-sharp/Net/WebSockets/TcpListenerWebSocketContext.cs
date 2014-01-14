@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net.WebSockets
       _client = client;
       _secure = secure;
       _stream = WsStream.CreateServerStream (client, cert, secure);
-      _request = HandshakeRequest.Parse (_stream.ReadHandshake ());
+      _request = _stream.ReadHandshakeRequest ();
       _websocket = new WebSocket (this, logger);
     }
 
@@ -365,7 +365,7 @@ namespace WebSocketSharp.Net.WebSockets
       var res = new HandshakeResponse (HttpStatusCode.Unauthorized);
       res.Headers ["WWW-Authenticate"] = challenge;
       _stream.WriteHandshake (res);
-      _request = HandshakeRequest.Parse (_stream.ReadHandshake ());
+      _request = _stream.ReadHandshakeRequest ();
     }
 
     internal void SetUser (

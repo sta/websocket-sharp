@@ -1035,8 +1035,9 @@ namespace WebSocketSharp
     // As client
     private HandshakeResponse receiveHandshakeResponse ()
     {
-      var res = HandshakeResponse.Parse (_stream.ReadHandshake ());
-      _logger.Debug ("A response to this WebSocket connection request:\n" + res.ToString ());
+      var res = _stream.ReadHandshakeResponse ();
+      _logger.Debug (
+        "A response to this WebSocket connection request:\n" + res.ToString ());
 
       return res;
     }
@@ -1310,7 +1311,7 @@ namespace WebSocketSharp
         frame => {
           if (acceptFrame (frame))
             receive ();
-          else
+          else if (_exitReceiving != null)
             _exitReceiving.Set ();
         },
         ex => processException (

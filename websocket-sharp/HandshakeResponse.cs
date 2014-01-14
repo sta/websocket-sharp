@@ -175,6 +175,11 @@ namespace WebSocketSharp
         buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
       buffer.Append (CrLf);
+
+      var entity = EntityBody;
+      if (entity.Length > 0)
+        buffer.Append (entity);
+
       return buffer.ToString ();
     }
 

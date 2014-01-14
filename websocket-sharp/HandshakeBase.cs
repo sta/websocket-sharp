@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,6 +37,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private byte []             _entity;
     private NameValueCollection _headers;
     private Version             _version;
 
@@ -58,7 +59,29 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    internal byte [] EntityBodyData {
+      get {
+        return _entity;
+      }
+
+      set {
+        _entity = value;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
+
+    public string EntityBody {
+      get {
+        return _entity != null && _entity.LongLength > 0
+               ? getEncoding (_headers ["Content-Type"]).GetString (_entity)
+               : String.Empty;
+      }
+    }
 
     public NameValueCollection Headers {
       get {
@@ -78,6 +101,27 @@ namespace WebSocketSharp
       protected set {
         _version = value;
       }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private static Encoding getEncoding (string contentType)
+    {
+      if (contentType == null || contentType.Length == 0)
+        return Encoding.UTF8;
+
+      var i = contentType.IndexOf ("charset=", StringComparison.Ordinal);
+      if (i == -1)
+        return Encoding.UTF8;
+
+      var charset = contentType.Substring (i + 8);
+      i = charset.IndexOf (';');
+      if (i != -1)
+        charset = charset.Substring (0, i);
+
+      return Encoding.GetEncoding (charset);
     }
 
     #endregion

@@ -192,13 +192,19 @@ namespace WebSocketSharp
     public override string ToString ()
     {
       var buffer = new StringBuilder (64);
-      buffer.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _rawUrl, ProtocolVersion, CrLf);
+      buffer.AppendFormat (
+        "{0} {1} HTTP/{2}{3}", _method, _rawUrl, ProtocolVersion, CrLf);
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
         buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
       buffer.Append (CrLf);
+
+      var entity = EntityBody;
+      if (entity.Length > 0)
+        buffer.Append (entity);
+
       return buffer.ToString ();
     }
 
