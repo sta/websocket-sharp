@@ -103,7 +103,9 @@ namespace WebSocketSharp
     private byte [] readHandshakeEntityBody (string length)
     {
       var len = Int64.Parse (length);
-      return _innerStream.ReadBytes (len, 1024);
+      return len > 1024
+             ? _innerStream.ReadBytes (len, 1024)
+             : _innerStream.ReadBytes ((int) len);
     }
 
     private string [] readHandshakeHeaders ()
