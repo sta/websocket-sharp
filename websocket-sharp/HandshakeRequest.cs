@@ -57,11 +57,9 @@ namespace WebSocketSharp
 
     public HandshakeRequest (string uriString)
     {
-      _method = "GET";
       _uri = uriString.ToUri ();
-      _rawUrl = _uri.IsAbsoluteUri
-              ? _uri.PathAndQuery
-              : uriString;
+      _rawUrl = _uri.IsAbsoluteUri ? _uri.PathAndQuery : uriString;
+      _method = "GET";
 
       var headers = Headers;
       headers ["User-Agent"] = "websocket-sharp/1.0";
@@ -76,7 +74,7 @@ namespace WebSocketSharp
     public AuthenticationResponse AuthResponse {
       get {
         var response = Headers ["Authorization"];
-        return !response.IsNullOrEmpty ()
+        return response != null && response.Length > 0
                ? AuthenticationResponse.Parse (response)
                : null;
       }
@@ -112,6 +110,7 @@ namespace WebSocketSharp
       get {
         if (_queryString == null) {
           _queryString = new NameValueCollection ();
+
           var i = RawUrl.IndexOf ('?');
           if (i > 0) {
             var query = RawUrl.Substring (i + 1);
@@ -155,16 +154,15 @@ namespace WebSocketSharp
 
     #region Public Methods
 
-    public static HandshakeRequest Parse (string [] request)
+    public static HandshakeRequest Parse (string [] headerParts)
     {
-      var requestLine = request [0].Split (' ');
+      var requestLine = headerParts [0].Split (new char [] { ' ' }, 3);
       if (requestLine.Length != 3)
-        throw new ArgumentException (
-          "Invalid HTTP Request-Line: " + request [0], "request");
+        throw new ArgumentException ("Invalid request line: " + headerParts [0]);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < request.Length; i++)
-        headers.SetInternal (request [i], false);
+      for (int i = 1; i < headerParts.Length; i++)
+        headers.SetInternal (headerParts [i], false);
 
       return new HandshakeRequest {
         Headers = headers,

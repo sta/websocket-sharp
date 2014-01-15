@@ -53,8 +53,6 @@ namespace WebSocketSharp
 
     protected HandshakeBase ()
     {
-      _version = HttpVersion.Version11;
-      _headers = new NameValueCollection ();
     }
 
     #endregion
@@ -85,7 +83,7 @@ namespace WebSocketSharp
 
     public NameValueCollection Headers {
       get {
-        return _headers;
+        return _headers ?? (_headers = new NameValueCollection ());
       }
 
       protected set {
@@ -95,7 +93,7 @@ namespace WebSocketSharp
 
     public Version ProtocolVersion {
       get {
-        return _version;
+        return _version ?? (_version = HttpVersion.Version11);
       }
 
       protected set {

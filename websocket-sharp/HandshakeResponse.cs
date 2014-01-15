@@ -72,7 +72,7 @@ namespace WebSocketSharp
     public AuthenticationChallenge AuthChallenge {
       get {
         var challenge = Headers ["WWW-Authenticate"];
-        return !challenge.IsNullOrEmpty ()
+        return challenge != null && challenge.Length > 0
                ? AuthenticationChallenge.Parse (challenge)
                : null;
       }
@@ -132,25 +132,21 @@ namespace WebSocketSharp
       return res;
     }
 
-    public static HandshakeResponse Parse (string [] response)
+    public static HandshakeResponse Parse (string [] headerParts)
     {
-      var statusLine = response [0].Split (' ');
-      if (statusLine.Length < 3)
-        throw new ArgumentException ("Invalid status line.");
-
-      var reason = new StringBuilder (statusLine [2], 64);
-      for (int i = 3; i < statusLine.Length; i++)
-        reason.AppendFormat (" {0}", statusLine [i]);
+      var statusLine = headerParts [0].Split (new char [] { ' ' }, 3);
+      if (statusLine.Length != 3)
+        throw new ArgumentException ("Invalid status line: " + headerParts [0]);
 
       var headers = new WebHeaderCollection ();
-      for (int i = 1; i < response.Length; i++)
-        headers.SetInternal (response [i], true);
+      for (int i = 1; i < headerParts.Length; i++)
+        headers.SetInternal (headerParts [i], true);
 
       return new HandshakeResponse {
         Headers = headers,
-        Reason = reason.ToString (),
-        StatusCode = statusLine [1],
-        ProtocolVersion = new Version (statusLine [0].Substring (5))
+        ProtocolVersion = new Version (statusLine [0].Substring (5)),
+        Reason = statusLine [2],
+        StatusCode = statusLine [1]
       };
     }
 
