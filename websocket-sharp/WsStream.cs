@@ -111,10 +111,14 @@ namespace WebSocketSharp
     private static string [] readHandshakeHeaders (Stream stream)
     {
       var buffer = new List<byte> ();
-      Action<int> add = i => buffer.Add ((byte) i);
+      var count = 0;
+      Action<int> add = i => {
+        buffer.Add ((byte) i);
+        count++;
+      };
 
       var read = false;
-      while (buffer.Count < _handshakeHeadersLimitLen) {
+      while (count < _handshakeHeadersLimitLen) {
         if (stream.ReadByte ().EqualsWith ('\r', add) &&
             stream.ReadByte ().EqualsWith ('\n', add) &&
             stream.ReadByte ().EqualsWith ('\r', add) &&
