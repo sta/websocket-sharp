@@ -132,12 +132,11 @@ namespace WebSocketSharp
         throw new WebSocketException (
           "The header part of a handshake is greater than the limit length.");
 
+      var crlf = "\r\n";
       return Encoding.UTF8.GetString (buffer.ToArray ())
-             .Replace ("\r\n", "\n")
-             .Replace ("\n ", " ")
-             .Replace ("\n\t", " ")
-             .TrimEnd ('\n')
-             .Split ('\n');
+             .Replace (crlf + " ", " ")
+             .Replace (crlf + "\t", " ")
+             .Split (new string [] { crlf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
     #endregion
