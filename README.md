@@ -190,7 +190,7 @@ The type of `data` is `string`, `byte []` or `System.IO.FileInfo`.
 
 If you want to send a data to the server asynchronously, you should use the `WebSocket.SendAsync (data, completed)` method.
 
-If you want to do something when the send is complete, you should set any action to `completed` (its type is `Action<bool>`).
+And if you want to do something when the send is complete, you should set any action to `completed` (its type is `Action<bool>`).
 
 #### Step 6 ####
 
