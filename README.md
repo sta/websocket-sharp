@@ -174,9 +174,11 @@ Connecting to the WebSocket server.
 ws.Connect ();
 ```
 
+If you want to connect to the WebSocket server asynchronously, you should use the `WebSocket.ConnectAsync ()` method.
+
 #### Step 5 ####
 
-Sending a data.
+Sending a data to the WebSocket server.
 
 ```cs
 ws.Send (data);
@@ -186,11 +188,9 @@ The `WebSocket.Send` method is overloaded.
 
 The types of `data` are `string`, `byte []` and `System.IO.FileInfo`.
 
-In addition, the `WebSocket.Send (stream, length)` method exists, too.
+If you want to send a data to the WebSocket server asynchronously, you should use the `WebSocket.SendAsync (data, completed)` method.
 
-These methods don't wait for the send to be complete. It means these methods behave asynchronously.
-
-If you do something when the send is complete, you use any of some `WebSocket.Send (data, completed)` methods.
+If you want to do something when the send is complete, you should set any action to `completed` (its type is `Action<bool>`).
 
 #### Step 6 ####
 
@@ -200,13 +200,15 @@ Closing the WebSocket connection.
 ws.Close (code, reason);
 ```
 
-If you explicitly close the WebSocket connection, you use the `WebSocket.Close` method.
+If you want to close the WebSocket connection explicitly, you should use the `WebSocket.Close` method.
 
 The `WebSocket.Close` method is overloaded.
 
 The types of `code` are `WebSocketSharp.CloseStatusCode` and `ushort`, and the type of `reason` is `string`.
 
 In addition, the `WebSocket.Close ()` and `WebSocket.Close (code)` methods exist, too.
+
+If you want to close the WebSocket connection asynchronously, you should use any of the `WebSocket.CloseAsync` methods.
 
 ### WebSocket Server ###
 
