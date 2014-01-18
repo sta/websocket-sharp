@@ -8,6 +8,7 @@
 - **[RFC 6455](#supported-websocket-specifications)**
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
+- **[HTTP Authentication](#http-authentication)**
 - .NET **3.5** or later (includes compatible)
 
 ## Branches ##
@@ -411,6 +412,39 @@ As a **WebSocket Server**, creating an instance of the `WebSocketServer` or `Htt
 ```cs
 var wssv = new WebSocketServer (4649, true);
 wssv.Certificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
+```
+
+### HTTP Authentication ###
+
+**websocket-sharp** supports the HTTP Authentication (Basic/Digest).
+
+As a **WebSocket Client**, you should set a pair of user name and password for the HTTP Authentication, using the `WebSocket.SetCredentials (username, password, preAuth)` method.
+
+```cs
+ws.SetCredentials ("nobita", "password", true);
+```
+
+If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials in the first connection request.
+
+And if `preAuth` is `false`, the `WebSocket` sends the Basic or Digest authentication credentials depend on the unauthorized response, in the second connection request.
+
+As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials. It's like the following.
+
+```cs
+wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
+wssv.Realm = "WebSocket Test";
+wssv.UserCredentialsFinder = identity => {
+  var name = identity.Name;
+  return name == "nobita"
+         ? new NetworkCredential (name, "password")
+         : null; // If the user credentials not found.
+};
+```
+
+If you want to provide the Digest authentication, you should set like the following.
+
+```cs
+wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
 ### Logging ###
