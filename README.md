@@ -524,7 +524,8 @@ Thanks for translating to japanese.
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
-[WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity[api]: http://www.w3.org/TR/websockets
+[WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
+[api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
