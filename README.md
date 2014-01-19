@@ -19,7 +19,7 @@
 
 ## Build ##
 
-**websocket-sharp** is built as a single assembly, **websocket-sharp.dll**.
+websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
 websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the MonoDevelop.
 
@@ -29,11 +29,11 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) built yourself to the library references of your project.
 
-If you use that websocket-sharp.dll in your **[Unity]** project, you should add it to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+If you want to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
 
 ### NuGet Gallery ###
 
-**websocket-sharp** is available on the **[NuGet Gallery]**, as still a **prerelease** version.
+websocket-sharp is available on the **[NuGet Gallery]**, as still a **prerelease** version.
 
 - **[NuGet Gallery: websocket-sharp]**
 
@@ -43,9 +43,9 @@ You can add websocket-sharp to your project using the **NuGet Package Manager**,
 
 ### Unity Asset Store ###
 
-**websocket-sharp** is available on the **Unity Asset Store**.
+websocket-sharp is available on the **Unity Asset Store**.
 
-- **[websocket-sharp for Unity]**
+- **[WebSocket-Sharp for Unity]**
 
 It's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
@@ -524,7 +524,7 @@ Thanks for translating to japanese.
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
-[api]: http://www.w3.org/TR/websockets
+[WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity[api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
 [compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
@@ -535,4 +535,3 @@ Thanks for translating to japanese.
 [master]: https://github.com/sta/websocket-sharp/tree/master
 [rfc6455]: http://tools.ietf.org/html/rfc6455
 [rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
-[websocket-sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
