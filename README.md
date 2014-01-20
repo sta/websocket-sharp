@@ -131,7 +131,7 @@ ws.OnMessage += (sender, e) => {
 
 If `e.Type` is `Opcode.TEXT`, you should use `e.Data` (its type is `string`) that represents the received **Text** message.
 
-If `e.Type` is `Opcode.BINARY`, you should use `e.RawData` (its type is `byte []`) that represents the received **Binary** message.
+Or if `e.Type` is `Opcode.BINARY`, you should use `e.RawData` (its type is `byte []`) that represents the received **Binary** message.
 
 ```cs
 if (e.Type == Opcode.TEXT) {
