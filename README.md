@@ -331,21 +331,21 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service with the specified path to the service to your `WebSocketServer` by using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
+You can add any WebSocket service with the specified path to the service to your `WebSocketServer` using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
-The type of `T` must inherit `WebSocketService` class.
+The type of `T` must inherit the `WebSocketService` class.
 
-So you can use the classes created in **Step 2**.
+So you can use the classes created in **Step 2** to add the WebSocket service.
 
-If you create an instance of the `WebSocketServer` class without the port number, the `WebSocketServer` set the port number to **80** automatically. So it's necessary to run with root permission.
+If you create an instance of the `WebSocketServer` class without a port number, the `WebSocketServer` set the port number to **80** automatically. So it's necessary to run with root permission.
 
     $ sudo mono example2.exe
 
 #### Step 4 ####
 
-Starting the server.
+Starting the WebSocket server.
 
 ```cs
 wssv.Start ();
@@ -353,11 +353,17 @@ wssv.Start ();
 
 #### Step 5 ####
 
-Stopping the server.
+Stopping the WebSocket server.
 
 ```cs
 wssv.Stop ();
 ```
+
+The `WebSocketServer.Stop` method is overloaded.
+
+The `WebSocketServer.Stop ()` and `WebSocketServer.Stop (code, reason)` methods exist.
+
+The type of `code` is `ushort` or `WebSocketSharp.CloseStatusCode`, and the type of `reason` is `string`.
 
 ### HTTP Server with the WebSocket ###
 
