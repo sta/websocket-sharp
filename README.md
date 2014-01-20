@@ -260,13 +260,13 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-The `WebSocketService` and `WebSocketServer` classes exist in the `WebSocketSharp.Server` namespace.
+The `WebSocketServer` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
 Creating the class that inherits the `WebSocketService` class.
 
-For example, if you provide an echo service,
+For example, if you want to provide an echo service,
 
 ```cs
 using System;
@@ -282,7 +282,7 @@ public class Echo : WebSocketService
 }
 ```
 
-And if you provide a chat service,
+And if you want to provide a chat service,
 
 ```cs
 using System;
@@ -314,11 +314,11 @@ If you override the `WebSocketService.OnMessage` method, it's bound to the serve
 
 And if you override the `WebSocketService.OnOpen`, `WebSocketService.OnError` and `WebSocketService.OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
 
-The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
+The `WebSocketService.Send (data)` method sends a data to the client of the current session to the WebSocket service.
 
 The `WebSocketService.Sessions` (its type is `WebSocketSharp.Server.WebSocketSessionManager`) property provides some functions for the sessions to the WebSocket service.
 
-The `WebSocketService.Sessions.Broadcast` method sends a data to all clients of the WebSocket service.
+The `WebSocketService.Sessions.Broadcast (data)` method broadcasts a data to all clients of the WebSocket service.
 
 #### Step 3 ####
 
