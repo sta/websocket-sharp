@@ -97,7 +97,7 @@ using (var ws = new WebSocket ("ws://example.com")) {
 }
 ```
 
-The `WebSocket` class inherits the `IDisposable` interface, so you can use the `using` statement.
+The `WebSocket` class inherits the `System.IDisposable` interface, so you can use the `using` statement.
 
 #### Step 3 ####
 
@@ -113,7 +113,7 @@ ws.OnOpen += (sender, e) => {
 };
 ```
 
-`e` has passed as `EventArgs.Empty`, so you don't use `e`.
+`e` has passed as the `System.EventArgs.Empty`, so you don't use `e`.
 
 ##### WebSocket.OnMessage Event #####
 
