@@ -331,7 +331,7 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service with the specified path to the service to your `WebSocketServer` using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
+You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew>` or `WebSocketServer.AddWebSocketService<T>` method.
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
@@ -361,7 +361,7 @@ wssv.Stop ();
 
 The `WebSocketServer.Stop` method is overloaded.
 
-The `WebSocketServer.Stop ()` and `WebSocketServer.Stop (code, reason)` methods exist.
+You can use the `WebSocketServer.Stop ()` or `WebSocketServer.Stop (code, reason)` method to stop the server.
 
 The type of `code` is `ushort` or `WebSocketSharp.CloseStatusCode`, and the type of `reason` is `string`.
 
