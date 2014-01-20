@@ -89,7 +89,7 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 
 #### Step 2 ####
 
-Creating an instance of the `WebSocket` class with the specified WebSocket URL to connect.
+Creating an instance of the `WebSocket` class with the WebSocket URL to connect.
 
 ```cs
 using (var ws = new WebSocket ("ws://example.com")) {
@@ -117,7 +117,7 @@ ws.OnOpen += (sender, e) => {
 
 ##### WebSocket.OnMessage Event #####
 
-A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a WebSocket data frame.
+A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a WebSocket message.
 
 ```cs
 ws.OnMessage += (sender, e) => {
@@ -125,11 +125,13 @@ ws.OnMessage += (sender, e) => {
 };
 ```
 
-`e.Type` (`WebSocketSharp.MessageEventArgs.Type`, its type is `WebSocketSharp.Opcode`) indicates the type of a received data. So by checking it, you determine which item you should use.
+`e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-If `e.Type` equals `Opcode.TEXT`, you use `e.Data` (`WebSocketSharp.MessageEventArgs.Data`, its type is `string`) that contains a received **Text** data.
+`e.Type` (its type is `WebSocketSharp.Opcode`) represents the type of the received message. So by checking it, you determine which item you should use.
 
-If `e.Type` equals `Opcode.BINARY`, you use `e.RawData` (`WebSocketSharp.MessageEventArgs.RawData`, its type is `byte []`) that contains a received **Binary** data.
+If `e.Type` is `Opcode.TEXT`, you should use `e.Data` (its type is `string`) that represents the received **Text** message.
+
+If `e.Type` is `Opcode.BINARY`, you should use `e.RawData` (its type is `byte []`) that represents the received **Binary** message.
 
 ```cs
 if (e.Type == Opcode.TEXT) {
@@ -153,7 +155,9 @@ ws.OnError += (sender, e) => {
 };
 ```
 
-`e.Message` (`WebSocketSharp.ErrorEventArgs.Message`, its type is `string`) contains an error message, so you use it.
+`e` has passed as a `WebSocketSharp.ErrorEventArgs`.
+
+`e.Message` (its type is `string`) represents the error message. So you should use it to get the error message.
 
 ##### WebSocket.OnClose Event #####
 
@@ -165,7 +169,9 @@ ws.OnClose += (sender, e) => {
 };
 ```
 
-`e.Code` (`WebSocketSharp.CloseEventArgs.Code`, its type is `ushort`) contains a status code indicating the reason for closure and `e.Reason` (`WebSocketSharp.CloseEventArgs.Reason`, its type is `string`) contains the reason for closure, so you use them.
+`e` has passed as a `WebSocketSharp.CloseEventArgs`.
+
+`e.Code` (its type is `ushort`) represents the status code that indicates the reason for closure, and `e.Reason` (its type is `string`) represents the reason for closure. So you should use them to get the reason for closure.
 
 #### Step 4 ####
 
