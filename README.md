@@ -193,7 +193,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, and `WebSocket.Send (System.IO.FileInfo)` methods to send a data.
 
 If you want to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
 
