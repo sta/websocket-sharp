@@ -367,7 +367,7 @@ You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of [Mono] to create the HTTP server that can accept the WebSocket connection requests.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that can accept the WebSocket connection requests.
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
