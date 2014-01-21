@@ -193,7 +193,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, or `WebSocket.Send (System.IO.FileInfo)` to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
 
 If you want to send a data asynchronously, you should use the `WebSocket.SendAsync (data, completed)` method.
 
@@ -211,7 +211,7 @@ If you want to close the connection explicitly, you should use the `WebSocket.Cl
 
 The `WebSocket.Close` method is overloaded.
 
-You can use the `WebSocket.Close ()`, `WebSocket.Close (ushort)`, `WebSocket.Close (WebSocketSharp.CloseStatusCode)`, `WebSocket.Close (ushort, string)`, or `WebSocket.Close (WebSocketSharp.CloseStatusCode, string)` to close the connection.
+You can use the `WebSocket.Close ()`, `WebSocket.Close (ushort)`, `WebSocket.Close (WebSocketSharp.CloseStatusCode)`, `WebSocket.Close (ushort, string)`, or `WebSocket.Close (WebSocketSharp.CloseStatusCode, string)` method to close the connection.
 
 If you want to close the connection asynchronously, you should use the `WebSocket.CloseAsync` method.
 
