@@ -402,7 +402,9 @@ If the server supports this extension, it returns the same header. And when your
 
 ### Secure Connection ###
 
-As a **WebSocket Client**, creating an instance of the `WebSocket` class with the specified **wss** scheme URL to connect.
+websocket-sharp supports the **Secure Connection (SSL)**.
+
+As a **WebSocket Client**, you should create an instance of the `WebSocket` class with the **wss** scheme WebSocket URL to connect.
 
 ```cs
 using (var ws = new WebSocket ("wss://example.com")) {
@@ -410,7 +412,7 @@ using (var ws = new WebSocket ("wss://example.com")) {
 }
 ```
 
-If you set the custom validation for the server certificate, you use the `WebSocket.ServerCertificateValidationCallback` property.
+If you want to set the custom validation for the server certificate, you should use the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
@@ -421,7 +423,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 
 If you set this property to nothing, the validation does nothing with the server certificate and returns valid.
 
-As a **WebSocket Server**, creating an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection.
+As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, like the following.
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
