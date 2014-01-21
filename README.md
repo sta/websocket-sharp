@@ -386,19 +386,19 @@ For more information, could you see **[Example3]**?
 
 #### Per-message Compression ####
 
-**websocket-sharp** supports **[Per-message Compression][compression]** extension. (But it doesn't support with [extension parameters].)
+websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
 
-If you enable this extension as a WebSocket client, you should do like the following.
+If you want to enable this extension as a WebSocket client, you should set like the following.
 
 ```cs
 ws.Compression = CompressionMethod.DEFLATE;
 ```
 
-And then your WebSocket client sends the following header in the opening handshake to a WebSocket server.
+And then your WebSocket client sends the following header with the connection request to the server.
 
     Sec-WebSocket-Extensions: permessage-deflate
 
-If the server supports this extension, it responds the same header. And when your client receives the header, it enables this extension.
+If the server supports this extension, it returns the same header. And when your client receives that header, it enables this extension.
 
 ### Secure Connection ###
 
