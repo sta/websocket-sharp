@@ -394,7 +394,7 @@ If you want to enable this extension as a WebSocket client, you should set like 
 ws.Compression = CompressionMethod.DEFLATE;
 ```
 
-And then your WebSocket client sends the following header with the connection request to the server.
+And then your client sends the following header with the connection request to the server.
 
     Sec-WebSocket-Extensions: permessage-deflate
 
