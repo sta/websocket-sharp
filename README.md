@@ -204,16 +204,14 @@ And if you want to do something when the send is complete, you should set any ac
 Closing the WebSocket connection.
 
 ```cs
-ws.Close ();
+ws.Close (code, reason);
 ```
 
 If you want to close the connection explicitly, you should use the `WebSocket.Close` method.
 
 The `WebSocket.Close` method is overloaded.
 
-The `WebSocket.Close ()`, `WebSocket.Close (code)` and `WebSocket.Close (code, reason)` methods exist.
-
-The type of `code` is `WebSocketSharp.CloseStatusCode` or `ushort`, and the type of `reason` is `string`.
+You can use the `WebSocket.Close ()`, `WebSocket.Close (ushort)`, `WebSocket.Close (WebSocketSharp.CloseStatusCode)`, `WebSocket.Close (ushort, string)`, or `WebSocket.Close (WebSocketSharp.CloseStatusCode, string)` to close the connection.
 
 If you want to close the connection asynchronously, you should use the `WebSocket.CloseAsync` method.
 
