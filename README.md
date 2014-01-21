@@ -367,9 +367,11 @@ You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext` and some other classes of [Mono] to create the HTTP server that can upgrade the connection to the WebSocket connection when it receives a WebSocket connection request.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of [Mono] to create the HTTP server that can accept the WebSocket connection requests.
 
-You can add any WebSocket service with the specified path to the service to your `HttpServer` by using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
+So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
+
+You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew>` or `HttpServer.AddWebSocketService<T>` method.
 
 ```cs
 var httpsv = new HttpServer (4649);
