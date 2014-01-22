@@ -467,7 +467,7 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 The `WebSocket` class includes the own logging function.
 
-You can access the logging function with the `WebSocket.Log` property. (Its type is `WebSocketSharp.Logger`.)
+You can access it with the `WebSocket.Log` property. (Its type is `WebSocketSharp.Logger`.)
 
 If you want to change the current logging level (the default logging level is `WebSocketSharp.LogLevel.ERROR`), you should set any of the `LogLevel` values to the `WebSocket.Log.Level`.
 
