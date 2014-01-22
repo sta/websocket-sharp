@@ -434,25 +434,25 @@ wssv.Certificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert
 
 websocket-sharp supports the **HTTP Authentication (Basic/Digest)**.
 
-As a **WebSocket Client**, you should set a pair of user name and password for the HTTP Authentication, using the `WebSocket.SetCredentials (username, password, preAuth)` method before connecting.
+As a **WebSocket Client**, you should set a pair of user name and password for the HTTP authentication, using the `WebSocket.SetCredentials (string, string, bool)` method before connecting.
 
 ```cs
-ws.SetCredentials ("nobita", "password", true);
+ws.SetCredentials (username, password, preAuth);
 ```
 
 If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first connection request to the server.
 
 Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest authentication (determined by the unauthorized response to the first connection request) credentials with the second connection request to the server.
 
-As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm and any function to find the user credentials, before starting. It's like the following.
+As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting. It's like the following.
 
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
 wssv.Realm = "WebSocket Test";
 wssv.UserCredentialsFinder = identity => {
-  var name = identity.Name;
-  return name == "nobita"
-         ? new NetworkCredential (name, "password")
+  var expected = "nobita";
+  return identity.Name == expected
+         ? new NetworkCredential (expected, "password", "gunfighter") // user name, password, and roles
          : null; // If the user credentials not found.
 };
 ```
