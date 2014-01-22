@@ -432,7 +432,7 @@ wssv.Certificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert
 
 ### HTTP Authentication ###
 
-websocket-sharp supports the **HTTP Authentication (Basic/Digest)**.
+websocket-sharp supports the **[HTTP Authentication (Basic/Digest)][rfc2617]**.
 
 As a **WebSocket Client**, you should set a pair of user name and password for the HTTP authentication, using the `WebSocket.SetCredentials (string, string, bool)` method before connecting.
 
@@ -452,7 +452,7 @@ wssv.Realm = "WebSocket Test";
 wssv.UserCredentialsFinder = identity => {
   var expected = "nobita";
   return identity.Name == expected
-         ? new NetworkCredential (expected, "password", "gunfighter") // user name, password, and roles
+         ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles
          : null; // If the user credentials not found.
 };
 ```
@@ -550,5 +550,6 @@ websocket-sharp is provided under **[The MIT License]**.
 [extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [master]: https://github.com/sta/websocket-sharp/tree/master
+[rfc2617]: http://tools.ietf.org/html/rfc2617
 [rfc6455]: http://tools.ietf.org/html/rfc6455
 [rfc6455_ja]: http://www.hcn.zaq.ne.jp/___/WEB/RFC6455-ja.html
