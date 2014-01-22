@@ -524,7 +524,7 @@ Thanks for translating to japanese.
 
 ## License ##
 
-**websocket-sharp** is provided under **[The MIT License]**.
+websocket-sharp is provided under **[The MIT License]**.
 
 
 [Audio Data delivery server]: http://agektmr.node-ninja.com:3000
