@@ -491,23 +491,23 @@ Examples using **websocket-sharp**.
 
 ### Example ###
 
-[Example] connects to the [Echo server] using the WebSocket.
+**[Example]** connects to the **[Echo server]** with the WebSocket.
 
 ### Example1 ###
 
-[Example1] connects to the [Audio Data delivery server] using the WebSocket ([Example1] is only implemented the chat feature, still unfinished).
+**[Example1]** connects to the **[Audio Data delivery server]** with the WebSocket. (Example1 is only implemented the chat feature, still unfinished.)
 
-And [Example1] uses [Json.NET].
+And Example1 uses **[Json.NET]**.
 
 ### Example2 ###
 
-[Example2] starts a WebSocket server.
+**[Example2]** starts a WebSocket server.
 
 ### Example3 ###
 
-[Example3] starts an HTTP server that can upgrade the connection to the WebSocket connection.
+**[Example3]** starts an HTTP server that can accept the WebSocket connection requests.
 
-Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after [Example3] running?
+Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
 
 ## Supported WebSocket Specifications ##
 
