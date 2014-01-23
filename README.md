@@ -333,7 +333,7 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew>` and `WebSocketServer.AddWebSocketService<T>` methods.
+You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` and `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` methods.
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
@@ -371,7 +371,7 @@ I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and 
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
-You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew>` and `HttpServer.AddWebSocketService<T>` methods.
+You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew> (string)` and `HttpServer.AddWebSocketService<T> (string, Func<T>)` methods.
 
 ```cs
 var httpsv = new HttpServer (4649);
