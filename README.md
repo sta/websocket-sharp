@@ -318,7 +318,7 @@ And if you override the `WebSocketService.OnOpen`, `WebSocketService.OnError` an
 
 The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
 
-The `WebSocketService.Sessions` (its type is `WebSocketSharp.Server.WebSocketSessionManager`) property provides some functions for the sessions to the WebSocket service.
+If you want to access the sessions to the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
 The `WebSocketService.Sessions.Broadcast` method broadcasts a data to all clients of the WebSocket service.
 
