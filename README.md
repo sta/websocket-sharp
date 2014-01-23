@@ -127,11 +127,11 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-`e.Type` (its type is `WebSocketSharp.Opcode`) represents the type of the received message. So by checking it, you determine which item you should use.
+`e.Type` property (returns one of the `WebSocketSharp.Opcode` enum values) represents the type of the received message. So by checking it, you determine which item you should use.
 
-If `e.Type` is `Opcode.TEXT`, you should use `e.Data` (its type is `string`) that represents the received **Text** message.
+If `e.Type` is `Opcode.TEXT`, you should use `e.Data` property (returns a `string`) that represents the received **Text** message.
 
-Or if `e.Type` is `Opcode.BINARY`, you should use `e.RawData` (its type is `byte []`) that represents the received **Binary** message.
+Or if `e.Type` is `Opcode.BINARY`, you should use `e.RawData` property (returns a `byte []`) that represents the received **Binary** message.
 
 ```cs
 if (e.Type == Opcode.TEXT) {
@@ -157,7 +157,7 @@ ws.OnError += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.ErrorEventArgs`.
 
-`e.Message` (its type is `string`) represents the error message. So you should use it to get the error message.
+`e.Message` property (returns a `string`) represents the error message. So you should use it to get the error message.
 
 ##### WebSocket.OnClose Event #####
 
@@ -171,7 +171,7 @@ ws.OnClose += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.CloseEventArgs`.
 
-`e.Code` (its type is `ushort`) represents the status code that indicates the reason for closure, and `e.Reason` (its type is `string`) represents the reason for closure. So you should use them to get the reason for closure.
+`e.Code` property (returns a `ushort`) represents the status code that indicates the reason for closure, and `e.Reason` property (returns a `string`) represents the reason for closure. So you should use them to get the reason for closure.
 
 #### Step 4 ####
 
