@@ -201,7 +201,7 @@ If you want to send a data asynchronously, you should use the `WebSocket.SendAsy
 ws.SendAsync (data, completed);
 ```
 
-And if you want to do something when the send is complete, you should set any action to `completed` (its type is `Action<bool>`).
+And if you want to do something when the send is complete, you should set `completed` to any `Action<bool>`.
 
 #### Step 6 ####
 
