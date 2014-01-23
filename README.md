@@ -469,7 +469,7 @@ The `WebSocket` class includes the own logging function.
 
 You can access it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
-If you want to change the current logging level (the default logging level is `WebSocketSharp.LogLevel.ERROR`), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
+If you want to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
