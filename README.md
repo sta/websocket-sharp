@@ -495,7 +495,7 @@ Examples using **websocket-sharp**.
 
 ### Example1 ###
 
-**[Example1]** connects to the **[Audio Data delivery server]** with the WebSocket. (Example1 is only implemented the chat feature, still unfinished.)
+**[Example1]** connects to the **[Audio Data delivery server]** with the WebSocket. (But it's only implemented the chat feature, still unfinished.)
 
 And Example1 uses **[Json.NET]**.
 
