@@ -504,6 +504,33 @@ namespace WebSocketSharp
       return true;
     }
 
+    private void acceptException (Exception exception, string reason)
+    {
+      var code = CloseStatusCode.ABNORMAL;
+      var msg = reason;
+      if (exception is WebSocketException) {
+        var wsex = (WebSocketException) exception;
+        code = wsex.Code;
+        reason = wsex.Message;
+      }
+
+      if (code == CloseStatusCode.ABNORMAL ||
+          code == CloseStatusCode.TLS_HANDSHAKE_FAILURE) {
+        _logger.Fatal (exception.ToString ());
+        reason = msg;
+      }
+      else {
+        _logger.Error (reason);
+        msg = null;
+      }
+
+      error (msg ?? code.GetMessage ());
+      if (_readyState == WebSocketState.CONNECTING && !_client)
+        Close (HttpStatusCode.BadRequest);
+      else
+        close (code, reason ?? code.GetMessage (), false);
+    }
+
     private bool acceptFragmentedFrame (WsFrame frame)
     {
       return frame.IsContinuation // Not first fragment
@@ -605,7 +632,7 @@ namespace WebSocketSharp
       WsFrame frame, CloseStatusCode code, string reason)
     {
       _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
-      processException (new WebSocketException (code, reason), null);
+      acceptException (new WebSocketException (code, reason), null);
 
       return false;
     }
@@ -812,7 +839,7 @@ namespace WebSocketSharp
           }
         }
         catch (Exception ex) {
-          processException (
+          acceptException (
             ex, "An exception has occurred while connecting.");
         }
 
@@ -959,36 +986,9 @@ namespace WebSocketSharp
           startReceiving ();
       }
       catch (Exception ex) {
-        processException (
+        acceptException (
           ex, "An exception has occurred while opening.");
       }
-    }
-
-    private void processException (Exception exception, string reason)
-    {
-      var code = CloseStatusCode.ABNORMAL;
-      var msg = reason;
-      if (exception is WebSocketException) {
-        var wsex = (WebSocketException) exception;
-        code = wsex.Code;
-        reason = wsex.Message;
-      }
-
-      if (code == CloseStatusCode.ABNORMAL ||
-          code == CloseStatusCode.TLS_HANDSHAKE_FAILURE) {
-        _logger.Fatal (exception.ToString ());
-        reason = msg;
-      }
-      else {
-        _logger.Error (reason);
-        msg = null;
-      }
-
-      error (msg ?? code.GetMessage ());
-      if (_readyState == WebSocketState.CONNECTING && !_client)
-        Close (HttpStatusCode.BadRequest);
-      else
-        close (code, reason ?? code.GetMessage (), false);
     }
 
     // As server
@@ -1314,7 +1314,7 @@ namespace WebSocketSharp
           else if (_exitReceiving != null)
             _exitReceiving.Set ();
         },
-        ex => processException (
+        ex => acceptException (
           ex, "An exception has occurred while receiving a message."));
 
       receive ();
@@ -1405,7 +1405,7 @@ namespace WebSocketSharp
         }
       }
       catch (Exception ex) {
-        processException (
+        acceptException (
           ex, "An exception has occurred while connecting.");
       }
     }
