@@ -2128,8 +2128,9 @@ namespace WebSocketSharp
     /// <paramref name="username"/> used to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends a Basic authentication
-    /// credentials with the first connection request; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication
+    /// credentials with the first connection request to the server; otherwise,
+    /// <c>false</c>.
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
