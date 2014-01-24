@@ -312,9 +312,9 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `WebSocketService.OnMessage` method, it's bound to the server side `WebSocket.OnMessage` event.
+If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, that overridden method is called when the current session's `WebSocket.OnMessage` event occurs.
 
-And if you override the `WebSocketService.OnOpen`, `WebSocketService.OnError` and `WebSocketService.OnClose` methods, each of them is bound to each server side event of `WebSocket.OnOpen`, `WebSocket.OnError` and `WebSocket.OnClose`.
+And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the current session's `WebSocket` (`OnOpen`, `OnError`, and `OnClose`) occurs.
 
 The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
 
