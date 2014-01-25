@@ -64,9 +64,8 @@ namespace Example
     public static void Main (string [] args)
     {
       using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
-        ws.OnMessage += (sender, e) => {
+        ws.OnMessage += (sender, e) =>
           Console.WriteLine ("Laputa says: " + e.Data);
-        };
 
         ws.Connect ();
         ws.Send ("BALUS");
@@ -312,9 +311,9 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, that overridden method is called when the current session's `WebSocket.OnMessage` event occurs.
+If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, that overridden method is called when the `OnMessage` event of the current session's `WebSocket` occurs.
 
-And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the current session's `WebSocket` (`OnOpen`, `OnError`, and `OnClose`) occurs.
+And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the current session's `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
 The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
 
