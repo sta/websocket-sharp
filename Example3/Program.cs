@@ -30,9 +30,9 @@ namespace Example3
       _httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       _httpsv.Realm = "WebSocket Test";
       _httpsv.UserCredentialsFinder = identity => {
-        var name = identity.Name;
-        return name == "nobita"
-               ? new NetworkCredential (name, "password")
+        var expected = "nobita";
+        return identity.Name == expected
+               ? new NetworkCredential (expected, "password", "gunfighter")
                : null;
       };
        */

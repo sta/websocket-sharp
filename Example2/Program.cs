@@ -30,9 +30,9 @@ namespace Example2
       wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       wssv.Realm = "WebSocket Test";
       wssv.UserCredentialsFinder = identity => {
-        var name = identity.Name;
-        return name == "nobita"
-               ? new NetworkCredential (name, "password")
+        var expected = "nobita";
+        return identity.Name == expected
+               ? new NetworkCredential (expected, "password", "gunfighter")
                : null;
       };
        */

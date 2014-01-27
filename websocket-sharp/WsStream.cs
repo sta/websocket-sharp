@@ -43,7 +43,6 @@ namespace WebSocketSharp
     #region Private Const Fields
 
     private const int _handshakeHeadersLimitLen = 8192;
-    private const int _handshakeTimeout = 90000;
 
     #endregion
 
@@ -183,7 +182,8 @@ namespace WebSocketSharp
       return new WsStream (conn.Stream, conn.IsSecure);
     }
 
-    internal T ReadHandshake<T> (Func<string [], T> parser)
+    internal T ReadHandshake<T> (
+      Func<string [], T> parser, int millisecondsTimeout)
       where T : HandshakeBase
     {
       var timeout = false;
@@ -193,7 +193,7 @@ namespace WebSocketSharp
           _innerStream.Close ();
         },
         null,
-        _handshakeTimeout,
+        millisecondsTimeout,
         -1);
 
       T handshake = null;
@@ -265,12 +265,12 @@ namespace WebSocketSharp
 
     public HandshakeRequest ReadHandshakeRequest ()
     {
-      return ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse);
+      return ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
     }
 
     public HandshakeResponse ReadHandshakeResponse ()
     {
-      return ReadHandshake<HandshakeResponse> (HandshakeResponse.Parse);
+      return ReadHandshake<HandshakeResponse> (HandshakeResponse.Parse, 90000);
     }
 
     public bool WriteFrame (WsFrame frame)
