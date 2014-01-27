@@ -2,7 +2,7 @@
 
 ## Welcome to websocket-sharp! ##
 
-**websocket-sharp** supports the followings.
+**websocket-sharp** supports the followings:
 
 - **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
 - **[RFC 6455](#supported-websocket-specifications)**
