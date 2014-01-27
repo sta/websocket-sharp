@@ -29,7 +29,7 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 
 You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) built yourself to the library references of your project.
 
-If you want to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+If you would like to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
 
 ### NuGet Gallery ###
 
@@ -180,7 +180,7 @@ Connecting to the WebSocket server.
 ws.Connect ();
 ```
 
-If you want to connect to the server asynchronously, you should use the `WebSocket.ConnectAsync ()` method.
+If you would like to connect to the server asynchronously, you should use the `WebSocket.ConnectAsync ()` method.
 
 #### Step 5 ####
 
@@ -194,13 +194,13 @@ The `WebSocket.Send` method is overloaded.
 
 You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, and `WebSocket.Send (System.IO.FileInfo)` methods to send a data.
 
-If you want to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
+If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
 
 ```cs
 ws.SendAsync (data, completed);
 ```
 
-And if you want to do something when the send is complete, you should set `completed` to any `Action<bool>`.
+And if you would like to do something when the send is complete, you should set `completed` to any `Action<bool>`.
 
 #### Step 6 ####
 
@@ -210,13 +210,13 @@ Closing the WebSocket connection.
 ws.Close (code, reason);
 ```
 
-If you want to close the connection explicitly, you should use the `WebSocket.Close` method.
+If you would like to close the connection explicitly, you should use the `WebSocket.Close` method.
 
 The `WebSocket.Close` method is overloaded.
 
 You can use the `WebSocket.Close ()`, `WebSocket.Close (ushort)`, `WebSocket.Close (WebSocketSharp.CloseStatusCode)`, `WebSocket.Close (ushort, string)`, or `WebSocket.Close (WebSocketSharp.CloseStatusCode, string)` method to close the connection.
 
-If you want to close the connection asynchronously, you should use the `WebSocket.CloseAsync` method.
+If you would like to close the connection asynchronously, you should use the `WebSocket.CloseAsync` method.
 
 ### WebSocket Server ###
 
@@ -267,7 +267,7 @@ The `WebSocketServer` and `WebSocketService` classes exist in the `WebSocketShar
 
 Creating the class that inherits the `WebSocketService` class.
 
-For example, if you want to provide an echo service,
+For example, if you would like to provide an echo service,
 
 ```cs
 using System;
@@ -283,7 +283,7 @@ public class Echo : WebSocketService
 }
 ```
 
-And if you want to provide a chat service,
+And if you would like to provide a chat service,
 
 ```cs
 using System;
@@ -317,7 +317,7 @@ And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError 
 
 The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
 
-If you want to access the sessions to the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+If you would like to access the sessions to the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
 The `WebSocketService.Sessions.Broadcast` method broadcasts a data to all clients of the WebSocket service.
 
@@ -387,7 +387,7 @@ For more information, could you see **[Example3]**?
 
 websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
 
-If you want to enable this extension as a WebSocket client, you should set like the following.
+If you would like to enable this extension as a WebSocket client, you should set like the following.
 
 ```cs
 ws.Compression = CompressionMethod.DEFLATE;
@@ -411,7 +411,7 @@ using (var ws = new WebSocket ("wss://example.com")) {
 }
 ```
 
-If you want to set the custom validation for the server certificate, you should set the `WebSocket.ServerCertificateValidationCallback` property.
+If you would like to set the custom validation for the server certificate, you should set the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
@@ -456,7 +456,7 @@ wssv.UserCredentialsFinder = identity => {
 };
 ```
 
-If you want to provide the Digest authentication, you should set like the following.
+If you would like to provide the Digest authentication, you should set like the following.
 
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
@@ -468,7 +468,7 @@ The `WebSocket` class includes the own logging function.
 
 You can access it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
-If you want to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
+If you would like to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
@@ -476,7 +476,7 @@ ws.Log.Level = LogLevel.DEBUG;
 
 This means a log with less than `LogLevel.DEBUG` isn't outputted.
 
-And if you want to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.DEBUG`.
+And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.DEBUG`.
 
 ```cs
 ws.Log.Debug ("This is a debug message.");
