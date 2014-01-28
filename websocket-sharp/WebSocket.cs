@@ -637,6 +637,13 @@ namespace WebSocketSharp
       return false;
     }
 
+    private string checkIfCanConnect ()
+    {
+      return !_client && _readyState == WebSocketState.CLOSED
+             ? "Connect isn't available to reconnect as a server."
+             : _readyState.CheckIfConnectable ();
+    }
+
     // As server
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
@@ -820,12 +827,11 @@ namespace WebSocketSharp
         frame, CloseStatusCode.INCORRECT_DATA, null);
     }
 
-    // As client
     private bool connect ()
     {
       lock (_forConn) {
-        if (IsConnected) {
-          var msg = "A WebSocket connection has already been established.";
+        var msg = _readyState.CheckIfConnectable ();
+        if (msg != null) {
           _logger.Error (msg);
           error (msg);
 
@@ -833,7 +839,7 @@ namespace WebSocketSharp
         }
 
         try {
-          if (doHandshake ()) {
+          if (_client ? doHandshake () : acceptHandshake ()) {
             _readyState = WebSocketState.OPEN;
             return true;
           }
@@ -1746,12 +1752,7 @@ namespace WebSocketSharp
     /// </summary>
     public void Connect ()
     {
-      var msg = !_client
-              ? "Connect isn't available as a server."
-              : IsConnected
-                ? "A WebSocket connection has already been established."
-                : null;
-
+      var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1771,12 +1772,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void ConnectAsync ()
     {
-      var msg = !_client
-              ? "ConnectAsync isn't available as a server."
-              : IsConnected
-                ? "A WebSocket connection has already been established."
-                : null;
-
+      var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
