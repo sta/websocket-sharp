@@ -201,13 +201,12 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the compression method used to compress the payload data of
-    /// the WebSocket Data frame.
+    /// Gets or sets the compression method used to compress the message.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CompressionMethod"/> values that represents the
-    /// compression method used to compress.
-    /// The default value is <see cref="CompressionMethod.NONE"/>.
+    /// One of the <see cref="CompressionMethod"/> enum values, indicates the
+    /// compression method used to compress the message. The default value is
+    /// <see cref="CompressionMethod.NONE"/>.
     /// </value>
     public CompressionMethod Compression {
       get {
@@ -216,11 +215,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = !_client
-                  ? "Set operation of Compression isn't available as a server."
-                  : IsConnected
-                    ? "A WebSocket connection has already been established."
-                    : null;
+          var msg = checkIfAvailable (
+            "Set operation of Compression", false, false);
 
           if (msg != null) {
             _logger.Error (msg);
@@ -235,7 +231,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the cookies used in the WebSocket connection request.
+    /// Gets the HTTP cookies used in the WebSocket connection request and
+    /// response.
     /// </summary>
     /// <value>
     /// An IEnumerable&lt;Cookie&gt; interface that provides an enumerator which
@@ -244,8 +241,8 @@ namespace WebSocketSharp
     public IEnumerable<Cookie> Cookies {
       get {
         lock (_cookies.SyncRoot) {
-          return from Cookie cookie in _cookies
-                 select cookie;
+          foreach (Cookie cookie in _cookies)
+            yield return cookie;
         }
       }
     }
@@ -267,7 +264,7 @@ namespace WebSocketSharp
     /// Gets the WebSocket extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the WebSocket extensions if any.
+    /// A <see cref="string"/> that represents the extensions if any.
     /// The default value is <see cref="String.Empty"/>.
     /// </value>
     public string Extensions {
@@ -304,9 +301,9 @@ namespace WebSocketSharp
     /// Gets the logging functions.
     /// </summary>
     /// <remarks>
-    /// The default logging level is the <see cref="LogLevel.ERROR"/>. If you
-    /// change the current logging level, you set the <c>Log.Level</c> property
-    /// to any of the <see cref="LogLevel"/> values.
+    /// The default logging level is <see cref="LogLevel.ERROR"/>. If you would
+    /// like to change it, you should set the <c>Log.Level</c> property to any of
+    /// the <see cref="LogLevel"/> enum values.
     /// </remarks>
     /// <value>
     /// A <see cref="Logger"/> that provides the logging functions.
@@ -322,8 +319,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the value of the Origin header used in the WebSocket
-    /// connection request.
+    /// Gets or sets the value of the Origin header to send with the WebSocket
+    /// connection request to the server.
     /// </summary>
     /// <remarks>
     /// The <see cref="WebSocket"/> sends the Origin header if this property has
@@ -347,16 +344,13 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          string msg = null;
-          if (!_client)
-            msg = "Set operation of Origin isn't available as a server.";
-          else if (IsConnected)
-            msg = "A WebSocket connection has already been established.";
-          else if (value.IsNullOrEmpty ()) {
-            _origin = value;
-            return;
-          }
-          else {
+          var msg = checkIfAvailable ("Set operation of Origin", false, false);
+          if (msg == null) {
+            if (value.IsNullOrEmpty ()) {
+              _origin = value;
+              return;
+            }
+
             Uri origin;
             if (!Uri.TryCreate (value, UriKind.Absolute, out origin) ||
                 origin.Segments.Length > 1)
@@ -392,7 +386,8 @@ namespace WebSocketSharp
     /// Gets the state of the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> values.
+    /// One of the <see cref="WebSocketState"/> enum values, indicates the state
+    /// of the WebSocket connection.
     /// The default value is <see cref="WebSocketState.CONNECTING"/>.
     /// </value>
     public WebSocketState ReadyState {
@@ -421,12 +416,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg =
-            !_client
-            ? "Set operation of ServerCertificateValidationCallback isn't available as a server."
-            : IsConnected
-              ? "A WebSocket connection has already been established."
-              : null;
+          var msg = checkIfAvailable (
+            "Set operation of ServerCertificateValidationCallback", false, false);
 
           if (msg != null) {
             _logger.Error (msg);
@@ -635,6 +626,16 @@ namespace WebSocketSharp
       acceptException (new WebSocketException (code, reason), null);
 
       return false;
+    }
+
+    private string checkIfAvailable (
+      string operation, bool availableAsServer, bool availableAsConnected)
+    {
+      return !_client && !availableAsServer
+             ? operation + " isn't available as a server."
+             : !availableAsConnected
+               ? _readyState.CheckIfConnectable ()
+               : null;
     }
 
     private string checkIfCanConnect ()
@@ -2083,21 +2084,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets a <see cref="Cookie"/> used in the WebSocket connection request.
+    /// Sets an HTTP <paramref name="cookie"/> to send with the WebSocket
+    /// connection request to the server.
     /// </summary>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> that represents an HTTP Cookie to set.
+    /// A <see cref="Cookie"/> that represents the HTTP Cookie to send.
     /// </param>
     public void SetCookie (Cookie cookie)
     {
       lock (_forConn) {
-        var msg = !_client
-                ? "SetCookie isn't available as a server."
-                : IsConnected
-                  ? "A WebSocket connection has already been established."
-                  : cookie == null
-                    ? "'cookie' must not be null."
-                    : null;
+        var msg = checkIfAvailable ("SetCookie", false, false) ??
+                  (cookie == null ? "'cookie' must not be null." : null);
 
         if (msg != null) {
           _logger.Error (msg);
@@ -2131,19 +2128,16 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       lock (_forConn) {
-        string msg = null;
-        if (!_client)
-          msg = "SetCredentials isn't available as a server.";
-        else if (IsConnected)
-          msg = "A WebSocket connection has already been established.";
-        else if (username.IsNullOrEmpty ()) {
-          _credentials = null;
-          _preAuth = false;
-          _logger.Warn ("Credentials was set back to the default.");
+        var msg = checkIfAvailable ("SetCredentials", false, false);
+        if (msg == null) {
+          if (username.IsNullOrEmpty ()) {
+            _credentials = null;
+            _preAuth = false;
+            _logger.Warn ("Credentials was set back to the default.");
 
-          return;
-        }
-        else {
+            return;
+          }
+
           msg = username.Contains (':') || !username.IsText ()
               ? "'username' contains an invalid character."
               : !password.IsNullOrEmpty () && !password.IsText ()
@@ -2160,6 +2154,7 @@ namespace WebSocketSharp
 
         _credentials = new NetworkCredential (
           username, password, _uri.PathAndQuery);
+
         _preAuth = preAuth;
       }
     }
