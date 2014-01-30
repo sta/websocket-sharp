@@ -1806,7 +1806,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <returns>
     /// <c>true</c> if the <see cref="WebSocket"/> instance receives the Pong to
-    /// this Ping from the server in a time; otherwise, <c>false</c>.
+    /// this Ping in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
     {
@@ -1821,7 +1821,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <returns>
     /// <c>true</c> if the <see cref="WebSocket"/> instance receives the Pong to
-    /// this Ping from the server in a time; otherwise, <c>false</c>.
+    /// this Ping in a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
