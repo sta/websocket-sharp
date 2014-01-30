@@ -270,39 +270,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping to the client of the current <see cref="WebSocketService"/>
-    /// instance.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance
-    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    protected bool Ping ()
-    {
-      return _websocket != null
-             ? _websocket.Ping ()
-             : false;
-    }
-
-    /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client
-    /// of the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the current <see cref="WebSocketService"/> instance
-    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the message to send.
-    /// </param>
-    protected bool Ping (string message)
-    {
-      return _websocket != null
-             ? _websocket.Ping (message)
-             : false;
-    }
-
-    /// <summary>
     /// Sends a binary <paramref name="data"/> to the client of the current
     /// <see cref="WebSocketService"/> instance.
     /// </summary>

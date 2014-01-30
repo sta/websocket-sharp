@@ -1437,10 +1437,9 @@ namespace WebSocketSharp
       return Convert.ToBase64String (src);
     }
 
-    internal bool Ping (byte [] frameAsBytes, int timeOut)
+    internal bool Ping (byte [] frame, int millisecondsTimeout)
     {
-      return send (frameAsBytes) &&
-             _receivePong.WaitOne (timeOut);
+      return send (frame) && _receivePong.WaitOne (millisecondsTimeout);
     }
 
     // As server, used to broadcast
@@ -1806,8 +1805,8 @@ namespace WebSocketSharp
     /// Sends a Ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> instance receives a Pong in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> instance receives the Pong to
+    /// this Ping from the server in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
     {
@@ -1817,14 +1816,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> using the WebSocket connection.
+    /// Sends a Ping with the specified <paramref name="message"/> using the
+    /// WebSocket connection.
     /// </summary>
     /// <param name="message">
-    /// A <see cref="string"/> that contains a message to send.
+    /// A <see cref="string"/> that represents the message to send.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> instance receives a Pong in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> instance receives the Pong to
+    /// this Ping from the server in a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping (string message)
     {
@@ -1832,7 +1832,7 @@ namespace WebSocketSharp
         return Ping ();
 
       var data = Encoding.UTF8.GetBytes (message);
-      var msg = data.CheckIfValidPingData ();
+      var msg = data.CheckIfValidControlData ("message");
       if (msg != null) {
         _logger.Error (msg);
         error (msg);

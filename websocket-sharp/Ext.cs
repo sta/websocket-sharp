@@ -251,10 +251,11 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfValidPingData (this byte [] data)
+    internal static string CheckIfValidControlData (
+      this byte [] data, string paramName)
     {
       return data.Length > 125
-             ? "'message' length must be less."
+             ? String.Format ("'{0}' length must be less.", paramName)
              : null;
     }
 

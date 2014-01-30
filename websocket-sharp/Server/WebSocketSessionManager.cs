@@ -588,7 +588,7 @@ namespace WebSocketSharp.Server
 
       byte [] data = null;
       var msg = _state.CheckIfStarted () ??
-                (data = Encoding.UTF8.GetBytes (message)).CheckIfValidPingData ();
+                (data = Encoding.UTF8.GetBytes (message)).CheckIfValidControlData ("message");
 
       if (msg != null) {
         _logger.Error (msg);
