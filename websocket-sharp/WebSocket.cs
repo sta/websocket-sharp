@@ -1819,13 +1819,13 @@ namespace WebSocketSharp
     /// Sends a Ping with the specified <paramref name="message"/> using the
     /// WebSocket connection.
     /// </summary>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the message to send.
-    /// </param>
     /// <returns>
     /// <c>true</c> if the <see cref="WebSocket"/> instance receives the Pong to
     /// this Ping from the server in a time; otherwise, <c>false</c>.
     /// </returns>
+    /// <param name="message">
+    /// A <see cref="string"/> that represents the message to send.
+    /// </param>
     public bool Ping (string message)
     {
       if (message == null || message.Length == 0)
