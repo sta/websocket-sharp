@@ -638,6 +638,11 @@ namespace WebSocketSharp
                : null;
     }
 
+    private string checkIfCanClose (Func<string> checkParams)
+    {
+      return _readyState.CheckIfClosable () ?? checkParams ();
+    }
+
     private string checkIfCanConnect ()
     {
       return !_client && _readyState == WebSocketState.CLOSED
@@ -1523,7 +1528,8 @@ namespace WebSocketSharp
     /// isn't in the allowable range of the WebSocket close status code.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code that indicates the
+    /// reason for closure.
     /// </param>
     public void Close (ushort code)
     {
@@ -1535,8 +1541,8 @@ namespace WebSocketSharp
     /// and releases all associated resources.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status
+    /// code that indicates the reason for closure.
     /// </param>
     public void Close (CloseStatusCode code)
     {
@@ -1550,10 +1556,11 @@ namespace WebSocketSharp
     /// <remarks>
     /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
     /// isn't in the allowable range of the WebSocket close status code or the
-    /// length of <paramref name="reason"/> is greater than 123 bytes.
+    /// size of <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code that indicates the
+    /// reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -1561,15 +1568,15 @@ namespace WebSocketSharp
     public void Close (ushort code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfClosable () ??
-                code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidCloseData ();
+      var msg = checkIfCanClose (
+        () => code.CheckIfValidCloseStatusCode () ??
+              (data = code.Append (reason)).CheckIfValidControlData ("reason"));
 
       if (msg != null) {
         _logger.Error (
           String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
 
+        error (msg);
         return;
       }
 
@@ -1582,12 +1589,12 @@ namespace WebSocketSharp
     /// and <see cref="string"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method emits a <see cref="OnError"/> event if the length of
+    /// This method emits a <see cref="OnError"/> event if the size of
     /// <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the
+    /// status code that indicates the reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -1595,14 +1602,15 @@ namespace WebSocketSharp
     public void Close (CloseStatusCode code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+      var msg = checkIfCanClose (
+        () => (data = ((ushort) code).Append (reason))
+              .CheckIfValidControlData ("reason"));
 
       if (msg != null) {
         _logger.Error (
           String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
 
+        error (msg);
         return;
       }
 
@@ -1645,7 +1653,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code that indicates the
+    /// reason for closure.
     /// </param>
     public void CloseAsync (ushort code)
     {
@@ -1660,8 +1669,8 @@ namespace WebSocketSharp
     /// This method doesn't wait for the close to be complete.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the
+    /// status code that indicates the reason for closure.
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
@@ -1680,11 +1689,12 @@ namespace WebSocketSharp
     ///   <para>
     ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/>
     ///   isn't in the allowable range of the WebSocket close status code or the
-    ///   length of <paramref name="reason"/> is greater than 123 bytes.
+    ///   size of <paramref name="reason"/> is greater than 123 bytes.
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code that indicates the
+    /// reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -1692,15 +1702,15 @@ namespace WebSocketSharp
     public void CloseAsync (ushort code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfClosable () ??
-                code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidCloseData ();
+      var msg = checkIfCanClose (
+        () => code.CheckIfValidCloseStatusCode () ??
+              (data = code.Append (reason)).CheckIfValidControlData ("reason"));
 
       if (msg != null) {
         _logger.Error (
           String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
 
+        error (msg);
         return;
       }
 
@@ -1718,13 +1728,13 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if the length of
+    ///   This method emits a <see cref="OnError"/> event if the size of
     ///   <paramref name="reason"/> is greater than 123 bytes.
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for closure.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the
+    /// status code that indicates the reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -1732,14 +1742,15 @@ namespace WebSocketSharp
     public void CloseAsync (CloseStatusCode code, string reason)
     {
       byte [] data = null;
-      var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+      var msg = checkIfCanClose (
+        () => (data = ((ushort) code).Append (reason))
+              .CheckIfValidControlData ("reason"));
 
       if (msg != null) {
         _logger.Error (
           String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
 
+        error (msg);
         return;
       }
 

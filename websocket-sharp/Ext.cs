@@ -237,13 +237,6 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfValidCloseData (this byte [] data)
-    {
-      return data.Length > 125
-             ? "'reason' length must be less."
-             : null;
-    }
-
     internal static string CheckIfValidCloseStatusCode (this ushort code)
     {
       return !code.IsCloseStatusCode ()

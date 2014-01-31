@@ -6,7 +6,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -549,6 +549,11 @@ namespace WebSocketSharp.Server
       return true;
     }
 
+    private string checkIfCanStop (Func<string> checkParams)
+    {
+      return _state.CheckIfStarted () ?? checkParams ();
+    }
+
     private string checkIfCertExists ()
     {
       return _secure && _cert == null
@@ -773,19 +778,19 @@ namespace WebSocketSharp.Server
     /// <see cref="ushort"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that contains a status code indicating the reason
-    /// for stop.
+    /// A <see cref="ushort"/> that represents the status code indicating the
+    /// reason for stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
+    /// A <see cref="string"/> that represents the reason for stop.
     /// </param>
     public void Stop (ushort code, string reason)
     {
       byte [] data = null;
       lock (_sync) {
-        var msg = _state.CheckIfStarted () ??
-                  code.CheckIfValidCloseStatusCode () ??
-                  (data = code.Append (reason)).CheckIfValidCloseData ();
+        var msg = checkIfCanStop (
+          () => code.CheckIfValidCloseStatusCode () ??
+                (data = code.Append (reason)).CheckIfValidControlData ("reason"));
 
         if (msg != null) {
           _logger.Error (
@@ -809,18 +814,19 @@ namespace WebSocketSharp.Server
     /// <see cref="CloseStatusCode"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that represent the status
-    /// codes indicating the reasons for stop.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the
+    /// status code indicating the reason for stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that contains the reason for stop.
+    /// A <see cref="string"/> that represents the reason for stop.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
       byte [] data = null;
       lock (_sync) {
-        var msg = _state.CheckIfStarted () ??
-                  (data = ((ushort) code).Append (reason)).CheckIfValidCloseData ();
+        var msg = checkIfCanStop (
+          () => (data = ((ushort) code).Append (reason))
+                .CheckIfValidControlData ("reason"));
 
         if (msg != null) {
           _logger.Error (

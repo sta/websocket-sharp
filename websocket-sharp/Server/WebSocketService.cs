@@ -401,48 +401,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance.
-    /// </summary>
-    protected void Stop ()
-    {
-      if (_websocket != null)
-        _websocket.Close ();
-    }
-
-    /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the
-    /// specified <see cref="ushort"/> and <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for stop.
-    /// </param>
-    protected void Stop (ushort code, string reason)
-    {
-      if (_websocket != null)
-        _websocket.Close (code, reason);
-    }
-
-    /// <summary>
-    /// Stops the current <see cref="WebSocketService"/> instance with the
-    /// specified <see cref="CloseStatusCode"/> and <see cref="string"/>.
-    /// </summary>
-    /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for stop.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for stop.
-    /// </param>
-    protected void Stop (CloseStatusCode code, string reason)
-    {
-      if (_websocket != null)
-        _websocket.Close (code, reason);
-    }
-
-    /// <summary>
     /// Validates the HTTP Cookies used in the WebSocket connection request.
     /// </summary>
     /// <remarks>
