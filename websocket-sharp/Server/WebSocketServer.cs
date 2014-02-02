@@ -551,7 +551,7 @@ namespace WebSocketSharp.Server
 
     private string checkIfCanStop (Func<string> checkParams)
     {
-      return _state.CheckIfStarted () ?? checkParams ();
+      return _state.CheckIfStart () ?? checkParams ();
     }
 
     private string checkIfCertExists ()
@@ -758,7 +758,7 @@ namespace WebSocketSharp.Server
     public void Stop ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfStarted ();
+        var msg = _state.CheckIfStart ();
         if (msg != null) {
           _logger.Error (String.Format ("{0}\nstate: {1}", msg, _state));
           return;

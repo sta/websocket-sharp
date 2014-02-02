@@ -650,6 +650,11 @@ namespace WebSocketSharp
              : _readyState.CheckIfConnectable ();
     }
 
+    private string checkIfCanSend (Func<string> checkParams)
+    {
+      return _readyState.CheckIfOpen () ?? checkParams ();
+    }
+
     // As server
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
@@ -1054,7 +1059,7 @@ namespace WebSocketSharp
       return res;
     }
 
-    private bool send (byte [] frameAsBytes)
+    private bool send (byte [] frame)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.OPEN) {
@@ -1065,7 +1070,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return _stream.Write (frameAsBytes);
+        return _stream.Write (frame);
       }
     }
 
@@ -1860,11 +1865,11 @@ namespace WebSocketSharp
     /// Sends a binary <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to send.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     public void Send (byte [] data)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1884,17 +1889,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/> using the
-    /// WebSocket connection.
+    /// Sends the specified <paramref name="file"/> as a binary data
+    /// using the WebSocket connection.
     /// </summary>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains the binary data to send.
+    /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     public void Send (FileInfo file)
     {
-      var msg = _readyState.CheckIfOpen () ??
-                (file == null ? "'file' must not be null." : null);
-
+      var msg = checkIfCanSend (() => file.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1913,7 +1916,7 @@ namespace WebSocketSharp
     /// </param>
     public void Send (string data)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1929,24 +1932,23 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously using the WebSocket
-    /// connection.
+    /// Sends a binary <paramref name="data"/> asynchronously
+    /// using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to send.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     public void SendAsync (byte [] data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1967,26 +1969,23 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/>
+    /// Sends the specified <paramref name="file"/> as a binary data
     /// asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains the binary data to send.
+    /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ??
-                (file == null ? "'file' must not be null." : null);
-
+      var msg = checkIfCanSend (() => file.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -1998,8 +1997,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously using the WebSocket
-    /// connection.
+    /// Sends a text <paramref name="data"/> asynchronously
+    /// using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
@@ -2009,13 +2008,12 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
       if (msg != null) {
         _logger.Error (msg);
         error (msg);
@@ -2031,29 +2029,28 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// using the WebSocket connection.
+    /// Sends a binary data from the specified <see cref="Stream"/>
+    /// asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains the binary data to send.
+    /// A <see cref="Stream"/> from which contains the binary data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ??
-                stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' must be greater than 0." : null);
+      var msg = checkIfCanSend (
+        () => stream.CheckIfCanRead () ??
+              (length < 1 ? "'length' must be greater than 0." : null));
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2067,9 +2064,9 @@ namespace WebSocketSharp
         data => {
           var len = data.Length;
           if (len == 0) {
-            var err = "A data cannot be read from 'stream'.";
-            _logger.Error (err);
-            error (err);
+            msg = "A data cannot be read from 'stream'.";
+            _logger.Error (msg);
+            error (msg);
 
             return;
           }

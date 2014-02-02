@@ -223,18 +223,24 @@ namespace WebSocketSharp
                  : null;
     }
 
-    internal static string CheckIfStarted (this ServerState state)
+    internal static string CheckIfStart (this ServerState state)
     {
-      return state != ServerState.START
-             ? "Any of not started, on shutdown or stopped."
-             : null;
+      return state == ServerState.READY
+             ? "The server hasn't started yet."
+             : state == ServerState.SHUTDOWN
+               ? "The server is shutting down."
+               : state == ServerState.STOP
+                 ? "The server has already stopped."
+                 : null;
     }
 
     internal static string CheckIfStopped (this ServerState state)
     {
-      return state == ServerState.START || state == ServerState.SHUTDOWN
-             ? "Already started or on shutdown."
-             : null;
+      return state == ServerState.START
+             ? "The server has already started."
+             : state == ServerState.SHUTDOWN
+               ? "The server is shutting down."
+               : null;
     }
 
     internal static string CheckIfValidCloseStatusCode (this ushort code)
@@ -256,6 +262,13 @@ namespace WebSocketSharp
     {
       return data == null
              ? "'data' must not be null."
+             : null;
+    }
+
+    internal static string CheckIfValidSendData (this FileInfo file)
+    {
+      return file == null
+             ? "'file' must not be null."
              : null;
     }
 

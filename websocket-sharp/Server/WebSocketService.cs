@@ -270,11 +270,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
+    /// Sends a binary <paramref name="data"/> to the client on the current
+    /// session in the WebSocket service.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to send.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     protected void Send (byte [] data)
     {
@@ -283,11 +283,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/> to
-    /// the client of the current <see cref="WebSocketService"/> instance.
+    /// Sends the specified <paramref name="file"/> as a binary data
+    /// to the client on the current session in the WebSocket service.
     /// </summary>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains the binary data to send.
+    /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     protected void Send (FileInfo file)
     {
@@ -296,8 +296,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client of the current
-    /// <see cref="WebSocketService"/> instance.
+    /// Sends a text <paramref name="data"/> to the client on the current
+    /// session in the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
@@ -309,20 +309,19 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously to the client of the
-    /// current <see cref="WebSocketService"/> instance.
+    /// Sends a binary <paramref name="data"/> asynchronously to the client
+    /// on the current session in the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that contains the binary data to send.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     protected void SendAsync (byte [] data, Action<bool> completed)
     {
@@ -331,21 +330,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="FileInfo"/>
-    /// asynchronously to the client of the current <see cref="WebSocketService"/>
-    /// instance.
+    /// Sends the specified <paramref name="file"/> as a binary data
+    /// asynchronously to the client on the current session in the WebSocket
+    /// service.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="file">
-    /// A <see cref="FileInfo"/> from which contains the binary data to send.
+    /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     protected void SendAsync (FileInfo file, Action<bool> completed)
     {
@@ -354,8 +352,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously to the client of the
-    /// current <see cref="WebSocketService"/> instance.
+    /// Sends a text <paramref name="data"/> asynchronously to the client
+    /// on the current session in the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
@@ -365,9 +363,8 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     protected void SendAsync (string data, Action<bool> completed)
     {
@@ -377,22 +374,21 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to the client of the current <see cref="WebSocketService"/> instance.
+    /// to the client on the current session in the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> object from which contains the binary data to send.
+    /// A <see cref="Stream"/> from which contains the binary data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is
+    /// <c>true</c> if the send is complete successfully; otherwise, <c>false</c>.
     /// </param>
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
