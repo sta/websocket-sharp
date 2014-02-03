@@ -234,7 +234,7 @@ namespace WebSocketSharp
                  : null;
     }
 
-    internal static string CheckIfStopped (this ServerState state)
+    internal static string CheckIfStartable (this ServerState state)
     {
       return state == ServerState.START
              ? "The server has already started."

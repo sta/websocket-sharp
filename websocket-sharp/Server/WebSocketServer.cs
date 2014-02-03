@@ -48,8 +48,7 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides the functions of the server that receives the WebSocket connection
-  /// requests.
+  /// Provides a WebSocket protocol server.
   /// </summary>
   /// <remarks>
   /// The WebSocketServer class provides the multi WebSocket service.
@@ -78,9 +77,12 @@ namespace WebSocketSharp.Server
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming requests on port 80.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
     /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on port 80.
+    /// </remarks>
     public WebSocketServer ()
       : this (80)
     {
@@ -88,11 +90,20 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming connection attempts on the specified
-    /// <paramref name="port"/>.
+    /// with the specified <paramref name="port"/>.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on <paramref name="port"/>.
+    ///   </para>
+    ///   <para>
+    ///   And if <paramref name="port"/> is 443, that instance provides a secure
+    ///   connection.
+    ///   </para>
+    /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
+    /// An <see cref="int"/> that represents the port number to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is not between 1 and 65535.
@@ -104,11 +115,14 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming connection attempts on the specified WebSocket
-    /// URL.
+    /// with the specified WebSocket URL.
     /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on the port number of <paramref name="url"/>.
+    /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that contains a WebSocket URL.
+    /// A <see cref="string"/> that represents the WebSocket URL of the server.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
@@ -140,11 +154,14 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming connection attempts on the specified
-    /// <paramref name="port"/> and <paramref name="secure"/>.
+    /// with the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on <paramref name="port"/>.
+    /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
+    /// An <see cref="int"/> that represents the port number to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
@@ -163,15 +180,23 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming connection attempts on the specified
-    /// <paramref name="address"/> and <paramref name="port"/>.
+    /// with the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on <paramref name="port"/>.
+    ///   </para>
+    ///   <para>
+    ///   And if <paramref name="port"/> is 443, that instance provides a secure
+    ///   connection.
+    ///   </para>
+    /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP
-    /// address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
+    /// An <see cref="int"/> that represents the port number to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
@@ -189,16 +214,18 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class
-    /// that listens for incoming connection attempts on the specified
-    /// <paramref name="address"/>, <paramref name="port"/> and
-    /// <paramref name="secure"/>.
+    /// with the specified <paramref name="address"/>, <paramref name="port"/>,
+    /// and <paramref name="secure"/>.
     /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on <paramref name="port"/>.
+    /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP
-    /// address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that contains a port number.
+    /// An <see cref="int"/> that represents the port number to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
@@ -251,12 +278,11 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the local IP address on which to listen for incoming connection
-    /// attempts.
+    /// Gets the local IP address of the server.
     /// </summary>
     /// <value>
     /// A <see cref="System.Net.IPAddress"/> that represents the local IP
-    /// address.
+    /// address of the server.
     /// </value>
     public System.Net.IPAddress Address {
       get {
@@ -268,8 +294,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> values
-    /// that indicates the scheme used to authenticate the clients. The default
+    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum
+    /// values, indicates the scheme used to authenticate the clients. The default
     /// value is <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
     /// </value>
     public AuthenticationSchemes AuthenticationSchemes {
@@ -352,9 +378,9 @@ namespace WebSocketSharp.Server
     /// Gets the logging functions.
     /// </summary>
     /// <remarks>
-    /// The default logging level is the <see cref="LogLevel.ERROR"/>. If you
-    /// change the current logging level, you set the <c>Log.Level</c> property
-    /// to any of the <see cref="LogLevel"/> values.
+    /// The default logging level is <see cref="LogLevel.ERROR"/>. If you would
+    /// like to change it, you should set the <c>Log.Level</c> property to any of
+    /// the <see cref="LogLevel"/> enum values.
     /// </remarks>
     /// <value>
     /// A <see cref="Logger"/> that provides the logging functions.
@@ -366,10 +392,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the port on which to listen for incoming connection attempts.
+    /// Gets the port on which to listen for incoming connection requests.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that contains a port number.
+    /// An <see cref="int"/> that represents the port number to listen.
     /// </value>
     public int Port {
       get {
@@ -382,7 +408,7 @@ namespace WebSocketSharp.Server
     /// <see cref="WebSocketServer"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the name of the realm.
+    /// A <see cref="string"/> that represents the name of the realm.
     /// The default value is <c>SECRET AREA</c>.
     /// </value>
     public string Realm {
@@ -404,8 +430,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     /// A Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;
-    /// delegate that references the method(s) used to find the credentials. The
-    /// default value is a function that only returns <see langword="null"/>.
+    /// delegate that references the method(s) used to find the credentials.
+    /// The default value is a function that only returns <see langword="null"/>.
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
@@ -421,7 +447,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the functions for the WebSocket services provided by the
+    /// Gets the access to the WebSocket services provided by the
     /// <see cref="WebSocketServer"/>.
     /// </summary>
     /// <value>
@@ -549,11 +575,6 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    private string checkIfCanStop (Func<string> checkParams)
-    {
-      return _state.CheckIfStart () ?? checkParams ();
-    }
-
     private string checkIfCertExists ()
     {
       return _secure && _cert == null
@@ -635,7 +656,7 @@ namespace WebSocketSharp.Server
     /// and removes <c>'/'</c> from tail end of <paramref name="servicePath"/>.
     /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
     /// service.
     /// </param>
     /// <typeparam name="TWithNew">
@@ -665,7 +686,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
     /// service.
     /// </param>
     /// <param name="serviceConstructor">
@@ -676,7 +697,8 @@ namespace WebSocketSharp.Server
     /// The type of the WebSocket service. The T must inherit the
     /// <see cref="WebSocketService"/> class.
     /// </typeparam>
-    public void AddWebSocketService<T> (string servicePath, Func<T> serviceConstructor)
+    public void AddWebSocketService<T> (
+      string servicePath, Func<T> serviceConstructor)
       where T : WebSocketService
     {
       var msg = servicePath.CheckIfValidServicePath () ??
@@ -713,7 +735,7 @@ namespace WebSocketSharp.Server
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="servicePath">
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket
     /// service to find.
     /// </param>
     public bool RemoveWebSocketService (string servicePath)
@@ -735,7 +757,7 @@ namespace WebSocketSharp.Server
     public void Start ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfStopped () ?? checkIfCertExists ();
+        var msg = _state.CheckIfStartable () ?? checkIfCertExists ();
         if (msg != null) {
           _logger.Error (
             String.Format (
@@ -788,9 +810,9 @@ namespace WebSocketSharp.Server
     {
       byte [] data = null;
       lock (_sync) {
-        var msg = checkIfCanStop (
-          () => code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidControlData ("reason"));
+        var msg = _state.CheckIfStart () ??
+                  code.CheckIfValidCloseStatusCode () ??
+                  (data = code.Append (reason)).CheckIfValidControlData ("reason");
 
         if (msg != null) {
           _logger.Error (
@@ -824,9 +846,8 @@ namespace WebSocketSharp.Server
     {
       byte [] data = null;
       lock (_sync) {
-        var msg = checkIfCanStop (
-          () => (data = ((ushort) code).Append (reason))
-                .CheckIfValidControlData ("reason"));
+        var msg = _state.CheckIfStart () ??
+                  (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
 
         if (msg != null) {
           _logger.Error (
