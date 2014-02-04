@@ -103,10 +103,10 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     public WebSocketServer (int port)
       : this (System.Net.IPAddress.Any, port)
@@ -118,8 +118,15 @@ namespace WebSocketSharp.Server
     /// with the specified WebSocket URL.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// connection requests on the port number of <paramref name="url"/>.
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on the port (if any) in <paramref name="url"/>.
+    ///   </para>
+    ///   <para>
+    ///   So if <paramref name="url"/> is without a port, either port 80 or 443
+    ///   is used on which to listen. It's determined by the scheme (ws or wss)
+    ///   in <paramref name="url"/>. (port 80 if the scheme is ws.)
+    ///   </para>
     /// </remarks>
     /// <param name="url">
     /// A <see cref="string"/> that represents the WebSocket URL of the server.
@@ -161,14 +168,14 @@ namespace WebSocketSharp.Server
     /// connection requests on <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
@@ -193,19 +200,20 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address
+    /// of the server.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="address"/> is not the local IP address.
+    /// <paramref name="address"/> isn't a local IP address.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port)
       : this (address, port, port == 443 ? true : false)
@@ -222,10 +230,11 @@ namespace WebSocketSharp.Server
     /// connection requests on <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address
+    /// of the server.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
@@ -235,11 +244,11 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="address"/> is not the local IP address.
+    ///   <paramref name="address"/> isn't a local IP address.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -332,10 +341,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the server has been started.
+    /// Gets a value indicating whether the server has started.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server has been started; otherwise, <c>false</c>.
+    /// <c>true</c> if the server has started; otherwise, <c>false</c>.
     /// </value>
     public bool IsListening {
       get {
@@ -344,10 +353,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the server provides secure connection.
+    /// Gets a value indicating whether the server provides a secure connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server provides secure connection; otherwise,
+    /// <c>true</c> if the server provides a secure connection; otherwise,
     /// <c>false</c>.
     /// </value>
     public bool IsSecure {
@@ -395,7 +404,7 @@ namespace WebSocketSharp.Server
     /// Gets the port on which to listen for incoming connection requests.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </value>
     public int Port {
       get {
@@ -622,10 +631,10 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
-    private void stopListener (int timeOut)
+    private void stopListener (int millisecondsTimeout)
     {
       _listener.Stop ();
-      _receiveRequestThread.Join (timeOut);
+      _receiveRequestThread.Join (millisecondsTimeout);
     }
 
     private static bool tryCreateUri (string uriString, out Uri result, out string message)

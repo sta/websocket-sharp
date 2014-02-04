@@ -100,10 +100,10 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     public HttpServer (int port)
       : this (port, port == 443 ? true : false)
@@ -119,14 +119,14 @@ namespace WebSocketSharp.Server
     /// requests on <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <param name="secure">
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> is not between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
@@ -208,10 +208,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the server has been started.
+    /// Gets a value indicating whether the server has started.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server has been started; otherwise, <c>false</c>.
+    /// <c>true</c> if the server has started; otherwise, <c>false</c>.
     /// </value>
     public bool IsListening {
       get {
@@ -220,10 +220,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the server provides secure connection.
+    /// Gets a value indicating whether the server provides a secure connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server provides secure connection; otherwise,
+    /// <c>true</c> if the server provides a secure connection; otherwise,
     /// <c>false</c>.
     /// </value>
     public bool IsSecure {
@@ -271,7 +271,7 @@ namespace WebSocketSharp.Server
     /// Gets the port on which to listen for incoming requests.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the port number to listen.
+    /// An <see cref="int"/> that represents the port number on which to listen.
     /// </value>
     public int Port {
       get {
@@ -432,52 +432,63 @@ namespace WebSocketSharp.Server
     {
       var args = new HttpRequestEventArgs (context);
       var method = context.Request.HttpMethod;
-      if (method == "GET" && OnGet != null) {
-        OnGet (this, args);
-        return;
+
+      if (method == "GET") {
+        if (OnGet != null) {
+          OnGet (this, args);
+          return;
+        }
+      }
+      else if (method == "HEAD") {
+        if (OnHead != null) {
+          OnHead (this, args);
+          return;
+        }
+      }
+      else if (method == "POST") {
+        if (OnPost != null) {
+          OnPost (this, args);
+          return;
+        }
+      }
+      else if (method == "PUT") {
+        if (OnPut != null) {
+          OnPut (this, args);
+          return;
+        }
+      }
+      else if (method == "DELETE") {
+        if (OnDelete != null) {
+          OnDelete (this, args);
+          return;
+        }
+      }
+      else if (method == "OPTIONS") {
+        if (OnOptions != null) {
+          OnOptions (this, args);
+          return;
+        }
+      }
+      else if (method == "TRACE") {
+        if (OnTrace != null) {
+          OnTrace (this, args);
+          return;
+        }
+      }
+      else if (method == "CONNECT") {
+        if (OnConnect != null) {
+          OnConnect (this, args);
+          return;
+        }
+      }
+      else if (method == "PATCH") {
+        if (OnPatch != null) {
+          OnPatch (this, args);
+          return;
+        }
       }
 
-      if (method == "HEAD" && OnHead != null) {
-        OnHead (this, args);
-        return;
-      }
-
-      if (method == "POST" && OnPost != null) {
-        OnPost (this, args);
-        return;
-      }
-
-      if (method == "PUT" && OnPut != null) {
-        OnPut (this, args);
-        return;
-      }
-
-      if (method == "DELETE" && OnDelete != null) {
-        OnDelete (this, args);
-        return;
-      }
-
-      if (method == "OPTIONS" && OnOptions != null) {
-        OnOptions (this, args);
-        return;
-      }
-
-      if (method == "TRACE" && OnTrace != null) {
-        OnTrace (this, args);
-        return;
-      }
-
-      if (method == "CONNECT" && OnConnect != null) {
-        OnConnect (this, args);
-        return;
-      }
-
-      if (method == "PATCH" && OnPatch != null) {
-        OnPatch (this, args);
-        return;
-      }
-
-      context.Response.Close (HttpStatusCode.NotImplemented);
+      context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
     }
 
     private void acceptRequestAsync (HttpListenerContext context)
@@ -590,10 +601,10 @@ namespace WebSocketSharp.Server
       _receiveRequestThread.Start ();
     }
 
-    private void stopListener (int timeOut)
+    private void stopListener (int millisecondsTimeout)
     {
       _listener.Close ();
-      _receiveRequestThread.Join (timeOut);
+      _receiveRequestThread.Join (millisecondsTimeout);
     }
 
     #endregion
