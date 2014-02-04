@@ -366,7 +366,7 @@ You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that can accept the WebSocket connection requests.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that allows to accept the WebSocket connection requests.
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
@@ -411,7 +411,7 @@ using (var ws = new WebSocket ("wss://example.com")) {
 }
 ```
 
-If you would like to set the custom validation for the server certificate, you should set the `WebSocket.ServerCertificateValidationCallback` property.
+And if you would like to set the custom validation for the server certificate, you should set the `WebSocket.ServerCertificateValidationCallback` property.
 
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
@@ -468,7 +468,7 @@ The `WebSocket` class includes the own logging function.
 
 You can access it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
-If you would like to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
+So if you would like to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
 ```cs
 ws.Log.Level = LogLevel.DEBUG;
@@ -504,7 +504,7 @@ And Example1 uses **[Json.NET]**.
 
 ### Example3 ###
 
-**[Example3]** starts an HTTP server that can accept the WebSocket connection requests.
+**[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
 
 Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
 
