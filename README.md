@@ -315,9 +315,9 @@ If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, that
 
 And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the current session's `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
-The `WebSocketService.Send` method sends a data to the client of the current session to the WebSocket service.
+The `WebSocketService.Send` method sends a data to the client on the current session in the WebSocket service.
 
-If you would like to access the sessions to the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+If you would like to access the sessions in the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
 The `WebSocketService.Sessions.Broadcast` method broadcasts a data to all clients of the WebSocket service.
 
