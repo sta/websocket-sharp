@@ -258,6 +258,16 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfValidProtocols (this string [] protocols)
+    {
+      return protocols.Contains (
+               protocol => protocol.Length == 0 || !protocol.IsToken ())
+             ? "Contains an invalid value."
+             : protocols.ContainsTwice ()
+               ? "Contains a value twice."
+               : null;
+    }
+
     internal static string CheckIfValidSendData (this byte [] data)
     {
       return data == null
@@ -332,6 +342,36 @@ namespace WebSocketSharp
       return method == CompressionMethod.DEFLATE
              ? stream.compressToArray ()
              : stream.ToByteArray ();
+    }
+
+    internal static bool Contains<T> (
+      this IEnumerable<T> source, Func<T, bool> comparer)
+    {
+      foreach (T value in source)
+        if (comparer (value))
+          return true;
+
+      return false;
+    }
+
+    internal static bool ContainsTwice (this string [] values)
+    {
+      var len = values.Length;
+
+      Func<int, bool> contains = null;
+      contains = index => {
+        if (index < len - 1) {
+          for (var i = index + 1; i < len; i++)
+            if (values [i] == values [index])
+              return true;
+
+          return contains (++index);
+        }
+
+        return false;
+      };
+
+      return contains (0);
     }
 
     internal static T [] Copy<T> (this T [] src, long length)

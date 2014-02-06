@@ -38,7 +38,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Net.Security;
 using System.Security.Cryptography;
@@ -89,7 +88,7 @@ namespace WebSocketSharp
     private string                  _origin;
     private bool                    _preAuth;
     private string                  _protocol;
-    private string                  _protocols;
+    private string []               _protocols;
     private volatile WebSocketState _readyState;
     private AutoResetEvent          _receivePong;
     private bool                    _secure;
@@ -148,10 +147,19 @@ namespace WebSocketSharp
     /// </param>
     /// <param name="protocols">
     /// An array of <see cref="string"/> that contains the WebSocket subprotocols
-    /// if any.
+    /// if any. Each value of <paramref name="protocols"/> must be a token defined
+    /// in <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is invalid.
+    ///   <para>
+    ///   <paramref name="url"/> is invalid.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocols"/> is invalid.
+    ///   </para>
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
@@ -165,7 +173,13 @@ namespace WebSocketSharp
       if (!url.TryCreateWebSocketUri (out _uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      _protocols = protocols.ToString (", ");
+      if (protocols != null && protocols.Length > 0) {
+        msg = protocols.CheckIfValidProtocols ();
+        if (msg != null)
+          throw new ArgumentException (msg, "protocols");
+
+        _protocols = protocols;
+      }
 
       _base64Key = CreateBase64Key ();
       _client = true;
@@ -677,21 +691,22 @@ namespace WebSocketSharp
     private string checkIfValidHandshakeResponse (HandshakeResponse response)
     {
       var headers = response.Headers;
-
-      string accept, version;
       return response.IsUnauthorized
              ? String.Format (
-                 "An HTTP {0} authorization is required.",
+                 "HTTP {0} authorization is required.",
                  response.AuthChallenge.Scheme)
              : !response.IsWebSocketResponse
-               ? "Not WebSocket connection response to the connection request."
-               : (accept = headers ["Sec-WebSocket-Accept"]) == null ||
-                 accept != CreateResponseKey (_base64Key)
+               ? "Not WebSocket connection response."
+               : !validateSecWebSocketAcceptHeader (
+                   headers ["Sec-WebSocket-Accept"])
                  ? "Invalid Sec-WebSocket-Accept header."
-                 : (version = headers ["Sec-WebSocket-Version"]) != null &&
-                   version != _version
-                   ? "Invalid Sec-WebSocket-Version header."
-                   : null;
+                 : !validateSecWebSocketProtocolHeader (
+                     headers ["Sec-WebSocket-Protocol"])
+                   ? "Invalid Sec-WebSocket-Protocol header."
+                   : !validateSecWebSocketVersionHeader (
+                       headers ["Sec-WebSocket-Version"])
+                     ? "Invalid Sec-WebSocket-Version header."
+                     : null;
     }
 
     private void close (CloseStatusCode code, string reason, bool wait)
@@ -894,8 +909,8 @@ namespace WebSocketSharp
 
       headers ["Sec-WebSocket-Key"] = _base64Key;
 
-      if (!_protocols.IsNullOrEmpty ())
-        headers ["Sec-WebSocket-Protocol"] = _protocols;
+      if (_protocols != null)
+        headers ["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
       var extensions = createExtensionsRequest ();
       if (extensions.Length > 0)
@@ -955,20 +970,16 @@ namespace WebSocketSharp
     {
       setClientStream ();
       var res = sendHandshakeRequest ();
-      var err = checkIfValidHandshakeResponse (res);
-      if (err != null) {
-        _logger.Error (err);
+      var msg = checkIfValidHandshakeResponse (res);
+      if (msg != null) {
+        _logger.Error (msg);
 
-        var msg = "An error has occurred while connecting.";
+        msg = "An error has occurred while connecting.";
         error (msg);
         close (CloseStatusCode.ABNORMAL, msg, false);
 
         return false;
       }
-
-      var protocol = res.Headers ["Sec-WebSocket-Protocol"];
-      if (!protocol.IsNullOrEmpty ())
-        _protocol = protocol;
 
       processRespondedExtensions (res.Headers ["Sec-WebSocket-Extensions"]);
 
@@ -1362,6 +1373,32 @@ namespace WebSocketSharp
       return Uri.CheckHostName (host) != UriHostNameType.Dns ||
              Uri.CheckHostName (expected) != UriHostNameType.Dns ||
              host == expected;
+    }
+
+    // As client
+    private bool validateSecWebSocketAcceptHeader (string value)
+    {
+      return value != null && value == CreateResponseKey (_base64Key);
+    }
+
+    // As client
+    private bool validateSecWebSocketProtocolHeader (string value)
+    {
+      if (value == null)
+        return _protocols == null;
+
+      if (_protocols == null ||
+          !_protocols.Contains (protocol => protocol == value))
+        return false;
+
+      _protocol = value;
+      return true;
+    }
+
+    // As client
+    private bool validateSecWebSocketVersionHeader (string value)
+    {
+      return value == null || value == _version;
     }
 
     #endregion

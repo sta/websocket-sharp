@@ -73,8 +73,8 @@ namespace Example {
 
       ThreadPool.QueueUserWorkItem(notifyMsg);
 
-      using (var ws = new WebSocket("ws://echo.websocket.org", "echo"))
-      //using (var ws = new WebSocket("wss://echo.websocket.org", "echo"))
+      using (var ws = new WebSocket("ws://echo.websocket.org"))
+      //using (var ws = new WebSocket("wss://echo.websocket.org"))
       //using (var ws = new WebSocket("ws://localhost:4649"))
       //using (var ws = new WebSocket("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket("wss://localhost:4649/Echo"))
