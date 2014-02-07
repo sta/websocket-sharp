@@ -157,7 +157,10 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (State == WebSocketState.CONNECTING && value.IsToken ())
+        if (State == WebSocketState.CONNECTING &&
+            value != null &&
+            value.Length > 0 &&
+            value.IsToken ())
           _protocol = value;
       }
     }

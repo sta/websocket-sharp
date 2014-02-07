@@ -261,7 +261,8 @@ namespace WebSocketSharp
     internal static string CheckIfValidProtocols (this string [] protocols)
     {
       return protocols.Contains (
-               protocol => protocol.Length == 0 || !protocol.IsToken ())
+               protocol =>
+                 protocol == null || protocol.Length == 0 || !protocol.IsToken ())
              ? "Contains an invalid value."
              : protocols.ContainsTwice ()
                ? "Contains a value twice."
