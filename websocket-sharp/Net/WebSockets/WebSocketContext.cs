@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -173,7 +173,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// WebSocket connection request.
     /// </summary>
     /// <remarks>
-    /// This property represents the subprotocols of the WebSocket connection.
+    /// This property represents the subprotocols requested from the client.
     /// </remarks>
     /// <value>
     /// An IEnumerable&lt;string&gt; that contains the values of the

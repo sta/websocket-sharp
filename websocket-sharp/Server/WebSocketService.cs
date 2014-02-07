@@ -44,10 +44,11 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private WebSocket               _websocket;
     private WebSocketContext        _context;
+    private string                  _protocol;
     private WebSocketSessionManager _sessions;
     private DateTime                _start;
+    private WebSocket               _websocket;
 
     #endregion
 
@@ -130,6 +131,38 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the subprotocol used on the WebSocket connection.
+    /// </summary>
+    /// <remarks>
+    /// Set operation of this property is available before the connection has
+    /// been established.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="string"/> that represents the subprotocol if any.
+    ///   </para>
+    ///   <para>
+    ///   The value to set must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see cref="String.Empty"/>.
+    ///   </para>
+    /// </value>
+    public string Protocol {
+      get {
+        return _websocket != null
+               ? _websocket.Protocol
+               : _protocol ?? String.Empty;
+      }
+
+      set {
+        if (State == WebSocketState.CONNECTING && value.IsToken ())
+          _protocol = value;
+      }
+    }
+
+    /// <summary>
     /// Gets the time that the current <see cref="WebSocketService"/> instance
     /// has been started.
     /// </summary>
@@ -203,11 +236,14 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       _websocket = context.WebSocket;
+      _websocket.Protocol = _protocol;
       _websocket.CookiesValidation = ValidateCookies;
+
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;
       _websocket.OnError += onError;
       _websocket.OnClose += onClose;
+
       _websocket.ConnectAsServer ();
     }
 

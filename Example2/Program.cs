@@ -41,7 +41,9 @@ namespace Example2
 
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
-      //wssv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
+      //wssv.AddWebSocketService<Chat> (
+      //  "/Chat",
+      //  () => new Chat ("Anon#") { Protocol = "chat" });
 
       wssv.Start ();
       if (wssv.IsListening) {

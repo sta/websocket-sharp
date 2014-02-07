@@ -392,7 +392,11 @@ namespace WebSocketSharp
     /// </value>
     public string Protocol {
       get {
-        return _protocol;
+        return _protocol ?? String.Empty;
+      }
+
+      internal set {
+        _protocol = value;
       }
     }
 
@@ -593,9 +597,9 @@ namespace WebSocketSharp
           _context.UserEndPoint,
           _context));
 
-      var err = checkIfValidHandshakeRequest (_context);
-      if (err != null) {
-        _logger.Error (err);
+      var msg = checkIfValidHandshakeRequest (_context);
+      if (msg != null) {
+        _logger.Error (msg);
 
         error ("An error has occurred while connecting.");
         Close (HttpStatusCode.BadRequest);
@@ -603,11 +607,10 @@ namespace WebSocketSharp
         return false;
       }
 
-      _base64Key = _context.SecWebSocketKey;
-
-      if (_protocol.Length > 0 &&
-          !_context.Headers.Contains ("Sec-WebSocket-Protocol", _protocol))
-        _protocol = String.Empty;
+      if (_protocol != null &&
+          !_context.SecWebSocketProtocols.Contains (
+            protocol => protocol == _protocol))
+        _protocol = null;
 
       var extensions = _context.Headers ["Sec-WebSocket-Extensions"];
       if (extensions != null && extensions.Length > 0)
@@ -672,15 +675,15 @@ namespace WebSocketSharp
     // As server
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
-      string key, version;
+      var headers = context.Headers;
       return !context.IsWebSocketRequest
              ? "Not WebSocket connection request."
-             : !validateHostHeader (context.Host)
+             : !validateHostHeader (headers ["Host"])
                ? "Invalid Host header."
-               : (key = context.SecWebSocketKey) == null || key.Length == 0
+               : !validateSecWebSocketKeyHeader (headers ["Sec-WebSocket-Key"])
                  ? "Invalid Sec-WebSocket-Key header."
-                 : (version = context.SecWebSocketVersion) == null ||
-                   version != _version
+                 : !validateSecWebSocketVersionClientHeader (
+                     headers ["Sec-WebSocket-Version"])
                    ? "Invalid Sec-WebSocket-Version header."
                    : !validateCookies (context.CookieCollection, _cookies)
                      ? "Invalid Cookies."
@@ -703,7 +706,7 @@ namespace WebSocketSharp
                  : !validateSecWebSocketProtocolHeader (
                      headers ["Sec-WebSocket-Protocol"])
                    ? "Invalid Sec-WebSocket-Protocol header."
-                   : !validateSecWebSocketVersionHeader (
+                   : !validateSecWebSocketVersionServerHeader (
                        headers ["Sec-WebSocket-Version"])
                      ? "Invalid Sec-WebSocket-Version header."
                      : null;
@@ -944,7 +947,7 @@ namespace WebSocketSharp
 
       headers ["Sec-WebSocket-Accept"] = CreateResponseKey (_base64Key);
 
-      if (_protocol.Length > 0)
+      if (_protocol != null)
         headers ["Sec-WebSocket-Protocol"] = _protocol;
 
       if (_extensions.Length > 0)
@@ -1002,7 +1005,6 @@ namespace WebSocketSharp
       _extensions = String.Empty;
       _forConn = new object ();
       _forSend = new object ();
-      _protocol = String.Empty;
       _readyState = WebSocketState.CONNECTING;
     }
 
@@ -1381,6 +1383,16 @@ namespace WebSocketSharp
       return value != null && value == CreateResponseKey (_base64Key);
     }
 
+    // As server
+    private bool validateSecWebSocketKeyHeader (string value)
+    {
+      if (value == null || value.Length == 0)
+        return false;
+
+      _base64Key = value;
+      return true;
+    }
+
     // As client
     private bool validateSecWebSocketProtocolHeader (string value)
     {
@@ -1395,8 +1407,14 @@ namespace WebSocketSharp
       return true;
     }
 
+    // As server
+    private bool validateSecWebSocketVersionClientHeader (string value)
+    {
+      return value != null && value == _version;
+    }
+
     // As client
-    private bool validateSecWebSocketVersionHeader (string value)
+    private bool validateSecWebSocketVersionServerHeader (string value)
     {
       return value == null || value == _version;
     }

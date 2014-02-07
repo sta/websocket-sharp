@@ -251,7 +251,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// WebSocket connection request.
     /// </summary>
     /// <remarks>
-    /// This property represents the subprotocols of the WebSocket connection.
+    /// This property represents the subprotocols requested from the client.
     /// </remarks>
     /// <value>
     /// An IEnumerable&lt;string&gt; that contains the values of the
@@ -259,7 +259,10 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        return _request.Headers.GetValues ("Sec-WebSocket-Protocol");
+        var protocols = _request.Headers ["Sec-WebSocket-Protocol"];
+        if (protocols != null)
+          foreach (var protocol in protocols.Split (','))
+            yield return protocol.Trim ();
       }
     }
 
