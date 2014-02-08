@@ -45,7 +45,9 @@ namespace Example3
 
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
-      //_httpsv.AddWebSocketService<Chat> ("/Chat", () => new Chat ("Anon#"));
+      //_httpsv.AddWebSocketService<Chat> (
+      //  "/Chat",
+      //  () => new Chat ("Anon#") { Protocol = "chat" });
 
       _httpsv.Start ();
       if (_httpsv.IsListening) {
