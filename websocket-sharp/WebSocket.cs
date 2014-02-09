@@ -278,12 +278,12 @@ namespace WebSocketSharp
     /// Gets the WebSocket extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the extensions if any.
-    /// The default value is <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that represents the extensions if any. The default value is
+    /// <see cref="String.Empty"/>.
     /// </value>
     public string Extensions {
       get {
-        return _extensions;
+        return _extensions ?? String.Empty;
       }
     }
 
@@ -695,21 +695,18 @@ namespace WebSocketSharp
     {
       var headers = response.Headers;
       return response.IsUnauthorized
-             ? String.Format (
-                 "HTTP {0} authorization is required.",
-                 response.AuthChallenge.Scheme)
+             ? String.Format ("HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
              : !response.IsWebSocketResponse
                ? "Not WebSocket connection response."
-               : !validateSecWebSocketAcceptHeader (
-                   headers ["Sec-WebSocket-Accept"])
+               : !validateSecWebSocketAcceptHeader (headers ["Sec-WebSocket-Accept"])
                  ? "Invalid Sec-WebSocket-Accept header."
-                 : !validateSecWebSocketProtocolHeader (
-                     headers ["Sec-WebSocket-Protocol"])
+                 : !validateSecWebSocketProtocolHeader (headers ["Sec-WebSocket-Protocol"])
                    ? "Invalid Sec-WebSocket-Protocol header."
-                   : !validateSecWebSocketVersionServerHeader (
-                       headers ["Sec-WebSocket-Version"])
-                     ? "Invalid Sec-WebSocket-Version header."
-                     : null;
+                   : !validateSecWebSocketExtensionsHeader (headers ["Sec-WebSocket-Extensions"])
+                     ? "Invalid Sec-WebSocket-Extensions header."
+                     : !validateSecWebSocketVersionServerHeader (headers ["Sec-WebSocket-Version"])
+                       ? "Invalid Sec-WebSocket-Version header."
+                       : null;
     }
 
     private void close (CloseStatusCode code, string reason, bool wait)
@@ -885,13 +882,13 @@ namespace WebSocketSharp
     // As client
     private string createExtensionsRequest ()
     {
-      var extensions = new StringBuilder (64);
+      var extensions = new StringBuilder (32);
       if (_compression != CompressionMethod.NONE)
         extensions.Append (_compression.ToCompressionExtension ());
 
       return extensions.Length > 0
              ? extensions.ToString ()
-             : String.Empty;
+             : null;
     }
 
     // As client
@@ -916,7 +913,7 @@ namespace WebSocketSharp
         headers ["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
       var extensions = createExtensionsRequest ();
-      if (extensions.Length > 0)
+      if (extensions != null)
         headers ["Sec-WebSocket-Extensions"] = extensions;
 
       headers ["Sec-WebSocket-Version"] = _version;
@@ -950,7 +947,7 @@ namespace WebSocketSharp
       if (_protocol != null)
         headers ["Sec-WebSocket-Protocol"] = _protocol;
 
-      if (_extensions.Length > 0)
+      if (_extensions != null)
         headers ["Sec-WebSocket-Extensions"] = _extensions;
 
       if (_cookies.Count > 0)
@@ -984,8 +981,6 @@ namespace WebSocketSharp
         return false;
       }
 
-      processRespondedExtensions (res.Headers ["Sec-WebSocket-Extensions"]);
-
       var cookies = res.Cookies;
       if (cookies.Count > 0)
         _cookies.SetOrRemove (cookies);
@@ -1002,7 +997,6 @@ namespace WebSocketSharp
     {
       _compression = CompressionMethod.NONE;
       _cookies = new CookieCollection ();
-      _extensions = String.Empty;
       _forConn = new object ();
       _forSend = new object ();
       _readyState = WebSocketState.CONNECTING;
@@ -1041,25 +1035,6 @@ namespace WebSocketSharp
 
       if (buffer.Count > 0)
         _extensions = buffer.ToArray ().ToString (", ");
-    }
-
-    // As client
-    private void processRespondedExtensions (string extensions)
-    {
-      var comp = _compression != CompressionMethod.NONE ? true : false;
-      var hasComp = false;
-      if (extensions != null && extensions.Length > 0) {
-        foreach (var e in extensions.SplitHeaderValue (',')) {
-          var extension = e.Trim ();
-          if (comp && !hasComp && extension.Equals (_compression))
-            hasComp = true;
-        }
-
-        _extensions = extensions;
-      }
-
-      if (comp && !hasComp)
-        _compression = CompressionMethod.NONE;
     }
 
     // As client
@@ -1381,6 +1356,29 @@ namespace WebSocketSharp
     private bool validateSecWebSocketAcceptHeader (string value)
     {
       return value != null && value == CreateResponseKey (_base64Key);
+    }
+
+    // As client
+    private bool validateSecWebSocketExtensionsHeader (string value)
+    {
+      var compress = _compression != CompressionMethod.NONE ? true : false;
+      if (value == null || value.Length == 0) {
+        if (compress)
+          _compression = CompressionMethod.NONE;
+
+        return true;
+      }
+
+      if (!compress)
+        return false;
+
+      var extensions = value.SplitHeaderValue (',');
+      if (extensions.Contains (
+            extension => !extension.Trim ().Equals (_compression)))
+        return false;
+
+      _extensions = value;
+      return true;
     }
 
     // As server
