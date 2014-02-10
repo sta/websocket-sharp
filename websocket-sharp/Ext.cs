@@ -426,11 +426,6 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
-    internal static bool Equals (this string value, CompressionMethod method)
-    {
-      return value == method.ToCompressionExtension ();
-    }
-
     /// <summary>
     /// Determines whether the specified <see cref="int"/> equals the specified
     /// <see cref="char"/>, and invokes the specified Action&lt;int&gt; delegate
@@ -709,10 +704,9 @@ namespace WebSocketSharp
         null);
     }
 
-    internal static string RemovePrefix (
-      this string value, params string [] prefixes)
+    internal static string RemovePrefix (this string value, params string [] prefixes)
     {
-      int i = 0;
+      var i = 0;
       foreach (var prefix in prefixes) {
         if (value.StartsWith (prefix)) {
           i = prefix.Length;
@@ -728,13 +722,16 @@ namespace WebSocketSharp
     internal static IEnumerable<string> SplitHeaderValue (
       this string value, params char [] separator)
     {
+      var len = value.Length;
       var separators = new string (separator);
-      var buffer = new StringBuilder (64);
-      int len = value.Length;
-      bool quoted = false;
-      bool escaped = false;
-      for (int i = 0; i < len; i++) {
-        char c = value [i];
+
+      var buffer = new StringBuilder (32);
+      var quoted = false;
+      var escaped = false;
+
+      char c;
+      for (var i = 0; i < len; i++) {
+        c = value [i];
         if (c == '"') {
           if (escaped)
             escaped = !escaped;
@@ -749,6 +746,7 @@ namespace WebSocketSharp
           if (!quoted) {
             yield return buffer.ToString ();
             buffer.Length = 0;
+
             continue;
           }
         }
@@ -791,20 +789,20 @@ namespace WebSocketSharp
              : buffer.Reverse ().ToArray ();
     }
 
-    internal static string ToCompressionExtension (this CompressionMethod method)
+    internal static CompressionMethod ToCompressionMethod (this string value)
+    {
+      foreach (CompressionMethod method in Enum.GetValues (typeof (CompressionMethod)))
+        if (method.ToExtensionString () == value)
+          return method;
+
+      return CompressionMethod.NONE;
+    }
+
+    internal static string ToExtensionString (this CompressionMethod method)
     {
       return method != CompressionMethod.NONE
              ? String.Format ("permessage-{0}", method.ToString ().ToLower ())
              : String.Empty;
-    }
-
-    internal static CompressionMethod ToCompressionMethod (this string value)
-    {
-      foreach (CompressionMethod method in Enum.GetValues (typeof (CompressionMethod)))
-        if (value.Equals (method))
-          return method;
-
-      return CompressionMethod.NONE;
     }
 
     internal static System.Net.IPAddress ToIPAddress (

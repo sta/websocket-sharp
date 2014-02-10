@@ -593,9 +593,7 @@ namespace WebSocketSharp
     {
       _logger.Debug (
         String.Format (
-          "A WebSocket connection request from {0}:\n{1}",
-          _context.UserEndPoint,
-          _context));
+          "A WebSocket connection request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       var msg = checkIfValidHandshakeRequest (_context);
       if (msg != null) {
@@ -608,13 +606,12 @@ namespace WebSocketSharp
       }
 
       if (_protocol != null &&
-          !_context.SecWebSocketProtocols.Contains (
-            protocol => protocol == _protocol))
+          !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol))
         _protocol = null;
 
       var extensions = _context.Headers ["Sec-WebSocket-Extensions"];
       if (extensions != null && extensions.Length > 0)
-        processRequestedExtensions (extensions);
+        acceptSecWebSocketExtensionsHeader (extensions);
 
       return send (createHandshakeResponse ());
     }
@@ -634,6 +631,34 @@ namespace WebSocketSharp
       _logger.Trace ("Received a Pong.");
 
       return true;
+    }
+
+    // As server
+    private void acceptSecWebSocketExtensionsHeader (string value)
+    {
+      var extensions = new StringBuilder (32);
+
+      var compress = false;
+      foreach (var extension in value.SplitHeaderValue (',')) {
+        var trimed = extension.Trim ();
+        var unprefixed = trimed.RemovePrefix ("x-webkit-");
+
+        if (!compress && unprefixed.IsCompressionExtension ()) {
+          var method = unprefixed.ToCompressionMethod ();
+          if (method != CompressionMethod.NONE) {
+            _compression = method;
+            compress = true;
+
+            extensions.Append (trimed + ", ");
+          }
+        }
+      }
+
+      var len = extensions.Length;
+      if (len > 0) {
+        extensions.Length = len - 2;
+        _extensions = extensions.ToString ();
+      }
     }
 
     private bool acceptUnsupportedFrame (
@@ -682,8 +707,7 @@ namespace WebSocketSharp
                ? "Invalid Host header."
                : !validateSecWebSocketKeyHeader (headers ["Sec-WebSocket-Key"])
                  ? "Invalid Sec-WebSocket-Key header."
-                 : !validateSecWebSocketVersionClientHeader (
-                     headers ["Sec-WebSocket-Version"])
+                 : !validateSecWebSocketVersionClientHeader (headers ["Sec-WebSocket-Version"])
                    ? "Invalid Sec-WebSocket-Version header."
                    : !validateCookies (context.CookieCollection, _cookies)
                      ? "Invalid Cookies."
@@ -883,8 +907,9 @@ namespace WebSocketSharp
     private string createExtensionsRequest ()
     {
       var extensions = new StringBuilder (32);
+
       if (_compression != CompressionMethod.NONE)
-        extensions.Append (_compression.ToCompressionExtension ());
+        extensions.Append (_compression.ToExtensionString ());
 
       return extensions.Length > 0
              ? extensions.ToString ()
@@ -1013,28 +1038,6 @@ namespace WebSocketSharp
         acceptException (
           ex, "An exception has occurred while opening.");
       }
-    }
-
-    // As server
-    private void processRequestedExtensions (string extensions)
-    {
-      var comp = false;
-      var buffer = new List<string> ();
-      foreach (var e in extensions.SplitHeaderValue (',')) {
-        var extension = e.Trim ();
-        var tmp = extension.RemovePrefix ("x-webkit-");
-        if (!comp && tmp.IsCompressionExtension ()) {
-          var method = tmp.ToCompressionMethod ();
-          if (method != CompressionMethod.NONE) {
-            _compression = method;
-            comp = true;
-            buffer.Add (extension);
-          }
-        }
-      }
-
-      if (buffer.Count > 0)
-        _extensions = buffer.ToArray ().ToString (", ");
     }
 
     // As client
@@ -1374,7 +1377,7 @@ namespace WebSocketSharp
 
       var extensions = value.SplitHeaderValue (',');
       if (extensions.Contains (
-            extension => !extension.Trim ().Equals (_compression)))
+            extension => extension.Trim () != _compression.ToExtensionString ()))
         return false;
 
       _extensions = value;
