@@ -215,12 +215,12 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the compression method used to compress the message.
+    /// Gets or sets the compression method used to compress the message on the WebSocket
+    /// connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CompressionMethod"/> enum values, indicates the
-    /// compression method used to compress the message. The default value is
-    /// <see cref="CompressionMethod.NONE"/>.
+    /// One of the <see cref="CompressionMethod"/> enum values, indicates the compression method
+    /// used to compress the message. The default value is <see cref="CompressionMethod.NONE"/>.
     /// </value>
     public CompressionMethod Compression {
       get {
