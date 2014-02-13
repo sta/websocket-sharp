@@ -29,7 +29,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
@@ -44,9 +43,9 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
+    private Dictionary<string, WebSocketServiceHost> _hosts;
     private volatile bool                            _keepClean;
     private Logger                                   _logger;
-    private Dictionary<string, WebSocketServiceHost> _serviceHosts;
     private volatile ServerState                     _state;
     private object                                   _sync;
 
@@ -62,8 +61,8 @@ namespace WebSocketSharp.Server
     internal WebSocketServiceHostManager (Logger logger)
     {
       _logger = logger;
+      _hosts = new Dictionary<string, WebSocketServiceHost> ();
       _keepClean = true;
-      _serviceHosts = new Dictionary<string, WebSocketServiceHost> ();
       _state = ServerState.READY;
       _sync = new object ();
     }
@@ -76,45 +75,55 @@ namespace WebSocketSharp.Server
     /// Gets the number of the WebSocket services provided by the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the number of the WebSocket services
-    /// provided by the server.
+    /// An <see cref="int"/> that represents the number of the WebSocket services.
     /// </value>
     public int Count {
       get {
         lock (_sync) {
-          return _serviceHosts.Count;
+          return _hosts.Count;
         }
       }
     }
 
     /// <summary>
-    /// Gets a WebSocket service host with the specified <paramref name="servicePath"/>.
+    /// Gets the collection of the WebSocket service hosts.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceHost"/> instance that represents the
-    /// WebSocket service host if it's successfully found; otherwise,
-    /// <see langword="null"/>.
+    /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of the WebSocket
+    /// service hosts.
     /// </value>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
+    public IEnumerable<WebSocketServiceHost> Hosts {
+      get {
+        return copyHosts ().Values;
+      }
+    }
+
+    /// <summary>
+    /// Gets a WebSocket service host with the specified <paramref name="path"/>.
+    /// </summary>
+    /// <value>
+    /// A <see cref="WebSocketServiceHost"/> instance that represents the WebSocket service host if
+    /// it's successfully found; otherwise, <see langword="null"/>.
+    /// </value>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.
     /// </param>
-    public WebSocketServiceHost this [string servicePath] {
+    public WebSocketServiceHost this [string path] {
       get {
         WebSocketServiceHost host;
-        TryGetServiceHost (servicePath, out host);
+        TryGetServiceHost (path, out host);
 
         return host;
       }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the manager cleans up periodically the
-    /// every inactive session to the WebSocket services provided by the server.
+    /// Gets a value indicating whether the manager cleans up periodically the inactive sessions in
+    /// the WebSocket services provided by the server.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the manager cleans up periodically the every inactive
-    /// session to the WebSocket services; otherwise, <c>false</c>.
+    /// <c>true</c> if the manager cleans up the inactive sessions every 60 seconds; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool KeepClean {
       get {
@@ -127,54 +136,35 @@ namespace WebSocketSharp.Server
             return;
 
           _keepClean = value;
-          foreach (var host in _serviceHosts.Values)
+          foreach (var host in _hosts.Values)
             host.KeepClean = value;
         }
       }
     }
 
     /// <summary>
-    /// Gets the collection of the WebSocket service hosts managed by the manager.
+    /// Gets the collection of every path to the WebSocket services provided by the server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of
-    /// the WebSocket service hosts.
+    /// An IEnumerable&lt;string&gt; that contains the collection of every path to the WebSocket
+    /// services.
     /// </value>
-    public IEnumerable<WebSocketServiceHost> ServiceHosts {
+    public IEnumerable<string> Paths {
       get {
-        lock (_sync) {
-          return _serviceHosts.Values.ToList ();
-        }
+        return copyHosts ().Keys;
       }
     }
 
     /// <summary>
-    /// Gets the collection of every path to the WebSocket services provided by
-    /// the server.
+    /// Gets the number of the WebSocket sessions in the server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the collection of every path to
-    /// the WebSocket services.
-    /// </value>
-    public IEnumerable<string> ServicePaths {
-      get {
-        lock (_sync) {
-          return _serviceHosts.Keys.ToList ();
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets the number of the WebSocket sessions to the server.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that represents the number of the sessions to the
-    /// server.
+    /// An <see cref="int"/> that represents the number of the sessions in the server.
     /// </value>
     public int SessionCount {
       get {
         var count = 0;
-        foreach (var host in ServiceHosts) {
+        foreach (var host in Hosts) {
           if (_state != ServerState.START)
             break;
 
@@ -193,7 +183,7 @@ namespace WebSocketSharp.Server
     {
       var cache = new Dictionary<CompressionMethod, byte []> ();
       try {
-        foreach (var host in ServiceHosts) {
+        foreach (var host in Hosts) {
           if (_state != ServerState.START)
             break;
 
@@ -215,7 +205,7 @@ namespace WebSocketSharp.Server
     {
       var cache = new Dictionary<CompressionMethod, Stream> ();
       try {
-        foreach (var host in ServiceHosts) {
+        foreach (var host in Hosts) {
           if (_state != ServerState.START)
             break;
 
@@ -249,59 +239,60 @@ namespace WebSocketSharp.Server
     }
 
     private Dictionary<string, Dictionary<string, bool>> broadping (
-      byte [] frameAsBytes, int timeOut)
+      byte [] frame, int millisecondsTimeout)
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
-      foreach (var host in ServiceHosts) {
+      foreach (var host in Hosts) {
         if (_state != ServerState.START)
           break;
 
-        result.Add (
-          host.ServicePath, host.Sessions.Broadping (frameAsBytes, timeOut));
+        result.Add (host.ServicePath, host.Sessions.Broadping (frame, millisecondsTimeout));
       }
 
       return result;
     }
 
-    private string checkIfCanSend (Func<string> checkParams)
+    private Dictionary<string, WebSocketServiceHost> copyHosts ()
     {
-      return _state.CheckIfStart () ?? checkParams ();
+      lock (_sync) {
+        return new Dictionary<string, WebSocketServiceHost> (_hosts);
+      }
     }
 
     #endregion
 
     #region Internal Methods
 
-    internal void Add (string servicePath, WebSocketServiceHost serviceHost)
+    internal void Add (string path, WebSocketServiceHost host)
     {
       lock (_sync) {
-        WebSocketServiceHost host;
-        if (_serviceHosts.TryGetValue (servicePath, out host)) {
+        WebSocketServiceHost find;
+        if (_hosts.TryGetValue (path, out find)) {
           _logger.Error (
-            "A WebSocket service with the specified path already exists.\npath: " + servicePath);
+            "A WebSocket service with the specified path already exists.\npath: " + path);
+
           return;
         }
 
         if (_state == ServerState.START)
-          serviceHost.Sessions.Start ();
+          host.Sessions.Start ();
 
-        _serviceHosts.Add (servicePath, serviceHost);
+        _hosts.Add (path, host);
       }
     }
 
-    internal bool Remove (string servicePath)
+    internal bool Remove (string path)
     {
-      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
 
       WebSocketServiceHost host;
       lock (_sync) {
-        if (!_serviceHosts.TryGetValue (servicePath, out host)) {
-          _logger.Error (
-            "A WebSocket service with the specified path not found.\npath: " + servicePath);
+        if (!_hosts.TryGetValue (path, out host)) {
+          _logger.Error ("A WebSocket service with the specified path not found.\npath: " + path);
           return false;
         }
 
-        _serviceHosts.Remove (servicePath);
+        _hosts.Remove (path);
       }
 
       if (host.Sessions.State == ServerState.START)
@@ -314,7 +305,7 @@ namespace WebSocketSharp.Server
     internal void Start ()
     {
       lock (_sync) {
-        foreach (var host in _serviceHosts.Values)
+        foreach (var host in _hosts.Values)
           host.Sessions.Start ();
 
         _state = ServerState.START;
@@ -328,33 +319,30 @@ namespace WebSocketSharp.Server
 
         var payload = new PayloadData (data);
         var args = new CloseEventArgs (payload);
-        var frameAsBytes =
-          send
-          ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
-          : null;
+        var frameAsBytes = send
+                         ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                         : null;
 
-        foreach (var host in _serviceHosts.Values)
+        foreach (var host in _hosts.Values)
           host.Sessions.Stop (args, frameAsBytes);
 
-        _serviceHosts.Clear ();
+        _hosts.Clear ();
 
         _state = ServerState.STOP;
       }
     }
 
-    internal bool TryGetServiceHostInternally (
-      string servicePath, out WebSocketServiceHost serviceHost)
+    internal bool TryGetServiceHostInternally (string path, out WebSocketServiceHost host)
     {
-      servicePath = HttpUtility.UrlDecode (servicePath).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
 
       bool result;
       lock (_sync) {
-        result = _serviceHosts.TryGetValue (servicePath, out serviceHost);
+        result = _hosts.TryGetValue (path, out host);
       }
 
       if (!result)
-        _logger.Error (
-          "A WebSocket service with the specified path not found.\npath: " + servicePath);
+        _logger.Error ("A WebSocket service with the specified path not found.\npath: " + path);
 
       return result;
     }
@@ -364,16 +352,15 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> to all clients
-    /// of the WebSocket services provided by the server.
+    /// Broadcasts a binary <paramref name="data"/> to every client in the WebSocket services
+    /// provided by the server.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data
-    /// to broadcast.
+    /// An array of <see cref="byte"/> that represents the binary data to broadcast.
     /// </param>
     public void Broadcast (byte [] data)
     {
-      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
+      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -386,15 +373,15 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a text <paramref name="data"/> to all clients
-    /// of the WebSocket services provided by the server.
+    /// Broadcasts a text <paramref name="data"/> to every client in the WebSocket services
+    /// provided by the server.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to broadcast.
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
+      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -408,23 +395,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> asynchronously to all clients
-    /// of the WebSocket services provided by the server.
+    /// Broadcasts a binary <paramref name="data"/> asynchronously to every client in the WebSocket
+    /// services provided by the server.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data
-    /// to broadcast.
+    /// An array of <see cref="byte"/> that represents the binary data to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// A <see cref="Action"/> delegate that references the method(s) called when the broadcast is
+    /// complete.
     /// </param>
     public void BroadcastAsync (byte [] data, Action completed)
     {
-      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
+      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -437,8 +423,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a text <paramref name="data"/> asynchronously to all clients
-    /// of the WebSocket services provided by the server.
+    /// Broadcasts a text <paramref name="data"/> asynchronously to every client in the WebSocket
+    /// services provided by the server.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
@@ -447,12 +433,12 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the text data to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// A <see cref="Action"/> delegate that references the method(s) called when the broadcast is
+    /// complete.
     /// </param>
     public void BroadcastAsync (string data, Action completed)
     {
-      var msg = checkIfCanSend (() => data.CheckIfValidSendData ());
+      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -466,9 +452,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a binary data from the specified <see cref="Stream"/>
-    /// asynchronously to all clients of the WebSocket services provided
-    /// by the server.
+    /// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously to every
+    /// client in the WebSocket services provided by the server.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the broadcast to be complete.
@@ -480,14 +465,14 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that represents the number of bytes to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// A <see cref="Action"/> delegate that references the method(s) called when the broadcast is
+    /// complete.
     /// </param>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
-      var msg = checkIfCanSend (
-        () => stream.CheckIfCanRead () ??
-              (length < 1 ? "'length' must be greater than 0." : null));
+      var msg = _state.CheckIfStart () ??
+                stream.CheckIfCanRead () ??
+                (length < 1 ? "'length' must be greater than 0." : null);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -519,134 +504,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> to all clients of the
-    /// WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data
-    /// to broadcast.
-    /// </param>
-    public void BroadcastTo (string servicePath, byte [] data)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.Broadcast (data);
-    }
-
-    /// <summary>
-    /// Broadcasts a text <paramref name="data"/> to all clients of the
-    /// WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to broadcast.
-    /// </param>
-    public void BroadcastTo (string servicePath, string data)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.Broadcast (data);
-    }
-
-    /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> asynchronously to all clients
-    /// of the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data
-    /// to broadcast.
-    /// </param>
-    /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
-    /// </param>
-    public void BroadcastToAsync (
-      string servicePath, byte [] data, Action completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.BroadcastAsync (data, completed);
-    }
-
-    /// <summary>
-    /// Broadcasts a text <paramref name="data"/> asynchronously to all clients
-    /// of the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to broadcast.
-    /// </param>
-    /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
-    /// </param>
-    public void BroadcastToAsync (
-      string servicePath, string data, Action completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.BroadcastAsync (data, completed);
-    }
-
-    /// <summary>
-    /// Broadcasts a binary data from the specified <see cref="Stream"/>
-    /// asynchronously to all clients of the WebSocket service with the
-    /// specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> from which contains the binary data to broadcast.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that represents the number of bytes to broadcast.
-    /// </param>
-    /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
-    /// </param>
-    public void BroadcastToAsync (
-      string servicePath, Stream stream, int length, Action completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.BroadcastAsync (stream, length, completed);
-    }
-
-    /// <summary>
-    /// Sends Pings to all clients of the WebSocket services provided by the
-    /// server.
+    /// Sends a Ping to every client in the WebSocket services provided by the server.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains
-    /// the collection of service paths and pairs of session ID and value
-    /// indicating whether each WebSocket service received a Pong from each client
-    /// in a time.
+    /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
+    /// pairs of service path and collection of pairs of session ID and value indicating whether
+    /// the manager received a Pong from every client in a time. If this method isn't available,
+    /// returns <see langword="null"/>.
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
@@ -660,17 +524,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to all clients
-    /// of the WebSocket services provided by the server.
+    /// Sends a Ping with the specified <paramref name="message"/> to every client in the WebSocket
+    /// services provided by the server.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains
-    /// the collection of service paths and pairs of session ID and value
-    /// indicating whether each WebSocket service received a Pong from each client
-    /// in a time. If <paramref name="message"/> is invalid, returns <see langword="null"/>.
+    /// A Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt; that contains the collection of
+    /// pairs of service path and collection of pairs of session ID and value indicating whether
+    /// the manager received a Pong from every client in a time. If this method isn't available or
+    /// <paramref name="message"/> is invalid, returns <see langword="null"/>.
     /// </returns>
     /// <param name="message">
-    /// A <see cref="string"/> that represents the message to broadcast.
+    /// A <see cref="string"/> that represents the message to send.
     /// </param>
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
@@ -678,358 +542,42 @@ namespace WebSocketSharp.Server
         return Broadping ();
 
       byte [] data = null;
-      var msg = checkIfCanSend (
-        () => (data = Encoding.UTF8.GetBytes (message))
-              .CheckIfValidControlData ("message"));
+      var msg = _state.CheckIfStart () ??
+                (data = Encoding.UTF8.GetBytes (message)).CheckIfValidControlData ("message");
 
       if (msg != null) {
         _logger.Error (msg);
         return null;
       }
 
-      return broadping (
-        WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
+      return broadping (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
     }
 
     /// <summary>
-    /// Sends Pings to all clients of the WebSocket service with the specified
-    /// <paramref name="servicePath"/>.
+    /// Tries to get a WebSocket service host with the specified <paramref name="path"/>.
     /// </summary>
     /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of
-    /// session ID and value indicating whether the WebSocket service received a
-    /// Pong from each client in a time. If the WebSocket service not found,
-    /// returns <see langword="null"/>.
+    /// <c>true</c> if the WebSocket service is successfully found; otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
+    /// <param name="path">
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.
     /// </param>
-    public Dictionary<string, bool> BroadpingTo (string servicePath)
+    /// <param name="host">
+    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that represents the
+    /// WebSocket service host if it's successfully found; otherwise, <see langword="null"/>. This
+    /// parameter is passed uninitialized.
+    /// </param>
+    public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
-      WebSocketServiceHost host;
-      return TryGetServiceHost (servicePath, out host)
-             ? host.Sessions.Broadping ()
-             : null;
-    }
-
-    /// <summary>
-    /// Sends Pings with the specified <paramref name="message"/> to all clients
-    /// of the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <returns>
-    /// A Dictionary&lt;string, bool&gt; that contains the collection of pairs of
-    /// session ID and value indicating whether the WebSocket service received a
-    /// Pong from each client in a time. If the WebSocket service not found,
-    /// returns <see langword="null"/>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the message to send.
-    /// </param>
-    public Dictionary<string, bool> BroadpingTo (
-      string servicePath, string message)
-    {
-      WebSocketServiceHost host;
-      return TryGetServiceHost (servicePath, out host)
-             ? host.Sessions.Broadping (message)
-             : null;
-    }
-
-    /// <summary>
-    /// Closes the session with the specified <paramref name="servicePath"/> and
-    /// <paramref name="id"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to close.
-    /// </param>
-    public void CloseSession (string servicePath, string id)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.CloseSession (id);
-    }
-
-    /// <summary>
-    /// Closes the session with the specified <paramref name="servicePath"/>,
-    /// <paramref name="id"/>, <paramref name="code"/> and <paramref name="reason"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to close.
-    /// </param>
-    /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code for closure.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for closure.
-    /// </param>
-    public void CloseSession (
-      string servicePath, string id, ushort code, string reason)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.CloseSession (id, code, reason);
-    }
-
-    /// <summary>
-    /// Closes the session with the specified <paramref name="servicePath"/>,
-    /// <paramref name="id"/>, <paramref name="code"/> and <paramref name="reason"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to close.
-    /// </param>
-    /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> values that indicate the status
-    /// codes for closure.
-    /// </param>
-    /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for closure.
-    /// </param>
-    public void CloseSession (
-      string servicePath, string id, CloseStatusCode code, string reason)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.CloseSession (id, code, reason);
-    }
-
-    /// <summary>
-    /// Sends a Ping to the client associated with the specified
-    /// <paramref name="servicePath"/> and <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the WebSocket service with <paramref name="servicePath"/>
-    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to send the
-    /// Ping to.
-    /// </param>
-    public bool PingTo (string servicePath, string id)
-    {
-      WebSocketServiceHost host;
-      return TryGetServiceHost (servicePath, out host) &&
-             host.Sessions.PingTo (id);
-    }
-
-    /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client
-    /// associated with the specified <paramref name="servicePath"/> and
-    /// <paramref name="id"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the WebSocket service with <paramref name="servicePath"/>
-    /// receives a Pong from the client in a time; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to send the
-    /// Ping to.
-    /// </param>
-    /// <param name="message">
-    /// A <see cref="string"/> that represents the message to send.
-    /// </param>
-    public bool PingTo (string servicePath, string id, string message)
-    {
-      WebSocketServiceHost host;
-      return TryGetServiceHost (servicePath, out host) &&
-             host.Sessions.PingTo (id, message);
-    }
-
-    /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client on the session with
-    /// the specified <paramref name="id"/>, in the WebSocket service with the
-    /// specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
-    /// </param>
-    public void SendTo (string servicePath, string id, byte [] data)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendTo (id, data);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> to the client on the session with
-    /// the specified <paramref name="id"/>, in the WebSocket service with the
-    /// specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
-    /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
-    /// </param>
-    public void SendTo (string servicePath, string id, string data)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendTo (id, data);
-    }
-
-    /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously to the client on the
-    /// session with the specified <paramref name="id"/>, in the WebSocket service
-    /// with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the send to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
-    /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
-    /// </param>
-    public void SendToAsync (
-      string servicePath, string id, byte [] data, Action<bool> completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendToAsync (id, data, completed);
-    }
-
-    /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously to the client on the
-    /// session with the specified <paramref name="id"/>, in the WebSocket service
-    /// with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the send to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
-    /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to send.
-    /// </param>
-    /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
-    /// </param>
-    public void SendToAsync (
-      string servicePath, string id, string data, Action<bool> completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendToAsync (id, data, completed);
-    }
-
-    /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to the client on the session with the specified <paramref name="id"/>, in
-    /// the WebSocket service with the specified <paramref name="servicePath"/>.
-    /// </summary>
-    /// <remarks>
-    /// This method doesn't wait for the send to be complete.
-    /// </remarks>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> from which contains the binary data to send.
-    /// </param>
-    /// <param name="length">
-    /// An <see cref="int"/> that represents the number of bytes to send.
-    /// </param>
-    /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when
-    /// the send is complete.
-    /// A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
-    /// </param>
-    public void SendToAsync (
-      string servicePath, string id, Stream stream, int length, Action<bool> completed)
-    {
-      WebSocketServiceHost host;
-      if (TryGetServiceHost (servicePath, out host))
-        host.Sessions.SendToAsync (id, stream, length, completed);
-    }
-
-    /// <summary>
-    /// Tries to get a WebSocket service host with the specified
-    /// <paramref name="servicePath"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the WebSocket service host is successfully found;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="servicePath">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket
-    /// service to find.
-    /// </param>
-    /// <param name="serviceHost">
-    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance
-    /// that represents the WebSocket service host if it's successfully found;
-    /// otherwise, <see langword="null"/>. This parameter is passed uninitialized.
-    /// </param>
-    public bool TryGetServiceHost (
-      string servicePath, out WebSocketServiceHost serviceHost)
-    {
-      var msg = _state.CheckIfStart () ?? servicePath.CheckIfValidServicePath ();
+      var msg = _state.CheckIfStart () ?? path.CheckIfValidServicePath ();
       if (msg != null) {
         _logger.Error (msg);
-        serviceHost = null;
+        host = null;
 
         return false;
       }
 
-      return TryGetServiceHostInternally (servicePath, out serviceHost);
+      return TryGetServiceHostInternally (path, out host);
     }
 
     #endregion

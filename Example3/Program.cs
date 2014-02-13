@@ -55,7 +55,7 @@ namespace Example3
           "An HTTP server listening on port: {0} WebSocket service paths:",
           _httpsv.Port);
 
-        foreach (var path in _httpsv.WebSocketServices.ServicePaths)
+        foreach (var path in _httpsv.WebSocketServices.Paths)
           Console.WriteLine ("  {0}", path);
       }
 
