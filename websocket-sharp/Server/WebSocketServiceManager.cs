@@ -1,6 +1,6 @@
 #region License
 /*
- * WebSocketServiceHostManager.cs
+ * WebSocketServiceManager.cs
  *
  * The MIT License
  *
@@ -39,7 +39,7 @@ namespace WebSocketSharp.Server
   /// Manages the WebSocket services provided by the <see cref="HttpServer"/> or
   /// <see cref="WebSocketServer"/>.
   /// </summary>
-  public class WebSocketServiceHostManager
+  public class WebSocketServiceManager
   {
     #region Private Fields
 
@@ -53,14 +53,15 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHostManager ()
+    internal WebSocketServiceManager ()
       : this (new Logger ())
     {
     }
 
-    internal WebSocketServiceHostManager (Logger logger)
+    internal WebSocketServiceManager (Logger logger)
     {
       _logger = logger;
+
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
       _keepClean = true;
       _state = ServerState.READY;
@@ -118,8 +119,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the manager cleans up periodically the inactive sessions in
-    /// the WebSocket services provided by the server.
+    /// Gets a value indicating whether the manager cleans up the inactive sessions in the
+    /// WebSocket services provided by the server periodically.
     /// </summary>
     /// <value>
     /// <c>true</c> if the manager cleans up the inactive sessions every 60 seconds; otherwise,
@@ -156,10 +157,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the number of the WebSocket sessions in the server.
+    /// Gets the number of the sessions in the WebSocket services provided by the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the number of the sessions in the server.
+    /// An <see cref="int"/> that represents the number of the sessions.
     /// </value>
     public int SessionCount {
       get {

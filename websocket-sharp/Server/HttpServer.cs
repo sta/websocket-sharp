@@ -64,7 +64,7 @@ namespace WebSocketSharp.Server
     private Thread                      _receiveRequestThread;
     private string                      _rootPath;
     private bool                        _secure;
-    private WebSocketServiceHostManager _serviceHosts;
+    private WebSocketServiceManager     _services;
     private volatile ServerState        _state;
     private object                      _sync;
     private bool                        _windows;
@@ -146,7 +146,7 @@ namespace WebSocketSharp.Server
       _secure = secure;
       _listener = new HttpListener ();
       _logger = new Logger ();
-      _serviceHosts = new WebSocketServiceHostManager (_logger);
+      _services = new WebSocketServiceManager (_logger);
       _state = ServerState.READY;
       _sync = new object ();
 
@@ -242,11 +242,11 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool KeepClean {
       get {
-        return _serviceHosts.KeepClean;
+        return _services.KeepClean;
       }
 
       set {
-        _serviceHosts.KeepClean = value;
+        _services.KeepClean = value;
       }
     }
 
@@ -345,16 +345,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the access to the WebSocket services provided by the
-    /// <see cref="HttpServer"/>.
+    /// Gets the access to the WebSocket services provided by the <see cref="HttpServer"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceHostManager"/> that manages the WebSocket
-    /// services.
+    /// A <see cref="WebSocketServiceManager"/> that manages the WebSocket services.
     /// </value>
-    public WebSocketServiceHostManager WebSocketServices {
+    public WebSocketServiceManager WebSocketServices {
       get {
-        return _serviceHosts;
+        return _services;
       }
     }
 
@@ -420,7 +418,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.SHUTDOWN;
       }
 
-      _serviceHosts.Stop (
+      _services.Stop (
         ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG),
         true);
       _listener.Abort ();
@@ -522,7 +520,7 @@ namespace WebSocketSharp.Server
 
       WebSocketServiceHost host;
       if (path == null ||
-          !_serviceHosts.TryGetServiceHostInternally (path, out host)) {
+          !_services.TryGetServiceHostInternally (path, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
         return;
       }
@@ -683,7 +681,7 @@ namespace WebSocketSharp.Server
       if (!KeepClean)
         host.KeepClean = false;
 
-      _serviceHosts.Add (host.ServicePath, host);
+      _services.Add (host.ServicePath, host);
     }
 
     /// <summary>
@@ -733,7 +731,7 @@ namespace WebSocketSharp.Server
         return false;
       }
 
-      return _serviceHosts.Remove (servicePath);
+      return _services.Remove (servicePath);
     }
 
     /// <summary>
@@ -751,7 +749,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _serviceHosts.Start ();
+        _services.Start ();
         _listener.Start ();
         startReceiving ();
 
@@ -774,7 +772,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.SHUTDOWN;
       }
 
-      _serviceHosts.Stop (new byte [0], true);
+      _services.Stop (new byte [0], true);
       stopListener (5000);
 
       _state = ServerState.STOP;
@@ -810,7 +808,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.SHUTDOWN;
       }
 
-      _serviceHosts.Stop (data, !code.IsReserved ());
+      _services.Stop (data, !code.IsReserved ());
       stopListener (5000);
 
       _state = ServerState.STOP;
@@ -844,7 +842,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.SHUTDOWN;
       }
 
-      _serviceHosts.Stop (data, !code.IsReserved ());
+      _services.Stop (data, !code.IsReserved ());
       stopListener (5000);
 
       _state = ServerState.STOP;

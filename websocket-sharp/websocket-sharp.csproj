@@ -122,7 +122,6 @@
     <Compile Include="HandshakeBase.cs" />
     <Compile Include="HandshakeRequest.cs" />
     <Compile Include="HandshakeResponse.cs" />
-    <Compile Include="Server\WebSocketServiceHostManager.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />
@@ -130,6 +129,7 @@
     <Compile Include="Net\HttpBasicIdentity.cs" />
     <Compile Include="Net\HttpDigestIdentity.cs" />
     <Compile Include="Net\NetworkCredential.cs" />
+    <Compile Include="Server\WebSocketServiceManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
