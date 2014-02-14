@@ -1509,52 +1509,60 @@ namespace WebSocketSharp
     }
 
     // As server, used to broadcast
-    internal void Send (
-      Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
+    internal void Send (Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
     {
       lock (_forSend) {
-        try {
-          byte [] cached;
-          if (!cache.TryGetValue (_compression, out cached)) {
-            cached = WsFrame.CreateFrame (
-              Fin.FINAL,
-              opcode,
-              Mask.UNMASK,
-              data.Compress (_compression),
-              _compression != CompressionMethod.NONE).ToByteArray ();
+        lock (_forConn) {
+          if (_readyState != WebSocketState.OPEN)
+            return;
 
-            cache.Add (_compression, cached);
+          try {
+            byte [] cached;
+            if (!cache.TryGetValue (_compression, out cached)) {
+              cached = WsFrame.CreateFrame (
+                Fin.FINAL,
+                opcode,
+                Mask.UNMASK,
+                data.Compress (_compression),
+                _compression != CompressionMethod.NONE)
+                .ToByteArray ();
+
+              cache.Add (_compression, cached);
+            }
+
+            _stream.Write (cached);
           }
-
-          send (cached);
-        }
-        catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          catch (Exception ex) {
+            _logger.Fatal (ex.ToString ());
+            error ("An exception has occurred while sending a data.");
+          }
         }
       }
     }
 
     // As server, used to broadcast
-    internal void Send (
-      Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
+    internal void Send (Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
     {
       lock (_forSend) {
-        try {
-          Stream cached;
-          if (!cache.TryGetValue (_compression, out cached)) {
-            cached = stream.Compress (_compression);
-            cache.Add (_compression, cached);
-          }
-          else
-            cached.Position = 0;
+        lock (_forConn) {
+          if (_readyState != WebSocketState.OPEN)
+            return;
 
-          sendFragmented (
-            opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
-        }
-        catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          try {
+            Stream cached;
+            if (!cache.TryGetValue (_compression, out cached)) {
+              cached = stream.Compress (_compression);
+              cache.Add (_compression, cached);
+            }
+            else
+              cached.Position = 0;
+
+            sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
+          }
+          catch (Exception ex) {
+            _logger.Fatal (ex.ToString ());
+            error ("An exception has occurred while sending a data.");
+          }
         }
       }
     }
