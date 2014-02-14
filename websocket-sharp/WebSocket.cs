@@ -1544,25 +1544,21 @@ namespace WebSocketSharp
     internal void Send (Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
     {
       lock (_forSend) {
-        lock (_forConn) {
-          if (_readyState != WebSocketState.OPEN)
-            return;
+        try {
+          Stream cached;
+          if (!cache.TryGetValue (_compression, out cached)) {
+            cached = stream.Compress (_compression);
+            cache.Add (_compression, cached);
+          }
+          else
+            cached.Position = 0;
 
-          try {
-            Stream cached;
-            if (!cache.TryGetValue (_compression, out cached)) {
-              cached = stream.Compress (_compression);
-              cache.Add (_compression, cached);
-            }
-            else
-              cached.Position = 0;
-
+          if (_readyState == WebSocketState.OPEN)
             sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
-          }
-          catch (Exception ex) {
-            _logger.Fatal (ex.ToString ());
-            error ("An exception has occurred while sending a data.");
-          }
+        }
+        catch (Exception ex) {
+          _logger.Fatal (ex.ToString ());
+          error ("An exception has occurred while sending a data.");
         }
       }
     }
