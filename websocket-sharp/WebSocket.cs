@@ -1054,10 +1054,7 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.OPEN) {
-          var msg = "The WebSocket connection isn't available.";
-          _logger.Error (msg);
-          error (msg);
-
+          _logger.Warn ("Sending has been interrupted.");
           return false;
         }
 
@@ -1088,10 +1085,7 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.OPEN) {
-          var msg = "The WebSocket connection isn't available.";
-          _logger.Error (msg);
-          error (msg);
-
+          _logger.Warn ("Sending has been interrupted.");
           return false;
         }
 
@@ -1193,19 +1187,10 @@ namespace WebSocketSharp
         null);
     }
 
-    private bool sendFragmented (
-      Opcode opcode, Stream stream, Mask mask, bool compressed)
+    private bool sendFragmented (Opcode opcode, Stream stream, Mask mask, bool compressed)
     {
       var len = stream.Length;
-      if (sendFragmented (opcode, stream, len, mask, compressed) == len)
-        return true;
-
-      var msg = "Sending fragmented data is interrupted.";
-      _logger.Error (msg);
-      error (msg);
-      close (CloseStatusCode.ABNORMAL, msg, false);
-
-      return false;
+      return sendFragmented (opcode, stream, len, mask, compressed) == len;
     }
 
     private long sendFragmented (
