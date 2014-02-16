@@ -148,11 +148,10 @@ namespace WebSocketSharp.Server
       var host = _uri.DnsSafeHost;
       _address = host.ToIPAddress ();
       if (_address == null || !_address.IsLocal ())
-        throw new ArgumentException (
-          String.Format ("The host part must be the local host name: {0}", host), "url");
+        throw new ArgumentException ("The host part must be the local host name: " + host, "url");
 
       _port = _uri.Port;
-      _secure = _uri.Scheme == "wss" ? true : false;
+      _secure = _uri.Scheme == "wss";
 
       init ();
     }
@@ -212,7 +211,7 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/> isn't a local IP address.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port)
-      : this (address, port, port == 443 ? true : false)
+      : this (address, port, port == 443)
     {
     }
 
@@ -254,8 +253,7 @@ namespace WebSocketSharp.Server
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
     {
       if (!address.IsLocal ())
-        throw new ArgumentException (
-          String.Format ("Must be the local IP address: {0}", address), "address");
+        throw new ArgumentException ("Must be the local IP address: " + address, "address");
 
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException ("port", "Must be between 1 and 65535: " + port);
@@ -344,8 +342,7 @@ namespace WebSocketSharp.Server
     /// Gets a value indicating whether the server provides a secure connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server provides a secure connection; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the server provides a secure connection; otherwise, <c>false</c>.
     /// </value>
     public bool IsSecure {
       get {
@@ -469,8 +466,7 @@ namespace WebSocketSharp.Server
 
       _listener.Stop ();
       _services.Stop (
-        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG),
-        true);
+        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
 
       _state = ServerState.STOP;
     }
@@ -511,11 +507,11 @@ namespace WebSocketSharp.Server
     }
 
     private bool authenticateRequest (
-      AuthenticationSchemes authScheme, TcpListenerWebSocketContext context)
+      AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
     {
-      var challenge = authScheme == AuthenticationSchemes.Basic
+      var challenge = scheme == AuthenticationSchemes.Basic
                     ? HttpUtility.CreateBasicAuthChallenge (Realm)
-                    : authScheme == AuthenticationSchemes.Digest
+                    : scheme == AuthenticationSchemes.Digest
                       ? HttpUtility.CreateDigestAuthChallenge (Realm)
                       : null;
 
@@ -525,7 +521,7 @@ namespace WebSocketSharp.Server
       }
 
       var retry = -1;
-      var expected = authScheme.ToString ();
+      var expected = scheme.ToString ();
       var realm = Realm;
       var credentialsFinder = UserCredentialsFinder;
       Func<bool> auth = null;
@@ -542,7 +538,7 @@ namespace WebSocketSharp.Server
           return auth ();
         }
 
-        context.SetUser (authScheme, realm, credentialsFinder);
+        context.SetUser (scheme, realm, credentialsFinder);
         if (context.IsAuthenticated)
           return true;
 
@@ -591,8 +587,7 @@ namespace WebSocketSharp.Server
           acceptRequestAsync (_listener.AcceptTcpClient ());
         }
         catch (SocketException ex) {
-          _logger.Warn (String.Format ("Receiving has been stopped.\nreason: {0}.", ex.Message));
-
+          _logger.Warn ("Receiving has been stopped.\nreason: " + ex.Message);
           break;
         }
         catch (Exception ex) {
@@ -692,7 +687,6 @@ namespace WebSocketSharp.Server
 
       if (msg != null) {
         _logger.Error (String.Format ("{0}\nservice path: {1}", msg, path));
-
         return;
       }
 
@@ -722,7 +716,6 @@ namespace WebSocketSharp.Server
       var msg = path.CheckIfValidServicePath ();
       if (msg != null) {
         _logger.Error (String.Format ("{0}\nservice path: {1}", msg, path));
-
         return false;
       }
 
@@ -738,7 +731,6 @@ namespace WebSocketSharp.Server
         var msg = _state.CheckIfStartable () ?? checkIfCertExists ();
         if (msg != null) {
           _logger.Error (String.Format ("{0}\nstate: {1}\nsecure: {2}", msg, _state, _secure));
-
           return;
         }
 
@@ -825,7 +817,6 @@ namespace WebSocketSharp.Server
 
         if (msg != null) {
           _logger.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
-
           return;
         }
 
