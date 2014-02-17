@@ -169,7 +169,7 @@ namespace WebSocketSharp.Server
           if (_state != ServerState.START)
             break;
 
-          count += host.SessionCount;
+          count += host.Sessions.Count;
         }
 
         return count;
@@ -247,7 +247,7 @@ namespace WebSocketSharp.Server
         if (_state != ServerState.START)
           break;
 
-        result.Add (host.ServicePath, host.Sessions.Broadping (frame, millisecondsTimeout));
+        result.Add (host.Path, host.Sessions.Broadping (frame, millisecondsTimeout));
       }
 
       return result;

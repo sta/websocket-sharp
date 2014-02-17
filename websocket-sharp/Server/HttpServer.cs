@@ -655,7 +655,7 @@ namespace WebSocketSharp.Server
       if (!KeepClean)
         host.KeepClean = false;
 
-      _services.Add (host.ServicePath, host);
+      _services.Add (host.Path, host);
     }
 
     /// <summary>

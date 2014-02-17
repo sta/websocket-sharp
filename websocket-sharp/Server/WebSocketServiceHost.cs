@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,15 +34,18 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides the methods and properties for the WebSocket service host.
+  /// Exposes the methods and properties used for accessing the information in a WebSocket
+  /// service provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
+  /// <remarks>
+  /// The WebSocketServiceHost class is an abstract class.
+  /// </remarks>
   public abstract class WebSocketServiceHost
   {
     #region Protected Constructors
@@ -59,57 +62,45 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service host cleans up
-    /// the inactive sessions periodically.
+    /// Gets or sets a value indicating whether the WebSocket service cleans up the inactive
+    /// sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive sessions periodically;
+    /// <c>true</c> if the WebSocket service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
     public abstract bool KeepClean { get; set; }
 
     /// <summary>
-    /// Gets the path to the WebSocket service managed by the WebSocket service host.
+    /// Gets the path to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
+    /// A <see cref="string"/> that represents the absolute path to the WebSocket service.
     /// </value>
-    public abstract string ServicePath { get; }
+    public abstract string Path { get; }
 
     /// <summary>
-    /// Gets the number of the sessions to the WebSocket service.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that contains the session count.
-    /// </value>
-    public abstract int SessionCount { get; }
-
-    /// <summary>
-    /// Gets the manager of the sessions to the WebSocket service.
+    /// Gets the access to the sessions in the WebSocket service.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
     /// </value>
     public abstract WebSocketSessionManager Sessions { get; }
 
+    /// <summary>
+    /// Gets the type of the WebSocket service.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Type"/> that represents the type of the WebSocket service.
+    /// </value>
+    public abstract Type Type { get; }
+
     #endregion
 
     #region Internal Methods
 
-    /// <summary>
-    /// Starts a new session to the WebSocket service using the specified <see cref="WebSocketContext"/>.
-    /// </summary>
-    /// <param name="context">
-    /// A <see cref="WebSocketContext"/> that contains a WebSocket connection request objects.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="context"/> is <see langword="null"/>.
-    /// </exception>
     internal void StartSession (WebSocketContext context)
     {
-      if (context == null)
-        throw new ArgumentNullException ("context");
-
       var session = CreateSession ();
       session.Start (context, Sessions);
     }
@@ -119,7 +110,7 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Creates a new session to the WebSocket service.
+    /// Creates a new session in the WebSocket service.
     /// </summary>
     /// <returns>
     /// A <see cref="WebSocketService"/> instance that represents a new session.
@@ -129,13 +120,6 @@ namespace WebSocketSharp.Server
     #endregion
   }
 
-  /// <summary>
-  /// Provides the methods and properties for the WebSocket service host.
-  /// </summary>
-  /// <typeparam name="T">
-  /// The type of the WebSocket service provided by the server.
-  /// The T must inherit the <see cref="WebSocketService"/> class.
-  /// </typeparam>
   internal class WebSocketServiceHost<T> : WebSocketServiceHost
     where T : WebSocketService
   {
@@ -160,14 +144,6 @@ namespace WebSocketSharp.Server
 
     #region Public Properties
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service host cleans up
-    /// the inactive sessions periodically.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if the WebSocket service host cleans up the inactive sessions
-    /// every 60 seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
-    /// </value>
     public override bool KeepClean {
       get {
         return _sessions.KeepClean;
@@ -178,39 +154,21 @@ namespace WebSocketSharp.Server
       }
     }
 
-    /// <summary>
-    /// Gets the path to the WebSocket service managed by the WebSocket service host.
-    /// </summary>
-    /// <value>
-    /// A <see cref="string"/> that contains an absolute path to the WebSocket service.
-    /// </value>
-    public override string ServicePath {
+    public override string Path {
       get {
         return _path;
       }
     }
 
-    /// <summary>
-    /// Gets the number of the sessions to the WebSocket service.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that contains the session count.
-    /// </value>
-    public override int SessionCount {
-      get {
-        return _sessions.Count;
-      }
-    }
-
-    /// <summary>
-    /// Gets the manager of the sessions to the WebSocket service.
-    /// </summary>
-    /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
-    /// </value>
     public override WebSocketSessionManager Sessions {
       get {
         return _sessions;
+      }
+    }
+
+    public override Type Type {
+      get {
+        return typeof (T);
       }
     }
 
@@ -218,12 +176,6 @@ namespace WebSocketSharp.Server
 
     #region Protected Methods
 
-    /// <summary>
-    /// Creates a new session to the WebSocket service.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="WebSocketService"/> instance that represents a new session.
-    /// </returns>
     protected override WebSocketService CreateSession ()
     {
       return _constructor ();
