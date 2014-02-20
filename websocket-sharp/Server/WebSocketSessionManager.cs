@@ -42,7 +42,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Static Fields
 
-    private static readonly List<IWebSocketSession> _emptySessions;
+    private static readonly Dictionary<string, IWebSocketSession> _emptySessions;
 
     #endregion
 
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Server
 
     static WebSocketSessionManager ()
     {
-      _emptySessions = new List<IWebSocketSession> ();
+      _emptySessions = new Dictionary<string, IWebSocketSession> ();
     }
 
     #endregion
@@ -138,7 +138,12 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> IDs {
       get {
-        return copySessions ().Keys;
+        if (_state == ServerState.SHUTDOWN)
+          return _emptySessions.Keys;
+
+        lock (_sync) {
+          return _sessions.Keys.ToList ();
+        }
       }
     }
 
@@ -158,11 +163,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a session information with the specified <paramref name="id"/> in the WebSocket
+    /// Gets the information in a session with the specified <paramref name="id"/> in the WebSocket
     /// service.
     /// </summary>
     /// <value>
-    /// A <see cref="IWebSocketSession"/> instance that represents the session information if it's
+    /// A <see cref="IWebSocketSession"/> instance that provides the access to the session if it's
     /// successfully found; otherwise, <see langword="null"/>.
     /// </value>
     /// <param name="id">
@@ -200,18 +205,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of the session informations in the Websocket service.
+    /// Gets the collection of every information in the sessions in the Websocket service.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;IWebSocketSession&gt; that contains the collection of the session
-    /// informations.
+    /// An IEnumerable&lt;IWebSocketSession&gt; that contains the collection of every information
+    /// in the sessions.
     /// </value>
     public IEnumerable<IWebSocketSession> Sessions {
       get {
         if (_state == ServerState.SHUTDOWN)
-          return _emptySessions;
+          return _emptySessions.Values;
 
-        return copySessions ().Values;
+        lock (_sync) {
+          return _sessions.Values.ToList ();
+        }
       }
     }
 
@@ -264,13 +271,6 @@ namespace WebSocketSharp.Server
     {
       ThreadPool.QueueUserWorkItem (
         state => broadcast (opcode, stream, completed));
-    }
-
-    private Dictionary<string, IWebSocketSession> copySessions ()
-    {
-      lock (_sync) {
-        return new Dictionary<string, IWebSocketSession> (_sessions);
-      }
     }
 
     private static string createID ()
@@ -380,7 +380,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.SHUTDOWN;
 
         _sweepTimer.Enabled = false;
-        foreach (var session in copySessions ().Values)
+        foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close (args, frame, 1000);
 
         _state = ServerState.STOP;
@@ -609,7 +609,7 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
     /// <param name="code">
-    /// A <see cref="ushort"/> that indicates the status code for closure.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -629,8 +629,8 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, indicates the status code for
-    /// closure.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
+    /// the reason for closure.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for closure.
@@ -826,7 +826,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get a session information with the specified <paramref name="id"/> in the
+    /// Tries to get the information in a session with the specified <paramref name="id"/> in the
     /// WebSocket service.
     /// </summary>
     /// <returns>
@@ -836,8 +836,8 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the ID of the session to find.
     /// </param>
     /// <param name="session">
-    /// When this method returns, a <see cref="IWebSocketSession"/> instance that represents the
-    /// session information if it's successfully found; otherwise, <see langword="null"/>. This
+    /// When this method returns, a <see cref="IWebSocketSession"/> instance that provides the
+    /// access to the session if it's successfully found; otherwise, <see langword="null"/>. This
     /// parameter is passed uninitialized.
     /// </param>
     public bool TryGetSession (string id, out IWebSocketSession session)

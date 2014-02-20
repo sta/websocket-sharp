@@ -87,24 +87,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the collection of the WebSocket service hosts.
+    /// Gets the collection of every information in the Websocket services provided by the server.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of the WebSocket
-    /// service hosts.
+    /// An IEnumerable&lt;WebSocketServiceHost&gt; that contains the collection of every
+    /// information in the Websocket services.
     /// </value>
     public IEnumerable<WebSocketServiceHost> Hosts {
       get {
-        return copyHosts ().Values;
+        lock (_sync) {
+          return _hosts.Values.ToList ();
+        }
       }
     }
 
     /// <summary>
-    /// Gets a WebSocket service host with the specified <paramref name="path"/>.
+    /// Gets the information in a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceHost"/> instance that represents the WebSocket service host if
-    /// it's successfully found; otherwise, <see langword="null"/>.
+    /// A <see cref="WebSocketServiceHost"/> instance that provides the access to the WebSocket
+    /// service if it's successfully found; otherwise, <see langword="null"/>.
     /// </value>
     /// <param name="path">
     /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.
@@ -152,7 +154,9 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> Paths {
       get {
-        return copyHosts ().Keys;
+        lock (_sync) {
+          return _hosts.Keys.ToList ();
+        }
       }
     }
 
@@ -253,13 +257,6 @@ namespace WebSocketSharp.Server
       return result;
     }
 
-    private Dictionary<string, WebSocketServiceHost> copyHosts ()
-    {
-      lock (_sync) {
-        return new Dictionary<string, WebSocketServiceHost> (_hosts);
-      }
-    }
-
     #endregion
 
     #region Internal Methods
@@ -328,7 +325,6 @@ namespace WebSocketSharp.Server
           host.Sessions.Stop (args, frameAsBytes);
 
         _hosts.Clear ();
-
         _state = ServerState.STOP;
       }
     }
@@ -555,7 +551,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get a WebSocket service host with the specified <paramref name="path"/>.
+    /// Tries to get the information in a WebSocket service with the specified
+    /// <paramref name="path"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the WebSocket service is successfully found; otherwise, <c>false</c>.
@@ -564,9 +561,9 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.
     /// </param>
     /// <param name="host">
-    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that represents the
-    /// WebSocket service host if it's successfully found; otherwise, <see langword="null"/>. This
-    /// parameter is passed uninitialized.
+    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that
+    /// provides the access to the WebSocket service if it's successfully found;
+    /// otherwise, <see langword="null"/>. This parameter is passed uninitialized.
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {

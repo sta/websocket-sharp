@@ -817,6 +817,11 @@ namespace WebSocketSharp
       }
     }
 
+    internal static List<TSource> ToList<TSource> (this IEnumerable<TSource> source)
+    {
+      return new List<TSource> (source);
+    }
+
     internal static ushort ToUInt16 (this byte [] src, ByteOrder srcOrder)
     {
       return BitConverter.ToUInt16 (src.ToHostOrder (srcOrder), 0);
