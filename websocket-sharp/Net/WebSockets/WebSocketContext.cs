@@ -119,10 +119,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string Origin { get; }
 
     /// <summary>
-    /// Gets the absolute path of the requested WebSocket URI.
+    /// Gets the absolute path of the requested URI.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested WebSocket URI.
+    /// A <see cref="string"/> that represents the absolute path of the requested URI.
     /// </value>
     public abstract string Path { get; }
 
@@ -135,10 +135,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract NameValueCollection QueryString { get; }
 
     /// <summary>
-    /// Gets the WebSocket URI requested by the client.
+    /// Gets the URI requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the requested WebSocket URI.
+    /// A <see cref="Uri"/> that represents the requested URI.
     /// </value>
     public abstract Uri RequestUri { get; }
 
@@ -158,7 +158,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the values of the Sec-WebSocket-Protocol header included in the request.
     /// </summary>
     /// <remarks>
-    /// This property represents the subprotocols requested from the client.
+    /// This property represents the subprotocols requested by the client.
     /// </remarks>
     /// <value>
     /// An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header.
