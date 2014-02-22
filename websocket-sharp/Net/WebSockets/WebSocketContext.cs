@@ -127,10 +127,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string Path { get; }
 
     /// <summary>
-    /// Gets the collection of query string variables included in the request.
+    /// Gets the query string variables included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string variables.
     /// </value>
     public abstract NameValueCollection QueryString { get; }
 
