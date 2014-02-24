@@ -810,38 +810,52 @@ namespace WebSocketSharp
 
     private bool concatenateFragmentsInto (Stream dest)
     {
-      var frame = _stream.ReadFrame ();
+      while (true) {
+        var frame = _stream.ReadFrame ();
 
-      // MORE & CONT
-      if (!frame.IsFinal && frame.IsContinuation) {
-        dest.WriteBytes (frame.PayloadData.ApplicationData);
-        return concatenateFragmentsInto (dest);
+        if (frame.IsFinal) {
+          // FINAL
+
+          // CONT
+          if (frame.IsContinuation) {
+            dest.WriteBytes (frame.PayloadData.ApplicationData);
+            break;
+          }
+
+          // PING
+          if (frame.IsPing) {
+            acceptPingFrame (frame);
+            continue;
+          }
+
+          // PONG
+          if (frame.IsPong) {
+            acceptPongFrame (frame);
+            continue;
+          }
+
+          // CLOSE
+          if (frame.IsClose)
+            return acceptCloseFrame (frame);
+        }
+        else {
+          // MORE
+
+          // CONT
+          if (frame.IsContinuation) {
+            dest.WriteBytes (frame.PayloadData.ApplicationData);
+            continue;
+          }
+        }
+
+        // ?
+        return acceptUnsupportedFrame (
+          frame,
+          CloseStatusCode.INCORRECT_DATA,
+          "An incorrect data has been received while receiving fragmented data.");
       }
 
-      // FINAL & CONT
-      if (frame.IsFinal && frame.IsContinuation) {
-        dest.WriteBytes (frame.PayloadData.ApplicationData);
-        return true;
-      }
-
-      // FINAL & PING
-      if (frame.IsFinal && frame.IsPing) {
-        acceptPingFrame (frame);
-        return concatenateFragmentsInto (dest);
-      }
-
-      // FINAL & PONG
-      if (frame.IsFinal && frame.IsPong) {
-        acceptPongFrame (frame);
-        return concatenateFragmentsInto (dest);
-      }
-
-      // FINAL & CLOSE
-      if (frame.IsFinal && frame.IsClose)
-        return acceptCloseFrame (frame);
-
-      // ?
-      return acceptUnsupportedFrame (frame, CloseStatusCode.INCORRECT_DATA, null);
+      return true;
     }
 
     private bool connect ()

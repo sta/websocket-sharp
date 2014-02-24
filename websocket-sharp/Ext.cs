@@ -481,7 +481,7 @@ namespace WebSocketSharp
                  : code == CloseStatusCode.INCONSISTENT_DATA
                    ? "An inconsistent data has been received."
                    : code == CloseStatusCode.POLICY_VIOLATION
-                     ? "A policy violation data has been received."
+                     ? "A policy violation has occurred."
                      : code == CloseStatusCode.TOO_BIG
                        ? "A too big data has been received."
                        : code == CloseStatusCode.IGNORE_EXTENSION
