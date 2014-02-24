@@ -161,7 +161,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// This property represents the subprotocols requested by the client.
     /// </remarks>
     /// <value>
-    /// An IEnumerable&lt;string&gt; that contains the values of the Sec-WebSocket-Protocol header.
+    /// An IEnumerable&lt;string&gt; instance that provides an enumerator which supports the
+    /// iteration over the values of the Sec-WebSocket-Protocol header.
     /// </value>
     public abstract IEnumerable<string> SecWebSocketProtocols { get; }
 
