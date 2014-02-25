@@ -474,7 +474,7 @@ So if you would like to change the current logging level (`WebSocketSharp.LogLev
 ws.Log.Level = LogLevel.DEBUG;
 ```
 
-This means a log with less than `LogLevel.DEBUG` isn't outputted.
+This means a log with less than `LogLevel.DEBUG` cannot be outputted.
 
 And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.DEBUG`.
 
