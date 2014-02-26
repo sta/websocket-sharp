@@ -30,7 +30,7 @@
         <h2>
 <a name="welcome-to-websocket-sharp" class="anchor" href="#welcome-to-websocket-sharp"><span class="octicon octicon-link"></span></a>Welcome to websocket-sharp!</h2>
 
-<p><strong>websocket-sharp</strong> supports the followings:</p>
+<p><strong>websocket-sharp</strong> supports:</p>
 
 <ul>
 <li>
@@ -42,16 +42,6 @@
 <li><strong><a href="#secure-connection">Secure Connection</a></strong></li>
 <li><strong><a href="#http-authentication">HTTP Authentication</a></strong></li>
 <li>.NET <strong>3.5</strong> or later (includes compatible)</li>
-</ul><h2>
-<a name="branches" class="anchor" href="#branches"><span class="octicon octicon-link"></span></a>Branches</h2>
-
-<ul>
-<li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/master">master</a></strong> for production releases.</li>
-<li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">hybi-00</a></strong> for older <a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">draft-ietf-hybi-thewebsocketprotocol-00</a>. No longer maintained.</li>
-<li>
-<strong><a href="https://github.com/sta/websocket-sharp/tree/draft75">draft75</a></strong> for even more old <a href="http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75">draft-hixie-thewebsocketprotocol-75</a>. No longer maintained.</li>
 </ul><h2>
 <a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
 
@@ -160,7 +150,7 @@
 <h5>
 <a name="websocketonmessage-event" class="anchor" href="#websocketonmessage-event"><span class="octicon octicon-link"></span></a>WebSocket.OnMessage Event</h5>
 
-<p>A <code>WebSocket.OnMessage</code> event occurs when the <code>WebSocket</code> receives a WebSocket message.</p>
+<p>A <code>WebSocket.OnMessage</code> event occurs when the <code>WebSocket</code> receives a message.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">OnMessage</span> <span class="p">+=</span> <span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
   <span class="p">...</span>
@@ -212,7 +202,7 @@
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.CloseEventArgs</code>.</p>
 
-<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code that indicates the reason for closure, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for closure. So you should use them to get the reason for closure.</p>
+<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code indicating the reason for closure, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for closure. So you should use them to get the reason for closure.</p>
 
 <h4>
 <a name="step-4" class="anchor" href="#step-4"><span class="octicon octicon-link"></span></a>Step 4</h4>
@@ -351,15 +341,15 @@
 <span class="p">}</span>
 </pre></div>
 
-<p>If you override the <code>WebSocketService.OnMessage (MessageEventArgs)</code> method, that overridden method is called when the <code>OnMessage</code> event of the current session's <code>WebSocket</code> occurs.</p>
+<p>If you override the <code>WebSocketService.OnMessage (MessageEventArgs)</code> method, it's called when the <code>OnMessage</code> event of the <code>WebSocket</code> used by the current session in the WebSocket service occurs.</p>
 
-<p>And if you override the <code>WebSocketService.OnOpen ()</code>, <code>WebSocketService.OnError (ErrorEventArgs)</code>, and <code>WebSocketService.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the current session's <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code> events) occurs.</p>
+<p>And if you override the <code>WebSocketService.OnOpen ()</code>, <code>WebSocketService.OnError (ErrorEventArgs)</code>, and <code>WebSocketService.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code>) occurs.</p>
 
 <p>The <code>WebSocketService.Send</code> method sends a data to the client on the current session in the WebSocket service.</p>
 
 <p>If you would like to access the sessions in the WebSocket service, you should use the <code>WebSocketService.Sessions</code> property (returns a <code>WebSocketSharp.Server.WebSocketSessionManager</code>).</p>
 
-<p>The <code>WebSocketService.Sessions.Broadcast</code> method broadcasts a data to all clients of the WebSocket service.</p>
+<p>The <code>WebSocketService.Sessions.Broadcast</code> method broadcasts a data to every client in the WebSocket service.</p>
 
 <h4>
 <a name="step-3-1" class="anchor" href="#step-3-1"><span class="octicon octicon-link"></span></a>Step 3</h4>
@@ -372,7 +362,7 @@
 <span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/ChatWithNiceBoat"</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Chat</span> <span class="p">(</span><span class="s">" Nice boat."</span><span class="p">));</span>
 </pre></div>
 
-<p>You can add any WebSocket service to your <code>WebSocketServer</code> with the specified path to the service, using the <code>WebSocketServer.AddWebSocketService&lt;TWithNew&gt; (string)</code> and <code>WebSocketServer.AddWebSocketService&lt;T&gt; (string, Func&lt;T&gt;)</code> methods.</p>
+<p>You can add any WebSocket service to your <code>WebSocketServer</code> with the specified path to the service, using the <code>WebSocketServer.AddWebSocketService&lt;TWithNew&gt; (string)</code> or <code>WebSocketServer.AddWebSocketService&lt;T&gt; (string, Func&lt;T&gt;)</code> method.</p>
 
 <p>The type of <code>TWithNew</code> must inherit the <code>WebSocketService</code> class and must have a public parameterless constructor.</p>
 
@@ -412,7 +402,7 @@
 
 <p>So websocket-sharp provides the <code>WebSocketSharp.Server.HttpServer</code> class.</p>
 
-<p>You can add any WebSocket service to your <code>HttpServer</code> with the specified path to the service, using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt; (string)</code> and <code>HttpServer.AddWebSocketService&lt;T&gt; (string, Func&lt;T&gt;)</code> methods.</p>
+<p>You can add any WebSocket service to your <code>HttpServer</code> with the specified path to the service, using the <code>HttpServer.AddWebSocketService&lt;TWithNew&gt; (string)</code> or <code>HttpServer.AddWebSocketService&lt;T&gt; (string, Func&lt;T&gt;)</code> method.</p>
 
 <div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">httpsv</span> <span class="p">=</span> <span class="k">new</span> <span class="n">HttpServer</span> <span class="p">(</span><span class="m">4649</span><span class="p">);</span>
 <span class="n">httpsv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Echo</span><span class="p">&gt;</span> <span class="p">(</span><span class="s">"/Echo"</span><span class="p">);</span>
