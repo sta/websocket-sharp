@@ -2,7 +2,7 @@
 
 ## Welcome to websocket-sharp! ##
 
-**websocket-sharp** supports the followings:
+**websocket-sharp** supports:
 
 - **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
 - **[RFC 6455](#supported-websocket-specifications)**
@@ -116,7 +116,7 @@ ws.OnOpen += (sender, e) => {
 
 ##### WebSocket.OnMessage Event #####
 
-A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a WebSocket message.
+A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a message.
 
 ```cs
 ws.OnMessage += (sender, e) => {
@@ -170,7 +170,7 @@ ws.OnClose += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.CloseEventArgs`.
 
-`e.Code` property returns a `ushort` that represents the status code that indicates the reason for closure, and `e.Reason` property returns a `string` that represents the reason for closure. So you should use them to get the reason for closure.
+`e.Code` property returns a `ushort` that represents the status code indicating the reason for closure, and `e.Reason` property returns a `string` that represents the reason for closure. So you should use them to get the reason for closure.
 
 #### Step 4 ####
 
@@ -311,15 +311,15 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, that overridden method is called when the `OnMessage` event of the current session's `WebSocket` occurs.
+If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, it's called when the `OnMessage` event of the `WebSocket` used by the current session in the WebSocket service occurs.
 
-And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the current session's `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
+And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose`) occurs.
 
 The `WebSocketService.Send` method sends a data to the client on the current session in the WebSocket service.
 
 If you would like to access the sessions in the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
-The `WebSocketService.Sessions.Broadcast` method broadcasts a data to all clients of the WebSocket service.
+The `WebSocketService.Sessions.Broadcast` method broadcasts a data to every client in the WebSocket service.
 
 #### Step 3 ####
 
@@ -332,7 +332,7 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` and `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` methods.
+You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` or `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` method.
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
@@ -370,7 +370,7 @@ I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and 
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
-You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew> (string)` and `HttpServer.AddWebSocketService<T> (string, Func<T>)` methods.
+You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew> (string)` or `HttpServer.AddWebSocketService<T> (string, Func<T>)` method.
 
 ```cs
 var httpsv = new HttpServer (4649);
