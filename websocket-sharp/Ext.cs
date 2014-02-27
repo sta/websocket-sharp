@@ -223,20 +223,20 @@ namespace WebSocketSharp
 
     internal static string CheckIfStart (this ServerState state)
     {
-      return state == ServerState.READY
-             ? "The server hasn't started yet."
-             : state == ServerState.SHUTDOWN
+      return state == ServerState.Ready
+             ? "The server hasn't yet started."
+             : state == ServerState.ShuttingDown
                ? "The server is shutting down."
-               : state == ServerState.STOP
+               : state == ServerState.Stop
                  ? "The server has already stopped."
                  : null;
     }
 
     internal static string CheckIfStartable (this ServerState state)
     {
-      return state == ServerState.START
+      return state == ServerState.Start
              ? "The server has already started."
-             : state == ServerState.SHUTDOWN
+             : state == ServerState.ShuttingDown
                ? "The server is shutting down."
                : null;
     }

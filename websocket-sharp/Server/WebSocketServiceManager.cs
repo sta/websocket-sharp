@@ -64,7 +64,7 @@ namespace WebSocketSharp.Server
 
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
       _keepClean = true;
-      _state = ServerState.READY;
+      _state = ServerState.Ready;
       _sync = new object ();
     }
 
@@ -170,7 +170,7 @@ namespace WebSocketSharp.Server
       get {
         var count = 0;
         foreach (var host in Hosts) {
-          if (_state != ServerState.START)
+          if (_state != ServerState.Start)
             break;
 
           count += host.Sessions.Count;
@@ -189,7 +189,7 @@ namespace WebSocketSharp.Server
       var cache = new Dictionary<CompressionMethod, byte []> ();
       try {
         foreach (var host in Hosts) {
-          if (_state != ServerState.START)
+          if (_state != ServerState.Start)
             break;
 
           host.Sessions.Broadcast (opcode, data, cache);
@@ -211,7 +211,7 @@ namespace WebSocketSharp.Server
       var cache = new Dictionary<CompressionMethod, Stream> ();
       try {
         foreach (var host in Hosts) {
-          if (_state != ServerState.START)
+          if (_state != ServerState.Start)
             break;
 
           host.Sessions.Broadcast (opcode, stream, cache);
@@ -248,7 +248,7 @@ namespace WebSocketSharp.Server
     {
       var result = new Dictionary<string, Dictionary<string, bool>> ();
       foreach (var host in Hosts) {
-        if (_state != ServerState.START)
+        if (_state != ServerState.Start)
           break;
 
         result.Add (host.Path, host.Sessions.Broadping (frame, millisecondsTimeout));
@@ -272,7 +272,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        if (_state == ServerState.START)
+        if (_state == ServerState.Start)
           host.Sessions.Start ();
 
         _hosts.Add (path, host);
@@ -293,7 +293,7 @@ namespace WebSocketSharp.Server
         _hosts.Remove (path);
       }
 
-      if (host.Sessions.State == ServerState.START)
+      if (host.Sessions.State == ServerState.Start)
         host.Sessions.Stop (
           ((ushort) CloseStatusCode.AWAY).ToByteArrayInternally (ByteOrder.BIG), true);
 
@@ -306,14 +306,14 @@ namespace WebSocketSharp.Server
         foreach (var host in _hosts.Values)
           host.Sessions.Start ();
 
-        _state = ServerState.START;
+        _state = ServerState.Start;
       }
     }
 
     internal void Stop (byte [] data, bool send)
     {
       lock (_sync) {
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
 
         var payload = new PayloadData (data);
         var args = new CloseEventArgs (payload);
@@ -325,7 +325,7 @@ namespace WebSocketSharp.Server
           host.Sessions.Stop (args, frameAsBytes);
 
         _hosts.Clear ();
-        _state = ServerState.STOP;
+        _state = ServerState.Stop;
       }
     }
 

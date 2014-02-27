@@ -334,7 +334,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public bool IsListening {
       get {
-        return _state == ServerState.START;
+        return _state == ServerState.Start;
       }
     }
 
@@ -461,14 +461,14 @@ namespace WebSocketSharp.Server
         if (!IsListening)
           return;
 
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
       }
 
       _listener.Stop ();
       _services.Stop (
         ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
 
-      _state = ServerState.STOP;
+      _state = ServerState.Stop;
     }
 
     private void acceptRequestAsync (TcpClient client)
@@ -551,7 +551,7 @@ namespace WebSocketSharp.Server
 
     private bool canSet (string property)
     {
-      if (_state == ServerState.START || _state == ServerState.SHUTDOWN) {
+      if (_state == ServerState.Start || _state == ServerState.ShuttingDown) {
         _logger.Error (
           String.Format (
             "Set operation of {0} isn't available because the server has already started.",
@@ -576,7 +576,7 @@ namespace WebSocketSharp.Server
       _listener = new TcpListener (_address, _port);
       _logger = new Logger ();
       _services = new WebSocketServiceManager (_logger);
-      _state = ServerState.READY;
+      _state = ServerState.Ready;
       _sync = new object ();
     }
 
@@ -738,7 +738,7 @@ namespace WebSocketSharp.Server
         _listener.Start ();
         startReceiving ();
 
-        _state = ServerState.START;
+        _state = ServerState.Start;
       }
     }
 
@@ -754,13 +754,13 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
       }
 
       stopListener (5000);
       _services.Stop (new byte [0], true);
 
-      _state = ServerState.STOP;
+      _state = ServerState.Stop;
     }
 
     /// <summary>
@@ -788,13 +788,13 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
       }
 
       stopListener (5000);
       _services.Stop (data, !code.IsReserved ());
 
-      _state = ServerState.STOP;
+      _state = ServerState.Stop;
     }
 
     /// <summary>
@@ -820,13 +820,13 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
       }
 
       stopListener (5000);
       _services.Stop (data, !code.IsReserved ());
 
-      _state = ServerState.STOP;
+      _state = ServerState.Stop;
     }
 
     #endregion

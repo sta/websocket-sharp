@@ -81,7 +81,7 @@ namespace WebSocketSharp.Server
       _forSweep = new object ();
       _keepClean = true;
       _sessions = new Dictionary<string, IWebSocketSession> ();
-      _state = ServerState.READY;
+      _state = ServerState.Ready;
       _sync = new object ();
 
       setSweepTimer (60000);
@@ -138,7 +138,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> IDs {
       get {
-        if (_state == ServerState.SHUTDOWN)
+        if (_state == ServerState.ShuttingDown)
           return _emptySessions.Keys;
 
         lock (_sync) {
@@ -199,7 +199,7 @@ namespace WebSocketSharp.Server
           return;
 
         _keepClean = value;
-        if (_state == ServerState.START)
+        if (_state == ServerState.Start)
           _sweepTimer.Enabled = value;
       }
     }
@@ -213,7 +213,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<IWebSocketSession> Sessions {
       get {
-        if (_state == ServerState.SHUTDOWN)
+        if (_state == ServerState.ShuttingDown)
           return _emptySessions.Values;
 
         lock (_sync) {
@@ -304,7 +304,7 @@ namespace WebSocketSharp.Server
     internal string Add (IWebSocketSession session)
     {
       lock (_sync) {
-        if (_state != ServerState.START)
+        if (_state != ServerState.Start)
           return null;
 
         var id = createID ();
@@ -318,7 +318,7 @@ namespace WebSocketSharp.Server
       Opcode opcode, byte [] data, Dictionary<CompressionMethod, byte []> cache)
     {
       foreach (var session in Sessions) {
-        if (_state != ServerState.START)
+        if (_state != ServerState.Start)
           break;
 
         session.Context.WebSocket.Send (opcode, data, cache);
@@ -329,7 +329,7 @@ namespace WebSocketSharp.Server
       Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
     {
       foreach (var session in Sessions) {
-        if (_state != ServerState.START)
+        if (_state != ServerState.Start)
           break;
 
         session.Context.WebSocket.Send (opcode, stream, cache);
@@ -340,7 +340,7 @@ namespace WebSocketSharp.Server
     {
       var result = new Dictionary<string, bool> ();
       foreach (var session in Sessions) {
-        if (_state != ServerState.START)
+        if (_state != ServerState.Start)
           break;
 
         result.Add (
@@ -360,7 +360,7 @@ namespace WebSocketSharp.Server
     internal void Start ()
     {
       _sweepTimer.Enabled = _keepClean;
-      _state = ServerState.START;
+      _state = ServerState.Start;
     }
 
     internal void Stop (byte [] data, bool send)
@@ -377,13 +377,13 @@ namespace WebSocketSharp.Server
     internal void Stop (CloseEventArgs args, byte [] frame)
     {
       lock (_sync) {
-        _state = ServerState.SHUTDOWN;
+        _state = ServerState.ShuttingDown;
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close (args, frame, 1000);
 
-        _state = ServerState.STOP;
+        _state = ServerState.Stop;
       }
     }
 
@@ -798,13 +798,13 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Sweep ()
     {
-      if (_state != ServerState.START || _sweeping || Count == 0)
+      if (_state != ServerState.Start || _sweeping || Count == 0)
         return;
 
       lock (_forSweep) {
         _sweeping = true;
         foreach (var id in InactiveIDs) {
-          if (_state != ServerState.START)
+          if (_state != ServerState.Start)
             break;
 
           lock (_sync) {
