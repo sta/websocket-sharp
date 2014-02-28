@@ -165,15 +165,15 @@ namespace Example1
       int  ch_num        = buffer_array.GetLength(0);
       int  buffer_length = buffer_array.GetLength(1);
 
-      msg.AddRange(user_id.ToByteArray(ByteOrder.BIG));
+      msg.AddRange(user_id.ToByteArray(ByteOrder.Big));
       msg.Add((byte)ch_num);
-      msg.AddRange(((uint)buffer_length).ToByteArray(ByteOrder.BIG));
+      msg.AddRange(((uint)buffer_length).ToByteArray(ByteOrder.Big));
 
       ch_num.Times(i =>
       {
         buffer_length.Times(j =>
         {
-          msg.AddRange(buffer_array[i, j].ToByteArray(ByteOrder.BIG));
+          msg.AddRange(buffer_array[i, j].ToByteArray(ByteOrder.Big));
         });
       });
 
@@ -195,9 +195,9 @@ namespace Example1
 
     private AudioMessage parseAudioMessage(byte[] data)
     {
-      uint     user_id       = data.SubArray(0, 4).To<uint>(ByteOrder.BIG);
+      uint     user_id       = data.SubArray(0, 4).To<uint>(ByteOrder.Big);
       byte     ch_num        = data.SubArray(4, 1)[0];
-      uint     buffer_length = data.SubArray(5, 4).To<uint>(ByteOrder.BIG);
+      uint     buffer_length = data.SubArray(5, 4).To<uint>(ByteOrder.Big);
       float[,] buffer_array  = new float[ch_num, buffer_length];
 
       int offset = 9;
@@ -205,7 +205,7 @@ namespace Example1
       {
         buffer_length.Times(j =>
         {
-          buffer_array[i, j] = data.SubArray(offset, 4).To<float>(ByteOrder.BIG);
+          buffer_array[i, j] = data.SubArray(offset, 4).To<float>(ByteOrder.Big);
           offset += 4;
         });
       });

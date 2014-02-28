@@ -88,7 +88,7 @@ namespace WebSocketSharp
     internal bool ContainsReservedCloseStatusCode {
       get {
         return ApplicationData.Length > 1
-               ? ApplicationData.SubArray (0, 2).ToUInt16 (ByteOrder.BIG).IsReserved ()
+               ? ApplicationData.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ()
                : false;
       }
     }

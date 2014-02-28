@@ -113,7 +113,7 @@ namespace WebSocketSharp
     private static ushort getCodeFrom (byte [] data)
     {
       return data.Length > 1
-             ? data.SubArray (0, 2).ToUInt16 (ByteOrder.BIG)
+             ? data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
              : (ushort) CloseStatusCode.NO_STATUS_CODE;
     }
 

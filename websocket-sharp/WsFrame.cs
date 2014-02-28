@@ -102,8 +102,8 @@ namespace WebSocketSharp
       ExtPayloadLen = payloadLen < 126
                     ? new byte []{}
                     : payloadLen == 126
-                      ? ((ushort) dataLen).ToByteArrayInternally (ByteOrder.BIG)
-                      : dataLen.ToByteArrayInternally (ByteOrder.BIG);
+                      ? ((ushort) dataLen).ToByteArrayInternally (ByteOrder.Big)
+                      : dataLen.ToByteArrayInternally (ByteOrder.Big);
 
       /* MaskingKey */
 
@@ -451,8 +451,8 @@ namespace WebSocketSharp
       ulong dataLen = payloadLen < 126
                     ? payloadLen
                     : payloadLen == 126
-                      ? extPayloadLen.ToUInt16 (ByteOrder.BIG)
-                      : extPayloadLen.ToUInt64 (ByteOrder.BIG);
+                      ? extPayloadLen.ToUInt16 (ByteOrder.Big)
+                      : extPayloadLen.ToUInt64 (ByteOrder.Big);
 
       byte [] data = null;
       if (dataLen > 0)
@@ -502,9 +502,9 @@ namespace WebSocketSharp
       var ext = frame.ExtPayloadLen;
       var size = ext.Length;
       var extLen = size == 2
-                 ? ext.ToUInt16 (ByteOrder.BIG).ToString ()
+                 ? ext.ToUInt16 (ByteOrder.Big).ToString ()
                  : size == 8
-                   ? ext.ToUInt64 (ByteOrder.BIG).ToString ()
+                   ? ext.ToUInt64 (ByteOrder.Big).ToString ()
                    : String.Empty;
 
       /* Masking Key */
@@ -677,7 +677,7 @@ Extended Payload Len: {7}
         header = (header << 4) + (int) Opcode;
         header = (header << 1) + (int) Mask;
         header = (header << 7) + (int) PayloadLen;
-        buffer.Write (((ushort) header).ToByteArrayInternally (ByteOrder.BIG), 0, 2);
+        buffer.Write (((ushort) header).ToByteArrayInternally (ByteOrder.Big), 0, 2);
 
         if (PayloadLen > 125)
           buffer.Write (ExtPayloadLen, 0, ExtPayloadLen.Length);

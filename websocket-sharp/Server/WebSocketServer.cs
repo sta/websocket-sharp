@@ -466,7 +466,7 @@ namespace WebSocketSharp.Server
 
       _listener.Stop ();
       _services.Stop (
-        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.BIG), true);
+        ((ushort) CloseStatusCode.SERVER_ERROR).ToByteArrayInternally (ByteOrder.Big), true);
 
       _state = ServerState.Stop;
     }

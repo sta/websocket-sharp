@@ -173,7 +173,7 @@ namespace WebSocketSharp
     internal static byte [] Append (this ushort code, string reason)
     {
       using (var buffer = new MemoryStream ()) {
-        var tmp = code.ToByteArrayInternally (ByteOrder.BIG);
+        var tmp = code.ToByteArrayInternally (ByteOrder.Big);
         buffer.Write (tmp, 0, 2);
         if (reason != null && reason.Length > 0) {
           tmp = Encoding.UTF8.GetBytes (reason);
@@ -1277,7 +1277,7 @@ namespace WebSocketSharp
     {
       // true : !(true ^ true)  or !(false ^ false)
       // false: !(true ^ false) or !(false ^ true)
-      return !(BitConverter.IsLittleEndian ^ (order == ByteOrder.LITTLE));
+      return !(BitConverter.IsLittleEndian ^ (order == ByteOrder.Little));
     }
 
     /// <summary>
