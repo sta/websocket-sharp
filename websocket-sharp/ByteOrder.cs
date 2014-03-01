@@ -28,8 +28,8 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Contains the values that indicate whether the byte order is a Little-endian or Big-endian.
   /// </summary>
