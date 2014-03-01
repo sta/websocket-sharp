@@ -80,9 +80,9 @@ namespace WebSocketSharp
       Fin fin, Opcode opcode, Mask mask, PayloadData payload, bool compressed)
     {
       Fin = fin;
-      Rsv1 = isData (opcode) && compressed ? Rsv.ON : Rsv.OFF;
-      Rsv2 = Rsv.OFF;
-      Rsv3 = Rsv.OFF;
+      Rsv1 = isData (opcode) && compressed ? Rsv.On : Rsv.Off;
+      Rsv2 = Rsv.Off;
+      Rsv3 = Rsv.Off;
       Opcode = opcode;
       Mask = mask;
 
@@ -140,7 +140,7 @@ namespace WebSocketSharp
 
     internal bool IsCompressed {
       get {
-        return Rsv1 == Rsv.ON;
+        return Rsv1 == Rsv.On;
       }
     }
 
@@ -185,7 +185,7 @@ namespace WebSocketSharp
     internal bool IsPerMessageCompressed {
       get {
         var opcode = Opcode;
-        return (opcode == Opcode.BINARY || opcode == Opcode.TEXT) && Rsv1 == Rsv.ON;
+        return (opcode == Opcode.BINARY || opcode == Opcode.TEXT) && Rsv1 == Rsv.On;
       }
     }
 
@@ -377,11 +377,11 @@ namespace WebSocketSharp
       // FIN
       var fin = (header [0] & 0x80) == 0x80 ? Fin.Final : Fin.More;
       // RSV1
-      var rsv1 = (header [0] & 0x40) == 0x40 ? Rsv.ON : Rsv.OFF;
+      var rsv1 = (header [0] & 0x40) == 0x40 ? Rsv.On : Rsv.Off;
       // RSV2
-      var rsv2 = (header [0] & 0x20) == 0x20 ? Rsv.ON : Rsv.OFF;
+      var rsv2 = (header [0] & 0x20) == 0x20 ? Rsv.On : Rsv.Off;
       // RSV3
-      var rsv3 = (header [0] & 0x10) == 0x10 ? Rsv.ON : Rsv.OFF;
+      var rsv3 = (header [0] & 0x10) == 0x10 ? Rsv.On : Rsv.Off;
       // Opcode
       var opcode = (Opcode) (header [0] & 0x0f);
       // MASK
@@ -392,7 +392,7 @@ namespace WebSocketSharp
       // Check if correct frame.
       var incorrect = isControl (opcode) && fin == Fin.More
                     ? "A control frame is fragmented."
-                    : !isData (opcode) && rsv1 == Rsv.ON
+                    : !isData (opcode) && rsv1 == Rsv.On
                       ? "A non data frame is compressed."
                       : null;
 
