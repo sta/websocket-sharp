@@ -67,7 +67,7 @@ namespace WebSocketSharp
     }
 
     public WsFrame (Opcode opcode, Mask mask, PayloadData payload)
-      : this (Fin.FINAL, opcode, mask, payload)
+      : this (Fin.Final, opcode, mask, payload)
     {
     }
 
@@ -166,13 +166,13 @@ namespace WebSocketSharp
 
     internal bool IsFinal {
       get {
-        return Fin == Fin.FINAL;
+        return Fin == Fin.Final;
       }
     }
 
     internal bool IsFragmented {
       get {
-        return Fin == Fin.MORE || Opcode == Opcode.CONT;
+        return Fin == Fin.More || Opcode == Opcode.CONT;
       }
     }
 
@@ -347,7 +347,7 @@ namespace WebSocketSharp
 
     private static bool isFinal (Fin fin)
     {
-      return fin == Fin.FINAL;
+      return fin == Fin.Final;
     }
 
     private static bool isMasked (Mask mask)
@@ -375,7 +375,7 @@ namespace WebSocketSharp
       /* Header */
 
       // FIN
-      var fin = (header [0] & 0x80) == 0x80 ? Fin.FINAL : Fin.MORE;
+      var fin = (header [0] & 0x80) == 0x80 ? Fin.Final : Fin.More;
       // RSV1
       var rsv1 = (header [0] & 0x40) == 0x40 ? Rsv.ON : Rsv.OFF;
       // RSV2
@@ -390,7 +390,7 @@ namespace WebSocketSharp
       var payloadLen = (byte) (header [1] & 0x7f);
 
       // Check if correct frame.
-      var incorrect = isControl (opcode) && fin == Fin.MORE
+      var incorrect = isControl (opcode) && fin == Fin.More
                     ? "A control frame is fragmented."
                     : !isData (opcode) && rsv1 == Rsv.ON
                       ? "A non data frame is compressed."

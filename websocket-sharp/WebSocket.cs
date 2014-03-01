@@ -1079,7 +1079,7 @@ namespace WebSocketSharp
           }
 
           var mask = _client ? Mask.MASK : Mask.UNMASK;
-          sent = send (WsFrame.CreateFrame (Fin.FINAL, opcode, mask, data, compressed));
+          sent = send (WsFrame.CreateFrame (Fin.Final, opcode, mask, data, compressed));
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1173,20 +1173,20 @@ namespace WebSocketSharp
       if (quo == 0) {
         buffer = new byte [rem];
         return stream.Read (buffer, 0, rem) == rem &&
-               send (WsFrame.CreateFrame (Fin.FINAL, opcode, mask, buffer, compressed));
+               send (WsFrame.CreateFrame (Fin.Final, opcode, mask, buffer, compressed));
       }
 
       buffer = new byte [FragmentLength];
 
       // First
       if (stream.Read (buffer, 0, FragmentLength) != FragmentLength ||
-          !send (WsFrame.CreateFrame (Fin.MORE, opcode, mask, buffer, compressed)))
+          !send (WsFrame.CreateFrame (Fin.More, opcode, mask, buffer, compressed)))
         return false;
 
       // Mid
       for (long i = 0; i < times; i++) {
         if (stream.Read (buffer, 0, FragmentLength) != FragmentLength ||
-            !send (WsFrame.CreateFrame (Fin.MORE, Opcode.CONT, mask, buffer, compressed)))
+            !send (WsFrame.CreateFrame (Fin.More, Opcode.CONT, mask, buffer, compressed)))
           return false;
       }
 
@@ -1196,7 +1196,7 @@ namespace WebSocketSharp
         buffer = new byte [tmpLen = rem];
 
       return stream.Read (buffer, 0, tmpLen) == tmpLen &&
-             send (WsFrame.CreateFrame (Fin.FINAL, Opcode.CONT, mask, buffer, compressed));
+             send (WsFrame.CreateFrame (Fin.Final, Opcode.CONT, mask, buffer, compressed));
     }
 
     // As client
@@ -1443,7 +1443,7 @@ namespace WebSocketSharp
             byte [] cached;
             if (!cache.TryGetValue (_compression, out cached)) {
               cached = WsFrame.CreateFrame (
-                Fin.FINAL,
+                Fin.Final,
                 opcode,
                 Mask.UNMASK,
                 data.Compress (_compression),
