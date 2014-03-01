@@ -46,7 +46,7 @@ namespace WebSocketSharp
 
     static WsFrame ()
     {
-      EmptyUnmaskPingData = CreatePingFrame (Mask.UNMASK).ToByteArray ();
+      EmptyUnmaskPingData = CreatePingFrame (Mask.Unmask).ToByteArray ();
     }
 
     #endregion
@@ -62,7 +62,7 @@ namespace WebSocketSharp
     #region Public Constructors
 
     public WsFrame (Opcode opcode, PayloadData payload)
-      : this (opcode, Mask.MASK, payload)
+      : this (opcode, Mask.Mask, payload)
     {
     }
 
@@ -107,7 +107,7 @@ namespace WebSocketSharp
 
       /* MaskingKey */
 
-      var masking = mask == Mask.MASK;
+      var masking = mask == Mask.Mask;
       var maskingKey = masking
                      ? createMaskingKey ()
                      : new byte []{};
@@ -178,7 +178,7 @@ namespace WebSocketSharp
 
     internal bool IsMasked {
       get {
-        return Mask == Mask.MASK;
+        return Mask == Mask.Mask;
       }
     }
 
@@ -352,7 +352,7 @@ namespace WebSocketSharp
 
     private static bool isMasked (Mask mask)
     {
-      return mask == Mask.MASK;
+      return mask == Mask.Mask;
     }
 
     private static bool isPing (Opcode opcode)
@@ -385,7 +385,7 @@ namespace WebSocketSharp
       // Opcode
       var opcode = (Opcode) (header [0] & 0x0f);
       // MASK
-      var mask = (header [1] & 0x80) == 0x80 ? Mask.MASK : Mask.UNMASK;
+      var mask = (header [1] & 0x80) == 0x80 ? Mask.Mask : Mask.Unmask;
       // Payload len
       var payloadLen = (byte) (header [1] & 0x7f);
 
@@ -435,7 +435,7 @@ namespace WebSocketSharp
 
       /* Masking Key */
 
-      var masked = mask == Mask.MASK;
+      var masked = mask == Mask.Mask;
       var maskingKey = masked
                      ? stream.ReadBytes (4)
                      : new byte []{};
@@ -479,7 +479,7 @@ namespace WebSocketSharp
       if (masked && unmask)
       {
         payload.Mask (maskingKey);
-        frame.Mask = Mask.UNMASK;
+        frame.Mask = Mask.Unmask;
         frame.MaskingKey = new byte []{};
       }
 
@@ -682,7 +682,7 @@ Extended Payload Len: {7}
         if (PayloadLen > 125)
           buffer.Write (ExtPayloadLen, 0, ExtPayloadLen.Length);
 
-        if (Mask == Mask.MASK)
+        if (Mask == Mask.Mask)
           buffer.Write (MaskingKey, 0, MaskingKey.Length);
 
         if (PayloadLen > 0)

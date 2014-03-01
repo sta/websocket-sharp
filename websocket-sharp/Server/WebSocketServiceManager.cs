@@ -318,7 +318,7 @@ namespace WebSocketSharp.Server
         var payload = new PayloadData (data);
         var args = new CloseEventArgs (payload);
         var frameAsBytes = send
-                         ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray ()
+                         ? WsFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
                          : null;
 
         foreach (var host in _hosts.Values)
@@ -547,7 +547,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
+      return broadping (WsFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
     }
 
     /// <summary>

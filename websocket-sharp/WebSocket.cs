@@ -605,7 +605,7 @@ namespace WebSocketSharp
 
     private bool acceptPingFrame (WsFrame frame)
     {
-      var mask = _client ? Mask.MASK : Mask.UNMASK;
+      var mask = _client ? Mask.Mask : Mask.Unmask;
       if (send (WsFrame.CreatePongFrame (mask, frame.PayloadData)))
         _logger.Trace ("Returned a Pong.");
 
@@ -732,11 +732,11 @@ namespace WebSocketSharp
       args.WasClean =
         _client
         ? closeHandshake (
-            send ? WsFrame.CreateCloseFrame (Mask.MASK, payload).ToByteArray () : null,
+            send ? WsFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
             wait ? 5000 : 0,
             closeClientResources)
         : closeHandshake (
-            send ? WsFrame.CreateCloseFrame (Mask.UNMASK, payload).ToByteArray () : null,
+            send ? WsFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null,
             wait ? 1000 : 0,
             closeServerResources);
 
@@ -1078,7 +1078,7 @@ namespace WebSocketSharp
             compressed = true;
           }
 
-          var mask = _client ? Mask.MASK : Mask.UNMASK;
+          var mask = _client ? Mask.Mask : Mask.Unmask;
           sent = send (WsFrame.CreateFrame (Fin.Final, opcode, mask, data, compressed));
         }
         catch (Exception ex) {
@@ -1102,7 +1102,7 @@ namespace WebSocketSharp
             compressed = true;
           }
 
-          var mask = _client ? Mask.MASK : Mask.UNMASK;
+          var mask = _client ? Mask.Mask : Mask.Unmask;
           sent = sendFragmented (opcode, stream, mask, compressed);
         }
         catch (Exception ex) {
@@ -1445,7 +1445,7 @@ namespace WebSocketSharp
               cached = WsFrame.CreateFrame (
                 Fin.Final,
                 opcode,
-                Mask.UNMASK,
+                Mask.Unmask,
                 data.Compress (_compression),
                 _compression != CompressionMethod.NONE)
                 .ToByteArray ();
@@ -1477,7 +1477,7 @@ namespace WebSocketSharp
             cached.Position = 0;
 
           if (_readyState == WebSocketState.OPEN)
-            sendFragmented (opcode, cached, Mask.UNMASK, _compression != CompressionMethod.NONE);
+            sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.NONE);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1797,7 +1797,7 @@ namespace WebSocketSharp
     public bool Ping ()
     {
       return _client
-             ? Ping (WsFrame.CreatePingFrame (Mask.MASK).ToByteArray (), 5000)
+             ? Ping (WsFrame.CreatePingFrame (Mask.Mask).ToByteArray (), 5000)
              : Ping (WsFrame.EmptyUnmaskPingData, 1000);
     }
 
@@ -1826,8 +1826,8 @@ namespace WebSocketSharp
       }
 
       return _client
-             ? Ping (WsFrame.CreatePingFrame (Mask.MASK, data).ToByteArray (), 5000)
-             : Ping (WsFrame.CreatePingFrame (Mask.UNMASK, data).ToByteArray (), 1000);
+             ? Ping (WsFrame.CreatePingFrame (Mask.Mask, data).ToByteArray (), 5000)
+             : Ping (WsFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
     }
 
     /// <summary>
