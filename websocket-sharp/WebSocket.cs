@@ -504,7 +504,7 @@ namespace WebSocketSharp
 
     private void acceptException (Exception exception, string reason)
     {
-      var code = CloseStatusCode.ABNORMAL;
+      var code = CloseStatusCode.Abnormal;
       var msg = reason;
       if (exception is WebSocketException) {
         var wsex = (WebSocketException) exception;
@@ -512,7 +512,7 @@ namespace WebSocketSharp
         reason = wsex.Message;
       }
 
-      if (code == CloseStatusCode.ABNORMAL || code == CloseStatusCode.TLS_HANDSHAKE_FAILURE) {
+      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure) {
         _logger.Fatal (exception.ToString ());
         reason = msg;
       }
@@ -561,7 +561,7 @@ namespace WebSocketSharp
       return frame.IsCompressed && _compression == CompressionMethod.NONE
              ? acceptUnsupportedFrame (
                  frame,
-                 CloseStatusCode.INCORRECT_DATA,
+                 CloseStatusCode.IncorrectData,
                  "A compressed data has been received without available decompression method.")
              : frame.IsFragmented
                ? acceptFragmentedFrame (frame)
@@ -573,7 +573,7 @@ namespace WebSocketSharp
                      ? acceptPongFrame (frame)
                      : frame.IsClose
                        ? acceptCloseFrame (frame)
-                       : acceptUnsupportedFrame (frame, CloseStatusCode.POLICY_VIOLATION, null);
+                       : acceptUnsupportedFrame (frame, CloseStatusCode.PolicyViolation, null);
     }
 
     // As server
@@ -851,7 +851,7 @@ namespace WebSocketSharp
         // ?
         return acceptUnsupportedFrame (
           frame,
-          CloseStatusCode.INCORRECT_DATA,
+          CloseStatusCode.IncorrectData,
           "An incorrect data has been received while receiving fragmented data.");
       }
 
@@ -978,7 +978,7 @@ namespace WebSocketSharp
 
         msg = "An error has occurred while connecting.";
         error (msg);
-        close (CloseStatusCode.ABNORMAL, msg, false);
+        close (CloseStatusCode.Abnormal, msg, false);
 
         return false;
       }
@@ -1780,11 +1780,11 @@ namespace WebSocketSharp
     /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method closes the WebSocket connection with <see cref="CloseStatusCode.AWAY"/>.
+    /// This method closes the WebSocket connection with <see cref="CloseStatusCode.Away"/>.
     /// </remarks>
     public void Dispose ()
     {
-      Close (CloseStatusCode.AWAY, null);
+      Close (CloseStatusCode.Away, null);
     }
 
     /// <summary>

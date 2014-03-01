@@ -812,7 +812,7 @@ namespace WebSocketSharp.Server
             if (_sessions.TryGetValue (id, out session)) {
               var state = session.State;
               if (state == WebSocketState.OPEN)
-                session.Context.WebSocket.Close (CloseStatusCode.ABNORMAL);
+                session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
               else if (state == WebSocketState.CLOSING)
                 continue;
               else

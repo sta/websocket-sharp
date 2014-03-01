@@ -55,7 +55,7 @@ namespace WebSocketSharp
     internal MessageEventArgs (Opcode opcode, byte[] data)
     {
       if ((ulong) data.LongLength > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TOO_BIG);
+        throw new WebSocketException (CloseStatusCode.TooBig);
 
       _opcode = opcode;
       _rawData = data;

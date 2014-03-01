@@ -472,23 +472,23 @@ namespace WebSocketSharp
 
     internal static string GetMessage (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.PROTOCOL_ERROR
+      return code == CloseStatusCode.ProtocolError
              ? "A WebSocket protocol error has occurred."
-             : code == CloseStatusCode.INCORRECT_DATA
+             : code == CloseStatusCode.IncorrectData
                ? "An incorrect data has been received."
-               : code == CloseStatusCode.ABNORMAL
+               : code == CloseStatusCode.Abnormal
                  ? "An exception has occurred."
-                 : code == CloseStatusCode.INCONSISTENT_DATA
+                 : code == CloseStatusCode.InconsistentData
                    ? "An inconsistent data has been received."
-                   : code == CloseStatusCode.POLICY_VIOLATION
+                   : code == CloseStatusCode.PolicyViolation
                      ? "A policy violation has occurred."
-                     : code == CloseStatusCode.TOO_BIG
+                     : code == CloseStatusCode.TooBig
                        ? "A too big data has been received."
-                       : code == CloseStatusCode.IGNORE_EXTENSION
+                       : code == CloseStatusCode.IgnoreExtension
                          ? "WebSocket client did not receive expected extension(s)."
-                         : code == CloseStatusCode.SERVER_ERROR
+                         : code == CloseStatusCode.ServerError
                            ? "WebSocket server got an internal error."
-                           : code == CloseStatusCode.TLS_HANDSHAKE_FAILURE
+                           : code == CloseStatusCode.TlsHandshakeFailure
                              ? "An error has occurred while handshaking."
                              : String.Empty;
     }
@@ -527,18 +527,18 @@ namespace WebSocketSharp
 
     internal static bool IsReserved (this ushort code)
     {
-      return code == (ushort) CloseStatusCode.UNDEFINED ||
-             code == (ushort) CloseStatusCode.NO_STATUS_CODE ||
-             code == (ushort) CloseStatusCode.ABNORMAL ||
-             code == (ushort) CloseStatusCode.TLS_HANDSHAKE_FAILURE;
+      return code == (ushort) CloseStatusCode.Undefined ||
+             code == (ushort) CloseStatusCode.NoStatusCode ||
+             code == (ushort) CloseStatusCode.Abnormal ||
+             code == (ushort) CloseStatusCode.TlsHandshakeFailure;
     }
 
     internal static bool IsReserved (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.UNDEFINED ||
-             code == CloseStatusCode.NO_STATUS_CODE ||
-             code == CloseStatusCode.ABNORMAL ||
-             code == CloseStatusCode.TLS_HANDSHAKE_FAILURE;
+      return code == CloseStatusCode.Undefined ||
+             code == CloseStatusCode.NoStatusCode ||
+             code == CloseStatusCode.Abnormal ||
+             code == CloseStatusCode.TlsHandshakeFailure;
     }
 
     internal static bool IsText (this string value)

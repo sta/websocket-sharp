@@ -39,7 +39,7 @@ namespace WebSocketSharp
     #region Internal Constructors
 
     internal WebSocketException ()
-      : this (CloseStatusCode.ABNORMAL, null, null)
+      : this (CloseStatusCode.Abnormal, null, null)
     {
     }
 
@@ -49,12 +49,12 @@ namespace WebSocketSharp
     }
 
     internal WebSocketException (string reason)
-      : this (CloseStatusCode.ABNORMAL, reason, null)
+      : this (CloseStatusCode.Abnormal, reason, null)
     {
     }
 
     internal WebSocketException (string reason, Exception innerException)
-      : this (CloseStatusCode.ABNORMAL, reason, innerException)
+      : this (CloseStatusCode.Abnormal, reason, innerException)
     {
     }
 

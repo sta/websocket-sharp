@@ -215,7 +215,7 @@ namespace WebSocketSharp.Server
     {
       ID = _sessions.Add (this);
       if (ID == null) {
-        _websocket.Close (CloseStatusCode.AWAY);
+        _websocket.Close (CloseStatusCode.Away);
         return;
       }
 

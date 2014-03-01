@@ -397,12 +397,12 @@ namespace WebSocketSharp
                       : null;
 
       if (incorrect != null)
-        throw new WebSocketException (CloseStatusCode.INCORRECT_DATA, incorrect);
+        throw new WebSocketException (CloseStatusCode.IncorrectData, incorrect);
 
       // Check if consistent frame.
       if (isControl (opcode) && payloadLen > 125)
         throw new WebSocketException (
-          CloseStatusCode.INCONSISTENT_DATA,
+          CloseStatusCode.InconsistentData,
           "The payload data length of a control frame is greater than 125 bytes.");
 
       var frame = new WsFrame {
@@ -460,7 +460,7 @@ namespace WebSocketSharp
         // Check if allowable payload data length.
         if (payloadLen > 126 && dataLen > PayloadData.MaxLength)
           throw new WebSocketException (
-            CloseStatusCode.TOO_BIG, "The 'Payload Data' length is greater than the allowable length.");
+            CloseStatusCode.TooBig, "The 'Payload Data' length is greater than the allowable length.");
 
         data = payloadLen > 126
              ? stream.ReadBytes ((long) dataLen, 1024)
