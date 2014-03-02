@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013 sta.blockhead
- * 
+ * Copyright (c) 2013-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,33 +31,33 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the logging level.
+  /// Contains the values of the logging levels.
   /// </summary>
   public enum LogLevel
   {
     /// <summary>
     /// Indicates the bottom logging level.
     /// </summary>
-    TRACE,
+    Trace,
     /// <summary>
     /// Indicates the 2nd logging level from the bottom.
     /// </summary>
-    DEBUG,
+    Debug,
     /// <summary>
     /// Indicates the 3rd logging level from the bottom.
     /// </summary>
-    INFO,
+    Info,
     /// <summary>
     /// Indicates the 3rd logging level from the top.
     /// </summary>
-    WARN,
+    Warn,
     /// <summary>
     /// Indicates the 2nd logging level from the top.
     /// </summary>
-    ERROR,
+    Error,
     /// <summary>
     /// Indicates the top logging level.
     /// </summary>
-    FATAL
+    Fatal
   }
 }

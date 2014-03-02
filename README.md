@@ -468,15 +468,15 @@ The `WebSocket` class includes the own logging function.
 
 You can access it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
-So if you would like to change the current logging level (`WebSocketSharp.LogLevel.ERROR` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
+So if you would like to change the current logging level (`WebSocketSharp.LogLevel.Error` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
 ```cs
-ws.Log.Level = LogLevel.DEBUG;
+ws.Log.Level = LogLevel.Debug;
 ```
 
-This means a log with less than `LogLevel.DEBUG` cannot be outputted.
+This means a log with less than `LogLevel.Debug` cannot be outputted.
 
-And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.DEBUG`.
+And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.Debug`.
 
 ```cs
 ws.Log.Debug ("This is a debug message.");

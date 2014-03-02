@@ -68,11 +68,11 @@ namespace WebSocketSharp
     /// Initializes a new instance of the <see cref="Logger"/> class.
     /// </summary>
     /// <remarks>
-    /// This constructor initializes the current logging level with the <see cref="LogLevel.ERROR"/> and
+    /// This constructor initializes the current logging level with the <see cref="LogLevel.Error"/> and
     /// initializes the path to the log file with <see langword="null"/>.
     /// </remarks>
     public Logger ()
-      : this (LogLevel.ERROR, null, null)
+      : this (LogLevel.Error, null, null)
     {
     }
 
@@ -184,7 +184,7 @@ namespace WebSocketSharp
           _output (data, _file);
         }
         catch (Exception ex) {
-          data = new LogData (LogLevel.FATAL, new StackFrame (0, true), ex.Message);
+          data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
           Console.WriteLine (data.ToString ());
         }
       }
@@ -204,10 +204,10 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.DEBUG"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Debug"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.DEBUG"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Debug"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -215,14 +215,14 @@ namespace WebSocketSharp
     /// </param>
     public void Debug (string message)
     {
-      output (message, LogLevel.DEBUG);
+      output (message, LogLevel.Debug);
     }
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.ERROR"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Error"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.ERROR"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Error"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -230,14 +230,14 @@ namespace WebSocketSharp
     /// </param>
     public void Error (string message)
     {
-      output (message, LogLevel.ERROR);
+      output (message, LogLevel.Error);
     }
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.FATAL"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Fatal"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.FATAL"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Fatal"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -245,14 +245,14 @@ namespace WebSocketSharp
     /// </param>
     public void Fatal (string message)
     {
-      output (message, LogLevel.FATAL);
+      output (message, LogLevel.Fatal);
     }
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.INFO"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Info"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.INFO"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Info"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -260,7 +260,7 @@ namespace WebSocketSharp
     /// </param>
     public void Info (string message)
     {
-      output (message, LogLevel.INFO);
+      output (message, LogLevel.Info);
     }
 
     /// <summary>
@@ -285,10 +285,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.TRACE"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Trace"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.TRACE"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Trace"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -296,14 +296,14 @@ namespace WebSocketSharp
     /// </param>
     public void Trace (string message)
     {
-      output (message, LogLevel.TRACE);
+      output (message, LogLevel.Trace);
     }
 
     /// <summary>
-    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.WARN"/>.
+    /// Outputs the specified <see cref="string"/> as a log with the <see cref="LogLevel.Warn"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is greater than the <see cref="LogLevel.WARN"/>,
+    /// If the current logging level is greater than the <see cref="LogLevel.Warn"/>,
     /// this method does not output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
@@ -311,7 +311,7 @@ namespace WebSocketSharp
     /// </param>
     public void Warn (string message)
     {
-      output (message, LogLevel.WARN);
+      output (message, LogLevel.Warn);
     }
 
     #endregion

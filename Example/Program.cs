@@ -111,7 +111,7 @@ namespace Example {
         };
 
         #if DEBUG
-        ws.Log.Level = LogLevel.TRACE;
+        ws.Log.Level = LogLevel.Trace;
         #endif
         //ws.Compression = CompressionMethod.DEFLATE;
         //ws.Origin = "http://echo.websocket.org";

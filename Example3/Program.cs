@@ -17,7 +17,7 @@ namespace Example3
       //_httpsv = new HttpServer (4649, true) // Secure;
 
 #if DEBUG
-      _httpsv.Log.Level = LogLevel.TRACE;
+      _httpsv.Log.Level = LogLevel.Trace;
 #endif
 
       /* Secure Connection
