@@ -99,7 +99,7 @@ namespace WebSocketSharp
     /// <param name="output">
     /// An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s)
     /// used to output a log. A <see cref="string"/> parameter passed to this delegate
-    /// is <paramref name="file"/> if any.
+    /// is <paramref name="file"/>.
     /// </param>
     public Logger (LogLevel level, string file, Action<LogData, string> output)
     {
@@ -162,7 +162,7 @@ namespace WebSocketSharp
     ///   <para>
     ///   An <c>Action&lt;LogData, string&gt;</c> delegate that references the method(s) used to
     ///   output a log. A <see cref="string"/> parameter passed to this delegate is the value of
-    ///   the <see cref="Logger.File"/> if any.
+    ///   the <see cref="Logger.File"/>.
     ///   </para>
     ///   <para>
     ///   If the value to set is <see langword="null"/>, the current output action is changed to
