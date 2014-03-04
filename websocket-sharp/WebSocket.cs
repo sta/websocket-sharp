@@ -218,7 +218,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// One of the <see cref="CompressionMethod"/> enum values, indicates the compression method
-    /// used to compress the message. The default value is <see cref="CompressionMethod.NONE"/>.
+    /// used to compress the message. The default value is <see cref="CompressionMethod.None"/>.
     /// </value>
     public CompressionMethod Compression {
       get {
@@ -543,7 +543,7 @@ namespace WebSocketSharp
           return false;
 
         byte [] data;
-        if (_compression != CompressionMethod.NONE) {
+        if (_compression != CompressionMethod.None) {
           data = concatenated.DecompressToArray (_compression);
         }
         else {
@@ -558,7 +558,7 @@ namespace WebSocketSharp
 
     private bool acceptFrame (WsFrame frame)
     {
-      return frame.IsCompressed && _compression == CompressionMethod.NONE
+      return frame.IsCompressed && _compression == CompressionMethod.None
              ? acceptUnsupportedFrame (
                  frame,
                  CloseStatusCode.IncorrectData,
@@ -632,7 +632,7 @@ namespace WebSocketSharp
 
         if (!compress && unprefixed.IsCompressionExtension ()) {
           var method = unprefixed.ToCompressionMethod ();
-          if (method != CompressionMethod.NONE) {
+          if (method != CompressionMethod.None) {
             _compression = method;
             compress = true;
 
@@ -888,7 +888,7 @@ namespace WebSocketSharp
     {
       var extensions = new StringBuilder (32);
 
-      if (_compression != CompressionMethod.NONE)
+      if (_compression != CompressionMethod.None)
         extensions.Append (_compression.ToExtensionString ());
 
       return extensions.Length > 0
@@ -997,7 +997,7 @@ namespace WebSocketSharp
 
     private void init ()
     {
-      _compression = CompressionMethod.NONE;
+      _compression = CompressionMethod.None;
       _cookies = new CookieCollection ();
       _forConn = new object ();
       _forSend = new object ();
@@ -1073,7 +1073,7 @@ namespace WebSocketSharp
         var sent = false;
         try {
           var compressed = false;
-          if (_compression != CompressionMethod.NONE) {
+          if (_compression != CompressionMethod.None) {
             data = data.Compress (_compression);
             compressed = true;
           }
@@ -1097,7 +1097,7 @@ namespace WebSocketSharp
         var src = stream;
         var compressed = false;
         try {
-          if (_compression != CompressionMethod.NONE) {
+          if (_compression != CompressionMethod.None) {
             stream = stream.Compress (_compression);
             compressed = true;
           }
@@ -1293,10 +1293,10 @@ namespace WebSocketSharp
     // As client
     private bool validateSecWebSocketExtensionsHeader (string value)
     {
-      var compress = _compression != CompressionMethod.NONE ? true : false;
+      var compress = _compression != CompressionMethod.None;
       if (value == null || value.Length == 0) {
         if (compress)
-          _compression = CompressionMethod.NONE;
+          _compression = CompressionMethod.None;
 
         return true;
       }
@@ -1447,7 +1447,7 @@ namespace WebSocketSharp
                 opcode,
                 Mask.Unmask,
                 data.Compress (_compression),
-                _compression != CompressionMethod.NONE)
+                _compression != CompressionMethod.None)
                 .ToByteArray ();
 
               cache.Add (_compression, cached);
@@ -1477,7 +1477,7 @@ namespace WebSocketSharp
             cached.Position = 0;
 
           if (_readyState == WebSocketState.OPEN)
-            sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.NONE);
+            sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1850,7 +1850,7 @@ namespace WebSocketSharp
       if (len <= FragmentLength)
         send (
           Opcode.BINARY,
-          len > 0 && _client && _compression == CompressionMethod.NONE ? data.Copy (len) : data);
+          len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data);
       else
         send (Opcode.BINARY, new MemoryStream (data));
     }
@@ -1926,7 +1926,7 @@ namespace WebSocketSharp
       if (len <= FragmentLength)
         sendAsync (
           Opcode.BINARY,
-          len > 0 && _client && _compression == CompressionMethod.NONE ? data.Copy (len) : data,
+          len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data,
           completed);
       else
         sendAsync (Opcode.BINARY, new MemoryStream (data), completed);

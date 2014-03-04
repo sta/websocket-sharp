@@ -390,7 +390,7 @@ websocket-sharp supports the **[Per-message Compression][compression]** extensio
 If you would like to enable this extension as a WebSocket client, you should set like the following.
 
 ```cs
-ws.Compression = CompressionMethod.DEFLATE;
+ws.Compression = CompressionMethod.Deflate;
 ```
 
 And then your client sends the following header with the connection request to the server.

@@ -319,21 +319,21 @@ namespace WebSocketSharp
 
     internal static byte [] Compress (this byte [] value, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? value.compress ()
              : value;
     }
 
     internal static Stream Compress (this Stream stream, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? stream.compress ()
              : stream;
     }
 
     internal static byte [] CompressToArray (this Stream stream, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? stream.compressToArray ()
              : stream.ToByteArray ();
     }
@@ -395,21 +395,21 @@ namespace WebSocketSharp
 
     internal static byte [] Decompress (this byte [] value, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? value.decompress ()
              : value;
     }
 
     internal static Stream Decompress (this Stream stream, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? stream.decompress ()
              : stream;
     }
 
     internal static byte [] DecompressToArray (this Stream stream, CompressionMethod method)
     {
-      return method == CompressionMethod.DEFLATE
+      return method == CompressionMethod.Deflate
              ? stream.decompressToArray ()
              : stream.ToByteArray ();
     }
@@ -787,12 +787,12 @@ namespace WebSocketSharp
         if (method.ToExtensionString () == value)
           return method;
 
-      return CompressionMethod.NONE;
+      return CompressionMethod.None;
     }
 
     internal static string ToExtensionString (this CompressionMethod method)
     {
-      return method != CompressionMethod.NONE
+      return method != CompressionMethod.None
              ? String.Format ("permessage-{0}", method.ToString ().ToLower ())
              : String.Empty;
     }

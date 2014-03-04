@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013 sta.blockhead
- * 
+ * Copyright (c) 2013-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,24 +28,26 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
-  /// Contains the values of the compression methods used to compress the payload data of the WebSocket Data frame.
+  /// Contains the values of the compression methods used to compress the message on the WebSocket
+  /// connection.
   /// </summary>
   /// <remarks>
-  /// The <b>CompressionMethod</b> enumeration contains the values of the compression methods defined in
-  /// <see href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression Extensions for WebSocket</see>.
+  /// The compression methods are defined in
+  /// <see href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression
+  /// Extensions for WebSocket</see>.
   /// </remarks>
   public enum CompressionMethod : byte
   {
     /// <summary>
     /// Indicates non compression.
     /// </summary>
-    NONE,
+    None,
     /// <summary>
     /// Indicates using DEFLATE.
     /// </summary>
-    DEFLATE
+    Deflate
   }
 }

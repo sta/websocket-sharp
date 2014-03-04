@@ -113,7 +113,7 @@ namespace Example {
         #if DEBUG
         ws.Log.Level = LogLevel.Trace;
         #endif
-        //ws.Compression = CompressionMethod.DEFLATE;
+        //ws.Compression = CompressionMethod.Deflate;
         //ws.Origin = "http://echo.websocket.org";
         //ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
         //{

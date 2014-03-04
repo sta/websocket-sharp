@@ -123,7 +123,7 @@ namespace Example1
         );
       };
 
-      //_ws.Compression = CompressionMethod.DEFLATE;
+      //_ws.Compression = CompressionMethod.Deflate;
 
       _notifyMsgState = new ThreadState();
       _notifyMsg = (state) =>
