@@ -153,7 +153,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (State == WebSocketState.CONNECTING &&
+        if (State == WebSocketState.Connecting &&
             value != null &&
             value.Length > 0 &&
             value.IsToken ())
@@ -184,7 +184,7 @@ namespace WebSocketSharp.Server
       get {
         return _websocket != null
                ? _websocket.ReadyState
-               : WebSocketState.CONNECTING;
+               : WebSocketState.Connecting;
       }
     }
 

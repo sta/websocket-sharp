@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2010-2013 sta.blockhead
- * 
+ * Copyright (c) 2010-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -28,34 +28,38 @@
 
 using System;
 
-namespace WebSocketSharp {
-
+namespace WebSocketSharp
+{
   /// <summary>
   /// Contains the values of the state of the WebSocket connection.
   /// </summary>
   /// <remarks>
-  /// The WebSocketState enumeration contains the values of the state of the WebSocket connection defined in
-  /// <a href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket API</a>.
+  /// The state of the WebSocket connection is defined in
+  /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket
+  /// API</see>.
   /// </remarks>
   public enum WebSocketState : ushort
   {
     /// <summary>
-    /// Equivalent to numeric value 0. Indicates that the connection has not yet been established.
+    /// Equivalent to numeric value 0.
+    /// Indicates that the connection has not yet been established.
     /// </summary>
-    CONNECTING = 0,
+    Connecting = 0,
     /// <summary>
-    /// Equivalent to numeric value 1. Indicates that the connection is established and the communication
-    /// is possible.
+    /// Equivalent to numeric value 1.
+    /// Indicates that the connection is established and the communication is possible.
     /// </summary>
-    OPEN = 1,
+    Open = 1,
     /// <summary>
-    /// Equivalent to numeric value 2. Indicates that the connection is going through the closing handshake,
-    /// or the WebSocket.Close method has been invoked.
+    /// Equivalent to numeric value 2.
+    /// Indicates that the connection is going through the closing handshake or
+    /// the <c>WebSocket.Close</c> method has been invoked.
     /// </summary>
-    CLOSING = 2,
+    Closing = 2,
     /// <summary>
-    /// Equivalent to numeric value 3. Indicates that the connection has been closed or could not be opened.
+    /// Equivalent to numeric value 3.
+    /// Indicates that the connection has been closed or couldn't be opened.
     /// </summary>
-    CLOSED = 3
+    Closed = 3
   }
 }

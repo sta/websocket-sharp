@@ -196,27 +196,27 @@ namespace WebSocketSharp
 
     internal static string CheckIfClosable (this WebSocketState state)
     {
-      return state == WebSocketState.CLOSING
+      return state == WebSocketState.Closing
              ? "While closing the WebSocket connection."
-             : state == WebSocketState.CLOSED
+             : state == WebSocketState.Closed
                ? "The WebSocket connection has already been closed."
                : null;
     }
 
     internal static string CheckIfConnectable (this WebSocketState state)
     {
-      return state == WebSocketState.OPEN || state == WebSocketState.CLOSING
+      return state == WebSocketState.Open || state == WebSocketState.Closing
              ? "A WebSocket connection has already been established."
              : null;
     }
 
     internal static string CheckIfOpen (this WebSocketState state)
     {
-      return state == WebSocketState.CONNECTING
+      return state == WebSocketState.Connecting
              ? "A WebSocket connection isn't established."
-             : state == WebSocketState.CLOSING
+             : state == WebSocketState.Closing
                ? "While closing the WebSocket connection."
-               : state == WebSocketState.CLOSED
+               : state == WebSocketState.Closed
                  ? "The WebSocket connection has already been closed."
                  : null;
     }

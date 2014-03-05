@@ -204,7 +204,7 @@ namespace WebSocketSharp
 
     internal bool IsConnected {
       get {
-        return _readyState == WebSocketState.OPEN || _readyState == WebSocketState.CLOSING;
+        return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
       }
     }
 
@@ -398,7 +398,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the WebSocket
-    /// connection. The default value is <see cref="WebSocketState.CONNECTING"/>.
+    /// connection. The default value is <see cref="WebSocketState.Connecting"/>.
     /// </value>
     public WebSocketState ReadyState {
       get {
@@ -522,7 +522,7 @@ namespace WebSocketSharp
       }
 
       error (msg ?? code.GetMessage ());
-      if (_readyState == WebSocketState.CONNECTING && !_client)
+      if (_readyState == WebSocketState.Connecting && !_client)
         Close (HttpStatusCode.BadRequest);
       else
         close (code, reason ?? code.GetMessage (), false);
@@ -668,7 +668,7 @@ namespace WebSocketSharp
 
     private string checkIfCanConnect ()
     {
-      return !_client && _readyState == WebSocketState.CLOSED
+      return !_client && _readyState == WebSocketState.Closed
              ? "Connect isn't available to reconnect as a server."
              : _readyState.CheckIfConnectable ();
     }
@@ -718,12 +718,12 @@ namespace WebSocketSharp
     private void close (PayloadData payload, bool send, bool wait)
     {
       lock (_forConn) {
-        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED) {
+        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
           _logger.Info ("Closing the WebSocket connection has already been done.");
           return;
         }
 
-        _readyState = WebSocketState.CLOSING;
+        _readyState = WebSocketState.Closing;
       }
 
       _logger.Trace ("Start closing handshake.");
@@ -742,7 +742,7 @@ namespace WebSocketSharp
 
       _logger.Trace ("End closing handshake.");
 
-      _readyState = WebSocketState.CLOSED;
+      _readyState = WebSocketState.Closed;
       try {
         OnClose.Emit (this, args);
       }
@@ -871,7 +871,7 @@ namespace WebSocketSharp
 
         try {
           if (_client ? doHandshake () : acceptHandshake ()) {
-            _readyState = WebSocketState.OPEN;
+            _readyState = WebSocketState.Open;
             return true;
           }
         }
@@ -1001,14 +1001,14 @@ namespace WebSocketSharp
       _cookies = new CookieCollection ();
       _forConn = new object ();
       _forSend = new object ();
-      _readyState = WebSocketState.CONNECTING;
+      _readyState = WebSocketState.Connecting;
     }
 
     private void open ()
     {
       try {
         OnOpen.Emit (this, EventArgs.Empty);
-        if (_readyState == WebSocketState.OPEN)
+        if (_readyState == WebSocketState.Open)
           startReceiving ();
       }
       catch (Exception ex) {
@@ -1028,7 +1028,7 @@ namespace WebSocketSharp
     private bool send (byte [] frame)
     {
       lock (_forConn) {
-        if (_readyState != WebSocketState.OPEN) {
+        if (_readyState != WebSocketState.Open) {
           _logger.Warn ("Sending has been interrupted.");
           return false;
         }
@@ -1058,7 +1058,7 @@ namespace WebSocketSharp
     private bool send (WsFrame frame)
     {
       lock (_forConn) {
-        if (_readyState != WebSocketState.OPEN) {
+        if (_readyState != WebSocketState.Open) {
           _logger.Warn ("Sending has been interrupted.");
           return false;
         }
@@ -1355,12 +1355,12 @@ namespace WebSocketSharp
     // As server
     internal void Close (HandshakeResponse response)
     {
-      _readyState = WebSocketState.CLOSING;
+      _readyState = WebSocketState.Closing;
 
       send (response);
       closeServerResources ();
 
-      _readyState = WebSocketState.CLOSED;
+      _readyState = WebSocketState.Closed;
     }
 
     // As server
@@ -1373,17 +1373,17 @@ namespace WebSocketSharp
     internal void Close (CloseEventArgs args, byte [] frame, int timeout)
     {
       lock (_forConn) {
-        if (_readyState == WebSocketState.CLOSING || _readyState == WebSocketState.CLOSED) {
+        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
           _logger.Info ("Closing the WebSocket connection has already been done.");
           return;
         }
 
-        _readyState = WebSocketState.CLOSING;
+        _readyState = WebSocketState.Closing;
       }
 
       args.WasClean = closeHandshake (frame, timeout, closeServerResources);
 
-      _readyState = WebSocketState.CLOSED;
+      _readyState = WebSocketState.Closed;
       try {
         OnClose.Emit (this, args);
       }
@@ -1397,7 +1397,7 @@ namespace WebSocketSharp
     {
       try {
         if (acceptHandshake ()) {
-          _readyState = WebSocketState.OPEN;
+          _readyState = WebSocketState.Open;
           open ();
         }
       }
@@ -1436,7 +1436,7 @@ namespace WebSocketSharp
     {
       lock (_forSend) {
         lock (_forConn) {
-          if (_readyState != WebSocketState.OPEN)
+          if (_readyState != WebSocketState.Open)
             return;
 
           try {
@@ -1476,7 +1476,7 @@ namespace WebSocketSharp
           else
             cached.Position = 0;
 
-          if (_readyState == WebSocketState.OPEN)
+          if (_readyState == WebSocketState.Open)
             sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
@@ -1503,7 +1503,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN;
+      var send = _readyState == WebSocketState.Open;
       close (new PayloadData (), send, send);
     }
 
@@ -1565,7 +1565,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
       close (new PayloadData (data), send, send);
     }
 
@@ -1597,7 +1597,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
       close (new PayloadData (data), send, send);
     }
 
@@ -1617,7 +1617,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN;
+      var send = _readyState == WebSocketState.Open;
       closeAsync (new PayloadData (), send, send);
     }
 
@@ -1692,7 +1692,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
       closeAsync (new PayloadData (data), send, send);
     }
 
@@ -1730,7 +1730,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.OPEN && !code.IsReserved ();
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
       closeAsync (new PayloadData (data), send, send);
     }
 

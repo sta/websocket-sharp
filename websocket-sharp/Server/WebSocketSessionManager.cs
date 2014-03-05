@@ -811,9 +811,9 @@ namespace WebSocketSharp.Server
             IWebSocketSession session;
             if (_sessions.TryGetValue (id, out session)) {
               var state = session.State;
-              if (state == WebSocketState.OPEN)
+              if (state == WebSocketState.Open)
                 session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
-              else if (state == WebSocketState.CLOSING)
+              else if (state == WebSocketState.Closing)
                 continue;
               else
                 _sessions.Remove (id);
