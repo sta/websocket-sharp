@@ -36,7 +36,7 @@ namespace WebSocketSharp
   /// <remarks>
   ///   <para>
   ///   The status codes for the WebSocket connection closure are defined in
-  ///   <a href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</a>
+  ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</see>
   ///   for the WebSocket protocol.
   ///   </para>
   ///   <para>
