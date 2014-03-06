@@ -313,7 +313,7 @@ public class Chat : WebSocketService
 
 If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, it's called when the `OnMessage` event of the `WebSocket` used by the current session in the WebSocket service occurs.
 
-And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose`) occurs.
+And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
 The `WebSocketService.Send` method sends a data to the client on the current session in the WebSocket service.
 
@@ -510,7 +510,7 @@ Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 ## Supported WebSocket Specifications ##
 
-websocket-sharp supports **[RFC 6455][rfc6455]** and is based on the following WebSocket references.
+websocket-sharp supports **[RFC 6455][rfc6455]**, and it's based on the following WebSocket references.
 
 - **[The WebSocket Protocol][rfc6455]**
 - **[The WebSocket API][api]**

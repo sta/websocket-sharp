@@ -31,11 +31,11 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the compression methods used to compress the message on the WebSocket
+  /// Contains the values of the compression method used to compress the message on the WebSocket
   /// connection.
   /// </summary>
   /// <remarks>
-  /// The compression methods are defined in
+  /// The values of the compression method are defined in
   /// <see href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression
   /// Extensions for WebSocket</see>.
   /// </remarks>

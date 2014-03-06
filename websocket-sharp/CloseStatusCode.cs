@@ -31,13 +31,13 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the status codes for the WebSocket connection closure.
+  /// Contains the values of the status code for the WebSocket connection closure.
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   The status codes for the WebSocket connection closure are defined in
-  ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4.1">RFC 6455</see>
-  ///   for the WebSocket protocol.
+  ///   The values of the status code are defined in
+  ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4</see>
+  ///   of RFC 6455.
   ///   </para>
   ///   <para>
   ///   "Reserved value" must not be set as a status code in a close control frame by

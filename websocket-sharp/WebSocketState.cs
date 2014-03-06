@@ -34,7 +34,7 @@ namespace WebSocketSharp
   /// Contains the values of the state of the WebSocket connection.
   /// </summary>
   /// <remarks>
-  /// The state of the WebSocket connection is defined in
+  /// The values of the state are defined in
   /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket
   /// API</see>.
   /// </remarks>

@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the logging levels.
+  /// Contains the values of the logging level.
   /// </summary>
   public enum LogLevel
   {
