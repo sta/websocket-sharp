@@ -117,7 +117,7 @@ namespace WebSocketSharp
     {
       return data.LongLength == 0
              ? String.Empty
-             : opcode == Opcode.TEXT
+             : opcode == Opcode.Text
                ? Encoding.UTF8.GetString (data)
                : opcode.ToString ();
     }

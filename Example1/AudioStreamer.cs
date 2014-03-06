@@ -85,11 +85,11 @@ namespace Example1
       {
         switch (e.Type)
         {
-          case Opcode.TEXT:
+          case Opcode.Text:
             var msg = parseTextMessage(e.Data);
             _msgQ.Enqueue(msg);
             break;
-          case Opcode.BINARY:
+          case Opcode.Binary:
             var audioMsg = parseAudioMessage(e.RawData);
             if (audioMsg.user_id == _user_id) goto default;
             if (_audioBox.ContainsKey(audioMsg.user_id))

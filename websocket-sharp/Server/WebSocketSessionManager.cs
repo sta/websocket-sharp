@@ -406,9 +406,9 @@ namespace WebSocketSharp.Server
       }
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.BINARY, data, null);
+        broadcast (Opcode.Binary, data, null);
       else
-        broadcast (Opcode.BINARY, new MemoryStream (data), null);
+        broadcast (Opcode.Binary, new MemoryStream (data), null);
     }
 
     /// <summary>
@@ -427,9 +427,9 @@ namespace WebSocketSharp.Server
 
       var rawData = Encoding.UTF8.GetBytes (data);
       if (rawData.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.TEXT, rawData, null);
+        broadcast (Opcode.Text, rawData, null);
       else
-        broadcast (Opcode.TEXT, new MemoryStream (rawData), null);
+        broadcast (Opcode.Text, new MemoryStream (rawData), null);
     }
 
     /// <summary>
@@ -455,9 +455,9 @@ namespace WebSocketSharp.Server
       }
 
       if (data.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.BINARY, data, completed);
+        broadcastAsync (Opcode.Binary, data, completed);
       else
-        broadcastAsync (Opcode.BINARY, new MemoryStream (data), completed);
+        broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
     }
 
     /// <summary>
@@ -484,9 +484,9 @@ namespace WebSocketSharp.Server
 
       var rawData = Encoding.UTF8.GetBytes (data);
       if (rawData.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.TEXT, rawData, completed);
+        broadcastAsync (Opcode.Text, rawData, completed);
       else
-        broadcastAsync (Opcode.TEXT, new MemoryStream (rawData), completed);
+        broadcastAsync (Opcode.Text, new MemoryStream (rawData), completed);
     }
 
     /// <summary>
@@ -534,9 +534,9 @@ namespace WebSocketSharp.Server
                 len));
 
           if (len <= WebSocket.FragmentLength)
-            broadcast (Opcode.BINARY, data, completed);
+            broadcast (Opcode.Binary, data, completed);
           else
-            broadcast (Opcode.BINARY, new MemoryStream (data), completed);
+            broadcast (Opcode.Binary, new MemoryStream (data), completed);
         },
         ex => _logger.Fatal (ex.ToString ()));
     }

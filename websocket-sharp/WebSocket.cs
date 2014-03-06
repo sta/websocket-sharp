@@ -1186,7 +1186,7 @@ namespace WebSocketSharp
       // Mid
       for (long i = 0; i < times; i++) {
         if (stream.Read (buffer, 0, FragmentLength) != FragmentLength ||
-            !send (WsFrame.CreateFrame (Fin.More, Opcode.CONT, mask, buffer, compressed)))
+            !send (WsFrame.CreateFrame (Fin.More, Opcode.Cont, mask, buffer, compressed)))
           return false;
       }
 
@@ -1196,7 +1196,7 @@ namespace WebSocketSharp
         buffer = new byte [tmpLen = rem];
 
       return stream.Read (buffer, 0, tmpLen) == tmpLen &&
-             send (WsFrame.CreateFrame (Fin.Final, Opcode.CONT, mask, buffer, compressed));
+             send (WsFrame.CreateFrame (Fin.Final, Opcode.Cont, mask, buffer, compressed));
     }
 
     // As client
@@ -1849,10 +1849,10 @@ namespace WebSocketSharp
       var len = data.LongLength;
       if (len <= FragmentLength)
         send (
-          Opcode.BINARY,
+          Opcode.Binary,
           len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data);
       else
-        send (Opcode.BINARY, new MemoryStream (data));
+        send (Opcode.Binary, new MemoryStream (data));
     }
 
     /// <summary>
@@ -1872,7 +1872,7 @@ namespace WebSocketSharp
         return;
       }
 
-      send (Opcode.BINARY, file.OpenRead ());
+      send (Opcode.Binary, file.OpenRead ());
     }
 
     /// <summary>
@@ -1893,9 +1893,9 @@ namespace WebSocketSharp
 
       var rawData = Encoding.UTF8.GetBytes (data);
       if (rawData.LongLength <= FragmentLength)
-        send (Opcode.TEXT, rawData);
+        send (Opcode.Text, rawData);
       else
-        send (Opcode.TEXT, new MemoryStream (rawData));
+        send (Opcode.Text, new MemoryStream (rawData));
     }
 
     /// <summary>
@@ -1925,11 +1925,11 @@ namespace WebSocketSharp
       var len = data.LongLength;
       if (len <= FragmentLength)
         sendAsync (
-          Opcode.BINARY,
+          Opcode.Binary,
           len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data,
           completed);
       else
-        sendAsync (Opcode.BINARY, new MemoryStream (data), completed);
+        sendAsync (Opcode.Binary, new MemoryStream (data), completed);
     }
 
     /// <summary>
@@ -1957,7 +1957,7 @@ namespace WebSocketSharp
         return;
       }
 
-      sendAsync (Opcode.BINARY, file.OpenRead (), completed);
+      sendAsync (Opcode.Binary, file.OpenRead (), completed);
     }
 
     /// <summary>
@@ -1986,9 +1986,9 @@ namespace WebSocketSharp
 
       var rawData = Encoding.UTF8.GetBytes (data);
       if (rawData.LongLength <= FragmentLength)
-        sendAsync (Opcode.TEXT, rawData, completed);
+        sendAsync (Opcode.Text, rawData, completed);
       else
-        sendAsync (Opcode.TEXT, new MemoryStream (rawData), completed);
+        sendAsync (Opcode.Text, new MemoryStream (rawData), completed);
     }
 
     /// <summary>
@@ -2042,8 +2042,8 @@ namespace WebSocketSharp
                 len));
 
           var sent = len <= FragmentLength
-                   ? send (Opcode.BINARY, data)
-                   : send (Opcode.BINARY, new MemoryStream (data));
+                   ? send (Opcode.Binary, data)
+                   : send (Opcode.Binary, new MemoryStream (data));
 
           if (completed != null)
             completed (sent);

@@ -128,13 +128,13 @@ namespace WebSocketSharp
 
     internal bool IsBinary {
       get {
-        return Opcode == Opcode.BINARY;
+        return Opcode == Opcode.Binary;
       }
     }
 
     internal bool IsClose {
       get {
-        return Opcode == Opcode.CLOSE;
+        return Opcode == Opcode.Close;
       }
     }
 
@@ -146,21 +146,21 @@ namespace WebSocketSharp
 
     internal bool IsContinuation {
       get {
-        return Opcode == Opcode.CONT;
+        return Opcode == Opcode.Cont;
       }
     }
 
     internal bool IsControl {
       get {
         var opcode = Opcode;
-        return opcode == Opcode.CLOSE || opcode == Opcode.PING || opcode == Opcode.PONG;
+        return opcode == Opcode.Close || opcode == Opcode.Ping || opcode == Opcode.Pong;
       }
     }
 
     internal bool IsData {
       get {
         var opcode = Opcode;
-        return opcode == Opcode.BINARY || opcode == Opcode.TEXT;
+        return opcode == Opcode.Binary || opcode == Opcode.Text;
       }
     }
 
@@ -172,7 +172,7 @@ namespace WebSocketSharp
 
     internal bool IsFragmented {
       get {
-        return Fin == Fin.More || Opcode == Opcode.CONT;
+        return Fin == Fin.More || Opcode == Opcode.Cont;
       }
     }
 
@@ -185,25 +185,25 @@ namespace WebSocketSharp
     internal bool IsPerMessageCompressed {
       get {
         var opcode = Opcode;
-        return (opcode == Opcode.BINARY || opcode == Opcode.TEXT) && Rsv1 == Rsv.On;
+        return (opcode == Opcode.Binary || opcode == Opcode.Text) && Rsv1 == Rsv.On;
       }
     }
 
     internal bool IsPing {
       get {
-        return Opcode == Opcode.PING;
+        return Opcode == Opcode.Ping;
       }
     }
 
     internal bool IsPong {
       get {
-        return Opcode == Opcode.PONG;
+        return Opcode == Opcode.Pong;
       }
     }
 
     internal bool IsText {
       get {
-        return Opcode == Opcode.TEXT;
+        return Opcode == Opcode.Text;
       }
     }
 
@@ -322,27 +322,27 @@ namespace WebSocketSharp
 
     private static bool isBinary (Opcode opcode)
     {
-      return opcode == Opcode.BINARY;
+      return opcode == Opcode.Binary;
     }
 
     private static bool isClose (Opcode opcode)
     {
-      return opcode == Opcode.CLOSE;
+      return opcode == Opcode.Close;
     }
 
     private static bool isContinuation (Opcode opcode)
     {
-      return opcode == Opcode.CONT;
+      return opcode == Opcode.Cont;
     }
 
     private static bool isControl (Opcode opcode)
     {
-      return opcode == Opcode.CLOSE || opcode == Opcode.PING || opcode == Opcode.PONG;
+      return opcode == Opcode.Close || opcode == Opcode.Ping || opcode == Opcode.Pong;
     }
 
     private static bool isData (Opcode opcode)
     {
-      return opcode == Opcode.TEXT || opcode == Opcode.BINARY;
+      return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
     private static bool isFinal (Fin fin)
@@ -357,17 +357,17 @@ namespace WebSocketSharp
 
     private static bool isPing (Opcode opcode)
     {
-      return opcode == Opcode.PING;
+      return opcode == Opcode.Ping;
     }
 
     private static bool isPong (Opcode opcode)
     {
-      return opcode == Opcode.PONG;
+      return opcode == Opcode.Pong;
     }
 
     private static bool isText (Opcode opcode)
     {
-      return opcode == Opcode.TEXT;
+      return opcode == Opcode.Text;
     }
 
     private static WsFrame parse (byte [] header, Stream stream, bool unmask)
@@ -556,12 +556,12 @@ Extended Payload Len: {7}
 
     internal static WsFrame CreateCloseFrame (Mask mask, PayloadData payload)
     {
-      return new WsFrame (Opcode.CLOSE, mask, payload);
+      return new WsFrame (Opcode.Close, mask, payload);
     }
 
     internal static WsFrame CreatePongFrame (Mask mask, PayloadData payload)
     {
-      return new WsFrame (Opcode.PONG, mask, payload);
+      return new WsFrame (Opcode.Pong, mask, payload);
     }
 
     #endregion
@@ -570,12 +570,12 @@ Extended Payload Len: {7}
 
     public static WsFrame CreateCloseFrame (Mask mask, byte [] data)
     {
-      return new WsFrame (Opcode.CLOSE, mask, new PayloadData (data));
+      return new WsFrame (Opcode.Close, mask, new PayloadData (data));
     }
 
     public static WsFrame CreateCloseFrame (Mask mask, CloseStatusCode code, string reason)
     {
-      return new WsFrame (Opcode.CLOSE, mask, new PayloadData (((ushort) code).Append (reason)));
+      return new WsFrame (Opcode.Close, mask, new PayloadData (((ushort) code).Append (reason)));
     }
 
     public static WsFrame CreateFrame (
@@ -586,12 +586,12 @@ Extended Payload Len: {7}
 
     public static WsFrame CreatePingFrame (Mask mask)
     {
-      return new WsFrame (Opcode.PING, mask, new PayloadData ());
+      return new WsFrame (Opcode.Ping, mask, new PayloadData ());
     }
 
     public static WsFrame CreatePingFrame (Mask mask, byte [] data)
     {
-      return new WsFrame (Opcode.PING, mask, new PayloadData (data));
+      return new WsFrame (Opcode.Ping, mask, new PayloadData (data));
     }
 
     public IEnumerator<byte> GetEnumerator ()

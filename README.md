@@ -126,19 +126,19 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-`e.Type` property returns either `WebSocketSharp.Opcode.TEXT` or `WebSocketSharp.Opcode.BINARY` that represents the type of the received message. So by checking it, you determine which item you should use.
+`e.Type` property returns either `WebSocketSharp.Opcode.Text` or `WebSocketSharp.Opcode.Binary` that represents the type of the received message. So by checking it, you determine which item you should use.
 
-If `e.Type` is `Opcode.TEXT`, you should use `e.Data` property (returns a `string`) that represents the received **Text** message.
+If `e.Type` is `Opcode.Text`, you should use `e.Data` property (returns a `string`) that represents the received **Text** message.
 
-Or if `e.Type` is `Opcode.BINARY`, you should use `e.RawData` property (returns a `byte []`) that represents the received **Binary** message.
+Or if `e.Type` is `Opcode.Binary`, you should use `e.RawData` property (returns a `byte []`) that represents the received **Binary** message.
 
 ```cs
-if (e.Type == Opcode.TEXT) {
+if (e.Type == Opcode.Text) {
   // Do something with e.Data
   return;
 }
 
-if (e.Type == Opcode.BINARY) {
+if (e.Type == Opcode.Binary) {
   // Do something with e.RawData
   return;
 }
