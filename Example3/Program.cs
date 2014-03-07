@@ -45,9 +45,48 @@ namespace Example3
 
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
-      //_httpsv.AddWebSocketService<Chat> (
-      //  "/Chat",
-      //  () => new Chat ("Anon#") { Protocol = "chat" });
+
+      /* With initializing
+      _httpsv.AddWebSocketService<Echo> (
+        "/Echo",
+        () => new Echo () {
+          Protocol = "echo",
+          OriginValidator = value => {
+            Uri origin;
+            return !value.IsNullOrEmpty () &&
+                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+                   origin.Host == "localhost";
+          },
+          CookiesValidator = (req, res) => {
+            foreach (Cookie cookie in req) {
+              cookie.Expired = true;
+              res.Add (cookie);
+            }
+
+            return true;
+          }
+        });
+
+      _httpsv.AddWebSocketService<Chat> (
+        "/Chat",
+        () => new Chat ("Anon#") {
+          Protocol = "chat",
+          OriginValidator = value => {
+            Uri origin;
+            return !value.IsNullOrEmpty () &&
+                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+                   origin.Host == "localhost";
+          },
+          CookiesValidator = (req, res) => {
+            foreach (Cookie cookie in req) {
+              cookie.Expired = true;
+              res.Add (cookie);
+            }
+
+            return true;
+          }
+        });
+       */
 
       _httpsv.Start ();
       if (_httpsv.IsListening) {

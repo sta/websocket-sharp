@@ -75,13 +75,13 @@ namespace WebSocketSharp
     private CompressionMethod       _compression;
     private WebSocketContext        _context;
     private CookieCollection        _cookies;
-    private Func<CookieCollection, CookieCollection, bool>
-                                    _cookiesValidation;
     private NetworkCredential       _credentials;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forConn;
     private object                  _forSend;
+    private Func<WebSocketContext, string>
+                                    _handshakeRequestChecker;
     private volatile Logger         _logger;
     private uint                    _nonceCount;
     private string                  _origin;
@@ -192,13 +192,20 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
-    internal Func<CookieCollection, CookieCollection, bool> CookiesValidation {
+    internal CookieCollection CookieCollection {
       get {
-        return _cookiesValidation;
+        return _cookies;
+      }
+    }
+
+    // As server
+    internal Func<WebSocketContext, string> CustomHandshakeRequestChecker {
+      get {
+        return _handshakeRequestChecker ?? (context => null);
       }
 
       set {
-        _cookiesValidation = value;
+        _handshakeRequestChecker = value;
       }
     }
 
@@ -685,9 +692,7 @@ namespace WebSocketSharp
                  ? "Invalid Sec-WebSocket-Key header."
                  : !validateSecWebSocketVersionClientHeader (headers ["Sec-WebSocket-Version"])
                    ? "Invalid Sec-WebSocket-Version header."
-                   : !validateCookies (context.CookieCollection, _cookies)
-                     ? "Invalid Cookies."
-                     : null;
+                   : CustomHandshakeRequestChecker (context);
     }
 
     // As client
@@ -1256,14 +1261,6 @@ namespace WebSocketSharp
           ex, "An exception has occurred while receiving a message."));
 
       receive ();
-    }
-
-    // As server
-    private bool validateCookies (CookieCollection request, CookieCollection response)
-    {
-      return _cookiesValidation != null
-             ? _cookiesValidation (request, response)
-             : true;
     }
 
     // As server

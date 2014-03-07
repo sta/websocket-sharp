@@ -45,6 +45,9 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private WebSocketContext        _context;
+    private Func<CookieCollection, CookieCollection, bool>
+                                    _cookiesValidator;
+    private Func<string, bool>      _originValidator;
     private string                  _protocol;
     private WebSocketSessionManager _sessions;
     private DateTime                _start;
@@ -116,6 +119,38 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the delegate called to validate the HTTP cookies included in the WebSocket
+    /// connection request.
+    /// </summary>
+    /// <remarks>
+    /// The delegate is called when the <see cref="WebSocket"/> used in the current session
+    /// validates the WebSocket connection request.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate that references
+    ///   the method(s) used to validate the cookies. 1st <see cref="CookieCollection"/> passed to
+    ///   this delegate contains the cookies to validate, if any. 2nd <see cref="CookieCollection"/>
+    ///   passed to this delegate receives the cookies to send to the client.
+    ///   </para>
+    ///   <para>
+    ///   This delegate should return <c>true</c> if the cookies are valid; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>, and it does nothing to validate.
+    ///   </para>
+    /// </value>
+    public Func<CookieCollection, CookieCollection, bool> CookiesValidator {
+      get {
+        return _cookiesValidator;
+      }
+
+      set {
+        _cookiesValidator = value;
+      }
+    }
+
+    /// <summary>
     /// Gets the unique ID of the current session.
     /// </summary>
     /// <value>
@@ -123,6 +158,38 @@ namespace WebSocketSharp.Server
     /// </value>
     public string ID {
       get; private set;
+    }
+
+    /// <summary>
+    /// Gets or sets the delegate called to validate the Origin header included in the WebSocket
+    /// connection request.
+    /// </summary>
+    /// <remarks>
+    /// The delegate is called when the <see cref="WebSocket"/> used in the current session
+    /// validates the WebSocket connection request.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to validate
+    ///   the origin header. A <see cref="string"/> passed to this delegate represents the value of
+    ///   the origin header to validate, if any.
+    ///   </para>
+    ///   <para>
+    ///   This delegate should return <c>true</c> if the origin header is valid; otherwise,
+    ///   <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>, and it does nothing to validate.
+    ///   </para>
+    /// </value>
+    public Func<string, bool> OriginValidator {
+      get {
+        return _originValidator;
+      }
+
+      set {
+        _originValidator = value;
+      }
     }
 
     /// <summary>
@@ -192,6 +259,16 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
+    private string checkIfValidConnectionRequest (WebSocketContext context)
+    {
+      return _originValidator != null && !_originValidator (context.Origin)
+             ? "Invalid Origin header."
+             : _cookiesValidator != null &&
+               !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
+               ? "Invalid Cookies."
+               : null;
+    }
+
     private void onClose (object sender, CloseEventArgs e)
     {
       if (ID == null)
@@ -234,7 +311,7 @@ namespace WebSocketSharp.Server
 
       _websocket = context.WebSocket;
       _websocket.Protocol = _protocol;
-      _websocket.CookiesValidation = ValidateCookies;
+      _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
 
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;
@@ -420,28 +497,6 @@ namespace WebSocketSharp.Server
     {
       if (_websocket != null)
         _websocket.SendAsync (stream, length, completed);
-    }
-
-    /// <summary>
-    /// Used to validate the HTTP cookies included in the WebSocket connection request.
-    /// </summary>
-    /// <remarks>
-    /// This method is called when the <see cref="WebSocket"/> used in the current session
-    /// validates the WebSocket connection request.
-    /// </remarks>
-    /// <returns>
-    /// <c>true</c> if the cookies are valid; otherwise, <c>false</c>. This method returns
-    /// <c>true</c> as default.
-    /// </returns>
-    /// <param name="request">
-    /// A <see cref="CookieCollection"/> that contains the cookies to validate.
-    /// </param>
-    /// <param name="response">
-    /// A <see cref="CookieCollection"/> that receives the cookies to send to the client.
-    /// </param>
-    protected virtual bool ValidateCookies (CookieCollection request, CookieCollection response)
-    {
-      return true;
     }
 
     #endregion

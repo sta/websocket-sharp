@@ -41,9 +41,48 @@ namespace Example2
 
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
-      //wssv.AddWebSocketService<Chat> (
-      //  "/Chat",
-      //  () => new Chat ("Anon#") { Protocol = "chat" });
+
+      /* With initializing
+      wssv.AddWebSocketService<Echo> (
+        "/Echo",
+        () => new Echo () {
+          Protocol = "echo",
+          OriginValidator = value => {
+            Uri origin;
+            return !value.IsNullOrEmpty () &&
+                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+                   origin.Host == "localhost";
+          },
+          CookiesValidator = (req, res) => {
+            foreach (Cookie cookie in req) {
+              cookie.Expired = true;
+              res.Add (cookie);
+            }
+
+            return true;
+          }
+        });
+
+      wssv.AddWebSocketService<Chat> (
+        "/Chat",
+        () => new Chat ("Anon#") {
+          Protocol = "chat",
+          OriginValidator = value => {
+            Uri origin;
+            return !value.IsNullOrEmpty () &&
+                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+                   origin.Host == "localhost";
+          },
+          CookiesValidator = (req, res) => {
+            foreach (Cookie cookie in req) {
+              cookie.Expired = true;
+              res.Add (cookie);
+            }
+
+            return true;
+          }
+        });
+       */
 
       wssv.Start ();
       if (wssv.IsListening) {

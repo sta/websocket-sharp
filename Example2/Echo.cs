@@ -16,16 +16,5 @@ namespace Example2
 
       Send (msg);
     }
-
-    protected override bool ValidateCookies (
-      CookieCollection request, CookieCollection response)
-    {
-      foreach (Cookie cookie in request) {
-        cookie.Expired = true;
-        response.Add (cookie);
-      }
-
-      return true;
-    }
   }
 }
