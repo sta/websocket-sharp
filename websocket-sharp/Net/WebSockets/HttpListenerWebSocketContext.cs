@@ -34,7 +34,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the properties used for accessing the information in a WebSocket connection request
+  /// Provides the properties used to access the information in a WebSocket connection request
   /// received by the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
@@ -44,8 +44,8 @@ namespace WebSocketSharp.Net.WebSockets
     #region Private Fields
 
     private HttpListenerContext _context;
-    private WebSocket           _websocket;
     private WsStream            _stream;
+    private WebSocket           _websocket;
 
     #endregion
 
@@ -227,8 +227,9 @@ namespace WebSocketSharp.Net.WebSockets
     /// This property represents the subprotocols requested by the client.
     /// </remarks>
     /// <value>
-    /// An IEnumerable&lt;string&gt; instance that provides an enumerator which supports the
-    /// iteration over the values of the Sec-WebSocket-Protocol header.
+    /// An <see cref="T:System.Collections.Generic.IEnumerable{string}"/> instance that provides
+    /// an enumerator which supports the iteration over the values of the Sec-WebSocket-Protocol
+    /// header.
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {

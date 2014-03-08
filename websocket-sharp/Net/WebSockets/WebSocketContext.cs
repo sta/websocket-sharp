@@ -34,7 +34,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Exposes the properties used for accessing the information in a WebSocket connection request.
+  /// Exposes the properties used to access the information in a WebSocket connection request.
   /// </summary>
   /// <remarks>
   /// The WebSocketContext class is an abstract class.
@@ -161,8 +161,9 @@ namespace WebSocketSharp.Net.WebSockets
     /// This property represents the subprotocols requested by the client.
     /// </remarks>
     /// <value>
-    /// An IEnumerable&lt;string&gt; instance that provides an enumerator which supports the
-    /// iteration over the values of the Sec-WebSocket-Protocol header.
+    /// An <see cref="T:System.Collections.Generic.IEnumerable{string}"/> instance that provides
+    /// an enumerator which supports the iteration over the values of the Sec-WebSocket-Protocol
+    /// header.
     /// </value>
     public abstract IEnumerable<string> SecWebSocketProtocols { get; }
 
