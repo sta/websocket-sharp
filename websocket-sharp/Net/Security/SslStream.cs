@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,41 +30,40 @@ using System;
 using System.Net.Security;
 using System.Net.Sockets;
 
-namespace WebSocketSharp.Net.Security {
-
+namespace WebSocketSharp.Net.Security
+{
   internal class SslStream : System.Net.Security.SslStream
   {
     #region Public Constructors
 
-    public SslStream(NetworkStream innerStream)
-      : base(innerStream)
+    public SslStream (NetworkStream innerStream)
+      : base (innerStream)
     {
     }
 
-    public SslStream(NetworkStream innerStream, bool leaveInnerStreamOpen)
-      : base(innerStream, leaveInnerStreamOpen)
+    public SslStream (NetworkStream innerStream, bool leaveInnerStreamOpen)
+      : base (innerStream, leaveInnerStreamOpen)
     {
     }
 
-    public SslStream(
+    public SslStream (
       NetworkStream innerStream,
       bool leaveInnerStreamOpen,
-      RemoteCertificateValidationCallback userCertificateValidationCallback
-    ) : base(innerStream, leaveInnerStreamOpen, userCertificateValidationCallback)
+      RemoteCertificateValidationCallback userCertificateValidationCallback)
+      : base (innerStream, leaveInnerStreamOpen, userCertificateValidationCallback)
     {
     }
 
-    public SslStream(
+    public SslStream (
       NetworkStream innerStream,
       bool leaveInnerStreamOpen,
       RemoteCertificateValidationCallback userCertificateValidationCallback,
-      LocalCertificateSelectionCallback userCertificateSelectionCallback
-    ) : base(
+      LocalCertificateSelectionCallback userCertificateSelectionCallback)
+      : base (
         innerStream,
         leaveInnerStreamOpen,
         userCertificateValidationCallback,
-        userCertificateSelectionCallback
-      )
+        userCertificateSelectionCallback)
     {
     }
 
@@ -74,7 +73,7 @@ namespace WebSocketSharp.Net.Security {
 
     public bool DataAvailable {
       get {
-       return ((NetworkStream)InnerStream).DataAvailable;
+        return ((NetworkStream) InnerStream).DataAvailable;
       }
     }
 
