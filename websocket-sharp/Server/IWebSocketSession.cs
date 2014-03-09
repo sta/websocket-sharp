@@ -32,19 +32,17 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the properties used for accessing the information in a session in a WebSocket
-  /// service.
+  /// Exposes the properties used to access the information in a session in a WebSocket service.
   /// </summary>
   public interface IWebSocketSession
   {
     #region Properties
 
     /// <summary>
-    /// Gets the information in the WebSocket connection request.
+    /// Gets the information in the connection request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the WebSocket connection
-    /// request.
+    /// A <see cref="WebSocketContext"/> that provides the access to the connection request.
     /// </value>
     WebSocketContext Context { get; }
 

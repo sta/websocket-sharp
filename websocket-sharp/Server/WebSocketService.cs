@@ -34,7 +34,7 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties for a WebSocket service provided by the
+  /// Exposes a set of the methods and properties for a WebSocket service provided by the
   /// <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
   /// <remarks>
@@ -106,11 +106,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the information in the WebSocket connection request.
+    /// Gets the information in the current connection request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the WebSocket connection
-    /// request.
+    /// A <see cref="WebSocketContext"/> that provides the access to the current connection request.
     /// </value>
     public WebSocketContext Context {
       get {
