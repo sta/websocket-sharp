@@ -118,12 +118,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the HTTP cookies included in the WebSocket
-    /// connection request.
+    /// Gets or sets the delegate called to validate the HTTP cookies included in a connection
+    /// request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// The delegate is called when the <see cref="WebSocket"/> used in the current session
-    /// validates the WebSocket connection request.
+    /// validates the connection request.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -160,12 +160,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the Origin header included in the WebSocket
-    /// connection request.
+    /// Gets or sets the delegate called to validate the Origin header included in a connection
+    /// request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// The delegate is called when the <see cref="WebSocket"/> used in the current session
-    /// validates the WebSocket connection request.
+    /// validates the connection request.
     /// </remarks>
     /// <value>
     ///   <para>
