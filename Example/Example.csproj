@@ -10,7 +10,6 @@
     <RootNamespace>Example</RootNamespace>
     <AssemblyName>example</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_Ubuntu</OutputPath>
-    <DefineConstants>DEBUG,NOTIFY</DefineConstants>
+    <DefineConstants>DEBUG,UBUNTU</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
@@ -44,7 +43,7 @@
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Release_Ubuntu</OutputPath>
-    <DefineConstants>NOTIFY</DefineConstants>
+    <DefineConstants>UBUNTU</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
@@ -66,5 +65,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Notifier.cs" />
+    <Compile Include="NotificationMessage.cs" />
   </ItemGroup>
 </Project>
