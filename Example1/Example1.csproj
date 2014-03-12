@@ -34,7 +34,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug_Ubuntu</OutputPath>
-    <DefineConstants>DEBUG;NOTIFY</DefineConstants>
+    <DefineConstants>DEBUG;UBUNTU</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
@@ -46,7 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <DefineConstants>NOTIFY</DefineConstants>
+    <DefineConstants>UBUNTU</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -62,6 +62,10 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AudioStreamer.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="AudioMessage.cs" />
+    <Compile Include="TextMessage.cs" />
+    <Compile Include="NotificationMessage.cs" />
+    <Compile Include="Notifier.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
