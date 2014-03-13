@@ -4,10 +4,6 @@ namespace Example
 {
   internal class NotificationMessage
   {
-    public NotificationMessage ()
-    {
-    }
-
     public string Body {
       get; set;
     }
@@ -22,7 +18,7 @@ namespace Example
 
     public override string ToString ()
     {
-      return String.Format ("[{0}: {1}]", Summary, Body);
+      return String.Format ("{0}: {1}", Summary, Body);
     }
   }
 }

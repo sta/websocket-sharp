@@ -26,7 +26,7 @@ namespace Example
 
         ws.OnMessage += (sender, e) =>
           nf.Notify (
-            new NotificationMessage () {
+            new NotificationMessage {
               Summary = "WebSocket Message",
               Body = e.Data,
               Icon = "notification-message-im"
@@ -34,7 +34,7 @@ namespace Example
 
         ws.OnError += (sender, e) =>
           nf.Notify (
-            new NotificationMessage () {
+            new NotificationMessage {
               Summary = "WebSocket Error",
               Body = e.Message,
               Icon = "notification-message-im"
@@ -42,7 +42,7 @@ namespace Example
 
         ws.OnClose += (sender, e) =>
           nf.Notify (
-            new NotificationMessage () {
+            new NotificationMessage {
               Summary = String.Format ("WebSocket Close ({0})", e.Code),
               Body = e.Reason,
               Icon = "notification-message-im"
@@ -51,7 +51,6 @@ namespace Example
 #if DEBUG
         ws.Log.Level = LogLevel.Trace;
 #endif
-
         // Per-message Compression
         //ws.Compression = CompressionMethod.Deflate;
 
@@ -80,9 +79,8 @@ namespace Example
           Thread.Sleep (500);
           Console.Write ("> ");
           var msg = Console.ReadLine ();
-          if (msg == "exit") {
+          if (msg == "exit")
             break;
-          }
 
           ws.Send (msg);
         }

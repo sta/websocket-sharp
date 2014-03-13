@@ -10,7 +10,14 @@ namespace Example1
       using (var streamer = new AudioStreamer ("ws://agektmr.node-ninja.com:3000/socket"))
       //using (var streamer = new AudioStreamer ("ws://localhost:3000/socket"))
       {
-        streamer.Connect ();
+        string name;
+        do {
+          Console.Write ("Input your name> ");
+          name = Console.ReadLine ();
+        }
+        while (name.Length == 0);
+
+        streamer.Connect (name);
 
         Console.WriteLine ("\nType \"exit\" to exit.\n");
         while (true) {

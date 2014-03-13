@@ -31,18 +31,18 @@ namespace Example1
       configure ();
     }
 
-    private AudioMessage acceptBinaryMessage (byte [] value)
+    private AudioMessage acceptBinaryMessage (byte [] data)
     {
-      var id = value.SubArray (0, 4).To<uint> (ByteOrder.Big);
-      var chNum = value.SubArray (4, 1) [0];
-      var bufferLength = value.SubArray (5, 4).To<uint> (ByteOrder.Big);
+      var id = data.SubArray (0, 4).To<uint> (ByteOrder.Big);
+      var chNum = data.SubArray (4, 1) [0];
+      var bufferLength = data.SubArray (5, 4).To<uint> (ByteOrder.Big);
       var bufferArray = new float [chNum, bufferLength];
 
       var offset = 9;
       ((int) chNum).Times (
         i => bufferLength.Times (
           j => {
-            bufferArray [i, j] = value.SubArray (offset, 4).To<float> (ByteOrder.Big);
+            bufferArray [i, j] = data.SubArray (offset, 4).To<float> (ByteOrder.Big);
             offset += 4;
           }));
 
@@ -54,17 +54,21 @@ namespace Example1
       };
     }
 
-    private NotificationMessage acceptTextMessage (string value)
+    private NotificationMessage acceptTextMessage (string data)
     {
-      var json = JObject.Parse (value);
+      var json = JObject.Parse (data);
       var id = (uint) json ["user_id"];
       var name = (string) json ["name"];
       var type = (string) json ["type"];
 
       string message;
-      if (type == "connection") {
+      if (type == "message")
+        message = String.Format ("{0}: {1}", name, (string) json ["message"]);
+      else if (type == "start_music")
+        message = String.Format ("{0}: Started playing music!", name);
+      else if (type == "connection") {
         var users = (JArray) json ["message"];
-        var msg = new StringBuilder ("Now keeping connection:");
+        var msg = new StringBuilder ("Now keeping connections:");
         foreach (JToken user in users)
           msg.AppendFormat (
             "\n- user_id: {0} name: {1}", (uint) user ["user_id"], (string) user ["name"]);
@@ -72,19 +76,15 @@ namespace Example1
         message = msg.ToString ();
       }
       else if (type == "connected") {
-        _heartbeatTimer.Change (30000, 30000);
         _id = id;
+        _heartbeatTimer.Change (30000, 30000);
         message = String.Format ("user_id: {0} name: {1}", id, name);
       }
-      else if (type == "message")
-        message = String.Format ("{0}: {1}", name, (string) json ["message"]);
-      else if (type == "start_music")
-        message = String.Format ("{0}: Started playing music!", name);
       else
         message = "Received unknown type message.";
 
       return new NotificationMessage {
-        Summary = String.Format ("AudioStreamer Message ({0})", type),
+        Summary = String.Format ("AudioStreamer ({0})", type),
         Body = message,
         Icon = "notification-message-im"
       };
@@ -120,7 +120,7 @@ namespace Example1
       _websocket.OnError += (sender, e) =>
         _notifier.Notify (
           new NotificationMessage {
-            Summary = "AudioStreamer Error",
+            Summary = "AudioStreamer (error)",
             Body = e.Message,
             Icon = "notification-message-im"
           });
@@ -128,8 +128,8 @@ namespace Example1
       _websocket.OnClose += (sender, e) =>
         _notifier.Notify (
           new NotificationMessage {
-            Summary = String.Format ("AudioStreamer Disconnect ({0})", e.Code),
-            Body = e.Reason,
+            Summary = "AudioStreamer (disconnect)",
+            Body = String.Format ("code: {0} reason: {1}", e.Code, e.Reason),
             Icon = "notification-message-im"
           });
     }
@@ -169,25 +169,19 @@ namespace Example1
       _websocket.Send (createTextMessage ("heartbeat", String.Empty));
     }
 
-    public void Connect ()
+    public void Connect (string username)
     {
-      do {
-        Console.Write ("Input your name> ");
-        _name = Console.ReadLine ();
-      }
-      while (_name.Length == 0);
-
+      _name = username;
       _websocket.Connect ();
     }
 
     public void Disconnect ()
     {
-      var wait = new ManualResetEvent (false);
-      _heartbeatTimer.Dispose (wait);
-      wait.WaitOne ();
-
-      _websocket.Close ();
-      _notifier.Close ();
+      _heartbeatTimer.Change (-1, -1);
+      _websocket.Close (CloseStatusCode.Away);
+      _audioBox.Clear ();
+      _id = null;
+      _name = null;
     }
 
     public void Write (string message)
@@ -198,6 +192,9 @@ namespace Example1
     void IDisposable.Dispose ()
     {
       Disconnect ();
+
+      _heartbeatTimer.Dispose ();
+      _notifier.Close ();
     }
   }
 }
