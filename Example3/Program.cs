@@ -14,19 +14,18 @@ namespace Example3
     public static void Main (string [] args)
     {
       _httpsv = new HttpServer (4649);
-      //_httpsv = new HttpServer (4649, true) // Secure;
-
+      //_httpsv = new HttpServer (4649, true); // For Secure Connection
 #if DEBUG
+      // Changing logging level
       _httpsv.Log.Level = LogLevel.Trace;
 #endif
-
-      /* Secure Connection
+      /* For Secure Connection
       var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
       var password = ConfigurationManager.AppSettings ["CertFilePassword"];
       _httpsv.Certificate = new X509Certificate2 (cert, password);
        */
 
-      /* HTTP Authentication (Basic/Digest)
+      /* For HTTP Authentication (Basic/Digest)
       _httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       _httpsv.Realm = "WebSocket Test";
       _httpsv.UserCredentialsFinder = identity => {
@@ -37,46 +36,32 @@ namespace Example3
       };
        */
 
+      // Not to remove inactive clients in WebSocket services periodically
       //_httpsv.KeepClean = false;
 
+      // Setting document root path
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
 
+      // Setting HTTP method events
       _httpsv.OnGet += (sender, e) => onGet (e);
 
+      // Adding WebSocket services
       _httpsv.AddWebSocketService<Echo> ("/Echo");
       _httpsv.AddWebSocketService<Chat> ("/Chat");
 
       /* With initializing
-      _httpsv.AddWebSocketService<Echo> (
-        "/Echo",
-        () => new Echo () {
-          Protocol = "echo",
-          OriginValidator = value => {
-            Uri origin;
-            return !value.IsNullOrEmpty () &&
-                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
-                   origin.Host == "localhost";
-          },
-          CookiesValidator = (req, res) => {
-            foreach (Cookie cookie in req) {
-              cookie.Expired = true;
-              res.Add (cookie);
-            }
-
-            return true;
-          }
-        });
-
       _httpsv.AddWebSocketService<Chat> (
         "/Chat",
         () => new Chat ("Anon#") {
           Protocol = "chat",
+          // Checking Origin header
           OriginValidator = value => {
             Uri origin;
             return !value.IsNullOrEmpty () &&
                    Uri.TryCreate (value, UriKind.Absolute, out origin) &&
                    origin.Host == "localhost";
           },
+          // Checking Cookies
           CookiesValidator = (req, res) => {
             foreach (Cookie cookie in req) {
               cookie.Expired = true;
@@ -91,11 +76,10 @@ namespace Example3
       _httpsv.Start ();
       if (_httpsv.IsListening) {
         Console.WriteLine (
-          "An HTTP server listening on port: {0} WebSocket service paths:",
-          _httpsv.Port);
+          "An HTTP server listening on port: {0}, providing WebSocket services:", _httpsv.Port);
 
         foreach (var path in _httpsv.WebSocketServices.Paths)
-          Console.WriteLine ("  {0}", path);
+          Console.WriteLine ("- {0}", path);
       }
 
       Console.WriteLine ("\nPress Enter key to stop the server...");
@@ -112,10 +96,10 @@ namespace Example3
       return _httpsv.GetFile (path);
     }
 
-    private static void onGet (HttpRequestEventArgs eventArgs)
+    private static void onGet (HttpRequestEventArgs e)
     {
-      var req = eventArgs.Request;
-      var res = eventArgs.Response;
+      var req = e.Request;
+      var res = e.Response;
       var content = getContent (req.RawUrl);
       if (content != null) {
         res.WriteContent (content);
