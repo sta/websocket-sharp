@@ -21,7 +21,7 @@ namespace Example1
 
         Console.WriteLine ("\nType \"exit\" to exit.\n");
         while (true) {
-          Thread.Sleep (500);
+          Thread.Sleep (1000);
           Console.Write ("> ");
           var msg = Console.ReadLine ();
           if (msg == "exit")

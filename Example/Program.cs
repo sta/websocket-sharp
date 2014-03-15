@@ -11,7 +11,7 @@ namespace Example
     {
       using (var nf = new Notifier ())
       using (var ws = new WebSocket ("ws://echo.websocket.org"))
-      //using (var ws = new WebSocket ("wss://echo.websocket.org"))
+      //using (var ws = new WebSocket ("wss://echo.websocket.org")) // For Secure Connection
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo?name=nobita"))
@@ -21,7 +21,7 @@ namespace Example
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
       //using (var ws = new WebSocket ("ws://localhost:4649/チャット?name=のび太"))
       {
-        /* WebSocket events */
+        /* Setting WebSocket events */
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
         ws.OnMessage += (sender, e) =>
@@ -51,23 +51,23 @@ namespace Example
 #if DEBUG
         ws.Log.Level = LogLevel.Trace;
 #endif
-        // Per-message Compression
+        // Setting Per-message Compression
         //ws.Compression = CompressionMethod.Deflate;
 
-        /* Secure Connection
+        /* For Secure Connection
         ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
           ws.Log.Debug (String.Format ("\n{0}\n{1}", certificate.Issuer, certificate.Subject));
           return true; // If the server cert is valid
         };
          */
 
-        // HTTP Authentication (Basic/Digest)
+        // For HTTP Authentication (Basic/Digest)
         //ws.SetCredentials ("nobita", "password", false); // Digest
 
-        // Origin
+        // Setting Origin
         //ws.Origin = "http://echo.websocket.org";
 
-        // Cookies
+        // Setting Cookies
         //ws.SetCookie (new Cookie ("nobita", "\"idiot, gunfighter\""));
         //ws.SetCookie (new Cookie ("dora", "tanuki"));
 
@@ -76,7 +76,7 @@ namespace Example
 
         Console.WriteLine ("\nType \"exit\" to exit.\n");
         while (true) {
-          Thread.Sleep (500);
+          Thread.Sleep (1000);
           Console.Write ("> ");
           var msg = Console.ReadLine ();
           if (msg == "exit")

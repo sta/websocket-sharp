@@ -10,7 +10,7 @@ namespace Example1
 {
   internal class Notifier : IDisposable
   {
-    private bool                       _enabled;
+    private volatile bool              _enabled;
     private Queue<NotificationMessage> _queue;
     private ManualResetEvent           _waitHandle;
 
@@ -65,7 +65,8 @@ namespace Example1
     public void Notify (NotificationMessage message)
     {
       lock (((ICollection) _queue).SyncRoot) {
-        _queue.Enqueue (message);
+        if (_enabled)
+          _queue.Enqueue (message);
       }
     }
 
