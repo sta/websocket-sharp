@@ -12,20 +12,21 @@ namespace Example1
   {
     private volatile bool              _enabled;
     private Queue<NotificationMessage> _queue;
+    private object                     _sync;
     private ManualResetEvent           _waitHandle;
 
     public Notifier ()
     {
       _enabled = true;
       _queue = new Queue<NotificationMessage> ();
+      _sync = ((ICollection) _queue).SyncRoot;
       _waitHandle = new ManualResetEvent (false);
 
       ThreadPool.QueueUserWorkItem (
         state => {
           while (_enabled || Count > 0) {
-            Thread.Sleep (500);
-            if (Count > 0) {
-              var msg = dequeue ();
+            var msg = dequeue ();
+            if (msg != null) {
 #if UBUNTU
               var nf = new Notification (msg.Summary, msg.Body, msg.Icon);
               nf.AddHint ("append", "allowed");
@@ -34,6 +35,8 @@ namespace Example1
               Console.WriteLine (msg);
 #endif
             }
+            else
+              Thread.Sleep (500);
           }
 
           _waitHandle.Set ();
@@ -42,7 +45,7 @@ namespace Example1
 
     public int Count {
       get {
-        lock (((ICollection) _queue).SyncRoot) {
+        lock (_sync) {
           return _queue.Count;
         }
       }
@@ -50,8 +53,10 @@ namespace Example1
 
     private NotificationMessage dequeue ()
     {
-      lock (((ICollection) _queue).SyncRoot) {
-        return _queue.Dequeue ();
+      lock (_sync) {
+        return _queue.Count > 0
+               ? _queue.Dequeue ()
+               : null;
       }
     }
 
@@ -64,7 +69,7 @@ namespace Example1
 
     public void Notify (NotificationMessage message)
     {
-      lock (((ICollection) _queue).SyncRoot) {
+      lock (_sync) {
         if (_enabled)
           _queue.Enqueue (message);
       }
