@@ -49,6 +49,7 @@ namespace Example
             });
          
 #if DEBUG
+        // Changing logging level
         ws.Log.Level = LogLevel.Trace;
 #endif
         // Setting Per-message Compression
@@ -62,9 +63,9 @@ namespace Example
          */
 
         // For HTTP Authentication (Basic/Digest)
-        //ws.SetCredentials ("nobita", "password", false); // Digest
+        //ws.SetCredentials ("nobita", "password", false);
 
-        // Setting Origin
+        // Setting Origin header
         //ws.Origin = "http://echo.websocket.org";
 
         // Setting Cookies
