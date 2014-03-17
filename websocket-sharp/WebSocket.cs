@@ -716,8 +716,7 @@ namespace WebSocketSharp
 
     private void close (CloseStatusCode code, string reason, bool wait)
     {
-      close (
-        new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
+      close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
     }
 
     private void close (PayloadData payload, bool send, bool wait)
@@ -1774,17 +1773,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection, and releases all associated resources.
-    /// </summary>
-    /// <remarks>
-    /// This method closes the WebSocket connection with <see cref="CloseStatusCode.Away"/>.
-    /// </remarks>
-    public void Dispose ()
-    {
-      Close (CloseStatusCode.Away, null);
-    }
-
-    /// <summary>
     /// Sends a Ping using the WebSocket connection.
     /// </summary>
     /// <returns>
@@ -2122,6 +2110,21 @@ namespace WebSocketSharp
         _credentials = new NetworkCredential (username, password, _uri.PathAndQuery);
         _preAuth = preAuth;
       }
+    }
+
+    #endregion
+
+    #region Explicit Interface Implementation
+
+    /// <summary>
+    /// Closes the WebSocket connection, and releases all associated resources.
+    /// </summary>
+    /// <remarks>
+    /// This method closes the WebSocket connection with <see cref="CloseStatusCode.Away"/>.
+    /// </remarks>
+    void IDisposable.Dispose ()
+    {
+      Close (CloseStatusCode.Away, null);
     }
 
     #endregion
