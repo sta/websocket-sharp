@@ -462,6 +462,45 @@ If you would like to provide the Digest authentication, you should set like the 
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
+### Origin header and Cookies ###
+
+As a **WebSocket Client**, if you would like to send the Origin header with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header], like the following.
+
+```cs
+ws.Origin = "http://example.com";
+```
+
+And if you would like to send the Cookies with the WebSocket connection request to the server, you should set any Cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method, like the following.
+
+```cs
+ws.SetCookie (new Cookie ("nobita", "gunfighter"));
+```
+
+As a **WebSocket Server**, if you would like to check the Origin header and Cookies included in each WebSocket connection request, you should set each validation for the Origin header and Cookies using the `AddWebSocketService<T> (string, Func<T>)` method with initializing, like the following.
+
+```cs
+wssv.AddWebSocketService<Chat> (
+  "/Chat",
+  () => new Chat () {
+    OriginValidator = value => {
+      // Check 'value' of the Origin header, and return true if it's valid
+      Uri origin;
+      return !value.IsNullOrEmpty () &&
+             Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+             origin.Host == "example.com";
+    },
+    CookiesValidator = (req, res) => {
+      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res' if necessary
+      foreach (Cookie cookie in req) {
+        cookie.Expired = true;
+        res.Add (cookie);
+      }
+
+      return true; // If the Cookies are valid
+    }
+  });
+```
+
 ### Logging ###
 
 The `WebSocket` class includes the own logging function.
@@ -510,7 +549,7 @@ Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 ## Supported WebSocket Specifications ##
 
-websocket-sharp supports **[RFC 6455][rfc6455]**, and it's based on the following WebSocket references.
+websocket-sharp supports **[RFC 6455][rfc6455]**, and it's based on the following WebSocket references:
 
 - **[The WebSocket Protocol][rfc6455]**
 - **[The WebSocket API][api]**
@@ -537,6 +576,7 @@ websocket-sharp is provided under **[The MIT License]**.
 [MonoDevelop]: http://monodevelop.com
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
+[Origin header]: http://tools.ietf.org/html/rfc6454#section-7
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
