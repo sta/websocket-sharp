@@ -41,9 +41,8 @@
 #endregion
 
 using System;
-using System.Text;
 using System.Globalization;
-using System.Collections;
+using System.Text;
 
 namespace WebSocketSharp.Net
 {
