@@ -476,7 +476,8 @@ namespace WebSocketSharp.Net
         string error;
         if (!tryCreatePorts (value, out _ports, out error))
           throw new CookieException (
-            String.Format ("The value of Port attribute contains an invalid value: {0}", error));
+            String.Format (
+              "The value specified for a Port attribute contains an invalid value: {0}", error));
 
         _port = value;
       }
@@ -582,7 +583,7 @@ namespace WebSocketSharp.Net
       }
 
       if (name [0] == '$' || name.Contains (_reservedCharsForName)) {
-        message = "Name contains an invalid character.";
+        message = "The value specified for a Name contains an invalid character.";
         return false;
       }
 
@@ -598,7 +599,7 @@ namespace WebSocketSharp.Net
       }
 
       if (value.Contains (_reservedCharsForValue) && !value.IsEnclosedIn ('"')) {
-        message = "Value contains an invalid character.";
+        message = "The value specified for a Value contains an invalid character.";
         return false;
       }
 
@@ -610,8 +611,8 @@ namespace WebSocketSharp.Net
     {
       return i ^
              (j << 13 | j >> 19) ^
-             (k << 26 | k >> 6) ^
-             (l << 7 | l >> 25) ^
+             (k << 26 | k >>  6) ^
+             (l <<  7 | l >> 25) ^
              (m << 20 | m >> 12);
     }
 
