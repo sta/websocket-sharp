@@ -1251,7 +1251,7 @@ namespace WebSocketSharp
       Action receive = null;
       receive = () => _stream.ReadFrameAsync (
         frame => {
-          if (acceptFrame (frame))
+          if (acceptFrame (frame) && _readyState != WebSocketState.Closed)
             receive ();
           else if (_exitReceiving != null)
             _exitReceiving.Set ();
