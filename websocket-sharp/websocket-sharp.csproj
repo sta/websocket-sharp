@@ -130,6 +130,7 @@
     <Compile Include="Net\HttpDigestIdentity.cs" />
     <Compile Include="Net\NetworkCredential.cs" />
     <Compile Include="Server\WebSocketServiceManager.cs" />
+    <Compile Include="Net\CookieCollectionComparer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
