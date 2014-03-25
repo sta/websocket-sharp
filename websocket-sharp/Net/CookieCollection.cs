@@ -44,7 +44,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -382,6 +381,7 @@ namespace WebSocketSharp.Net
       var path = cookie.Path;
       var domain = cookie.Domain;
       var version = cookie.Version;
+
       for (int i = _list.Count - 1; i >= 0; i--) {
         var c = _list [i];
         if (c.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase) &&
@@ -545,12 +545,12 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Copies the elements of the <see cref="CookieCollection"/> to the specified array of
-    /// <see cref="Cookie"/>, starting at the specified <paramref name="index"/> in the
-    /// <paramref name="array"/>.
+    /// <see cref="Cookie"/>, starting at the specified <paramref name="index"/> in
+    /// the <paramref name="array"/>.
     /// </summary>
     /// <param name="array">
-    /// An array of <see cref="Cookie"/> is the destination of the elements copied from the
-    /// <see cref="CookieCollection"/>.
+    /// An array of <see cref="Cookie"/> is the destination of the elements copied from
+    /// the <see cref="CookieCollection"/>.
     /// </param>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
@@ -585,7 +585,7 @@ namespace WebSocketSharp.Net
     /// Gets the enumerator to use to iterate through the <see cref="CookieCollection"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="IEnumerator"/> instance to use to iterate through
+    /// An <see cref="IEnumerator"/> instance to use to iterate through
     /// the <see cref="CookieCollection"/>.
     /// </returns>
     public IEnumerator GetEnumerator ()

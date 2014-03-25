@@ -38,8 +38,14 @@ namespace WebSocketSharp.Net
   {
     public int Compare (Cookie x, Cookie y)
     {
-      if (x == null || y == null)
+      if (x == null && y == null)
         return 0;
+
+      if (x == null)
+        return -1;
+
+      if (y == null)
+        return 1;
 
       var c1 = x.Name.Length + x.Value.Length;
       var c2 = y.Name.Length + y.Value.Length;
