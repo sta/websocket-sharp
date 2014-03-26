@@ -501,11 +501,13 @@ namespace WebSocketSharp
     private bool acceptDataFrame (WsFrame frame)
     {
       var args = frame.IsCompressed
-               ? new MessageEventArgs (
-                   frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-               : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+                 ? new MessageEventArgs (
+                     frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
+                 : new MessageEventArgs (frame.Opcode, frame.PayloadData);
 
-      OnMessage.Emit (this, args);
+      if (_readyState == WebSocketState.Open)
+        OnMessage.Emit (this, args);
+
       return true;
     }
 
@@ -558,7 +560,9 @@ namespace WebSocketSharp
           data = concatenated.ToArray ();
         }
 
-        OnMessage.Emit (this, new MessageEventArgs (first.Opcode, data));
+        if (_readyState == WebSocketState.Open)
+          OnMessage.Emit (this, new MessageEventArgs (first.Opcode, data));
+
         return true;
       }
     }
