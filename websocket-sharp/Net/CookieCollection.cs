@@ -43,7 +43,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -54,12 +53,6 @@ namespace WebSocketSharp.Net
   [Serializable]
   public class CookieCollection : ICollection, IEnumerable
   {
-    #region Private Static Fields
-
-    private static CookieCollectionComparer _comparer = new CookieCollectionComparer ();
-
-    #endregion
-
     #region Private Fields
 
     private List<Cookie> _list;
@@ -89,11 +82,11 @@ namespace WebSocketSharp.Net
 
     internal IEnumerable<Cookie> Sorted {
       get {
-        return from cookie in _list
-               orderby cookie.Version,
-                       cookie.Name,
-                       cookie.Path.Length descending
-               select cookie;
+        var list = new List<Cookie> (_list);
+        if (list.Count > 1)
+          list.Sort (compareCookieWithinSorted);
+
+        return list;
       }
     }
 
@@ -202,7 +195,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Object SyncRoot {
       get {
-        return _sync ?? (_sync = new object ());
+        return _sync ?? (_sync = ((ICollection) _list).SyncRoot);
       }
     }
 
@@ -210,13 +203,28 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private static int compareCookieWithinSort (Cookie x, Cookie y)
+    {
+      return (x.Name.Length + x.Value.Length) - (y.Name.Length + y.Value.Length);
+    }
+
+    private static int compareCookieWithinSorted (Cookie x, Cookie y)
+    {
+      var ret = 0;
+      return (ret = x.Version - y.Version) != 0
+             ? ret
+             : (ret = x.Name.CompareTo (y.Name)) != 0
+               ? ret
+               : y.Path.Length - x.Path.Length;
+    }
+
     private static CookieCollection parseRequest (string value)
     {
       var cookies = new CookieCollection ();
 
       Cookie cookie = null;
       var version = 0;
-      var pairs = split (value).ToArray ();
+      var pairs = splitCookieHeaderValue (value);
       for (int i = 0; i < pairs.Length; i++) {
         var pair = pairs [i].Trim ();
         if (pair.Length == 0)
@@ -277,7 +285,7 @@ namespace WebSocketSharp.Net
       var cookies = new CookieCollection ();
 
       Cookie cookie = null;
-      var pairs = split (value).ToArray ();
+      var pairs = splitCookieHeaderValue (value);
       for (int i = 0; i < pairs.Length; i++) {
         var pair = pairs [i].Trim ();
         if (pair.Length == 0)
@@ -394,9 +402,9 @@ namespace WebSocketSharp.Net
       return -1;
     }
 
-    private static IEnumerable<string> split (string value)
+    private static string [] splitCookieHeaderValue (string value)
     {
-      return value.SplitHeaderValue (',', ';');
+      return new List<string> (value.SplitHeaderValue (',', ';')).ToArray ();
     }
 
     #endregion
@@ -436,8 +444,8 @@ namespace WebSocketSharp.Net
 
     internal void Sort ()
     {
-      if (_list.Count > 0)
-        _list.Sort (_comparer);
+      if (_list.Count > 1)
+        _list.Sort (compareCookieWithinSort);
     }
 
     #endregion
@@ -540,7 +548,7 @@ namespace WebSocketSharp.Net
         throw new InvalidCastException (
           "The elements in this collection cannot be cast automatically to the type of the destination array.");
 
-      (_list as IList).CopyTo (array, index);
+      ((IList) _list).CopyTo (array, index);
     }
 
     /// <summary>
