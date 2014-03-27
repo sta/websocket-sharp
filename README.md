@@ -464,19 +464,19 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 ### Origin header and Cookies ###
 
-As a **WebSocket Client**, if you would like to send the Origin header with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header], like the following.
+As a **WebSocket Client**, if you would like to send the **Origin** header with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, like the following.
 
 ```cs
 ws.Origin = "http://example.com";
 ```
 
-And if you would like to send the Cookies with the WebSocket connection request to the server, you should set any Cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method, like the following.
+And if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, like the following.
 
 ```cs
 ws.SetCookie (new Cookie ("nobita", "gunfighter"));
 ```
 
-As a **WebSocket Server**, if you would like to check the Origin header and Cookies included in each WebSocket connection request, you should set each validation for the Origin header and Cookies using the `AddWebSocketService<T> (string, Func<T>)` method with initializing, like the following.
+As a **WebSocket Server**, if you would like to check the Origin header and Cookies included in each WebSocket connection request, you should set each validation for the Origin header and Cookies in your `WebSocketService`, for example, using the `AddWebSocketService<T> (string, Func<T>)` method with initializing, like the following.
 
 ```cs
 wssv.AddWebSocketService<Chat> (
