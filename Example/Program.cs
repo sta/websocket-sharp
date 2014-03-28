@@ -15,11 +15,9 @@ namespace Example
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("wss://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo?name=nobita"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/エコー?name=のび太"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("wss://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
-      //using (var ws = new WebSocket ("ws://localhost:4649/チャット?name=のび太"))
       {
         /* Setting WebSocket events */
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
@@ -67,11 +65,13 @@ namespace Example
 
         // Setting Origin header
         //ws.Origin = "http://echo.websocket.org";
+        //ws.Origin = "http://localhost:4649";
 
         // Setting Cookies
-        //ws.SetCookie (new Cookie ("nobita", "\"idiot, gunfighter\""));
-        //ws.SetCookie (new Cookie ("dora", "tanuki"));
+        //ws.SetCookie (new Cookie ("name", "nobita"));
+        //ws.SetCookie (new Cookie ("role", "\"idiot, gunfighter\""));
 
+        // Connecting to the server
         ws.Connect ();
         //ws.ConnectAsync ();
 
@@ -83,6 +83,7 @@ namespace Example
           if (msg == "exit")
             break;
 
+          // Sending a text message
           ws.Send (msg);
         }
       }
