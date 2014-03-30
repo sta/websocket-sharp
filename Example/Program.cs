@@ -47,7 +47,7 @@ namespace Example
             });
          
 #if DEBUG
-        // Changing logging level
+        // Changing the logging level
         ws.Log.Level = LogLevel.Trace;
 #endif
         // Setting Per-message Compression
@@ -69,13 +69,13 @@ namespace Example
 
         // Setting Cookies
         //ws.SetCookie (new Cookie ("name", "nobita"));
-        //ws.SetCookie (new Cookie ("role", "\"idiot, gunfighter\""));
+        //ws.SetCookie (new Cookie ("roles", "\"idiot, gunfighter\""));
 
         // Connecting to the server
         ws.Connect ();
         //ws.ConnectAsync ();
 
-        Console.WriteLine ("\nType \"exit\" to exit.\n");
+        Console.WriteLine ("\nType 'exit' to exit.\n");
         while (true) {
           Thread.Sleep (1000);
           Console.Write ("> ");
