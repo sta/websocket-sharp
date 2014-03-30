@@ -18,7 +18,8 @@ namespace Example1
         while (name.Length == 0);
 
         streamer.Connect (name);
-        Console.WriteLine ("\nType \"exit\" to exit.\n");
+
+        Console.WriteLine ("\nType 'exit' to exit.\n");
         while (true) {
           Thread.Sleep (1000);
           Console.Write ("> ");
