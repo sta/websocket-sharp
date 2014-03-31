@@ -19,12 +19,13 @@ namespace Example2
 
     public Chat (string prefix)
     {
-      _prefix = prefix ?? "anon#";
+      _prefix = !prefix.IsNullOrEmpty () ? prefix : "anon#";
     }
 
     private string getName ()
     {
-      return Context.QueryString ["name"] ?? (_prefix + getNum ());
+      var name = Context.QueryString ["name"];
+      return !name.IsNullOrEmpty () ? name : (_prefix + getNum ());
     }
 
     private static int getNum ()

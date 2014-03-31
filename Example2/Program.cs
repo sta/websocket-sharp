@@ -16,7 +16,7 @@ namespace Example2
       //var wssv = new WebSocketServer ("ws://localhost:4649");
       //var wssv = new WebSocketServer ("wss://localhost:4649"); // For Secure Connection
 #if DEBUG
-      // Changing logging level
+      // Changing the logging level
       wssv.Log.Level = LogLevel.Trace;
 #endif
       /* For Secure Connection
