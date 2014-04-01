@@ -16,7 +16,7 @@ namespace Example3
       _httpsv = new HttpServer (4649);
       //_httpsv = new HttpServer (4649, true); // For Secure Connection
 #if DEBUG
-      // Changing logging level
+      // Changing the logging level
       _httpsv.Log.Level = LogLevel.Trace;
 #endif
       /* For Secure Connection
@@ -39,7 +39,7 @@ namespace Example3
       // Not to remove inactive clients in WebSocket services periodically
       //_httpsv.KeepClean = false;
 
-      // Setting document root path
+      // Setting the document root path
       _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
 
       // Setting HTTP method events
