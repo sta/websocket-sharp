@@ -305,6 +305,13 @@ namespace WebSocketSharp.Server
 
     internal void Start (WebSocketContext context, WebSocketSessionManager sessions)
     {
+      if (_websocket != null) {
+        _websocket.Log.Error ("This session has already been started.");
+        context.WebSocket.Close (HttpStatusCode.ServiceUnavailable);
+
+        return;
+      }
+
       _context = context;
       _sessions = sessions;
 
