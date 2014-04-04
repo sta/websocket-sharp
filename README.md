@@ -21,7 +21,7 @@
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
-websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the MonoDevelop.
+websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the **websocket-sharp project** with any of the build configurations (e.g. Debug) in the MonoDevelop.
 
 ## Install ##
 
@@ -192,7 +192,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, and `WebSocket.Send (System.IO.FileInfo)` methods to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
 
 If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
 
@@ -232,8 +232,8 @@ namespace Example
     protected override void OnMessage (MessageEventArgs e)
     {
       var msg = e.Data == "BALUS"
-              ? "I've been balused already..."
-              : "I'm not available now.";
+                ? "I've been balused already..."
+                : "I'm not available now.";
 
       Send (msg);
     }
