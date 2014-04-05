@@ -5,7 +5,7 @@
  * This code is derived from System.Net.HttpStatusCode.cs of Mono
  * (http://www.mono-project.com).
  *
- * This code was automatically generated from ECMA CLI XML Library Specification.
+ * It was automatically generated from ECMA CLI XML Library Specification.
  * Generator: libgen.xsl [1.0; (C) Sergey Chaban (serge@wildwestsoftware.com)]
  * Created: Wed, 5 Sep 2001 06:32:05 UTC
  * Source file: AllTypes.xml
@@ -253,7 +253,7 @@ namespace WebSocketSharp.Net
     MethodNotAllowed = 405,
     /// <summary>
     /// Equivalent to status code 406.
-    /// Indicates that the server doesn't have the appropriate resource to respond to the accept
+    /// Indicates that the server doesn't have the appropriate resource to respond to the Accept
     /// headers in the client's request.
     /// </summary>
     NotAcceptable = 406,
@@ -287,8 +287,8 @@ namespace WebSocketSharp.Net
     LengthRequired = 411,
     /// <summary>
     /// Equivalent to status code 412.
-    /// Indicates that the precondition given in one or more of the request header fields
-    /// evaluated to false when it was tested on the server.
+    /// Indicates that the precondition given in one or more of the request headers evaluated to
+    /// false when it was tested on the server.
     /// </summary>
     PreconditionFailed = 412,
     /// <summary>
@@ -310,13 +310,13 @@ namespace WebSocketSharp.Net
     UnsupportedMediaType = 415,
     /// <summary>
     /// Equivalent to status code 416.
-    /// Indicates that none of the range specifier values in a Range request header field
-    /// overlap the current extent of the selected resource.
+    /// Indicates that none of the range specifier values in a Range request header overlap
+    /// the current extent of the selected resource.
     /// </summary>
     RequestedRangeNotSatisfiable = 416,
     /// <summary>
     /// Equivalent to status code 417.
-    /// Indicates that the expectation given in an Expect request header field couldn't be met by
+    /// Indicates that the expectation given in an Expect request header couldn't be met by
     /// the server.
     /// </summary>
     ExpectationFailed = 417,
