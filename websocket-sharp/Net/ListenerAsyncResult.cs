@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Ximian, Inc. (http://www.ximian.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@ximian.com>
+ * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  */
 #endregion
 
@@ -124,8 +124,8 @@ namespace WebSocketSharp.Net
     internal void Complete (Exception exception)
     {
       _exception = InGet && (exception is ObjectDisposedException)
-                 ? new HttpListenerException (500, "Listener closed")
-                 : exception;
+                   ? new HttpListenerException (500, "Listener closed.")
+                   : exception;
 
       lock (_sync) {
         _completed = true;
@@ -155,22 +155,20 @@ namespace WebSocketSharp.Net
 
       var header = context.Request.Headers ["Authorization"];
       if (scheme == AuthenticationSchemes.Basic &&
-          (header == null ||
-           !header.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
+          (header == null || !header.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
           HttpUtility.CreateBasicAuthChallenge (listener.Realm));
-        listener.BeginGetContext (this);
 
+        listener.BeginGetContext (this);
         return;
       }
 
       if (scheme == AuthenticationSchemes.Digest &&
-          (header == null ||
-           !header.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
+          (header == null || !header.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
           HttpUtility.CreateDigestAuthChallenge (listener.Realm));
-        listener.BeginGetContext (this);
 
+        listener.BeginGetContext (this);
         return;
       }
 
