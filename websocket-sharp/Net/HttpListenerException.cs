@@ -60,7 +60,7 @@ namespace WebSocketSharp.Net
     /// A <see cref="SerializationInfo"/> that contains the serialized object data.
     /// </param>
     /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that represents the source for the deserialization.
+    /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
     /// </param>
     protected HttpListenerException (
       SerializationInfo serializationInfo, StreamingContext streamingContext)
