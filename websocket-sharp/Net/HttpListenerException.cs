@@ -44,7 +44,8 @@ using System.Runtime.Serialization;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// The exception that is thrown when an error occurs processing an HTTP request.
+  /// The exception that is thrown when a <see cref="HttpListener"/> gets an error
+  /// processing an HTTP request.
   /// </summary>
   [Serializable]
   public class HttpListenerException : Win32Exception
@@ -52,9 +53,8 @@ namespace WebSocketSharp.Net
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerException"/> class
-    /// from the specified instances of the <see cref="SerializationInfo"/> and
-    /// <see cref="StreamingContext"/> classes.
+    /// Initializes a new instance of the <see cref="HttpListenerException"/> class from
+    /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that contains the serialized object data.
@@ -111,7 +111,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the value that identifies the error that occurred.
+    /// Gets the error code that identifies the error that occurred.
     /// </summary>
     /// <value>
     /// An <see cref="int"/> that identifies the error.
