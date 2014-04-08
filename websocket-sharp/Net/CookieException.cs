@@ -65,15 +65,14 @@ namespace WebSocketSharp.Net
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CookieException"/> class with the specified
-    /// <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
+    /// Initializes a new instance of the <see cref="CookieException"/> class from
+    /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
     /// </summary>
     /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that holds the serialized object data.
+    /// A <see cref="SerializationInfo"/> that contains the serialized object data.
     /// </param>
     /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that contains the contextual information about the source
-    /// or destination.
+    /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
     /// </param>
     protected CookieException (
       SerializationInfo serializationInfo, StreamingContext streamingContext)
@@ -99,7 +98,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
-    /// the <see cref="CookieException"/>.
+    /// the current <see cref="CookieException"/>.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that holds the serialized object data.
@@ -121,7 +120,7 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
-    /// the <see cref="CookieException"/>.
+    /// the current <see cref="CookieException"/>.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that holds the serialized object data.
