@@ -42,8 +42,8 @@ namespace WebSocketSharp
     {
     }
 
-    internal WebSocketException (string reason)
-      : this (CloseStatusCode.Abnormal, reason, null)
+    internal WebSocketException (string message)
+      : this (CloseStatusCode.Abnormal, message, null)
     {
     }
 
@@ -52,18 +52,18 @@ namespace WebSocketSharp
     {
     }
 
-    internal WebSocketException (string reason, Exception innerException)
-      : this (CloseStatusCode.Abnormal, reason, innerException)
+    internal WebSocketException (string message, Exception innerException)
+      : this (CloseStatusCode.Abnormal, message, innerException)
     {
     }
 
-    internal WebSocketException (CloseStatusCode code, string reason)
-      : this (code, reason, null)
+    internal WebSocketException (CloseStatusCode code, string message)
+      : this (code, message, null)
     {
     }
 
-    internal WebSocketException (CloseStatusCode code, string reason, Exception innerException)
-      : base (reason ?? code.GetMessage (), innerException)
+    internal WebSocketException (CloseStatusCode code, string message, Exception innerException)
+      : base (message ?? code.GetMessage (), innerException)
     {
       Code = code;
     }
