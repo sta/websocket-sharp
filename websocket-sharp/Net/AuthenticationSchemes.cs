@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Atsushi Enomoto <atsushi@ximian.com>
+ * - Atsushi Enomoto <atsushi@ximian.com>
  */
 #endregion
 
@@ -62,6 +62,6 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Indicates anonymous authentication.
     /// </summary>
-    Anonymous = 0x8000,
+    Anonymous = 0x8000
   }
 }
