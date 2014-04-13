@@ -188,10 +188,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an object to use to synchronize access to the <see cref="CookieCollection"/>.
+    /// Gets an object used to synchronize access to the <see cref="CookieCollection"/>.
     /// </summary>
     /// <value>
-    /// An <see cref="Object"/> to use to synchronize access to the <see cref="CookieCollection"/>.
+    /// An <see cref="Object"/> used to synchronize access to the <see cref="CookieCollection"/>.
     /// </value>
     public Object SyncRoot {
       get {
@@ -590,10 +590,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the enumerator to use to iterate through the <see cref="CookieCollection"/>.
+    /// Gets the enumerator used to iterate through the <see cref="CookieCollection"/>.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance to use to iterate through
+    /// An <see cref="IEnumerator"/> instance used to iterate through
     /// the <see cref="CookieCollection"/>.
     /// </returns>
     public IEnumerator GetEnumerator ()
