@@ -182,8 +182,7 @@ namespace WebSocketSharp
       return new WsStream (conn.Stream, conn.IsSecure);
     }
 
-    internal T ReadHandshake<T> (
-      Func<string [], T> parser, int millisecondsTimeout)
+    internal T ReadHandshake<T> (Func<string [], T> parser, int millisecondsTimeout)
       where T : HandshakeBase
     {
       var timeout = false;
@@ -202,8 +201,7 @@ namespace WebSocketSharp
         handshake = parser (readHandshakeHeaders (_innerStream));
         var contentLen = handshake.Headers ["Content-Length"];
         if (contentLen != null && contentLen.Length > 0)
-          handshake.EntityBodyData = readHandshakeEntityBody (
-            _innerStream, contentLen);
+          handshake.EntityBodyData = readHandshakeEntityBody (_innerStream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
@@ -213,14 +211,14 @@ namespace WebSocketSharp
         timer.Dispose ();
       }
 
-      var reason = timeout
-                 ? "A timeout has occurred while receiving a handshake."
-                 : exception != null
-                   ? "An exception has occurred while receiving a handshake."
-                   : null;
+      var msg = timeout
+                ? "A timeout has occurred while receiving a handshake."
+                : exception != null
+                  ? "An exception has occurred while receiving a handshake."
+                  : null;
 
-      if (reason != null)
-        throw new WebSocketException (reason, exception);
+      if (msg != null)
+        throw new WebSocketException (msg, exception);
 
       return handshake;
     }
@@ -257,8 +255,7 @@ namespace WebSocketSharp
       return WsFrame.Parse (_innerStream, true);
     }
 
-    public void ReadFrameAsync (
-      Action<WsFrame> completed, Action<Exception> error)
+    public void ReadFrameAsync (Action<WsFrame> completed, Action<Exception> error)
     {
       WsFrame.ParseAsync (_innerStream, true, completed, error);
     }
