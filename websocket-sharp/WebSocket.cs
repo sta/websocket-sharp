@@ -511,26 +511,22 @@ namespace WebSocketSharp
       return true;
     }
 
-    private void acceptException (Exception exception, string reason)
+    private void acceptException (Exception exception, string message)
     {
       var code = CloseStatusCode.Abnormal;
-      var msg = reason;
+      var reason = message;
       if (exception is WebSocketException) {
         var wsex = (WebSocketException) exception;
         code = wsex.Code;
         reason = wsex.Message;
       }
 
-      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure) {
+      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure)
         _logger.Fatal (exception.ToString ());
-        reason = msg;
-      }
-      else {
+      else
         _logger.Error (reason);
-        msg = null;
-      }
 
-      error (msg ?? code.GetMessage ());
+      error (message ?? code.GetMessage ());
       if (_readyState == WebSocketState.Connecting && !_client)
         Close (HttpStatusCode.BadRequest);
       else
@@ -2031,8 +2027,8 @@ namespace WebSocketSharp
                 len));
 
           var sent = len <= FragmentLength
-                   ? send (Opcode.Binary, data)
-                   : send (Opcode.Binary, new MemoryStream (data));
+                     ? send (Opcode.Binary, data)
+                     : send (Opcode.Binary, new MemoryStream (data));
 
           if (completed != null)
             completed (sent);
@@ -2098,10 +2094,10 @@ namespace WebSocketSharp
           }
 
           msg = username.Contains (':') || !username.IsText ()
-              ? "'username' contains an invalid character."
-              : !password.IsNullOrEmpty () && !password.IsText ()
-                ? "'password' contains an invalid character."
-                : null;
+                ? "'username' contains an invalid character."
+                : !password.IsNullOrEmpty () && !password.IsText ()
+                  ? "'password' contains an invalid character."
+                  : null;
         }
 
         if (msg != null) {
