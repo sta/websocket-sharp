@@ -1,99 +1,119 @@
-//
-// HttpHeaderInfo.cs
-//
-// Authors:
-//	sta (sta.blockhead@gmail.com)
-//
-// Copyright (c) 2013 sta.blockhead
-//
-// Permission is hereby granted, free of charge, to any person obtaining
-// a copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to
-// permit persons to whom the Software is furnished to do so, subject to
-// the following conditions:
-// 
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-// OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//
+#region License
+/*
+ * HttpHeaderInfo.cs
+ *
+ * The MIT License
+ *
+ * Copyright (c) 2013-2014 sta.blockhead
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+#endregion
 
 using System;
 
-namespace WebSocketSharp.Net {
+namespace WebSocketSharp.Net
+{
+  internal class HttpHeaderInfo
+  {
+    #region Private Fields
 
-	class HttpHeaderInfo {
+    private HttpHeaderType _type;
 
-		#region Constructor
+    #endregion
 
-		public HttpHeaderInfo ()
-		{
-		}
+    #region Public Constructors
 
-		#endregion
+    public HttpHeaderInfo ()
+    {
+    }
 
-		#region Properties
+    #endregion
 
-		public bool IsMultiValueInRequest {
-			get {
-				return (Type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
-			}
-		}
+    #region Internal Properties
 
-		public bool IsMultiValueInResponse {
-			get {
-				return (Type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
-			}
-		}
+    internal bool IsMultiValueInRequest {
+      get {
+        return (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
+      }
+    }
 
-		public bool IsRequest {
-			get {
-				return (Type & HttpHeaderType.Request) == HttpHeaderType.Request;
-			}
-		}
+    internal bool IsMultiValueInResponse {
+      get {
+        return (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
+      }
+    }
 
-		public bool IsResponse {
-			get {
-				return (Type & HttpHeaderType.Response) == HttpHeaderType.Response;
-			}
-		}
+    #endregion
 
-		public string Name { get; set; }
+    #region Public Properties
 
-		public HttpHeaderType Type { get; set; }
+    public bool IsRequest {
+      get {
+        return (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
+      }
+    }
 
-		#endregion
+    public bool IsResponse {
+      get {
+        return (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
+      }
+    }
 
-		#region Methods
+    public string Name {
+      get; set;
+    }
 
-		public bool IsMultiValue (bool response)
-		{
-			return (Type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
-			       ? response
-			         ? IsMultiValueInResponse
-			         : IsMultiValueInRequest
-			       : response
-			         ? IsResponse
-			         : IsRequest;
-		}
+    public HttpHeaderType Type {
+      get {
+        return _type;
+      }
 
-		public bool IsRestricted (bool response)
-		{
-			return (Type & HttpHeaderType.Restricted) != HttpHeaderType.Restricted
-			       ? false
-			       : response
-			         ? IsResponse
-			         : IsRequest;
-		}
+      set {
+        _type = value;
+      }
+    }
 
-		#endregion
-	}
+    #endregion
+
+    #region Public Methods
+
+    public bool IsMultiValue (bool response)
+    {
+      return (_type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
+             ? response
+               ? IsMultiValueInResponse
+               : IsMultiValueInRequest
+             : response
+               ? IsResponse
+               : IsRequest;
+    }
+
+    public bool IsRestricted (bool response)
+    {
+      return (_type & HttpHeaderType.Restricted) != HttpHeaderType.Restricted
+             ? false
+             : response
+               ? IsResponse
+               : IsRequest;
+    }
+
+    #endregion
+  }
 }
