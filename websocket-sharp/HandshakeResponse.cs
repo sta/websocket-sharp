@@ -140,7 +140,7 @@ namespace WebSocketSharp
 
       var headers = new WebHeaderCollection ();
       for (int i = 1; i < headerParts.Length; i++)
-        headers.SetInternal (headerParts [i], true);
+        headers.SetInternally (headerParts [i], true);
 
       return new HandshakeResponse {
         Headers = headers,

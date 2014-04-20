@@ -527,7 +527,7 @@ namespace WebSocketSharp.Net
       var name = header.Substring (0, colon).Trim ();
       var val = header.Substring (colon + 1).Trim ();
       var lower = name.ToLower (CultureInfo.InvariantCulture);
-      _headers.SetInternal (name, val, false);
+      _headers.SetInternally (name, val, false);
 
       if (lower == "accept") {
         _acceptTypes = val.SplitHeaderValue (',').ToArray ();

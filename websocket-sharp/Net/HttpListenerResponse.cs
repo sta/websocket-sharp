@@ -538,20 +538,20 @@ namespace WebSocketSharp.Net
         if (_contentEncoding != null &&
             _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1) {
           var charset = _contentEncoding.WebName;
-          _headers.SetInternal (
+          _headers.SetInternally (
             "Content-Type", _contentType + "; charset=" + charset, true);
         }
         else {
-          _headers.SetInternal ("Content-Type", _contentType, true);
+          _headers.SetInternally ("Content-Type", _contentType, true);
         }
       }
 
       if (_headers ["Server"] == null)
-        _headers.SetInternal ("Server", "websocket-sharp/1.0", true);
+        _headers.SetInternally ("Server", "websocket-sharp/1.0", true);
 
       var provider = CultureInfo.InvariantCulture;
       if (_headers ["Date"] == null)
-        _headers.SetInternal (
+        _headers.SetInternally (
           "Date", DateTime.UtcNow.ToString ("r", provider), true);
 
       if (!_chunked) {
@@ -561,7 +561,7 @@ namespace WebSocketSharp.Net
         }
 
         if (_contentLengthSet)
-          _headers.SetInternal (
+          _headers.SetInternally (
             "Content-Length", _contentLength.ToString (provider), true);
       }
 
@@ -591,36 +591,36 @@ namespace WebSocketSharp.Net
 
       // They sent both KeepAlive: true and Connection: close!?
       if (!_keepAlive || connClose) {
-        _headers.SetInternal ("Connection", "close", true);
+        _headers.SetInternally ("Connection", "close", true);
         connClose = true;
       }
 
       if (_chunked)
-        _headers.SetInternal ("Transfer-Encoding", "chunked", true);
+        _headers.SetInternally ("Transfer-Encoding", "chunked", true);
 
       int reuses = _context.Connection.Reuses;
       if (reuses >= 100) {
         _forceCloseChunked = true;
         if (!connClose) {
-          _headers.SetInternal ("Connection", "close", true);
+          _headers.SetInternally ("Connection", "close", true);
           connClose = true;
         }
       }
 
       if (!connClose) {
-        _headers.SetInternal (
+        _headers.SetInternally (
           "Keep-Alive",
           String.Format ("timeout=15,max={0}", 100 - reuses), true);
         if (_context.Request.ProtocolVersion <= HttpVersion.Version10)
-          _headers.SetInternal ("Connection", "keep-alive", true);
+          _headers.SetInternally ("Connection", "keep-alive", true);
       }
 
       if (_location != null)
-        _headers.SetInternal ("Location", _location, true);
+        _headers.SetInternally ("Location", _location, true);
 
       if (_cookies != null) {
         foreach (Cookie cookie in _cookies)
-          _headers.SetInternal ("Set-Cookie", cookie.ToResponseString (), true);
+          _headers.SetInternally ("Set-Cookie", cookie.ToResponseString (), true);
       }
 
       var encoding = _contentEncoding ?? Encoding.Default;

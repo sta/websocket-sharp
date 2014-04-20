@@ -886,18 +886,18 @@ namespace WebSocketSharp.Net
       return info != null && info.IsMultiValue (response);
     }
 
-    internal void RemoveInternal (string name)
+    internal void RemoveInternally (string name)
     {
       base.Remove (name);
     }
 
-    internal void SetInternal (string header, bool response)
+    internal void SetInternally (string header, bool response)
     {
       var pos = checkColonSeparated (header);
-      SetInternal (header.Substring (0, pos), header.Substring (pos + 1), response);
+      SetInternally (header.Substring (0, pos), header.Substring (pos + 1), response);
     }
 
-    internal void SetInternal (string name, string value, bool response)
+    internal void SetInternally (string name, string value, bool response)
     {
       value = checkValue (value);
       if (IsMultiValue (name, response))
@@ -1124,6 +1124,9 @@ namespace WebSocketSharp.Net
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index of the header to find.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// </exception>
     public override string Get (int index)
     {
       return base.Get (index);
@@ -1133,8 +1136,8 @@ namespace WebSocketSharp.Net
     /// Get the value of the header with the specified <paramref name="name"/> in the collection.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the value of the header. <see langword="null"/> if
-    /// there is no header with <paramref name="name"/> in the collection.
+    /// A <see cref="string"/> that receives the value of the header if found; otherwise,
+    /// <see langword="null"/>.
     /// </returns>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the header to find.
@@ -1165,21 +1168,28 @@ namespace WebSocketSharp.Net
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index of the header to find.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// </exception>
     public override string GetKey (int index)
     {
       return base.GetKey (index);
     }
 
     /// <summary>
-    /// Gets an array of header values stored in the specified <paramref name="index"/> position of
-    /// the collection.
+    /// Gets an array of header values stored in the specified <paramref name="index"/> position
+    /// of the collection.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values.
+    /// An array of <see cref="string"/> that receives the header values if found; otherwise,
+    /// <see langword="null"/>.
     /// </returns>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index of the header to find.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// </exception>
     public override string [] GetValues (int index)
     {
       var values = base.GetValues (index);
@@ -1192,7 +1202,8 @@ namespace WebSocketSharp.Net
     /// Gets an array of header values stored in the specified <paramref name="header"/>.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values.
+    /// An array of <see cref="string"/> that receives the header values if found; otherwise,
+    /// <see langword="null"/>.
     /// </returns>
     /// <param name="header">
     /// A <see cref="string"/> that represents the name of the header to find.
