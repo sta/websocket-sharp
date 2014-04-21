@@ -95,11 +95,10 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the number of cookies contained in the <see cref="CookieCollection"/>.
+    /// Gets the number of cookies in the collection.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the number of cookies contained in
-    /// the <see cref="CookieCollection"/>.
+    /// An <see cref="int"/> that represents the number of cookies in the collection.
     /// </value>
     public int Count {
       get {
@@ -108,10 +107,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="CookieCollection"/> is read-only.
+    /// Gets a value indicating whether the collection is read-only.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="CookieCollection"/> is read-only; otherwise, <c>false</c>.
+    /// <c>true</c> if the collection is read-only; otherwise, <c>false</c>.
     /// The default value is <c>true</c>.
     /// </value>
     public bool IsReadOnly {
@@ -123,12 +122,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the access to the <see cref="CookieCollection"/> is
-    /// thread safe.
+    /// Gets a value indicating whether the access to the collection is thread safe.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the access to the <see cref="CookieCollection"/> is thread safe;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the access to the collection is thread safe; otherwise, <c>false</c>.
+    /// The default value is <c>false</c>.
     /// </value>
     public bool IsSynchronized {
       get {
@@ -137,19 +135,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the <see cref="Cookie"/> with the specified <paramref name="index"/> from
-    /// the <see cref="CookieCollection"/>.
+    /// Gets the <see cref="Cookie"/> at the specified <paramref name="index"/> from
+    /// the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="Cookie"/> with the specified <paramref name="index"/> in
-    /// the <see cref="CookieCollection"/>.
+    /// A <see cref="Cookie"/> at the specified <paramref name="index"/> in the collection.
     /// </value>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index of the <see cref="Cookie"/>
     /// to find.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> isn't between zero and <see cref="Count"/>.
+    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
     /// </exception>
     public Cookie this [int index] {
       get {
@@ -162,11 +159,10 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Gets the <see cref="Cookie"/> with the specified <paramref name="name"/> from
-    /// the <see cref="CookieCollection"/>.
+    /// the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="Cookie"/> with the specified <paramref name="name"/> in
-    /// the <see cref="CookieCollection"/>.
+    /// A <see cref="Cookie"/> with the specified <paramref name="name"/> in the collection.
     /// </value>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the <see cref="Cookie"/> to find.
@@ -188,10 +184,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an object used to synchronize access to the <see cref="CookieCollection"/>.
+    /// Gets an object used to synchronize access to the collection.
     /// </summary>
     /// <value>
-    /// An <see cref="Object"/> used to synchronize access to the <see cref="CookieCollection"/>.
+    /// An <see cref="Object"/> used to synchronize access to the collection.
     /// </value>
     public Object SyncRoot {
       get {
@@ -453,10 +449,10 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Add the specified <see cref="Cookie"/> to the <see cref="CookieCollection"/>.
+    /// Adds the specified <paramref name="cookie"/> to the collection.
     /// </summary>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> to add to the <see cref="CookieCollection"/>.
+    /// A <see cref="Cookie"/> to add.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
@@ -476,11 +472,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Add the elements of the specified <see cref="CookieCollection"/> to the current
-    /// <see cref="CookieCollection"/>.
+    /// Adds the specified <paramref name="cookies"/> to the collection.
     /// </summary>
     /// <param name="cookies">
-    /// A <see cref="CookieCollection"/> to add to the current <see cref="CookieCollection"/>.
+    /// A <see cref="CookieCollection"/> that contains the cookies to add.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookies"/> is <see langword="null"/>.
@@ -495,13 +490,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the elements of the <see cref="CookieCollection"/> to the specified
-    /// <see cref="Array"/>, starting at the specified <paramref name="index"/> in
-    /// the <paramref name="array"/>.
+    /// Copies the elements of the collection to the specified <see cref="Array"/>, starting at
+    /// the specified <paramref name="index"/> in the <paramref name="array"/>.
     /// </summary>
     /// <param name="array">
-    /// An <see cref="Array"/> is the destination of the elements copied from
-    /// the <see cref="CookieCollection"/>.
+    /// An <see cref="Array"/> that represents the destination of the elements copied from
+    /// the collection.
     /// </param>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
@@ -521,13 +515,13 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The number of elements in the <see cref="CookieCollection"/> is greater than the available
-    ///   space from index to the end of the destination <paramref name="array"/>.
+    ///   The number of elements in the collection is greater than the available space from
+    ///   <paramref name="index"/> to the end of the destination <paramref name="array"/>.
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidCastException">
-    /// The elements in the <see cref="CookieCollection"/> cannot be cast automatically to the type
-    /// of the destination <paramref name="array"/>.
+    /// The elements in the collection cannot be cast automatically to the type of the destination
+    /// <paramref name="array"/>.
     /// </exception>
     public void CopyTo (Array array, int index)
     {
@@ -535,10 +529,10 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("array");
 
       if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Must not be less than zero.");
+        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
 
       if (array.Rank > 1)
-        throw new ArgumentException ("Must not be multidimensional.", "array");
+        throw new ArgumentException ("Multidimensional.", "array");
 
       if (array.Length - index < _list.Count)
         throw new ArgumentException (
@@ -552,13 +546,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the elements of the <see cref="CookieCollection"/> to the specified array of
-    /// <see cref="Cookie"/>, starting at the specified <paramref name="index"/> in
-    /// the <paramref name="array"/>.
+    /// Copies the elements of the collection to the specified array of <see cref="Cookie"/>,
+    /// starting at the specified <paramref name="index"/> in the <paramref name="array"/>.
     /// </summary>
     /// <param name="array">
-    /// An array of <see cref="Cookie"/> is the destination of the elements copied from
-    /// the <see cref="CookieCollection"/>.
+    /// An array of <see cref="Cookie"/> that represents the destination of the elements
+    /// copied from the collection.
     /// </param>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
@@ -571,8 +564,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="index"/> is less than zero.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// The number of elements in the <see cref="CookieCollection"/> is greater than the available
-    /// space from index to the end of the destination <paramref name="array"/>.
+    /// The number of elements in the collection is greater than the available space from
+    /// <paramref name="index"/> to the end of the destination <paramref name="array"/>.
     /// </exception>
     public void CopyTo (Cookie [] array, int index)
     {
@@ -580,7 +573,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("array");
 
       if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Must not be less than zero.");
+        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
 
       if (array.Length - index < _list.Count)
         throw new ArgumentException (
@@ -590,11 +583,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="CookieCollection"/>.
+    /// Gets the enumerator used to iterate through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through
-    /// the <see cref="CookieCollection"/>.
+    /// An <see cref="IEnumerator"/> instance used to iterate through the collection.
     /// </returns>
     public IEnumerator GetEnumerator ()
     {
