@@ -783,8 +783,7 @@ namespace WebSocketSharp.Net
 
       value = value.Trim ();
       if (value.Length > 65535)
-        throw new ArgumentOutOfRangeException (
-          "value", "The length must not be greater than 65535.");
+        throw new ArgumentOutOfRangeException ("value", "The length is greater than 65535.");
 
       if (!IsHeaderValue (value))
         throw new ArgumentException ("Contains invalid characters.", "value");
@@ -999,7 +998,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("header");
 
       var pos = checkColonSeparated (header);
-      Add (header.Substring (0, pos), header.Substring (pos + 1));
+      add (header.Substring (0, pos), header.Substring (pos + 1), false);
     }
 
     /// <summary>
@@ -1148,11 +1147,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="WebHeaderCollection"/>.
+    /// Gets the enumerator used to iterate through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through
-    /// the <see cref="WebHeaderCollection"/>.
+    /// An <see cref="IEnumerator"/> instance used to iterate through the collection.
     /// </returns>
     public override IEnumerator GetEnumerator ()
     {
