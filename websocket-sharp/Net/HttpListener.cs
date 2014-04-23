@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
@@ -44,7 +44,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Threading;
 
-// TODO: logging
+// TODO: Logging.
 namespace WebSocketSharp.Net
 {
   /// <summary>
@@ -104,12 +104,12 @@ namespace WebSocketSharp.Net
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> values
-    /// that indicates the scheme used to authenticate the clients. The default
-    /// value is <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum values,
+    /// represents the scheme used to authenticate the clients. The default value is
+    /// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public AuthenticationSchemes AuthenticationSchemes {
       get {
@@ -124,16 +124,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to determine the scheme used to
-    /// authenticate clients.
+    /// Gets or sets the delegate called to determine the scheme used to authenticate clients.
     /// </summary>
     /// <value>
-    /// A <see cref="AuthenticationSchemeSelector"/> delegate that invokes the
-    /// method(s) used to select an authentication scheme. The default value is
-    /// <see langword="null"/>.
+    /// A <see cref="AuthenticationSchemeSelector"/> delegate that invokes the method(s) used to
+    /// select an authentication scheme. The default value is <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate {
       get {
@@ -148,29 +146,29 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the path to the folder stored the certificate files used to
+    /// Gets or sets the path to the folder in which stores the certificate files used to
     /// authenticate the server on the secure connection.
     /// </summary>
     /// <remarks>
-    /// This property represents the path to the folder stored the certificate
-    /// files associated with the port number of each added URI prefix. A set of
-    /// the certificate files is a pair of the <c>'port number'.cer</c> (DER) and
-    /// <c>'port number'.key</c> (DER, RSA Private Key).
+    /// This property represents the path to the folder in which stores the certificate files
+    /// associated with each port number of added URI prefixes. A set of the certificate files
+    /// is a pair of the <c>'port number'.cer</c> (DER) and <c>'port number'.key</c>
+    /// (DER, RSA Private Key).
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that contains the path to the certificate folder.
-    /// The default value is the result of <c>Environment.GetFolderPath</c>
-    /// (<see cref="Environment.SpecialFolder.ApplicationData"/>).
+    /// A <see cref="string"/> that represents the path to the folder in which stores the
+    /// certificate files. The default value is result of <c>System.Environment.GetFolderPath
+    /// (<see cref="Environment.SpecialFolder.ApplicationData"/>)</c>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public string CertificateFolderPath {
       get {
         CheckDisposed ();
         return _certFolderPath == null || _certFolderPath.Length == 0
-               ? (_certFolderPath = Environment.GetFolderPath (
-                    Environment.SpecialFolder.ApplicationData))
+               ? (_certFolderPath =
+                   Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData))
                : _certFolderPath;
       }
 
@@ -181,16 +179,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the default certificate used to authenticate the server on
-    /// the secure connection.
+    /// Gets or sets the default certificate used to authenticate the server on the secure
+    /// connection.
     /// </summary>
     /// <value>
-    /// A <see cref="X509Certificate2"/> used to authenticate the server if the
-    /// certificate associated with the port number of each added URI prefix is
-    /// not found in the <see cref="CertificateFolderPath"/>.
+    /// A <see cref="X509Certificate2"/> used to authenticate the server if the certificate
+    /// files aren't found in the <see cref="CertificateFolderPath"/>. The default value is
+    /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public X509Certificate2 DefaultCertificate {
       get {
@@ -205,16 +203,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="HttpListener"/>
-    /// returns exceptions that occur when sending the response to the client.
+    /// Gets or sets a value indicating whether the listener returns exceptions that occur when
+    /// sending the response to the client.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="HttpListener"/> doesn't return exceptions
-    /// that occur when sending the response to the client; otherwise,
-    /// <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the listener doesn't return exceptions that occur when sending the response
+    /// to the client; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public bool IgnoreWriteExceptions {
       get {
@@ -229,12 +226,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="HttpListener"/> has been
-    /// started.
+    /// Gets a value indicating whether the listener has been started.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="HttpListener"/> has been started; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the listener has been started; otherwise, <c>false</c>.
     /// </value>
     public bool IsListening {
       get {
@@ -243,8 +238,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the <see cref="HttpListener"/> can be
-    /// used with the current operating system.
+    /// Gets a value indicating whether the listener can be used with the current operating system.
     /// </summary>
     /// <value>
     /// <c>true</c>.
@@ -256,14 +250,13 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the URI prefixes handled by the <see cref="HttpListener"/>.
+    /// Gets the URI prefixes handled by the listener.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerPrefixCollection"/> that contains the URI
-    /// prefixes.
+    /// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public HttpListenerPrefixCollection Prefixes {
       get {
@@ -273,15 +266,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the name of the realm associated with the
-    /// <see cref="HttpListener"/>.
+    /// Gets or sets the name of the realm associated with the listener.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that contains the name of the realm. The default
-    /// value is <c>SECRET AREA</c>.
+    /// A <see cref="string"/> that represents the name of the realm. The default value is
+    /// <c>SECRET AREA</c>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public string Realm {
       get {
@@ -324,16 +316,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to find the credentials for an identity
-    /// used to authenticate a client.
+    /// Gets or sets the delegate called to find the credentials for an identity used to
+    /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;
-    /// delegate that references the method(s) used to find the credentials. The
-    /// default value is a function that only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
+    /// that invokes the method(s) used to find the credentials. The default value is a function
+    /// that only returns <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
@@ -369,7 +361,7 @@ namespace WebSocketSharp.Net
         if (_connections.Count == 0)
           return;
 
-        // Need to copy this since closing will call RemoveConnection
+        // Need to copy this since closing will call RemoveConnection.
         var keys = _connections.Keys;
         var conns = new HttpConnection [keys.Count];
         keys.CopyTo (conns, 0);
@@ -385,7 +377,7 @@ namespace WebSocketSharp.Net
         if (_registry.Count == 0)
           return;
 
-        // Need to copy this since closing will call UnregisterContext
+        // Need to copy this since closing will call UnregisterContext.
         var keys = _registry.Keys;
         var all = new HttpListenerContext [keys.Count];
         keys.CopyTo (all, 0);
@@ -402,9 +394,8 @@ namespace WebSocketSharp.Net
           return;
 
         var ex = new ObjectDisposedException (GetType ().ToString ());
-        foreach (var ares in _waitQueue) {
+        foreach (var ares in _waitQueue)
           ares.Complete (ex);
-        }
 
         _waitQueue.Clear ();
       }
@@ -416,7 +407,7 @@ namespace WebSocketSharp.Net
       cleanup (force);
     }
 
-    // Must be called with a lock on _contextQueue
+    // Must be called with a lock on _contextQueue.
     private HttpListenerContext getContextFromQueue ()
     {
       if (_contextQueue.Count == 0)
@@ -457,14 +448,12 @@ namespace WebSocketSharp.Net
     {
       CheckDisposed ();
       if (_prefixes.Count == 0)
-        throw new InvalidOperationException (
-          "Please, call AddPrefix before using this method.");
+        throw new InvalidOperationException ("Please, call AddPrefix before using this method.");
 
       if (!_listening)
-        throw new InvalidOperationException (
-          "Please, call Start before using this method.");
+        throw new InvalidOperationException ("Please, call Start before using this method.");
 
-      // Lock _waitQueue early to avoid race conditions
+      // Lock _waitQueue early to avoid race conditions.
       lock (((ICollection) _waitQueue).SyncRoot) {
         lock (((ICollection) _contextQueue).SyncRoot) {
           var context = getContextFromQueue ();
@@ -512,8 +501,7 @@ namespace WebSocketSharp.Net
       _connections.Remove (connection);
     }
 
-    internal AuthenticationSchemes SelectAuthenticationScheme (
-      HttpListenerContext context)
+    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerContext context)
     {
       return AuthenticationSchemeSelectorDelegate != null
              ? AuthenticationSchemeSelectorDelegate (context.Request)
@@ -537,7 +525,7 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Shuts down the <see cref="HttpListener"/> immediately.
+    /// Shuts down the listener immediately.
     /// </summary>
     public void Abort ()
     {
@@ -552,17 +540,15 @@ namespace WebSocketSharp.Net
     /// Begins getting an incoming request information asynchronously.
     /// </summary>
     /// <remarks>
-    /// This asynchronous operation must be completed by calling the
-    /// <c>EndGetContext</c> method. Typically, that method is invoked by the
-    /// <paramref name="callback"/> delegate.
+    /// This asynchronous operation must be completed by calling the <c>EndGetContext</c> method.
+    /// Typically, that method is invoked by the <paramref name="callback"/> delegate.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that contains the status of the
-    /// asynchronous operation.
+    /// An <see cref="IAsyncResult"/> that represents the status of the asynchronous operation.
     /// </returns>
     /// <param name="callback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method(s)
-    /// called when the asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that references the method(s) to invoke
+    /// when the asynchronous operation completes.
     /// </param>
     /// <param name="state">
     /// An <see cref="object"/> that contains a user defined object to pass to
@@ -570,19 +556,17 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The <see cref="HttpListener"/> does not have any URI prefixes to listen
-    ///   on.
+    ///   This listener doesn't have any URI prefixes to listen on.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The <see cref="HttpListener"/> has not been started or is stopped
-    ///   currently.
+    ///   This listener hasn't been started or is stopped currently.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
@@ -590,7 +574,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Shuts down the <see cref="HttpListener"/>.
+    /// Shuts down the listener.
     /// </summary>
     public void Close ()
     {
@@ -605,30 +589,26 @@ namespace WebSocketSharp.Net
     /// Ends an asynchronous operation to get an incoming request information.
     /// </summary>
     /// <remarks>
-    /// This method completes an asynchronous operation started by calling the
-    /// <c>BeginGetContext</c> method.
+    /// This method completes an asynchronous operation started by calling
+    /// the <c>BeginGetContext</c> method.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that contains a client's request
-    /// information.
+    /// A <see cref="HttpListenerContext"/> that contains a request information.
     /// </returns>
     /// <param name="asyncResult">
-    /// An <see cref="IAsyncResult"/> obtained by calling the
-    /// <c>BeginGetContext</c> method.
+    /// An <see cref="IAsyncResult"/> obtained by calling the <c>BeginGetContext</c> method.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="asyncResult"/> was not obtained by calling the
-    /// <c>BeginGetContext</c> method.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="asyncResult"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="asyncResult"/> wasn't obtained by calling the <c>BeginGetContext</c> method.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// This method was already called for the specified
-    /// <paramref name="asyncResult"/>.
+    /// This method was already called for the specified <paramref name="asyncResult"/>.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public HttpListenerContext EndGetContext (IAsyncResult asyncResult)
     {
@@ -654,9 +634,9 @@ namespace WebSocketSharp.Net
       }
 
       var context = ares.GetContext ();
-      var authScheme = SelectAuthenticationScheme (context);
-      if (authScheme != AuthenticationSchemes.Anonymous)
-        context.SetUser (authScheme, Realm, UserCredentialsFinder);
+      var scheme = SelectAuthenticationScheme (context);
+      if (scheme != AuthenticationSchemes.Anonymous)
+        context.SetUser (scheme, Realm, UserCredentialsFinder);
 
       return context; // This will throw on error.
     }
@@ -665,28 +645,25 @@ namespace WebSocketSharp.Net
     /// Gets an incoming request information.
     /// </summary>
     /// <remarks>
-    /// This method waits for an incoming request and returns the request
-    /// information when received the request.
+    /// This method waits for an incoming request and returns a request information
+    /// when the listener receives a request.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that contains a client's request
-    /// information.
+    /// A <see cref="HttpListenerContext"/> that contains a request information.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   The <see cref="HttpListener"/> does not have any URI prefixes to listen
-    ///   on.
+    ///   This listener doesn't have any URI prefixes to listen on.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The <see cref="HttpListener"/> has not been started or is stopped
-    ///   currently.
+    ///   This listener hasn't been started or is stopped currently.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public HttpListenerContext GetContext ()
     {
@@ -700,7 +677,7 @@ namespace WebSocketSharp.Net
     /// Starts to receive incoming requests.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public void Start ()
     {
@@ -716,7 +693,7 @@ namespace WebSocketSharp.Net
     /// Stops receiving incoming requests.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
-    /// This object has been closed.
+    /// This listener has been closed.
     /// </exception>
     public void Stop ()
     {
@@ -734,7 +711,7 @@ namespace WebSocketSharp.Net
     #region Explicit Interface Implementation
 
     /// <summary>
-    /// Releases all resource used by the <see cref="HttpListener"/>.
+    /// Releases all resource used by the listener.
     /// </summary>
     void IDisposable.Dispose ()
     {
