@@ -55,7 +55,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private AuthenticationSchemes                                _authSchemes;
-    private AuthenticationSchemeSelector                         _authSchemeSelector;
+    private Func<HttpListenerRequest, AuthenticationSchemes>     _authSchemeSelector;
     private string                                               _certFolderPath;
     private Dictionary<HttpConnection, HttpConnection>           _connections;
     private List<HttpListenerContext>                            _contextQueue;
@@ -124,16 +124,27 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to determine the scheme used to authenticate clients.
+    /// Gets or sets the delegate called to select the scheme used to authenticate the clients.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   If you set this property, the listener uses the authentication scheme selected by
+    ///   the delegate for each request.
+    ///   </para>
+    ///   <para>
+    ///   If you don't set, the listener uses the value of the <c>AuthenticationSchemes</c>
+    ///   property as the authentication scheme for all requests.
+    ///   </para>
+    /// </remarks>
     /// <value>
-    /// A <see cref="AuthenticationSchemeSelector"/> delegate that invokes the method(s) used to
-    /// select an authentication scheme. The default value is <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="HttpListenerRequest"/>, <see cref="AuthenticationSchemes"/>&gt;</c>
+    /// delegate that invokes the method(s) used to select an authentication scheme. The default
+    /// value is <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
-    public AuthenticationSchemeSelector AuthenticationSchemeSelectorDelegate {
+    public Func<HttpListenerRequest, AuthenticationSchemes> AuthenticationSchemeSelector {
       get {
         CheckDisposed ();
         return _authSchemeSelector;
@@ -503,8 +514,8 @@ namespace WebSocketSharp.Net
 
     internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerContext context)
     {
-      return AuthenticationSchemeSelectorDelegate != null
-             ? AuthenticationSchemeSelectorDelegate (context.Request)
+      return AuthenticationSchemeSelector != null
+             ? AuthenticationSchemeSelector (context.Request)
              : _authSchemes;
     }
 

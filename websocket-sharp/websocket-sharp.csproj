@@ -71,7 +71,6 @@
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Server\WebSocketService.cs" />
     <Compile Include="WsStream.cs" />
-    <Compile Include="Net\AuthenticationSchemeSelector.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\ChunkedInputStream.cs" />
