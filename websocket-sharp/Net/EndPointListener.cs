@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
@@ -67,44 +67,56 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     public EndPointListener (
-      IPAddress address,
-      int port,
-      bool secure,
-      string certFolderPath,
-      X509Certificate2 defaultCert)
+      IPAddress address, int port, bool secure, string certFolderPath, X509Certificate2 defaultCert)
     {
       if (secure) {
         _secure = secure;
         _cert = getCertificate (port, certFolderPath, defaultCert);
         if (_cert == null)
-          throw new ArgumentException ("Server certificate not found.");
+          throw new ArgumentException ("No server certificate found.");
       }
 
       _endpoint = new IPEndPoint (address, port);
-      _socket = new Socket (
-        address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+      _prefixes = new Dictionary<ListenerPrefix, HttpListener> ();
+      _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
+
+      _socket = new Socket (address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
       _socket.Bind (_endpoint);
       _socket.Listen (500);
+
       var args = new SocketAsyncEventArgs ();
       args.UserToken = this;
       args.Completed += onAccept;
       _socket.AcceptAsync (args);
-      _prefixes = new Dictionary<ListenerPrefix, HttpListener> ();
-      _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
+    }
+
+    #endregion
+
+    #region Public Properties
+
+    public X509Certificate2 Certificate {
+      get {
+        return _cert;
+      }
+    }
+
+    public bool IsSecure {
+      get {
+        return _secure;
+      }
     }
 
     #endregion
 
     #region Private Methods
 
-    private static void addSpecial (
-      List<ListenerPrefix> prefixes, ListenerPrefix prefix)
+    private static void addSpecial (List<ListenerPrefix> prefixes, ListenerPrefix prefix)
     {
       if (prefixes == null)
         return;
 
       foreach (var p in prefixes)
-        if (p.Path == prefix.Path) // TODO: code
+        if (p.Path == prefix.Path) // TODO: Code.
           throw new HttpListenerException (400, "Prefix already in use.");
 
       prefixes.Add (prefix);
@@ -126,14 +138,15 @@ namespace WebSocketSharp.Net
 
     private static RSACryptoServiceProvider createRSAFromFile (string filename)
     {
-      var rsa = new RSACryptoServiceProvider ();
-      byte[] pvk = null;
+      byte [] pvk = null;
       using (var fs = File.Open (filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
         pvk = new byte [fs.Length];
         fs.Read (pvk, 0, pvk.Length);
       }
 
+      var rsa = new RSACryptoServiceProvider ();
       rsa.ImportCspBlob (pvk);
+
       return rsa;
     }
 
@@ -183,7 +196,7 @@ namespace WebSocketSharp.Net
     private static void onAccept (object sender, EventArgs e)
     {
       var args = (SocketAsyncEventArgs) e;
-      var epListener = (EndPointListener) args.UserToken;
+      var listener = (EndPointListener) args.UserToken;
       Socket accepted = null;
       if (args.SocketError == SocketError.Success) {
         accepted = args.AcceptSocket;
@@ -191,7 +204,7 @@ namespace WebSocketSharp.Net
       }
 
       try {
-        epListener._socket.AcceptAsync (args);
+        listener._socket.AcceptAsync (args);
       }
       catch {
         if (accepted != null)
@@ -205,11 +218,9 @@ namespace WebSocketSharp.Net
 
       HttpConnection conn = null;
       try {
-        conn = new HttpConnection (
-          accepted, epListener, epListener._secure, epListener._cert);
-        lock (((ICollection) epListener._unregistered).SyncRoot) {
-          epListener._unregistered [conn] = conn;
-        }
+        conn = new HttpConnection (accepted, listener, listener._secure, listener._cert);
+        lock (((ICollection) listener._unregistered).SyncRoot)
+          listener._unregistered [conn] = conn;
 
         conn.BeginReadRequest ();
       }
@@ -223,8 +234,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static bool removeSpecial (
-      List<ListenerPrefix> prefixes, ListenerPrefix prefix)
+    private static bool removeSpecial (List<ListenerPrefix> prefixes, ListenerPrefix prefix)
     {
       if (prefixes == null)
         return false;
@@ -320,8 +330,8 @@ namespace WebSocketSharp.Net
         do {
           current = _unhandled;
           future = current != null
-                 ? new List<ListenerPrefix> (current)
-                 : new List<ListenerPrefix> ();
+                   ? new List<ListenerPrefix> (current)
+                   : new List<ListenerPrefix> ();
 
           prefix.Listener = listener;
           addSpecial (future, prefix);
@@ -335,8 +345,8 @@ namespace WebSocketSharp.Net
         do {
           current = _all;
           future = current != null
-                 ? new List<ListenerPrefix> (current)
-                 : new List<ListenerPrefix> ();
+                   ? new List<ListenerPrefix> (current)
+                   : new List<ListenerPrefix> ();
 
           prefix.Listener = listener;
           addSpecial (future, prefix);
@@ -351,9 +361,8 @@ namespace WebSocketSharp.Net
         prefs = _prefixes;
         if (prefs.ContainsKey (prefix)) {
           var other = prefs [prefix];
-          if (other != listener) // TODO: code.
-            throw new HttpListenerException (
-              400, "There's another listener for " + prefix);
+          if (other != listener) // TODO: Code.
+            throw new HttpListenerException (400, "There's another listener for " + prefix);
 
           return;
         }
@@ -366,9 +375,8 @@ namespace WebSocketSharp.Net
 
     public bool BindContext (HttpListenerContext context)
     {
-      var req = context.Request;
       ListenerPrefix prefix;
-      var listener = searchListener (req.Url, out prefix);
+      var listener = searchListener (context.Request.Url, out prefix);
       if (listener == null)
         return false;
 
@@ -398,8 +406,8 @@ namespace WebSocketSharp.Net
         do {
           current = _unhandled;
           future = current != null
-                 ? new List<ListenerPrefix> (current)
-                 : new List<ListenerPrefix> ();
+                   ? new List<ListenerPrefix> (current)
+                   : new List<ListenerPrefix> ();
 
           if (!removeSpecial (future, prefix))
             break; // Prefix not found.
@@ -414,8 +422,8 @@ namespace WebSocketSharp.Net
         do {
           current = _all;
           future = current != null
-                 ? new List<ListenerPrefix> (current)
-                 : new List<ListenerPrefix> ();
+                   ? new List<ListenerPrefix> (current)
+                   : new List<ListenerPrefix> ();
 
           if (!removeSpecial (future, prefix))
             break; // Prefix not found.
