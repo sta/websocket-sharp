@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
@@ -100,27 +100,25 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    public HttpConnection (
-      Socket socket,
-      EndPointListener listener,
-      bool secure,
-      X509Certificate2 cert)
+    public HttpConnection (Socket socket, EndPointListener listener)
     {
       _socket = socket;
       _epListener = listener;
-      _secure = secure;
+      _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (!secure)
+      if (!_secure) {
         _stream = netStream;
+      }
       else {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (cert);
+        sslStream.AuthenticateAsServer (listener.Certificate);
         _stream = sslStream;
       }
 
       _timeout = 90000; // 90k ms for first request, 15k ms from then on.
-      _timer = new Timer (onTimeout, null, Timeout.Infinite, Timeout.Infinite);
+      _timer = new Timer (onTimeout, this, Timeout.Infinite, Timeout.Infinite);
+
       init ();
     }
 
@@ -211,80 +209,77 @@ namespace WebSocketSharp.Net
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
-      conn.onReadInternal (asyncResult);
-    }
-
-    private void onReadInternal (IAsyncResult asyncResult)
-    {
-      _timer.Change (Timeout.Infinite, Timeout.Infinite);
+      conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
 
       var read = -1;
       try {
-        read = _stream.EndRead (asyncResult);
-        _requestBuffer.Write (_buffer, 0, read);
-        if (_requestBuffer.Length > 32768) {
-          SendError ();
-          Close (true);
+        read = conn._stream.EndRead (asyncResult);
+        conn._requestBuffer.Write (conn._buffer, 0, read);
+        if (conn._requestBuffer.Length > 32768) {
+          conn.SendError ();
+          conn.Close (true);
 
           return;
         }
       }
       catch {
-        if (_requestBuffer != null && _requestBuffer.Length > 0)
-          SendError ();
+        if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
+          conn.SendError ();
 
-        if (_socket != null) {
-          closeSocket ();
-          unbind ();
+        if (conn._socket != null) {
+          conn.closeSocket ();
+          conn.unbind ();
         }
 
         return;
       }
 
       if (read <= 0) {
-        closeSocket ();
-        unbind ();
+        conn.closeSocket ();
+        conn.unbind ();
 
         return;
       }
 
-      if (processInput (_requestBuffer.GetBuffer ())) {
-        if (!_context.HaveError)
-          _context.Request.FinishInitialization ();
+      if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
+        if (!conn._context.HaveError) {
+          conn._context.Request.FinishInitialization ();
+        }
         else {
-          SendError ();
-          Close (true);
+          conn.SendError ();
+          conn.Close (true);
 
           return;
         }
 
-        if (!_epListener.BindContext (_context)) {
-          SendError ("Invalid host", 400);
-          Close (true);
+        if (!conn._epListener.BindContext (conn._context)) {
+          conn.SendError ("Invalid host.", 400);
+          conn.Close (true);
 
           return;
         }
 
-        var listener = _context.Listener;
-        if (_lastListener != listener) {
-          removeConnection ();
-          listener.AddConnection (this);
-          _lastListener = listener;
+        var listener = conn._context.Listener;
+        if (conn._lastListener != listener) {
+          conn.removeConnection ();
+          listener.AddConnection (conn);
+          conn._lastListener = listener;
         }
 
-        _contextWasBound = true;
-        listener.RegisterContext (_context);
+        conn._contextWasBound = true;
+        listener.RegisterContext (conn._context);
 
         return;
       }
 
-      _stream.BeginRead (_buffer, 0, _bufferSize, onRead, this);
+      conn._stream.BeginRead (conn._buffer, 0, _bufferSize, onRead, conn);
     }
 
-    private void onTimeout (object unused)
+    private static void onTimeout (object state)
     {
-      closeSocket ();
-      unbind ();
+      var conn = (HttpConnection) state;
+      conn.closeSocket ();
+      conn.unbind ();
     }
 
     // true -> Done processing.
@@ -295,8 +290,7 @@ namespace WebSocketSharp.Net
       var used = 0;
       string line;
       try {
-        while ((line = readLine (
-          data, _position, length - _position, ref used)) != null) {
+        while ((line = readLine (data, _position, length - _position, ref used)) != null) {
           _position += used;
           if (line.Length == 0) {
             if (_inputState == InputState.RequestLine)
@@ -332,8 +326,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private string readLine (
-      byte [] buffer, int offset, int length, ref int used)
+    private string readLine (byte [] buffer, int offset, int length, ref int used)
     {
       if (_currentLine == null)
         _currentLine = new StringBuilder ();
@@ -343,15 +336,12 @@ namespace WebSocketSharp.Net
       for (int i = offset; i < last && _lineState != LineState.LF; i++) {
         used++;
         var b = buffer [i];
-        if (b == 13) {
+        if (b == 13)
           _lineState = LineState.CR;
-        }
-        else if (b == 10) {
+        else if (b == 10)
           _lineState = LineState.LF;
-        }
-        else {
+        else
           _currentLine.Append ((char) b);
-        }
       }
 
       string result = null;
@@ -505,8 +495,8 @@ namespace WebSocketSharp.Net
 
         var description = status.GetStatusDescription ();
         var error = message != null && message.Length > 0
-                  ? String.Format ("<h1>{0} ({1})</h1>", description, message)
-                  : String.Format ("<h1>{0}</h1>", description);
+                    ? String.Format ("<h1>{0} ({1})</h1>", description, message)
+                    : String.Format ("<h1>{0}</h1>", description);
 
         var entity = res.ContentEncoding.GetBytes (error);
         res.Close (entity, false);

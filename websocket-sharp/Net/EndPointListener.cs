@@ -218,7 +218,7 @@ namespace WebSocketSharp.Net
 
       HttpConnection conn = null;
       try {
-        conn = new HttpConnection (accepted, listener, listener._secure, listener._cert);
+        conn = new HttpConnection (accepted, listener);
         lock (((ICollection) listener._unregistered).SyncRoot)
           listener._unregistered [conn] = conn;
 

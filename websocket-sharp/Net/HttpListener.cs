@@ -452,7 +452,8 @@ namespace WebSocketSharp.Net
 
     internal void AddConnection (HttpConnection connection)
     {
-      _connections [connection] = connection;
+      lock (((ICollection) _connections).SyncRoot)
+        _connections [connection] = connection;
     }
 
     internal ListenerAsyncResult BeginGetContext (ListenerAsyncResult asyncResult)
@@ -509,7 +510,8 @@ namespace WebSocketSharp.Net
 
     internal void RemoveConnection (HttpConnection connection)
     {
-      _connections.Remove (connection);
+      lock (((ICollection) _connections).SyncRoot)
+        _connections.Remove (connection);
     }
 
     internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerContext context)
