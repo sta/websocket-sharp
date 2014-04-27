@@ -52,21 +52,6 @@ namespace WebSocketSharp.Net
 {
   internal sealed class HttpConnection
   {
-    #region Internal Enums
-
-    enum InputState {
-      RequestLine,
-      Headers
-    }
-
-    enum LineState {
-      None,
-      CR,
-      LF
-    }
-
-    #endregion
-
     #region Private Const Fields
 
     private const int _bufferSize = 8192;
@@ -107,13 +92,13 @@ namespace WebSocketSharp.Net
       _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (!_secure) {
-        _stream = netStream;
-      }
-      else {
+      if (_secure) {
         var sslStream = new SslStream (netStream, false);
         sslStream.AuthenticateAsServer (listener.Certificate);
         _stream = sslStream;
+      }
+      else {
+        _stream = netStream;
       }
 
       _timeout = 90000; // 90k ms for first request, 15k ms from then on.
@@ -216,7 +201,7 @@ namespace WebSocketSharp.Net
         read = conn._stream.EndRead (asyncResult);
         conn._requestBuffer.Write (conn._buffer, 0, read);
         if (conn._requestBuffer.Length > 32768) {
-          conn.SendError ();
+          conn.SendError ("Bad request", 400);
           conn.Close (true);
 
           return;
@@ -253,7 +238,7 @@ namespace WebSocketSharp.Net
         }
 
         if (!conn._epListener.BindContext (conn._context)) {
-          conn.SendError ("Invalid host.", 400);
+          conn.SendError ("Invalid host", 400);
           conn.Close (true);
 
           return;

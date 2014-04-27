@@ -129,6 +129,8 @@
     <Compile Include="Net\HttpDigestIdentity.cs" />
     <Compile Include="Net\NetworkCredential.cs" />
     <Compile Include="Server\WebSocketServiceManager.cs" />
+    <Compile Include="Net\InputState.cs" />
+    <Compile Include="Net\LineState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
