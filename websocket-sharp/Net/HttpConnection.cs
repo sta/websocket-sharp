@@ -178,6 +178,24 @@ namespace WebSocketSharp.Net
       removeConnection ();
     }
 
+    private void disposeTimer ()
+    {
+      if (_timer == null)
+        return;
+
+      var timer = _timer;
+      _timer = null;
+
+      try {
+        timer.Change (Timeout.Infinite, Timeout.Infinite);
+      }
+      catch {
+      }
+
+      if (timer != null)
+        timer.Dispose ();
+    }
+
     private void init ()
     {
       _chunked = false;
@@ -194,10 +212,10 @@ namespace WebSocketSharp.Net
     private static void onRead (IAsyncResult asyncResult)
     {
       var conn = (HttpConnection) asyncResult.AsyncState;
-      conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
 
       var read = -1;
       try {
+        conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
         read = conn._stream.EndRead (asyncResult);
         conn._requestBuffer.Write (conn._buffer, 0, read);
         if (conn._requestBuffer.Length > 32768) {
@@ -212,6 +230,7 @@ namespace WebSocketSharp.Net
           conn.SendError ();
 
         if (conn._socket != null) {
+          conn.disposeTimer ();
           conn.closeSocket ();
           conn.unbind ();
         }
@@ -220,6 +239,7 @@ namespace WebSocketSharp.Net
       }
 
       if (read <= 0) {
+        conn.disposeTimer ();
         conn.closeSocket ();
         conn.unbind ();
 
@@ -263,6 +283,7 @@ namespace WebSocketSharp.Net
     private static void onTimeout (object state)
     {
       var conn = (HttpConnection) state;
+      conn.disposeTimer ();
       conn.closeSocket ();
       conn.unbind ();
     }
@@ -369,6 +390,7 @@ namespace WebSocketSharp.Net
 
         var req = _context.Request;
         var res = _context.Response;
+
         force |= !req.KeepAlive;
         if (!force)
           force = res.Headers ["Connection"] == "close";
@@ -387,15 +409,17 @@ namespace WebSocketSharp.Net
 
         var socket = _socket;
         _socket = null;
+
+        disposeTimer ();
+
         try {
           socket.Shutdown (SocketShutdown.Both);
         }
         catch {
         }
-        finally {
-          if (socket != null)
-            socket.Close ();
-        }
+
+        if (socket != null)
+          socket.Close ();
 
         unbind ();
         removeConnection ();
@@ -421,7 +445,7 @@ namespace WebSocketSharp.Net
         _stream.BeginRead (_buffer, 0, _bufferSize, onRead, this);
       }
       catch {
-        _timer.Change (Timeout.Infinite, Timeout.Infinite);
+        disposeTimer ();
         closeSocket ();
         unbind ();
       }
