@@ -163,9 +163,6 @@ namespace WebSocketSharp.Net
 
     private void close ()
     {
-      if (_socket == null)
-        return;
-
       lock (_sync) {
         if (_socket == null)
           return;
@@ -261,8 +258,7 @@ namespace WebSocketSharp.Net
           }
         }
         catch {
-          var requestBuffer = conn._requestBuffer;
-          if (requestBuffer != null && requestBuffer.Length > 0)
+          if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
             conn.SendError ();
 
           conn.close ();
