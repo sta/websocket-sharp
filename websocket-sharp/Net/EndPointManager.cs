@@ -67,7 +67,7 @@ namespace WebSocketSharp.Net
     {
       var prefix = new ListenerPrefix (uriPrefix);
       if (prefix.Path.IndexOf ('%') != -1)
-        throw new HttpListenerException (400, "Invalid path.");
+        throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
       if (prefix.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
@@ -149,9 +149,8 @@ namespace WebSocketSharp.Net
 
     public static void AddPrefix (string uriPrefix, HttpListener httpListener)
     {
-      lock (((ICollection) _ipToEndpoints).SyncRoot) {
+      lock (((ICollection) _ipToEndpoints).SyncRoot)
         addPrefix (uriPrefix, httpListener);
-      }
     }
 
     public static void RemoveEndPoint (EndPointListener epListener, IPEndPoint endpoint)
@@ -168,17 +167,15 @@ namespace WebSocketSharp.Net
 
     public static void RemoveListener (HttpListener httpListener)
     {
-      lock (((ICollection) _ipToEndpoints).SyncRoot) {
+      lock (((ICollection) _ipToEndpoints).SyncRoot)
         foreach (var prefix in httpListener.Prefixes)
           removePrefix (prefix, httpListener);
-      }
     }
 
     public static void RemovePrefix (string uriPrefix, HttpListener httpListener)
     {
-      lock (((ICollection) _ipToEndpoints).SyncRoot) {
+      lock (((ICollection) _ipToEndpoints).SyncRoot)
         removePrefix (uriPrefix, httpListener);
-      }
     }
 
     #endregion
