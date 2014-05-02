@@ -115,8 +115,9 @@ namespace WebSocketSharp.Net
       if (prefixes == null)
         return;
 
-      foreach (var p in prefixes)
-        if (p.Path == prefix.Path) // TODO: Code.
+      var path = prefix.Path;
+      foreach (var pref in prefixes)
+        if (pref.Path == path) // TODO: Code?
           throw new HttpListenerException (400, "Prefix already in use.");
 
       prefixes.Add (prefix);
@@ -178,15 +179,15 @@ namespace WebSocketSharp.Net
 
       HttpListener bestMatch = null;
       var bestLength = -1;
-      foreach (var p in list) {
-        var ppath = p.Path;
+      foreach (var pref in list) {
+        var ppath = pref.Path;
         if (ppath.Length < bestLength)
           continue;
 
         if (path.StartsWith (ppath)) {
           bestLength = ppath.Length;
-          bestMatch = p.Listener;
-          prefix = p;
+          bestMatch = pref.Listener;
+          prefix = pref;
         }
       }
 
@@ -239,9 +240,10 @@ namespace WebSocketSharp.Net
       if (prefixes == null)
         return false;
 
+      var path = prefix.Path;
       var count = prefixes.Count;
       for (int i = 0; i < count; i++) {
-        if (prefixes [i].Path == prefix.Path) {
+        if (prefixes [i].Path == path) {
           prefixes.RemoveAt (i);
           return true;
         }
@@ -260,21 +262,22 @@ namespace WebSocketSharp.Net
       var port = uri.Port;
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
       var pathSlash = path [path.Length - 1] == '/' ? path : path + "/";
+
       HttpListener bestMatch = null;
       var bestLength = -1;
       if (host != null && host.Length > 0) {
-        foreach (var p in _prefixes.Keys) {
-          var ppath = p.Path;
+        foreach (var pref in _prefixes.Keys) {
+          var ppath = pref.Path;
           if (ppath.Length < bestLength)
             continue;
 
-          if (p.Host != host || p.Port != port)
+          if (pref.Host != host || pref.Port != port)
             continue;
 
           if (path.StartsWith (ppath) || pathSlash.StartsWith (ppath)) {
             bestLength = ppath.Length;
-            bestMatch = _prefixes [p];
-            prefix = p;
+            bestMatch = _prefixes [pref];
+            prefix = pref;
           }
         }
 
@@ -356,21 +359,21 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<ListenerPrefix, HttpListener> prefs, p2;
+      Dictionary<ListenerPrefix, HttpListener> prefs, prefs2;
       do {
         prefs = _prefixes;
         if (prefs.ContainsKey (prefix)) {
           var other = prefs [prefix];
-          if (other != listener) // TODO: Code.
+          if (other != listener) // TODO: Code?
             throw new HttpListenerException (400, "There's another listener for " + prefix);
 
           return;
         }
 
-        p2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
-        p2 [prefix] = listener;
+        prefs2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
+        prefs2 [prefix] = listener;
       }
-      while (Interlocked.CompareExchange (ref _prefixes, p2, prefs) != prefs);
+      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
     }
 
     public bool BindContext (HttpListenerContext context)
@@ -389,13 +392,14 @@ namespace WebSocketSharp.Net
     public void Close ()
     {
       _socket.Close ();
+
       lock (((ICollection) _unregistered).SyncRoot) {
-        var copy = new Dictionary<HttpConnection, HttpConnection> (_unregistered);
-        foreach (var conn in copy.Keys)
+        var conns = new List<HttpConnection> (_unregistered.Keys);
+        _unregistered.Clear ();
+        foreach (var conn in conns)
           conn.Close (true);
 
-        copy.Clear ();
-        _unregistered.Clear ();
+        conns.Clear ();
       }
     }
 
@@ -434,16 +438,16 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<ListenerPrefix, HttpListener> prefs, p2;
+      Dictionary<ListenerPrefix, HttpListener> prefs, prefs2;
       do {
         prefs = _prefixes;
         if (!prefs.ContainsKey (prefix))
           break;
 
-        p2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
-        p2.Remove (prefix);
+        prefs2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
+        prefs2.Remove (prefix);
       }
-      while (Interlocked.CompareExchange (ref _prefixes, p2, prefs) != prefs);
+      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
 
       checkIfRemove ();
     }
