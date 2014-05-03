@@ -41,9 +41,6 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net.Security;
@@ -245,11 +242,11 @@ namespace WebSocketSharp.Net
         if (conn._socket == null)
           return;
 
-        var read = -1;
+        var nread = -1;
         try {
           conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
-          read = conn._stream.EndRead (asyncResult);
-          conn._requestBuffer.Write (conn._buffer, 0, read);
+          nread = conn._stream.EndRead (asyncResult);
+          conn._requestBuffer.Write (conn._buffer, 0, nread);
           if (conn._requestBuffer.Length > 32768) {
             conn.SendError ("Bad request", 400);
             conn.Close (true);
@@ -265,7 +262,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (read <= 0) {
+        if (nread <= 0) {
           conn.close ();
           return;
         }
@@ -315,11 +312,11 @@ namespace WebSocketSharp.Net
     // false -> Need more input.
     private bool processInput (byte [] data)
     {
-      var length = data.Length;
+      var len = data.Length;
       var used = 0;
       string line;
       try {
-        while ((line = readLine (data, _position, length - _position, ref used)) != null) {
+        while ((line = readLine (data, _position, len - _position, ref used)) != null) {
           _position += used;
           if (line.Length == 0) {
             if (_inputState == InputState.RequestLine)
@@ -347,7 +344,7 @@ namespace WebSocketSharp.Net
       }
 
       _position += used;
-      if (used == length) {
+      if (used == len) {
         _requestBuffer.SetLength (0);
         _position = 0;
       }
@@ -373,14 +370,14 @@ namespace WebSocketSharp.Net
           _currentLine.Append ((char) b);
       }
 
-      string result = null;
+      string res = null;
       if (_lineState == LineState.LF) {
         _lineState = LineState.None;
-        result = _currentLine.ToString ();
+        res = _currentLine.ToString ();
         _currentLine.Length = 0;
       }
 
-      return result;
+      return res;
     }
 
     private void removeConnection ()
@@ -476,18 +473,18 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return _inputStream;
 
-        var buffer = _requestBuffer.GetBuffer ();
-        var length = buffer.Length;
+        var buff = _requestBuffer.GetBuffer ();
+        var len = buff.Length;
         disposeRequestBuffer ();
         if (chunked) {
           _chunked = true;
           _context.Response.SendChunked = true;
           _inputStream = new ChunkedInputStream (
-            _context, _stream, buffer, _position, length - _position);
+            _context, _stream, buff, _position, len - _position);
         }
         else {
           _inputStream = new RequestStream (
-            _stream, buffer, _position, length - _position, contentlength);
+            _stream, buff, _position, len - _position, contentlength);
         }
 
         return _inputStream;
