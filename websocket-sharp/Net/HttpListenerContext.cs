@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,22 +33,19 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
 using System;
-using System.Collections.Specialized;
-using System.IO;
 using System.Security.Principal;
-using System.Text;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides access to the HTTP request and response information used by the
-  /// <see cref="HttpListener"/>.
+  /// Provides a set of methods and properties used to access the HTTP request and response
+  /// information used by the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
   /// The HttpListenerContext class cannot be inherited.
@@ -123,12 +120,10 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the <see cref="HttpListenerRequest"/> that contains the HTTP
-    /// request information from a client.
+    /// Gets the HTTP request information from a client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerRequest"/> that contains the HTTP request
-    /// information.
+    /// A <see cref="HttpListenerRequest"/> that represents the HTTP request.
     /// </value>
     public HttpListenerRequest Request {
       get {
@@ -137,13 +132,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the <see cref="HttpListenerResponse"/> that contains the HTTP
-    /// response information to send to the client in response to the client's
-    /// request.
+    /// Gets the HTTP response information used to send to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerResponse"/> that contains the HTTP response
-    /// information.
+    /// A <see cref="HttpListenerResponse"/> that represents the HTTP response to send.
     /// </value>
     public HttpListenerResponse Response {
       get {
@@ -152,11 +144,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the client information (identity, authentication information, and
-    /// security roles).
+    /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> contains the client information.
+    /// A <see cref="IPrincipal"/> that represents the client information.
     /// </value>
     public IPrincipal User {
       get {
@@ -169,7 +160,7 @@ namespace WebSocketSharp.Net
     #region Internal Methods
 
     internal void SetUser (
-      AuthenticationSchemes expectedScheme,
+      AuthenticationSchemes scheme,
       string realm,
       Func<IIdentity, NetworkCredential> credentialsFinder)
     {
@@ -177,45 +168,44 @@ namespace WebSocketSharp.Net
       if (authRes == null)
         return;
 
-      var identity = authRes.ToIdentity ();
-      if (identity == null)
+      var id = authRes.ToIdentity ();
+      if (id == null)
         return;
 
-      NetworkCredential credentials = null;
+      NetworkCredential cred = null;
       try {
-        credentials = credentialsFinder (identity);
+        cred = credentialsFinder (id);
       }
       catch {
       }
 
-      if (credentials == null)
+      if (cred == null)
         return;
 
-      var valid = expectedScheme == AuthenticationSchemes.Basic
-                ? ((HttpBasicIdentity) identity).Password == credentials.Password
-                : expectedScheme == AuthenticationSchemes.Digest
-                  ? ((HttpDigestIdentity) identity).IsValid (
-                      credentials.Password, realm, _request.HttpMethod, null)
-                  : false;
+      var valid = scheme == AuthenticationSchemes.Basic
+                  ? ((HttpBasicIdentity) id).Password == cred.Password
+                  : scheme == AuthenticationSchemes.Digest
+                    ? ((HttpDigestIdentity) id).IsValid (
+                        cred.Password, realm, _request.HttpMethod, null)
+                    : false;
 
       if (valid)
-        _user = new GenericPrincipal (identity, credentials.Roles);
+        _user = new GenericPrincipal (id, cred.Roles);
     }
 
     #endregion
 
-    #region Public Method
+    #region Public Methods
 
     /// <summary>
     /// Accepts a WebSocket connection request.
     /// </summary>
     /// <returns>
-    /// A <see cref="HttpListenerWebSocketContext"/> that contains a WebSocket
-    /// connection request information.
+    /// A <see cref="HttpListenerWebSocketContext"/> that represents the WebSocket connection
+    /// request.
     /// </returns>
     /// <param name="logger">
-    /// A <see cref="Logger"/> that provides the logging functions used in the
-    /// WebSocket attempts.
+    /// A <see cref="Logger"/> that provides the logging functions used in the WebSocket attempts.
     /// </param>
     public HttpListenerWebSocketContext AcceptWebSocket (Logger logger)
     {
