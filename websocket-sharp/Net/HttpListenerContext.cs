@@ -109,7 +109,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal bool HaveError {
+    internal bool HasError {
       get {
         return _error != null && _error.Length > 0;
       }

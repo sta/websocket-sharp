@@ -268,7 +268,7 @@ namespace WebSocketSharp.Net
         }
 
         if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
-          if (!conn._context.HaveError) {
+          if (!conn._context.HasError) {
             conn._context.Request.FinishInitialization ();
           }
           else {
@@ -334,7 +334,7 @@ namespace WebSocketSharp.Net
             _context.Request.AddHeader (line);
           }
 
-          if (_context.HaveError)
+          if (_context.HasError)
             return true;
         }
       }
