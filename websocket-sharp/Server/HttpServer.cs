@@ -489,7 +489,7 @@ namespace WebSocketSharp.Server
               return;
 
             if (context.Request.IsUpgradeTo ("websocket")) {
-              acceptWebSocketRequest (context.AcceptWebSocket (_logger));
+              acceptWebSocketRequest (context.AcceptWebSocket (null, _logger));
               return;
             }
 

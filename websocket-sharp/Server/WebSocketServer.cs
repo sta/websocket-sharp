@@ -476,7 +476,7 @@ namespace WebSocketSharp.Server
       ThreadPool.QueueUserWorkItem (
         state => {
           try {
-            var context = client.GetWebSocketContext (_cert, _secure, _logger);
+            var context = client.GetWebSocketContext (null, _cert, _secure, _logger);
             if (_authSchemes != AuthenticationSchemes.Anonymous &&
                 !authenticateRequest (_authSchemes, context))
               return;

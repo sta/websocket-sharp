@@ -59,7 +59,7 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient client, X509Certificate cert, bool secure, Logger logger)
+      TcpClient client, string protocol, X509Certificate cert, bool secure, Logger logger)
     {
       _client = client;
       _secure = secure;
@@ -67,7 +67,7 @@ namespace WebSocketSharp.Net.WebSockets
       _request = _stream.ReadHandshake<HandshakeRequest> (
         HandshakeRequest.Parse, 90000);
 
-      _websocket = new WebSocket (this, logger);
+      _websocket = new WebSocket (this, protocol, logger);
     }
 
     #endregion

@@ -106,9 +106,10 @@ namespace WebSocketSharp
     #region Internal Constructors
 
     // As server
-    internal WebSocket (HttpListenerWebSocketContext context, Logger logger)
+    internal WebSocket (HttpListenerWebSocketContext context, string protocol, Logger logger)
     {
       _context = context;
+      _protocol = protocol;
       _logger = logger;
 
       _closeContext = context.Close;
@@ -120,9 +121,10 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal WebSocket (TcpListenerWebSocketContext context, Logger logger)
+    internal WebSocket (TcpListenerWebSocketContext context, string protocol, Logger logger)
     {
       _context = context;
+      _protocol = protocol;
       _logger = logger;
 
       _closeContext = context.Close;

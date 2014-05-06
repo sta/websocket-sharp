@@ -204,12 +204,34 @@ namespace WebSocketSharp.Net
     /// A <see cref="HttpListenerWebSocketContext"/> that represents the WebSocket connection
     /// request.
     /// </returns>
+    /// <param name="protocol">
+    /// A <see cref="string"/> that represents the subprotocol used in the WebSocket connection.
+    /// </param>
     /// <param name="logger">
     /// A <see cref="Logger"/> that provides the logging functions used in the WebSocket attempts.
     /// </param>
-    public HttpListenerWebSocketContext AcceptWebSocket (Logger logger)
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="protocol"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocol"/> contains an invalid character.
+    ///   </para>
+    /// </exception>
+    public HttpListenerWebSocketContext AcceptWebSocket (string protocol, Logger logger)
     {
-      return new HttpListenerWebSocketContext (this, logger);
+      if (protocol != null) {
+        if (protocol.Length == 0)
+          throw new ArgumentException ("An empty string.", "protocol");
+
+        if (!protocol.IsToken ())
+          throw new ArgumentException ("Contains an invalid character.", "protocol");
+      }
+
+      return new HttpListenerWebSocketContext (this, protocol, logger ?? new Logger ());
     }
 
     #endregion

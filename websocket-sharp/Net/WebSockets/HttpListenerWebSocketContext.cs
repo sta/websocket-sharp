@@ -51,11 +51,12 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Constructors
 
-    internal HttpListenerWebSocketContext (HttpListenerContext context, Logger logger)
+    internal HttpListenerWebSocketContext (
+      HttpListenerContext context, string protocol, Logger logger)
     {
       _context = context;
       _stream = WsStream.CreateServerStream (context);
-      _websocket = new WebSocket (this, logger ?? new Logger ());
+      _websocket = new WebSocket (this, protocol, logger);
     }
 
     #endregion
