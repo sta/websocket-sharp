@@ -44,14 +44,13 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private WebSocketContext        _context;
-    private Func<CookieCollection, CookieCollection, bool>
-                                    _cookiesValidator;
-    private Func<string, bool>      _originValidator;
-    private string                  _protocol;
-    private WebSocketSessionManager _sessions;
-    private DateTime                _start;
-    private WebSocket               _websocket;
+    private WebSocketContext                               _context;
+    private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
+    private Func<string, bool>                             _originValidator;
+    private string                                         _protocol;
+    private WebSocketSessionManager                        _sessions;
+    private DateTime                                       _start;
+    private WebSocket                                      _websocket;
 
     #endregion
 
@@ -192,7 +191,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the subprotocol of the <see cref="WebSocket"/> used in the current session.
+    /// Gets or sets the WebSocket subprotocol used in the current session.
     /// </summary>
     /// <remarks>
     /// Set operation of this property is available before the WebSocket connection has been
@@ -200,15 +199,12 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the subprotocol of the <see cref="WebSocket"/>
-    ///   used in the current session if any.
+    ///   A <see cref="string"/> that represents the subprotocol if any. The default value is
+    ///   <see cref="String.Empty"/>.
     ///   </para>
     ///   <para>
     ///   The value to set must be a token defined in
     ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
-    ///   </para>
-    ///   <para>
-    ///   The default value is <see cref="String.Empty"/>.
     ///   </para>
     /// </value>
     public string Protocol {
@@ -219,11 +215,13 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (State == WebSocketState.Connecting &&
-            value != null &&
-            value.Length > 0 &&
-            value.IsToken ())
-          _protocol = value;
+        if (State != WebSocketState.Connecting)
+          return;
+
+        if (value != null && (value.Length == 0 || !value.IsToken ()))
+          return;
+
+        _protocol = value;
       }
     }
 
