@@ -51,6 +51,13 @@ namespace WebSocketSharp.Net
 {
   internal sealed class EndPointListener
   {
+    #region Private Static Fields
+
+    private static readonly string _defaultCertFolderPath =
+      Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
+
+    #endregion
+
     #region Private Fields
 
     private List<ListenerPrefix>                       _all; // host = '+'
@@ -154,6 +161,9 @@ namespace WebSocketSharp.Net
     private static X509Certificate2 getCertificate (
       int port, string certFolderPath, X509Certificate2 defaultCert)
     {
+      if (certFolderPath == null || certFolderPath.Length == 0)
+        certFolderPath = _defaultCertFolderPath;
+
       try {
         var cer = Path.Combine (certFolderPath, String.Format ("{0}.cer", port));
         var key = Path.Combine (certFolderPath, String.Format ("{0}.key", port));
@@ -310,6 +320,9 @@ namespace WebSocketSharp.Net
 
     internal static bool CertificateExists (int port, string certFolderPath)
     {
+      if (certFolderPath == null || certFolderPath.Length == 0)
+        certFolderPath = _defaultCertFolderPath;
+
       var cer = Path.Combine (certFolderPath, String.Format ("{0}.cer", port));
       var key = Path.Combine (certFolderPath, String.Format ("{0}.key", port));
 

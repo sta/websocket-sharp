@@ -161,15 +161,21 @@ namespace WebSocketSharp.Net
     /// authenticate the server on the secure connection.
     /// </summary>
     /// <remarks>
-    /// This property represents the path to the folder in which stores the certificate files
-    /// associated with each port number of added URI prefixes. A set of the certificate files
-    /// is a pair of the <c>'port number'.cer</c> (DER) and <c>'port number'.key</c>
-    /// (DER, RSA Private Key).
+    ///   <para>
+    ///   This property represents the path to the folder in which stores the certificate files
+    ///   associated with each port number of added URI prefixes. A set of the certificate files
+    ///   is a pair of the <c>'port number'.cer</c> (DER) and <c>'port number'.key</c>
+    ///   (DER, RSA Private Key).
+    ///   </para>
+    ///   <para>
+    ///   If this property is <see langword="null"/> or empty, the result of
+    ///   <c>System.Environment.GetFolderPath
+    ///   (<see cref="Environment.SpecialFolder.ApplicationData"/>)</c> is used as the default path.
+    ///   </para>
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the path to the folder in which stores the
-    /// certificate files. The default value is result of <c>System.Environment.GetFolderPath
-    /// (<see cref="Environment.SpecialFolder.ApplicationData"/>)</c>.
+    /// A <see cref="string"/> that represents the path to the folder in which stores
+    /// the certificate files. The default value is <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -177,10 +183,7 @@ namespace WebSocketSharp.Net
     public string CertificateFolderPath {
       get {
         CheckDisposed ();
-        return _certFolderPath == null || _certFolderPath.Length == 0
-               ? (_certFolderPath =
-                   Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData))
-               : _certFolderPath;
+        return _certFolderPath;
       }
 
       set {
