@@ -690,9 +690,10 @@ namespace WebSocketSharp.Net
     /// Gets a collection of header names in the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="KeysCollection"/> that contains all header names in the collection.
+    /// A <see cref="NameObjectCollectionBase.KeysCollection"/> that contains all header names
+    /// in the collection.
     /// </value>
-    public override KeysCollection Keys {
+    public override NameObjectCollectionBase.KeysCollection Keys {
       get {
         return base.Keys;
       }
