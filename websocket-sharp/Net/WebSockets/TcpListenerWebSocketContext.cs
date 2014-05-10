@@ -59,14 +59,12 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient client, string protocol, X509Certificate cert, bool secure, Logger logger)
+      TcpClient client, string protocol, bool secure, X509Certificate cert, Logger logger)
     {
       _client = client;
       _secure = secure;
-      _stream = WsStream.CreateServerStream (client, cert, secure);
-      _request = _stream.ReadHandshake<HandshakeRequest> (
-        HandshakeRequest.Parse, 90000);
-
+      _stream = WsStream.CreateServerStream (client, secure, cert);
+      _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -326,8 +324,8 @@ namespace WebSocketSharp.Net.WebSockets
       var host = _request.Headers ["Host"];
       var rawUri = _request.RequestUri;
       var path = rawUri.IsAbsoluteUri
-               ? rawUri.PathAndQuery
-               : HttpUtility.UrlDecode (_request.RawUrl);
+                 ? rawUri.PathAndQuery
+                 : HttpUtility.UrlDecode (_request.RawUrl);
 
       return String.Format ("{0}://{1}{2}", scheme, host, path).ToUri ();
     }
@@ -356,7 +354,7 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     internal void SetUser (
-      AuthenticationSchemes expectedScheme,
+      AuthenticationSchemes scheme,
       string realm,
       Func<IIdentity, NetworkCredential> credentialsFinder)
     {
@@ -364,29 +362,29 @@ namespace WebSocketSharp.Net.WebSockets
       if (authRes == null)
         return;
 
-      var identity = authRes.ToIdentity ();
-      if (identity == null)
+      var id = authRes.ToIdentity ();
+      if (id == null)
         return;
 
-      NetworkCredential credentials = null;
+      NetworkCredential cred = null;
       try {
-        credentials = credentialsFinder (identity);
+        cred = credentialsFinder (id);
       }
       catch {
       }
 
-      if (credentials == null)
+      if (cred == null)
         return;
 
-      var valid = expectedScheme == AuthenticationSchemes.Basic
-                ? ((HttpBasicIdentity) identity).Password == credentials.Password
-                : expectedScheme == AuthenticationSchemes.Digest
-                  ? ((HttpDigestIdentity) identity).IsValid (
-                      credentials.Password, realm, _request.HttpMethod, null)
-                  : false;
+      var valid = scheme == AuthenticationSchemes.Basic
+                  ? ((HttpBasicIdentity) id).Password == cred.Password
+                  : scheme == AuthenticationSchemes.Digest
+                    ? ((HttpDigestIdentity) id).IsValid (
+                        cred.Password, realm, _request.HttpMethod, null)
+                    : false;
 
       if (valid)
-        _user = new GenericPrincipal (identity, credentials.Roles);
+        _user = new GenericPrincipal (id, cred.Roles);
     }
 
     #endregion

@@ -510,9 +510,9 @@ namespace WebSocketSharp
     }
 
     internal static TcpListenerWebSocketContext GetWebSocketContext (
-      this TcpClient client, string protocol, X509Certificate cert, bool secure, Logger logger)
+      this TcpClient client, string protocol, bool secure, X509Certificate cert, Logger logger)
     {
-      return new TcpListenerWebSocketContext (client, protocol, cert, secure, logger);
+      return new TcpListenerWebSocketContext (client, protocol, secure, cert, logger);
     }
 
     internal static bool IsCompressionExtension (this string value)

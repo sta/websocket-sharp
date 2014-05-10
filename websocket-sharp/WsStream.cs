@@ -163,7 +163,7 @@ namespace WebSocketSharp
     }
 
     internal static WsStream CreateServerStream (
-      TcpClient client, X509Certificate cert, bool secure)
+      TcpClient client, bool secure, X509Certificate cert)
     {
       var netStream = client.GetStream ();
       if (secure) {
