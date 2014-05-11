@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2013 sta.blockhead
+ * Copyright (c) 2012-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
@@ -57,8 +57,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal RequestStream (
-      Stream stream, byte [] buffer, int offset, int length)
+    internal RequestStream (Stream stream, byte [] buffer, int offset, int length)
       : this (stream, buffer, offset, length, -1)
     {
     }
@@ -167,24 +166,20 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     public override IAsyncResult BeginRead (
-      byte [] buffer,
-      int offset,
-      int count,
-      AsyncCallback callback,
-      object state)
+      byte [] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      var read = fillFromBuffer (buffer, offset, count);
-      if (read > 0 || read == -1) {
+      var nread = fillFromBuffer (buffer, offset, count);
+      if (nread > 0 || nread == -1) {
         var ares = new HttpStreamAsyncResult ();
         ares.Buffer = buffer;
         ares.Offset = offset;
         ares.Count = count;
         ares.Callback = callback;
         ares.State = state;
-        ares.SyncRead = read;
+        ares.SyncRead = nread;
         ares.Complete ();
 
         return ares;
@@ -225,11 +220,11 @@ namespace WebSocketSharp.Net
       }
 
       // Close on exception?
-      var read = _stream.EndRead (asyncResult);
-      if (read > 0 && _remainingBody > 0)
-        _remainingBody -= read;
+      var nread = _stream.EndRead (asyncResult);
+      if (nread > 0 && _remainingBody > 0)
+        _remainingBody -= nread;
 
-      return read;
+      return nread;
     }
 
     public override void EndWrite (IAsyncResult asyncResult)
@@ -248,17 +243,18 @@ namespace WebSocketSharp.Net
 
       // Call fillFromBuffer to check for buffer boundaries even when
       // _remainingBody is 0.
-      var read = fillFromBuffer (buffer, offset, count);
-      if (read == -1) // No more bytes available (Content-Length).
+      var nread = fillFromBuffer (buffer, offset, count);
+      if (nread == -1) // No more bytes available (Content-Length).
         return 0;
-      else if (read > 0)
-        return read;
 
-      read = _stream.Read (buffer, offset, count);
-      if (read > 0 && _remainingBody > 0)
-        _remainingBody -= read;
+      if (nread > 0)
+        return nread;
 
-      return read;
+      nread = _stream.Read (buffer, offset, count);
+      if (nread > 0 && _remainingBody > 0)
+        _remainingBody -= nread;
+
+      return nread;
     }
 
     public override long Seek (long offset, SeekOrigin origin)
