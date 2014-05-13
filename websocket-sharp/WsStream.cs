@@ -54,9 +54,9 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Private Constructors
+    #region Internal Constructors
 
-    private WsStream (Stream innerStream, bool secure)
+    internal WsStream (Stream innerStream, bool secure)
     {
       _innerStream = innerStream;
       _secure = secure;
@@ -65,14 +65,14 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Internal Constructors
+    #region Public Constructors
 
-    internal WsStream (NetworkStream innerStream)
+    public WsStream (NetworkStream innerStream)
       : this (innerStream, false)
     {
     }
 
-    internal WsStream (SslStream innerStream)
+    public WsStream (SslStream innerStream)
       : this (innerStream, true)
     {
     }
@@ -109,10 +109,10 @@ namespace WebSocketSharp
 
     private static string [] readHandshakeHeaders (Stream stream)
     {
-      var buffer = new List<byte> ();
+      var buff = new List<byte> ();
       var count = 0;
       Action<int> add = i => {
-        buffer.Add ((byte) i);
+        buff.Add ((byte) i);
         count++;
       };
 
@@ -132,55 +132,15 @@ namespace WebSocketSharp
           "The header part of a handshake is greater than the limit length.");
 
       var crlf = "\r\n";
-      return Encoding.UTF8.GetString (buffer.ToArray ())
+      return Encoding.UTF8.GetString (buff.ToArray ())
              .Replace (crlf + " ", " ")
              .Replace (crlf + "\t", " ")
-             .Split (new string [] { crlf }, StringSplitOptions.RemoveEmptyEntries);
+             .Split (new [] { crlf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
     #endregion
 
     #region Internal Methods
-
-    internal static WsStream CreateClientStream (
-      TcpClient client,
-      bool secure,
-      string host,
-      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
-    {
-      var netStream = client.GetStream ();
-      if (secure) {
-        if (validationCallback == null)
-          validationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-
-        var sslStream = new SslStream (netStream, false, validationCallback);
-        sslStream.AuthenticateAsClient (host);
-
-        return new WsStream (sslStream);
-      }
-
-      return new WsStream (netStream);
-    }
-
-    internal static WsStream CreateServerStream (
-      TcpClient client, bool secure, X509Certificate cert)
-    {
-      var netStream = client.GetStream ();
-      if (secure) {
-        var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (cert);
-
-        return new WsStream (sslStream);
-      }
-
-      return new WsStream (netStream);
-    }
-
-    internal static WsStream CreateServerStream (HttpListenerContext context)
-    {
-      var conn = context.Connection;
-      return new WsStream (conn.Stream, conn.IsSecure);
-    }
 
     internal T ReadHandshake<T> (Func<string [], T> parser, int millisecondsTimeout)
       where T : HandshakeBase
@@ -243,6 +203,46 @@ namespace WebSocketSharp
     public void Close ()
     {
       _innerStream.Close ();
+    }
+
+    public static WsStream CreateClientStream (
+      TcpClient client,
+      bool secure,
+      string host,
+      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
+    {
+      var netStream = client.GetStream ();
+      if (secure) {
+        if (validationCallback == null)
+          validationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+
+        var sslStream = new SslStream (netStream, false, validationCallback);
+        sslStream.AuthenticateAsClient (host);
+
+        return new WsStream (sslStream);
+      }
+
+      return new WsStream (netStream);
+    }
+
+    public static WsStream CreateServerStream (
+      TcpClient client, bool secure, X509Certificate cert)
+    {
+      var netStream = client.GetStream ();
+      if (secure) {
+        var sslStream = new SslStream (netStream, false);
+        sslStream.AuthenticateAsServer (cert);
+
+        return new WsStream (sslStream);
+      }
+
+      return new WsStream (netStream);
+    }
+
+    public static WsStream CreateServerStream (HttpListenerContext context)
+    {
+      var conn = context.Connection;
+      return new WsStream (conn.Stream, conn.IsSecure);
     }
 
     public void Dispose ()
