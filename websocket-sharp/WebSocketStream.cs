@@ -1,6 +1,6 @@
 #region License
 /*
- * WsStream.cs
+ * WebSocketStream.cs
  *
  * The MIT License
  *
@@ -38,7 +38,7 @@ using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp
 {
-  internal class WsStream : IDisposable
+  internal class WebSocketStream : IDisposable
   {
     #region Private Const Fields
 
@@ -56,7 +56,7 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal WsStream (Stream innerStream, bool secure)
+    internal WebSocketStream (Stream innerStream, bool secure)
     {
       _innerStream = innerStream;
       _secure = secure;
@@ -67,12 +67,12 @@ namespace WebSocketSharp
 
     #region Public Constructors
 
-    public WsStream (NetworkStream innerStream)
+    public WebSocketStream (NetworkStream innerStream)
       : this (innerStream, false)
     {
     }
 
-    public WsStream (SslStream innerStream)
+    public WebSocketStream (SslStream innerStream)
       : this (innerStream, true)
     {
     }
@@ -205,7 +205,7 @@ namespace WebSocketSharp
       _innerStream.Close ();
     }
 
-    public static WsStream CreateClientStream (
+    public static WebSocketStream CreateClientStream (
       TcpClient client,
       bool secure,
       string host,
@@ -219,13 +219,13 @@ namespace WebSocketSharp
         var sslStream = new SslStream (netStream, false, validationCallback);
         sslStream.AuthenticateAsClient (host);
 
-        return new WsStream (sslStream);
+        return new WebSocketStream (sslStream);
       }
 
-      return new WsStream (netStream);
+      return new WebSocketStream (netStream);
     }
 
-    public static WsStream CreateServerStream (
+    public static WebSocketStream CreateServerStream (
       TcpClient client, bool secure, X509Certificate cert)
     {
       var netStream = client.GetStream ();
@@ -233,16 +233,16 @@ namespace WebSocketSharp
         var sslStream = new SslStream (netStream, false);
         sslStream.AuthenticateAsServer (cert);
 
-        return new WsStream (sslStream);
+        return new WebSocketStream (sslStream);
       }
 
-      return new WsStream (netStream);
+      return new WebSocketStream (netStream);
     }
 
-    public static WsStream CreateServerStream (HttpListenerContext context)
+    public static WebSocketStream CreateServerStream (HttpListenerContext context)
     {
       var conn = context.Connection;
-      return new WsStream (conn.Stream, conn.IsSecure);
+      return new WebSocketStream (conn.Stream, conn.IsSecure);
     }
 
     public void Dispose ()

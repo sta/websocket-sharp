@@ -70,7 +70,6 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Server\WebSocketService.cs" />
-    <Compile Include="WsStream.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\ChunkedInputStream.cs" />
@@ -131,6 +130,7 @@
     <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
+    <Compile Include="WebSocketStream.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

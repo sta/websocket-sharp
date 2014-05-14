@@ -49,7 +49,7 @@ namespace WebSocketSharp.Net.WebSockets
     private CookieCollection _cookies;
     private HandshakeRequest _request;
     private bool             _secure;
-    private WsStream         _stream;
+    private WebSocketStream  _stream;
     private Uri              _uri;
     private IPrincipal       _user;
     private WebSocket        _websocket;
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net.WebSockets
     {
       _client = client;
       _secure = secure;
-      _stream = WsStream.CreateServerStream (client, secure, cert);
+      _stream = WebSocketStream.CreateServerStream (client, secure, cert);
       _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
       _websocket = new WebSocket (this, protocol, logger);
     }
@@ -72,7 +72,7 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WsStream Stream {
+    internal WebSocketStream Stream {
       get {
         return _stream;
       }

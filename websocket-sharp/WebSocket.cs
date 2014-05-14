@@ -91,7 +91,7 @@ namespace WebSocketSharp
     private volatile WebSocketState _readyState;
     private AutoResetEvent          _receivePong;
     private bool                    _secure;
-    private WsStream                _stream;
+    private WebSocketStream         _stream;
     private TcpClient               _tcpClient;
     private Uri                     _uri;
 
@@ -1242,7 +1242,8 @@ namespace WebSocketSharp
       var port = _uri.Port;
 
       _tcpClient = new TcpClient (host, port);
-      _stream = WsStream.CreateClientStream (_tcpClient, _secure, host, _certValidationCallback);
+      _stream = WebSocketStream.CreateClientStream (
+        _tcpClient, _secure, host, _certValidationCallback);
     }
 
     private void startReceiving ()

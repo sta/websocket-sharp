@@ -44,7 +44,7 @@ namespace WebSocketSharp.Net.WebSockets
     #region Private Fields
 
     private HttpListenerContext _context;
-    private WsStream            _stream;
+    private WebSocketStream     _stream;
     private WebSocket           _websocket;
 
     #endregion
@@ -55,7 +55,7 @@ namespace WebSocketSharp.Net.WebSockets
       HttpListenerContext context, string protocol, Logger logger)
     {
       _context = context;
-      _stream = WsStream.CreateServerStream (context);
+      _stream = WebSocketStream.CreateServerStream (context);
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WsStream Stream {
+    internal WebSocketStream Stream {
       get {
         return _stream;
       }
