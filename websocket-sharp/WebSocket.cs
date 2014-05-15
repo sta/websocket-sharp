@@ -1427,7 +1427,13 @@ namespace WebSocketSharp
 
     internal bool Ping (byte [] frame, int timeout)
     {
-      return send (frame) && _receivePong.WaitOne (timeout);
+      try {
+        var pong = _receivePong;
+        return send (frame) && pong != null && pong.WaitOne (timeout);
+      }
+      catch {
+        return false;
+      }
     }
 
     // As server, used to broadcast
