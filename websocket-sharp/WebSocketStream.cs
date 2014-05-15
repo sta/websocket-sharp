@@ -239,12 +239,6 @@ namespace WebSocketSharp
       return new WebSocketStream (netStream);
     }
 
-    public static WebSocketStream CreateServerStream (HttpListenerContext context)
-    {
-      var conn = context.Connection;
-      return new WebSocketStream (conn.Stream, conn.IsSecure);
-    }
-
     public void Dispose ()
     {
       _innerStream.Dispose ();

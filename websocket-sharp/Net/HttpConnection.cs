@@ -72,11 +72,13 @@ namespace WebSocketSharp.Net
     private ListenerPrefix      _prefix;
     private MemoryStream        _requestBuffer;
     private int                 _reuses;
+    private bool                _secure;
     private Socket              _socket;
     private Stream              _stream;
     private object              _sync;
     private int                 _timeout;
     private Timer               _timer;
+    private WebSocketStream     _websocketStream;
 
     #endregion
 
@@ -86,9 +88,10 @@ namespace WebSocketSharp.Net
     {
       _socket = socket;
       _listener = listener;
+      _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (listener.IsSecure) {
+      if (_secure) {
         var sslStream = new SslStream (netStream, false);
         sslStream.AuthenticateAsServer (listener.Certificate);
         _stream = sslStream;
@@ -116,7 +119,7 @@ namespace WebSocketSharp.Net
 
     public bool IsSecure {
       get {
-        return _listener.IsSecure;
+        return _secure;
       }
     }
 
@@ -199,6 +202,9 @@ namespace WebSocketSharp.Net
     {
       if (_stream == null)
         return;
+
+      _inputStream = null;
+      _websocketStream = null;
 
       _stream.Dispose ();
       _stream = null;
@@ -507,6 +513,20 @@ namespace WebSocketSharp.Net
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;
+      }
+    }
+
+    public WebSocketStream GetWebSocketStream ()
+    {
+      if (_websocketStream != null || _socket == null)
+        return _websocketStream;
+
+      lock (_sync) {
+        if (_socket == null)
+          return _websocketStream;
+
+        _websocketStream = new WebSocketStream (_stream, _secure);
+        return _websocketStream;
       }
     }
 

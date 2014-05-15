@@ -44,7 +44,6 @@ namespace WebSocketSharp.Net.WebSockets
     #region Private Fields
 
     private HttpListenerContext _context;
-    private WebSocketStream     _stream;
     private WebSocket           _websocket;
 
     #endregion
@@ -55,7 +54,6 @@ namespace WebSocketSharp.Net.WebSockets
       HttpListenerContext context, string protocol, Logger logger)
     {
       _context = context;
-      _stream = WebSocketStream.CreateServerStream (context);
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -65,7 +63,7 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal WebSocketStream Stream {
       get {
-        return _stream;
+        return _context.Connection.GetWebSocketStream ();
       }
     }
 
@@ -141,7 +139,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _context.Request.IsSecureConnection;
+        return _context.Connection.IsSecure;
       }
     }
 
