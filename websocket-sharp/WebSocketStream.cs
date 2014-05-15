@@ -101,10 +101,18 @@ namespace WebSocketSharp
 
     private static byte [] readHandshakeEntityBody (Stream stream, string length)
     {
-      var len = Int64.Parse (length);
+      long len;
+      if (!Int64.TryParse (length, out len))
+        throw new ArgumentException ("Cannot be parsed.", "length");
+
+      if (len < 0)
+        throw new ArgumentOutOfRangeException ("length", "Less than zero.");
+
       return len > 1024
              ? stream.ReadBytes (len, 1024)
-             : stream.ReadBytes ((int) len);
+             : len > 0
+               ? stream.ReadBytes ((int) len)
+               : null;
     }
 
     private static string [] readHandshakeHeaders (Stream stream)
