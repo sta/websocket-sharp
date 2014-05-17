@@ -132,6 +132,8 @@
     <Compile Include="Net\LineState.cs" />
     <Compile Include="WebSocketStream.cs" />
     <Compile Include="Net\ReadBufferState.cs" />
+    <Compile Include="Net\Chunk.cs" />
+    <Compile Include="Net\InputChunkState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
