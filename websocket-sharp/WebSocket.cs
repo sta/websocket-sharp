@@ -79,10 +79,13 @@ namespace WebSocketSharp
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forConn;
+    private object                  _forEvent;
+    private object                  _forMessageEventQueue;
     private object                  _forSend;
     private Func<WebSocketContext, string>
                                     _handshakeRequestChecker;
     private volatile Logger         _logger;
+    private Queue<MessageEventArgs> _messageEventQueue;
     private uint                    _nonceCount;
     private string                  _origin;
     private bool                    _preAuth;
@@ -502,14 +505,12 @@ namespace WebSocketSharp
 
     private bool acceptDataFrame (WsFrame frame)
     {
-      var args = frame.IsCompressed
-                 ? new MessageEventArgs (
-                     frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-                 : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+      var e = frame.IsCompressed
+              ? new MessageEventArgs (
+                  frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
+              : new MessageEventArgs (frame.Opcode, frame.PayloadData);
 
-      if (_readyState == WebSocketState.Open)
-        OnMessage.Emit (this, args);
-
+      enqueueToMessageEventQueue (e);
       return true;
     }
 
@@ -558,9 +559,7 @@ namespace WebSocketSharp
           data = concatenated.ToArray ();
         }
 
-        if (_readyState == WebSocketState.Open)
-          OnMessage.Emit (this, new MessageEventArgs (first.Opcode, data));
-
+        enqueueToMessageEventQueue (new MessageEventArgs (first.Opcode, data));
         return true;
       }
     }
@@ -734,8 +733,8 @@ namespace WebSocketSharp
 
       _logger.Trace ("Start closing handshake.");
 
-      var args = new CloseEventArgs (payload);
-      args.WasClean =
+      var e = new CloseEventArgs (payload);
+      e.WasClean =
         _client
         ? closeHandshake (
             send ? WsFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
@@ -750,7 +749,7 @@ namespace WebSocketSharp
 
       _readyState = WebSocketState.Closed;
       try {
-        OnClose.Emit (this, args);
+        OnClose.Emit (this, e);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -794,6 +793,8 @@ namespace WebSocketSharp
         _exitReceiving.Close ();
         _exitReceiving = null;
       }
+
+      _messageEventQueue.Clear ();
 
       var result = sent && received;
       _logger.Debug (
@@ -973,6 +974,14 @@ namespace WebSocketSharp
       return res;
     }
 
+    private MessageEventArgs dequeueFromMessageEventQueue ()
+    {
+      lock (_forMessageEventQueue)
+        return _messageEventQueue.Count > 0
+               ? _messageEventQueue.Dequeue ()
+               : null;
+    }
+
     // As client
     private bool doHandshake ()
     {
@@ -996,9 +1005,20 @@ namespace WebSocketSharp
       return true;
     }
 
+    private void enqueueToMessageEventQueue (MessageEventArgs e)
+    {
+      lock (_forMessageEventQueue)
+        _messageEventQueue.Enqueue (e);
+    }
+
     private void error (string message)
     {
-      OnError.Emit (this, new ErrorEventArgs (message));
+      try {
+        OnError.Emit (this, new ErrorEventArgs (message));
+      }
+      catch (Exception ex) {
+        _logger.Fatal ("An exception has occurred while OnError:\n" + ex.ToString ());
+      }
     }
 
     private void init ()
@@ -1006,19 +1026,24 @@ namespace WebSocketSharp
       _compression = CompressionMethod.None;
       _cookies = new CookieCollection ();
       _forConn = new object ();
+      _forEvent = new object ();
       _forSend = new object ();
+      _messageEventQueue = new Queue<MessageEventArgs> ();
+      _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
       _readyState = WebSocketState.Connecting;
     }
 
     private void open ()
     {
-      try {
-        OnOpen.Emit (this, EventArgs.Empty);
-        if (_readyState == WebSocketState.Open)
-          startReceiving ();
-      }
-      catch (Exception ex) {
-        acceptException (ex, "An exception has occurred while opening.");
+      startReceiving ();
+
+      lock (_forEvent) {
+        try {
+          OnOpen.Emit (this, EventArgs.Empty);
+        }
+        catch (Exception ex) {
+          acceptException (ex, "An exception has occurred while OnOpen.");
+        }
       }
     }
 
@@ -1254,13 +1279,28 @@ namespace WebSocketSharp
       Action receive = null;
       receive = () => _stream.ReadFrameAsync (
         frame => {
-          if (acceptFrame (frame) && _readyState != WebSocketState.Closed)
+          if (acceptFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
-          else if (_exitReceiving != null)
+
+            if (!frame.IsData)
+              return;
+
+            lock (_forEvent) {
+              try {
+                var e = dequeueFromMessageEventQueue ();
+                if (e != null && _readyState == WebSocketState.Open)
+                  OnMessage.Emit (this, e);
+              }
+              catch (Exception ex) {
+                acceptException (ex, "An exception has occurred while OnMessage.");
+              }
+            }
+          }
+          else if (_exitReceiving != null) {
             _exitReceiving.Set ();
+          }
         },
-        ex => acceptException (
-          ex, "An exception has occurred while receiving a message."));
+        ex => acceptException (ex, "An exception has occurred while receiving a message."));
 
       receive ();
     }
@@ -1369,7 +1409,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs args, byte [] frame, int timeout)
+    internal void Close (CloseEventArgs e, byte [] frame, int timeout)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
@@ -1380,14 +1420,14 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      args.WasClean = closeHandshake (frame, timeout, closeServerResources);
+      e.WasClean = closeHandshake (frame, timeout, closeServerResources);
 
       _readyState = WebSocketState.Closed;
       try {
-        OnClose.Emit (this, args);
+        OnClose.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _logger.Fatal ("An exception has occurred while OnClose:\n" + ex.ToString ());
       }
     }
 
@@ -1429,9 +1469,10 @@ namespace WebSocketSharp
     {
       try {
         var pong = _receivePong;
-        return send (frame) && pong != null && pong.WaitOne (timeout);
+        return _readyState == WebSocketState.Open && send (frame) && pong.WaitOne (timeout);
       }
-      catch {
+      catch (Exception ex) {
+        _logger.Fatal ("An exception has occurred while Ping:\n" + ex.ToString ());
         return false;
       }
     }
