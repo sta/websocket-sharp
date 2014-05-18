@@ -1,6 +1,6 @@
 #region License
 /*
- * ChunkedInputStream.cs
+ * ChunkedRequestStream.cs
  *
  * This code is derived from System.Net.ChunkedInputStream.cs of Mono
  * (http://www.mono-project.com).
@@ -42,7 +42,7 @@ using System.IO;
 
 namespace WebSocketSharp.Net
 {
-  internal class ChunkedInputStream : RequestStream
+  internal class ChunkedRequestStream : RequestStream
   {
     #region Private Const Fields
 
@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    public ChunkedInputStream (
+    public ChunkedRequestStream (
       HttpListenerContext context, Stream stream, byte [] buffer, int offset, int length)
       : base (stream, buffer, offset, length)
     {

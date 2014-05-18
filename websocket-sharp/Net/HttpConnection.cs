@@ -485,7 +485,7 @@ namespace WebSocketSharp.Net
         if (chunked) {
           _chunked = true;
           _context.Response.SendChunked = true;
-          _inputStream = new ChunkedInputStream (
+          _inputStream = new ChunkedRequestStream (
             _context, _stream, buff, _position, len - _position);
         }
         else {
