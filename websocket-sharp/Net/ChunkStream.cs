@@ -134,7 +134,7 @@ namespace WebSocketSharp.Net
         if (chunk == null)
           continue;
 
-        if (chunk.Offset == chunk.Length) {
+        if (chunk.ReadLeft == 0) {
           _chunks [i] = null;
           continue;
         }

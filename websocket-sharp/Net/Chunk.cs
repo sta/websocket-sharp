@@ -61,15 +61,9 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public int Length {
+    public int ReadLeft {
       get {
-        return _data.Length;
-      }
-    }
-
-    public int Offset {
-      get {
-        return _offset;
+        return _data.Length - _offset;
       }
     }
 
