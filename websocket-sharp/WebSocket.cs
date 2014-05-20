@@ -1035,15 +1035,20 @@ namespace WebSocketSharp
 
     private void open ()
     {
-      startReceiving ();
+      try {
+        startReceiving ();
 
-      lock (_forEvent) {
-        try {
-          OnOpen.Emit (this, EventArgs.Empty);
+        lock (_forEvent) {
+          try {
+            OnOpen.Emit (this, EventArgs.Empty);
+          }
+          catch (Exception ex) {
+            acceptException (ex, "An exception has occurred while OnOpen.");
+          }
         }
-        catch (Exception ex) {
-          acceptException (ex, "An exception has occurred while OnOpen.");
-        }
+      }
+      catch (Exception ex) {
+        acceptException (ex, "An exception has occurred while opening.");
       }
     }
 
@@ -1468,8 +1473,11 @@ namespace WebSocketSharp
     internal bool Ping (byte [] frame, int timeout)
     {
       try {
-        var pong = _receivePong;
-        return _readyState == WebSocketState.Open && send (frame) && pong.WaitOne (timeout);
+        AutoResetEvent pong;
+        return _readyState == WebSocketState.Open &&
+               send (frame) &&
+               (pong = _receivePong) != null &&
+               pong.WaitOne (timeout);
       }
       catch (Exception ex) {
         _logger.Fatal ("An exception has occurred while Ping:\n" + ex.ToString ());
