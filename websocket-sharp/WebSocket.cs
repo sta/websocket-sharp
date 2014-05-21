@@ -794,8 +794,6 @@ namespace WebSocketSharp
         _exitReceiving = null;
       }
 
-      _messageEventQueue.Clear ();
-
       var result = sent && received;
       _logger.Debug (
         String.Format ("Was clean?: {0}\nsent: {1} received: {2}", result, sent, received));
@@ -1278,6 +1276,9 @@ namespace WebSocketSharp
 
     private void startReceiving ()
     {
+      if (_messageEventQueue.Count > 0)
+        _messageEventQueue.Clear ();
+
       _exitReceiving = new AutoResetEvent (false);
       _receivePong = new AutoResetEvent (false);
 
