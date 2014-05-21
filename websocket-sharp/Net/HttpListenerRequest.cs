@@ -33,22 +33,22 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides access to a request to the <see cref="HttpListener"/>.
+  /// Provides the access to a request to the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
   /// The HttpListenerRequest class cannot be inherited.
@@ -105,9 +105,8 @@ namespace WebSocketSharp.Net
     /// Gets the media types which are acceptable for the response.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the media type names in
-    /// the Accept request-header or <see langword="null"/> if the request didn't
-    /// include an Accept header.
+    /// An array of <see cref="string"/> that contains the media type names in the Accept
+    /// request-header or <see langword="null"/> if the request didn't include an Accept header.
     /// </value>
     public string [] AcceptTypes {
       get {
@@ -116,8 +115,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an error code that identifies a problem with the client's
-    /// certificate.
+    /// Gets an error code that identifies a problem with the client's certificate.
     /// </summary>
     /// <value>
     /// Always returns <c>0</c>.
@@ -140,9 +138,9 @@ namespace WebSocketSharp.Net
     /// Gets the encoding used with the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Encoding"/> that represents the encoding used with the entity
-    /// body data or <see cref="Encoding.Default"/> if the request didn't include
-    /// the information about the encoding.
+    /// A <see cref="Encoding"/> that represents the encoding used with the entity body data or
+    /// <see cref="Encoding.Default"/> if the request didn't include the information about the
+    /// encoding.
     /// </value>
     public Encoding ContentEncoding {
       get {
@@ -154,9 +152,8 @@ namespace WebSocketSharp.Net
     /// Gets the size of the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length
-    /// entity-header. The value is a number of bytes in the entity body data.
-    /// <c>-1</c> if the size isn't known.
+    /// A <see cref="long"/> that represents the value of the Content-Length entity-header. The
+    /// value is a number of bytes in the entity body data. <c>-1</c> if the size isn't known.
     /// </value>
     public long ContentLength64 {
       get {
@@ -168,8 +165,7 @@ namespace WebSocketSharp.Net
     /// Gets the media type of the entity body included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Content-Type
-    /// entity-header.
+    /// A <see cref="string"/> that represents the value of the Content-Type entity-header.
     /// </value>
     public string ContentType {
       get {
@@ -181,8 +177,7 @@ namespace WebSocketSharp.Net
     /// Gets the cookies included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="CookieCollection"/> that contains the cookies included in
-    /// the request.
+    /// A <see cref="CookieCollection"/> that contains the cookies included in the request.
     /// </value>
     public CookieCollection Cookies {
       get {
@@ -206,8 +201,7 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP headers used in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the HTTP headers used
-    /// in the request.
+    /// A <see cref="NameValueCollection"/> that contains the HTTP headers used in the request.
     /// </value>
     public NameValueCollection Headers {
       get {
@@ -228,26 +222,22 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a <see cref="Stream"/> that contains the entity body data included
-    /// in the request.
+    /// Gets a <see cref="Stream"/> that contains the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Stream"/> that contains the entity body data included in the
-    /// request.
+    /// A <see cref="Stream"/> that contains the entity body data included in the request.
     /// </value>
     public Stream InputStream {
       get {
         return _inputStream ??
                (_inputStream = HasEntityBody
-                             ? _context.Connection.GetRequestStream (
-                                 _chunked, _contentLength)
-                             : Stream.Null);
+                               ? _context.Connection.GetRequestStream (_chunked, _contentLength)
+                               : Stream.Null);
       }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client that sent the request is
-    /// authenticated.
+    /// Gets a value indicating whether the client that sent the request is authenticated.
     /// </summary>
     /// <value>
     /// <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
@@ -260,12 +250,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is sent from the local
-    /// computer.
+    /// Gets a value indicating whether the request is sent from the local computer.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is sent from the local computer; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the request is sent from the local computer; otherwise, <c>false</c>.
     /// </value>
     public bool IsLocal {
       get {
@@ -274,8 +262,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the HTTP connection is secured using the
-    /// SSL protocol.
+    /// Gets a value indicating whether the HTTP connection is secured using the SSL protocol.
     /// </summary>
     /// <value>
     /// <c>true</c> if the HTTP connection is secured; otherwise, <c>false</c>.
@@ -287,12 +274,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket connection
-    /// request.
+    /// Gets a value indicating whether the request is a WebSocket connection request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket connection request; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
     /// </value>
     public bool IsWebSocketRequest {
       get {
@@ -304,22 +289,20 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client requests a persistent
-    /// connection.
+    /// Gets a value indicating whether the client requests a persistent connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client requests a persistent connection; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the client requests a persistent connection; otherwise, <c>false</c>.
     /// </value>
     public bool KeepAlive {
       get {
         if (!_keepAliveWasSet) {
           _keepAlive = _headers.Contains ("Connection", "keep-alive") ||
                        _version == HttpVersion.Version11
-                     ? true
-                     : _headers.Contains ("Keep-Alive")
-                       ? !_headers.Contains ("Keep-Alive", "closed")
-                       : false;
+                       ? true
+                       : _headers.Contains ("Keep-Alive")
+                         ? !_headers.Contains ("Keep-Alive", "closed")
+                         : false;
 
           _keepAliveWasSet = true;
         }
@@ -344,8 +327,7 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP version used in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the HTTP version used in the
-    /// request.
+    /// A <see cref="Version"/> that represents the HTTP version used in the request.
     /// </value>
     public Version ProtocolVersion {
       get {
@@ -357,8 +339,8 @@ namespace WebSocketSharp.Net
     /// Gets the collection of query string variables used in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the collection of query
-    /// string variables used in the request.
+    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables
+    /// used in the request.
     /// </value>
     public NameValueCollection QueryString {
       get {
@@ -367,12 +349,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the raw URL (without the scheme, host and port) requested by the
-    /// client.
+    /// Gets the raw URL (without the scheme, host, and port) requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the raw URL requested by the
-    /// client.
+    /// A <see cref="string"/> that represents the raw URL requested by the client.
     /// </value>
     public string RawUrl {
       get {
@@ -420,9 +400,8 @@ namespace WebSocketSharp.Net
     /// Gets the URL of the resource from which the requested URL was obtained.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the value of the Referer
-    /// request-header or <see langword="null"/> if the request didn't include
-    /// an Referer header.
+    /// A <see cref="Uri"/> that represents the value of the Referer request-header or
+    /// <see langword="null"/> if the request didn't include an Referer header.
     /// </value>
     public Uri UrlReferrer {
       get {
@@ -434,8 +413,7 @@ namespace WebSocketSharp.Net
     /// Gets the information about the user agent originating the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the User-Agent
-    /// request-header.
+    /// A <see cref="string"/> that represents the value of the User-Agent request-header.
     /// </value>
     public string UserAgent {
       get {
@@ -456,12 +434,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the internet host name and port number (if present) specified by the
-    /// client.
+    /// Gets the internet host name and port number (if present) specified by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Host
-    /// request-header.
+    /// A <see cref="string"/> that represents the value of the Host request-header.
     /// </value>
     public string UserHostName {
       get {
@@ -473,9 +449,9 @@ namespace WebSocketSharp.Net
     /// Gets the natural languages which are preferred for the response.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the natural language names
-    /// in the Accept-Language request-header or <see langword="null"/> if the
-    /// request didn't include an Accept-Language header.
+    /// An array of <see cref="string"/> that contains the natural language names in the
+    /// Accept-Language request-header or <see langword="null"/> if the request didn't
+    /// include an Accept-Language header.
     /// </value>
     public string [] UserLanguages {
       get {
@@ -512,6 +488,18 @@ namespace WebSocketSharp.Net
       }
     }
 
+    private static bool tryCreateVersion (string version, out Version result)
+    {
+      result = null;
+      try {
+        result = new Version (version);
+        return true;
+      }
+      catch {
+        return false;
+      }
+    }
+
     #endregion
 
     #region Internal Methods
@@ -526,11 +514,11 @@ namespace WebSocketSharp.Net
 
       var name = header.Substring (0, colon).Trim ();
       var val = header.Substring (colon + 1).Trim ();
-      var lower = name.ToLower (CultureInfo.InvariantCulture);
       _headers.SetInternally (name, val, false);
 
+      var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "accept") {
-        _acceptTypes = val.SplitHeaderValue (',').ToArray ();
+        _acceptTypes = new List<string> (val.SplitHeaderValue (',')).ToArray ();
         return;
       }
 
@@ -591,13 +579,14 @@ namespace WebSocketSharp.Net
         host = UserHostAddress;
 
       string path;
-      var rawUri = _rawUrl.ToUri ();
-      if (rawUri != null && rawUri.IsAbsoluteUri) {
+      Uri rawUri;
+      if (_rawUrl.MaybeUri () && Uri.TryCreate (_rawUrl, UriKind.Absolute, out rawUri)) {
         host = rawUri.Host;
         path = rawUri.PathAndQuery;
       }
-      else
+      else {
         path = HttpUtility.UrlDecode (_rawUrl);
+      }
 
       var colon = host.IndexOf (':');
       if (colon != -1)
@@ -619,9 +608,7 @@ namespace WebSocketSharp.Net
       createQueryString (_url.Query);
 
       var encoding = Headers ["Transfer-Encoding"];
-      if (_version >= HttpVersion.Version11 &&
-          encoding != null &&
-          encoding.Length > 0) {
+      if (_version >= HttpVersion.Version11 && encoding != null && encoding.Length > 0) {
         _chunked = encoding.ToLower () == "chunked";
         if (!_chunked) {
           _context.ErrorMessage = String.Empty;
@@ -642,9 +629,7 @@ namespace WebSocketSharp.Net
       }
 
       var expect = Headers ["Expect"];
-      if (expect != null &&
-          expect.Length > 0 &&
-          expect.ToLower () == "100-continue") {
+      if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
         var output = _context.Connection.GetResponseStream ();
         output.WriteInternally (_100continue, 0, _100continue.Length);
       }
@@ -660,11 +645,11 @@ namespace WebSocketSharp.Net
       if (_contentLength > 0)
         length = (int) Math.Min (_contentLength, (long) length);
 
-      var buffer = new byte [length];
+      var buff = new byte [length];
       while (true) {
         // TODO: Test if MS has a timeout when doing this.
         try {
-          var ares = InputStream.BeginRead (buffer, 0, length, null, null);
+          var ares = InputStream.BeginRead (buff, 0, length, null, null);
           if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne (100))
             return false;
 
@@ -679,7 +664,7 @@ namespace WebSocketSharp.Net
 
     internal void SetRequestLine (string requestLine)
     {
-      var parts = requestLine.Split (new char [] { ' ' }, 3);
+      var parts = requestLine.Split (new [] { ' ' }, 3);
       if (parts.Length != 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
         return;
@@ -693,19 +678,11 @@ namespace WebSocketSharp.Net
 
       _rawUrl = parts [1];
 
-      if (parts [2].Length != 8 || !parts [2].StartsWith ("HTTP/")) {
+      if (parts [2].Length != 8 ||
+          !parts [2].StartsWith ("HTTP/") ||
+          !tryCreateVersion (parts [2].Substring (5), out _version) ||
+          _version.Major < 1)
         _context.ErrorMessage = "Invalid request line (version)";
-        return;
-      }
-
-      try {
-        _version = new Version (parts [2].Substring (5));
-        if (_version.Major < 1)
-          throw new Exception ();
-      }
-      catch {
-        _context.ErrorMessage = "Invalid request line (version)";
-      }
     }
 
     #endregion
@@ -717,26 +694,24 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     /// This asynchronous operation must be completed by calling the
-    /// <see cref="EndGetClientCertificate"/> method. Typically, that method is
-    /// invoked by the <paramref name="requestCallback"/> delegate.
+    /// <see cref="EndGetClientCertificate"/> method. Typically, that method is invoked by the
+    /// <paramref name="requestCallback"/> delegate.
     /// </remarks>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that contains the status of the
-    /// asynchronous operation.
+    /// An <see cref="IAsyncResult"/> that contains the status of the asynchronous operation.
     /// </returns>
     /// <param name="requestCallback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method(s)
-    /// called when the asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that references the method(s) called when the
+    /// asynchronous operation completes.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that contains a user defined object to pass to
-    /// the <paramref name="requestCallback"/> delegate.
+    /// An <see cref="object"/> that contains a user defined object to pass to the
+    /// <paramref name="requestCallback"/> delegate.
     /// </param>
     /// <exception cref="NotImplementedException">
-    /// This method is not implemented.
+    /// This method isn't implemented.
     /// </exception>
-    public IAsyncResult BeginGetClientCertificate (
-      AsyncCallback requestCallback, Object state)
+    public IAsyncResult BeginGetClientCertificate (AsyncCallback requestCallback, object state)
     {
       // TODO: Not Implemented.
       throw new NotImplementedException ();
@@ -750,15 +725,14 @@ namespace WebSocketSharp.Net
     /// <see cref="BeginGetClientCertificate"/> method.
     /// </remarks>
     /// <returns>
-    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3
-    /// certificate.
+    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
     /// </returns>
     /// <param name="asyncResult">
     /// An <see cref="IAsyncResult"/> obtained by calling the
     /// <see cref="BeginGetClientCertificate"/> method.
     /// </param>
     /// <exception cref="NotImplementedException">
-    /// This method is not implemented.
+    /// This method isn't implemented.
     /// </exception>
     public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
     {
@@ -770,11 +744,10 @@ namespace WebSocketSharp.Net
     /// Gets the client's X.509 v.3 certificate.
     /// </summary>
     /// <returns>
-    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3
-    /// certificate.
+    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
     /// </returns>
     /// <exception cref="NotImplementedException">
-    /// This method is not implemented.
+    /// This method isn't implemented.
     /// </exception>
     public X509Certificate2 GetClientCertificate ()
     {
@@ -787,18 +760,15 @@ namespace WebSocketSharp.Net
     /// <see cref="HttpListenerRequest"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerRequest"/>.
+    /// A <see cref="string"/> that represents the current <see cref="HttpListenerRequest"/>.
     /// </returns>
     public override string ToString ()
     {
-      var buffer = new StringBuilder (64);
-      buffer.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _rawUrl, _version);
-      foreach (var key in _headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}\r\n", key, _headers [key]);
+      var buff = new StringBuilder (64);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _rawUrl, _version);
+      buff.Append (_headers.ToString ());
 
-      buffer.Append ("\r\n");
-      return buffer.ToString ();
+      return buff.ToString ();
     }
 
     #endregion

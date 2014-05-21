@@ -1337,7 +1337,7 @@ namespace WebSocketSharp
     /// </param>
     public static bool IsPredefinedScheme (this string value)
     {
-      if (value == null && value.Length < 2)
+      if (value == null || value.Length < 2)
         return false;
 
       var c = value [0];
@@ -1407,7 +1407,7 @@ namespace WebSocketSharp
     /// Determines whether the specified <see cref="string"/> is a URI string.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is maybe a URI string; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> may be a URI string; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
@@ -1778,18 +1778,18 @@ namespace WebSocketSharp
     /// </summary>
     /// <returns>
     /// A <see cref="Uri"/> converted from <paramref name="uriString"/>, or <see langword="null"/>
-    /// if <paramref name="uriString"/> is <see langword="null"/> or empty.
+    /// if <paramref name="uriString"/> isn't successfully converted.
     /// </returns>
     /// <param name="uriString">
     /// A <see cref="string"/> to convert.
     /// </param>
     public static Uri ToUri (this string uriString)
     {
-      return uriString == null || uriString.Length == 0
-             ? null
-             : uriString.MaybeUri ()
-               ? new Uri (uriString)
-               : new Uri (uriString, UriKind.Relative);
+      Uri res;
+      return Uri.TryCreate (
+               uriString, uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out res)
+             ? res
+             : null;
     }
 
     /// <summary>
