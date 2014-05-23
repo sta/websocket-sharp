@@ -632,7 +632,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
@@ -670,7 +670,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
@@ -784,7 +784,7 @@ namespace WebSocketSharp.Net
 
       value = value.Trim ();
       if (value.Length > 65535)
-        throw new ArgumentOutOfRangeException ("value", "The length is greater than 65535.");
+        throw new ArgumentOutOfRangeException ("value", "Greater than 65,535 characters.");
 
       if (!IsHeaderValue (value))
         throw new ArgumentException ("Contains invalid characters.", "value");
@@ -943,7 +943,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="headerName"/> or <paramref name="headerValue"/> contains invalid characters.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="headerValue"/> is greater than 65535.
+    /// The length of <paramref name="headerValue"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
@@ -987,7 +987,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of the value part of <paramref name="header"/> is greater than 65535.
+    /// The length of the value part of <paramref name="header"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
@@ -1025,7 +1025,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
@@ -1059,7 +1059,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
@@ -1095,7 +1095,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the header
@@ -1391,7 +1391,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
@@ -1424,7 +1424,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
@@ -1459,7 +1459,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The length of <paramref name="value"/> is greater than 65535.
+    /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the header
