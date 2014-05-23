@@ -122,7 +122,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Encoding ContentEncoding {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _contentEncoding;
       }
 
@@ -150,7 +150,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public long ContentLength64 {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _contentLength;
       }
 
@@ -185,7 +185,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string ContentType {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _contentType;
       }
 
@@ -215,7 +215,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public CookieCollection Cookies {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _cookies ?? (_cookies = new CookieCollection ());
       }
 
@@ -231,6 +231,9 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="WebHeaderCollection"/> that contains the headers returned to the client.
     /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
     /// </exception>
@@ -254,6 +257,9 @@ namespace WebSocketSharp.Net
         // TODO: Check if this is marked readonly after headers are sent.
 
         checkDisposedOrHeadersSent ();
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
         _headers = value;
       }
     }
@@ -273,7 +279,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool KeepAlive {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _keepAlive;
       }
 
@@ -294,9 +300,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Stream OutputStream {
       get {
-        if (_disposed)
-          throw new ObjectDisposedException (GetType ().ToString ());
-
+        checkDisposed ();
         return _outputStream ?? (_outputStream = _context.Connection.GetResponseStream ());
       }
     }
@@ -322,7 +326,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Version ProtocolVersion {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _version;
       }
 
@@ -355,7 +359,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string RedirectLocation {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _location;
       }
 
@@ -409,7 +413,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public int StatusCode {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _statusCode;
       }
 
@@ -438,7 +442,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string StatusDescription {
       get {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         return _statusDescription;
       }
 
@@ -456,18 +460,25 @@ namespace WebSocketSharp.Net
 
     private bool canAddOrUpdate (Cookie cookie)
     {
-      if (Cookies.Count == 0)
+      if (_cookies == null || _cookies.Count == 0)
         return true;
 
       var found = findCookie (cookie).ToList ();
       if (found.Count == 0)
         return true;
 
+      var version = cookie.Version;
       foreach (var c in found)
-        if (c.Version == cookie.Version)
+        if (c.Version == version)
           return true;
 
       return false;
+    }
+
+    private void checkDisposed ()
+    {
+      if (_disposed)
+        throw new ObjectDisposedException (GetType ().ToString ());
     }
 
     private void checkDisposedOrHeadersSent ()
@@ -490,12 +501,12 @@ namespace WebSocketSharp.Net
       var name = cookie.Name;
       var domain = cookie.Domain;
       var path = cookie.Path;
-
-      foreach (Cookie c in Cookies)
-        if (c.Name.Equals (name, StringComparison.OrdinalIgnoreCase) &&
-            c.Domain.Equals (domain, StringComparison.OrdinalIgnoreCase) &&
-            c.Path.Equals (path, StringComparison.Ordinal))
-          yield return c;
+      if (_cookies != null)
+        foreach (Cookie c in _cookies)
+          if (c.Name.Equals (name, StringComparison.OrdinalIgnoreCase) &&
+              c.Domain.Equals (domain, StringComparison.OrdinalIgnoreCase) &&
+              c.Path.Equals (path, StringComparison.Ordinal))
+            yield return c;
     }
 
     #endregion
