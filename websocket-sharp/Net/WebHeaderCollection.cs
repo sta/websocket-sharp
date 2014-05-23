@@ -908,18 +908,18 @@ namespace WebSocketSharp.Net
 
     internal string ToStringMultiValue (bool response)
     {
-      var buffer = new StringBuilder ();
+      var buff = new StringBuilder ();
       Count.Times (
         i => {
           var key = GetKey (i);
           if (IsMultiValue (key, response))
             foreach (var value in GetValues (i))
-              buffer.AppendFormat ("{0}: {1}\r\n", key, value);
+              buff.AppendFormat ("{0}: {1}\r\n", key, value);
           else
-            buffer.AppendFormat ("{0}: {1}\r\n", key, Get (i));
+            buff.AppendFormat ("{0}: {1}\r\n", key, Get (i));
         });
 
-      return buffer.Append ("\r\n").ToString ();
+      return buff.Append ("\r\n").ToString ();
     }
 
     #endregion
@@ -1491,10 +1491,10 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override string ToString ()
     {
-      var buffer = new StringBuilder ();
-      Count.Times (i => buffer.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i)));
+      var buff = new StringBuilder ();
+      Count.Times (i => buff.AppendFormat ("{0}: {1}\r\n", GetKey (i), Get (i)));
 
-      return buffer.Append ("\r\n").ToString ();
+      return buff.Append ("\r\n").ToString ();
     }
 
     #endregion
