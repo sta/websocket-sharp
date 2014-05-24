@@ -463,29 +463,29 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void createQueryString (string query)
+    private static NameValueCollection createQueryString (string query)
     {
-      if (query == null || query.Length == 0) {
-        _queryString = new NameValueCollection (1);
-        return;
-      }
+      if (query == null || query.Length == 0)
+        return new NameValueCollection (1);
 
-      _queryString = new NameValueCollection ();
+      var res = new NameValueCollection ();
       if (query [0] == '?')
         query = query.Substring (1);
 
       var components = query.Split ('&');
       foreach (var component in components) {
         var i = component.IndexOf ('=');
-        if (i == -1) {
-          _queryString.Add (null, HttpUtility.UrlDecode (component));
-        }
-        else {
+        if (i > -1) {
           var name = HttpUtility.UrlDecode (component.Substring (0, i));
           var val = HttpUtility.UrlDecode (component.Substring (i + 1));
-          _queryString.Add (name, val);
+          res.Add (name, val);
+        }
+        else {
+          res.Add (null, HttpUtility.UrlDecode (component));
         }
       }
+
+      return res;
     }
 
     private static bool tryCreateVersion (string version, out Version result)
@@ -578,18 +578,31 @@ namespace WebSocketSharp.Net
       if (noHost)
         host = UserHostAddress;
 
-      string path;
+      string path = null;
       Uri rawUri;
-      if (_rawUrl.MaybeUri () && Uri.TryCreate (_rawUrl, UriKind.Absolute, out rawUri)) {
+      if (_rawUrl == "*") {
+      }
+      else if (_rawUrl.StartsWith ("/")) {
+        path = HttpUtility.UrlDecode (_rawUrl);
+      }
+      else if (_rawUrl.MaybeUri () && Uri.TryCreate (_rawUrl, UriKind.Absolute, out rawUri)) {
         host = rawUri.Host;
         path = rawUri.PathAndQuery;
       }
       else {
-        path = HttpUtility.UrlDecode (_rawUrl);
+        var authority = HttpUtility.UrlDecode (_rawUrl);
+        var slash = authority.IndexOf ('/');
+        if (slash > -1) {
+          host = authority.Substring (0, slash);
+          path = authority.Substring (slash);
+        }
+        else {
+          host = authority;
+        }
       }
 
       var colon = host.IndexOf (':');
-      if (colon != -1)
+      if (colon > -1)
         host = host.Substring (0, colon);
 
       var scheme = IsWebSocketRequest ? "ws" : "http";
@@ -605,7 +618,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      createQueryString (_url.Query);
+      _queryString = createQueryString (_url.Query);
 
       var encoding = Headers ["Transfer-Encoding"];
       if (_version >= HttpVersion.Version11 && encoding != null && encoding.Length > 0) {
