@@ -91,6 +91,12 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
+    internal bool CloseConnection {
+      get {
+        return _headers ["Connection"] == "close";
+      }
+    }
+
     internal bool ForceCloseChunked {
       get {
         return _forceCloseChunked;
@@ -242,6 +248,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public WebHeaderCollection Headers {
       get {
+        checkDisposed ();
         return _headers;
       }
 

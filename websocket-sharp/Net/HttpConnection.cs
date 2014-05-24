@@ -204,6 +204,7 @@ namespace WebSocketSharp.Net
         return;
 
       _inputStream = null;
+      _outputStream = null;
       _websocketStream = null;
 
       _stream.Dispose ();
@@ -415,29 +416,24 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return;
 
-        if (_outputStream != null) {
-          _outputStream.Close ();
-          _outputStream = null;
-        }
+        if (!force) {
+          GetResponseStream ().Close ();
 
-        var req = _context.Request;
-        var res = _context.Response;
+          var req = _context.Request;
+          var res = _context.Response;
+          if (req.KeepAlive &&
+              !res.CloseConnection &&
+              req.FlushInput () &&
+              (!_chunked || (_chunked && !res.ForceCloseChunked))) {
+            // Don't close. Keep working.
+            _reuses++;
+            disposeRequestBuffer ();
+            unbind ();
+            init ();
+            BeginReadRequest ();
 
-        force |= !req.KeepAlive;
-        if (!force)
-          force = res.Headers ["Connection"] == "close";
-
-        if (!force &&
-            req.FlushInput () &&
-            (!_chunked || (_chunked && !res.ForceCloseChunked))) {
-          // Don't close. Keep working.
-          _reuses++;
-          disposeRequestBuffer ();
-          unbind ();
-          init ();
-          BeginReadRequest ();
-
-          return;
+            return;
+          }
         }
 
         close ();
