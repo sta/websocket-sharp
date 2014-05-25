@@ -579,43 +579,38 @@ namespace WebSocketSharp.Net
         host = UserHostAddress;
 
       string path = null;
-      Uri rawUri;
-      if (_rawUrl == "*") {
-      }
-      else if (_rawUrl.StartsWith ("/")) {
+      if (_rawUrl.StartsWith ("/")) {
         path = HttpUtility.UrlDecode (_rawUrl);
       }
-      else if (_rawUrl.MaybeUri () && Uri.TryCreate (_rawUrl, UriKind.Absolute, out rawUri)) {
-        host = rawUri.Host;
-        path = rawUri.PathAndQuery;
+      else if (_rawUrl.MaybeUri ()) {
+        if (!Uri.TryCreate (_rawUrl, UriKind.Absolute, out _url) ||
+            !(_url.Scheme.StartsWith ("http") || _url.Scheme.StartsWith ("ws"))) {
+          _context.ErrorMessage = "Invalid request url: " + _rawUrl;
+          return;
+        }
+      }
+      else if (_rawUrl == "*") {
       }
       else {
-        var authority = HttpUtility.UrlDecode (_rawUrl);
-        var slash = authority.IndexOf ('/');
-        if (slash > -1) {
-          host = authority.Substring (0, slash);
-          path = authority.Substring (slash);
-        }
-        else {
-          host = authority;
-        }
+        // As authority form
+        host = HttpUtility.UrlDecode (_rawUrl);
       }
 
-      var colon = host.IndexOf (':');
-      if (colon > -1)
-        host = host.Substring (0, colon);
+      if (_url == null) {
+        var scheme = IsWebSocketRequest ? "ws" : "http";
+        var secure = IsSecureConnection;
+        if (secure)
+          scheme += "s";
 
-      var scheme = IsWebSocketRequest ? "ws" : "http";
-      var url = String.Format (
-        "{0}://{1}:{2}{3}",
-        IsSecureConnection ? scheme + "s" : scheme,
-        host,
-        LocalEndPoint.Port,
-        path);
+        var colon = host.IndexOf (':');
+        if (colon == -1)
+          host = String.Format ("{0}:{1}", host, secure ? 443 : 80);
 
-      if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
-        _context.ErrorMessage = "Invalid request url: " + url;
-        return;
+        var url = String.Format ("{0}://{1}{2}", scheme, host, path);
+        if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
+          _context.ErrorMessage = "Invalid request url: " + url;
+          return;
+        }
       }
 
       _queryString = createQueryString (_url.Query);
