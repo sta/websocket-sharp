@@ -111,7 +111,7 @@ namespace WebSocketSharp.Net
 
     internal bool HasError {
       get {
-        return _error != null && _error.Length > 0;
+        return _error != null;
       }
     }
 
