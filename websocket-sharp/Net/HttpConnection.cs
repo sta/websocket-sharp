@@ -275,10 +275,10 @@ namespace WebSocketSharp.Net
         }
 
         if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
-          if (!conn._context.HasError) {
+          if (!conn._context.HasError)
             conn._context.Request.FinishInitialization ();
-          }
-          else {
+
+          if (conn._context.HasError) {
             conn.SendError ();
             conn.Close (true);
 

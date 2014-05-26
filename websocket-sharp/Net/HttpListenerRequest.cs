@@ -78,8 +78,8 @@ namespace WebSocketSharp.Net
     private bool                _keepAliveWasSet;
     private string              _method;
     private NameValueCollection _queryString;
-    private string              _rawUrl;
     private Uri                 _referer;
+    private string              _uri;
     private Uri                 _url;
     private string []           _userLanguages;
     private Version             _version;
@@ -94,7 +94,6 @@ namespace WebSocketSharp.Net
       _contentLength = -1;
       _headers = new WebHeaderCollection ();
       _identifier = Guid.NewGuid ();
-      _version = HttpVersion.Version10;
     }
 
     #endregion
@@ -106,7 +105,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// An array of <see cref="string"/> that contains the media type names in the Accept
-    /// request-header or <see langword="null"/> if the request didn't include an Accept header.
+    /// request-header, or <see langword="null"/> if the request didn't include an Accept header.
     /// </value>
     public string [] AcceptTypes {
       get {
@@ -123,24 +122,17 @@ namespace WebSocketSharp.Net
     public int ClientCertificateError {
       get {
         // TODO: Always returns 0.
-/*
-        if (no_get_certificate)
-          throw new InvalidOperationException (
-            "Call GetClientCertificate method before accessing this property.");
-
-        return client_cert_error;
-*/
         return 0;
       }
     }
 
     /// <summary>
-    /// Gets the encoding used with the entity body data included in the request.
+    /// Gets the encoding for the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Encoding"/> that represents the encoding used with the entity body data or
-    /// <see cref="Encoding.Default"/> if the request didn't include the information about the
-    /// encoding.
+    /// A <see cref="Encoding"/> that represents the encoding for the entity body data, or
+    /// <see cref="Encoding.Default"/> if the request didn't include the information about
+    /// the encoding.
     /// </value>
     public Encoding ContentEncoding {
       get {
@@ -282,7 +274,7 @@ namespace WebSocketSharp.Net
     public bool IsWebSocketRequest {
       get {
         return _method == "GET" &&
-               _version >= HttpVersion.Version11 &&
+               _version > HttpVersion.Version10 &&
                _headers.Contains ("Upgrade", "websocket") &&
                _headers.Contains ("Connection", "Upgrade");
       }
@@ -297,12 +289,10 @@ namespace WebSocketSharp.Net
     public bool KeepAlive {
       get {
         if (!_keepAliveWasSet) {
-          _keepAlive = _headers.Contains ("Connection", "keep-alive") ||
-                       _version == HttpVersion.Version11
-                       ? true
-                       : _headers.Contains ("Keep-Alive")
-                         ? !_headers.Contains ("Keep-Alive", "closed")
-                         : false;
+          string keepAlive;
+          _keepAlive = _version > HttpVersion.Version10 ||
+                       _headers.Contains ("Connection", "keep-alive") ||
+                       ((keepAlive = _headers ["Keep-Alive"]) != null && keepAlive != "closed");
 
           _keepAliveWasSet = true;
         }
@@ -336,15 +326,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the collection of query string variables used in the request.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the collection of query string variables
-    /// used in the request.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters
+    /// included in the request.
     /// </value>
     public NameValueCollection QueryString {
       get {
-        return _queryString;
+        return _queryString ?? (_queryString = createQueryString (_url.Query));
       }
     }
 
@@ -356,7 +346,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        return _rawUrl;
+        return _url.PathAndQuery;
       }
     }
 
@@ -400,8 +390,8 @@ namespace WebSocketSharp.Net
     /// Gets the URL of the resource from which the requested URL was obtained.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the value of the Referer request-header or
-    /// <see langword="null"/> if the request didn't include an Referer header.
+    /// A <see cref="Uri"/> that represents the value of the Referer request-header,
+    /// or <see langword="null"/> if the request didn't include an Referer header.
     /// </value>
     public Uri UrlReferrer {
       get {
@@ -449,9 +439,9 @@ namespace WebSocketSharp.Net
     /// Gets the natural languages which are preferred for the response.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the natural language names in the
-    /// Accept-Language request-header or <see langword="null"/> if the request didn't
-    /// include an Accept-Language header.
+    /// An array of <see cref="string"/> that contains the natural language names in
+    /// the Accept-Language request-header, or <see langword="null"/> if the request
+    /// didn't include an Accept-Language header.
     /// </value>
     public string [] UserLanguages {
       get {
@@ -579,44 +569,44 @@ namespace WebSocketSharp.Net
         host = UserHostAddress;
 
       string path = null;
-      if (_rawUrl.StartsWith ("/")) {
-        path = HttpUtility.UrlDecode (_rawUrl);
+      if (_uri.StartsWith ("/")) {
+        path = HttpUtility.UrlDecode (_uri);
       }
-      else if (_rawUrl.MaybeUri ()) {
-        if (!Uri.TryCreate (_rawUrl, UriKind.Absolute, out _url) ||
-            !(_url.Scheme.StartsWith ("http") || _url.Scheme.StartsWith ("ws"))) {
-          _context.ErrorMessage = "Invalid request url: " + _rawUrl;
+      else if (_uri.MaybeUri ()) {
+        Uri uri;
+        if (!Uri.TryCreate (_uri, UriKind.Absolute, out uri) ||
+            !(uri.Scheme.StartsWith ("http") || uri.Scheme.StartsWith ("ws"))) {
+          _context.ErrorMessage = "Invalid request url: " + _uri;
           return;
         }
+
+        host = uri.Authority;
+        path = uri.PathAndQuery;
       }
-      else if (_rawUrl == "*") {
+      else if (_uri == "*") {
       }
       else {
         // As authority form
-        host = HttpUtility.UrlDecode (_rawUrl);
+        host = HttpUtility.UrlDecode (_uri);
       }
 
-      if (_url == null) {
-        var scheme = IsWebSocketRequest ? "ws" : "http";
-        var secure = IsSecureConnection;
-        if (secure)
-          scheme += "s";
+      var scheme = IsWebSocketRequest ? "ws" : "http";
+      var secure = IsSecureConnection;
+      if (secure)
+        scheme += "s";
 
-        var colon = host.IndexOf (':');
-        if (colon == -1)
-          host = String.Format ("{0}:{1}", host, secure ? 443 : 80);
+      var colon = host.IndexOf (':');
+      if (colon == -1)
+        host = String.Format ("{0}:{1}", host, secure ? 443 : 80);
 
-        var url = String.Format ("{0}://{1}{2}", scheme, host, path);
-        if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
-          _context.ErrorMessage = "Invalid request url: " + url;
-          return;
-        }
+      var url = String.Format ("{0}://{1}{2}", scheme, host, path);
+      if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
+        _context.ErrorMessage = "Invalid request url: " + url;
+        return;
       }
-
-      _queryString = createQueryString (_url.Query);
 
       var encoding = Headers ["Transfer-Encoding"];
-      if (_version >= HttpVersion.Version11 && encoding != null && encoding.Length > 0) {
+      if (_version > HttpVersion.Version10 && encoding != null && encoding.Length > 0) {
         _chunked = encoding.ToLower () == "chunked";
         if (!_chunked) {
           _context.ErrorMessage = String.Empty;
@@ -684,7 +674,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      _rawUrl = parts [1];
+      _uri = parts [1];
 
       if (parts [2].Length != 8 ||
           !parts [2].StartsWith ("HTTP/") ||
@@ -773,7 +763,7 @@ namespace WebSocketSharp.Net
     public override string ToString ()
     {
       var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _rawUrl, _version);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
       buff.Append (_headers.ToString ());
 
       return buff.ToString ();
