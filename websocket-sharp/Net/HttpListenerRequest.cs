@@ -568,6 +568,7 @@ namespace WebSocketSharp.Net
       if (noHost)
         host = UserHostAddress;
 
+      string scheme = null;
       string path = null;
       if (_uri.StartsWith ("/")) {
         path = HttpUtility.UrlDecode (_uri);
@@ -580,6 +581,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
+        scheme = uri.Scheme;
         host = uri.Authority;
         path = uri.PathAndQuery;
       }
@@ -590,14 +592,12 @@ namespace WebSocketSharp.Net
         host = HttpUtility.UrlDecode (_uri);
       }
 
-      var scheme = IsWebSocketRequest ? "ws" : "http";
-      var secure = IsSecureConnection;
-      if (secure)
-        scheme += "s";
+      if (scheme == null)
+        scheme = (IsWebSocketRequest ? "ws" : "http") + (IsSecureConnection ? "s" : String.Empty);
 
       var colon = host.IndexOf (':');
       if (colon == -1)
-        host = String.Format ("{0}:{1}", host, secure ? 443 : 80);
+        host = String.Format ("{0}:{1}", host, scheme == "http" || scheme == "ws" ? 80 : 443);
 
       var url = String.Format ("{0}://{1}{2}", scheme, host, path);
       if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
