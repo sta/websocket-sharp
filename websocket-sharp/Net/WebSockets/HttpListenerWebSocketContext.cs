@@ -168,18 +168,6 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the absolute path of the requested URI.
-    /// </summary>
-    /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested URI.
-    /// </value>
-    public override string Path {
-      get {
-        return _context.Request.Url.GetAbsolutePath ();
-      }
-    }
-
-    /// <summary>
     /// Gets the query string variables included in the request.
     /// </summary>
     /// <value>

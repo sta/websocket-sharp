@@ -505,10 +505,8 @@ namespace WebSocketSharp.Server
 
     private void acceptWebSocketRequest (HttpListenerWebSocketContext context)
     {
-      var path = context.Path;
-
       WebSocketServiceHost host;
-      if (path == null || !_services.TryGetServiceHostInternally (path, out host)) {
+      if (!_services.TryGetServiceHostInternally (context.RequestUri.AbsolutePath, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
         return;
       }

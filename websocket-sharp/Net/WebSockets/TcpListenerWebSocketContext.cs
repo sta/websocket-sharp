@@ -45,14 +45,15 @@ namespace WebSocketSharp.Net.WebSockets
   {
     #region Private Fields
 
-    private TcpClient        _client;
-    private CookieCollection _cookies;
-    private HandshakeRequest _request;
-    private bool             _secure;
-    private WebSocketStream  _stream;
-    private Uri              _uri;
-    private IPrincipal       _user;
-    private WebSocket        _websocket;
+    private TcpClient           _client;
+    private CookieCollection    _cookies;
+    private NameValueCollection _queryString;
+    private HandshakeRequest    _request;
+    private bool                _secure;
+    private WebSocketStream     _stream;
+    private Uri                 _uri;
+    private IPrincipal          _user;
+    private WebSocket           _websocket;
 
     #endregion
 
@@ -65,6 +66,7 @@ namespace WebSocketSharp.Net.WebSockets
       _secure = secure;
       _stream = WebSocketStream.CreateServerStream (client, secure, cert);
       _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
+      _uri = createRequestUrl (_request, secure);
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -179,18 +181,6 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the absolute path of the requested URI.
-    /// </summary>
-    /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested URI.
-    /// </value>
-    public override string Path {
-      get {
-        return _request.RequestUri.GetAbsolutePath ();
-      }
-    }
-
-    /// <summary>
     /// Gets the query string variables included in the request.
     /// </summary>
     /// <value>
@@ -198,7 +188,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override NameValueCollection QueryString {
       get {
-        return _request.QueryString;
+        return _queryString ??
+               (_queryString = createQueryString (_uri != null ? _uri.Query : null));
       }
     }
 
@@ -210,7 +201,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override Uri RequestUri {
       get {
-        return _uri ?? (_uri = createRequestUri ());
+        return _uri;
       }
     }
 
@@ -318,16 +309,78 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Private Methods
 
-    private Uri createRequestUri ()
+    private static NameValueCollection createQueryString (string query)
     {
-      var scheme = _secure ? "wss" : "ws";
-      var host = _request.Headers ["Host"];
-      var rawUri = _request.RequestUri;
-      var path = rawUri.IsAbsoluteUri
-                 ? rawUri.PathAndQuery
-                 : HttpUtility.UrlDecode (_request.RawUrl);
+      if (query == null || query.Length == 0)
+        return new NameValueCollection (1);
 
-      return String.Format ("{0}://{1}{2}", scheme, host, path).ToUri ();
+      var res = new NameValueCollection ();
+      if (query [0] == '?')
+        query = query.Substring (1);
+
+      var components = query.Split ('&');
+      foreach (var component in components) {
+        var i = component.IndexOf ('=');
+        if (i > -1) {
+          var name = HttpUtility.UrlDecode (component.Substring (0, i));
+          var val = component.Length > i + 1
+                    ? HttpUtility.UrlDecode (component.Substring (i + 1))
+                    : String.Empty;
+
+          res.Add (name, val);
+        }
+        else {
+          res.Add (null, HttpUtility.UrlDecode (component));
+        }
+      }
+
+      return res;
+    }
+
+    private static Uri createRequestUrl (HandshakeRequest request, bool secure)
+    {
+      var host = request.Headers ["Host"];
+      if (host == null || host.Length == 0)
+        return null;
+
+      string scheme = null;
+      string path = null;
+
+      var reqUri = request.RequestUri;
+      if (reqUri.StartsWith ("/")) {
+        path = reqUri;
+      }
+      else if (reqUri.MaybeUri ()) {
+        Uri uri;
+        if (!Uri.TryCreate (reqUri, UriKind.Absolute, out uri) ||
+            !uri.Scheme.StartsWith ("ws"))
+          return null;
+
+        scheme = uri.Scheme;
+        host = uri.Authority;
+        path = uri.PathAndQuery;
+      }
+      else if (reqUri == "*") {
+      }
+      else {
+        // As authority form
+        host = reqUri;
+      }
+
+      if (scheme == null)
+        scheme = secure ? "wss" : "ws";
+
+      var colon = host.IndexOf (':');
+      if (colon == -1)
+        host = String.Format ("{0}:{1}", host, scheme == "ws" ? 80 : 443);
+
+      var url = String.Format ("{0}://{1}{2}", scheme, host, path);
+
+      Uri res;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out res))
+        return null;
+
+      return res;
     }
 
     #endregion

@@ -118,7 +118,6 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _uri = context.Path.ToUri ();
 
       init ();
     }
@@ -133,7 +132,6 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
-      _uri = context.Path.ToUri ();
 
       init ();
     }
@@ -459,11 +457,9 @@ namespace WebSocketSharp
     /// </value>
     public Uri Url {
       get {
-        return _uri;
-      }
-
-      internal set {
-        _uri = value;
+        return _client
+               ? _uri
+               : _context.RequestUri;
       }
     }
 
@@ -685,10 +681,10 @@ namespace WebSocketSharp
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
       var headers = context.Headers;
-      return !context.IsWebSocketRequest
-             ? "Not WebSocket connection request."
-             : !validateHostHeader (headers ["Host"])
-               ? "Invalid Host header."
+      return context.RequestUri == null
+             ? "Invalid request url."
+             : !context.IsWebSocketRequest
+               ? "Not WebSocket connection request."
                : !validateSecWebSocketKeyHeader (headers ["Sec-WebSocket-Key"])
                  ? "Invalid Sec-WebSocket-Key header."
                  : !validateSecWebSocketVersionClientHeader (headers ["Sec-WebSocket-Version"])
@@ -1309,24 +1305,6 @@ namespace WebSocketSharp
         ex => acceptException (ex, "An exception has occurred while receiving a message."));
 
       receive ();
-    }
-
-    // As server
-    private bool validateHostHeader (string value)
-    {
-      if (value == null || value.Length == 0)
-        return false;
-
-      if (!_uri.IsAbsoluteUri)
-        return true;
-
-      var i = value.IndexOf (':');
-      var host = i > 0 ? value.Substring (0, i) : value;
-      var expected = _uri.DnsSafeHost;
-
-      return Uri.CheckHostName (host) != UriHostNameType.Dns ||
-             Uri.CheckHostName (expected) != UriHostNameType.Dns ||
-             host == expected;
     }
 
     // As client

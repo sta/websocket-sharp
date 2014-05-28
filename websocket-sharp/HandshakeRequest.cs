@@ -28,7 +28,6 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -38,10 +37,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string              _method;
-    private NameValueCollection _queryString;
-    private string              _rawUrl;
-    private Uri                 _uri;
+    private string _method;
+    private string _uri;
 
     #endregion
 
@@ -55,10 +52,9 @@ namespace WebSocketSharp
 
     #region Public Constructors
 
-    public HandshakeRequest (string uriString)
+    public HandshakeRequest (string absPathAndQuery)
     {
-      _uri = uriString.ToUri ();
-      _rawUrl = _uri.IsAbsoluteUri ? _uri.PathAndQuery : uriString;
+      _uri = absPathAndQuery;
       _method = "GET";
 
       var headers = Headers;
@@ -73,9 +69,9 @@ namespace WebSocketSharp
 
     public AuthenticationResponse AuthResponse {
       get {
-        var response = Headers ["Authorization"];
-        return response != null && response.Length > 0
-               ? AuthenticationResponse.Parse (response)
+        var auth = Headers ["Authorization"];
+        return auth != null && auth.Length > 0
+               ? AuthenticationResponse.Parse (auth)
                : null;
       }
     }
@@ -100,47 +96,13 @@ namespace WebSocketSharp
       get {
         var headers = Headers;
         return _method == "GET" &&
-               ProtocolVersion >= HttpVersion.Version11 &&
+               ProtocolVersion > HttpVersion.Version10 &&
                headers.Contains ("Upgrade", "websocket") &&
                headers.Contains ("Connection", "Upgrade");
       }
     }
 
-    public NameValueCollection QueryString {
-      get {
-        if (_queryString == null) {
-          _queryString = new NameValueCollection ();
-
-          var i = RawUrl.IndexOf ('?');
-          if (i > 0) {
-            var query = RawUrl.Substring (i + 1);
-            var components = query.Split ('&');
-            foreach (var c in components) {
-              var nv = c.GetNameAndValue ("=");
-              if (nv.Key != null) {
-                var name = nv.Key.UrlDecode ();
-                var val = nv.Value.UrlDecode ();
-                _queryString.Add (name, val);
-              }
-            }
-          }
-        }
-
-        return _queryString;
-      }
-    }
-
-    public string RawUrl {
-      get {
-        return _rawUrl;
-      }
-
-      private set {
-        _rawUrl = value;
-      }
-    }
-
-    public Uri RequestUri {
+    public string RequestUri {
       get {
         return _uri;
       }
@@ -156,7 +118,7 @@ namespace WebSocketSharp
 
     public static HandshakeRequest Parse (string [] headerParts)
     {
-      var requestLine = headerParts [0].Split (new char [] { ' ' }, 3);
+      var requestLine = headerParts [0].Split (new [] { ' ' }, 3);
       if (requestLine.Length != 3)
         throw new ArgumentException ("Invalid request line: " + headerParts [0]);
 
@@ -168,8 +130,7 @@ namespace WebSocketSharp
         Headers = headers,
         HttpMethod = requestLine [0],
         ProtocolVersion = new Version (requestLine [2].Substring (5)),
-        RawUrl = requestLine [1],
-        RequestUri = requestLine [1].ToUri ()
+        RequestUri = requestLine [1]
       };
     }
 
@@ -178,32 +139,34 @@ namespace WebSocketSharp
       if (cookies == null || cookies.Count == 0)
         return;
 
-      var sorted = cookies.Sorted.ToArray ();
-      var header = new StringBuilder (sorted [0].ToString (), 64);
-      for (int i = 1; i < sorted.Length; i++)
-        if (!sorted [i].Expired)
-          header.AppendFormat ("; {0}", sorted [i].ToString ());
+      var buff = new StringBuilder (64);
+      foreach (var cookie in cookies.Sorted)
+        if (!cookie.Expired)
+          buff.AppendFormat ("{0}; ", cookie.ToString ());
 
-      Headers ["Cookie"] = header.ToString ();
+      var len = buff.Length;
+      if (len > 2) {
+        buff.Length = len - 2;
+        Headers ["Cookie"] = buff.ToString ();
+      }
     }
 
     public override string ToString ()
     {
-      var buffer = new StringBuilder (64);
-      buffer.AppendFormat (
-        "{0} {1} HTTP/{2}{3}", _method, _rawUrl, ProtocolVersion, CrLf);
+      var buff = new StringBuilder (64);
+      buff.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _uri, ProtocolVersion, CrLf);
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        buff.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
-      buffer.Append (CrLf);
+      buff.Append (CrLf);
 
       var entity = EntityBody;
       if (entity.Length > 0)
-        buffer.Append (entity);
+        buff.Append (entity);
 
-      return buffer.ToString ();
+      return buff.ToString ();
     }
 
     #endregion

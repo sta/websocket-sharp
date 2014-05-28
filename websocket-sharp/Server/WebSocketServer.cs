@@ -492,16 +492,28 @@ namespace WebSocketSharp.Server
 
     private void acceptWebSocket (TcpListenerWebSocketContext context)
     {
-      var path = context.Path;
-
-      WebSocketServiceHost host;
-      if (path == null || !_services.TryGetServiceHostInternally (path, out host)) {
-        context.Close (HttpStatusCode.NotImplemented);
+      var reqUri = context.RequestUri;
+      if (reqUri == null) {
+        context.Close (HttpStatusCode.BadRequest);
         return;
       }
 
-      if (_uri.IsAbsoluteUri)
-        context.WebSocket.Url = new Uri (_uri, path);
+      if (_uri.IsAbsoluteUri) {
+        var req = reqUri.DnsSafeHost;
+        var expected = _uri.DnsSafeHost;
+        if (Uri.CheckHostName (req) == UriHostNameType.Dns &&
+            Uri.CheckHostName (expected) == UriHostNameType.Dns &&
+            req != expected) {
+          context.Close (HttpStatusCode.NotFound);
+          return;
+        }
+      }
+
+      WebSocketServiceHost host;
+      if (!_services.TryGetServiceHostInternally (reqUri.AbsolutePath, out host)) {
+        context.Close (HttpStatusCode.NotImplemented);
+        return;
+      }
 
       host.StartSession (context);
     }

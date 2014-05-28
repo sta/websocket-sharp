@@ -346,6 +346,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
+        // TODO: Should decode?
         return _url.PathAndQuery;
       }
     }
@@ -467,7 +468,10 @@ namespace WebSocketSharp.Net
         var i = component.IndexOf ('=');
         if (i > -1) {
           var name = HttpUtility.UrlDecode (component.Substring (0, i));
-          var val = HttpUtility.UrlDecode (component.Substring (i + 1));
+          var val = component.Length > i + 1
+                    ? HttpUtility.UrlDecode (component.Substring (i + 1))
+                    : String.Empty;
+
           res.Add (name, val);
         }
         else {
@@ -571,7 +575,7 @@ namespace WebSocketSharp.Net
       string scheme = null;
       string path = null;
       if (_uri.StartsWith ("/")) {
-        path = HttpUtility.UrlDecode (_uri);
+        path = _uri;
       }
       else if (_uri.MaybeUri ()) {
         Uri uri;
@@ -589,7 +593,7 @@ namespace WebSocketSharp.Net
       }
       else {
         // As authority form
-        host = HttpUtility.UrlDecode (_uri);
+        host = _uri;
       }
 
       if (scheme == null)
