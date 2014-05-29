@@ -134,6 +134,7 @@
     <Compile Include="Net\Chunk.cs" />
     <Compile Include="Net\InputChunkState.cs" />
     <Compile Include="Net\ChunkedRequestStream.cs" />
+    <Compile Include="Net\QueryStringCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
