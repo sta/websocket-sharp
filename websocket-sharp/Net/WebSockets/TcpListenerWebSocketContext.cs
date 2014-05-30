@@ -189,7 +189,8 @@ namespace WebSocketSharp.Net.WebSockets
     public override NameValueCollection QueryString {
       get {
         return _queryString ??
-               (_queryString = createQueryString (_uri != null ? _uri.Query : null));
+               (_queryString =
+                 HttpUtility.ParseQueryStringSimply (_uri != null ? _uri.Query : null));
       }
     }
 
@@ -308,34 +309,6 @@ namespace WebSocketSharp.Net.WebSockets
     #endregion
 
     #region Private Methods
-
-    private static NameValueCollection createQueryString (string query)
-    {
-      if (query == null || query.Length == 0)
-        return new NameValueCollection (1);
-
-      var res = new NameValueCollection ();
-      if (query [0] == '?')
-        query = query.Substring (1);
-
-      var components = query.Split ('&');
-      foreach (var component in components) {
-        var i = component.IndexOf ('=');
-        if (i > -1) {
-          var name = HttpUtility.UrlDecode (component.Substring (0, i));
-          var val = component.Length > i + 1
-                    ? HttpUtility.UrlDecode (component.Substring (i + 1))
-                    : String.Empty;
-
-          res.Add (name, val);
-        }
-        else {
-          res.Add (null, HttpUtility.UrlDecode (component));
-        }
-      }
-
-      return res;
-    }
 
     private static Uri createRequestUrl (HandshakeRequest request, bool secure)
     {

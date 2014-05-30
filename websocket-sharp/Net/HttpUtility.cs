@@ -1038,7 +1038,7 @@ namespace WebSocketSharp.Net
 
       var len = query.Length;
       if (len == 0 || (len == 1 && query [0] == '?'))
-        return new NameValueCollection ();
+        return new NameValueCollection (1);
 
       if (query [0] == '?')
         query = query.Substring (1);
@@ -1048,6 +1048,36 @@ namespace WebSocketSharp.Net
 
       var res = new QueryStringCollection ();
       ParseQueryString (query, encoding, res);
+
+      return res;
+    }
+
+    // Used by HttpListenerRequest and TcpListenerWebSocketContext.
+    public static NameValueCollection ParseQueryStringSimply (string query)
+    {
+      int len;
+      if (query == null || (len = query.Length) == 0 || (len == 1 && query [0] == '?'))
+        return new NameValueCollection (1);
+
+      if (query [0] == '?')
+        query = query.Substring (1);
+
+      var res = new QueryStringCollection ();
+      var components = query.Split ('&');
+      foreach (var component in components) {
+        var i = component.IndexOf ('=');
+        if (i > -1) {
+          var name = UrlDecode (component.Substring (0, i), Encoding.UTF8);
+          var val = component.Length > i + 1
+                    ? UrlDecode (component.Substring (i + 1), Encoding.UTF8)
+                    : String.Empty;
+
+          res.Add (name, val);
+        }
+        else {
+          res.Add (null, UrlDecode (component, Encoding.UTF8));
+        }
+      }
 
       return res;
     }
