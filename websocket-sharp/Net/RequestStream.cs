@@ -173,12 +173,10 @@ namespace WebSocketSharp.Net
 
       var nread = fillFromBuffer (buffer, offset, count);
       if (nread > 0 || nread == -1) {
-        var ares = new HttpStreamAsyncResult ();
+        var ares = new HttpStreamAsyncResult (callback, state);
         ares.Buffer = buffer;
         ares.Offset = offset;
         ares.Count = count;
-        ares.Callback = callback;
-        ares.State = state;
         ares.SyncRead = nread;
         ares.Complete ();
 

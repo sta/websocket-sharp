@@ -135,9 +135,7 @@ namespace WebSocketSharp.Net
       if (count < 0 || offset > len - count)
         throw new ArgumentOutOfRangeException ("'offset' + 'count' exceeds the size of buffer.");
 
-      var ares = new HttpStreamAsyncResult ();
-      ares.Callback = callback;
-      ares.State = state;
+      var ares = new HttpStreamAsyncResult (callback, state);
       if (_noMoreData) {
         ares.Complete ();
         return ares;
