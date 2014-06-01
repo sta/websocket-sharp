@@ -544,40 +544,9 @@ namespace WebSocketSharp.Net
       if (noHost)
         host = UserHostAddress;
 
-      string scheme = null;
-      string path = null;
-      if (_uri.StartsWith ("/")) {
-        path = _uri;
-      }
-      else if (_uri.MaybeUri ()) {
-        Uri uri;
-        if (!Uri.TryCreate (_uri, UriKind.Absolute, out uri) ||
-            !(uri.Scheme.StartsWith ("http") || uri.Scheme.StartsWith ("ws"))) {
-          _context.ErrorMessage = "Invalid request url: " + _uri;
-          return;
-        }
-
-        scheme = uri.Scheme;
-        host = uri.Authority;
-        path = uri.PathAndQuery;
-      }
-      else if (_uri == "*") {
-      }
-      else {
-        // As authority form
-        host = _uri;
-      }
-
-      if (scheme == null)
-        scheme = (IsWebSocketRequest ? "ws" : "http") + (IsSecureConnection ? "s" : String.Empty);
-
-      var colon = host.IndexOf (':');
-      if (colon == -1)
-        host = String.Format ("{0}:{1}", host, scheme == "http" || scheme == "ws" ? 80 : 443);
-
-      var url = String.Format ("{0}://{1}{2}", scheme, host, path);
-      if (!Uri.TryCreate (url, UriKind.Absolute, out _url)) {
-        _context.ErrorMessage = "Invalid request url: " + url;
+      _url = HttpUtility.CreateRequestUrl (_uri, host, IsWebSocketRequest, IsSecureConnection);
+      if (_url == null) {
+        _context.ErrorMessage = "Invalid request url";
         return;
       }
 

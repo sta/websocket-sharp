@@ -629,6 +629,52 @@ namespace WebSocketSharp.Net
       return hash (String.Format ("{0}:{1}", secret, data));
     }
 
+    internal static Uri CreateRequestUrl (
+      string requestUri, string host, bool websocketRequest, bool secure)
+    {
+      if (requestUri == null || requestUri.Length == 0 || host == null || host.Length == 0)
+        return null;
+
+      string scheme = null;
+      string path = null;
+      if (requestUri.StartsWith ("/")) {
+        path = requestUri;
+      }
+      else if (requestUri.MaybeUri ()) {
+        Uri uri;
+        var valid = Uri.TryCreate (requestUri, UriKind.Absolute, out uri) &&
+                    (((scheme = uri.Scheme).StartsWith ("http") && !websocketRequest) ||
+                     (scheme.StartsWith ("ws") && websocketRequest));
+
+        if (!valid)
+          return null;
+
+        host = uri.Authority;
+        path = uri.PathAndQuery;
+      }
+      else if (requestUri == "*") {
+      }
+      else {
+        // As authority form
+        host = requestUri;
+      }
+
+      if (scheme == null)
+        scheme = (websocketRequest ? "ws" : "http") + (secure ? "s" : String.Empty);
+
+      var colon = host.IndexOf (':');
+      if (colon == -1)
+        host = String.Format ("{0}:{1}", host, scheme == "http" || scheme == "ws" ? 80 : 443);
+
+      var url = String.Format ("{0}://{1}{2}", scheme, host, path);
+
+      Uri res;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out res))
+        return null;
+
+      return res;
+    }
+
     internal static void ParseQueryString (
       string query, Encoding encoding, NameValueCollection result)
     {

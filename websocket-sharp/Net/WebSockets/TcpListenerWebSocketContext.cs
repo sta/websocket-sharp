@@ -66,7 +66,9 @@ namespace WebSocketSharp.Net.WebSockets
       _secure = secure;
       _stream = WebSocketStream.CreateServerStream (client, secure, cert);
       _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
-      _uri = createRequestUrl (_request, secure);
+      _uri = HttpUtility.CreateRequestUrl (
+        _request.RequestUri, _request.Headers ["Host"], _request.IsWebSocketRequest, secure);
+
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -304,56 +306,6 @@ namespace WebSocketSharp.Net.WebSockets
       get {
         return _websocket;
       }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private static Uri createRequestUrl (HandshakeRequest request, bool secure)
-    {
-      var host = request.Headers ["Host"];
-      if (host == null || host.Length == 0)
-        return null;
-
-      string scheme = null;
-      string path = null;
-
-      var reqUri = request.RequestUri;
-      if (reqUri.StartsWith ("/")) {
-        path = reqUri;
-      }
-      else if (reqUri.MaybeUri ()) {
-        Uri uri;
-        if (!Uri.TryCreate (reqUri, UriKind.Absolute, out uri) ||
-            !uri.Scheme.StartsWith ("ws"))
-          return null;
-
-        scheme = uri.Scheme;
-        host = uri.Authority;
-        path = uri.PathAndQuery;
-      }
-      else if (reqUri == "*") {
-      }
-      else {
-        // As authority form
-        host = reqUri;
-      }
-
-      if (scheme == null)
-        scheme = secure ? "wss" : "ws";
-
-      var colon = host.IndexOf (':');
-      if (colon == -1)
-        host = String.Format ("{0}:{1}", host, scheme == "ws" ? 80 : 443);
-
-      var url = String.Format ("{0}://{1}{2}", scheme, host, path);
-
-      Uri res;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out res))
-        return null;
-
-      return res;
     }
 
     #endregion
