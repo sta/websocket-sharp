@@ -39,6 +39,8 @@ namespace WebSocketSharp
 
     private string _method;
     private string _uri;
+    private bool   _websocketRequest;
+    private bool   _websocketRequestWasSet;
 
     #endregion
 
@@ -94,11 +96,17 @@ namespace WebSocketSharp
 
     public bool IsWebSocketRequest {
       get {
-        var headers = Headers;
-        return _method == "GET" &&
-               ProtocolVersion > HttpVersion.Version10 &&
-               headers.Contains ("Upgrade", "websocket") &&
-               headers.Contains ("Connection", "Upgrade");
+        if (!_websocketRequestWasSet) {
+          var headers = Headers;
+          _websocketRequest = _method == "GET" &&
+                              ProtocolVersion > HttpVersion.Version10 &&
+                              headers.Contains ("Upgrade", "websocket") &&
+                              headers.Contains ("Connection", "Upgrade");
+
+          _websocketRequestWasSet = true;
+        }
+
+        return _websocketRequest;
       }
     }
 

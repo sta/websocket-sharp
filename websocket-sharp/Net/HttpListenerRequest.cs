@@ -83,6 +83,8 @@ namespace WebSocketSharp.Net
     private Uri                 _url;
     private string []           _userLanguages;
     private Version             _version;
+    private bool                _websocketRequest;
+    private bool                _websocketRequestWasSet;
 
     #endregion
 
@@ -273,10 +275,16 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        return _method == "GET" &&
-               _version > HttpVersion.Version10 &&
-               _headers.Contains ("Upgrade", "websocket") &&
-               _headers.Contains ("Connection", "Upgrade");
+        if (!_websocketRequestWasSet) {
+          _websocketRequest = _method == "GET" &&
+                              _version > HttpVersion.Version10 &&
+                              _headers.Contains ("Upgrade", "websocket") &&
+                              _headers.Contains ("Connection", "Upgrade");
+
+          _websocketRequestWasSet = true;
+        }
+
+        return _websocketRequest;
       }
     }
 
