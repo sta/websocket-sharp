@@ -168,10 +168,10 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the query string variables included in the request.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public override NameValueCollection QueryString {
       get {

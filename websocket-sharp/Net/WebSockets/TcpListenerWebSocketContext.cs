@@ -32,6 +32,7 @@ using System.Collections.Specialized;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Text;
 
 namespace WebSocketSharp.Net.WebSockets
 {
@@ -183,16 +184,16 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the query string variables included in the request.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public override NameValueCollection QueryString {
       get {
         return _queryString ??
-               (_queryString =
-                 HttpUtility.ParseQueryStringSimply (_uri != null ? _uri.Query : null));
+               (_queryString = HttpUtility.ParseQueryStringInternally (
+                 _uri != null ? _uri.Query : null, Encoding.UTF8));
       }
     }
 

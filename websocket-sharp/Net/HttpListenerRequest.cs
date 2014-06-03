@@ -337,12 +337,12 @@ namespace WebSocketSharp.Net
     /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string parameters
-    /// included in the request.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public NameValueCollection QueryString {
       get {
-        return _queryString ?? (_queryString = HttpUtility.ParseQueryStringSimply (_url.Query));
+        return _queryString ??
+               (_queryString = HttpUtility.ParseQueryStringInternally (_url.Query, Encoding.UTF8));
       }
     }
 

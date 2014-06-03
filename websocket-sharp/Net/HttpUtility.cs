@@ -675,57 +675,33 @@ namespace WebSocketSharp.Net
       return res;
     }
 
-    internal static void ParseQueryString (
-      string query, Encoding encoding, NameValueCollection result)
+    internal static NameValueCollection ParseQueryStringInternally (string query, Encoding encoding)
     {
-      if (query.Length == 0)
-        return;
+      int len;
+      if (query == null || (len = query.Length) == 0 || (len == 1 && query [0] == '?'))
+        return new NameValueCollection (1);
 
-      var decoded = HtmlDecode (query);
-      var decodedLength = decoded.Length;
-      var namePos = 0;
-      var first = true;
-      while (namePos <= decodedLength) {
-        var valuePos = -1;
-        var valueEnd = -1;
-        for (int q = namePos; q < decodedLength; q++) {
-          if (valuePos == -1 && decoded [q] == '=') {
-            valuePos = q + 1;
-          }
-          else if (decoded [q] == '&') {
-            valueEnd = q;
-            break;
-          }
-        }
+      if (query [0] == '?')
+        query = query.Substring (1);
 
-        if (first) {
-          first = false;
-          if (decoded [namePos] == '?')
-            namePos++;
-        }
+      var res = new QueryStringCollection ();
+      var components = query.Split ('&');
+      foreach (var component in components) {
+        var i = component.IndexOf ('=');
+        if (i > -1) {
+          var name = UrlDecode (component.Substring (0, i), encoding);
+          var val = component.Length > i + 1
+                    ? UrlDecode (component.Substring (i + 1), encoding)
+                    : String.Empty;
 
-        string name;
-        if (valuePos == -1) {
-          name = null;
-          valuePos = namePos;
+          res.Add (name, val);
         }
         else {
-          name = UrlDecode (decoded.Substring (namePos, valuePos - namePos - 1), encoding);
+          res.Add (null, UrlDecode (component, encoding));
         }
-
-        if (valueEnd < 0) {
-          namePos = -1;
-          valueEnd = decoded.Length;
-        }
-        else {
-          namePos = valueEnd + 1;
-        }
-
-        var value = UrlDecode (decoded.Substring (valuePos, valueEnd - valuePos), encoding);
-        result.Add (name, value);
-        if (namePos == -1)
-          break;
       }
+
+      return res;
     }
 
     internal static string UrlDecodeInternally (
@@ -1074,7 +1050,10 @@ namespace WebSocketSharp.Net
 
     public static NameValueCollection ParseQueryString (string query)
     {
-      return ParseQueryString (query, Encoding.UTF8);
+      if (query == null)
+        throw new ArgumentNullException ("query");
+
+      return ParseQueryStringInternally (query, Encoding.UTF8);
     }
 
     public static NameValueCollection ParseQueryString (string query, Encoding encoding)
@@ -1082,50 +1061,10 @@ namespace WebSocketSharp.Net
       if (query == null)
         throw new ArgumentNullException ("query");
 
-      var len = query.Length;
-      if (len == 0 || (len == 1 && query [0] == '?'))
-        return new NameValueCollection (1);
-
-      if (query [0] == '?')
-        query = query.Substring (1);
-
       if (encoding == null)
-        encoding = Encoding.UTF8;
+        throw new ArgumentNullException ("encoding");
 
-      var res = new QueryStringCollection ();
-      ParseQueryString (query, encoding, res);
-
-      return res;
-    }
-
-    // Used by HttpListenerRequest and TcpListenerWebSocketContext.
-    public static NameValueCollection ParseQueryStringSimply (string query)
-    {
-      int len;
-      if (query == null || (len = query.Length) == 0 || (len == 1 && query [0] == '?'))
-        return new NameValueCollection (1);
-
-      if (query [0] == '?')
-        query = query.Substring (1);
-
-      var res = new QueryStringCollection ();
-      var components = query.Split ('&');
-      foreach (var component in components) {
-        var i = component.IndexOf ('=');
-        if (i > -1) {
-          var name = UrlDecode (component.Substring (0, i), Encoding.UTF8);
-          var val = component.Length > i + 1
-                    ? UrlDecode (component.Substring (i + 1), Encoding.UTF8)
-                    : String.Empty;
-
-          res.Add (name, val);
-        }
-        else {
-          res.Add (null, UrlDecode (component, Encoding.UTF8));
-        }
-      }
-
-      return res;
+      return ParseQueryStringInternally (query, encoding);
     }
 
     public static string UrlDecode (string s)
