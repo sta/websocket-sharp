@@ -47,7 +47,13 @@ websocket-sharp is available on the **Unity Asset Store**.
 
 - **[WebSocket-Sharp for Unity]**
 
-It's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
+It works with **Unity Free**, but there are some limitations:
+
+- **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
+- **.NET API 2.0 compatibility level for iOS/Android** (requires to fix lack of `System.Func<...>` delegates, etc)
+- **[Security Sandbox of the Webplayer]** (WebSocket Server doesn't work in the webplayer)
+
+And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
 ## Usage ##
 
@@ -577,8 +583,10 @@ websocket-sharp is provided under **[The MIT License]**.
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [Origin header]: http://tools.ietf.org/html/rfc6454#section-7
+[Security Sandbox of the Webplayer]: http://docs.unity3d.com/Manual/SecuritySandbox.html
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
+[Unity Licenses Comparison]: http://unity3d.com/unity/licenses
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
