@@ -470,6 +470,34 @@ If you would like to provide the Digest authentication, you should set like the 
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
+### Query String ###
+
+As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket connection request to the server, you should create an instance of the `WebSocket` class with the WebSocket URL that includes the query string parameters.
+
+```cs
+using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
+  ...
+}
+```
+
+As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketService.Context.QueryString` property, like the following.
+
+```cs
+public class Chat : WebSocketService
+{
+  private string _name;
+
+  ...
+
+  protected override void OnOpen ()
+  {
+    _name = Context.QueryString ["name"];
+  }
+
+  ...
+}
+```
+
 ### Origin header and Cookies ###
 
 As a **WebSocket Client**, if you would like to send the **Origin header** with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, like the following.
