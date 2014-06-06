@@ -9,6 +9,7 @@
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
 - **[HTTP Authentication](#http-authentication)**
+- **[Query String, Origin header and Cookies](#query-string-origin-header-and-cookies)**
 - .NET **3.5** or later (includes compatible)
 
 ## Branches ##
@@ -472,7 +473,7 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 ### Query String, Origin header and Cookies ###
 
-As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket connection request to the server, you should create an instance of the `WebSocket` class with the WebSocket URL that includes the query string parameters.
+As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket connection request to the server, you should create an instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
 
 ```cs
 using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
@@ -611,6 +612,7 @@ websocket-sharp is provided under **[The MIT License]**.
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
 [Origin header]: http://tools.ietf.org/html/rfc6454#section-7
+[Query]: http://tools.ietf.org/html/rfc3986#section-3.4
 [Security Sandbox of the Webplayer]: http://docs.unity3d.com/Manual/SecuritySandbox.html
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
