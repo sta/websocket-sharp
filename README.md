@@ -518,7 +518,7 @@ wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
     OriginValidator = value => {
-      // Check 'value' of the Origin header, and return true if it's valid
+      // Check 'value' of the Origin header, and return true if valid
       Uri origin;
       return !value.IsNullOrEmpty () &&
              Uri.TryCreate (value, UriKind.Absolute, out origin) &&
@@ -531,10 +531,12 @@ wssv.AddWebSocketService<Chat> (
         res.Add (cookie);
       }
 
-      return true; // If the Cookies are valid
+      return true; // If valid
     }
   });
 ```
+
+Also, if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketService.Context.Origin` and `WebSocketService.Context.CookieCollection` properties.
 
 ### Logging ###
 
