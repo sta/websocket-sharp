@@ -110,7 +110,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        foreach (var result in Broadping (WsFrame.EmptyUnmaskPingData, 1000))
+        foreach (var result in Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000))
           if (result.Value)
             yield return result.Key;
       }
@@ -156,7 +156,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var result in Broadping (WsFrame.EmptyUnmaskPingData, 1000))
+        foreach (var result in Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000))
           if (!result.Value)
             yield return result.Key;
       }
@@ -367,9 +367,8 @@ namespace WebSocketSharp.Server
     {
       var payload = new PayloadData (data);
       var args = new CloseEventArgs (payload);
-      var frameAsBytes = send
-                       ? WsFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
-                       : null;
+      var frameAsBytes =
+        send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null;
 
       Stop (args, frameAsBytes);
     }
@@ -556,7 +555,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (WsFrame.EmptyUnmaskPingData, 1000);
+      return Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000);
     }
 
     /// <summary>
@@ -584,8 +583,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (
-        WsFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+      return Broadping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
     }
 
     /// <summary>

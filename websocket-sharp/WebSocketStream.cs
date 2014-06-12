@@ -252,14 +252,14 @@ namespace WebSocketSharp
       _innerStream.Dispose ();
     }
 
-    public WsFrame ReadFrame ()
+    public WebSocketFrame ReadFrame ()
     {
-      return WsFrame.Parse (_innerStream, true);
+      return WebSocketFrame.Parse (_innerStream, true);
     }
 
-    public void ReadFrameAsync (Action<WsFrame> completed, Action<Exception> error)
+    public void ReadFrameAsync (Action<WebSocketFrame> completed, Action<Exception> error)
     {
-      WsFrame.ParseAsync (_innerStream, true, completed, error);
+      WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
     }
 
     public HandshakeRequest ReadHandshakeRequest ()
@@ -272,7 +272,7 @@ namespace WebSocketSharp
       return ReadHandshake<HandshakeResponse> (HandshakeResponse.Parse, 90000);
     }
 
-    public bool WriteFrame (WsFrame frame)
+    public bool WriteFrame (WebSocketFrame frame)
     {
       return Write (frame.ToByteArray ());
     }

@@ -1,6 +1,6 @@
 #region License
 /*
- * WsFrame.cs
+ * WebSocketFrame.cs
  *
  * The MIT License
  *
@@ -34,7 +34,7 @@ using System.Text;
 
 namespace WebSocketSharp
 {
-  internal class WsFrame : IEnumerable<byte>
+  internal class WebSocketFrame : IEnumerable<byte>
   {
     #region Private Fields
 
@@ -59,7 +59,7 @@ namespace WebSocketSharp
 
     #region Static Constructor
 
-    static WsFrame ()
+    static WebSocketFrame ()
     {
       EmptyUnmaskPingData = CreatePingFrame (Mask.Unmask).ToByteArray ();
     }
@@ -68,7 +68,7 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private WsFrame ()
+    private WebSocketFrame ()
     {
     }
 
@@ -76,22 +76,22 @@ namespace WebSocketSharp
 
     #region Public Constructors
 
-    public WsFrame (Opcode opcode, PayloadData payload)
+    public WebSocketFrame (Opcode opcode, PayloadData payload)
       : this (Fin.Final, opcode, Mask.Mask, payload, false)
     {
     }
 
-    public WsFrame (Opcode opcode, Mask mask, PayloadData payload)
+    public WebSocketFrame (Opcode opcode, Mask mask, PayloadData payload)
       : this (Fin.Final, opcode, mask, payload, false)
     {
     }
 
-    public WsFrame (Fin fin, Opcode opcode, Mask mask, PayloadData payload)
+    public WebSocketFrame (Fin fin, Opcode opcode, Mask mask, PayloadData payload)
       : this (fin, opcode, mask, payload, false)
     {
     }
 
-    public WsFrame (Fin fin, Opcode opcode, Mask mask, PayloadData payload, bool compressed)
+    public WebSocketFrame (Fin fin, Opcode opcode, Mask mask, PayloadData payload, bool compressed)
     {
       _fin = fin;
       _rsv1 = isData (opcode) && compressed ? Rsv.On : Rsv.Off;
@@ -100,24 +100,19 @@ namespace WebSocketSharp
       _opcode = opcode;
       _mask = mask;
 
-      /* PayloadLength */
-
       var len = payload.Length;
-      _payloadLength = len < 126
-                       ? (byte) len
-                       : len < 0x010000
-                         ? (byte) 126
-                         : (byte) 127;
-
-      /* ExtendedPayloadLength */
-
-      _extPayloadLength = _payloadLength < 126
-                          ? new byte [0]
-                          : _payloadLength == 126
-                            ? ((ushort) len).ToByteArrayInternally (ByteOrder.Big)
-                            : len.ToByteArrayInternally (ByteOrder.Big);
-
-      /* MaskingKey */
+      if (len < 126) {
+        _payloadLength = (byte) len;
+        _extPayloadLength = new byte [0];
+      }
+      else if (len < 0x010000) {
+        _payloadLength = (byte) 126;
+        _extPayloadLength = ((ushort) len).ToByteArrayInternally (ByteOrder.Big);
+      }
+      else {
+        _payloadLength = (byte) 127;
+        _extPayloadLength = len.ToByteArrayInternally (ByteOrder.Big);
+      }
 
       if (mask == Mask.Mask) {
         _maskingKey = createMaskingKey ();
@@ -126,8 +121,6 @@ namespace WebSocketSharp
       else {
         _maskingKey = new byte [0];
       }
-
-      /* PayloadData */
 
       _payloadData = payload;
     }
@@ -293,7 +286,7 @@ namespace WebSocketSharp
       return key;
     }
 
-    private static string dump (WsFrame frame)
+    private static string dump (WebSocketFrame frame)
     {
       var len = frame.Length;
       var cnt = (long) (len / 4);
@@ -322,21 +315,21 @@ namespace WebSocketSharp
       var headerFmt = String.Format (
 @"{0} 01234567 89ABCDEF 01234567 89ABCDEF
 {0}+--------+--------+--------+--------+\n", spFmt);
+      var lineFmt = String.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
       var footerFmt = String.Format ("{0}+--------+--------+--------+--------+", spFmt);
 
       var output = new StringBuilder (64);
       Func<Action<string, string, string, string>> linePrinter = () => {
         long lineCnt = 0;
-        var lineFmt = String.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
         return (arg1, arg2, arg3, arg4) =>
           output.AppendFormat (lineFmt, ++lineCnt, arg1, arg2, arg3, arg4);
       };
 
-      var printLine = linePrinter ();
       output.AppendFormat (headerFmt, String.Empty);
 
+      var printLine = linePrinter ();
       var frameAsBytes = frame.ToByteArray ();
-      for (int i = 0; i <= cnt; i++) {
+      for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
         if (i < cnt)
           printLine (
@@ -366,7 +359,7 @@ namespace WebSocketSharp
       return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
-    private static WsFrame parse (byte [] header, Stream stream, bool unmask)
+    private static WebSocketFrame parse (byte [] header, Stream stream, bool unmask)
     {
       /* Header */
 
@@ -401,7 +394,7 @@ namespace WebSocketSharp
           CloseStatusCode.InconsistentData,
           "The length of payload data of a control frame is greater than 125 bytes.");
 
-      var frame = new WsFrame ();
+      var frame = new WebSocketFrame ();
       frame._fin = fin;
       frame._rsv1 = rsv1;
       frame._rsv2 = rsv2;
@@ -474,7 +467,7 @@ namespace WebSocketSharp
       return frame;
     }
 
-    private static string print (WsFrame frame)
+    private static string print (WebSocketFrame frame)
     {
       /* Opcode */
 
@@ -510,16 +503,16 @@ namespace WebSocketSharp
                         : frame._payloadData.ToString ();
 
       var format =
-@"                 FIN: {0}
-                RSV1: {1}
-                RSV2: {2}
-                RSV3: {3}
-              Opcode: {4}
-                MASK: {5}
-         Payload Len: {6}
-Extended Payload Len: {7}
-         Masking Key: {8}
-        Payload Data: {9}";
+@"                    FIN: {0}
+                   RSV1: {1}
+                   RSV2: {2}
+                   RSV3: {3}
+                 Opcode: {4}
+                   MASK: {5}
+         Payload Length: {6}
+Extended Payload Length: {7}
+            Masking Key: {8}
+           Payload Data: {9}";
 
       return String.Format (
         format,
@@ -539,44 +532,45 @@ Extended Payload Len: {7}
 
     #region Internal Methods
 
-    internal static WsFrame CreateCloseFrame (Mask mask, PayloadData payload)
+    internal static WebSocketFrame CreateCloseFrame (Mask mask, PayloadData payload)
     {
-      return new WsFrame (Opcode.Close, mask, payload);
+      return new WebSocketFrame (Opcode.Close, mask, payload);
     }
 
-    internal static WsFrame CreatePongFrame (Mask mask, PayloadData payload)
+    internal static WebSocketFrame CreatePongFrame (Mask mask, PayloadData payload)
     {
-      return new WsFrame (Opcode.Pong, mask, payload);
+      return new WebSocketFrame (Opcode.Pong, mask, payload);
     }
 
     #endregion
 
     #region Public Methods
 
-    public static WsFrame CreateCloseFrame (Mask mask, byte [] data)
+    public static WebSocketFrame CreateCloseFrame (Mask mask, byte [] data)
     {
-      return new WsFrame (Opcode.Close, mask, new PayloadData (data));
+      return new WebSocketFrame (Opcode.Close, mask, new PayloadData (data));
     }
 
-    public static WsFrame CreateCloseFrame (Mask mask, CloseStatusCode code, string reason)
+    public static WebSocketFrame CreateCloseFrame (Mask mask, CloseStatusCode code, string reason)
     {
-      return new WsFrame (Opcode.Close, mask, new PayloadData (((ushort) code).Append (reason)));
+      return new WebSocketFrame (
+        Opcode.Close, mask, new PayloadData (((ushort) code).Append (reason)));
     }
 
-    public static WsFrame CreateFrame (
+    public static WebSocketFrame CreateFrame (
       Fin fin, Opcode opcode, Mask mask, byte [] data, bool compressed)
     {
-      return new WsFrame (fin, opcode, mask, new PayloadData (data), compressed);
+      return new WebSocketFrame (fin, opcode, mask, new PayloadData (data), compressed);
     }
 
-    public static WsFrame CreatePingFrame (Mask mask)
+    public static WebSocketFrame CreatePingFrame (Mask mask)
     {
-      return new WsFrame (Opcode.Ping, mask, new PayloadData ());
+      return new WebSocketFrame (Opcode.Ping, mask, new PayloadData ());
     }
 
-    public static WsFrame CreatePingFrame (Mask mask, byte [] data)
+    public static WebSocketFrame CreatePingFrame (Mask mask, byte [] data)
     {
-      return new WsFrame (Opcode.Ping, mask, new PayloadData (data));
+      return new WebSocketFrame (Opcode.Ping, mask, new PayloadData (data));
     }
 
     public IEnumerator<byte> GetEnumerator ()
@@ -585,23 +579,23 @@ Extended Payload Len: {7}
         yield return b;
     }
 
-    public static WsFrame Parse (byte [] src)
+    public static WebSocketFrame Parse (byte [] src)
     {
       return Parse (src, true);
     }
 
-    public static WsFrame Parse (Stream stream)
+    public static WebSocketFrame Parse (Stream stream)
     {
       return Parse (stream, true);
     }
 
-    public static WsFrame Parse (byte [] src, bool unmask)
+    public static WebSocketFrame Parse (byte [] src, bool unmask)
     {
       using (var stream = new MemoryStream (src))
         return Parse (stream, unmask);
     }
 
-    public static WsFrame Parse (Stream stream, bool unmask)
+    public static WebSocketFrame Parse (Stream stream, bool unmask)
     {
       var header = stream.ReadBytes (2);
       if (header.Length != 2)
@@ -611,19 +605,19 @@ Extended Payload Len: {7}
       return parse (header, stream, unmask);
     }
 
-    public static void ParseAsync (Stream stream, Action<WsFrame> completed)
+    public static void ParseAsync (Stream stream, Action<WebSocketFrame> completed)
     {
       ParseAsync (stream, true, completed, null);
     }
 
     public static void ParseAsync (
-      Stream stream, Action<WsFrame> completed, Action<Exception> error)
+      Stream stream, Action<WebSocketFrame> completed, Action<Exception> error)
     {
       ParseAsync (stream, true, completed, error);
     }
 
     public static void ParseAsync (
-      Stream stream, bool unmask, Action<WsFrame> completed, Action<Exception> error)
+      Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
     {
       stream.ReadBytesAsync (
         2,

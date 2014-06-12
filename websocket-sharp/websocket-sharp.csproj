@@ -102,7 +102,6 @@
     <Compile Include="Opcode.cs" />
     <Compile Include="PayloadData.cs" />
     <Compile Include="Rsv.cs" />
-    <Compile Include="WsFrame.cs" />
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
@@ -135,6 +134,7 @@
     <Compile Include="Net\InputChunkState.cs" />
     <Compile Include="Net\ChunkedRequestStream.cs" />
     <Compile Include="Net\QueryStringCollection.cs" />
+    <Compile Include="WebSocketFrame.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

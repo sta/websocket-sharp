@@ -491,7 +491,7 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private bool acceptCloseFrame (WsFrame frame)
+    private bool acceptCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
       close (payload, !payload.ContainsReservedCloseStatusCode, false);
@@ -499,7 +499,7 @@ namespace WebSocketSharp
       return false;
     }
 
-    private bool acceptDataFrame (WsFrame frame)
+    private bool acceptDataFrame (WebSocketFrame frame)
     {
       var e = frame.IsCompressed
               ? new MessageEventArgs (
@@ -532,14 +532,14 @@ namespace WebSocketSharp
         close (code, reason ?? code.GetMessage (), false);
     }
 
-    private bool acceptFragmentedFrame (WsFrame frame)
+    private bool acceptFragmentedFrame (WebSocketFrame frame)
     {
       return frame.IsContinuation // Not first fragment
              ? true
              : acceptFragments (frame);
     }
 
-    private bool acceptFragments (WsFrame first)
+    private bool acceptFragments (WebSocketFrame first)
     {
       using (var concatenated = new MemoryStream ()) {
         concatenated.WriteBytes (first.PayloadData.ApplicationData);
@@ -560,7 +560,7 @@ namespace WebSocketSharp
       }
     }
 
-    private bool acceptFrame (WsFrame frame)
+    private bool acceptFrame (WebSocketFrame frame)
     {
       return frame.IsCompressed && _compression == CompressionMethod.None
              ? acceptUnsupportedFrame (
@@ -607,16 +607,16 @@ namespace WebSocketSharp
       return send (createHandshakeResponse ());
     }
 
-    private bool acceptPingFrame (WsFrame frame)
+    private bool acceptPingFrame (WebSocketFrame frame)
     {
       var mask = _client ? Mask.Mask : Mask.Unmask;
-      if (send (WsFrame.CreatePongFrame (mask, frame.PayloadData)))
+      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData)))
         _logger.Trace ("Returned a Pong.");
 
       return true;
     }
 
-    private bool acceptPongFrame (WsFrame frame)
+    private bool acceptPongFrame (WebSocketFrame frame)
     {
       _receivePong.Set ();
       _logger.Trace ("Received a Pong.");
@@ -652,7 +652,7 @@ namespace WebSocketSharp
       }
     }
 
-    private bool acceptUnsupportedFrame (WsFrame frame, CloseStatusCode code, string reason)
+    private bool acceptUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
     {
       _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
       acceptException (new WebSocketException (code, reason), null);
@@ -733,11 +733,11 @@ namespace WebSocketSharp
       e.WasClean =
         _client
         ? closeHandshake (
-            send ? WsFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
+            send ? WebSocketFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
             wait ? 5000 : 0,
             closeClientResources)
         : closeHandshake (
-            send ? WsFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null,
+            send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null,
             wait ? 1000 : 0,
             closeServerResources);
 
@@ -1085,7 +1085,7 @@ namespace WebSocketSharp
       return _stream.WriteHandshake (response);
     }
 
-    private bool send (WsFrame frame)
+    private bool send (WebSocketFrame frame)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
@@ -1109,7 +1109,7 @@ namespace WebSocketSharp
           }
 
           var mask = _client ? Mask.Mask : Mask.Unmask;
-          sent = send (WsFrame.CreateFrame (Fin.Final, opcode, mask, data, compressed));
+          sent = send (WebSocketFrame.CreateFrame (Fin.Final, opcode, mask, data, compressed));
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1203,20 +1203,20 @@ namespace WebSocketSharp
       if (quo == 0) {
         buffer = new byte [rem];
         return stream.Read (buffer, 0, rem) == rem &&
-               send (WsFrame.CreateFrame (Fin.Final, opcode, mask, buffer, compressed));
+               send (WebSocketFrame.CreateFrame (Fin.Final, opcode, mask, buffer, compressed));
       }
 
       buffer = new byte [FragmentLength];
 
       // First
       if (stream.Read (buffer, 0, FragmentLength) != FragmentLength ||
-          !send (WsFrame.CreateFrame (Fin.More, opcode, mask, buffer, compressed)))
+          !send (WebSocketFrame.CreateFrame (Fin.More, opcode, mask, buffer, compressed)))
         return false;
 
       // Mid
       for (long i = 0; i < times; i++) {
         if (stream.Read (buffer, 0, FragmentLength) != FragmentLength ||
-            !send (WsFrame.CreateFrame (Fin.More, Opcode.Cont, mask, buffer, compressed)))
+            !send (WebSocketFrame.CreateFrame (Fin.More, Opcode.Cont, mask, buffer, compressed)))
           return false;
       }
 
@@ -1226,7 +1226,7 @@ namespace WebSocketSharp
         buffer = new byte [tmpLen = rem];
 
       return stream.Read (buffer, 0, tmpLen) == tmpLen &&
-             send (WsFrame.CreateFrame (Fin.Final, Opcode.Cont, mask, buffer, compressed));
+             send (WebSocketFrame.CreateFrame (Fin.Final, Opcode.Cont, mask, buffer, compressed));
     }
 
     // As client
@@ -1475,7 +1475,7 @@ namespace WebSocketSharp
           try {
             byte [] cached;
             if (!cache.TryGetValue (_compression, out cached)) {
-              cached = WsFrame.CreateFrame (
+              cached = WebSocketFrame.CreateFrame (
                 Fin.Final,
                 opcode,
                 Mask.Unmask,
@@ -1819,8 +1819,8 @@ namespace WebSocketSharp
     public bool Ping ()
     {
       return _client
-             ? Ping (WsFrame.CreatePingFrame (Mask.Mask).ToByteArray (), 5000)
-             : Ping (WsFrame.EmptyUnmaskPingData, 1000);
+             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask).ToByteArray (), 5000)
+             : Ping (WebSocketFrame.EmptyUnmaskPingData, 1000);
     }
 
     /// <summary>
@@ -1848,8 +1848,8 @@ namespace WebSocketSharp
       }
 
       return _client
-             ? Ping (WsFrame.CreatePingFrame (Mask.Mask, data).ToByteArray (), 5000)
-             : Ping (WsFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask, data).ToByteArray (), 5000)
+             : Ping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
     }
 
     /// <summary>
