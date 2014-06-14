@@ -4,29 +4,40 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>websocket-sharp by sta</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/sta/websocket-sharp">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/sta/websocket-sharp/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/sta/websocket-sharp/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
     <div class="wrapper">
-      <header>
-        <h1>websocket-sharp</h1>
-        <p>A C# implementation of the WebSocket protocol client and server</p>
-        <p class="view"><a href="https://github.com/sta/websocket-sharp">View the Project on GitHub <small>sta/websocket-sharp</small></a></p>
-        <ul>
-          <li><a href="https://github.com/sta/websocket-sharp/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/sta/websocket-sharp/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/sta/websocket-sharp">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
+
       <section>
+        <div id="title">
+          <h1>websocket-sharp</h1>
+          <p>A C# implementation of the WebSocket protocol client and server</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/sta">sta</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
         <h2>
 <a name="welcome-to-websocket-sharp" class="anchor" href="#welcome-to-websocket-sharp"><span class="octicon octicon-link"></span></a>Welcome to websocket-sharp!</h2>
 
@@ -41,13 +52,24 @@
 <strong><a href="#per-message-compression">Per-message Compression</a></strong> extension</li>
 <li><strong><a href="#secure-connection">Secure Connection</a></strong></li>
 <li><strong><a href="#http-authentication">HTTP Authentication</a></strong></li>
+<li><strong><a href="#query-string-origin-header-and-cookies">Query String, Origin header and Cookies</a></strong></li>
 <li>.NET <strong>3.5</strong> or later (includes compatible)</li>
+</ul><h2>
+<a name="branches" class="anchor" href="#branches"><span class="octicon octicon-link"></span></a>Branches</h2>
+
+<ul>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/master">master</a></strong> for production releases.</li>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/hybi-00">hybi-00</a></strong> for older <a href="http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00">draft-ietf-hybi-thewebsocketprotocol-00</a>. No longer maintained.</li>
+<li>
+<strong><a href="https://github.com/sta/websocket-sharp/tree/draft75">draft75</a></strong> for even more old <a href="http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75">draft-hixie-thewebsocketprotocol-75</a>. No longer maintained.</li>
 </ul><h2>
 <a name="build" class="anchor" href="#build"><span class="octicon octicon-link"></span></a>Build</h2>
 
 <p>websocket-sharp is built as a single assembly, <strong>websocket-sharp.dll</strong>.</p>
 
-<p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So the simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for the websocket-sharp project with any of the build configurations (e.g. Debug) in the MonoDevelop.</p>
+<p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So the simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for the <strong>websocket-sharp project</strong> with any of the build configurations (e.g. Debug) in the MonoDevelop.</p>
 
 <h2>
 <a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
@@ -78,7 +100,17 @@
 
 <ul>
 <li><strong><a href="http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity">WebSocket-Sharp for Unity</a></strong></li>
-</ul><p>It's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, <strong>Thank you!</strong></p>
+</ul><p>It works with <strong>Unity Free</strong>, but there are some limitations:</p>
+
+<ul>
+<li>
+<strong><a href="http://docs.unity3d.com/Manual/SecuritySandbox.html">Security Sandbox of the Webplayer</a></strong> (server doesn't work in the webplayer)</li>
+<li>
+<strong><a href="http://unity3d.com/unity/licenses">.NET Socket Support for iOS/Android</a></strong> (requires iOS/Android Pro)</li>
+<li><strong>.NET API 2.0 compatibility level for iOS/Android</strong></li>
+</ul><p>Using <strong>.NET API 2.0 compatibility level for iOS/Android</strong> requires to fix lack of some features for later than .NET 2.0, such as the <code>System.Func&lt;...&gt;</code> delegates (i've fixed it in the asset package).</p>
+
+<p>And it's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, <strong>Thank you!</strong></p>
 
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
@@ -159,18 +191,18 @@
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.MessageEventArgs</code>.</p>
 
-<p><code>e.Type</code> property returns either <code>WebSocketSharp.Opcode.TEXT</code> or <code>WebSocketSharp.Opcode.BINARY</code> that represents the type of the received message. So by checking it, you determine which item you should use.</p>
+<p><code>e.Type</code> property returns either <code>WebSocketSharp.Opcode.Text</code> or <code>WebSocketSharp.Opcode.Binary</code> that represents the type of the received message. So by checking it, you determine which item you should use.</p>
 
-<p>If <code>e.Type</code> is <code>Opcode.TEXT</code>, you should use <code>e.Data</code> property (returns a <code>string</code>) that represents the received <strong>Text</strong> message.</p>
+<p>If <code>e.Type</code> is <code>Opcode.Text</code>, you should use <code>e.Data</code> property (returns a <code>string</code>) that represents the received <strong>Text</strong> message.</p>
 
-<p>Or if <code>e.Type</code> is <code>Opcode.BINARY</code>, you should use <code>e.RawData</code> property (returns a <code>byte []</code>) that represents the received <strong>Binary</strong> message.</p>
+<p>Or if <code>e.Type</code> is <code>Opcode.Binary</code>, you should use <code>e.RawData</code> property (returns a <code>byte []</code>) that represents the received <strong>Binary</strong> message.</p>
 
-<div class="highlight highlight-cs"><pre><span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">TEXT</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight highlight-cs"><pre><span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">Text</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something with e.Data</span>
   <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">BINARY</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="n">Opcode</span><span class="p">.</span><span class="n">Binary</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">// Do something with e.RawData</span>
   <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
@@ -224,7 +256,7 @@
 
 <p>The <code>WebSocket.Send</code> method is overloaded.</p>
 
-<p>You can use the <code>WebSocket.Send (string)</code>, <code>WebSocket.Send (byte [])</code>, and <code>WebSocket.Send (System.IO.FileInfo)</code> methods to send a data.</p>
+<p>You can use the <code>WebSocket.Send (string)</code>, <code>WebSocket.Send (byte [])</code>, or <code>WebSocket.Send (System.IO.FileInfo)</code> method to send a data.</p>
 
 <p>If you would like to send a data asynchronously, you should use the <code>WebSocket.SendAsync</code> method.</p>
 
@@ -263,8 +295,8 @@
     <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnMessage</span> <span class="p">(</span><span class="n">MessageEventArgs</span> <span class="n">e</span><span class="p">)</span>
     <span class="p">{</span>
       <span class="kt">var</span> <span class="n">msg</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">Data</span> <span class="p">==</span> <span class="s">"BALUS"</span>
-              <span class="p">?</span> <span class="s">"I've been balused already..."</span>
-              <span class="p">:</span> <span class="s">"I'm not available now."</span><span class="p">;</span>
+                <span class="p">?</span> <span class="s">"I've been balused already..."</span>
+                <span class="p">:</span> <span class="s">"I'm not available now."</span><span class="p">;</span>
 
       <span class="n">Send</span> <span class="p">(</span><span class="n">msg</span><span class="p">);</span>
     <span class="p">}</span>
@@ -343,7 +375,7 @@
 
 <p>If you override the <code>WebSocketService.OnMessage (MessageEventArgs)</code> method, it's called when the <code>OnMessage</code> event of the <code>WebSocket</code> used by the current session in the WebSocket service occurs.</p>
 
-<p>And if you override the <code>WebSocketService.OnOpen ()</code>, <code>WebSocketService.OnError (ErrorEventArgs)</code>, and <code>WebSocketService.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code>) occurs.</p>
+<p>And if you override the <code>WebSocketService.OnOpen ()</code>, <code>WebSocketService.OnError (ErrorEventArgs)</code>, and <code>WebSocketService.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code> events) occurs.</p>
 
 <p>The <code>WebSocketService.Send</code> method sends a data to the client on the current session in the WebSocket service.</p>
 
@@ -422,7 +454,7 @@
 
 <p>If you would like to enable this extension as a WebSocket client, you should set like the following.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Compression</span> <span class="p">=</span> <span class="n">CompressionMethod</span><span class="p">.</span><span class="n">DEFLATE</span><span class="p">;</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Compression</span> <span class="p">=</span> <span class="n">CompressionMethod</span><span class="p">.</span><span class="n">Deflate</span><span class="p">;</span>
 </pre></div>
 
 <p>And then your client sends the following header with the connection request to the server.</p>
@@ -492,20 +524,83 @@
 </pre></div>
 
 <h3>
+<a name="query-string-origin-header-and-cookies" class="anchor" href="#query-string-origin-header-and-cookies"><span class="octicon octicon-link"></span></a>Query String, Origin header and Cookies</h3>
+
+<p>As a <strong>WebSocket Client</strong>, if you would like to send the <strong>Query String</strong> with the WebSocket connection request to the server, you should create an instance of the <code>WebSocket</code> class with the WebSocket URL that includes the <a href="http://tools.ietf.org/html/rfc3986#section-3.4">Query</a> string parameters.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">ws</span> <span class="p">=</span> <span class="k">new</span> <span class="n">WebSocket</span> <span class="p">(</span><span class="s">"ws://example.com/?name=nobita"</span><span class="p">))</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>And if you would like to send the <strong>Origin header</strong> with the WebSocket connection request to the server, you should set the <code>WebSocket.Origin</code> property to an allowable value as the <a href="http://tools.ietf.org/html/rfc6454#section-7">Origin header</a> before connecting, like the following.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Origin</span> <span class="p">=</span> <span class="s">"http://example.com"</span><span class="p">;</span>
+</pre></div>
+
+<p>And if you would like to send the <strong>Cookies</strong> with the WebSocket connection request to the server, you should set any cookie using the <code>WebSocket.SetCookie (WebSocketSharp.Net.Cookie)</code> method before connecting, like the following.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">SetCookie</span> <span class="p">(</span><span class="k">new</span> <span class="n">Cookie</span> <span class="p">(</span><span class="s">"name"</span><span class="p">,</span> <span class="s">"nobita"</span><span class="p">));</span>
+</pre></div>
+
+<p>As a <strong>WebSocket Server</strong>, if you would like to get the <strong>Query String</strong> included in each WebSocket connection request, you should access the <code>WebSocketService.Context.QueryString</code> property, like the following.</p>
+
+<div class="highlight highlight-cs"><pre><span class="k">public</span> <span class="k">class</span> <span class="nc">Chat</span> <span class="p">:</span> <span class="n">WebSocketService</span>
+<span class="p">{</span>
+  <span class="k">private</span> <span class="kt">string</span> <span class="n">_name</span><span class="p">;</span>
+
+  <span class="p">...</span>
+
+  <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnOpen</span> <span class="p">()</span>
+  <span class="p">{</span>
+    <span class="n">_name</span> <span class="p">=</span> <span class="n">Context</span><span class="p">.</span><span class="n">QueryString</span> <span class="p">[</span><span class="s">"name"</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>And if you would like to check the <strong>Origin header and Cookies</strong> included in each WebSocket connection request, you should set each validation for the Origin header and Cookies in your <code>WebSocketService</code>, for example, using the <code>AddWebSocketService&lt;T&gt; (string, Func&lt;T&gt;)</code> method with initializing, like the following.</p>
+
+<div class="highlight highlight-cs"><pre><span class="n">wssv</span><span class="p">.</span><span class="n">AddWebSocketService</span><span class="p">&lt;</span><span class="n">Chat</span><span class="p">&gt;</span> <span class="p">(</span>
+  <span class="s">"/Chat"</span><span class="p">,</span>
+  <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">Chat</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="n">OriginValidator</span> <span class="p">=</span> <span class="k">value</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// Check 'value' of the Origin header, and return true if valid</span>
+      <span class="n">Uri</span> <span class="n">origin</span><span class="p">;</span>
+      <span class="k">return</span> <span class="p">!</span><span class="k">value</span><span class="p">.</span><span class="n">IsNullOrEmpty</span> <span class="p">()</span> <span class="p">&amp;&amp;</span>
+             <span class="n">Uri</span><span class="p">.</span><span class="n">TryCreate</span> <span class="p">(</span><span class="k">value</span><span class="p">,</span> <span class="n">UriKind</span><span class="p">.</span><span class="n">Absolute</span><span class="p">,</span> <span class="k">out</span> <span class="n">origin</span><span class="p">)</span> <span class="p">&amp;&amp;</span>
+             <span class="n">origin</span><span class="p">.</span><span class="n">Host</span> <span class="p">==</span> <span class="s">"example.com"</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="n">CookiesValidator</span> <span class="p">=</span> <span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+      <span class="c1">// Check the Cookies in 'req', and set the Cookies to send to the client with 'res' if necessary</span>
+      <span class="k">foreach</span> <span class="p">(</span><span class="n">Cookie</span> <span class="n">cookie</span> <span class="k">in</span> <span class="n">req</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cookie</span><span class="p">.</span><span class="n">Expired</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+        <span class="n">res</span><span class="p">.</span><span class="n">Add</span> <span class="p">(</span><span class="n">cookie</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="k">true</span><span class="p">;</span> <span class="c1">// If valid</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+</pre></div>
+
+<p>Also, if you would like to get each value of the Origin header and cookies, you should access each of the <code>WebSocketService.Context.Origin</code> and <code>WebSocketService.Context.CookieCollection</code> properties.</p>
+
+<h3>
 <a name="logging" class="anchor" href="#logging"><span class="octicon octicon-link"></span></a>Logging</h3>
 
 <p>The <code>WebSocket</code> class includes the own logging function.</p>
 
 <p>You can access it with the <code>WebSocket.Log</code> property (returns a <code>WebSocketSharp.Logger</code>).</p>
 
-<p>So if you would like to change the current logging level (<code>WebSocketSharp.LogLevel.ERROR</code> as the default), you should set the <code>WebSocket.Log.Level</code> property to any of the <code>LogLevel</code> enum values.</p>
+<p>So if you would like to change the current logging level (<code>WebSocketSharp.LogLevel.Error</code> as the default), you should set the <code>WebSocket.Log.Level</code> property to any of the <code>LogLevel</code> enum values.</p>
 
-<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Level</span> <span class="p">=</span> <span class="n">LogLevel</span><span class="p">.</span><span class="n">DEBUG</span><span class="p">;</span>
+<div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Level</span> <span class="p">=</span> <span class="n">LogLevel</span><span class="p">.</span><span class="n">Debug</span><span class="p">;</span>
 </pre></div>
 
-<p>This means a log with less than <code>LogLevel.DEBUG</code> cannot be outputted.</p>
+<p>This means a log with lower than <code>LogLevel.Debug</code> cannot be outputted.</p>
 
-<p>And if you would like to output a log, you should use any of the output methods. The following outputs a log with <code>LogLevel.DEBUG</code>.</p>
+<p>And if you would like to output a log, you should use any of the output methods. The following outputs a log with <code>LogLevel.Debug</code>.</p>
 
 <div class="highlight highlight-cs"><pre><span class="n">ws</span><span class="p">.</span><span class="n">Log</span><span class="p">.</span><span class="n">Debug</span> <span class="p">(</span><span class="s">"This is a debug message."</span><span class="p">);</span>
 </pre></div>
@@ -544,7 +639,7 @@
 <h2>
 <a name="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications"><span class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
 
-<p>websocket-sharp supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong> and is based on the following WebSocket references.</p>
+<p>websocket-sharp supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>, and it's based on the following WebSocket references:</p>
 
 <ul>
 <li><strong><a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a></strong></li>
@@ -560,11 +655,8 @@
 
 <p>websocket-sharp is provided under <strong><a href="https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt">The MIT License</a></strong>.</p>
       </section>
+
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/sta">sta</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
     <!--[if !IE]><script>fixScale(document);</script><![endif]-->
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
