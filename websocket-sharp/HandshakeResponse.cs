@@ -27,7 +27,6 @@
 #endregion
 
 using System;
-using System.Collections.Specialized;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -71,9 +70,9 @@ namespace WebSocketSharp
 
     public AuthenticationChallenge AuthChallenge {
       get {
-        var challenge = Headers ["WWW-Authenticate"];
-        return challenge != null && challenge.Length > 0
-               ? AuthenticationChallenge.Parse (challenge)
+        var auth = Headers ["WWW-Authenticate"];
+        return auth != null && auth.Length > 0
+               ? AuthenticationChallenge.Parse (auth)
                : null;
       }
     }
@@ -93,7 +92,7 @@ namespace WebSocketSharp
     public bool IsWebSocketResponse {
       get {
         var headers = Headers;
-        return ProtocolVersion >= HttpVersion.Version11 &&
+        return ProtocolVersion > HttpVersion.Version10 &&
                _code == "101" &&
                headers.Contains ("Upgrade", "websocket") &&
                headers.Contains ("Connection", "Upgrade");
@@ -134,7 +133,7 @@ namespace WebSocketSharp
 
     public static HandshakeResponse Parse (string [] headerParts)
     {
-      var statusLine = headerParts [0].Split (new char [] { ' ' }, 3);
+      var statusLine = headerParts [0].Split (new [] { ' ' }, 3);
       if (statusLine.Length != 3)
         throw new ArgumentException ("Invalid status line: " + headerParts [0]);
 
@@ -162,21 +161,20 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      var buffer = new StringBuilder (64);
-      buffer.AppendFormat (
-        "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        output.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
-      buffer.Append (CrLf);
+      output.Append (CrLf);
 
       var entity = EntityBody;
       if (entity.Length > 0)
-        buffer.Append (entity);
+        output.Append (entity);
 
-      return buffer.ToString ();
+      return output.ToString ();
     }
 
     #endregion
