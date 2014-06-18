@@ -27,7 +27,6 @@
 #endregion
 
 using System;
-using System.Collections.Specialized;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -161,20 +160,20 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _uri, ProtocolVersion, CrLf);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("{0} {1} HTTP/{2}{3}", _method, _uri, ProtocolVersion, CrLf);
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        buff.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        output.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
 
-      buff.Append (CrLf);
+      output.Append (CrLf);
 
       var entity = EntityBody;
       if (entity.Length > 0)
-        buff.Append (entity);
+        output.Append (entity);
 
-      return buff.ToString ();
+      return output.ToString ();
     }
 
     #endregion
