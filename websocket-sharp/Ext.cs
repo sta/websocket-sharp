@@ -606,26 +606,20 @@ namespace WebSocketSharp
 
     internal static NameValueCollection ParseAuthParams (this string value)
     {
-      var result = new NameValueCollection ();
-      var i = 0;
-      string name, val;
+      var res = new NameValueCollection ();
       foreach (var param in value.SplitHeaderValue (',')) {
-        i = param.IndexOf ('=');
-        if (i > 0) {
-          name = param.Substring (0, i).Trim ();
-          val = i < param.Length - 1
-              ? param.Substring (i + 1).Trim ().Trim ('"')
-              : String.Empty;
-        }
-        else {
-          name = param;
-          val = String.Empty;
-        }
+        var i = param.IndexOf ('=');
+        var name = i > 0 ? param.Substring (0, i).Trim () : null;
+        var val = i < 0
+                  ? param.Trim ().Trim ('"')
+                  : param.Length > i + 1
+                    ? param.Substring (i + 1).Trim ().Trim ('"')
+                    : String.Empty;
 
-        result.Add (name, val);
+        res.Add (name, val);
       }
 
-      return result;
+      return res;
     }
 
     internal static byte [] ReadBytes (this Stream stream, int length)

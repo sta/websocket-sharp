@@ -117,8 +117,9 @@ namespace WebSocketSharp
 
     public static AuthenticationChallenge Parse (string value)
     {
-      var challenge = value.Split (new char [] {' '}, 2);
+      var challenge = value.Split (new [] { ' ' }, 2);
       var scheme = challenge [0].ToLower ();
+
       return scheme == "basic" || scheme == "digest"
              ? new AuthenticationChallenge (scheme, challenge [1])
              : null;
