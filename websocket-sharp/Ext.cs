@@ -338,10 +338,10 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
-    internal static bool Contains<T> (this IEnumerable<T> source, Func<T, bool> comparer)
+    internal static bool Contains<T> (this IEnumerable<T> source, Func<T, bool> condition)
     {
-      foreach (T value in source)
-        if (comparer (value))
+      foreach (T elm in source)
+        if (condition (elm))
           return true;
 
       return false;

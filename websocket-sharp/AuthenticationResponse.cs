@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013 sta.blockhead
+ * Copyright (c) 2013-2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,7 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private AuthenticationResponse (
-      string authScheme, NameValueCollection authParams)
+    private AuthenticationResponse (string authScheme, NameValueCollection authParams)
     {
       _scheme = authScheme;
       _params = authParams;
@@ -184,27 +183,18 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static bool contains (string [] array, string item)
-    {
-      foreach (var i in array)
-        if (i.Trim ().ToLower () == item)
-          return true;
-
-      return false;
-    }
-
     private void initAsDigest ()
     {
       var qops = _params ["qop"];
       if (qops != null) {
-        var qop = "auth";
-        if (contains (qops.Split (','), qop)) {
-          _params ["qop"] = qop;
+        if (qops.Split (',').Contains (qop => qop.Trim ().ToLower () == "auth")) {
+          _params ["qop"] = "auth";
           _params ["nc"] = String.Format ("{0:x8}", ++_nonceCount);
           _params ["cnonce"] = HttpUtility.CreateNonceValue ();
         }
-        else
+        else {
           _params ["qop"] = null;
+        }
       }
 
       _params ["method"] = "GET";
@@ -218,7 +208,7 @@ namespace WebSocketSharp
     public static AuthenticationResponse Parse (string value)
     {
       try {
-        var credentials = value.Split (new char [] { ' ' }, 2);
+        var credentials = value.Split (new [] { ' ' }, 2);
         if (credentials.Length != 2)
           return null;
 
@@ -227,8 +217,7 @@ namespace WebSocketSharp
                ? new AuthenticationResponse (
                    scheme, credentials [1].ParseBasicAuthResponseParams ())
                : scheme == "digest"
-                 ? new AuthenticationResponse (
-                     scheme, credentials [1].ParseAuthParams ())
+                 ? new AuthenticationResponse (scheme, credentials [1].ParseAuthParams ())
                  : null;
       }
       catch {
@@ -240,8 +229,7 @@ namespace WebSocketSharp
     public IIdentity ToIdentity ()
     {
       return _scheme == "basic"
-             ? new HttpBasicIdentity (
-                 _params ["username"], _params ["password"]) as IIdentity
+             ? new HttpBasicIdentity (_params ["username"], _params ["password"]) as IIdentity
              : _scheme == "digest"
                ? new HttpDigestIdentity (_params)
                : null;
@@ -250,8 +238,7 @@ namespace WebSocketSharp
     public override string ToString ()
     {
       return _scheme == "basic"
-             ? HttpUtility.CreateBasicAuthCredentials (
-                 _params ["username"], _params ["password"])
+             ? HttpUtility.CreateBasicAuthCredentials (_params ["username"], _params ["password"])
              : _scheme == "digest"
                ? HttpUtility.CreateDigestAuthCredentials (_params)
                : String.Empty;
