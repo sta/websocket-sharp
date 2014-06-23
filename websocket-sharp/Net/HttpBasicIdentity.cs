@@ -33,16 +33,17 @@
 #region Authors
 /*
  * Authors:
- *   Gonzalo Paniagua Javier <gonzalo@novell.com>
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
 #endregion
 
+using System;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the user name and password from an HTTP Basic authentication request.
+  /// Holds the user name and password from an HTTP Basic authentication credentials.
   /// </summary>
   public class HttpBasicIdentity : GenericIdentity
   {
@@ -65,7 +66,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the password from an HTTP Basic authentication request.
+    /// Gets the password from an HTTP Basic authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the password.
