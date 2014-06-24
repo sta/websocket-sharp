@@ -33,8 +33,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the user name and other authentication parameters from an HTTP Digest
-  /// authentication request.
+  /// Holds the user name and other parameters from the HTTP Digest authentication credentials.
   /// </summary>
   public class HttpDigestIdentity : GenericIdentity
   {
@@ -57,7 +56,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the algorithm parameter from an HTTP Digest authentication request.
+    /// Gets the algorithm parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the algorithm parameter.
@@ -69,7 +68,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the cnonce parameter from an HTTP Digest authentication request.
+    /// Gets the cnonce parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the cnonce parameter.
@@ -81,7 +80,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the nc parameter from an HTTP Digest authentication request.
+    /// Gets the nc parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the nc parameter.
@@ -93,7 +92,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the nonce parameter from an HTTP Digest authentication request.
+    /// Gets the nonce parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the nonce parameter.
@@ -105,7 +104,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the opaque parameter from an HTTP Digest authentication request.
+    /// Gets the opaque parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the opaque parameter.
@@ -117,7 +116,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the qop parameter from an HTTP Digest authentication request.
+    /// Gets the qop parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the qop parameter.
@@ -129,7 +128,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the realm parameter from an HTTP Digest authentication request.
+    /// Gets the realm parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the realm parameter.
@@ -141,7 +140,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the response parameter from an HTTP Digest authentication request.
+    /// Gets the response parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the response parameter.
@@ -153,7 +152,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the uri parameter from an HTTP Digest authentication request.
+    /// Gets the uri parameter from the HTTP Digest authentication credentials.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the uri parameter.
@@ -168,8 +167,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal bool IsValid (
-      string password, string realm, string method, string entity)
+    internal bool IsValid (string password, string realm, string method, string entity)
     {
       var parameters = new NameValueCollection (_params);
       parameters ["password"] = password;
