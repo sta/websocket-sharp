@@ -214,8 +214,7 @@ namespace WebSocketSharp
 
         var scheme = credentials [0].ToLower ();
         return scheme == "basic"
-               ? new AuthenticationResponse (
-                   scheme, credentials [1].ParseBasicAuthResponseParams ())
+               ? new AuthenticationResponse (scheme, credentials [1].ParseBasicCredentials ())
                : scheme == "digest"
                  ? new AuthenticationResponse (scheme, credentials [1].ParseAuthParams ())
                  : null;

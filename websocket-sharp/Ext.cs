@@ -6,7 +6,7 @@
  * - GetStatusDescription is derived from System.Net.HttpListenerResponse.cs
  * - IsPredefinedScheme is derived from System.Uri.cs
  * - MaybeUri is derived from System.Uri.cs
- * - ParseBasicAuthResponseParams is derived from System.Net.HttpListenerContext.cs
+ * - ParseBasicCredentials is derived from System.Net.HttpListenerContext.cs
  *
  * The MIT License
  *
@@ -571,39 +571,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    internal static string Quote (this string value)
-    {
-      return value.IsToken ()
-             ? value
-             : String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
-    }
-
-    internal static NameValueCollection ParseBasicAuthResponseParams (this string value)
-    {
-      // HTTP Basic Authentication response is a formatted Base64 string.
-      var userPass = Encoding.Default.GetString (
-        Convert.FromBase64String (value));
-
-      // The format is [<domain>\]<username>:<password>.
-      // 'domain' is optional.
-      var i = userPass.IndexOf (':');
-      var username = userPass.Substring (0, i);
-      var password = i < userPass.Length - 1
-                     ? userPass.Substring (i + 1)
-                     : String.Empty;
-
-      // Check if 'domain' exists.
-      i = username.IndexOf ('\\');
-      if (i > 0)
-        username = username.Substring (i + 1);
-
-      var result = new NameValueCollection ();
-      result ["username"] = username;
-      result ["password"] = password;
-
-      return result;
-    }
-
     internal static NameValueCollection ParseAuthParams (this string value)
     {
       var res = new NameValueCollection ();
@@ -620,6 +587,35 @@ namespace WebSocketSharp
       }
 
       return res;
+    }
+
+    internal static NameValueCollection ParseBasicCredentials (this string value)
+    {
+      // Decode the basic-credentials (a Base64 encoded string).
+      var cred = Encoding.Default.GetString (Convert.FromBase64String (value));
+
+      // The format is [<domain>\]<username>:<password>.
+      var i = cred.IndexOf (':');
+      var user = cred.Substring (0, i);
+      var pass = i < cred.Length - 1 ? cred.Substring (i + 1) : String.Empty;
+
+      // Check if 'domain' exists.
+      i = user.IndexOf ('\\');
+      if (i > -1)
+        user = user.Substring (i + 1);
+
+      var res = new NameValueCollection ();
+      res ["username"] = user;
+      res ["password"] = pass;
+
+      return res;
+    }
+
+    internal static string Quote (this string value)
+    {
+      return value.IsToken ()
+             ? value
+             : String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
     }
 
     internal static byte [] ReadBytes (this Stream stream, int length)
