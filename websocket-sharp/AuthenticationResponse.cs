@@ -39,17 +39,17 @@ namespace WebSocketSharp
     #region Private Fields
 
     private uint                _nonceCount;
-    private NameValueCollection _params;
+    private NameValueCollection _parameters;
     private string              _scheme;
 
     #endregion
 
     #region Private Constructors
 
-    private AuthenticationResponse (string authScheme, NameValueCollection authParams)
+    private AuthenticationResponse (string scheme, NameValueCollection parameters)
     {
-      _scheme = authScheme;
-      _params = authParams;
+      _scheme = scheme;
+      _parameters = parameters;
     }
 
     #endregion
@@ -62,24 +62,19 @@ namespace WebSocketSharp
     }
 
     internal AuthenticationResponse (
-      AuthenticationChallenge challenge,
-      NetworkCredential credentials,
-      uint nonceCount)
-      : this (challenge.Scheme, challenge.Params, credentials, nonceCount)
+      AuthenticationChallenge challenge, NetworkCredential credentials, uint nonceCount)
+      : this (challenge.Scheme, challenge.Parameters, credentials, nonceCount)
     {
     }
 
     internal AuthenticationResponse (
-      string authScheme,
-      NameValueCollection authParams,
-      NetworkCredential credentials,
-      uint nonceCount)
+      string scheme, NameValueCollection parameters, NetworkCredential credentials, uint nonceCount)
     {
-      _scheme = authScheme.ToLower ();
-      _params = authParams;
-      _params ["username"] = credentials.UserName;
-      _params ["password"] = credentials.Password;
-      _params ["uri"] = credentials.Domain;
+      _scheme = scheme.ToLower ();
+      _parameters = parameters;
+      _parameters ["username"] = credentials.UserName;
+      _parameters ["password"] = credentials.Password;
+      _parameters ["uri"] = credentials.Domain;
       _nonceCount = nonceCount;
       if (_scheme == "digest")
         initAsDigest ();
@@ -97,9 +92,9 @@ namespace WebSocketSharp
       }
     }
 
-    internal NameValueCollection Params {
+    internal NameValueCollection Parameters {
       get {
-        return _params;
+        return _parameters;
       }
     }
 
@@ -109,55 +104,55 @@ namespace WebSocketSharp
 
     public string Algorithm {
       get {
-        return _params ["algorithm"];
+        return _parameters ["algorithm"];
       }
     }
 
     public string Cnonce {
       get {
-        return _params ["cnonce"];
+        return _parameters ["cnonce"];
       }
     }
 
     public string Nc {
       get {
-        return _params ["nc"];
+        return _parameters ["nc"];
       }
     }
 
     public string Nonce {
       get {
-        return _params ["nonce"];
+        return _parameters ["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _params ["opaque"];
+        return _parameters ["opaque"];
       }
     }
 
     public string Password {
       get {
-        return _params ["password"];
+        return _parameters ["password"];
       }
     }
 
     public string Qop {
       get {
-        return _params ["qop"];
+        return _parameters ["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _params ["realm"];
+        return _parameters ["realm"];
       }
     }
 
     public string Response {
       get {
-        return _params ["response"];
+        return _parameters ["response"];
       }
     }
 
@@ -169,13 +164,13 @@ namespace WebSocketSharp
 
     public string Uri {
       get {
-        return _params ["uri"];
+        return _parameters ["uri"];
       }
     }
 
     public string UserName {
       get {
-        return _params ["username"];
+        return _parameters ["username"];
       }
     }
 
@@ -185,20 +180,20 @@ namespace WebSocketSharp
 
     private void initAsDigest ()
     {
-      var qops = _params ["qop"];
+      var qops = _parameters ["qop"];
       if (qops != null) {
         if (qops.Split (',').Contains (qop => qop.Trim ().ToLower () == "auth")) {
-          _params ["qop"] = "auth";
-          _params ["nc"] = String.Format ("{0:x8}", ++_nonceCount);
-          _params ["cnonce"] = HttpUtility.CreateNonceValue ();
+          _parameters ["qop"] = "auth";
+          _parameters ["nc"] = String.Format ("{0:x8}", ++_nonceCount);
+          _parameters ["cnonce"] = HttpUtility.CreateNonceValue ();
         }
         else {
-          _params ["qop"] = null;
+          _parameters ["qop"] = null;
         }
       }
 
-      _params ["method"] = "GET";
-      _params ["response"] = HttpUtility.CreateRequestDigest (_params);
+      _parameters ["method"] = "GET";
+      _parameters ["response"] = HttpUtility.CreateRequestDigest (_parameters);
     }
 
     #endregion
@@ -216,7 +211,7 @@ namespace WebSocketSharp
         return scheme == "basic"
                ? new AuthenticationResponse (scheme, credentials [1].ParseBasicCredentials ())
                : scheme == "digest"
-                 ? new AuthenticationResponse (scheme, credentials [1].ParseAuthParams ())
+                 ? new AuthenticationResponse (scheme, credentials [1].ParseAuthParameters ())
                  : null;
       }
       catch {
@@ -228,18 +223,20 @@ namespace WebSocketSharp
     public IIdentity ToIdentity ()
     {
       return _scheme == "basic"
-             ? new HttpBasicIdentity (_params ["username"], _params ["password"]) as IIdentity
+             ? new HttpBasicIdentity (
+                 _parameters ["username"], _parameters ["password"]) as IIdentity
              : _scheme == "digest"
-               ? new HttpDigestIdentity (_params)
+               ? new HttpDigestIdentity (_parameters)
                : null;
     }
 
     public override string ToString ()
     {
       return _scheme == "basic"
-             ? HttpUtility.CreateBasicAuthCredentials (_params ["username"], _params ["password"])
+             ? HttpUtility.CreateBasicAuthCredentials (
+                 _parameters ["username"], _parameters ["password"])
              : _scheme == "digest"
-               ? HttpUtility.CreateDigestAuthCredentials (_params)
+               ? HttpUtility.CreateDigestAuthCredentials (_parameters)
                : String.Empty;
     }
 

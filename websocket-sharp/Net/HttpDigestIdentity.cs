@@ -39,16 +39,16 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private NameValueCollection _params;
+    private NameValueCollection _parameters;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpDigestIdentity (NameValueCollection authParams)
-      : base (authParams ["username"], "Digest")
+    internal HttpDigestIdentity (NameValueCollection parameters)
+      : base (parameters ["username"], "Digest")
     {
-      _params = authParams;
+      _parameters = parameters;
     }
 
     #endregion
@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Algorithm {
       get {
-        return _params ["algorithm"];
+        return _parameters ["algorithm"];
       }
     }
 
@@ -75,7 +75,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Cnonce {
       get {
-        return _params ["cnonce"];
+        return _parameters ["cnonce"];
       }
     }
 
@@ -87,7 +87,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Nc {
       get {
-        return _params ["nc"];
+        return _parameters ["nc"];
       }
     }
 
@@ -99,7 +99,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Nonce {
       get {
-        return _params ["nonce"];
+        return _parameters ["nonce"];
       }
     }
 
@@ -111,7 +111,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Opaque {
       get {
-        return _params ["opaque"];
+        return _parameters ["opaque"];
       }
     }
 
@@ -123,7 +123,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Qop {
       get {
-        return _params ["qop"];
+        return _parameters ["qop"];
       }
     }
 
@@ -135,7 +135,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Realm {
       get {
-        return _params ["realm"];
+        return _parameters ["realm"];
       }
     }
 
@@ -147,7 +147,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Response {
       get {
-        return _params ["response"];
+        return _parameters ["response"];
       }
     }
 
@@ -159,7 +159,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Uri {
       get {
-        return _params ["uri"];
+        return _parameters ["uri"];
       }
     }
 
@@ -169,13 +169,13 @@ namespace WebSocketSharp.Net
 
     internal bool IsValid (string password, string realm, string method, string entity)
     {
-      var parameters = new NameValueCollection (_params);
+      var parameters = new NameValueCollection (_parameters);
       parameters ["password"] = password;
       parameters ["realm"] = realm;
       parameters ["method"] = method;
       parameters ["entity"] = entity;
 
-      return _params ["response"] == HttpUtility.CreateRequestDigest (parameters);
+      return _parameters ["response"] == HttpUtility.CreateRequestDigest (parameters);
     }
 
     #endregion

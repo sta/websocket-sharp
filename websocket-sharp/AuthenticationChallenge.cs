@@ -36,26 +36,26 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private NameValueCollection _params;
+    private NameValueCollection _parameters;
     private string              _scheme;
 
     #endregion
 
     #region Internal Constructors
 
-    internal AuthenticationChallenge (string authScheme, string authParams)
+    internal AuthenticationChallenge (string scheme, string parameters)
     {
-      _scheme = authScheme;
-      _params = authParams.ParseAuthParams ();
+      _scheme = scheme;
+      _parameters = parameters.ParseAuthParameters ();
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal NameValueCollection Params {
+    internal NameValueCollection Parameters {
       get {
-        return _params;
+        return _parameters;
       }
     }
 
@@ -65,37 +65,37 @@ namespace WebSocketSharp
 
     public string Algorithm {
       get {
-        return _params ["algorithm"];
+        return _parameters ["algorithm"];
       }
     }
 
     public string Domain {
       get {
-        return _params ["domain"];
+        return _parameters ["domain"];
       }
     }
 
     public string Nonce {
       get {
-        return _params ["nonce"];
+        return _parameters ["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _params ["opaque"];
+        return _parameters ["opaque"];
       }
     }
 
     public string Qop {
       get {
-        return _params ["qop"];
+        return _parameters ["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _params ["realm"];
+        return _parameters ["realm"];
       }
     }
 
@@ -107,7 +107,7 @@ namespace WebSocketSharp
 
     public string Stale {
       get {
-        return _params ["stale"];
+        return _parameters ["stale"];
       }
     }
 
@@ -118,8 +118,10 @@ namespace WebSocketSharp
     public static AuthenticationChallenge Parse (string value)
     {
       var challenge = value.Split (new [] { ' ' }, 2);
-      var scheme = challenge [0].ToLower ();
+      if (challenge.Length != 2)
+        return null;
 
+      var scheme = challenge [0].ToLower ();
       return scheme == "basic" || scheme == "digest"
              ? new AuthenticationChallenge (scheme, challenge [1])
              : null;

@@ -571,7 +571,7 @@ namespace WebSocketSharp
       return true;
     }
 
-    internal static NameValueCollection ParseAuthParams (this string value)
+    internal static NameValueCollection ParseAuthParameters (this string value)
     {
       var res = new NameValueCollection ();
       foreach (var param in value.SplitHeaderValue (',')) {
@@ -579,7 +579,7 @@ namespace WebSocketSharp
         var name = i > 0 ? param.Substring (0, i).Trim () : null;
         var val = i < 0
                   ? param.Trim ().Trim ('"')
-                  : param.Length > i + 1
+                  : i < param.Length - 1
                     ? param.Substring (i + 1).Trim ().Trim ('"')
                     : String.Empty;
 
