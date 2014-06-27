@@ -522,10 +522,10 @@ namespace WebSocketSharp.Server
       AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
     {
       var challenge = scheme == AuthenticationSchemes.Basic
-                    ? HttpUtility.CreateBasicAuthChallenge (Realm)
-                    : scheme == AuthenticationSchemes.Digest
-                      ? HttpUtility.CreateDigestAuthChallenge (Realm)
-                      : null;
+                      ? AuthenticationChallenge.CreateBasicChallenge (Realm).ToBasicString ()
+                      : scheme == AuthenticationSchemes.Digest
+                        ? AuthenticationChallenge.CreateDigestChallenge (Realm).ToDigestString ()
+                        : null;
 
       if (challenge == null) {
         context.Close (HttpStatusCode.Forbidden);

@@ -6,7 +6,6 @@
  * - GetStatusDescription is derived from System.Net.HttpListenerResponse.cs
  * - IsPredefinedScheme is derived from System.Uri.cs
  * - MaybeUri is derived from System.Uri.cs
- * - ParseBasicCredentials is derived from System.Net.HttpListenerContext.cs
  *
  * The MIT License
  *
@@ -569,46 +568,6 @@ namespace WebSocketSharp
           return false;
 
       return true;
-    }
-
-    internal static NameValueCollection ParseAuthParameters (this string value)
-    {
-      var res = new NameValueCollection ();
-      foreach (var param in value.SplitHeaderValue (',')) {
-        var i = param.IndexOf ('=');
-        var name = i > 0 ? param.Substring (0, i).Trim () : null;
-        var val = i < 0
-                  ? param.Trim ().Trim ('"')
-                  : i < param.Length - 1
-                    ? param.Substring (i + 1).Trim ().Trim ('"')
-                    : String.Empty;
-
-        res.Add (name, val);
-      }
-
-      return res;
-    }
-
-    internal static NameValueCollection ParseBasicCredentials (this string value)
-    {
-      // Decode the basic-credentials (a Base64 encoded string).
-      var cred = Encoding.Default.GetString (Convert.FromBase64String (value));
-
-      // The format is [<domain>\]<username>:<password>.
-      var i = cred.IndexOf (':');
-      var user = cred.Substring (0, i);
-      var pass = i < cred.Length - 1 ? cred.Substring (i + 1) : String.Empty;
-
-      // Check if 'domain' exists.
-      i = user.IndexOf ('\\');
-      if (i > -1)
-        user = user.Substring (i + 1);
-
-      var res = new NameValueCollection ();
-      res ["username"] = user;
-      res ["password"] = pass;
-
-      return res;
     }
 
     internal static string Quote (this string value)

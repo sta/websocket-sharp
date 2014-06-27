@@ -47,7 +47,6 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Security.Cryptography;
 
 namespace WebSocketSharp.Net
 {
@@ -77,27 +76,6 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Private Methods
-
-    private static string getA1 (string username, string password, string realm)
-    {
-      return String.Format ("{0}:{1}:{2}", username, realm, password);
-    }
-
-    private static string getA1 (
-      string username, string password, string realm, string nonce, string cnonce)
-    {
-      return String.Format ("{0}:{1}:{2}", hash (getA1 (username, password, realm)), nonce, cnonce);
-    }
-
-    private static string getA2 (string method, string uri)
-    {
-      return String.Format ("{0}:{1}", method, uri);
-    }
-
-    private static string getA2 (string method, string uri, string entity)
-    {
-      return String.Format ("{0}:{1}:{2}", method, uri, entity);
-    }
 
     private static int getChar (byte [] bytes, int offset, int length)
     {
@@ -148,19 +126,6 @@ namespace WebSocketSharp.Net
                : c >= 'A' && c <= 'F'
                  ? c - 'A' + 10
                  : -1;
-    }
-
-    private static string hash (string value)
-    {
-      var src = Encoding.UTF8.GetBytes (value);
-      var md5 = MD5.Create ();
-      var hashed = md5.ComputeHash (src);
-
-      var res = new StringBuilder (64);
-      foreach (var b in hashed)
-        res.Append (b.ToString ("x2"));
-
-      return res.ToString ();
     }
 
     private static void initEntities ()
@@ -531,103 +496,6 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Internal Methods
-
-    internal static string CreateBasicAuthChallenge (string realm)
-    {
-      return String.Format ("Basic realm=\"{0}\"", realm);
-    }
-
-    internal static string CreateBasicAuthCredentials (string username, string password)
-    {
-      var userPass = String.Format ("{0}:{1}", username, password);
-      var base64UserPass = Convert.ToBase64String (Encoding.UTF8.GetBytes (userPass));
-
-      return "Basic " + base64UserPass;
-    }
-
-    internal static string CreateDigestAuthChallenge (string realm)
-    {
-      var nonce = CreateNonceValue ();
-      var algorithm = "MD5";
-      var qop = "auth";
-
-      return String.Format (
-        "Digest realm=\"{0}\", nonce=\"{1}\", algorithm={2}, qop=\"{3}\"",
-        realm,
-        nonce,
-        algorithm,
-        qop);
-    }
-
-    internal static string CreateDigestAuthCredentials (NameValueCollection authParams)
-    {
-      var digestRes = new StringBuilder (64);
-      digestRes.AppendFormat ("username=\"{0}\"", authParams ["username"]);
-      digestRes.AppendFormat (", realm=\"{0}\"", authParams ["realm"]);
-      digestRes.AppendFormat (", nonce=\"{0}\"", authParams ["nonce"]);
-      digestRes.AppendFormat (", uri=\"{0}\"", authParams ["uri"]);
-
-      var algorithm = authParams ["algorithm"];
-      if (algorithm != null)
-        digestRes.AppendFormat (", algorithm={0}", algorithm);
-
-      digestRes.AppendFormat (", response=\"{0}\"", authParams ["response"]);
-
-      var qop = authParams ["qop"];
-      if (qop != null) {
-        digestRes.AppendFormat (", qop={0}", qop);
-        digestRes.AppendFormat (", nc={0}", authParams ["nc"]);
-        digestRes.AppendFormat (", cnonce=\"{0}\"", authParams ["cnonce"]);
-      }
-
-      var opaque = authParams ["opaque"];
-      if (opaque != null)
-        digestRes.AppendFormat (", opaque=\"{0}\"", opaque);
-
-      return "Digest " + digestRes.ToString ();
-    }
-
-    internal static string CreateNonceValue ()
-    {
-      var src = new byte [16];
-      var rand = new Random ();
-      rand.NextBytes (src);
-
-      var nonce = new StringBuilder (32);
-      foreach (var b in src)
-        nonce.Append (b.ToString ("x2"));
-
-      return nonce.ToString ();
-    }
-
-    internal static string CreateRequestDigest (NameValueCollection parameters)
-    {
-      var username = parameters ["username"];
-      var password = parameters ["password"];
-      var realm = parameters ["realm"];
-      var nonce = parameters ["nonce"];
-      var uri = parameters ["uri"];
-      var algorithm = parameters ["algorithm"];
-      var qop = parameters ["qop"];
-      var nc = parameters ["nc"];
-      var cnonce = parameters ["cnonce"];
-      var method = parameters ["method"];
-
-      var a1 = algorithm != null && algorithm.ToLower () == "md5-sess"
-               ? getA1 (username, password, realm, nonce, cnonce)
-               : getA1 (username, password, realm);
-
-      var a2 = qop != null && qop.ToLower () == "auth-int"
-               ? getA2 (method, uri, parameters ["entity"])
-               : getA2 (method, uri);
-
-      var secret = hash (a1);
-      var data = qop != null
-                 ? String.Format ("{0}:{1}:{2}:{3}:{4}", nonce, nc, cnonce, qop, hash (a2))
-                 : String.Format ("{0}:{1}", nonce, hash (a2));
-
-      return hash (String.Format ("{0}:{1}", secret, data));
-    }
 
     internal static Uri CreateRequestUrl (
       string requestUri, string host, bool websocketRequest, bool secure)

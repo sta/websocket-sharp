@@ -521,10 +521,10 @@ namespace WebSocketSharp.Server
 
       if (scheme == AuthenticationSchemes.Basic)
         context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateBasicAuthChallenge (_listener.Realm));
+          AuthenticationChallenge.CreateBasicChallenge (_listener.Realm).ToBasicString ());
       else if (scheme == AuthenticationSchemes.Digest)
         context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateDigestAuthChallenge (_listener.Realm));
+          AuthenticationChallenge.CreateDigestChallenge (_listener.Realm).ToDigestString ());
       else
         context.Response.Close (HttpStatusCode.Forbidden);
 

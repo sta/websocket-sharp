@@ -157,7 +157,7 @@ namespace WebSocketSharp.Net
       if (scheme == AuthenticationSchemes.Basic &&
           (header == null || !header.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateBasicAuthChallenge (listener.Realm));
+          AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
 
         listener.BeginGetContext (this);
         return;
@@ -166,7 +166,7 @@ namespace WebSocketSharp.Net
       if (scheme == AuthenticationSchemes.Digest &&
           (header == null || !header.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateDigestAuthChallenge (listener.Realm));
+          AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
 
         listener.BeginGetContext (this);
         return;

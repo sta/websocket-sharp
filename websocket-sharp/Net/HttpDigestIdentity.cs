@@ -175,7 +175,7 @@ namespace WebSocketSharp.Net
       parameters ["method"] = method;
       parameters ["entity"] = entity;
 
-      return _parameters ["response"] == HttpUtility.CreateRequestDigest (parameters);
+      return _parameters ["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
     }
 
     #endregion

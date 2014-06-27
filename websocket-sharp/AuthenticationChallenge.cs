@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Text;
+using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
@@ -36,17 +37,32 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private NameValueCollection _parameters;
-    private string              _scheme;
+    private NameValueCollection   _parameters;
+    private AuthenticationSchemes _scheme;
+
+    #endregion
+
+    #region Private Constructors
+
+    private AuthenticationChallenge (AuthenticationSchemes scheme, NameValueCollection parameters)
+    {
+      _scheme = scheme;
+      _parameters = parameters;
+    }
 
     #endregion
 
     #region Internal Constructors
 
-    internal AuthenticationChallenge (string scheme, string parameters)
+    internal AuthenticationChallenge (AuthenticationSchemes scheme, string realm)
+      : this (scheme, new NameValueCollection ())
     {
-      _scheme = scheme;
-      _parameters = parameters.ParseAuthParameters ();
+      _parameters["realm"] = realm;
+      if (scheme == AuthenticationSchemes.Digest) {
+        _parameters["nonce"] = AuthenticationResponse.CreateNonceValue ();
+        _parameters["algorithm"] = "MD5";
+        _parameters["qop"] = "auth";
+      }
     }
 
     #endregion
@@ -65,41 +81,41 @@ namespace WebSocketSharp
 
     public string Algorithm {
       get {
-        return _parameters ["algorithm"];
+        return _parameters["algorithm"];
       }
     }
 
     public string Domain {
       get {
-        return _parameters ["domain"];
+        return _parameters["domain"];
       }
     }
 
     public string Nonce {
       get {
-        return _parameters ["nonce"];
+        return _parameters["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _parameters ["opaque"];
+        return _parameters["opaque"];
       }
     }
 
     public string Qop {
       get {
-        return _parameters ["qop"];
+        return _parameters["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _parameters ["realm"];
+        return _parameters["realm"];
       }
     }
 
-    public string Scheme {
+    public AuthenticationSchemes Scheme {
       get {
         return _scheme;
       }
@@ -107,24 +123,66 @@ namespace WebSocketSharp
 
     public string Stale {
       get {
-        return _parameters ["stale"];
+        return _parameters["stale"];
       }
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal static AuthenticationChallenge CreateBasicChallenge (string realm)
+    {
+      return new AuthenticationChallenge (AuthenticationSchemes.Basic, realm);
+    }
+
+    internal static AuthenticationChallenge CreateDigestChallenge (string realm)
+    {
+      return new AuthenticationChallenge (AuthenticationSchemes.Digest, realm);
+    }
+
+    internal static AuthenticationChallenge Parse (string value)
+    {
+      var chal = value.Split (new[] { ' ' }, 2);
+      if (chal.Length != 2)
+        return null;
+
+      var scheme = chal[0].ToLower ();
+      return scheme == "basic"
+             ? new AuthenticationChallenge (
+                 AuthenticationSchemes.Basic, AuthenticationResponse.ParseParameters (chal[1]))
+             : scheme == "digest"
+               ? new AuthenticationChallenge (
+                   AuthenticationSchemes.Digest, AuthenticationResponse.ParseParameters (chal[1]))
+               : null;
+    }
+
+    internal string ToBasicString ()
+    {
+      return String.Format ("Basic realm=\"{0}\"", _parameters["realm"]);
+    }
+
+    internal string ToDigestString ()
+    {
+      return String.Format (
+        "Digest realm=\"{0}\", nonce=\"{1}\", algorithm={2}, qop=\"{3}\"",
+        _parameters["realm"],
+        _parameters["nonce"],
+        _parameters["algorithm"],
+        _parameters["qop"]);
     }
 
     #endregion
 
     #region Public Methods
 
-    public static AuthenticationChallenge Parse (string value)
+    public override string ToString ()
     {
-      var challenge = value.Split (new [] { ' ' }, 2);
-      if (challenge.Length != 2)
-        return null;
-
-      var scheme = challenge [0].ToLower ();
-      return scheme == "basic" || scheme == "digest"
-             ? new AuthenticationChallenge (scheme, challenge [1])
-             : null;
+      return _scheme == AuthenticationSchemes.Basic
+             ? ToBasicString ()
+             : _scheme == AuthenticationSchemes.Digest
+               ? ToDigestString ()
+               : String.Empty;
     }
 
     #endregion

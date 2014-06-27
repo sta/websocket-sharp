@@ -1236,7 +1236,8 @@ namespace WebSocketSharp
       var res = sendHandshakeRequest (req);
       if (res.IsUnauthorized) {
         _authChallenge = res.AuthChallenge;
-        if (_credentials != null && (!_preAuth || _authChallenge.Scheme == "digest")) {
+        if (_credentials != null &&
+            (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
           if (res.Headers.Contains ("Connection", "close")) {
             closeClientResources ();
             setClientStream ();
