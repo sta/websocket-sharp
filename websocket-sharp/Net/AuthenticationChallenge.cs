@@ -29,9 +29,8 @@
 using System;
 using System.Collections.Specialized;
 using System.Text;
-using WebSocketSharp.Net;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Net
 {
   internal class AuthenticationChallenge
   {
