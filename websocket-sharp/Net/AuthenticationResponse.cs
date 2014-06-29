@@ -35,9 +35,8 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
-using WebSocketSharp.Net;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Net
 {
   internal class AuthenticationResponse
   {
