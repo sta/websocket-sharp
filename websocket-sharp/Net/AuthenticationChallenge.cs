@@ -32,21 +32,13 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  internal class AuthenticationChallenge
+  internal class AuthenticationChallenge : AuthenticationBase
   {
-    #region Private Fields
-
-    private NameValueCollection   _parameters;
-    private AuthenticationSchemes _scheme;
-
-    #endregion
-
     #region Private Constructors
 
     private AuthenticationChallenge (AuthenticationSchemes scheme, NameValueCollection parameters)
+      : base (scheme, parameters)
     {
-      _scheme = scheme;
-      _parameters = parameters;
     }
 
     #endregion
@@ -54,23 +46,13 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal AuthenticationChallenge (AuthenticationSchemes scheme, string realm)
-      : this (scheme, new NameValueCollection ())
+      : base (scheme, new NameValueCollection ())
     {
-      _parameters["realm"] = realm;
+      Parameters["realm"] = realm;
       if (scheme == AuthenticationSchemes.Digest) {
-        _parameters["nonce"] = AuthenticationResponse.CreateNonceValue ();
-        _parameters["algorithm"] = "MD5";
-        _parameters["qop"] = "auth";
-      }
-    }
-
-    #endregion
-
-    #region Internal Properties
-
-    internal NameValueCollection Parameters {
-      get {
-        return _parameters;
+        Parameters["nonce"] = CreateNonceValue ();
+        Parameters["algorithm"] = "MD5";
+        Parameters["qop"] = "auth";
       }
     }
 
@@ -80,49 +62,43 @@ namespace WebSocketSharp.Net
 
     public string Algorithm {
       get {
-        return _parameters["algorithm"];
+        return Parameters["algorithm"];
       }
     }
 
     public string Domain {
       get {
-        return _parameters["domain"];
+        return Parameters["domain"];
       }
     }
 
     public string Nonce {
       get {
-        return _parameters["nonce"];
+        return Parameters["nonce"];
       }
     }
 
     public string Opaque {
       get {
-        return _parameters["opaque"];
+        return Parameters["opaque"];
       }
     }
 
     public string Qop {
       get {
-        return _parameters["qop"];
+        return Parameters["qop"];
       }
     }
 
     public string Realm {
       get {
-        return _parameters["realm"];
-      }
-    }
-
-    public AuthenticationSchemes Scheme {
-      get {
-        return _scheme;
+        return Parameters["realm"];
       }
     }
 
     public string Stale {
       get {
-        return _parameters["stale"];
+        return Parameters["stale"];
       }
     }
 
@@ -146,29 +122,36 @@ namespace WebSocketSharp.Net
       if (chal.Length != 2)
         return null;
 
-      var scheme = chal[0].ToLower ();
-      return scheme == "basic"
+      var schm = chal[0].ToLower ();
+      return schm == "basic"
              ? new AuthenticationChallenge (
-                 AuthenticationSchemes.Basic, AuthenticationResponse.ParseParameters (chal[1]))
-             : scheme == "digest"
+                 AuthenticationSchemes.Basic, ParseParameters (chal[1]))
+             : schm == "digest"
                ? new AuthenticationChallenge (
-                   AuthenticationSchemes.Digest, AuthenticationResponse.ParseParameters (chal[1]))
+                   AuthenticationSchemes.Digest, ParseParameters (chal[1]))
                : null;
     }
 
     internal string ToBasicString ()
     {
-      return String.Format ("Basic realm=\"{0}\"", _parameters["realm"]);
+      return String.Format ("Basic realm=\"{0}\"", Parameters["realm"]);
     }
 
     internal string ToDigestString ()
     {
-      return String.Format (
-        "Digest realm=\"{0}\", nonce=\"{1}\", algorithm={2}, qop=\"{3}\"",
-        _parameters["realm"],
-        _parameters["nonce"],
-        _parameters["algorithm"],
-        _parameters["qop"]);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("Digest realm=\"{0}\"", Parameters["realm"]);
+      output.AppendFormat (", nonce=\"{0}\"", Parameters["nonce"]);
+
+      var algo = Parameters["algorithm"];
+      if (algo != null)
+        output.AppendFormat (", algorithm={0}", algo);
+
+      var qop = Parameters["qop"];
+      if (qop != null)
+        output.AppendFormat (", qop=\"{0}\"", qop);
+
+      return output.ToString ();
     }
 
     #endregion
@@ -177,9 +160,10 @@ namespace WebSocketSharp.Net
 
     public override string ToString ()
     {
-      return _scheme == AuthenticationSchemes.Basic
+      var schm = Scheme;
+      return schm == AuthenticationSchemes.Basic
              ? ToBasicString ()
-             : _scheme == AuthenticationSchemes.Digest
+             : schm == AuthenticationSchemes.Digest
                ? ToDigestString ()
                : String.Empty;
     }

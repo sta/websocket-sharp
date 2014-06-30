@@ -135,6 +135,7 @@
     <Compile Include="WebSocketFrame.cs" />
     <Compile Include="Net\AuthenticationChallenge.cs" />
     <Compile Include="Net\AuthenticationResponse.cs" />
+    <Compile Include="Net\AuthenticationBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
