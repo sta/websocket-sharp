@@ -99,12 +99,6 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public string Algorithm {
-      get {
-        return Parameters["algorithm"];
-      }
-    }
-
     public string Cnonce {
       get {
         return Parameters["cnonce"];
@@ -117,33 +111,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public string Nonce {
-      get {
-        return Parameters["nonce"];
-      }
-    }
-
-    public string Opaque {
-      get {
-        return Parameters["opaque"];
-      }
-    }
-
     public string Password {
       get {
         return Parameters["password"];
-      }
-    }
-
-    public string Qop {
-      get {
-        return Parameters["qop"];
-      }
-    }
-
-    public string Realm {
-      get {
-        return Parameters["realm"];
       }
     }
 

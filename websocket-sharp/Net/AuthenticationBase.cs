@@ -58,6 +58,36 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
+    public string Algorithm {
+      get {
+        return Parameters["algorithm"];
+      }
+    }
+
+    public string Nonce {
+      get {
+        return Parameters["nonce"];
+      }
+    }
+
+    public string Opaque {
+      get {
+        return Parameters["opaque"];
+      }
+    }
+
+    public string Qop {
+      get {
+        return Parameters["qop"];
+      }
+    }
+
+    public string Realm {
+      get {
+        return Parameters["realm"];
+      }
+    }
+
     public AuthenticationSchemes Scheme {
       get {
         return _scheme;
