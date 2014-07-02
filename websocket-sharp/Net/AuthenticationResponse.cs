@@ -180,8 +180,8 @@ namespace WebSocketSharp.Net
       if (qops != null) {
         if (qops.Split (',').Contains (qop => qop.Trim ().ToLower () == "auth")) {
           Parameters["qop"] = "auth";
-          Parameters["nc"] = String.Format ("{0:x8}", ++_nonceCount);
           Parameters["cnonce"] = CreateNonceValue ();
+          Parameters["nc"] = String.Format ("{0:x8}", ++_nonceCount);
         }
         else {
           Parameters["qop"] = null;
@@ -205,8 +205,8 @@ namespace WebSocketSharp.Net
       var uri = parameters["uri"];
       var algo = parameters["algorithm"];
       var qop = parameters["qop"];
-      var nc = parameters["nc"];
       var cnonce = parameters["cnonce"];
+      var nc = parameters["nc"];
       var method = parameters["method"];
 
       var a1 = algo != null && algo.ToLower () == "md5-sess"
@@ -279,30 +279,29 @@ namespace WebSocketSharp.Net
 
     internal string ToDigestString ()
     {
-      var res = new StringBuilder (64);
-      res.AppendFormat ("username=\"{0}\"", Parameters["username"]);
-      res.AppendFormat (", realm=\"{0}\"", Parameters["realm"]);
-      res.AppendFormat (", nonce=\"{0}\"", Parameters["nonce"]);
-      res.AppendFormat (", uri=\"{0}\"", Parameters["uri"]);
-
-      var algo = Parameters["algorithm"];
-      if (algo != null)
-        res.AppendFormat (", algorithm={0}", algo);
-
-      res.AppendFormat (", response=\"{0}\"", Parameters["response"]);
-
-      var qop = Parameters["qop"];
-      if (qop != null) {
-        res.AppendFormat (", qop={0}", qop);
-        res.AppendFormat (", nc={0}", Parameters["nc"]);
-        res.AppendFormat (", cnonce=\"{0}\"", Parameters["cnonce"]);
-      }
+      var output = new StringBuilder (256);
+      output.AppendFormat (
+        "Digest username=\"{0}\", realm=\"{1}\", nonce=\"{2}\", uri=\"{3}\", response=\"{4}\"",
+        Parameters["username"],
+        Parameters["realm"],
+        Parameters["nonce"],
+        Parameters["uri"],
+        Parameters["response"]);
 
       var opaque = Parameters["opaque"];
       if (opaque != null)
-        res.AppendFormat (", opaque=\"{0}\"", opaque);
+        output.AppendFormat (", opaque=\"{0}\"", opaque);
 
-      return "Digest " + res.ToString ();
+      var algo = Parameters["algorithm"];
+      if (algo != null)
+        output.AppendFormat (", algorithm={0}", algo);
+
+      var qop = Parameters["qop"];
+      if (qop != null)
+        output.AppendFormat (
+          ", qop={0}, cnonce=\"{1}\", nc={2}", qop, Parameters["cnonce"], Parameters["nc"]);
+
+      return output.ToString ();
     }
 
     #endregion

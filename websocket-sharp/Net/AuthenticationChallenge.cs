@@ -109,9 +109,26 @@ namespace WebSocketSharp.Net
 
     internal string ToDigestString ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("Digest realm=\"{0}\"", Parameters["realm"]);
-      output.AppendFormat (", nonce=\"{0}\"", Parameters["nonce"]);
+      var output = new StringBuilder (128);
+
+      var domain = Parameters["domain"];
+      if (domain != null)
+        output.AppendFormat (
+          "Digest realm=\"{0}\", domain=\"{1}\", nonce=\"{2}\"",
+          Parameters["realm"],
+          domain,
+          Parameters["nonce"]);
+      else
+        output.AppendFormat (
+          "Digest realm=\"{0}\", nonce=\"{1}\"", Parameters["realm"], Parameters["nonce"]);
+
+      var opaque = Parameters["opaque"];
+      if (opaque != null)
+        output.AppendFormat (", opaque=\"{0}\"", opaque);
+
+      var stale = Parameters["stale"];
+      if (stale != null)
+        output.AppendFormat (", stale={0}", stale);
 
       var algo = Parameters["algorithm"];
       if (algo != null)
