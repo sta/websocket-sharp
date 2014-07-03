@@ -102,12 +102,12 @@ namespace WebSocketSharp.Net
                : null;
     }
 
-    internal string ToBasicString ()
+    internal override string ToBasicString ()
     {
       return String.Format ("Basic realm=\"{0}\"", Parameters["realm"]);
     }
 
-    internal string ToDigestString ()
+    internal override string ToDigestString ()
     {
       var output = new StringBuilder (128);
 
@@ -139,20 +139,6 @@ namespace WebSocketSharp.Net
         output.AppendFormat (", qop=\"{0}\"", qop);
 
       return output.ToString ();
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public override string ToString ()
-    {
-      var schm = Scheme;
-      return schm == AuthenticationSchemes.Basic
-             ? ToBasicString ()
-             : schm == AuthenticationSchemes.Digest
-               ? ToDigestString ()
-               : String.Empty;
     }
 
     #endregion

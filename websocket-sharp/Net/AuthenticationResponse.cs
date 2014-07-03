@@ -269,7 +269,7 @@ namespace WebSocketSharp.Net
       return res;
     }
 
-    internal string ToBasicString ()
+    internal override string ToBasicString ()
     {
       var userPass = String.Format ("{0}:{1}", Parameters["username"], Parameters["password"]);
       var cred = Convert.ToBase64String (Encoding.UTF8.GetBytes (userPass));
@@ -277,7 +277,7 @@ namespace WebSocketSharp.Net
       return "Basic " + cred;
     }
 
-    internal string ToDigestString ()
+    internal override string ToDigestString ()
     {
       var output = new StringBuilder (256);
       output.AppendFormat (
@@ -316,16 +316,6 @@ namespace WebSocketSharp.Net
              : schm == AuthenticationSchemes.Digest
                ? new HttpDigestIdentity (Parameters)
                : null;
-    }
-
-    public override string ToString ()
-    {
-      var schm = Scheme;
-      return schm == AuthenticationSchemes.Basic
-             ? ToBasicString ()
-             : schm == AuthenticationSchemes.Digest
-               ? ToDigestString ()
-               : String.Empty;
     }
 
     #endregion

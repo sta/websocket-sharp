@@ -129,6 +129,23 @@ namespace WebSocketSharp.Net
       return res;
     }
 
+    internal abstract string ToBasicString ();
+
+    internal abstract string ToDigestString ();
+
+    #endregion
+
+    #region Public Methods
+
+    public override string ToString ()
+    {
+      return _scheme == AuthenticationSchemes.Basic
+             ? ToBasicString ()
+             : _scheme == AuthenticationSchemes.Digest
+               ? ToDigestString ()
+               : String.Empty;
+    }
+
     #endregion
   }
 }
