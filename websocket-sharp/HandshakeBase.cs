@@ -37,7 +37,7 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private byte []             _entity;
+    private byte[]              _entity;
     private NameValueCollection _headers;
     private Version             _version;
 
@@ -59,7 +59,7 @@ namespace WebSocketSharp
 
     #region Internal Properties
 
-    internal byte [] EntityBodyData {
+    internal byte[] EntityBodyData {
       get {
         return _entity;
       }
@@ -76,7 +76,7 @@ namespace WebSocketSharp
     public string EntityBody {
       get {
         return _entity != null && _entity.LongLength > 0
-               ? getEncoding (_headers ["Content-Type"]).GetString (_entity)
+               ? getEncoding (_headers["Content-Type"]).GetString (_entity)
                : String.Empty;
       }
     }
@@ -126,7 +126,7 @@ namespace WebSocketSharp
 
     #region Public Methods
 
-    public byte [] ToByteArray ()
+    public byte[] ToByteArray ()
     {
       return Encoding.UTF8.GetBytes (ToString ());
     }
