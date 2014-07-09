@@ -53,15 +53,15 @@ namespace WebSocketSharp
 
     #region Public Constructors
 
-    public HandshakeRequest (string absPathAndQuery)
+    public HandshakeRequest (string pathAndQuery)
     {
-      _uri = absPathAndQuery;
+      _uri = pathAndQuery;
       _method = "GET";
 
       var headers = Headers;
-      headers ["User-Agent"] = "websocket-sharp/1.0";
-      headers ["Upgrade"] = "websocket";
-      headers ["Connection"] = "Upgrade";
+      headers["User-Agent"] = "websocket-sharp/1.0";
+      headers["Upgrade"] = "websocket";
+      headers["Connection"] = "Upgrade";
     }
 
     #endregion
@@ -70,7 +70,7 @@ namespace WebSocketSharp
 
     public AuthenticationResponse AuthResponse {
       get {
-        var auth = Headers ["Authorization"];
+        var auth = Headers["Authorization"];
         return auth != null && auth.Length > 0
                ? AuthenticationResponse.Parse (auth)
                : null;
@@ -123,21 +123,21 @@ namespace WebSocketSharp
 
     #region Public Methods
 
-    public static HandshakeRequest Parse (string [] headerParts)
+    public static HandshakeRequest Parse (string[] headerParts)
     {
-      var requestLine = headerParts [0].Split (new [] { ' ' }, 3);
+      var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
       if (requestLine.Length != 3)
-        throw new ArgumentException ("Invalid request line: " + headerParts [0]);
+        throw new ArgumentException ("Invalid request line: " + headerParts[0]);
 
       var headers = new WebHeaderCollection ();
       for (int i = 1; i < headerParts.Length; i++)
-        headers.SetInternally (headerParts [i], false);
+        headers.SetInternally (headerParts[i], false);
 
       return new HandshakeRequest {
         Headers = headers,
-        HttpMethod = requestLine [0],
-        ProtocolVersion = new Version (requestLine [2].Substring (5)),
-        RequestUri = requestLine [1]
+        HttpMethod = requestLine[0],
+        ProtocolVersion = new Version (requestLine[2].Substring (5)),
+        RequestUri = requestLine[1]
       };
     }
 
@@ -154,7 +154,7 @@ namespace WebSocketSharp
       var len = buff.Length;
       if (len > 2) {
         buff.Length = len - 2;
-        Headers ["Cookie"] = buff.ToString ();
+        Headers["Cookie"] = buff.ToString ();
       }
     }
 
@@ -165,7 +165,7 @@ namespace WebSocketSharp
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        output.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
 
       output.Append (CrLf);
 
