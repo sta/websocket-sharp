@@ -57,10 +57,10 @@ namespace WebSocketSharp
       _reason = code.GetDescription ();
 
       var headers = Headers;
-      headers ["Server"] = "websocket-sharp/1.0";
+      headers["Server"] = "websocket-sharp/1.0";
       if (code == HttpStatusCode.SwitchingProtocols) {
-        headers ["Upgrade"] = "websocket";
-        headers ["Connection"] = "Upgrade";
+        headers["Upgrade"] = "websocket";
+        headers["Connection"] = "Upgrade";
       }
     }
 
@@ -70,7 +70,7 @@ namespace WebSocketSharp
 
     public AuthenticationChallenge AuthChallenge {
       get {
-        var auth = Headers ["WWW-Authenticate"];
+        var auth = Headers["WWW-Authenticate"];
         return auth != null && auth.Length > 0
                ? AuthenticationChallenge.Parse (auth)
                : null;
@@ -126,26 +126,26 @@ namespace WebSocketSharp
     public static HandshakeResponse CreateCloseResponse (HttpStatusCode code)
     {
       var res = new HandshakeResponse (code);
-      res.Headers ["Connection"] = "close";
+      res.Headers["Connection"] = "close";
 
       return res;
     }
 
-    public static HandshakeResponse Parse (string [] headerParts)
+    public static HandshakeResponse Parse (string[] headerParts)
     {
-      var statusLine = headerParts [0].Split (new [] { ' ' }, 3);
+      var statusLine = headerParts[0].Split (new[] { ' ' }, 3);
       if (statusLine.Length != 3)
-        throw new ArgumentException ("Invalid status line: " + headerParts [0]);
+        throw new ArgumentException ("Invalid status line: " + headerParts[0]);
 
       var headers = new WebHeaderCollection ();
       for (int i = 1; i < headerParts.Length; i++)
-        headers.SetInternally (headerParts [i], true);
+        headers.SetInternally (headerParts[i], true);
 
       return new HandshakeResponse {
         Headers = headers,
-        ProtocolVersion = new Version (statusLine [0].Substring (5)),
-        Reason = statusLine [2],
-        StatusCode = statusLine [1]
+        ProtocolVersion = new Version (statusLine[0].Substring (5)),
+        Reason = statusLine[2],
+        StatusCode = statusLine[1]
       };
     }
 
@@ -166,7 +166,7 @@ namespace WebSocketSharp
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        output.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
 
       output.Append (CrLf);
 
