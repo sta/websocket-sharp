@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Specialized;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -45,15 +46,17 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HandshakeRequest ()
+    private HandshakeRequest (Version version, NameValueCollection headers)
+      : base (version, headers)
     {
     }
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public HandshakeRequest (string pathAndQuery)
+    internal HandshakeRequest (string pathAndQuery)
+      : base (HttpVersion.Version11, new NameValueCollection ())
     {
       _uri = pathAndQuery;
       _method = "GET";
@@ -87,10 +90,6 @@ namespace WebSocketSharp
       get {
         return _method;
       }
-
-      private set {
-        _method = value;
-      }
     }
 
     public bool IsWebSocketRequest {
@@ -113,17 +112,13 @@ namespace WebSocketSharp
       get {
         return _uri;
       }
-
-      private set {
-        _uri = value;
-      }
     }
 
     #endregion
 
-    #region Public Methods
+    #region Internal Methods
 
-    public static HandshakeRequest Parse (string[] headerParts)
+    internal static HandshakeRequest Parse (string[] headerParts)
     {
       var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
       if (requestLine.Length != 3)
@@ -133,13 +128,16 @@ namespace WebSocketSharp
       for (int i = 1; i < headerParts.Length; i++)
         headers.SetInternally (headerParts[i], false);
 
-      return new HandshakeRequest {
-        Headers = headers,
-        HttpMethod = requestLine[0],
-        ProtocolVersion = new Version (requestLine[2].Substring (5)),
-        RequestUri = requestLine[1]
-      };
+      var req = new HandshakeRequest (new Version (requestLine[2].Substring (5)), headers);
+      req._method = requestLine[0];
+      req._uri = requestLine[1];
+
+      return req;
     }
+
+    #endregion
+
+    #region Public Methods
 
     public void SetCookies (CookieCollection cookies)
     {

@@ -37,9 +37,14 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private byte[]              _entity;
     private NameValueCollection _headers;
     private Version             _version;
+
+    #endregion
+
+    #region Internal Fields
+
+    internal byte[] EntityBodyData;
 
     #endregion
 
@@ -51,22 +56,10 @@ namespace WebSocketSharp
 
     #region Protected Constructors
 
-    protected HandshakeBase ()
+    protected HandshakeBase (Version version, NameValueCollection headers)
     {
-    }
-
-    #endregion
-
-    #region Internal Properties
-
-    internal byte[] EntityBodyData {
-      get {
-        return _entity;
-      }
-
-      set {
-        _entity = value;
-      }
+      _version = version;
+      _headers = headers;
     }
 
     #endregion
@@ -75,29 +68,21 @@ namespace WebSocketSharp
 
     public string EntityBody {
       get {
-        return _entity != null && _entity.LongLength > 0
-               ? getEncoding (_headers["Content-Type"]).GetString (_entity)
+        return EntityBodyData != null && EntityBodyData.LongLength > 0
+               ? getEncoding (_headers["Content-Type"]).GetString (EntityBodyData)
                : String.Empty;
       }
     }
 
     public NameValueCollection Headers {
       get {
-        return _headers ?? (_headers = new NameValueCollection ());
-      }
-
-      protected set {
-        _headers = value;
+        return _headers;
       }
     }
 
     public Version ProtocolVersion {
       get {
-        return _version ?? (_version = HttpVersion.Version11);
-      }
-
-      protected set {
-        _version = value;
+        return _version;
       }
     }
 
