@@ -22,15 +22,15 @@
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
-websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the **websocket-sharp project** with any of the build configurations (e.g. Debug) in the MonoDevelop.
+websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in the MonoDevelop.
 
 ## Install ##
 
 ### Self Build ###
 
-You should add **websocket-sharp.dll** (e.g. /path/to/websocket-sharp/bin/Debug/websocket-sharp.dll) built yourself to the library references of your project.
+You should add **websocket-sharp.dll** (e.g. `/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll`) built yourself to the library references of your project.
 
-If you would like to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. Assets/Plugins) in the **Unity Editor**.
+If you would like to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. `Assets/Plugins`) in the **Unity Editor**.
 
 ### NuGet Gallery ###
 
@@ -338,7 +338,7 @@ Creating an instance of the `WebSocketServer` class.
 var wssv = new WebSocketServer (4649);
 wssv.AddWebSocketService<Echo> ("/Echo");
 wssv.AddWebSocketService<Chat> ("/Chat");
-wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan."));
+wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
 ```
 
 You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` or `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` method.
@@ -385,7 +385,7 @@ You can add any WebSocket service to your `HttpServer` with the specified path t
 var httpsv = new HttpServer (4649);
 httpsv.AddWebSocketService<Echo> ("/Echo");
 httpsv.AddWebSocketService<Chat> ("/Chat");
-httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan."));
+httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
 ```
 
 For more information, could you see **[Example3]**?
