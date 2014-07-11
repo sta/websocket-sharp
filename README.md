@@ -70,7 +70,7 @@ namespace Example
 {
   public class Program
   {
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
       using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
         ws.OnMessage += (sender, e) =>
@@ -139,7 +139,7 @@ ws.OnMessage += (sender, e) => {
 
 If `e.Type` is `Opcode.Text`, you should use `e.Data` property (returns a `string`) that represents the received **Text** message.
 
-Or if `e.Type` is `Opcode.Binary`, you should use `e.RawData` property (returns a `byte []`) that represents the received **Binary** message.
+Or if `e.Type` is `Opcode.Binary`, you should use `e.RawData` property (returns a `byte[]`) that represents the received **Binary** message.
 
 ```cs
 if (e.Type == Opcode.Text) {
@@ -179,7 +179,7 @@ ws.OnClose += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.CloseEventArgs`.
 
-`e.Code` property returns a `ushort` that represents the status code indicating the reason for closure, and `e.Reason` property returns a `string` that represents the reason for closure. So you should use them to get the reason for closure.
+`e.Code` property returns a `ushort` that represents the status code indicating the reason for the close, and `e.Reason` property returns a `string` that represents the reason for the close. So you should use them to get the reason for the close.
 
 #### Step 4 ####
 
@@ -201,7 +201,7 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte [])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
 
 If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
 
@@ -250,7 +250,7 @@ namespace Example
 
   public class Program
   {
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
       var wssv = new WebSocketServer ("ws://dragonsnest.far");
       wssv.AddWebSocketService<Laputa> ("/Laputa");
@@ -338,7 +338,7 @@ Creating an instance of the `WebSocketServer` class.
 var wssv = new WebSocketServer (4649);
 wssv.AddWebSocketService<Echo> ("/Echo");
 wssv.AddWebSocketService<Chat> ("/Chat");
-wssv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
+wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan."));
 ```
 
 You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` or `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` method.
@@ -385,7 +385,7 @@ You can add any WebSocket service to your `HttpServer` with the specified path t
 var httpsv = new HttpServer (4649);
 httpsv.AddWebSocketService<Echo> ("/Echo");
 httpsv.AddWebSocketService<Chat> ("/Chat");
-httpsv.AddWebSocketService<Chat> ("/ChatWithNiceBoat", () => new Chat (" Nice boat."));
+httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan."));
 ```
 
 For more information, could you see **[Example3]**?
@@ -457,9 +457,9 @@ As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
 wssv.Realm = "WebSocket Test";
-wssv.UserCredentialsFinder = identity => {
+wssv.UserCredentialsFinder = id => {
   var expected = "nobita";
-  return identity.Name == expected
+  return id.Name == expected
          ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles
          : null; // If the user credentials not found.
 };
@@ -499,12 +499,11 @@ As a **WebSocket Server**, if you would like to get the **Query String** include
 public class Chat : WebSocketService
 {
   private string _name;
-
   ...
 
   protected override void OnOpen ()
   {
-    _name = Context.QueryString ["name"];
+    _name = Context.QueryString["name"];
   }
 
   ...
@@ -517,11 +516,11 @@ And if you would like to check the **Origin header and Cookies** included in eac
 wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
-    OriginValidator = value => {
-      // Check 'value' of the Origin header, and return true if valid
+    OriginValidator = val => {
+      // Check value of the Origin header, and return true if valid
       Uri origin;
-      return !value.IsNullOrEmpty () &&
-             Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+      return !val.IsNullOrEmpty () &&
+             Uri.TryCreate (val, UriKind.Absolute, out origin) &&
              origin.Host == "example.com";
     },
     CookiesValidator = (req, res) => {
@@ -582,7 +581,7 @@ And Example1 uses **[Json.NET]**.
 
 **[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
 
-Could you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
+Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
 
 ## Supported WebSocket Specifications ##
 
