@@ -4,8 +4,8 @@
 
 **websocket-sharp** supports:
 
-- **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
 - **[RFC 6455](#supported-websocket-specifications)**
+- **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
 - **[HTTP Authentication](#http-authentication)**
@@ -431,7 +431,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 
 If you set this property to nothing, the validation does nothing with the server certificate and returns valid.
 
-As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection. It's like the following.
+As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, like the following.
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
@@ -452,7 +452,7 @@ If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentia
 
 Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest authentication (determined by the unauthorized response to the first connection request) credentials with the second connection request to the server.
 
-As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting. It's like the following.
+As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, like the following.
 
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
@@ -561,7 +561,7 @@ The `WebSocketServer` and `HttpServer` classes include the same logging function
 
 ## Examples ##
 
-Examples using **websocket-sharp**.
+Examples using websocket-sharp.
 
 ### Example ###
 
