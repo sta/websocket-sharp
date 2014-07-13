@@ -54,7 +54,7 @@ It works with **Unity Free**, but there are some limitations:
 - **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
 - **.NET API 2.0 compatibility level for iOS/Android**
 
-Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (i've fixed it in the asset package).
+Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
 
 And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
@@ -144,11 +144,15 @@ Or if `e.Type` is `Opcode.Binary`, you should use `e.RawData` property (returns 
 ```cs
 if (e.Type == Opcode.Text) {
   // Do something with e.Data
+  ...
+
   return;
 }
 
 if (e.Type == Opcode.Binary) {
   // Do something with e.RawData
+  ...
+
   return;
 }
 ```
@@ -209,7 +213,7 @@ If you would like to send a data asynchronously, you should use the `WebSocket.S
 ws.SendAsync (data, completed);
 ```
 
-And if you would like to do something when the send is complete, you should set `completed` to any `Action<bool>`.
+And also if you would like to do something when the send is complete, you should set `completed` to any `Action<bool>` delegate.
 
 #### Step 6 ####
 
@@ -320,7 +324,7 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, it's called when the `OnMessage` event of the `WebSocket` used by the current session in the WebSocket service occurs.
+If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, it's called when the `OnMessage` event of the `WebSocket` used in the current session in the WebSocket service occurs.
 
 And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
@@ -345,7 +349,7 @@ You can add any WebSocket service to your `WebSocketServer` with the specified p
 
 The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
 
-The type of `T` must inherit the `WebSocketService` class.
+And also the type of `T` must inherit the `WebSocketService` class.
 
 So you can use the classes created in **Step 2** to add the WebSocket service.
 
@@ -388,7 +392,7 @@ httpsv.AddWebSocketService<Chat> ("/Chat");
 httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
 ```
 
-For more information, could you see **[Example3]**?
+For more information, would you see **[Example3]**?
 
 ### WebSocket Extensions ###
 
@@ -412,7 +416,7 @@ If the server supports this extension, it returns the same header. And when your
 
 websocket-sharp supports the **Secure Connection (SSL)**.
 
-As a **WebSocket Client**, you should create an instance of the `WebSocket` class with the **wss** scheme WebSocket URL to connect.
+As a **WebSocket Client**, you should create an instance of the `WebSocket` class with the **wss** scheme WebSocket URL.
 
 ```cs
 using (var ws = new WebSocket ("wss://example.com")) {
@@ -425,11 +429,13 @@ And if you would like to set the custom validation for the server certificate, y
 ```cs
 ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
   // Do something to validate the server certificate.
+  ...
+
   return true; // If the server certificate is valid.
 };
 ```
 
-If you set this property to nothing, the validation does nothing with the server certificate and returns valid.
+If you set this property to nothing, the validation does nothing with the server certificate and returns `true`.
 
 As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, like the following.
 
@@ -445,7 +451,7 @@ websocket-sharp supports the **[HTTP Authentication (Basic/Digest)][rfc2617]**.
 As a **WebSocket Client**, you should set a pair of user name and password for the HTTP authentication, using the `WebSocket.SetCredentials (string, string, bool)` method before connecting.
 
 ```cs
-ws.SetCredentials (username, password, preAuth);
+ws.SetCredentials ("nobita", "password", preAuth);
 ```
 
 If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first connection request to the server.
@@ -517,7 +523,7 @@ wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
     OriginValidator = val => {
-      // Check value of the Origin header, and return true if valid
+      // Check the value of the Origin header, and return true if valid
       Uri origin;
       return !val.IsNullOrEmpty () &&
              Uri.TryCreate (val, UriKind.Absolute, out origin) &&
@@ -549,7 +555,7 @@ So if you would like to change the current logging level (`WebSocketSharp.LogLev
 ws.Log.Level = LogLevel.Debug;
 ```
 
-This means a log with lower than `LogLevel.Debug` cannot be outputted.
+The above means a log with lower than `LogLevel.Debug` cannot be outputted.
 
 And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.Debug`.
 
