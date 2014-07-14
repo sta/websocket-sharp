@@ -1,6 +1,6 @@
 #region License
 /*
- * HandshakeRequest.cs
+ * HttpRequest.cs
  *
  * The MIT License
  *
@@ -33,7 +33,7 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class HandshakeRequest : HttpBase
+  internal class HttpRequest : HttpBase
   {
     #region Private Fields
 
@@ -46,25 +46,21 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HandshakeRequest (Version version, NameValueCollection headers)
+    private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
       : base (version, headers)
     {
+      _method = method;
+      _uri = uri;
     }
 
     #endregion
 
     #region Internal Constructors
 
-    internal HandshakeRequest (string pathAndQuery)
-      : base (HttpVersion.Version11, new NameValueCollection ())
+    internal HttpRequest (string method, string uri)
+      : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
     {
-      _uri = pathAndQuery;
-      _method = "GET";
-
-      var headers = Headers;
-      headers["User-Agent"] = "websocket-sharp/1.0";
-      headers["Upgrade"] = "websocket";
-      headers["Connection"] = "Upgrade";
+      Headers["User-Agent"] = "websocket-sharp/1.0";
     }
 
     #endregion
@@ -118,7 +114,28 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static HandshakeRequest Parse (string[] headerParts)
+    internal static HttpRequest CreateConnectRequest (Uri uri)
+    {
+      var authority = uri.Authority;
+      var req = new HttpRequest ("CONNECT", authority);
+      req.Headers["Host"] = uri.Port == 80 ? uri.DnsSafeHost : authority;
+
+      return req;
+    }
+
+    internal static HttpRequest CreateWebSocketRequest (Uri uri)
+    {
+      var req = new HttpRequest ("GET", uri.PathAndQuery);
+
+      var headers = req.Headers;
+      headers["Upgrade"] = "websocket";
+      headers["Connection"] = "Upgrade";
+      headers["Host"] = uri.Port == 80 ? uri.DnsSafeHost : uri.Authority;
+
+      return req;
+    }
+
+    internal static HttpRequest Parse (string[] headerParts)
     {
       var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
       if (requestLine.Length != 3)
@@ -128,11 +145,8 @@ namespace WebSocketSharp
       for (int i = 1; i < headerParts.Length; i++)
         headers.SetInternally (headerParts[i], false);
 
-      var req = new HandshakeRequest (new Version (requestLine[2].Substring (5)), headers);
-      req._method = requestLine[0];
-      req._uri = requestLine[1];
-
-      return req;
+      return new HttpRequest (
+        requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);
     }
 
     #endregion

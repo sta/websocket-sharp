@@ -42,7 +42,7 @@ namespace WebSocketSharp
   {
     #region Private Const Fields
 
-    private const int _handshakeHeadersLimitLen = 8192;
+    private const int _httpHeadersLimitLen = 8192;
 
     #endregion
 
@@ -99,7 +99,7 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static byte [] readHandshakeEntityBody (Stream stream, string length)
+    private static byte [] readHttpEntityBody (Stream stream, string length)
     {
       long len;
       if (!Int64.TryParse (length, out len))
@@ -115,7 +115,7 @@ namespace WebSocketSharp
                : null;
     }
 
-    private static string [] readHandshakeHeaders (Stream stream)
+    private static string [] readHttpHeaders (Stream stream)
     {
       var buff = new List<byte> ();
       var count = 0;
@@ -125,7 +125,7 @@ namespace WebSocketSharp
       };
 
       var read = false;
-      while (count < _handshakeHeadersLimitLen) {
+      while (count < _httpHeadersLimitLen) {
         if (stream.ReadByte ().EqualsWith ('\r', add) &&
             stream.ReadByte ().EqualsWith ('\n', add) &&
             stream.ReadByte ().EqualsWith ('\r', add) &&
@@ -137,7 +137,7 @@ namespace WebSocketSharp
 
       if (!read)
         throw new WebSocketException (
-          "The header part of a handshake is greater than the limit length.");
+          "The header part of a HTTP data is greater than the limit length.");
 
       var crlf = "\r\n";
       return Encoding.UTF8.GetString (buff.ToArray ())
@@ -150,7 +150,7 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal T ReadHandshake<T> (Func<string [], T> parser, int millisecondsTimeout)
+    internal T ReadHttp<T> (Func<string [], T> parser, int millisecondsTimeout)
       where T : HttpBase
     {
       var timeout = false;
@@ -163,13 +163,13 @@ namespace WebSocketSharp
         millisecondsTimeout,
         -1);
 
-      T handshake = null;
+      T http = null;
       Exception exception = null;
       try {
-        handshake = parser (readHandshakeHeaders (_innerStream));
-        var contentLen = handshake.Headers ["Content-Length"];
+        http = parser (readHttpHeaders (_innerStream));
+        var contentLen = http.Headers ["Content-Length"];
         if (contentLen != null && contentLen.Length > 0)
-          handshake.EntityBodyData = readHandshakeEntityBody (_innerStream, contentLen);
+          http.EntityBodyData = readHttpEntityBody (_innerStream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
@@ -180,15 +180,15 @@ namespace WebSocketSharp
       }
 
       var msg = timeout
-                ? "A timeout has occurred while receiving a handshake."
+                ? "A timeout has occurred while receiving a HTTP data."
                 : exception != null
-                  ? "An exception has occurred while receiving a handshake."
+                  ? "An exception has occurred while receiving a HTTP data."
                   : null;
 
       if (msg != null)
         throw new WebSocketException (msg, exception);
 
-      return handshake;
+      return http;
     }
 
     internal bool Write (byte [] data)
@@ -262,14 +262,14 @@ namespace WebSocketSharp
       WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
     }
 
-    public HandshakeRequest ReadHandshakeRequest ()
+    public HttpRequest ReadHandshakeRequest ()
     {
-      return ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
+      return ReadHttp<HttpRequest> (HttpRequest.Parse, 90000);
     }
 
     public HandshakeResponse ReadHandshakeResponse ()
     {
-      return ReadHandshake<HandshakeResponse> (HandshakeResponse.Parse, 90000);
+      return ReadHttp<HandshakeResponse> (HandshakeResponse.Parse, 90000);
     }
 
     public bool WriteFrame (WebSocketFrame frame)

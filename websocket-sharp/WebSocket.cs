@@ -898,16 +898,11 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HandshakeRequest createHandshakeRequest ()
+    private HttpRequest createHandshakeRequest ()
     {
-      var path = _uri.PathAndQuery;
-      var host = _uri.Port == 80 ? _uri.DnsSafeHost : _uri.Authority;
+      var req = HttpRequest.CreateWebSocketRequest (_uri);
 
-      var req = new HandshakeRequest (path);
       var headers = req.Headers;
-
-      headers ["Host"] = host;
-
       if (!_origin.IsNullOrEmpty ())
         headers ["Origin"] = _origin;
 
@@ -927,8 +922,9 @@ namespace WebSocketSharp
         authRes = new AuthenticationResponse (_authChallenge, _credentials, _nonceCount);
         _nonceCount = authRes.NonceCount;
       }
-      else if (_preAuth)
+      else if (_preAuth) {
         authRes = new AuthenticationResponse (_credentials);
+      }
 
       if (authRes != null)
         headers ["Authorization"] = authRes.ToString ();
@@ -1068,7 +1064,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private void send (HandshakeRequest request)
+    private void send (HttpRequest request)
     {
       _logger.Debug (
         String.Format ("A WebSocket connection request to {0}:\n{1}", _uri, request));
@@ -1254,7 +1250,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HandshakeResponse sendHandshakeRequest (HandshakeRequest request)
+    private HandshakeResponse sendHandshakeRequest (HttpRequest request)
     {
       send (request);
       return receiveHandshakeResponse ();

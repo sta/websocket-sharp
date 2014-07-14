@@ -49,7 +49,7 @@ namespace WebSocketSharp.Net.WebSockets
     private TcpClient           _client;
     private CookieCollection    _cookies;
     private NameValueCollection _queryString;
-    private HandshakeRequest    _request;
+    private HttpRequest         _request;
     private bool                _secure;
     private WebSocketStream     _stream;
     private Uri                 _uri;
@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net.WebSockets
       _client = client;
       _secure = secure;
       _stream = WebSocketStream.CreateServerStream (client, secure, cert);
-      _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
+      _request = _stream.ReadHttp<HttpRequest> (HttpRequest.Parse, 90000);
       _uri = HttpUtility.CreateRequestUrl (
         _request.RequestUri, _request.Headers ["Host"], _request.IsWebSocketRequest, secure);
 
@@ -329,7 +329,7 @@ namespace WebSocketSharp.Net.WebSockets
       var res = new HandshakeResponse (HttpStatusCode.Unauthorized);
       res.Headers ["WWW-Authenticate"] = challenge;
       _stream.WriteHandshake (res);
-      _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 15000);
+      _request = _stream.ReadHttp<HttpRequest> (HttpRequest.Parse, 15000);
     }
 
     internal void SetUser (
