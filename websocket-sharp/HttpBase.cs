@@ -1,6 +1,6 @@
 #region License
 /*
- * HandshakeBase.cs
+ * HttpBase.cs
  *
  * The MIT License
  *
@@ -33,7 +33,7 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal abstract class HandshakeBase
+  internal abstract class HttpBase
   {
     #region Private Fields
 
@@ -56,7 +56,7 @@ namespace WebSocketSharp
 
     #region Protected Constructors
 
-    protected HandshakeBase (Version version, NameValueCollection headers)
+    protected HttpBase (Version version, NameValueCollection headers)
     {
       _version = version;
       _headers = headers;

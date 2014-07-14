@@ -151,7 +151,7 @@ namespace WebSocketSharp
     #region Internal Methods
 
     internal T ReadHandshake<T> (Func<string [], T> parser, int millisecondsTimeout)
-      where T : HandshakeBase
+      where T : HttpBase
     {
       var timeout = false;
       var timer = new Timer (
@@ -277,7 +277,7 @@ namespace WebSocketSharp
       return Write (frame.ToByteArray ());
     }
 
-    public bool WriteHandshake (HandshakeBase handshake)
+    public bool WriteHandshake (HttpBase handshake)
     {
       return Write (handshake.ToByteArray ());
     }

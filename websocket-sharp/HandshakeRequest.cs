@@ -33,7 +33,7 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class HandshakeRequest : HandshakeBase
+  internal class HandshakeRequest : HttpBase
   {
     #region Private Fields
 
