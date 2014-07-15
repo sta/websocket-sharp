@@ -67,11 +67,11 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public AuthenticationResponse AuthResponse {
+    public AuthenticationResponse AuthenticationResponse {
       get {
-        var auth = Headers["Authorization"];
-        return auth != null && auth.Length > 0
-               ? AuthenticationResponse.Parse (auth)
+        var res = Headers["Authorization"];
+        return res != null && res.Length > 0
+               ? AuthenticationResponse.Parse (res)
                : null;
       }
     }

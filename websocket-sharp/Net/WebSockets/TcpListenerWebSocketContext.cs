@@ -337,7 +337,7 @@ namespace WebSocketSharp.Net.WebSockets
       string realm,
       Func<IIdentity, NetworkCredential> credentialsFinder)
     {
-      var authRes = _request.AuthResponse;
+      var authRes = _request.AuthenticationResponse;
       if (authRes == null)
         return;
 
