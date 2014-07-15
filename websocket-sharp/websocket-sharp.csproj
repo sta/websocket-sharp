@@ -113,7 +113,6 @@
     <Compile Include="LogData.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="HandshakeResponse.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />
@@ -136,6 +135,7 @@
     <Compile Include="Net\AuthenticationBase.cs" />
     <Compile Include="HttpBase.cs" />
     <Compile Include="HttpRequest.cs" />
+    <Compile Include="HttpResponse.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -693,11 +693,12 @@ namespace WebSocketSharp
     }
 
     // As client
-    private string checkIfValidHandshakeResponse (HandshakeResponse response)
+    private string checkIfValidHandshakeResponse (HttpResponse response)
     {
       var headers = response.Headers;
       return response.IsUnauthorized
-             ? String.Format ("HTTP {0} authorization is required.", response.AuthChallenge.Scheme)
+             ? String.Format (
+                 "HTTP {0} authorization is required.", response.AuthenticationChallenge.Scheme)
              : !response.IsWebSocketResponse
                ? "Not WebSocket connection response."
                : !validateSecWebSocketAcceptHeader (headers ["Sec-WebSocket-Accept"])
@@ -897,6 +898,15 @@ namespace WebSocketSharp
              : null;
     }
 
+    // As server
+    private HttpResponse createHandshakeCloseResponse (HttpStatusCode code)
+    {
+      var res = HttpResponse.CreateCloseResponse (code);
+      res.Headers ["Sec-WebSocket-Version"] = _version;
+
+      return res;
+    }
+
     // As client
     private HttpRequest createHandshakeRequest ()
     {
@@ -936,11 +946,11 @@ namespace WebSocketSharp
     }
 
     // As server
-    private HandshakeResponse createHandshakeResponse ()
+    private HttpResponse createHandshakeResponse ()
     {
-      var res = new HandshakeResponse (HttpStatusCode.SwitchingProtocols);
-      var headers = res.Headers;
+      var res = HttpResponse.CreateWebSocketResponse ();
 
+      var headers = res.Headers;
       headers ["Sec-WebSocket-Accept"] = CreateResponseKey (_base64Key);
 
       if (_protocol != null)
@@ -951,15 +961,6 @@ namespace WebSocketSharp
 
       if (_cookies.Count > 0)
         res.SetCookies (_cookies);
-
-      return res;
-    }
-
-    // As server
-    private HandshakeResponse createHandshakeResponse (HttpStatusCode code)
-    {
-      var res = HandshakeResponse.CreateCloseResponse (code);
-      res.Headers ["Sec-WebSocket-Version"] = _version;
 
       return res;
     }
@@ -1043,7 +1044,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HandshakeResponse receiveHandshakeResponse ()
+    private HttpResponse receiveHandshakeResponse ()
     {
       var res = _stream.ReadHandshakeResponse ();
       _logger.Debug ("A response to this WebSocket connection request:\n" + res.ToString ());
@@ -1073,7 +1074,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool send (HandshakeResponse response)
+    private bool send (HttpResponse response)
     {
       _logger.Debug (
         "A response to the WebSocket connection request:\n" + response.ToString ());
@@ -1226,12 +1227,12 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HandshakeResponse sendHandshakeRequest ()
+    private HttpResponse sendHandshakeRequest ()
     {
       var req = createHandshakeRequest ();
       var res = sendHandshakeRequest (req);
       if (res.IsUnauthorized) {
-        _authChallenge = res.AuthChallenge;
+        _authChallenge = res.AuthenticationChallenge;
         if (_credentials != null &&
             (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
           if (res.Headers.Contains ("Connection", "close")) {
@@ -1250,7 +1251,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HandshakeResponse sendHandshakeRequest (HttpRequest request)
+    private HttpResponse sendHandshakeRequest (HttpRequest request)
     {
       send (request);
       return receiveHandshakeResponse ();
@@ -1373,7 +1374,7 @@ namespace WebSocketSharp
     #region Internal Methods
 
     // As server
-    internal void Close (HandshakeResponse response)
+    internal void Close (HttpResponse response)
     {
       _readyState = WebSocketState.Closing;
 
@@ -1386,7 +1387,7 @@ namespace WebSocketSharp
     // As server
     internal void Close (HttpStatusCode code)
     {
-      Close (createHandshakeResponse (code));
+      Close (createHandshakeCloseResponse (code));
     }
 
     // As server

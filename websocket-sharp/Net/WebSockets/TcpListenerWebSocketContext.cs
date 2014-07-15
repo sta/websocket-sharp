@@ -321,12 +321,12 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void Close (HttpStatusCode code)
     {
-      _websocket.Close (HandshakeResponse.CreateCloseResponse (code));
+      _websocket.Close (HttpResponse.CreateCloseResponse (code));
     }
 
     internal void SendAuthChallenge (string challenge)
     {
-      var res = new HandshakeResponse (HttpStatusCode.Unauthorized);
+      var res = new HttpResponse (HttpStatusCode.Unauthorized);
       res.Headers ["WWW-Authenticate"] = challenge;
       _stream.WriteHandshake (res);
       _request = _stream.ReadHttp<HttpRequest> (HttpRequest.Parse, 15000);

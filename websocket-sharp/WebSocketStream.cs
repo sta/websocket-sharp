@@ -267,9 +267,9 @@ namespace WebSocketSharp
       return ReadHttp<HttpRequest> (HttpRequest.Parse, 90000);
     }
 
-    public HandshakeResponse ReadHandshakeResponse ()
+    public HttpResponse ReadHandshakeResponse ()
     {
-      return ReadHttp<HandshakeResponse> (HandshakeResponse.Parse, 90000);
+      return ReadHttp<HttpResponse> (HttpResponse.Parse, 90000);
     }
 
     public bool WriteFrame (WebSocketFrame frame)

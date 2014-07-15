@@ -1,6 +1,6 @@
 #region License
 /*
- * HandshakeResponse.cs
+ * HttpResponse.cs
  *
  * The MIT License
  *
@@ -33,7 +33,7 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class HandshakeResponse : HttpBase
+  internal class HttpResponse : HttpBase
   {
     #region Private Fields
 
@@ -44,38 +44,37 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HandshakeResponse (Version version, NameValueCollection headers)
+    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
       : base (version, headers)
     {
+      _code = code;
+      _reason = reason;
     }
 
     #endregion
 
     #region Internal Constructors
 
-    internal HandshakeResponse (HttpStatusCode code)
-      : base (HttpVersion.Version11, new NameValueCollection ())
+    internal HttpResponse (HttpStatusCode code)
+      : this (code, code.GetDescription ())
     {
-      _code = ((int) code).ToString ();
-      _reason = code.GetDescription ();
+    }
 
-      var headers = Headers;
-      headers["Server"] = "websocket-sharp/1.0";
-      if (code == HttpStatusCode.SwitchingProtocols) {
-        headers["Upgrade"] = "websocket";
-        headers["Connection"] = "Upgrade";
-      }
+    internal HttpResponse (HttpStatusCode code, string reason)
+      : this (((int) code).ToString (), reason, HttpVersion.Version11, new NameValueCollection ())
+    {
+      Headers["Server"] = "websocket-sharp/1.0";
     }
 
     #endregion
 
     #region Public Properties
 
-    public AuthenticationChallenge AuthChallenge {
+    public AuthenticationChallenge AuthenticationChallenge {
       get {
-        var auth = Headers["WWW-Authenticate"];
-        return auth != null && auth.Length > 0
-               ? AuthenticationChallenge.Parse (auth)
+        var chal = Headers["WWW-Authenticate"];
+        return chal != null && chal.Length > 0
+               ? AuthenticationChallenge.Parse (chal)
                : null;
       }
     }
@@ -83,6 +82,12 @@ namespace WebSocketSharp
     public CookieCollection Cookies {
       get {
         return Headers.GetCookies (true);
+      }
+    }
+
+    public bool IsProxyAuthenticationRequired {
+      get {
+        return _code == "407";
       }
     }
 
@@ -102,6 +107,15 @@ namespace WebSocketSharp
       }
     }
 
+    public AuthenticationChallenge ProxyAuthenticationChallenge {
+      get {
+        var chal = Headers["Proxy-Authenticate"];
+        return chal != null && chal.Length > 0
+               ? AuthenticationChallenge.Parse (chal)
+               : null;
+      }
+    }
+
     public string Reason {
       get {
         return _reason;
@@ -118,15 +132,26 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static HandshakeResponse CreateCloseResponse (HttpStatusCode code)
+    internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
     {
-      var res = new HandshakeResponse (code);
+      var res = new HttpResponse (code);
       res.Headers["Connection"] = "close";
 
       return res;
     }
 
-    internal static HandshakeResponse Parse (string[] headerParts)
+    internal static HttpResponse CreateWebSocketResponse ()
+    {
+      var res = new HttpResponse (HttpStatusCode.SwitchingProtocols);
+
+      var headers = res.Headers;
+      headers["Upgrade"] = "websocket";
+      headers["Connection"] = "Upgrade";
+
+      return res;
+    }
+
+    internal static HttpResponse Parse (string[] headerParts)
     {
       var statusLine = headerParts[0].Split (new[] { ' ' }, 3);
       if (statusLine.Length != 3)
@@ -136,11 +161,8 @@ namespace WebSocketSharp
       for (int i = 1; i < headerParts.Length; i++)
         headers.SetInternally (headerParts[i], true);
 
-      var res = new HandshakeResponse (new Version (statusLine[0].Substring (5)), headers);
-      res._code = statusLine[1];
-      res._reason = statusLine[2];
-
-      return res;
+      return new HttpResponse (
+        statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
     }
 
     #endregion
