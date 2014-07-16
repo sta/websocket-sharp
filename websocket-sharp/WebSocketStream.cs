@@ -42,7 +42,7 @@ namespace WebSocketSharp
   {
     #region Private Const Fields
 
-    private const int _httpHeadersLimitLen = 8192;
+    private const int _headersMaxLength = 8192;
 
     #endregion
 
@@ -61,20 +61,6 @@ namespace WebSocketSharp
       _innerStream = innerStream;
       _secure = secure;
       _forWrite = new object ();
-    }
-
-    #endregion
-
-    #region Public Constructors
-
-    public WebSocketStream (NetworkStream innerStream)
-      : this (innerStream, false)
-    {
-    }
-
-    public WebSocketStream (SslStream innerStream)
-      : this (innerStream, true)
-    {
     }
 
     #endregion
@@ -99,7 +85,7 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static byte [] readHttpEntityBody (Stream stream, string length)
+    private static byte[] readEntityBody (Stream stream, string length)
     {
       long len;
       if (!Int64.TryParse (length, out len))
@@ -115,17 +101,17 @@ namespace WebSocketSharp
                : null;
     }
 
-    private static string [] readHttpHeaders (Stream stream)
+    private static string[] readHeaders (Stream stream, int maxLength)
     {
       var buff = new List<byte> ();
-      var count = 0;
+      var cnt = 0;
       Action<int> add = i => {
         buff.Add ((byte) i);
-        count++;
+        cnt++;
       };
 
       var read = false;
-      while (count < _httpHeadersLimitLen) {
+      while (cnt < maxLength) {
         if (stream.ReadByte ().EqualsWith ('\r', add) &&
             stream.ReadByte ().EqualsWith ('\n', add) &&
             stream.ReadByte ().EqualsWith ('\r', add) &&
@@ -137,27 +123,23 @@ namespace WebSocketSharp
 
       if (!read)
         throw new WebSocketException (
-          "The header part of a HTTP data is greater than the limit length.");
+          "The header part of a HTTP data is greater than the max length.");
 
       var crlf = "\r\n";
       return Encoding.UTF8.GetString (buff.ToArray ())
              .Replace (crlf + " ", " ")
              .Replace (crlf + "\t", " ")
-             .Split (new [] { crlf }, StringSplitOptions.RemoveEmptyEntries);
+             .Split (new[] { crlf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    #endregion
-
-    #region Internal Methods
-
-    internal T ReadHttp<T> (Func<string [], T> parser, int millisecondsTimeout)
+    private static T readHttp<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
       where T : HttpBase
     {
       var timeout = false;
       var timer = new Timer (
         state => {
           timeout = true;
-          _innerStream.Close ();
+          stream.Close ();
         },
         null,
         millisecondsTimeout,
@@ -166,10 +148,10 @@ namespace WebSocketSharp
       T http = null;
       Exception exception = null;
       try {
-        http = parser (readHttpHeaders (_innerStream));
-        var contentLen = http.Headers ["Content-Length"];
+        http = parser (readHeaders (stream, _headersMaxLength));
+        var contentLen = http.Headers["Content-Length"];
         if (contentLen != null && contentLen.Length > 0)
-          http.EntityBodyData = readHttpEntityBody (_innerStream, contentLen);
+          http.EntityBodyData = readEntityBody (stream, contentLen);
       }
       catch (Exception ex) {
         exception = ex;
@@ -191,7 +173,104 @@ namespace WebSocketSharp
       return http;
     }
 
-    internal bool Write (byte [] data)
+    private static HttpResponse sendHttpRequest (
+      Stream stream, HttpRequest request, int millisecondsTimeout)
+    {
+      var buff = request.ToByteArray ();
+      stream.Write (buff, 0, buff.Length);
+
+      return readHttp<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal static WebSocketStream CreateClientStream (
+      Uri targetUri,
+      Uri proxyUri,
+      NetworkCredential proxyCredentials,
+      bool secure,
+      System.Net.Security.RemoteCertificateValidationCallback validationCallback,
+      out TcpClient tcpClient)
+    {
+      var proxy = proxyUri != null;
+      tcpClient = proxy
+                  ? new TcpClient (proxyUri.DnsSafeHost, proxyUri.Port)
+                  : new TcpClient (targetUri.DnsSafeHost, targetUri.Port);
+
+      var netStream = tcpClient.GetStream ();
+      if (proxy) {
+        var req = HttpRequest.CreateConnectRequest (targetUri);
+        var res = sendHttpRequest (netStream, req, 90000);
+        if (res.IsProxyAuthenticationRequired) {
+          var authChal = res.ProxyAuthenticationChallenge;
+          if (authChal != null && proxyCredentials != null) {
+            var authRes = new AuthenticationResponse (authChal, proxyCredentials, 0);
+            req.Headers["Proxy-Authorization"] = authRes.ToString ();
+            res = sendHttpRequest (netStream, req, 15000);
+          }
+
+          if (res.IsProxyAuthenticationRequired)
+            throw new WebSocketException ("Proxy authentication is required.");
+        }
+
+        var code = res.StatusCode;
+        if (code.Length != 3 || code[0] != '2')
+          throw new WebSocketException (
+            String.Format (
+              "The proxy has failed a connection to the requested host and port. ({0})", code));
+      }
+
+      if (secure) {
+        var sslStream = new SslStream (
+          netStream,
+          false,
+          validationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true));
+
+        sslStream.AuthenticateAsClient (targetUri.DnsSafeHost);
+        return new WebSocketStream (sslStream, secure);
+      }
+
+      return new WebSocketStream (netStream, secure);
+    }
+
+    internal static WebSocketStream CreateServerStream (
+      TcpClient tcpClient, bool secure, X509Certificate certificate)
+    {
+      var netStream = tcpClient.GetStream ();
+      if (secure) {
+        var sslStream = new SslStream (netStream, false);
+        sslStream.AuthenticateAsServer (certificate);
+
+        return new WebSocketStream (sslStream, secure);
+      }
+
+      return new WebSocketStream (netStream, secure);
+    }
+
+    internal HttpRequest ReadHttpRequest (int millisecondsTimeout)
+    {
+      return readHttp<HttpRequest> (_innerStream, HttpRequest.Parse, millisecondsTimeout);
+    }
+
+    internal HttpResponse ReadHttpResponse (int millisecondsTimeout)
+    {
+      return readHttp<HttpResponse> (_innerStream, HttpResponse.Parse, millisecondsTimeout);
+    }
+
+    internal WebSocketFrame ReadWebSocketFrame ()
+    {
+      return WebSocketFrame.Parse (_innerStream, true);
+    }
+
+    internal void ReadWebSocketFrameAsync (
+      Action<WebSocketFrame> completed, Action<Exception> error)
+    {
+      WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
+    }
+
+    internal bool WriteBytes (byte[] data)
     {
       lock (_forWrite) {
         try {
@@ -213,73 +292,9 @@ namespace WebSocketSharp
       _innerStream.Close ();
     }
 
-    public static WebSocketStream CreateClientStream (
-      TcpClient client,
-      bool secure,
-      string host,
-      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
-    {
-      var netStream = client.GetStream ();
-      if (secure) {
-        if (validationCallback == null)
-          validationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
-
-        var sslStream = new SslStream (netStream, false, validationCallback);
-        sslStream.AuthenticateAsClient (host);
-
-        return new WebSocketStream (sslStream);
-      }
-
-      return new WebSocketStream (netStream);
-    }
-
-    public static WebSocketStream CreateServerStream (
-      TcpClient client, bool secure, X509Certificate cert)
-    {
-      var netStream = client.GetStream ();
-      if (secure) {
-        var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (cert);
-
-        return new WebSocketStream (sslStream);
-      }
-
-      return new WebSocketStream (netStream);
-    }
-
     public void Dispose ()
     {
       _innerStream.Dispose ();
-    }
-
-    public WebSocketFrame ReadFrame ()
-    {
-      return WebSocketFrame.Parse (_innerStream, true);
-    }
-
-    public void ReadFrameAsync (Action<WebSocketFrame> completed, Action<Exception> error)
-    {
-      WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
-    }
-
-    public HttpRequest ReadHandshakeRequest ()
-    {
-      return ReadHttp<HttpRequest> (HttpRequest.Parse, 90000);
-    }
-
-    public HttpResponse ReadHandshakeResponse ()
-    {
-      return ReadHttp<HttpResponse> (HttpResponse.Parse, 90000);
-    }
-
-    public bool WriteFrame (WebSocketFrame frame)
-    {
-      return Write (frame.ToByteArray ());
-    }
-
-    public bool WriteHandshake (HttpBase handshake)
-    {
-      return Write (handshake.ToByteArray ());
     }
 
     #endregion

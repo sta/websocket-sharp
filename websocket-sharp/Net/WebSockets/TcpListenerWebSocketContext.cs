@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net.WebSockets
       _client = client;
       _secure = secure;
       _stream = WebSocketStream.CreateServerStream (client, secure, cert);
-      _request = _stream.ReadHttp<HttpRequest> (HttpRequest.Parse, 90000);
+      _request = _stream.ReadHttpRequest (90000);
       _uri = HttpUtility.CreateRequestUrl (
         _request.RequestUri, _request.Headers ["Host"], _request.IsWebSocketRequest, secure);
 
@@ -328,8 +328,8 @@ namespace WebSocketSharp.Net.WebSockets
     {
       var res = new HttpResponse (HttpStatusCode.Unauthorized);
       res.Headers ["WWW-Authenticate"] = challenge;
-      _stream.WriteHandshake (res);
-      _request = _stream.ReadHttp<HttpRequest> (HttpRequest.Parse, 15000);
+      _stream.WriteBytes (res.ToByteArray ());
+      _request = _stream.ReadHttpRequest (15000);
     }
 
     internal void SetUser (

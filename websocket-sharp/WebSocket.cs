@@ -91,6 +91,8 @@ namespace WebSocketSharp
     private bool                    _preAuth;
     private string                  _protocol;
     private string []               _protocols;
+    private NetworkCredential       _proxyCredentials;
+    private Uri                     _proxyUri;
     private volatile WebSocketState _readyState;
     private AutoResetEvent          _receivePong;
     private bool                    _secure;
@@ -776,7 +778,7 @@ namespace WebSocketSharp
 
     private bool closeHandshake (byte [] frame, int timeout, Action release)
     {
-      var sent = frame != null && _stream.Write (frame);
+      var sent = frame != null && _stream.WriteBytes (frame);
       var received = timeout == 0 ||
                      (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeout));
 
@@ -813,7 +815,7 @@ namespace WebSocketSharp
     private bool concatenateFragmentsInto (Stream dest)
     {
       while (true) {
-        var frame = _stream.ReadFrame ();
+        var frame = _stream.ReadWebSocketFrame ();
 
         if (frame.IsFinal) {
           // FINAL
@@ -1046,7 +1048,7 @@ namespace WebSocketSharp
     // As client
     private HttpResponse receiveHandshakeResponse ()
     {
-      var res = _stream.ReadHandshakeResponse ();
+      var res = _stream.ReadHttpResponse (90000);
       _logger.Debug ("A response to this WebSocket connection request:\n" + res.ToString ());
 
       return res;
@@ -1060,7 +1062,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return _stream.Write (frame);
+        return _stream.WriteBytes (frame);
       }
     }
 
@@ -1070,7 +1072,7 @@ namespace WebSocketSharp
       _logger.Debug (
         String.Format ("A WebSocket connection request to {0}:\n{1}", _uri, request));
 
-      _stream.WriteHandshake (request);
+      _stream.WriteBytes (request.ToByteArray ());
     }
 
     // As server
@@ -1079,7 +1081,7 @@ namespace WebSocketSharp
       _logger.Debug (
         "A response to the WebSocket connection request:\n" + response.ToString ());
 
-      return _stream.WriteHandshake (response);
+      return _stream.WriteBytes (response.ToByteArray ());
     }
 
     private bool send (WebSocketFrame frame)
@@ -1090,7 +1092,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return _stream.Write (frame.ToByteArray ());
+        return _stream.WriteBytes (frame.ToByteArray ());
       }
     }
 
@@ -1260,12 +1262,8 @@ namespace WebSocketSharp
     // As client
     private void setClientStream ()
     {
-      var host = _uri.DnsSafeHost;
-      var port = _uri.Port;
-
-      _tcpClient = new TcpClient (host, port);
       _stream = WebSocketStream.CreateClientStream (
-        _tcpClient, _secure, host, _certValidationCallback);
+        _uri, _proxyUri, _proxyCredentials, _secure, _certValidationCallback, out _tcpClient);
     }
 
     private void startReceiving ()
@@ -1277,7 +1275,7 @@ namespace WebSocketSharp
       _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
-      receive = () => _stream.ReadFrameAsync (
+      receive = () => _stream.ReadWebSocketFrameAsync (
         frame => {
           if (acceptFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
@@ -1484,7 +1482,7 @@ namespace WebSocketSharp
               cache.Add (_compression, cached);
             }
 
-            _stream.Write (cached);
+            _stream.WriteBytes (cached);
           }
           catch (Exception ex) {
             _logger.Fatal (ex.ToString ());
