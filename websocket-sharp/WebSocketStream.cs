@@ -182,23 +182,29 @@ namespace WebSocketSharp
       return readHttp<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
     }
 
+    private static bool writeBytes (Stream stream, byte[] data)
+    {
+      try {
+        stream.Write (data, 0, data.Length);
+        return true;
+      }
+      catch {
+        return false;
+      }
+    }
+
     #endregion
 
     #region Internal Methods
 
     internal static WebSocketStream CreateClientStream (
+      TcpClient tcpClient,
+      bool proxy,
       Uri targetUri,
-      Uri proxyUri,
       NetworkCredential proxyCredentials,
       bool secure,
-      System.Net.Security.RemoteCertificateValidationCallback validationCallback,
-      out TcpClient tcpClient)
+      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
     {
-      var proxy = proxyUri != null;
-      tcpClient = proxy
-                  ? new TcpClient (proxyUri.DnsSafeHost, proxyUri.Port)
-                  : new TcpClient (targetUri.DnsSafeHost, targetUri.Port);
-
       var netStream = tcpClient.GetStream ();
       if (proxy) {
         var req = HttpRequest.CreateConnectRequest (targetUri);
@@ -270,17 +276,26 @@ namespace WebSocketSharp
       WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
     }
 
+    internal HttpResponse SendHttpRequest (HttpRequest request, int millisecondsTimeout)
+    {
+      return sendHttpRequest (_innerStream, request, millisecondsTimeout);
+    }
+
     internal bool WriteBytes (byte[] data)
     {
-      lock (_forWrite) {
-        try {
-          _innerStream.Write (data, 0, data.Length);
-          return true;
-        }
-        catch {
-          return false;
-        }
-      }
+      lock (_forWrite)
+        return writeBytes (_innerStream, data);
+    }
+
+    internal bool WriteHttp (HttpBase http)
+    {
+      return writeBytes (_innerStream, http.ToByteArray ());
+    }
+
+    internal bool WriteWebSocketFrame (WebSocketFrame frame)
+    {
+      lock (_forWrite)
+        return writeBytes (_innerStream, frame.ToByteArray ());
     }
 
     #endregion
