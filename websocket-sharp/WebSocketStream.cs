@@ -292,12 +292,6 @@ namespace WebSocketSharp
       return writeBytes (_innerStream, http.ToByteArray ());
     }
 
-    internal bool WriteWebSocketFrame (WebSocketFrame frame)
-    {
-      lock (_forWrite)
-        return writeBytes (_innerStream, frame.ToByteArray ());
-    }
-
     #endregion
 
     #region Public Methods

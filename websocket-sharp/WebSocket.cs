@@ -611,7 +611,7 @@ namespace WebSocketSharp
     private bool acceptPingFrame (WebSocketFrame frame)
     {
       var mask = _client ? Mask.Mask : Mask.Unmask;
-      if (sendWebSocketFrame (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData)))
+      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
 
       return true;
@@ -775,9 +775,9 @@ namespace WebSocketSharp
       }
     }
 
-    private bool closeHandshake (byte[] data, int millisecondsTimeout, Action release)
+    private bool closeHandshake (byte[] frameAsBytes, int millisecondsTimeout, Action release)
     {
-      var sent = data != null && _stream.WriteBytes (data);
+      var sent = frameAsBytes != null && _stream.WriteBytes (frameAsBytes);
       var received =
         millisecondsTimeout == 0 ||
         (sent && _exitReceiving != null && _exitReceiving.WaitOne (millisecondsTimeout));
@@ -1045,6 +1045,18 @@ namespace WebSocketSharp
       }
     }
 
+    private bool send (byte[] frameAsBytes)
+    {
+      lock (_forConn) {
+        if (_readyState != WebSocketState.Open) {
+          _logger.Warn ("Sending has been interrupted.");
+          return false;
+        }
+
+        return _stream.WriteBytes (frameAsBytes);
+      }
+    }
+
     private bool send (Opcode opcode, byte[] data)
     {
       lock (_forSend) {
@@ -1057,8 +1069,7 @@ namespace WebSocketSharp
           }
 
           var mask = _client ? Mask.Mask : Mask.Unmask;
-          sent = sendWebSocketFrame (
-            WebSocketFrame.CreateFrame (Fin.Final, opcode, mask, data, compressed));
+          sent = send (Fin.Final, opcode, mask, data, compressed);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1072,8 +1083,8 @@ namespace WebSocketSharp
     private bool send (Opcode opcode, Stream stream)
     {
       lock (_forSend) {
-        var sent = false;
         var src = stream;
+        var sent = false;
         var compressed = false;
         try {
           if (_compression != CompressionMethod.None) {
@@ -1096,6 +1107,19 @@ namespace WebSocketSharp
         }
 
         return sent;
+      }
+    }
+
+    private bool send (Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
+    {
+      lock (_forConn) {
+        if (_readyState != WebSocketState.Open) {
+          _logger.Warn ("Sending has been interrupted.");
+          return false;
+        }
+
+        return _stream.WriteBytes (
+          WebSocketFrame.CreateFrame (fin, opcode, mask, data, compressed).ToByteArray ());
       }
     }
 
@@ -1152,23 +1176,20 @@ namespace WebSocketSharp
       if (quo == 0) {
         buff = new byte[rem];
         return stream.Read (buff, 0, rem) == rem &&
-               sendWebSocketFrame (
-                 WebSocketFrame.CreateFrame (Fin.Final, opcode, mask, buff, compressed));
+               send (Fin.Final, opcode, mask, buff, compressed);
       }
 
       buff = new byte[FragmentLength];
 
       // First
       if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-          !sendWebSocketFrame (
-            WebSocketFrame.CreateFrame (Fin.More, opcode, mask, buff, compressed)))
+          !send (Fin.More, opcode, mask, buff, compressed))
         return false;
 
       // Mid
       for (long i = 0; i < times; i++) {
         if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-            !sendWebSocketFrame (
-              WebSocketFrame.CreateFrame (Fin.More, Opcode.Cont, mask, buff, compressed)))
+            !send (Fin.More, Opcode.Cont, mask, buff, compressed))
           return false;
       }
 
@@ -1178,8 +1199,7 @@ namespace WebSocketSharp
         buff = new byte[tmpLen = rem];
 
       return stream.Read (buff, 0, tmpLen) == tmpLen &&
-             sendWebSocketFrame (
-               WebSocketFrame.CreateFrame (Fin.Final, Opcode.Cont, mask, buff, compressed));
+             send (Fin.Final, Opcode.Cont, mask, buff, compressed);
     }
 
     // As client
@@ -1225,30 +1245,6 @@ namespace WebSocketSharp
         "A response to the WebSocket connection request:\n" + response.ToString ());
 
       return _stream.WriteHttp (response);
-    }
-
-    private bool sendWebSocketFrame (byte[] data)
-    {
-      lock (_forConn) {
-        if (_readyState != WebSocketState.Open) {
-          _logger.Warn ("Sending has been interrupted.");
-          return false;
-        }
-
-        return _stream.WriteBytes (data);
-      }
-    }
-
-    private bool sendWebSocketFrame (WebSocketFrame frame)
-    {
-      lock (_forConn) {
-        if (_readyState != WebSocketState.Open) {
-          _logger.Warn ("Sending has been interrupted.");
-          return false;
-        }
-
-        return _stream.WriteWebSocketFrame (frame);
-      }
     }
 
     // As client
@@ -1386,7 +1382,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs e, byte[] data, int millisecondsTimeout)
+    internal void Close (CloseEventArgs e, byte[] frameAsBytes, int millisecondsTimeout)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
@@ -1397,7 +1393,7 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      e.WasClean = closeHandshake (data, millisecondsTimeout, closeServerResources);
+      e.WasClean = closeHandshake (frameAsBytes, millisecondsTimeout, closeServerResources);
 
       _readyState = WebSocketState.Closed;
       try {
@@ -1442,12 +1438,12 @@ namespace WebSocketSharp
       return Convert.ToBase64String (src);
     }
 
-    internal bool Ping (byte[] data, int millisecondsTimeout)
+    internal bool Ping (byte[] frameAsBytes, int millisecondsTimeout)
     {
       try {
         AutoResetEvent pong;
         return _readyState == WebSocketState.Open &&
-               sendWebSocketFrame (data) &&
+               send (frameAsBytes) &&
                (pong = _receivePong) != null &&
                pong.WaitOne (millisecondsTimeout);
       }
@@ -1499,8 +1495,9 @@ namespace WebSocketSharp
             cached = stream.Compress (_compression);
             cache.Add (_compression, cached);
           }
-          else
+          else {
             cached.Position = 0;
+          }
 
           if (_readyState == WebSocketState.Open)
             sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None);
