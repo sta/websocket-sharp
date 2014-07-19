@@ -1250,13 +1250,8 @@ namespace WebSocketSharp
     // As client
     private void setClientStream ()
     {
-      var proxy = _proxyUri != null;
-      _tcpClient = proxy
-                   ? new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port)
-                   : new TcpClient (_uri.DnsSafeHost, _uri.Port);
-
       _stream = WebSocketStream.CreateClientStream (
-        _tcpClient, proxy, _uri, _proxyCredentials, _secure, _certValidationCallback);
+        _uri, _proxyUri, _proxyCredentials, _secure, _certValidationCallback, out _tcpClient);
     }
 
     private void startReceiving ()
@@ -2136,6 +2131,69 @@ namespace WebSocketSharp
 
         _credentials = new NetworkCredential (username, password, _uri.PathAndQuery);
         _preAuth = preAuth;
+      }
+    }
+
+    /// <summary>
+    /// Sets the HTTP Proxy server URL to connect through, and a pair of <paramref name="username"/>
+    /// and <paramref name="password"/> for the proxy server authentication (Basic/Digest).
+    /// </summary>
+    /// <param name="url">
+    /// A <see cref="string"/> that represents the HTTP Proxy server URL to connect through.
+    /// </param>
+    /// <param name="username">
+    /// A <see cref="string"/> that represents the user name used to authenticate.
+    /// </param>
+    /// <param name="password">
+    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
+    /// used to authenticate.
+    /// </param>
+    public void SetHttpProxy (string url, string username, string password)
+    {
+      lock (_forConn) {
+        var msg = checkIfAvailable ("SetHttpProxy", false, false);
+        if (msg == null) {
+          if (url.IsNullOrEmpty ()) {
+            _proxyUri = null;
+            _proxyCredentials = null;
+            _logger.Warn ("Proxy url and credentials were set back to the default.");
+
+            return;
+          }
+
+          Uri uri;
+          if (!Uri.TryCreate (url, UriKind.Absolute, out uri) ||
+              uri.Scheme != "http" ||
+              uri.Segments.Length > 1) {
+            msg = "The syntax of proxy url must be 'http://<host>[:<port>]'.";
+          }
+          else {
+            _proxyUri = uri;
+
+            if (username.IsNullOrEmpty ()) {
+              _proxyCredentials = null;
+              _logger.Warn ("Proxy credentials was set back to the default.");
+
+              return;
+            }
+
+            msg = username.Contains (':') || !username.IsText ()
+                  ? "'username' contains an invalid character."
+                  : !password.IsNullOrEmpty () && !password.IsText ()
+                    ? "'password' contains an invalid character."
+                    : null;
+          }
+        }
+
+        if (msg != null) {
+          _logger.Error (msg);
+          error (msg);
+
+          return;
+        }
+
+        _proxyCredentials = new NetworkCredential (
+          username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port));
       }
     }
 

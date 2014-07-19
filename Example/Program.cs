@@ -63,6 +63,9 @@ namespace Example
         // For HTTP Authentication (Basic/Digest)
         //ws.SetCredentials ("nobita", "password", false);
 
+        // For HTTP Proxy
+        //ws.SetHttpProxy ("http://localhost:3128", "nobita", "password");
+
         // Setting Origin header
         //ws.Origin = "http://echo.websocket.org";
         //ws.Origin = "http://localhost:4649";

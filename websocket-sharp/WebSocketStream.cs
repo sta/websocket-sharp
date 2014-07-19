@@ -198,13 +198,18 @@ namespace WebSocketSharp
     #region Internal Methods
 
     internal static WebSocketStream CreateClientStream (
-      TcpClient tcpClient,
-      bool proxy,
       Uri targetUri,
+      Uri proxyUri,
       NetworkCredential proxyCredentials,
       bool secure,
-      System.Net.Security.RemoteCertificateValidationCallback validationCallback)
+      System.Net.Security.RemoteCertificateValidationCallback validationCallback,
+      out TcpClient tcpClient)
     {
+      var proxy = proxyUri != null;
+      tcpClient = proxy
+                  ? new TcpClient (proxyUri.DnsSafeHost, proxyUri.Port)
+                  : new TcpClient (targetUri.DnsSafeHost, targetUri.Port);
+
       var netStream = tcpClient.GetStream ();
       if (proxy) {
         var req = HttpRequest.CreateConnectRequest (targetUri);
@@ -212,6 +217,14 @@ namespace WebSocketSharp
         if (res.IsProxyAuthenticationRequired) {
           var authChal = res.ProxyAuthenticationChallenge;
           if (authChal != null && proxyCredentials != null) {
+            if (res.Headers.Contains ("Connection", "close")) {
+              netStream.Dispose ();
+              tcpClient.Close ();
+
+              tcpClient = new TcpClient (proxyUri.DnsSafeHost, proxyUri.Port);
+              netStream = tcpClient.GetStream ();
+            }
+
             var authRes = new AuthenticationResponse (authChal, proxyCredentials, 0);
             req.Headers["Proxy-Authorization"] = authRes.ToString ();
             res = sendHttpRequest (netStream, req, 15000);

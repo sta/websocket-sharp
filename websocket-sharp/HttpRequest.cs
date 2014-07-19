@@ -116,9 +116,11 @@ namespace WebSocketSharp
 
     internal static HttpRequest CreateConnectRequest (Uri uri)
     {
-      var authority = uri.Authority;
+      var host = uri.DnsSafeHost;
+      var port = uri.Port;
+      var authority = String.Format ("{0}:{1}", host, port);
       var req = new HttpRequest ("CONNECT", authority);
-      req.Headers["Host"] = uri.Port == 80 ? uri.DnsSafeHost : authority;
+      req.Headers["Host"] = port == 80 ? host : authority;
 
       return req;
     }
