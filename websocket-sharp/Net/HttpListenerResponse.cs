@@ -128,7 +128,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Encoding ContentEncoding {
       get {
-        checkDisposed ();
         return _contentEncoding;
       }
 
@@ -156,7 +155,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public long ContentLength64 {
       get {
-        checkDisposed ();
         return _contentLength;
       }
 
@@ -191,7 +189,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string ContentType {
       get {
-        checkDisposed ();
         return _contentType;
       }
 
@@ -221,7 +218,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public CookieCollection Cookies {
       get {
-        checkDisposed ();
         return _cookies ?? (_cookies = new CookieCollection ());
       }
 
@@ -248,7 +244,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public WebHeaderCollection Headers {
       get {
-        checkDisposed ();
         return _headers;
       }
 
@@ -286,7 +281,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool KeepAlive {
       get {
-        checkDisposed ();
         return _keepAlive;
       }
 
@@ -333,7 +327,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public Version ProtocolVersion {
       get {
-        checkDisposed ();
         return _version;
       }
 
@@ -366,7 +359,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string RedirectLocation {
       get {
-        checkDisposed ();
         return _location;
       }
 
@@ -420,7 +412,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public int StatusCode {
       get {
-        checkDisposed ();
         return _statusCode;
       }
 
@@ -449,7 +440,6 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string StatusDescription {
       get {
-        checkDisposed ();
         return _statusDescription;
       }
 
