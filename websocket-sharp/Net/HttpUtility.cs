@@ -50,7 +50,7 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  internal sealed class HttpUtility
+  public sealed class HttpUtility
   {
     #region Private Static Fields
 
