@@ -128,7 +128,36 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentException">
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
     /// </exception>
-    public HttpServer (int port, bool secure)
+    public HttpServer(int port, bool secure)
+        : this(port, secure, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with the specified
+    /// <paramref name="port"/> and <paramref name="secure"/>.
+    /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming requests on
+    /// <paramref name="port"/>.
+    /// </remarks>
+    /// <param name="port">
+    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not. (<c>true</c>
+    /// indicates providing a secure connection.)
+    /// </param>
+    /// <param name="prefix">
+    /// A <see cref="string"/> that provides a custom url prefix, if desired. (<c>true</c>
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    /// </exception>
+    public HttpServer (int port, bool secure, string prefix)
     {
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException ("port", "Must be between 1 and 65535: " + port);
@@ -149,8 +178,10 @@ namespace WebSocketSharp.Server
       if (os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX)
         _windows = true;
 
-      var prefix = String.Format ("http{0}://*:{1}/", _secure ? "s" : "", _port);
-      _listener.Prefixes.Add (prefix);
+      if (string.IsNullOrEmpty(prefix))
+        prefix = String.Format("http{0}://*:{1}/", _secure ? "s" : "", _port);
+
+      _listener.Prefixes.Add(prefix);
     }
 
     #endregion
@@ -367,6 +398,11 @@ namespace WebSocketSharp.Server
     public event EventHandler<HttpRequestEventArgs> OnGet;
 
     /// <summary>
+    /// Occurs when the server receives an HTTP request.
+    /// </summary>
+    public event EventHandler<HttpRequestEventArgs> OnRequest;
+    
+      /// <summary>
     /// Occurs when the server receives an HTTP HEAD request.
     /// </summary>
     public event EventHandler<HttpRequestEventArgs> OnHead;
@@ -420,6 +456,7 @@ namespace WebSocketSharp.Server
     {
       var args = new HttpRequestEventArgs (context);
       var method = context.Request.HttpMethod;
+
       if (method == "GET") {
         if (OnGet != null) {
           OnGet (this, args);
@@ -480,7 +517,13 @@ namespace WebSocketSharp.Server
 
     private void acceptRequestAsync (HttpListenerContext context)
     {
-      ThreadPool.QueueUserWorkItem (
+        if (OnRequest != null)
+        {
+            OnRequest(this, new HttpRequestEventArgs(context));
+            return;
+        }
+
+        ThreadPool.QueueUserWorkItem(
         state => {
           try {
             var authScheme = _listener.SelectAuthenticationScheme (context);

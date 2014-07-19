@@ -45,6 +45,7 @@ namespace WebSocketSharp.Server {
 
     internal HttpRequestEventArgs(HttpListenerContext context)
     {
+      Context = context;
       Request = context.Request;
       Response = context.Response;
     }
@@ -53,7 +54,9 @@ namespace WebSocketSharp.Server {
 
     #region Public Properties
 
-    /// <summary>
+    public HttpListenerContext Context { get; private set; }
+    
+      /// <summary>
     /// Gets the HTTP request objects sent from a client.
     /// </summary>
     /// <value>
