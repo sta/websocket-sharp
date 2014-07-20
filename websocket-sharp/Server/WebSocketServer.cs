@@ -546,7 +546,7 @@ namespace WebSocketSharp.Server
 
         var header = context.Headers ["Authorization"];
         if (header == null || !header.StartsWith (expected, StringComparison.OrdinalIgnoreCase)) {
-          context.SendAuthChallenge (challenge);
+          context.SendAuthenticationChallenge (challenge);
           return auth ();
         }
 
@@ -554,7 +554,7 @@ namespace WebSocketSharp.Server
         if (context.IsAuthenticated)
           return true;
 
-        context.SendAuthChallenge (challenge);
+        context.SendAuthenticationChallenge (challenge);
         return auth ();
       };
 
