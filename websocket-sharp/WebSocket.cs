@@ -1049,7 +1049,7 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Warn ("Sending has been interrupted.");
+          _logger.Error ("Closing the WebSocket connection has been done.");
           return false;
         }
 
@@ -1057,47 +1057,26 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, byte[] data)
-    {
-      lock (_forSend) {
-        var sent = false;
-        try {
-          var compressed = false;
-          if (_compression != CompressionMethod.None) {
-            data = data.Compress (_compression);
-            compressed = true;
-          }
-
-          var mask = _client ? Mask.Mask : Mask.Unmask;
-          sent = send (Fin.Final, opcode, mask, data, compressed);
-        }
-        catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
-        }
-
-        return sent;
-      }
-    }
-
     private bool send (Opcode opcode, Stream stream)
     {
       lock (_forSend) {
         var src = stream;
-        var sent = false;
         var compressed = false;
+        var sent = false;
+        string msg = null;
         try {
           if (_compression != CompressionMethod.None) {
             stream = stream.Compress (_compression);
             compressed = true;
           }
 
-          var mask = _client ? Mask.Mask : Mask.Unmask;
-          sent = sendFragmented (opcode, stream, mask, compressed);
+          sent = send (opcode, stream, _client ? Mask.Mask : Mask.Unmask, compressed);
+          if (!sent)
+            msg = "Sending a data has been interrupted.";
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          msg = "An exception has occurred while sending a data.";
         }
         finally {
           if (compressed)
@@ -1106,41 +1085,70 @@ namespace WebSocketSharp
           src.Dispose ();
         }
 
+        if (msg != null)
+          error (msg);
+
         return sent;
       }
+    }
+
+    private bool send (Opcode opcode, Stream stream, Mask mask, bool compressed)
+    {
+      var len = stream.Length;
+
+      /* Not fragmented */
+
+      if (len == 0)
+        return send (Fin.Final, opcode, mask, new byte[0], compressed);
+
+      var quo = len / FragmentLength;
+      var rem = (int) (len % FragmentLength);
+
+      byte[] buff = null;
+      if (quo == 0) {
+        buff = new byte[rem];
+        return stream.Read (buff, 0, rem) == rem &&
+               send (Fin.Final, opcode, mask, buff, compressed);
+      }
+
+      buff = new byte[FragmentLength];
+      if (quo == 1 && rem == 0)
+        return stream.Read (buff, 0, FragmentLength) == FragmentLength &&
+               send (Fin.Final, opcode, mask, buff, compressed);
+
+      /* Send fragmented */
+
+      // Begin
+      if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
+          !send (Fin.More, opcode, mask, buff, compressed))
+        return false;
+
+      var times = rem == 0 ? quo - 2 : quo - 1;
+      for (long i = 0; i < times; i++)
+        if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
+            !send (Fin.More, Opcode.Cont, mask, buff, compressed))
+          return false;
+
+      // End
+      var tmpLen = FragmentLength;
+      if (rem != 0)
+        buff = new byte[tmpLen = rem];
+
+      return stream.Read (buff, 0, tmpLen) == tmpLen &&
+             send (Fin.Final, Opcode.Cont, mask, buff, compressed);
     }
 
     private bool send (Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Warn ("Sending has been interrupted.");
+          _logger.Error ("Closing the WebSocket connection has been done.");
           return false;
         }
 
         return _stream.WriteBytes (
           WebSocketFrame.CreateFrame (fin, opcode, mask, data, compressed).ToByteArray ());
       }
-    }
-
-    private void sendAsync (Opcode opcode, byte[] data, Action<bool> completed)
-    {
-      Func<Opcode, byte[], bool> sender = send;
-      sender.BeginInvoke (
-        opcode,
-        data,
-        ar => {
-          try {
-            var sent = sender.EndInvoke (ar);
-            if (completed != null)
-              completed (sent);
-          }
-          catch (Exception ex) {
-            _logger.Fatal (ex.ToString ());
-            error ("An exception has occurred while callback.");
-          }
-        },
-        null);
     }
 
     private void sendAsync (Opcode opcode, Stream stream, Action<bool> completed)
@@ -1161,45 +1169,6 @@ namespace WebSocketSharp
           }
         },
         null);
-    }
-
-    private bool sendFragmented (Opcode opcode, Stream stream, Mask mask, bool compressed)
-    {
-      var len = stream.Length;
-      var quo = len / FragmentLength;
-      var rem = (int) (len % FragmentLength);
-      var times = rem == 0 ? quo - 2 : quo - 1;
-
-      byte[] buff = null;
-
-      // Not fragmented
-      if (quo == 0) {
-        buff = new byte[rem];
-        return stream.Read (buff, 0, rem) == rem &&
-               send (Fin.Final, opcode, mask, buff, compressed);
-      }
-
-      buff = new byte[FragmentLength];
-
-      // First
-      if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-          !send (Fin.More, opcode, mask, buff, compressed))
-        return false;
-
-      // Mid
-      for (long i = 0; i < times; i++) {
-        if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-            !send (Fin.More, Opcode.Cont, mask, buff, compressed))
-          return false;
-      }
-
-      // Final
-      var tmpLen = FragmentLength;
-      if (rem != 0)
-        buff = new byte[tmpLen = rem];
-
-      return stream.Read (buff, 0, tmpLen) == tmpLen &&
-             send (Fin.Final, Opcode.Cont, mask, buff, compressed);
     }
 
     // As client
@@ -1453,8 +1422,10 @@ namespace WebSocketSharp
     {
       lock (_forSend) {
         lock (_forConn) {
-          if (_readyState != WebSocketState.Open)
+          if (_readyState != WebSocketState.Open) {
+            _logger.Error ("Closing the WebSocket connection has been done.");
             return;
+          }
 
           try {
             byte[] cached;
@@ -1470,11 +1441,11 @@ namespace WebSocketSharp
               cache.Add (_compression, cached);
             }
 
-            _stream.WriteBytes (cached);
+            if (!_stream.WriteBytes (cached))
+              _logger.Error ("Sending a data has been interrupted.");
           }
           catch (Exception ex) {
-            _logger.Fatal (ex.ToString ());
-            error ("An exception has occurred while sending a data.");
+            _logger.Fatal ("An exception has occurred while sending a data:\n" + ex.ToString ());
           }
         }
       }
@@ -1494,12 +1465,12 @@ namespace WebSocketSharp
             cached.Position = 0;
           }
 
-          if (_readyState == WebSocketState.Open)
-            sendFragmented (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None);
+          if (_readyState != WebSocketState.Open ||
+              !send (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None))
+            _logger.Error ("Sending a data has been interrupted.");
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          _logger.Fatal ("An exception has occurred while sending a data:\n" + ex.ToString ());
         }
       }
     }
@@ -1853,13 +1824,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var len = data.LongLength;
-      if (len <= FragmentLength)
-        send (
-          Opcode.Binary,
-          len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data);
-      else
-        send (Opcode.Binary, new MemoryStream (data));
+      send (Opcode.Binary, new MemoryStream (data));
     }
 
     /// <summary>
@@ -1898,11 +1863,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var rawData = Encoding.UTF8.GetBytes (data);
-      if (rawData.LongLength <= FragmentLength)
-        send (Opcode.Text, rawData);
-      else
-        send (Opcode.Text, new MemoryStream (rawData));
+      send (Opcode.Text, new MemoryStream (Encoding.UTF8.GetBytes (data)));
     }
 
     /// <summary>
@@ -1929,14 +1890,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var len = data.LongLength;
-      if (len <= FragmentLength)
-        sendAsync (
-          Opcode.Binary,
-          len > 0 && _client && _compression == CompressionMethod.None ? data.Copy (len) : data,
-          completed);
-      else
-        sendAsync (Opcode.Binary, new MemoryStream (data), completed);
+      sendAsync (Opcode.Binary, new MemoryStream (data), completed);
     }
 
     /// <summary>
@@ -1991,11 +1945,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var rawData = Encoding.UTF8.GetBytes (data);
-      if (rawData.LongLength <= FragmentLength)
-        sendAsync (Opcode.Text, rawData, completed);
-      else
-        sendAsync (Opcode.Text, new MemoryStream (rawData), completed);
+      sendAsync (Opcode.Text, new MemoryStream (Encoding.UTF8.GetBytes (data)), completed);
     }
 
     /// <summary>
@@ -2048,10 +1998,7 @@ namespace WebSocketSharp
                 length,
                 len));
 
-          var sent = len <= FragmentLength
-                     ? send (Opcode.Binary, data)
-                     : send (Opcode.Binary, new MemoryStream (data));
-
+          var sent = send (Opcode.Binary, new MemoryStream (data));
           if (completed != null)
             completed (sent);
         },
