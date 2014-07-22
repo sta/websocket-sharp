@@ -177,7 +177,7 @@ namespace WebSocketSharp.Net
         ares.Buffer = buffer;
         ares.Offset = offset;
         ares.Count = count;
-        ares.SyncRead = nread;
+        ares.SyncRead = nread > 0 ? nread : 0;
         ares.Complete ();
 
         return ares;
