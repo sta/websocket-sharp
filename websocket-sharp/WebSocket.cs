@@ -492,95 +492,6 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private bool acceptCloseFrame (WebSocketFrame frame)
-    {
-      var payload = frame.PayloadData;
-      close (payload, !payload.ContainsReservedCloseStatusCode, false);
-
-      return false;
-    }
-
-    private bool acceptDataFrame (WebSocketFrame frame)
-    {
-      var e = frame.IsCompressed
-              ? new MessageEventArgs (
-                  frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-              : new MessageEventArgs (frame.Opcode, frame.PayloadData);
-
-      enqueueToMessageEventQueue (e);
-      return true;
-    }
-
-    private void acceptException (Exception exception, string message)
-    {
-      var code = CloseStatusCode.Abnormal;
-      var reason = message;
-      if (exception is WebSocketException) {
-        var wsex = (WebSocketException) exception;
-        code = wsex.Code;
-        reason = wsex.Message;
-      }
-
-      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure)
-        _logger.Fatal (exception.ToString ());
-      else
-        _logger.Error (reason);
-
-      error (message ?? code.GetMessage ());
-      if (_readyState == WebSocketState.Connecting && !_client)
-        Close (HttpStatusCode.BadRequest);
-      else
-        close (code, reason ?? code.GetMessage (), false);
-    }
-
-    private bool acceptFragmentedFrame (WebSocketFrame frame)
-    {
-      return frame.IsContinuation // Not first fragment
-             ? true
-             : acceptFragments (frame);
-    }
-
-    private bool acceptFragments (WebSocketFrame first)
-    {
-      using (var concatenated = new MemoryStream ()) {
-        concatenated.WriteBytes (first.PayloadData.ApplicationData);
-        if (!concatenateFragmentsInto (concatenated))
-          return false;
-
-        byte[] data;
-        if (_compression != CompressionMethod.None) {
-          data = concatenated.DecompressToArray (_compression);
-        }
-        else {
-          concatenated.Close ();
-          data = concatenated.ToArray ();
-        }
-
-        enqueueToMessageEventQueue (new MessageEventArgs (first.Opcode, data));
-        return true;
-      }
-    }
-
-    private bool acceptFrame (WebSocketFrame frame)
-    {
-      return frame.IsCompressed && _compression == CompressionMethod.None
-             ? acceptUnsupportedFrame (
-                 frame,
-                 CloseStatusCode.IncorrectData,
-                 "A compressed data has been received without available decompression method.")
-             : frame.IsFragmented
-               ? acceptFragmentedFrame (frame)
-               : frame.IsData
-                 ? acceptDataFrame (frame)
-                 : frame.IsPing
-                   ? acceptPingFrame (frame)
-                   : frame.IsPong
-                     ? acceptPongFrame (frame)
-                     : frame.IsClose
-                       ? acceptCloseFrame (frame)
-                       : acceptUnsupportedFrame (frame, CloseStatusCode.PolicyViolation, null);
-    }
-
     // As server
     private bool acceptHandshake ()
     {
@@ -603,62 +514,9 @@ namespace WebSocketSharp
 
       var extensions = _context.Headers["Sec-WebSocket-Extensions"];
       if (extensions != null && extensions.Length > 0)
-        acceptSecWebSocketExtensionsHeader (extensions);
+        processSecWebSocketExtensionsHeader (extensions);
 
       return sendHandshakeResponse (createHandshakeResponse ());
-    }
-
-    private bool acceptPingFrame (WebSocketFrame frame)
-    {
-      var mask = _client ? Mask.Mask : Mask.Unmask;
-      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData).ToByteArray ()))
-        _logger.Trace ("Returned a Pong.");
-
-      return true;
-    }
-
-    private bool acceptPongFrame (WebSocketFrame frame)
-    {
-      _receivePong.Set ();
-      _logger.Trace ("Received a Pong.");
-
-      return true;
-    }
-
-    // As server
-    private void acceptSecWebSocketExtensionsHeader (string value)
-    {
-      var extensions = new StringBuilder (32);
-
-      var compress = false;
-      foreach (var extension in value.SplitHeaderValue (',')) {
-        var trimed = extension.Trim ();
-        var unprefixed = trimed.RemovePrefix ("x-webkit-");
-
-        if (!compress && unprefixed.IsCompressionExtension ()) {
-          var method = unprefixed.ToCompressionMethod ();
-          if (method != CompressionMethod.None) {
-            _compression = method;
-            compress = true;
-
-            extensions.Append (trimed + ", ");
-          }
-        }
-      }
-
-      var len = extensions.Length;
-      if (len > 0) {
-        extensions.Length = len - 2;
-        _extensions = extensions.ToString ();
-      }
-    }
-
-    private bool acceptUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
-    {
-      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
-      acceptException (new WebSocketException (code, reason), null);
-
-      return false;
     }
 
     private string checkIfAvailable (
@@ -698,8 +556,7 @@ namespace WebSocketSharp
     {
       var headers = response.Headers;
       return response.IsUnauthorized
-             ? String.Format (
-                 "HTTP {0} authentication is required.", response.AuthenticationChallenge.Scheme)
+             ? "HTTP authentication is required."
              : !response.IsWebSocketResponse
                ? "Not WebSocket connection response."
                : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
@@ -816,9 +673,8 @@ namespace WebSocketSharp
     {
       while (true) {
         var frame = _stream.ReadWebSocketFrame ();
-
         if (frame.IsFinal) {
-          // FINAL
+          /* FINAL */
 
           // CONT
           if (frame.IsContinuation) {
@@ -828,22 +684,22 @@ namespace WebSocketSharp
 
           // PING
           if (frame.IsPing) {
-            acceptPingFrame (frame);
+            processPingFrame (frame);
             continue;
           }
 
           // PONG
           if (frame.IsPong) {
-            acceptPongFrame (frame);
+            processPongFrame (frame);
             continue;
           }
 
           // CLOSE
           if (frame.IsClose)
-            return acceptCloseFrame (frame);
+            return processCloseFrame (frame);
         }
         else {
-          // MORE
+          /* MORE */
 
           // CONT
           if (frame.IsContinuation) {
@@ -853,7 +709,7 @@ namespace WebSocketSharp
         }
 
         // ?
-        return acceptUnsupportedFrame (
+        return processUnsupportedFrame (
           frame,
           CloseStatusCode.IncorrectData,
           "An incorrect data has been received while receiving fragmented data.");
@@ -880,7 +736,7 @@ namespace WebSocketSharp
           }
         }
         catch (Exception ex) {
-          acceptException (ex, "An exception has occurred while connecting.");
+          processException (ex, "An exception has occurred while connecting.");
         }
 
         return false;
@@ -888,15 +744,15 @@ namespace WebSocketSharp
     }
 
     // As client
-    private string createExtensionsRequest ()
+    private string createExtensions ()
     {
-      var extensions = new StringBuilder (32);
+      var res = new StringBuilder (32);
 
       if (_compression != CompressionMethod.None)
-        extensions.Append (_compression.ToExtensionString ());
+        res.Append (_compression.ToExtensionString ());
 
-      return extensions.Length > 0
-             ? extensions.ToString ()
+      return res.Length > 0
+             ? res.ToString ()
              : null;
     }
 
@@ -923,7 +779,7 @@ namespace WebSocketSharp
       if (_protocols != null)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
-      var extensions = createExtensionsRequest ();
+      var extensions = createExtensions ();
       if (extensions != null)
         headers["Sec-WebSocket-Extensions"] = extensions;
 
@@ -1036,13 +892,154 @@ namespace WebSocketSharp
             OnOpen.Emit (this, EventArgs.Empty);
           }
           catch (Exception ex) {
-            acceptException (ex, "An exception has occurred while OnOpen.");
+            processException (ex, "An exception has occurred while OnOpen.");
           }
         }
       }
       catch (Exception ex) {
-        acceptException (ex, "An exception has occurred while opening.");
+        processException (ex, "An exception has occurred while opening.");
       }
+    }
+
+    private bool processCloseFrame (WebSocketFrame frame)
+    {
+      var payload = frame.PayloadData;
+      close (payload, !payload.ContainsReservedCloseStatusCode, false);
+
+      return false;
+    }
+
+    private bool processDataFrame (WebSocketFrame frame)
+    {
+      var e = frame.IsCompressed
+              ? new MessageEventArgs (
+                  frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
+              : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+
+      enqueueToMessageEventQueue (e);
+      return true;
+    }
+
+    private void processException (Exception exception, string message)
+    {
+      var code = CloseStatusCode.Abnormal;
+      var reason = message;
+      if (exception is WebSocketException) {
+        var wsex = (WebSocketException) exception;
+        code = wsex.Code;
+        reason = wsex.Message;
+      }
+
+      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure)
+        _logger.Fatal (exception.ToString ());
+      else
+        _logger.Error (reason);
+
+      error (message ?? code.GetMessage ());
+      if (_readyState == WebSocketState.Connecting && !_client)
+        Close (HttpStatusCode.BadRequest);
+      else
+        close (code, reason ?? code.GetMessage (), false);
+    }
+
+    private bool processFragmentedFrame (WebSocketFrame frame)
+    {
+      return frame.IsContinuation // Not first fragment
+             ? true
+             : processFragments (frame);
+    }
+
+    private bool processFragments (WebSocketFrame first)
+    {
+      using (var buff = new MemoryStream ()) {
+        buff.WriteBytes (first.PayloadData.ApplicationData);
+        if (!concatenateFragmentsInto (buff))
+          return false;
+
+        byte[] data;
+        if (_compression != CompressionMethod.None) {
+          data = buff.DecompressToArray (_compression);
+        }
+        else {
+          buff.Close ();
+          data = buff.ToArray ();
+        }
+
+        enqueueToMessageEventQueue (new MessageEventArgs (first.Opcode, data));
+        return true;
+      }
+    }
+
+    private bool processPingFrame (WebSocketFrame frame)
+    {
+      var mask = _client ? Mask.Mask : Mask.Unmask;
+      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData).ToByteArray ()))
+        _logger.Trace ("Returned a Pong.");
+
+      return true;
+    }
+
+    private bool processPongFrame (WebSocketFrame frame)
+    {
+      _receivePong.Set ();
+      _logger.Trace ("Received a Pong.");
+
+      return true;
+    }
+
+    // As server
+    private void processSecWebSocketExtensionsHeader (string value)
+    {
+      var buff = new StringBuilder (32);
+
+      var compress = false;
+      foreach (var extension in value.SplitHeaderValue (',')) {
+        var trimed = extension.Trim ();
+        var unprefixed = trimed.RemovePrefix ("x-webkit-");
+        if (!compress && unprefixed.IsCompressionExtension ()) {
+          var method = unprefixed.ToCompressionMethod ();
+          if (method != CompressionMethod.None) {
+            _compression = method;
+            compress = true;
+
+            buff.Append (trimed + ", ");
+          }
+        }
+      }
+
+      var len = buff.Length;
+      if (len > 0) {
+        buff.Length = len - 2;
+        _extensions = buff.ToString ();
+      }
+    }
+
+    private bool processUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
+    {
+      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
+      processException (new WebSocketException (code, reason), null);
+
+      return false;
+    }
+
+    private bool processWebSocketFrame (WebSocketFrame frame)
+    {
+      return frame.IsCompressed && _compression == CompressionMethod.None
+             ? processUnsupportedFrame (
+                 frame,
+                 CloseStatusCode.IncorrectData,
+                 "A compressed data has been received without available decompression method.")
+             : frame.IsFragmented
+               ? processFragmentedFrame (frame)
+               : frame.IsData
+                 ? processDataFrame (frame)
+                 : frame.IsPing
+                   ? processPingFrame (frame)
+                   : frame.IsPong
+                     ? processPongFrame (frame)
+                     : frame.IsClose
+                       ? processCloseFrame (frame)
+                       : processUnsupportedFrame (frame, CloseStatusCode.PolicyViolation, null);
     }
 
     private bool send (byte[] frameAsBytes)
@@ -1063,7 +1060,6 @@ namespace WebSocketSharp
         var src = stream;
         var compressed = false;
         var sent = false;
-        string msg = null;
         try {
           if (_compression != CompressionMethod.None) {
             stream = stream.Compress (_compression);
@@ -1072,11 +1068,11 @@ namespace WebSocketSharp
 
           sent = send (opcode, stream, _client ? Mask.Mask : Mask.Unmask, compressed);
           if (!sent)
-            msg = "Sending a data has been interrupted.";
+            error ("Sending a data has been interrupted.");
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          msg = "An exception has occurred while sending a data.";
+          error ("An exception has occurred while sending a data.");
         }
         finally {
           if (compressed)
@@ -1084,9 +1080,6 @@ namespace WebSocketSharp
 
           src.Dispose ();
         }
-
-        if (msg != null)
-          error (msg);
 
         return sent;
       }
@@ -1123,18 +1116,18 @@ namespace WebSocketSharp
           !send (Fin.More, opcode, mask, buff, compressed))
         return false;
 
-      var times = rem == 0 ? quo - 2 : quo - 1;
-      for (long i = 0; i < times; i++)
+      var n = rem == 0 ? quo - 2 : quo - 1;
+      for (long i = 0; i < n; i++)
         if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
             !send (Fin.More, Opcode.Cont, mask, buff, compressed))
           return false;
 
       // End
-      var tmpLen = FragmentLength;
+      var endLen = FragmentLength;
       if (rem != 0)
-        buff = new byte[tmpLen = rem];
+        buff = new byte[endLen = rem];
 
-      return stream.Read (buff, 0, tmpLen) == tmpLen &&
+      return stream.Read (buff, 0, endLen) == endLen &&
              send (Fin.Final, Opcode.Cont, mask, buff, compressed);
     }
 
@@ -1234,7 +1227,7 @@ namespace WebSocketSharp
       Action receive = null;
       receive = () => _stream.ReadWebSocketFrameAsync (
         frame => {
-          if (acceptFrame (frame) && _readyState != WebSocketState.Closed) {
+          if (processWebSocketFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
 
             if (!frame.IsData)
@@ -1247,7 +1240,7 @@ namespace WebSocketSharp
                   OnMessage.Emit (this, e);
               }
               catch (Exception ex) {
-                acceptException (ex, "An exception has occurred while OnMessage.");
+                processException (ex, "An exception has occurred while OnMessage.");
               }
             }
           }
@@ -1255,7 +1248,7 @@ namespace WebSocketSharp
             _exitReceiving.Set ();
           }
         },
-        ex => acceptException (ex, "An exception has occurred while receiving a message."));
+        ex => processException (ex, "An exception has occurred while receiving a message."));
 
       receive ();
     }
@@ -1378,7 +1371,7 @@ namespace WebSocketSharp
         }
       }
       catch (Exception ex) {
-        acceptException (ex, "An exception has occurred while connecting.");
+        processException (ex, "An exception has occurred while connecting.");
       }
     }
 
