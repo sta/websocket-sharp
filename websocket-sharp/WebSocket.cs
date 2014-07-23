@@ -90,7 +90,7 @@ namespace WebSocketSharp
     private string                  _origin;
     private bool                    _preAuth;
     private string                  _protocol;
-    private string[]               _protocols;
+    private string[]                _protocols;
     private NetworkCredential       _proxyCredentials;
     private Uri                     _proxyUri;
     private volatile WebSocketState _readyState;
@@ -746,13 +746,13 @@ namespace WebSocketSharp
     // As client
     private string createExtensions ()
     {
-      var res = new StringBuilder (32);
+      var buff = new StringBuilder (32);
 
       if (_compression != CompressionMethod.None)
-        res.Append (_compression.ToExtensionString ());
+        buff.Append (_compression.ToExtensionString ());
 
-      return res.Length > 0
-             ? res.ToString ()
+      return buff.Length > 0
+             ? buff.ToString ()
              : null;
     }
 
@@ -1066,7 +1066,7 @@ namespace WebSocketSharp
             compressed = true;
           }
 
-          sent = send (opcode, stream, _client ? Mask.Mask : Mask.Unmask, compressed);
+          sent = send (opcode, _client ? Mask.Mask : Mask.Unmask, stream, compressed);
           if (!sent)
             error ("Sending a data has been interrupted.");
         }
@@ -1085,7 +1085,7 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, Stream stream, Mask mask, bool compressed)
+    private bool send (Opcode opcode, Mask mask, Stream stream, bool compressed)
     {
       var len = stream.Length;
 
@@ -1123,11 +1123,12 @@ namespace WebSocketSharp
           return false;
 
       // End
-      var endLen = FragmentLength;
-      if (rem != 0)
-        buff = new byte[endLen = rem];
+      if (rem == 0)
+        rem = FragmentLength;
+      else
+        buff = new byte[rem];
 
-      return stream.Read (buff, 0, endLen) == endLen &&
+      return stream.Read (buff, 0, rem) == rem &&
              send (Fin.Final, Opcode.Cont, mask, buff, compressed);
     }
 
@@ -1459,7 +1460,7 @@ namespace WebSocketSharp
           }
 
           if (_readyState != WebSocketState.Open ||
-              !send (opcode, cached, Mask.Unmask, _compression != CompressionMethod.None))
+              !send (opcode, Mask.Unmask, cached, _compression != CompressionMethod.None))
             _logger.Error ("Sending a data has been interrupted.");
         }
         catch (Exception ex) {
