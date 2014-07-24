@@ -1207,7 +1207,7 @@ namespace WebSocketSharp
       _logger.Debug (
         "A response to the WebSocket connection request:\n" + response.ToString ());
 
-      return _stream.WriteHttp (response);
+      return _stream.WriteBytes (response.ToByteArray ());
     }
 
     // As client

@@ -48,7 +48,6 @@ namespace WebSocketSharp
 
     #region Private Fields
 
-    private object _forWrite;
     private Stream _innerStream;
     private bool   _secure;
 
@@ -60,7 +59,6 @@ namespace WebSocketSharp
     {
       _innerStream = innerStream;
       _secure = secure;
-      _forWrite = new object ();
     }
 
     #endregion
@@ -84,6 +82,47 @@ namespace WebSocketSharp
     #endregion
 
     #region Private Methods
+
+    private static T read<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
+      where T : HttpBase
+    {
+      var timeout = false;
+      var timer = new Timer (
+        state => {
+          timeout = true;
+          stream.Close ();
+        },
+        null,
+        millisecondsTimeout,
+        -1);
+
+      T http = null;
+      Exception exception = null;
+      try {
+        http = parser (readHeaders (stream, _headersMaxLength));
+        var contentLen = http.Headers["Content-Length"];
+        if (contentLen != null && contentLen.Length > 0)
+          http.EntityBodyData = readEntityBody (stream, contentLen);
+      }
+      catch (Exception ex) {
+        exception = ex;
+      }
+      finally {
+        timer.Change (-1, -1);
+        timer.Dispose ();
+      }
+
+      var msg = timeout
+                ? "A timeout has occurred while reading an HTTP request/response."
+                : exception != null
+                  ? "An exception has occurred while reading an HTTP request/response."
+                  : null;
+
+      if (msg != null)
+        throw new WebSocketException (msg, exception);
+
+      return http;
+    }
 
     private static byte[] readEntityBody (Stream stream, string length)
     {
@@ -122,8 +161,7 @@ namespace WebSocketSharp
       }
 
       if (!read)
-        throw new WebSocketException (
-          "The header part of a HTTP data is greater than the max length.");
+        throw new WebSocketException ("The length of header part is greater than the max length.");
 
       var crlf = "\r\n";
       return Encoding.UTF8.GetString (buff.ToArray ())
@@ -132,65 +170,13 @@ namespace WebSocketSharp
              .Split (new[] { crlf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    private static T readHttp<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
-      where T : HttpBase
-    {
-      var timeout = false;
-      var timer = new Timer (
-        state => {
-          timeout = true;
-          stream.Close ();
-        },
-        null,
-        millisecondsTimeout,
-        -1);
-
-      T http = null;
-      Exception exception = null;
-      try {
-        http = parser (readHeaders (stream, _headersMaxLength));
-        var contentLen = http.Headers["Content-Length"];
-        if (contentLen != null && contentLen.Length > 0)
-          http.EntityBodyData = readEntityBody (stream, contentLen);
-      }
-      catch (Exception ex) {
-        exception = ex;
-      }
-      finally {
-        timer.Change (-1, -1);
-        timer.Dispose ();
-      }
-
-      var msg = timeout
-                ? "A timeout has occurred while receiving a HTTP data."
-                : exception != null
-                  ? "An exception has occurred while receiving a HTTP data."
-                  : null;
-
-      if (msg != null)
-        throw new WebSocketException (msg, exception);
-
-      return http;
-    }
-
     private static HttpResponse sendHttpRequest (
       Stream stream, HttpRequest request, int millisecondsTimeout)
     {
       var buff = request.ToByteArray ();
       stream.Write (buff, 0, buff.Length);
 
-      return readHttp<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
-    }
-
-    private static bool writeBytes (Stream stream, byte[] data)
-    {
-      try {
-        stream.Write (data, 0, data.Length);
-        return true;
-      }
-      catch {
-        return false;
-      }
+      return read<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
     }
 
     #endregion
@@ -235,7 +221,7 @@ namespace WebSocketSharp
         }
 
         var code = res.StatusCode;
-        if (code.Length != 3 || code[0] != '2')
+        if (code[0] != '2')
           throw new WebSocketException (
             String.Format (
               "The proxy has failed a connection to the requested host and port. ({0})", code));
@@ -270,12 +256,12 @@ namespace WebSocketSharp
 
     internal HttpRequest ReadHttpRequest (int millisecondsTimeout)
     {
-      return readHttp<HttpRequest> (_innerStream, HttpRequest.Parse, millisecondsTimeout);
+      return read<HttpRequest> (_innerStream, HttpRequest.Parse, millisecondsTimeout);
     }
 
     internal HttpResponse ReadHttpResponse (int millisecondsTimeout)
     {
-      return readHttp<HttpResponse> (_innerStream, HttpResponse.Parse, millisecondsTimeout);
+      return read<HttpResponse> (_innerStream, HttpResponse.Parse, millisecondsTimeout);
     }
 
     internal WebSocketFrame ReadWebSocketFrame ()
@@ -296,13 +282,13 @@ namespace WebSocketSharp
 
     internal bool WriteBytes (byte[] data)
     {
-      lock (_forWrite)
-        return writeBytes (_innerStream, data);
-    }
-
-    internal bool WriteHttp (HttpBase http)
-    {
-      return writeBytes (_innerStream, http.ToByteArray ());
+      try {
+        _innerStream.Write (data, 0, data.Length);
+        return true;
+      }
+      catch {
+        return false;
+      }
     }
 
     #endregion
