@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -137,6 +138,14 @@ namespace WebSocketSharp
       return req;
     }
 
+    internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
+    {
+      var buff = ToByteArray ();
+      stream.Write (buff, 0, buff.Length);
+
+      return Read<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
+    }
+
     internal static HttpRequest Parse (string[] headerParts)
     {
       var requestLine = headerParts[0].Split (new[] { ' ' }, 3);
@@ -149,6 +158,11 @@ namespace WebSocketSharp
 
       return new HttpRequest (
         requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);
+    }
+
+    internal static HttpRequest Read (Stream stream, int millisecondsTimeout)
+    {
+      return Read<HttpRequest> (stream, Parse, millisecondsTimeout);
     }
 
     #endregion

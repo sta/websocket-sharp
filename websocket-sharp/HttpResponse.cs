@@ -28,6 +28,7 @@
 
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -171,6 +172,11 @@ namespace WebSocketSharp
 
       return new HttpResponse (
         statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
+    }
+
+    internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
+    {
+      return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
     }
 
     #endregion
