@@ -1141,7 +1141,7 @@ namespace WebSocketSharp
         }
 
         return _stream.WriteBytes (
-          WebSocketFrame.CreateFrame (fin, opcode, mask, data, compressed).ToByteArray ());
+          WebSocketFrame.CreateWebSocketFrame (fin, opcode, mask, data, compressed).ToByteArray ());
       }
     }
 
@@ -1424,7 +1424,7 @@ namespace WebSocketSharp
           try {
             byte[] cached;
             if (!cache.TryGetValue (_compression, out cached)) {
-              cached = WebSocketFrame.CreateFrame (
+              cached = WebSocketFrame.CreateWebSocketFrame (
                 Fin.Final,
                 opcode,
                 Mask.Unmask,

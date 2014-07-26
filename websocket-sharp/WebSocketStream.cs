@@ -157,13 +157,13 @@ namespace WebSocketSharp
 
     internal WebSocketFrame ReadWebSocketFrame ()
     {
-      return WebSocketFrame.Parse (_innerStream, true);
+      return WebSocketFrame.Read (_innerStream, true);
     }
 
     internal void ReadWebSocketFrameAsync (
       Action<WebSocketFrame> completed, Action<Exception> error)
     {
-      WebSocketFrame.ParseAsync (_innerStream, true, completed, error);
+      WebSocketFrame.ReadAsync (_innerStream, true, completed, error);
     }
 
     internal HttpResponse SendHttpRequest (HttpRequest request, int millisecondsTimeout)
