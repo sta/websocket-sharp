@@ -57,13 +57,6 @@ namespace WebSocketSharp
   /// </remarks>
   public class WebSocket : IDisposable
   {
-    #region Private Const Fields
-
-    private const string _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-    private const string _version = "13";
-
-    #endregion
-
     #region Private Fields
 
     private AuthenticationChallenge _authChallenge;
@@ -82,6 +75,7 @@ namespace WebSocketSharp
     private object                  _forEvent;
     private object                  _forMessageEventQueue;
     private object                  _forSend;
+    private const string            _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string>
                                     _handshakeRequestChecker;
     private volatile Logger         _logger;
@@ -99,10 +93,11 @@ namespace WebSocketSharp
     private WebSocketStream         _stream;
     private TcpClient               _tcpClient;
     private Uri                     _uri;
+    private const string            _version = "13";
 
     #endregion
 
-    #region Internal Const Fields
+    #region Internal Fields
 
     internal const int FragmentLength = 1016; // Max value is int.MaxValue - 14.
 
