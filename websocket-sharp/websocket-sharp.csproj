@@ -94,7 +94,6 @@
     <Compile Include="Server\HttpServer.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
-    <Compile Include="Net\Security\SslStream.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="CloseStatusCode.cs" />
     <Compile Include="Fin.cs" />
@@ -123,7 +122,6 @@
     <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
-    <Compile Include="WebSocketStream.cs" />
     <Compile Include="Net\ReadBufferState.cs" />
     <Compile Include="Net\Chunk.cs" />
     <Compile Include="Net\InputChunkState.cs" />
@@ -141,7 +139,6 @@
   <ItemGroup>
     <Folder Include="Server\" />
     <Folder Include="Net\" />
-    <Folder Include="Net\Security\" />
     <Folder Include="Net\WebSockets\" />
   </ItemGroup>
 </Project>

@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -37,8 +38,6 @@ namespace WebSocketSharp.Net.WebSockets
   /// Provides the properties used to access the information in a WebSocket connection request
   /// received by the <see cref="HttpListener"/>.
   /// </summary>
-  /// <remarks>
-  /// </remarks>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
     #region Private Fields
@@ -61,9 +60,9 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WebSocketStream Stream {
+    internal Stream Stream {
       get {
-        return _context.Connection.GetWebSocketStream ();
+        return _context.Connection.Stream;
       }
     }
 
@@ -103,7 +102,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Host {
       get {
-        return _context.Request.Headers ["Host"];
+        return _context.Request.Headers["Host"];
       }
     }
 
@@ -163,7 +162,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Origin {
       get {
-        return _context.Request.Headers ["Origin"];
+        return _context.Request.Headers["Origin"];
       }
     }
 
@@ -203,7 +202,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketKey {
       get {
-        return _context.Request.Headers ["Sec-WebSocket-Key"];
+        return _context.Request.Headers["Sec-WebSocket-Key"];
       }
     }
 
@@ -220,7 +219,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var protocols = _context.Request.Headers ["Sec-WebSocket-Protocol"];
+        var protocols = _context.Request.Headers["Sec-WebSocket-Protocol"];
         if (protocols != null)
           foreach (var protocol in protocols.Split (','))
             yield return protocol.Trim ();
@@ -238,7 +237,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketVersion {
       get {
-        return _context.Request.Headers ["Sec-WebSocket-Version"];
+        return _context.Request.Headers["Sec-WebSocket-Version"];
       }
     }
 

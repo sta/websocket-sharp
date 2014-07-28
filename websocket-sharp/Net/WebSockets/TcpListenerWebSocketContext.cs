@@ -29,6 +29,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
@@ -48,7 +50,7 @@ namespace WebSocketSharp.Net.WebSockets
     private NameValueCollection _queryString;
     private HttpRequest         _request;
     private bool                _secure;
-    private WebSocketStream     _stream;
+    private Stream              _stream;
     private TcpClient           _tcpClient;
     private Uri                 _uri;
     private IPrincipal          _user;
@@ -63,8 +65,18 @@ namespace WebSocketSharp.Net.WebSockets
     {
       _tcpClient = tcpClient;
       _secure = secure;
-      _stream = WebSocketStream.CreateServerStream (tcpClient, secure, certificate);
-      _request = _stream.ReadHttpRequest (90000);
+
+      var netStream = tcpClient.GetStream ();
+      if (secure) {
+        var sslStream = new SslStream (netStream, false);
+        sslStream.AuthenticateAsServer (certificate);
+        _stream = sslStream;
+      }
+      else {
+        _stream = netStream;
+      }
+
+      _request = HttpRequest.Read (_stream, 90000);
       _uri = HttpUtility.CreateRequestUrl (
         _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure);
 
@@ -75,7 +87,7 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WebSocketStream Stream {
+    internal Stream Stream {
       get {
         return _stream;
       }
@@ -324,8 +336,9 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void SendAuthenticationChallenge (string challenge)
     {
-      _stream.WriteBytes (HttpResponse.CreateUnauthorizedResponse (challenge).ToByteArray ());
-      _request = _stream.ReadHttpRequest (15000);
+      var buff = HttpResponse.CreateUnauthorizedResponse (challenge).ToByteArray ();
+      _stream.Write (buff, 0, buff.Length);
+      _request = HttpRequest.Read (_stream, 15000);
     }
 
     internal void SetUser (

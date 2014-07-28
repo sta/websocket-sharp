@@ -40,24 +40,19 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp.Net
 {
   internal sealed class HttpConnection
   {
-    #region Private Const Fields
-
-    private const int _bufferSize = 8192;
-
-    #endregion
-
     #region Private Fields
 
-    private byte []             _buffer;
+    private byte[]              _buffer;
+    private const int           _bufferSize = 8192;
     private bool                _chunked;
     private HttpListenerContext _context;
     private bool                _contextWasBound;
@@ -78,7 +73,6 @@ namespace WebSocketSharp.Net
     private object              _sync;
     private int                 _timeout;
     private Timer               _timer;
-    private WebSocketStream     _websocketStream;
 
     #endregion
 
@@ -205,7 +199,6 @@ namespace WebSocketSharp.Net
 
       _inputStream = null;
       _outputStream = null;
-      _websocketStream = null;
 
       _stream.Dispose ();
       _stream = null;
@@ -317,7 +310,7 @@ namespace WebSocketSharp.Net
 
     // true -> Done processing.
     // false -> Need more input.
-    private bool processInput (byte [] data)
+    private bool processInput (byte[] data)
     {
       var len = data.Length;
       var used = 0;
@@ -359,7 +352,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private string readLine (byte [] buffer, int offset, int length, ref int used)
+    private string readLine (byte[] buffer, int offset, int length, ref int used)
     {
       if (_currentLine == null)
         _currentLine = new StringBuilder ();
@@ -368,7 +361,7 @@ namespace WebSocketSharp.Net
       used = 0;
       for (int i = offset; i < last && _lineState != LineState.LF; i++) {
         used++;
-        var b = buffer [i];
+        var b = buffer[i];
         if (b == 13)
           _lineState = LineState.CR;
         else if (b == 10)
@@ -447,7 +440,7 @@ namespace WebSocketSharp.Net
     public void BeginReadRequest ()
     {
       if (_buffer == null)
-        _buffer = new byte [_bufferSize];
+        _buffer = new byte[_bufferSize];
 
       if (_reuses == 1)
         _timeout = 15000;
@@ -509,20 +502,6 @@ namespace WebSocketSharp.Net
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;
-      }
-    }
-
-    public WebSocketStream GetWebSocketStream ()
-    {
-      if (_websocketStream != null || _socket == null)
-        return _websocketStream;
-
-      lock (_sync) {
-        if (_socket == null)
-          return _websocketStream;
-
-        _websocketStream = new WebSocketStream (_stream, _secure);
-        return _websocketStream;
       }
     }
 
