@@ -629,7 +629,7 @@ namespace WebSocketSharp
 
     private bool closeHandshake (byte[] frameAsBytes, int millisecondsTimeout, Action release)
     {
-      var sent = frameAsBytes != null && writeBytes (frameAsBytes);
+      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
       var received =
         millisecondsTimeout == 0 ||
         (sent && _exitReceiving != null && _exitReceiving.WaitOne (millisecondsTimeout));
@@ -1045,7 +1045,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return writeBytes (frameAsBytes);
+        return sendBytes (frameAsBytes);
       }
     }
 
@@ -1135,7 +1135,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return writeBytes (
+        return sendBytes (
           WebSocketFrame.CreateWebSocketFrame (fin, opcode, mask, data, compressed).ToByteArray ());
       }
     }
@@ -1158,6 +1158,18 @@ namespace WebSocketSharp
           }
         },
         null);
+    }
+
+    private bool sendBytes (byte[] data)
+    {
+      try {
+        _stream.Write (data, 0, data.Length);
+        return true;
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        return false;
+      }
     }
 
     // As client
@@ -1198,7 +1210,7 @@ namespace WebSocketSharp
     private bool sendHttpResponse (HttpResponse response)
     {
       _logger.Debug ("A response to this request:\n" + response.ToString ());
-      return writeBytes (response.ToByteArray ());
+      return sendBytes (response.ToByteArray ());
     }
 
     // As client
@@ -1358,18 +1370,6 @@ namespace WebSocketSharp
       return value == null || value == _version;
     }
 
-    private bool writeBytes (byte[] data)
-    {
-      try {
-        _stream.Write (data, 0, data.Length);
-        return true;
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        return false;
-      }
-    }
-
     #endregion
 
     #region Internal Methods
@@ -1487,7 +1487,7 @@ namespace WebSocketSharp
               cache.Add (_compression, cached);
             }
 
-            writeBytes (cached);
+            sendBytes (cached);
           }
           catch (Exception ex) {
             _logger.Fatal (ex.ToString ());
