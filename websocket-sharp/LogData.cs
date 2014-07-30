@@ -131,20 +131,18 @@ namespace WebSocketSharp
       var headerAndCaller = String.Format ("{0}{1}.{2}|", header, type.Name, method.Name);
 #endif
 
-      var messages = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
-      if (messages.Length <= 1)
+      var msgs = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
+      if (msgs.Length <= 1)
         return String.Format ("{0}{1}", headerAndCaller, _message);
 
-      var log = new StringBuilder (
-        String.Format ("{0}{1}\n", headerAndCaller, messages [0]), 64);
+      var output = new StringBuilder (String.Format ("{0}{1}\n", headerAndCaller, msgs[0]), 64);
 
-      var space = header.Length;
-      var format = String.Format ("{{0,{0}}}{{1}}\n", space);
-      for (var i = 1; i < messages.Length; i++)
-        log.AppendFormat (format, "", messages [i]);
+      var fmt = String.Format ("{{0,{0}}}{{1}}\n", header.Length);
+      for (var i = 1; i < msgs.Length; i++)
+        output.AppendFormat (fmt, "", msgs[i]);
 
-      log.Length--;
-      return log.ToString ();
+      output.Length--;
+      return output.ToString ();
     }
 
     #endregion
