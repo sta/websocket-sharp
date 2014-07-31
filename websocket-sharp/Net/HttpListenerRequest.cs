@@ -522,7 +522,7 @@ namespace WebSocketSharp.Net
             var charset = tmp.GetValue ("=");
             if (charset != null && charset.Length > 0) {
               try {
-                _contentEncoding = Encoding.GetEncoding (charset);
+                _contentEncoding = Encoding.GetEncoding (charset.Trim ('"'));
               }
               catch {
                 _context.ErrorMessage = "Invalid Content-Type header";
