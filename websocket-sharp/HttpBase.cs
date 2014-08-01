@@ -106,9 +106,9 @@ namespace WebSocketSharp
       var charset = contentType.Substring (i + 8);
       i = charset.IndexOf (';');
       if (i != -1)
-        charset = charset.Substring (0, i);
+        charset = charset.Substring (0, i).TrimEnd ();
 
-      return Encoding.GetEncoding (charset);
+      return Encoding.GetEncoding (charset.Trim ('"'));
     }
 
     private static byte[] readEntityBody (Stream stream, string length)
