@@ -546,9 +546,9 @@ Also, if you would like to get each value of the Origin header and cookies, you 
 
 ### Connecting through the HTTP Proxy server ###
 
-websocket-sharp supports to connect through the HTTP Proxy server.
+websocket-sharp supports to connect through the **HTTP Proxy** server.
 
-If you would like to connect a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetHttpProxy (string, string, string)` method before connecting.
+If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetHttpProxy (string, string, string)` method before connecting.
 
 ```cs
 var ws = new WebSocket ("ws://example.com");
