@@ -10,6 +10,7 @@
 - **[Secure Connection](#secure-connection)**
 - **[HTTP Authentication](#http-authentication)**
 - **[Query String, Origin header and Cookies](#query-string-origin-header-and-cookies)**
+- **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
 - .NET **3.5** or later (includes compatible)
 
 ## Branches ##
@@ -543,6 +544,24 @@ wssv.AddWebSocketService<Chat> (
 
 Also, if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketService.Context.Origin` and `WebSocketService.Context.CookieCollection` properties.
 
+### Connecting through the HTTP Proxy server ###
+
+websocket-sharp supports to connect through the HTTP Proxy server.
+
+If you would like to connect a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetHttpProxy (string, string, string)` method before connecting.
+
+```cs
+var ws = new WebSocket ("ws://example.com");
+ws.SetHttpProxy ("http://localhost:3128", "nobita", "password");
+```
+
+I tested this with the [Squid]. And it's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
+
+```
+# Deny CONNECT to other than SSL ports
+#http_access deny CONNECT !SSL_ports
+```
+
 ### Logging ###
 
 The `WebSocket` class includes the own logging function.
@@ -621,6 +640,7 @@ websocket-sharp is provided under **[The MIT License]**.
 [Origin header]: http://tools.ietf.org/html/rfc6454#section-7
 [Query]: http://tools.ietf.org/html/rfc3986#section-3.4
 [Security Sandbox of the Webplayer]: http://docs.unity3d.com/Manual/SecuritySandbox.html
+[Squid]: http://www.squid-cache.org
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
 [Unity Licenses Comparison]: http://unity3d.com/unity/licenses
