@@ -1214,7 +1214,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HttpResponse sendProxyConnectRequest ()
+    private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
       var res = sendHttpRequest (req, 90000);
@@ -1231,9 +1231,14 @@ namespace WebSocketSharp
           req.Headers["Proxy-Authorization"] = authRes.ToString ();
           res = sendHttpRequest (req, 15000);
         }
+
+        if (res.IsProxyAuthenticationRequired)
+          throw new WebSocketException ("Proxy authentication is required.");
       }
 
-      return res;
+      if (res.StatusCode[0] != '2')
+        throw new WebSocketException (
+          "The proxy has failed a connection to the requested host and port.");
     }
 
     // As client
@@ -1246,15 +1251,8 @@ namespace WebSocketSharp
 
       _stream = _tcpClient.GetStream ();
 
-      if (proxy) {
-        var res = sendProxyConnectRequest ();
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("Proxy authentication is required.");
-
-        if (res.StatusCode[0] != '2')
-          throw new WebSocketException (
-            "The proxy has failed a connection to the requested host and port.");
-      }
+      if (proxy)
+        sendProxyConnectRequest ();
 
       if (_secure) {
         var sslStream = new SslStream (
