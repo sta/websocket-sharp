@@ -1244,15 +1244,15 @@ namespace WebSocketSharp
     // As client
     private void setClientStream ()
     {
-      var proxy = _proxyUri != null;
-      _tcpClient = proxy
-                   ? new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port)
-                   : new TcpClient (_uri.DnsSafeHost, _uri.Port);
-
-      _stream = _tcpClient.GetStream ();
-
-      if (proxy)
+      if (_proxyUri != null) {
+        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
+      }
+      else {
+        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _stream = _tcpClient.GetStream ();
+      }
 
       if (_secure) {
         var sslStream = new SslStream (
