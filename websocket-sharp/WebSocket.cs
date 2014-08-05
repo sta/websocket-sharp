@@ -2123,8 +2123,9 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP Proxy server URL to connect through, and a pair of <paramref name="username"/>
-    /// and <paramref name="password"/> for the proxy server authentication (Basic/Digest).
+    /// Sets the HTTP Proxy server URL to connect through, and if necessary, a pair of
+    /// <paramref name="username"/> and <paramref name="password"/> for the proxy server
+    /// authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that represents the HTTP Proxy server URL to connect through.
@@ -2175,7 +2176,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred while setting the HTTP Proxy.");
 
           return;
         }
