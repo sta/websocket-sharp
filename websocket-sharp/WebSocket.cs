@@ -237,7 +237,7 @@ namespace WebSocketSharp
           var msg = checkIfAvailable ("Set operation of Compression", false, false);
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error ("An error has occurred while setting the compression.");
 
             return;
           }
@@ -367,12 +367,12 @@ namespace WebSocketSharp
 
             Uri origin;
             if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-              msg = "The syntax of Origin must be '<scheme>://<host>[:<port>]'.";
+              msg = "The syntax of origin must be '<scheme>://<host>[:<port>]'.";
           }
 
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error ("An error has occurred while setting the origin.");
 
             return;
           }
@@ -435,7 +435,8 @@ namespace WebSocketSharp
 
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error (
+              "An error has occurred while setting the server certificate validation callback.");
 
             return;
           }
@@ -2060,11 +2061,11 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         var msg = checkIfAvailable ("SetCookie", false, false) ??
-                  (cookie == null ? "'cookie' must not be null." : null);
+                  (cookie == null ? "'cookie' is null." : null);
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred while setting the cookie.");
 
           return;
         }
@@ -2112,7 +2113,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred while setting the credentials.");
 
           return;
         }
@@ -2176,7 +2177,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error ("An error has occurred while setting the HTTP Proxy.");
+          error ("An error has occurred while setting the proxy.");
 
           return;
         }
