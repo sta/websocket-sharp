@@ -63,9 +63,6 @@ namespace Example
         // For HTTP Authentication (Basic/Digest)
         //ws.SetCredentials ("nobita", "password", false);
 
-        // For HTTP Proxy
-        //ws.SetHttpProxy ("http://localhost:3128", "nobita", "password");
-
         // Setting Origin header
         //ws.Origin = "http://echo.websocket.org";
         //ws.Origin = "http://localhost:4649";
@@ -73,6 +70,9 @@ namespace Example
         // Setting Cookies
         //ws.SetCookie (new Cookie ("name", "nobita"));
         //ws.SetCookie (new Cookie ("roles", "\"idiot, gunfighter\""));
+
+        // Setting Proxy
+        //ws.SetProxy ("http://localhost:3128", "nobita", "password");
 
         // Connecting to the server
         ws.Connect ();

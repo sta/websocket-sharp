@@ -548,11 +548,11 @@ Also, if you would like to get each value of the Origin header and cookies, you 
 
 websocket-sharp supports to connect through the **HTTP Proxy** server.
 
-If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetHttpProxy (string, string, string)` method before connecting.
+If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetProxy (string, string, string)` method before connecting.
 
 ```cs
 var ws = new WebSocket ("ws://example.com");
-ws.SetHttpProxy ("http://localhost:3128", "nobita", "password");
+ws.SetProxy ("http://localhost:3128", "nobita", "password");
 ```
 
 I tested this with the [Squid]. And it's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).

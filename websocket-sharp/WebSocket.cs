@@ -2124,12 +2124,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP Proxy server URL to connect through, and if necessary, a pair of
+    /// Sets an HTTP Proxy server URL to connect through, and if necessary, a pair of
     /// <paramref name="username"/> and <paramref name="password"/> for the proxy server
     /// authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the HTTP Proxy server URL to connect through.
+    /// A <see cref="string"/> that represents the proxy server URL to connect through.
     /// </param>
     /// <param name="username">
     /// A <see cref="string"/> that represents the user name used to authenticate.
@@ -2138,10 +2138,10 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the password for <paramref name="username"/>
     /// used to authenticate.
     /// </param>
-    public void SetHttpProxy (string url, string username, string password)
+    public void SetProxy (string url, string username, string password)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable ("SetHttpProxy", false, false);
+        var msg = checkIfAvailable ("SetProxy", false, false);
         if (msg == null) {
           if (url.IsNullOrEmpty ()) {
             _proxyUri = null;
