@@ -46,7 +46,7 @@ namespace WebSocketSharp
   ///   </para>
   ///   <para>
   ///   If you would like to use the custom output action, you should set the
-  ///   <see cref="Logger.Output"/> to any <c>Action&lt;LogData, string&gt;</c>.
+  ///   <see cref="Logger.Output"/> to any <c>Action&lt;LogData, string&gt;</c> delegate.
   ///   </para>
   /// </remarks>
   public class Logger
@@ -114,10 +114,10 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the path to the log file.
+    /// Gets or sets the current path to the log file.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the path to the log file if any.
+    /// A <see cref="string"/> that represents the current path to the log file if any.
     /// </value>
     public string File {
       get {
@@ -191,7 +191,7 @@ namespace WebSocketSharp
       var log = data.ToString ();
       Console.WriteLine (log);
       if (path != null && path.Length > 0)
-        writeToFile (path, log);
+        writeToFile (log, path);
     }
 
     private void output (string message, LogLevel level)
@@ -212,12 +212,11 @@ namespace WebSocketSharp
       }
     }
 
-    private static void writeToFile (string path, string value)
+    private static void writeToFile (string value, string path)
     {
       using (var writer = new StreamWriter (path, true))
-      using (var syncWriter = TextWriter.Synchronized (writer)) {
+      using (var syncWriter = TextWriter.Synchronized (writer))
         syncWriter.WriteLine (value);
-      }
     }
 
     #endregion
@@ -228,8 +227,8 @@ namespace WebSocketSharp
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Debug"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Debug"/>, this method
-    /// doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than <see cref="LogLevel.Debug"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
@@ -246,8 +245,8 @@ namespace WebSocketSharp
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Error"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Error"/>, this method
-    /// doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than <see cref="LogLevel.Error"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
@@ -275,8 +274,8 @@ namespace WebSocketSharp
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Info"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Info"/>, this method
-    /// doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than <see cref="LogLevel.Info"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
@@ -293,8 +292,8 @@ namespace WebSocketSharp
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Trace"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Trace"/>, this method
-    /// doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than <see cref="LogLevel.Trace"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
@@ -311,8 +310,8 @@ namespace WebSocketSharp
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Warn"/>.
     /// </summary>
     /// <remarks>
-    /// If the current logging level is higher than <see cref="LogLevel.Warn"/>, this method
-    /// doesn't output <paramref name="message"/> as a log.
+    /// If the current logging level is higher than <see cref="LogLevel.Warn"/>,
+    /// this method doesn't output <paramref name="message"/> as a log.
     /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to output as a log.
