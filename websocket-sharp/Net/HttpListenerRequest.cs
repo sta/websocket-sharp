@@ -55,36 +55,39 @@ namespace WebSocketSharp.Net
   /// </remarks>
   public sealed class HttpListenerRequest
   {
-    #region Private Static Fields
+    #region Private Fields
 
-    private static byte [] _100continue =
-      Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
+    private static readonly byte[] _100continue;
+    private string[]               _acceptTypes;
+    private bool                   _chunked;
+    private Encoding               _contentEncoding;
+    private long                   _contentLength;
+    private bool                   _contentLengthWasSet;
+    private HttpListenerContext    _context;
+    private CookieCollection       _cookies;
+    private WebHeaderCollection    _headers;
+    private Guid                   _identifier;
+    private Stream                 _inputStream;
+    private bool                   _keepAlive;
+    private bool                   _keepAliveWasSet;
+    private string                 _method;
+    private NameValueCollection    _queryString;
+    private Uri                    _referer;
+    private string                 _uri;
+    private Uri                    _url;
+    private string[]               _userLanguages;
+    private Version                _version;
+    private bool                   _websocketRequest;
+    private bool                   _websocketRequestWasSet;
 
     #endregion
 
-    #region Private Fields
+    #region Static Constructor
 
-    private string []           _acceptTypes;
-    private bool                _chunked;
-    private Encoding            _contentEncoding;
-    private long                _contentLength;
-    private bool                _contentLengthWasSet;
-    private HttpListenerContext _context;
-    private CookieCollection    _cookies;
-    private WebHeaderCollection _headers;
-    private Guid                _identifier;
-    private Stream              _inputStream;
-    private bool                _keepAlive;
-    private bool                _keepAliveWasSet;
-    private string              _method;
-    private NameValueCollection _queryString;
-    private Uri                 _referer;
-    private string              _uri;
-    private Uri                 _url;
-    private string []           _userLanguages;
-    private Version             _version;
-    private bool                _websocketRequest;
-    private bool                _websocketRequestWasSet;
+    static HttpListenerRequest ()
+    {
+      _100continue = Encoding.ASCII.GetBytes ("HTTP/1.1 100 Continue\r\n\r\n");
+    }
 
     #endregion
 
@@ -109,7 +112,7 @@ namespace WebSocketSharp.Net
     /// An array of <see cref="string"/> that contains the media type names in the Accept
     /// request-header, or <see langword="null"/> if the request didn't include an Accept header.
     /// </value>
-    public string [] AcceptTypes {
+    public string[] AcceptTypes {
       get {
         return _acceptTypes;
       }
@@ -163,7 +166,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string ContentType {
       get {
-        return _headers ["Content-Type"];
+        return _headers["Content-Type"];
       }
     }
 
@@ -300,7 +303,7 @@ namespace WebSocketSharp.Net
           string keepAlive;
           _keepAlive = _version > HttpVersion.Version10 ||
                        _headers.Contains ("Connection", "keep-alive") ||
-                       ((keepAlive = _headers ["Keep-Alive"]) != null && keepAlive != "closed");
+                       ((keepAlive = _headers["Keep-Alive"]) != null && keepAlive != "closed");
 
           _keepAliveWasSet = true;
         }
@@ -416,7 +419,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string UserAgent {
       get {
-        return _headers ["User-Agent"];
+        return _headers["User-Agent"];
       }
     }
 
@@ -440,7 +443,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string UserHostName {
       get {
-        return _headers ["Host"];
+        return _headers["Host"];
       }
     }
 
@@ -452,7 +455,7 @@ namespace WebSocketSharp.Net
     /// the Accept-Language request-header, or <see langword="null"/> if the request
     /// didn't include an Accept-Language header.
     /// </value>
-    public string [] UserLanguages {
+    public string[] UserLanguages {
       get {
         return _userLanguages;
       }
@@ -464,12 +467,12 @@ namespace WebSocketSharp.Net
 
     private static bool tryCreateVersion (string version, out Version result)
     {
-      result = null;
       try {
         result = new Version (version);
         return true;
       }
       catch {
+        result = null;
         return false;
       }
     }
@@ -502,9 +505,9 @@ namespace WebSocketSharp.Net
       }
 
       if (lower == "content-length") {
-        long length;
-        if (Int64.TryParse (val, out length) && length >= 0) {
-          _contentLength = length;
+        long len;
+        if (Int64.TryParse (val, out len) && len >= 0) {
+          _contentLength = len;
           _contentLengthWasSet = true;
         }
         else {
@@ -515,11 +518,11 @@ namespace WebSocketSharp.Net
       }
 
       if (lower == "content-type") {
-        var contents = val.Split (';');
-        foreach (var content in contents) {
-          var tmp = content.Trim ();
-          if (tmp.StartsWith ("charset")) {
-            var charset = tmp.GetValue ("=");
+        var parts = val.Split (';');
+        foreach (var p in parts) {
+          var part = p.Trim ();
+          if (part.StartsWith ("charset", StringComparison.OrdinalIgnoreCase)) {
+            var charset = part.GetValue ("=");
             if (charset != null && charset.Length > 0) {
               try {
                 _contentEncoding = Encoding.GetEncoding (charset.Trim ('"'));
@@ -542,7 +545,7 @@ namespace WebSocketSharp.Net
 
     internal void FinishInitialization ()
     {
-      var host = _headers ["Host"];
+      var host = _headers["Host"];
       var noHost = host == null || host.Length == 0;
       if (_version > HttpVersion.Version10 && noHost) {
         _context.ErrorMessage = "Invalid Host header";
@@ -558,7 +561,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var encoding = Headers ["Transfer-Encoding"];
+      var encoding = Headers["Transfer-Encoding"];
       if (_version > HttpVersion.Version10 && encoding != null && encoding.Length > 0) {
         _chunked = encoding.ToLower () == "chunked";
         if (!_chunked) {
@@ -579,7 +582,7 @@ namespace WebSocketSharp.Net
         }
       }
 
-      var expect = Headers ["Expect"];
+      var expect = Headers["Expect"];
       if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
         var output = _context.Connection.GetResponseStream ();
         output.WriteInternally (_100continue, 0, _100continue.Length);
@@ -592,15 +595,15 @@ namespace WebSocketSharp.Net
       if (!HasEntityBody)
         return true;
 
-      var length = 2048;
+      var len = 2048;
       if (_contentLength > 0)
-        length = (int) Math.Min (_contentLength, (long) length);
+        len = (int) Math.Min (_contentLength, (long) len);
 
-      var buff = new byte [length];
+      var buff = new byte[len];
       while (true) {
         // TODO: Test if MS has a timeout when doing this.
         try {
-          var ares = InputStream.BeginRead (buff, 0, length, null, null);
+          var ares = InputStream.BeginRead (buff, 0, len, null, null);
           if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne (100))
             return false;
 
@@ -615,23 +618,23 @@ namespace WebSocketSharp.Net
 
     internal void SetRequestLine (string requestLine)
     {
-      var parts = requestLine.Split (new [] { ' ' }, 3);
+      var parts = requestLine.Split (new[] { ' ' }, 3);
       if (parts.Length != 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
         return;
       }
 
-      _method = parts [0];
+      _method = parts[0];
       if (!_method.IsToken ()) {
         _context.ErrorMessage = "Invalid request line (method)";
         return;
       }
 
-      _uri = parts [1];
+      _uri = parts[1];
 
-      if (parts [2].Length != 8 ||
-          !parts [2].StartsWith ("HTTP/") ||
-          !tryCreateVersion (parts [2].Substring (5), out _version) ||
+      if (parts[2].Length != 8 ||
+          !parts[2].StartsWith ("HTTP/") ||
+          !tryCreateVersion (parts[2].Substring (5), out _version) ||
           _version.Major < 1)
         _context.ErrorMessage = "Invalid request line (version)";
     }
@@ -715,11 +718,11 @@ namespace WebSocketSharp.Net
     /// </returns>
     public override string ToString ()
     {
-      var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
-      buff.Append (_headers.ToString ());
+      var output = new StringBuilder (64);
+      output.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
+      output.Append (_headers.ToString ());
 
-      return buff.ToString ();
+      return output.ToString ();
     }
 
     #endregion
