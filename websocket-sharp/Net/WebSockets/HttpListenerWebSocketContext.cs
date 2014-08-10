@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -51,19 +52,19 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal HttpListenerWebSocketContext (
-      HttpListenerContext context, string protocol, Logger logger)
+      HttpListenerContext context, string protocol)
     {
       _context = context;
-      _websocket = new WebSocket (this, protocol, logger);
+      _websocket = new WebSocket (this, protocol);
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal WebSocketStream Stream {
+    internal Stream Stream {
       get {
-        return _context.Connection.GetWebSocketStream ();
+        return _context.Connection.Stream;
       }
     }
 

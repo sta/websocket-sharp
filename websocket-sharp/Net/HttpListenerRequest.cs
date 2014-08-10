@@ -521,11 +521,18 @@ namespace WebSocketSharp.Net
           if (tmp.StartsWith ("charset")) {
             var charset = tmp.GetValue ("=");
             if (charset != null && charset.Length > 0) {
-              try {
+              try
+              {
+
+                  // Support upnp/dlna devices - CONTENT-TYPE: text/xml ; charset="utf-8"\r\n
+                  charset = charset.Trim('"');
+                  var index = charset.IndexOf('"');
+                  if (index != -1) charset = charset.Substring(0, index);
+
                 _contentEncoding = Encoding.GetEncoding (charset);
               }
               catch {
-                _context.ErrorMessage = "Invalid Content-Type header";
+                _context.ErrorMessage = "Invalid Content-Type header: " + charset;
               }
             }
 

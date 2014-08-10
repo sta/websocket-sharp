@@ -145,7 +145,7 @@ namespace WebSocketSharp.Net
     public void Add (string uriPrefix)
     {
       _listener.CheckDisposed ();
-      ListenerPrefix.CheckUriPrefix (uriPrefix);
+      ListenerPrefix.CheckUri(uriPrefix);
       if (_prefixes.Contains (uriPrefix))
         return;
 

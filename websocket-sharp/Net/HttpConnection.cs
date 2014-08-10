@@ -40,10 +40,10 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp.Net
 {
@@ -78,7 +78,6 @@ namespace WebSocketSharp.Net
     private object              _sync;
     private int                 _timeout;
     private Timer               _timer;
-    private WebSocketStream     _websocketStream;
 
     #endregion
 
@@ -123,10 +122,16 @@ namespace WebSocketSharp.Net
       }
     }
 
+    private IPEndPoint local_ep;
     public IPEndPoint LocalEndPoint {
-      get {
-        return (IPEndPoint) _socket.LocalEndPoint;
-      }
+        get
+        {
+            if (local_ep != null)
+                return local_ep;
+
+            local_ep = (IPEndPoint)_socket.LocalEndPoint;
+            return local_ep;
+        }
     }
 
     public ListenerPrefix Prefix {
@@ -139,10 +144,17 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public IPEndPoint RemoteEndPoint {
-      get {
-        return (IPEndPoint) _socket.RemoteEndPoint;
-      }
+    private IPEndPoint remote_ep;
+    public IPEndPoint RemoteEndPoint
+    {
+        get
+        {
+            if (remote_ep != null)
+                return remote_ep;
+
+            remote_ep = (IPEndPoint)_socket.RemoteEndPoint;
+            return remote_ep;
+        }
     }
 
     public int Reuses {
@@ -205,7 +217,6 @@ namespace WebSocketSharp.Net
 
       _inputStream = null;
       _outputStream = null;
-      _websocketStream = null;
 
       _stream.Dispose ();
       _stream = null;
@@ -509,20 +520,6 @@ namespace WebSocketSharp.Net
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;
-      }
-    }
-
-    public WebSocketStream GetWebSocketStream ()
-    {
-      if (_websocketStream != null || _socket == null)
-        return _websocketStream;
-
-      lock (_sync) {
-        if (_socket == null)
-          return _websocketStream;
-
-        _websocketStream = new WebSocketStream (_stream, _secure);
-        return _websocketStream;
       }
     }
 

@@ -42,7 +42,7 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-  internal class ListenerAsyncResult : IAsyncResult
+  public class ListenerAsyncResult : IAsyncResult
   {
     #region Private Fields
 

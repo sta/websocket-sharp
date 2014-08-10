@@ -658,38 +658,6 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an incoming request information.
-    /// </summary>
-    /// <remarks>
-    /// This method waits for an incoming request and returns a request information
-    /// when the listener receives a request.
-    /// </remarks>
-    /// <returns>
-    /// A <see cref="HttpListenerContext"/> that contains a request information.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    ///   <para>
-    ///   This listener doesn't have any URI prefixes to listen on.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   This listener hasn't been started or is stopped currently.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
-    /// </exception>
-    public HttpListenerContext GetContext ()
-    {
-      var ares = BeginGetContext (new ListenerAsyncResult (null, null));
-      ares.InGet = true;
-
-      return EndGetContext (ares);
-    }
-
-    /// <summary>
     /// Starts to receive incoming requests.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
