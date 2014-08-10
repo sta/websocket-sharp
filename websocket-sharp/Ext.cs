@@ -508,6 +508,24 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string GetValue (this string nameAndValue, string separator, bool unquote)
+    {
+      var i = nameAndValue.IndexOf (separator);
+      if (i < 0 || i == nameAndValue.Length - 1)
+        return null;
+
+      var val = nameAndValue.Substring (i + 1).Trim ();
+      var len = val.Length;
+      if (len > 0 && val[0] == '"' && unquote) {
+        var end = val.LastIndexOf ('"');
+        return end == 0
+               ? len > 1 ? val.Substring (1) : String.Empty
+               : end > 1 ? val.Substring (1, end - 1) : String.Empty;
+      }
+
+      return val;
+    }
+
     internal static TcpListenerWebSocketContext GetWebSocketContext (
       this TcpClient client, string protocol, bool secure, X509Certificate cert, Logger logger)
     {

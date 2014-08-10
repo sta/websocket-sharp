@@ -522,10 +522,10 @@ namespace WebSocketSharp.Net
         foreach (var p in parts) {
           var part = p.Trim ();
           if (part.StartsWith ("charset", StringComparison.OrdinalIgnoreCase)) {
-            var charset = part.GetValue ("=");
+            var charset = part.GetValue ("=", true);
             if (charset != null && charset.Length > 0) {
               try {
-                _contentEncoding = Encoding.GetEncoding (charset.Trim ('"'));
+                _contentEncoding = Encoding.GetEncoding (charset);
               }
               catch {
                 _context.ErrorMessage = "Invalid Content-Type header";
