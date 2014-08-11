@@ -227,20 +227,20 @@ namespace WebSocketSharp.Net
           continue;
 
         if (pair.StartsWith ("$version", StringComparison.InvariantCultureIgnoreCase)) {
-          version = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+          version = Int32.Parse (pair.GetValue ('=', true));
         }
         else if (pair.StartsWith ("$path", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Path = pair.GetValueInternal ("=");
+            cookie.Path = pair.GetValue ('=');
         }
         else if (pair.StartsWith ("$domain", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Domain = pair.GetValueInternal ("=");
+            cookie.Domain = pair.GetValue ('=');
         }
         else if (pair.StartsWith ("$port", StringComparison.InvariantCultureIgnoreCase)) {
           var port = pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase)
                      ? "\"\""
-                     : pair.GetValueInternal ("=");
+                     : pair.GetValue ('=');
 
           if (cookie != null)
             cookie.Port = port;
@@ -289,10 +289,10 @@ namespace WebSocketSharp.Net
 
         if (pair.StartsWith ("version", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Version = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+            cookie.Version = Int32.Parse (pair.GetValue ('=', true));
         }
         else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
-          var buffer = new StringBuilder (pair.GetValueInternal ("="), 32);
+          var buffer = new StringBuilder (pair.GetValue ('='), 32);
           if (i < pairs.Length - 1)
             buffer.AppendFormat (", {0}", pairs [++i].Trim ());
 
@@ -309,34 +309,34 @@ namespace WebSocketSharp.Net
             cookie.Expires = expires.ToLocalTime ();
         }
         else if (pair.StartsWith ("max-age", StringComparison.InvariantCultureIgnoreCase)) {
-          var max = Int32.Parse (pair.GetValueInternal ("=").Trim ('"'));
+          var max = Int32.Parse (pair.GetValue ('=', true));
           var expires = DateTime.Now.AddSeconds ((double) max);
           if (cookie != null)
             cookie.Expires = expires;
         }
         else if (pair.StartsWith ("path", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Path = pair.GetValueInternal ("=");
+            cookie.Path = pair.GetValue ('=');
         }
         else if (pair.StartsWith ("domain", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Domain = pair.GetValueInternal ("=");
+            cookie.Domain = pair.GetValue ('=');
         }
         else if (pair.StartsWith ("port", StringComparison.InvariantCultureIgnoreCase)) {
           var port = pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase)
                      ? "\"\""
-                     : pair.GetValueInternal ("=");
+                     : pair.GetValue ('=');
 
           if (cookie != null)
             cookie.Port = port;
         }
         else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Comment = pair.GetValueInternal ("=").UrlDecode ();
+            cookie.Comment = pair.GetValue ('=').UrlDecode ();
         }
         else if (pair.StartsWith ("commenturl", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.CommentUri = pair.GetValueInternal ("=").Trim ('"').ToUri ();
+            cookie.CommentUri = pair.GetValue ('=', true).ToUri ();
         }
         else if (pair.StartsWith ("discard", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
