@@ -1414,7 +1414,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void ConnectAsServer ()
+    public void ConnectAsServer ()
     {
       try {
         if (acceptHandshake ()) {
