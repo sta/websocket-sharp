@@ -615,9 +615,7 @@ namespace WebSocketSharp
 
     internal static string Quote (this string value)
     {
-      return value.IsToken ()
-             ? value
-             : String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
+      return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
     }
 
     internal static byte[] ReadBytes (this Stream stream, int length)
@@ -834,12 +832,12 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the WebSocket URL to try.
     /// </param>
     /// <param name="result">
-    /// When this method returns, a <see cref="Uri"/> that represents the WebSocket URL if
-    /// <paramref name="uriString"/> is valid; otherwise, <see langword="null"/>.
+    /// When this method returns, a <see cref="Uri"/> that represents the WebSocket URL
+    /// if <paramref name="uriString"/> is valid; otherwise, <see langword="null"/>.
     /// </param>
     /// <param name="message">
-    /// When this method returns, a <see cref="string"/> that represents the error message if
-    /// <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
+    /// When this method returns, a <see cref="string"/> that represents the error message
+    /// if <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
     /// </param>
     internal static bool TryCreateWebSocketUri (
       this string uriString, out Uri result, out string message)
@@ -880,9 +878,9 @@ namespace WebSocketSharp
         }
       }
       else {
-        uri = String.Format (
-          "{0}://{1}:{2}{3}", schm, uri.Host, schm == "ws" ? 80 : 443, uri.PathAndQuery)
-          .ToUri ();
+        uri = new Uri (
+          String.Format (
+            "{0}://{1}:{2}{3}", schm, uri.Host, schm == "ws" ? 80 : 443, uri.PathAndQuery));
       }
 
       result = uri;

@@ -667,8 +667,10 @@ namespace WebSocketSharp.Net
       if (!_comment.IsNullOrEmpty ())
         result.AppendFormat ("; Comment={0}", _comment.UrlEncode ());
 
-      if (_commentUri != null)
-        result.AppendFormat ("; CommentURL={0}", _commentUri.OriginalString.Quote ());
+      if (_commentUri != null) {
+        var url = _commentUri.OriginalString;
+        result.AppendFormat ("; CommentURL={0}", url.IsToken () ? url : url.Quote ());
+      }
 
       if (_discard)
         result.Append ("; Discard");
