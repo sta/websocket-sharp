@@ -41,11 +41,16 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
+using CookieCollection = WebSocketSharp.Net.CookieCollection;
+using HttpListenerRequest = WebSocketSharp.Net.HttpListenerRequest;
+using HttpListenerResponse = WebSocketSharp.Net.HttpListenerResponse;
+using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
 
 namespace WebSocketSharp
 {
@@ -962,7 +967,7 @@ namespace WebSocketSharp
     /// Gets the collection of the HTTP cookies from the specified HTTP <paramref name="headers"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="CookieCollection"/> that receives a collection of the HTTP cookies.
+    /// A <see cref="Net.CookieCollection"/> that receives a collection of the HTTP cookies.
     /// </returns>
     /// <param name="headers">
     /// A <see cref="NameValueCollection"/> that contains a collection of the HTTP headers.
@@ -1276,7 +1281,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="HttpListenerRequest"/> is an HTTP Upgrade
+    /// Determines whether the specified <see cref="Net.HttpListenerRequest"/> is an HTTP Upgrade
     /// request to switch to the specified <paramref name="protocol"/>.
     /// </summary>
     /// <returns>
@@ -1284,7 +1289,7 @@ namespace WebSocketSharp
     /// <paramref name="protocol"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="request">
-    /// A <see cref="HttpListenerRequest"/> that represents the HTTP request.
+    /// A <see cref="Net.HttpListenerRequest"/> that represents the HTTP request.
     /// </param>
     /// <param name="protocol">
     /// A <see cref="string"/> that represents the protocol name.
@@ -1721,7 +1726,7 @@ namespace WebSocketSharp
     {
       return value == null || value.Length == 0
              ? value
-             : HttpUtility.UrlDecode (value);
+             : WebUtility.UrlDecode(value);
     }
 
     /// <summary>
@@ -1738,7 +1743,7 @@ namespace WebSocketSharp
     {
       return value == null || value.Length == 0
              ? value
-             : HttpUtility.UrlEncode (value);
+             : WebUtility.UrlEncode(value);
     }
 
     /// <summary>

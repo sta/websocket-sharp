@@ -83,6 +83,7 @@
     <Compile Include="Net\AuthenticationSchemeSelector.cs" />
     <Compile Include="Net\ChunkedInputStream.cs" />
     <Compile Include="Net\HttpListenerBasicIdentity.cs" />
+    <Compile Include="Net\HttpUtility.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="Net\HttpListenerRequest.cs" />
     <Compile Include="Net\HttpListenerResponse.cs" />
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
-    <Compile Include="Net\HttpUtility.cs" />
     <Compile Include="Net\ListenerAsyncResult.cs" />
     <Compile Include="Net\ListenerPrefix.cs" />
     <Compile Include="Net\RequestStream.cs" />
