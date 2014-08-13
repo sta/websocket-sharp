@@ -176,11 +176,13 @@ namespace WebSocketSharp.Net
           int nread = FillFromBuffer(buffer, offset, count);
           if (nread > 0 || nread == -1)
           {
-              HttpStreamAsyncResult ares = new HttpStreamAsyncResult(cback, state);
+              HttpStreamAsyncResult ares = new HttpStreamAsyncResult();
+              ares.Callback = cback;
+              ares.State = state;
               ares.Buffer = buffer;
               ares.Offset = offset;
               ares.Count = count;
-              ares.SyncRead = Math.Max(0, nread);
+              ares.SynchRead = Math.Max(0, nread);
               ares.Complete();
               return ares;
           }
@@ -205,7 +207,7 @@ namespace WebSocketSharp.Net
               HttpStreamAsyncResult r = (HttpStreamAsyncResult)ares;
               if (!ares.IsCompleted)
                   ares.AsyncWaitHandle.WaitOne();
-              return r.SyncRead;
+              return r.SynchRead;
           }
 
           // Close on exception?

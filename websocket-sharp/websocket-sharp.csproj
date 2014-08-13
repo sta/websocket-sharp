@@ -80,6 +80,7 @@
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
+    <Compile Include="Net\ChunkedInputStream.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
@@ -114,8 +115,6 @@
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
     <Compile Include="Server\HttpRequestEventArgs.cs" />
-    <Compile Include="Net\HttpHeaderType.cs" />
-    <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
     <Compile Include="WebSocketState.cs" />
@@ -125,10 +124,6 @@
     <Compile Include="Net\NetworkCredential.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
-    <Compile Include="Net\ReadBufferState.cs" />
-    <Compile Include="Net\Chunk.cs" />
-    <Compile Include="Net\InputChunkState.cs" />
-    <Compile Include="Net\ChunkedRequestStream.cs" />
     <Compile Include="Net\QueryStringCollection.cs" />
     <Compile Include="WebSocketFrame.cs" />
     <Compile Include="Net\AuthenticationChallenge.cs" />

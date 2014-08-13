@@ -74,17 +74,17 @@ namespace WebSocketSharp.Net
             this.context = context;
         }
 
-        internal bool ForceCloseChunked
-        {
-            get { return force_close_chunked; }
-        }
-
         internal bool CloseConnection
         {
             get
             {
                 return headers["Connection"] == "close";
             }
+        }
+
+        internal bool ForceCloseChunked
+        {
+            get { return force_close_chunked; }
         }
 
         public Encoding ContentEncoding
@@ -455,20 +455,20 @@ namespace WebSocketSharp.Net
                 if (content_encoding != null && content_type.IndexOf("charset=", StringComparison.Ordinal) == -1)
                 {
                     string enc_name = content_encoding.WebName;
-                    headers.SetInternally("Content-Type", content_type + "; charset=" + enc_name, true);
+                    headers.SetInternal("Content-Type", content_type + "; charset=" + enc_name);
                 }
                 else
                 {
-                    headers.SetInternally("Content-Type", content_type, true);
+                    headers.SetInternal("Content-Type", content_type);
                 }
             }
 
             if (headers["Server"] == null)
-                headers.SetInternally("Server", "Mono-HTTPAPI/1.0", true);
+                headers.SetInternal("Server", "Mono-HTTPAPI/1.0");
 
             CultureInfo inv = CultureInfo.InvariantCulture;
             if (headers["Date"] == null)
-                headers.SetInternally("Date", DateTime.UtcNow.ToString("r", inv), true);
+                headers.SetInternal("Date", DateTime.UtcNow.ToString("r", inv));
 
             if (!chunked)
             {
@@ -479,7 +479,7 @@ namespace WebSocketSharp.Net
                 }
 
                 if (cl_set)
-                    headers.SetInternally("Content-Length", content_length.ToString(inv), true);
+                    headers.SetInternal("Content-Length", content_length.ToString(inv));
             }
 
             Version v = context.Request.ProtocolVersion;
@@ -505,43 +505,31 @@ namespace WebSocketSharp.Net
             // They sent both KeepAlive: true and Connection: close!?
             if (!keep_alive || conn_close)
             {
-                headers.SetInternally("Connection", "close", true);
+                headers.SetInternal("Connection", "close");
                 conn_close = true;
             }
 
             if (chunked)
-                headers.SetInternally("Transfer-Encoding", "chunked", true);
-
-            int reuses = context.Connection.Reuses;
-            if (reuses >= 100)
-            {
-                force_close_chunked = true;
-                if (!conn_close)
-                {
-                    headers.SetInternally("Connection", "close", true);
-                    conn_close = true;
-                }
-            }
+                headers.SetInternal("Transfer-Encoding", "chunked");
 
             if (!conn_close)
             {
-                headers.SetInternally("Keep-Alive", String.Format("timeout=15,max={0}", 100 - reuses), true);
                 if (context.Request.ProtocolVersion <= HttpVersion.Version10)
-                    headers.SetInternally("Connection", "keep-alive", true);
+                    headers.SetInternal("Connection", "keep-alive");
             }
 
             if (location != null)
-                headers.SetInternally("Location", location, true);
+                headers.SetInternal("Location", location);
 
             if (cookies != null)
             {
                 foreach (Cookie cookie in cookies)
-                    headers.SetInternally("Set-Cookie", cookie.ToClientString(), true);
+                    headers.SetInternal("Set-Cookie", cookie.ToClientString());
             }
 
             StreamWriter writer = new StreamWriter(ms, encoding, 256);
             writer.Write("HTTP/{0} {1} {2}\r\n", version, status_code, status_description);
-            string headers_str = headers.ToStringMultiValue(true);
+            string headers_str = headers.ToStringMultiValue();
             writer.Write(headers_str);
             writer.Flush();
             int preamble = (encoding.CodePage == 65001) ? 3 : encoding.GetPreamble().Length;

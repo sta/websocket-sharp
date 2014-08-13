@@ -486,9 +486,9 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var name = header.Substring (0, colon).Trim ();
+        var name = header.Substring (0, colon).Trim ();
       var val = header.Substring (colon + 1).Trim ();
-      _headers.SetInternally (name, val, false);
+      _headers.SetInternal (name, val);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "accept") {
@@ -585,11 +585,11 @@ namespace WebSocketSharp.Net
           return;
         }
       }
-
+      
       var expect = Headers ["Expect"];
       if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
         var output = _context.Connection.GetResponseStream ();
-        output.WriteInternally (_100continue, 0, _100continue.Length);
+        output.InternalWrite (_100continue, 0, _100continue.Length);
       }
     }
 

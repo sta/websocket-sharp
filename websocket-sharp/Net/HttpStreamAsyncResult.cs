@@ -42,92 +42,75 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-  internal class HttpStreamAsyncResult : IAsyncResult
-  {
-    #region Private Fields
-
-    private AsyncCallback    _callback;
-    private bool             _completed;
-    private object           _state;
-    private object           _sync;
-    private ManualResetEvent _waitHandle;
-
-    #endregion
-
-    #region Internal Fields
-
-    internal byte []   Buffer;
-    internal int       Count;
-    internal Exception Error;
-    internal int       Offset;
-    internal int       SyncRead;
-
-    #endregion
-
-    #region Public Constructors
-
-    public HttpStreamAsyncResult (AsyncCallback callback, object state)
+    class HttpStreamAsyncResult : IAsyncResult
     {
-      _callback = callback;
-      _state = state;
-      _sync = new object ();
+        object locker = new object();
+        ManualResetEvent handle;
+        bool completed;
+
+        internal byte[] Buffer;
+        internal int Offset;
+        internal int Count;
+        internal AsyncCallback Callback;
+        internal object State;
+        internal int SynchRead;
+        internal Exception Error;
+
+        public void Complete(Exception e)
+        {
+            Error = e;
+            Complete();
+        }
+
+        public void Complete()
+        {
+            lock (locker)
+            {
+                if (completed)
+                    return;
+
+                completed = true;
+                if (handle != null)
+                    handle.Set();
+
+                if (Callback != null)
+                    Callback.BeginInvoke(this, null, null);
+            }
+        }
+
+        public object AsyncState
+        {
+            get { return State; }
+        }
+
+        public WaitHandle AsyncWaitHandle
+        {
+            get
+            {
+                lock (locker)
+                {
+                    if (handle == null)
+                        handle = new ManualResetEvent(completed);
+                }
+
+                return handle;
+            }
+        }
+
+        public bool CompletedSynchronously
+        {
+            get { return (SynchRead == Count); }
+        }
+
+        public bool IsCompleted
+        {
+            get
+            {
+                lock (locker)
+                {
+                    return completed;
+                }
+            }
+        }
     }
-
-    #endregion
-
-    #region Public Properties
-
-    public object AsyncState {
-      get {
-        return _state;
-      }
-    }
-
-    public WaitHandle AsyncWaitHandle {
-      get {
-        lock (_sync)
-          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
-      }
-    }
-
-    public bool CompletedSynchronously {
-      get {
-        return SyncRead == Count;
-      }
-    }
-
-    public bool IsCompleted {
-      get {
-        lock (_sync)
-          return _completed;
-      }
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public void Complete ()
-    {
-      lock (_sync) {
-        if (_completed)
-          return;
-
-        _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
-
-        if (_callback != null)
-          _callback.BeginInvoke (this, ar => _callback.EndInvoke (ar), null);
-      }
-    }
-
-    public void Complete (Exception exception)
-    {
-      Error = exception;
-      Complete ();
-    }
-
-    #endregion
-  }
 }

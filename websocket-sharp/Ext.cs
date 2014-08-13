@@ -309,13 +309,6 @@ namespace WebSocketSharp
       response.OutputStream.Close ();
     }
 
-    internal static void CloseWithAuthChallenge (
-      this HttpListenerResponse response, string challenge)
-    {
-      response.Headers.SetInternally ("WWW-Authenticate", challenge, true);
-      response.Close (HttpStatusCode.Unauthorized);
-    }
-
     internal static byte [] Compress (this byte [] value, CompressionMethod method)
     {
       return method == CompressionMethod.Deflate

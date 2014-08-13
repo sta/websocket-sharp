@@ -157,12 +157,6 @@ namespace WebSocketSharp.Net
         }
     }
 
-    public int Reuses {
-      get {
-        return _reuses;
-      }
-    }
-
     public Stream Stream {
       get {
         return _stream;
@@ -435,7 +429,7 @@ namespace WebSocketSharp.Net
           if (req.KeepAlive &&
               !res.CloseConnection &&
               req.FlushInput () &&
-              (!_chunked || (_chunked && !res.ForceCloseChunked))) {
+              (!_chunked || (_chunked))) {
             // Don't close. Keep working.
             _reuses++;
             disposeRequestBuffer ();
@@ -460,11 +454,8 @@ namespace WebSocketSharp.Net
       if (_buffer == null)
         _buffer = new byte [_bufferSize];
 
-      if (_reuses == 1)
-        _timeout = 15000;
-
       try {
-        _timer.Change (_timeout, Timeout.Infinite);
+        _timer.Change(Timeout.Infinite, Timeout.Infinite);
         _stream.BeginRead (_buffer, 0, _bufferSize, onRead, this);
       }
       catch {
@@ -492,7 +483,7 @@ namespace WebSocketSharp.Net
         if (chunked) {
           _chunked = true;
           _context.Response.SendChunked = true;
-          _inputStream = new ChunkedRequestStream (
+          _inputStream = new ChunkedInputStream(
             _context, _stream, buff, _position, len - _position);
         }
         else {
