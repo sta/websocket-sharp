@@ -63,29 +63,34 @@ namespace WebSocketSharp.Net
   [Serializable]
   public sealed class Cookie
   {
-    #region Private Static Fields
+    #region Private Fields
 
-    private static char [] _reservedCharsForName = { ' ', '=', ';', ',', '\n', '\r', '\t' };
-    private static char [] _reservedCharsForValue = { ';', ',' };
+    private string                 _comment;
+    private Uri                    _commentUri;
+    private bool                   _discard;
+    private string                 _domain;
+    private DateTime               _expires;
+    private bool                   _httpOnly;
+    private string                 _name;
+    private string                 _path;
+    private string                 _port;
+    private int[]                  _ports;
+    private static readonly char[] _reservedCharsForName;
+    private static readonly char[] _reservedCharsForValue;
+    private bool                   _secure;
+    private DateTime               _timestamp;
+    private string                 _value;
+    private int                    _version;
 
     #endregion
 
-    #region Private Fields
+    #region Static Constructor
 
-    private string   _comment;
-    private Uri      _commentUri;
-    private bool     _discard;
-    private string   _domain;
-    private DateTime _expires;
-    private bool     _httpOnly;
-    private string   _name;
-    private string   _path;
-    private string   _port;
-    private int []   _ports;
-    private bool     _secure;
-    private DateTime _timestamp;
-    private string   _value;
-    private int      _version;
+    static Cookie ()
+    {
+      _reservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
+      _reservedCharsForValue = new[] { ';', ',' };
+    }
 
     #endregion
 
@@ -102,7 +107,7 @@ namespace WebSocketSharp.Net
       _name = String.Empty;
       _path = String.Empty;
       _port = String.Empty;
-      _ports = new int [0];
+      _ports = new int[0];
       _timestamp = DateTime.Now;
       _value = String.Empty;
       _version = 0;
@@ -263,7 +268,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal int [] Ports {
+    internal int[] Ports {
       get {
         return _ports;
       }
@@ -342,7 +347,7 @@ namespace WebSocketSharp.Net
         }
         else {
           _domain = value;
-          ExactDomain = value [0] != '.';
+          ExactDomain = value[0] != '.';
         }
       }
     }
@@ -464,20 +469,20 @@ namespace WebSocketSharp.Net
       set { 
         if (value.IsNullOrEmpty ()) {
           _port = String.Empty;
-          _ports = new int [0];
+          _ports = new int[0];
 
           return;
         }
 
         if (!value.IsEnclosedIn ('"'))
           throw new CookieException (
-            "The value of Port attribute must be enclosed in double quotes.");
+            "The value specified for the Port attribute isn't enclosed in double quotes.");
 
-        string error;
-        if (!tryCreatePorts (value, out _ports, out error))
+        string err;
+        if (!tryCreatePorts (value, out _ports, out err))
           throw new CookieException (
             String.Format (
-              "The value specified for a Port attribute contains an invalid value: {0}", error));
+              "The value specified for the Port attribute contains an invalid value: {0}", err));
 
         _port = value;
       }
@@ -565,7 +570,7 @@ namespace WebSocketSharp.Net
 
       set {
         if (value < 0 || value > 1)
-          throw new ArgumentOutOfRangeException ("value", "Must be 0 or 1.");
+          throw new ArgumentOutOfRangeException ("value", "Not 0 or 1.");
 
         _version = value;
       }
@@ -578,12 +583,12 @@ namespace WebSocketSharp.Net
     private static bool canSetName (string name, out string message)
     {
       if (name.IsNullOrEmpty ()) {
-        message = "Name must not be null or empty.";
+        message = "The value specified for the Name is null or empty.";
         return false;
       }
 
-      if (name [0] == '$' || name.Contains (_reservedCharsForName)) {
-        message = "The value specified for a Name contains an invalid character.";
+      if (name[0] == '$' || name.Contains (_reservedCharsForName)) {
+        message = "The value specified for the Name contains an invalid character.";
         return false;
       }
 
@@ -594,12 +599,12 @@ namespace WebSocketSharp.Net
     private static bool canSetValue (string value, out string message)
     {
       if (value == null) {
-        message = "Value must not be null.";
+        message = "The value specified for the Value is null.";
         return false;
       }
 
       if (value.Contains (_reservedCharsForValue) && !value.IsEnclosedIn ('"')) {
-        message = "The value specified for a Value contains an invalid character.";
+        message = "The value specified for the Value contains an invalid character.";
         return false;
       }
 
@@ -618,88 +623,90 @@ namespace WebSocketSharp.Net
 
     private string toResponseStringVersion0 ()
     {
-      var result = new StringBuilder (64);
-      result.AppendFormat ("{0}={1}", _name, _value);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("{0}={1}", _name, _value);
 
       if (_expires != DateTime.MinValue)
-        result.AppendFormat (
+        output.AppendFormat (
           "; Expires={0}",
           _expires.ToUniversalTime ().ToString (
             "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
             CultureInfo.CreateSpecificCulture ("en-US")));
 
       if (!_path.IsNullOrEmpty ())
-        result.AppendFormat ("; Path={0}", _path);
+        output.AppendFormat ("; Path={0}", _path);
 
       if (!_domain.IsNullOrEmpty ())
-        result.AppendFormat ("; Domain={0}", _domain);
+        output.AppendFormat ("; Domain={0}", _domain);
 
       if (_secure)
-        result.Append ("; Secure");
+        output.Append ("; Secure");
 
       if (_httpOnly)
-        result.Append ("; HttpOnly");
+        output.Append ("; HttpOnly");
 
-      return result.ToString ();
+      return output.ToString ();
     }
 
     private string toResponseStringVersion1 ()
     {
-      var result = new StringBuilder (64);
-      result.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("{0}={1}; Version={2}", _name, _value, _version);
 
       if (_expires != DateTime.MinValue)
-        result.AppendFormat ("; Max-Age={0}", MaxAge);
+        output.AppendFormat ("; Max-Age={0}", MaxAge);
 
       if (!_path.IsNullOrEmpty ())
-        result.AppendFormat ("; Path={0}", _path);
+        output.AppendFormat ("; Path={0}", _path);
 
       if (!_domain.IsNullOrEmpty ())
-        result.AppendFormat ("; Domain={0}", _domain);
+        output.AppendFormat ("; Domain={0}", _domain);
 
       if (!_port.IsNullOrEmpty ()) {
         if (_port == "\"\"")
-          result.Append ("; Port");
+          output.Append ("; Port");
         else
-          result.AppendFormat ("; Port={0}", _port);
+          output.AppendFormat ("; Port={0}", _port);
       }
 
       if (!_comment.IsNullOrEmpty ())
-        result.AppendFormat ("; Comment={0}", _comment.UrlEncode ());
+        output.AppendFormat ("; Comment={0}", _comment.UrlEncode ());
 
       if (_commentUri != null) {
         var url = _commentUri.OriginalString;
-        result.AppendFormat ("; CommentURL={0}", url.IsToken () ? url : url.Quote ());
+        output.AppendFormat ("; CommentURL={0}", url.IsToken () ? url : url.Quote ());
       }
 
       if (_discard)
-        result.Append ("; Discard");
+        output.Append ("; Discard");
 
       if (_secure)
-        result.Append ("; Secure");
+        output.Append ("; Secure");
 
-      return result.ToString ();
+      return output.ToString ();
     }
 
-    private static bool tryCreatePorts (string value, out int [] result, out string parseError)
+    private static bool tryCreatePorts (string value, out int[] result, out string parseError)
     {
       var ports = value.Trim ('"').Split (',');
-      var tmp = new int [ports.Length];
-      for (int i = 0; i < ports.Length; i++) {
-        tmp [i] = int.MinValue;
-        var port = ports [i].Trim ();
+      var len = ports.Length;
+      var res = new int[len];
+      for (var i = 0; i < len; i++) {
+        res[i] = Int32.MinValue;
+
+        var port = ports[i].Trim ();
         if (port.Length == 0)
           continue;
 
-        if (!int.TryParse (port, out tmp [i])) {
-          result = new int [0];
+        if (!Int32.TryParse (port, out res[i])) {
+          result = new int[0];
           parseError = port;
 
           return false;
         }
       }
 
-      result = tmp;
+      result = res;
       parseError = String.Empty;
 
       return true;
@@ -718,28 +725,28 @@ namespace WebSocketSharp.Net
       if (_version == 0)
         return String.Format ("{0}={1}", _name, _value);
 
-      var result = new StringBuilder (64);
-      result.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
 
       if (!_path.IsNullOrEmpty ())
-        result.AppendFormat ("; $Path={0}", _path);
+        output.AppendFormat ("; $Path={0}", _path);
       else if (uri != null)
-        result.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
+        output.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
       else
-        result.Append ("; $Path=/");
+        output.Append ("; $Path=/");
 
-      bool appendDomain = uri == null || uri.Host != _domain;
+      var appendDomain = uri == null || uri.Host != _domain;
       if (appendDomain && !_domain.IsNullOrEmpty ())
-        result.AppendFormat ("; $Domain={0}", _domain);
+        output.AppendFormat ("; $Domain={0}", _domain);
 
       if (!_port.IsNullOrEmpty ()) {
         if (_port == "\"\"")
-          result.Append ("; $Port");
+          output.Append ("; $Port");
         else
-          result.AppendFormat ("; $Port={0}", _port);
+          output.AppendFormat ("; $Port={0}", _port);
       }
 
-      return result.ToString ();
+      return output.ToString ();
     }
 
     // From server to client
