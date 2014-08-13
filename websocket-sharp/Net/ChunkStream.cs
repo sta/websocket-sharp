@@ -52,6 +52,7 @@ namespace WebSocketSharp.Net
         enum State
         {
             None,
+            PartialSize,
             Body,
             BodyFinished,
             Trailer
@@ -155,10 +156,10 @@ namespace WebSocketSharp.Net
 
         void InternalWrite(byte[] buffer, ref int offset, int size)
         {
-            if (state == State.None)
+            if (state == State.None || state == State.PartialSize)
             {
                 state = GetChunkSize(buffer, ref offset, size);
-                if (state == State.None)
+                if (state == State.PartialSize)
                     return;
 
                 saved.Length = 0;
@@ -295,7 +296,7 @@ namespace WebSocketSharp.Net
                     ThrowProtocolViolation("Cannot parse chunk size.");
                 }
 
-                return State.None;
+                return State.PartialSize;
             }
 
             chunkRead = 0;

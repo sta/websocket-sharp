@@ -46,7 +46,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
-using WebSocketSharp.Server;
 
 namespace WebSocketSharp
 {
@@ -218,26 +217,6 @@ namespace WebSocketSharp
                : state == WebSocketState.Closed
                  ? "The WebSocket connection has already been closed."
                  : null;
-    }
-
-    internal static string CheckIfStart (this ServerState state)
-    {
-      return state == ServerState.Ready
-             ? "The server hasn't yet started."
-             : state == ServerState.ShuttingDown
-               ? "The server is shutting down."
-               : state == ServerState.Stop
-                 ? "The server has already stopped."
-                 : null;
-    }
-
-    internal static string CheckIfStartable (this ServerState state)
-    {
-      return state == ServerState.Start
-             ? "The server has already started."
-             : state == ServerState.ShuttingDown
-               ? "The server is shutting down."
-               : null;
     }
 
     internal static string CheckIfValidCloseStatusCode (this ushort code)

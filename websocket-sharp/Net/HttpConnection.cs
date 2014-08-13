@@ -83,16 +83,16 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    public HttpConnection (Socket socket, EndPointListener listener)
+    public HttpConnection (Socket socket, EndPointListener listener, bool secure)
     {
       _socket = socket;
       _listener = listener;
-      _secure = listener.IsSecure;
+      _secure = secure;
 
       var netStream = new NetworkStream (socket, false);
       if (_secure) {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (listener.Certificate);
+        //sslStream.AuthenticateAsServer (listener.Certificate);
         _stream = sslStream;
       }
       else {
@@ -280,10 +280,11 @@ namespace WebSocketSharp.Net
         }
 
         if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
-          if (!conn._context.HasError)
+            if (!conn._context.HaveError)
             conn._context.Request.FinishInitialization ();
 
-          if (conn._context.HasError) {
+          if (conn._context.HaveError)
+          {
             conn.SendError ();
             conn.Close (true);
 
@@ -346,7 +347,7 @@ namespace WebSocketSharp.Net
             _context.Request.AddHeader (line);
           }
 
-          if (_context.HasError)
+          if (_context.HaveError)
             return true;
         }
       }

@@ -42,7 +42,7 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-    public class ListenerAsyncResult : IAsyncResult
+    class ListenerAsyncResult : IAsyncResult
     {
         ManualResetEvent handle;
         bool synch;
