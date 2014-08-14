@@ -72,7 +72,10 @@ namespace WebSocketSharp.Net
             endpoint = new IPEndPoint(addr, port);
             sock = new Socket(addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             sock.Bind(endpoint);
-            sock.Listen(500);
+
+            // This is the number TcpListener uses.
+            sock.Listen(2147483647);
+
             SocketAsyncEventArgs args = new SocketAsyncEventArgs();
             args.UserToken = this;
             args.Completed += OnAccept;

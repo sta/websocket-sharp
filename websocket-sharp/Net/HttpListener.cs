@@ -45,6 +45,8 @@ using System.Security.Principal;
 using System.Threading;
 
 // TODO: Logging.
+using System.Threading.Tasks;
+
 namespace WebSocketSharp.Net
 {
     public sealed class HttpListener : IDisposable
@@ -323,12 +325,10 @@ namespace WebSocketSharp.Net
             disposed = true;
         }
 
-#if NET_4_5
 		public Task<HttpListenerContext> GetContextAsync ()
 		{
 			return Task<HttpListenerContext>.Factory.FromAsync (BeginGetContext, EndGetContext, null);
 		}
-#endif
 
         internal void CheckDisposed()
         {

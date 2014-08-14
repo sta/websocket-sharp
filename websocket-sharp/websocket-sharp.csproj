@@ -68,7 +68,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -119,15 +118,8 @@
     <Compile Include="WebSocketException.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Net\HttpBasicIdentity.cs" />
-    <Compile Include="Net\HttpDigestIdentity.cs" />
     <Compile Include="Net\NetworkCredential.cs" />
-    <Compile Include="Net\InputState.cs" />
-    <Compile Include="Net\LineState.cs" />
-    <Compile Include="Net\QueryStringCollection.cs" />
     <Compile Include="WebSocketFrame.cs" />
-    <Compile Include="Net\AuthenticationChallenge.cs" />
-    <Compile Include="Net\AuthenticationResponse.cs" />
-    <Compile Include="Net\AuthenticationBase.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

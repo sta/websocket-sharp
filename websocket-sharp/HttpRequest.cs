@@ -68,17 +68,6 @@ namespace WebSocketSharp
 
         #region Public Properties
 
-        public AuthenticationResponse AuthenticationResponse
-        {
-            get
-            {
-                var res = Headers["Authorization"];
-                return res != null && res.Length > 0
-                       ? AuthenticationResponse.Parse(res)
-                       : null;
-            }
-        }
-
         public CookieCollection Cookies
         {
             get

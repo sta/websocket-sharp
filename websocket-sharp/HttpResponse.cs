@@ -71,17 +71,6 @@ namespace WebSocketSharp
 
         #region Public Properties
 
-        public AuthenticationChallenge AuthenticationChallenge
-        {
-            get
-            {
-                var chal = Headers["WWW-Authenticate"];
-                return chal != null && chal.Length > 0
-                       ? AuthenticationChallenge.Parse(chal)
-                       : null;
-            }
-        }
-
         public CookieCollection Cookies
         {
             get
@@ -115,17 +104,6 @@ namespace WebSocketSharp
                        _code == "101" &&
                        headers.Contains("Upgrade", "websocket") &&
                        headers.Contains("Connection", "Upgrade");
-            }
-        }
-
-        public AuthenticationChallenge ProxyAuthenticationChallenge
-        {
-            get
-            {
-                var chal = Headers["Proxy-Authenticate"];
-                return chal != null && chal.Length > 0
-                       ? AuthenticationChallenge.Parse(chal)
-                       : null;
             }
         }
 
