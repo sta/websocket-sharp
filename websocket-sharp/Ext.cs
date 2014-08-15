@@ -540,15 +540,9 @@ namespace WebSocketSharp
         return null;
 
       var val = nameAndValue.Substring (i + 1).Trim ();
-      var len = val.Length;
-      if (len > 0 && val[0] == '"' && unquote) {
-        var end = val.LastIndexOf ('"');
-        return end == 0
-               ? len > 1 ? val.Substring (1) : String.Empty
-               : end > 1 ? val.Substring (1, end - 1) : String.Empty;
-      }
-
-      return val;
+      return unquote && val.Length > 1
+             ? val.Unquote ()
+             : val;
     }
 
     internal static TcpListenerWebSocketContext GetWebSocketContext (
@@ -893,10 +887,13 @@ namespace WebSocketSharp
     {
       var start = value.IndexOf ('"');
       var end = value.LastIndexOf ('"');
-      if (start < end)
-        value = value.Substring (start + 1, end - start - 1).Replace ("\\\"", "\"");
+      var len = end - start - 1;
 
-      return value.Trim ();
+      return len < 0
+             ? value
+             : len == 0
+               ? String.Empty
+               : value.Substring (start + 1, len).Replace ("\\\"", "\"");
     }
 
     internal static void WriteBytes (this Stream stream, byte[] data)
