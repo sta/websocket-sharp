@@ -269,7 +269,7 @@ namespace WebSocketSharp.Net
             foreach (ListenerPrefix p in coll)
             {
                 if (p.Path == prefix.Path) //TODO: code
-                    throw new HttpListenerException(400, "Prefix already in use.");
+                    throw new System.Net.HttpListenerException(400, "Prefix already in use.");
             }
             coll.Add(prefix);
         }
@@ -360,7 +360,7 @@ namespace WebSocketSharp.Net
                 {
                     HttpListener other = (HttpListener)prefs[prefix];
                     if (other != listener) // TODO: code.
-                        throw new HttpListenerException(400, "There's another listener for " + prefix);
+                        throw new System.Net.HttpListenerException(400, "There's another listener for " + prefix);
                     return;
                 }
                 p2 = (Hashtable)prefs.Clone();

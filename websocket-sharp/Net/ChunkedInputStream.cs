@@ -146,7 +146,7 @@ namespace WebSocketSharp.Net
                 ares.AsyncWaitHandle.WaitOne();
 
             if (my_ares.Error != null)
-                throw new HttpListenerException(400, "I/O operation aborted: " + my_ares.Error.Message);
+                throw new System.Net.HttpListenerException(400, "I/O operation aborted: " + my_ares.Error.Message);
 
             return my_ares.Count;
         }

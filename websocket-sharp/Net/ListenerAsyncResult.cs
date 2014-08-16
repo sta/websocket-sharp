@@ -71,7 +71,7 @@ namespace WebSocketSharp.Net
             }
             exception = exc;
             if (InGet && (exc is ObjectDisposedException))
-                exception = new HttpListenerException(500, "Listener closed");
+                exception = new System.Net.HttpListenerException(500, "Listener closed");
             lock (locker)
             {
                 completed = true;
@@ -134,7 +134,7 @@ namespace WebSocketSharp.Net
                     for (int i = 0; next.forward != null; i++)
                     {
                         if (i > 20)
-                            Complete(new HttpListenerException(400, "Too many authentication errors"));
+                            Complete(new System.Net.HttpListenerException(400, "Too many authentication errors"));
                         next = next.forward;
                     }
                 }

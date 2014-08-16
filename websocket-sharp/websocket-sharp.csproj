@@ -94,7 +94,6 @@
     <Compile Include="Net\HttpConnection.cs" />
     <Compile Include="Net\HttpListener.cs" />
     <Compile Include="Net\HttpListenerContext.cs" />
-    <Compile Include="Net\HttpListenerException.cs" />
     <Compile Include="Net\HttpListenerPrefixCollection.cs" />
     <Compile Include="Net\HttpListenerRequest.cs" />
     <Compile Include="Net\HttpListenerResponse.cs" />
