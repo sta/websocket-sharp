@@ -135,9 +135,9 @@ namespace WebSocketSharp.Net
     /// Gets the encoding for the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Encoding"/> that represents the encoding for the entity body data, or
-    /// <see cref="Encoding.Default"/> if the request didn't include the information about
-    /// the encoding.
+    /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
+    /// or <see cref="Encoding.Default"/> if the request didn't include the information
+    /// about the encoding.
     /// </value>
     public Encoding ContentEncoding {
       get {
@@ -518,22 +518,11 @@ namespace WebSocketSharp.Net
       }
 
       if (lower == "content-type") {
-        var parts = val.Split (';');
-        foreach (var p in parts) {
-          var part = p.Trim ();
-          if (part.StartsWith ("charset", StringComparison.OrdinalIgnoreCase)) {
-            var charset = part.GetValue ('=', true);
-            if (charset != null && charset.Length > 0) {
-              try {
-                _contentEncoding = Encoding.GetEncoding (charset);
-              }
-              catch {
-                _context.ErrorMessage = "Invalid Content-Type header";
-              }
-            }
-
-            break;
-          }
+        try {
+          _contentEncoding = HttpUtility.GetEncoding (val);
+        }
+        catch {
+          _context.ErrorMessage = "Invalid Content-Type header";
         }
 
         return;
@@ -561,9 +550,9 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var encoding = Headers["Transfer-Encoding"];
-      if (_version > HttpVersion.Version10 && encoding != null && encoding.Length > 0) {
-        _chunked = encoding.ToLower () == "chunked";
+      var enc = Headers["Transfer-Encoding"];
+      if (_version > HttpVersion.Version10 && enc != null && enc.Length > 0) {
+        _chunked = enc.ToLower () == "chunked";
         if (!_chunked) {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 501;

@@ -543,6 +543,18 @@ namespace WebSocketSharp.Net
       return res;
     }
 
+    internal static Encoding GetEncoding (string contentType)
+    {
+      var parts = contentType.Split (';');
+      foreach (var p in parts) {
+        var part = p.Trim ();
+        if (part.StartsWith ("charset", StringComparison.OrdinalIgnoreCase))
+          return Encoding.GetEncoding (part.GetValue ('=', true));
+      }
+
+      return null;
+    }
+
     internal static NameValueCollection ParseQueryStringInternally (string query, Encoding encoding)
     {
       int len;
