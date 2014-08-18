@@ -345,7 +345,7 @@ namespace WebSocketSharp.Net
     public NameValueCollection QueryString {
       get {
         return _queryString ??
-               (_queryString = HttpUtility.ParseQueryStringInternally (_url.Query, Encoding.UTF8));
+               (_queryString = HttpUtility.InternalParseQueryString (_url.Query, Encoding.UTF8));
       }
     }
 
