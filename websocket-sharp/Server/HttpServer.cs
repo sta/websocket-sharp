@@ -410,7 +410,7 @@ namespace WebSocketSharp.Server
       }
 
       _services.Stop (
-        ((ushort) CloseStatusCode.ServerError).ToByteArrayInternally (ByteOrder.Big), true);
+        ((ushort) CloseStatusCode.ServerError).InternalToByteArray (ByteOrder.Big), true);
 
       _listener.Abort ();
       _state = ServerState.Stop;

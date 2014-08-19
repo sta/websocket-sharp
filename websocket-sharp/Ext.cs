@@ -114,7 +114,9 @@ namespace WebSocketSharp
 
       stream.Position = 0;
       using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
-        ds.CopyTo (output, true);
+        ds.CopyTo (output);
+        output.Position = 0;
+
         return output;
       }
     }
@@ -133,13 +135,12 @@ namespace WebSocketSharp
       if (len < 1)
         return buffer.SubArray (0, offset);
 
-      var tmp = 0;
       while (len < length) {
-        tmp = stream.Read (buffer, offset + len, length - len);
-        if (tmp < 1)
+        var readLen = stream.Read (buffer, offset + len, length - len);
+        if (readLen < 1)
           break;
 
-        len += tmp;
+        len += readLen;
       }
 
       return len < length
@@ -148,19 +149,19 @@ namespace WebSocketSharp
     }
 
     private static bool readBytes (
-      this Stream stream, byte[] buffer, int offset, int length, Stream dest)
+      this Stream stream, byte[] buffer, int offset, int length, Stream destination)
     {
       var bytes = stream.readBytes (buffer, offset, length);
       var len = bytes.Length;
-      dest.Write (bytes, 0, len);
+      destination.Write (bytes, 0, len);
 
       return len == offset + length;
     }
 
-    private static void times (this ulong n, Action act)
+    private static void times (this ulong n, Action action)
     {
       for (ulong i = 0; i < n; i++)
-        act ();
+        action ();
     }
 
     #endregion
@@ -170,11 +171,11 @@ namespace WebSocketSharp
     internal static byte[] Append (this ushort code, string reason)
     {
       using (var buff = new MemoryStream ()) {
-        var tmp = code.ToByteArrayInternally (ByteOrder.Big);
-        buff.Write (tmp, 0, 2);
+        var bytes = code.InternalToByteArray (ByteOrder.Big);
+        buff.Write (bytes, 0, 2);
         if (reason != null && reason.Length > 0) {
-          tmp = Encoding.UTF8.GetBytes (reason);
-          buff.Write (tmp, 0, tmp.Length);
+          bytes = Encoding.UTF8.GetBytes (reason);
+          buff.Write (bytes, 0, bytes.Length);
         }
 
         buff.Close ();
@@ -283,14 +284,14 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfValidServicePath (this string servicePath)
+    internal static string CheckIfValidServicePath (this string path)
     {
-      return servicePath == null || servicePath.Length == 0
-             ? "'servicePath' is null or empty."
-             : servicePath[0] != '/'
-               ? "'servicePath' isn't absolute path."
-               : servicePath.IndexOfAny (new[] {'?', '#'}) != -1
-                 ? "'servicePath' contains either or both query and fragment components."
+      return path == null || path.Length == 0
+             ? "'path' is null or empty."
+             : path[0] != '/'
+               ? "'path' isn't absolute path."
+               : path.IndexOfAny (new[] { '?', '#' }) > -1
+                 ? "'path' contains either or both query and fragment components."
                  : null;
     }
 
@@ -364,29 +365,21 @@ namespace WebSocketSharp
       return contains (0);
     }
 
-    internal static T[] Copy<T> (this T[] src, long length)
+    internal static T[] Copy<T> (this T[] source, long length)
     {
       var dest = new T[length];
-      Array.Copy (src, 0, dest, 0, length);
+      Array.Copy (source, 0, dest, 0, length);
 
       return dest;
     }
 
-    internal static void CopyTo (this Stream src, Stream dest)
+    internal static void CopyTo (this Stream source, Stream destination)
     {
-      src.CopyTo (dest, false);
-    }
-
-    internal static void CopyTo (this Stream src, Stream dest, bool setDefaultPosition)
-    {
-      var readLen = 0;
       var buffLen = 256;
       var buff = new byte[buffLen];
-      while ((readLen = src.Read (buff, 0, buffLen)) > 0)
-        dest.Write (buff, 0, readLen);
-
-      if (setDefaultPosition)
-        dest.Position = 0;
+      var readLen = 0;
+      while ((readLen = source.Read (buff, 0, buffLen)) > 0)
+        destination.Write (buff, 0, readLen);
     }
 
     internal static byte[] Decompress (this byte[] data, CompressionMethod method)
@@ -460,7 +453,7 @@ namespace WebSocketSharp
       if (original[0] != '/')
         return null;
 
-      var i = original.IndexOfAny (new[] {'?', '#'});
+      var i = original.IndexOfAny (new[] { '?', '#' });
       return i > 0
              ? original.Substring (0, i)
              : original;
@@ -540,15 +533,37 @@ namespace WebSocketSharp
         return null;
 
       var val = nameAndValue.Substring (i + 1).Trim ();
-      return unquote && val.Length > 1
+      return unquote
              ? val.Unquote ()
              : val;
     }
 
     internal static TcpListenerWebSocketContext GetWebSocketContext (
-      this TcpClient client, string protocol, bool secure, X509Certificate cert, Logger logger)
+      this TcpClient tcpClient,
+      string protocol,
+      bool secure,
+      X509Certificate certificate,
+      Logger logger)
     {
-      return new TcpListenerWebSocketContext (client, protocol, secure, cert, logger);
+      return new TcpListenerWebSocketContext (tcpClient, protocol, secure, certificate, logger);
+    }
+
+    internal static byte[] InternalToByteArray (this ushort value, ByteOrder order)
+    {
+      var bytes = BitConverter.GetBytes (value);
+      if (!order.IsHostOrder ())
+        Array.Reverse (bytes);
+
+      return bytes;
+    }
+
+    internal static byte[] InternalToByteArray (this ulong value, ByteOrder order)
+    {
+      var bytes = BitConverter.GetBytes (value);
+      if (!order.IsHostOrder ())
+        Array.Reverse (bytes);
+
+      return bytes;
     }
 
     internal static bool IsCompressionExtension (this string value)
@@ -581,7 +596,7 @@ namespace WebSocketSharp
     {
       var len = value.Length;
       for (var i = 0; i < len; i++) {
-        char c = value[i];
+        var c = value[i];
         if (c < 0x20 && !"\r\n\t".Contains (c))
           return false;
 
@@ -600,7 +615,7 @@ namespace WebSocketSharp
 
     internal static bool IsToken (this string value)
     {
-      foreach (char c in value)
+      foreach (var c in value)
         if (c < 0x20 || c >= 0x7f || _tspecials.Contains (c))
           return false;
 
@@ -696,18 +711,17 @@ namespace WebSocketSharp
     }
 
     internal static IEnumerable<string> SplitHeaderValue (
-      this string value, params char[] separator)
+      this string value, params char[] separators)
     {
       var len = value.Length;
-      var separators = new string (separator);
+      var seps = new string (separators);
 
       var buff = new StringBuilder (32);
-      var quoted = false;
       var escaped = false;
+      var quoted = false;
 
-      char c;
       for (var i = 0; i < len; i++) {
-        c = value[i];
+        var c = value[i];
         if (c == '"') {
           if (escaped)
             escaped = !escaped;
@@ -718,7 +732,7 @@ namespace WebSocketSharp
           if (i < len - 1 && value[i + 1] == '"')
             escaped = true;
         }
-        else if (separators.Contains (c)) {
+        else if (seps.Contains (c)) {
           if (!quoted) {
             yield return buff.ToString ();
             buff.Length = 0;
@@ -745,24 +759,6 @@ namespace WebSocketSharp
 
         return output.ToArray ();
       }
-    }
-
-    internal static byte[] ToByteArrayInternally (this ushort value, ByteOrder order)
-    {
-      var bytes = BitConverter.GetBytes (value);
-      if (!order.IsHostOrder ())
-        Array.Reverse (bytes);
-
-      return bytes;
-    }
-
-    internal static byte[] ToByteArrayInternally (this ulong value, ByteOrder order)
-    {
-      var bytes = BitConverter.GetBytes (value);
-      if (!order.IsHostOrder ())
-        Array.Reverse (bytes);
-
-      return bytes;
     }
 
     internal static CompressionMethod ToCompressionMethod (this string value)
@@ -797,14 +793,14 @@ namespace WebSocketSharp
       return new List<TSource> (source);
     }
 
-    internal static ushort ToUInt16 (this byte[] src, ByteOrder srcOrder)
+    internal static ushort ToUInt16 (this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt16 (src.ToHostOrder (srcOrder), 0);
+      return BitConverter.ToUInt16 (source.ToHostOrder (sourceOrder), 0);
     }
 
-    internal static ulong ToUInt64 (this byte[] src, ByteOrder srcOrder)
+    internal static ulong ToUInt64 (this byte[] source, ByteOrder sourceOrder)
     {
-      return BitConverter.ToUInt64 (src.ToHostOrder (srcOrder), 0);
+      return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
     }
 
     internal static string TrimEndSlash (this string value)
@@ -886,6 +882,9 @@ namespace WebSocketSharp
     internal static string Unquote (this string value)
     {
       var start = value.IndexOf ('"');
+      if (start < 0)
+        return value;
+
       var end = value.LastIndexOf ('"');
       var len = end - start - 1;
 
@@ -896,9 +895,9 @@ namespace WebSocketSharp
                : value.Substring (start + 1, len).Replace ("\\\"", "\"");
     }
 
-    internal static void WriteBytes (this Stream stream, byte[] data)
+    internal static void WriteBytes (this Stream stream, byte[] bytes)
     {
-      using (var input = new MemoryStream (data))
+      using (var input = new MemoryStream (bytes))
         input.CopyTo (stream);
     }
 
@@ -926,7 +925,7 @@ namespace WebSocketSharp
              ? true
              : value == null || value.Length == 0
                ? false
-               : value.IndexOfAny (chars) != -1;
+               : value.IndexOfAny (chars) > -1;
     }
 
     /// <summary>
@@ -945,9 +944,9 @@ namespace WebSocketSharp
     /// </param>
     public static bool Contains (this NameValueCollection collection, string name)
     {
-      return collection == null || collection.Count == 0
-             ? false
-             : collection[name] != null;
+      return collection != null && collection.Count > 0
+             ? collection[name] != null
+             : false;
     }
 
     /// <summary>
@@ -1041,9 +1040,9 @@ namespace WebSocketSharp
     public static CookieCollection GetCookies (this NameValueCollection headers, bool response)
     {
       var name = response ? "Set-Cookie" : "Cookie";
-      return headers == null || !headers.Contains (name)
-             ? new CookieCollection ()
-             : CookieCollection.Parse (headers[name], response);
+      return headers != null && headers.Contains (name)
+             ? CookieCollection.Parse (headers[name], response)
+             : new CookieCollection ();
     }
 
     /// <summary>
@@ -1387,13 +1386,13 @@ namespace WebSocketSharp
     /// <param name="n">
     /// An <see cref="int"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
-    public static void Times (this int n, Action act)
+    public static void Times (this int n, Action action)
     {
-      if (n > 0 && act != null)
-        ((ulong) n).times (act);
+      if (n > 0 && action != null)
+        ((ulong) n).times (action);
     }
 
     /// <summary>
@@ -1402,13 +1401,13 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="long"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
-    public static void Times (this long n, Action act)
+    public static void Times (this long n, Action action)
     {
-      if (n > 0 && act != null)
-        ((ulong) n).times (act);
+      if (n > 0 && action != null)
+        ((ulong) n).times (action);
     }
 
     /// <summary>
@@ -1417,13 +1416,13 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="uint"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
-    public static void Times (this uint n, Action act)
+    public static void Times (this uint n, Action action)
     {
-      if (n > 0 && act != null)
-        ((ulong) n).times (act);
+      if (n > 0 && action != null)
+        ((ulong) n).times (action);
     }
 
     /// <summary>
@@ -1432,13 +1431,13 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="ulong"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <see cref="Action"/> delegate that references the method(s) to execute.
     /// </param>
-    public static void Times (this ulong n, Action act)
+    public static void Times (this ulong n, Action action)
     {
-      if (n > 0 && act != null)
-        n.times (act);
+      if (n > 0 && action != null)
+        n.times (action);
     }
 
     /// <summary>
@@ -1447,16 +1446,16 @@ namespace WebSocketSharp
     /// <param name="n">
     /// An <see cref="int"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <c>Action&lt;int&gt;</c> delegate that references the method(s) to execute.
     /// An <see cref="int"/> parameter to pass to the method(s) is the zero-based count
     /// of iteration.
     /// </param>
-    public static void Times (this int n, Action<int> act)
+    public static void Times (this int n, Action<int> action)
     {
-      if (n > 0 && act != null)
+      if (n > 0 && action != null)
         for (int i = 0; i < n; i++)
-          act (i);
+          action (i);
     }
 
     /// <summary>
@@ -1465,16 +1464,16 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="long"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <c>Action&lt;long&gt;</c> delegate that references the method(s) to execute.
     /// A <see cref="long"/> parameter to pass to the method(s) is the zero-based count
     /// of iteration.
     /// </param>
-    public static void Times (this long n, Action<long> act)
+    public static void Times (this long n, Action<long> action)
     {
-      if (n > 0 && act != null)
+      if (n > 0 && action != null)
         for (long i = 0; i < n; i++)
-          act (i);
+          action (i);
     }
 
     /// <summary>
@@ -1483,16 +1482,16 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="uint"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <c>Action&lt;uint&gt;</c> delegate that references the method(s) to execute.
     /// A <see cref="uint"/> parameter to pass to the method(s) is the zero-based count
     /// of iteration.
     /// </param>
-    public static void Times (this uint n, Action<uint> act)
+    public static void Times (this uint n, Action<uint> action)
     {
-      if (n > 0 && act != null)
+      if (n > 0 && action != null)
         for (uint i = 0; i < n; i++)
-          act (i);
+          action (i);
     }
 
     /// <summary>
@@ -1501,52 +1500,52 @@ namespace WebSocketSharp
     /// <param name="n">
     /// A <see cref="ulong"/> is the number of times to execute.
     /// </param>
-    /// <param name="act">
+    /// <param name="action">
     /// An <c>Action&lt;ulong&gt;</c> delegate that references the method(s) to execute.
     /// A <see cref="ulong"/> parameter to pass to this method(s) is the zero-based count
     /// of iteration.
     /// </param>
-    public static void Times (this ulong n, Action<ulong> act)
+    public static void Times (this ulong n, Action<ulong> action)
     {
-      if (n > 0 && act != null)
+      if (n > 0 && action != null)
         for (ulong i = 0; i < n; i++)
-          act (i);
+          action (i);
     }
 
     /// <summary>
     /// Converts the specified array of <see cref="byte"/> to the specified type data.
     /// </summary>
     /// <returns>
-    /// A T converted from <paramref name="src"/>, or a default value of T if
-    /// <paramref name="src"/> is an empty array of <see cref="byte"/> or if the
+    /// A T converted from <paramref name="source"/>, or a default value of T if
+    /// <paramref name="source"/> is an empty array of <see cref="byte"/> or if the
     /// type of T isn't <see cref="bool"/>, <see cref="char"/>, <see cref="double"/>,
     /// <see cref="float"/>, <see cref="int"/>, <see cref="long"/>, <see cref="short"/>,
     /// <see cref="uint"/>, <see cref="ulong"/>, or <see cref="ushort"/>.
     /// </returns>
-    /// <param name="src">
+    /// <param name="source">
     /// An array of <see cref="byte"/> to convert.
     /// </param>
-    /// <param name="srcOrder">
+    /// <param name="sourceOrder">
     /// One of the <see cref="ByteOrder"/> enum values, indicates the byte order of
-    /// <paramref name="src"/>.
+    /// <paramref name="source"/>.
     /// </param>
     /// <typeparam name="T">
     /// The type of the return. The T must be a value type.
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="src"/> is <see langword="null"/>.
+    /// <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
-    public static T To<T> (this byte[] src, ByteOrder srcOrder)
+    public static T To<T> (this byte[] source, ByteOrder sourceOrder)
       where T : struct
     {
-      if (src == null)
-        throw new ArgumentNullException ("src");
+      if (source == null)
+        throw new ArgumentNullException ("source");
 
-      if (src.Length == 0)
+      if (source.Length == 0)
         return default (T);
 
       var type = typeof (T);
-      var buff = src.ToHostOrder (srcOrder);
+      var buff = source.ToHostOrder (sourceOrder);
 
       return type == typeof (Boolean)
              ? (T)(object) BitConverter.ToBoolean (buff, 0)
@@ -1624,26 +1623,26 @@ namespace WebSocketSharp
     /// Converts the order of the specified array of <see cref="byte"/> to the host byte order.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> converted from <paramref name="src"/>.
+    /// An array of <see cref="byte"/> converted from <paramref name="source"/>.
     /// </returns>
-    /// <param name="src">
+    /// <param name="source">
     /// An array of <see cref="byte"/> to convert.
     /// </param>
-    /// <param name="srcOrder">
+    /// <param name="sourceOrder">
     /// One of the <see cref="ByteOrder"/> enum values, indicates the byte order of
-    /// <paramref name="src"/>.
+    /// <paramref name="source"/>.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="src"/> is <see langword="null"/>.
+    /// <paramref name="source"/> is <see langword="null"/>.
     /// </exception>
-    public static byte[] ToHostOrder (this byte[] src, ByteOrder srcOrder)
+    public static byte[] ToHostOrder (this byte[] source, ByteOrder sourceOrder)
     {
-      if (src == null)
-        throw new ArgumentNullException ("src");
+      if (source == null)
+        throw new ArgumentNullException ("source");
 
-      return src.Length > 1 && !srcOrder.IsHostOrder ()
-             ? src.Reverse ()
-             : src;
+      return source.Length > 1 && !sourceOrder.IsHostOrder ()
+             ? source.Reverse ()
+             : source;
     }
 
     /// <summary>
@@ -1717,9 +1716,9 @@ namespace WebSocketSharp
     /// </param>
     public static string UrlDecode (this string value)
     {
-      return value == null || value.Length == 0
-             ? value
-             : HttpUtility.UrlDecode (value);
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlDecode (value)
+             : value;
     }
 
     /// <summary>
@@ -1734,9 +1733,9 @@ namespace WebSocketSharp
     /// </param>
     public static string UrlEncode (this string value)
     {
-      return value == null || value.Length == 0
-             ? value
-             : HttpUtility.UrlEncode (value);
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlEncode (value)
+             : value;
     }
 
     /// <summary>

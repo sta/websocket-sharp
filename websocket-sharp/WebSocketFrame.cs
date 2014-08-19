@@ -108,11 +108,11 @@ namespace WebSocketSharp
       }
       else if (len < 0x010000) {
         _payloadLength = (byte) 126;
-        _extPayloadLength = ((ushort) len).ToByteArrayInternally (ByteOrder.Big);
+        _extPayloadLength = ((ushort) len).InternalToByteArray (ByteOrder.Big);
       }
       else {
         _payloadLength = (byte) 127;
-        _extPayloadLength = len.ToByteArrayInternally (ByteOrder.Big);
+        _extPayloadLength = len.InternalToByteArray (ByteOrder.Big);
       }
 
       if (mask == Mask.Mask) {
@@ -640,7 +640,7 @@ Extended Payload Length: {7}
         header = (header << 4) + (int) _opcode;
         header = (header << 1) + (int) _mask;
         header = (header << 7) + (int) _payloadLength;
-        buff.Write (((ushort) header).ToByteArrayInternally (ByteOrder.Big), 0, 2);
+        buff.Write (((ushort) header).InternalToByteArray (ByteOrder.Big), 0, 2);
 
         if (_payloadLength > 125)
           buff.Write (_extPayloadLength, 0, _extPayloadLength.Length);

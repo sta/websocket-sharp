@@ -295,7 +295,7 @@ namespace WebSocketSharp.Server
 
       if (host.Sessions.State == ServerState.Start)
         host.Sessions.Stop (
-          ((ushort) CloseStatusCode.Away).ToByteArrayInternally (ByteOrder.Big), true);
+          ((ushort) CloseStatusCode.Away).InternalToByteArray (ByteOrder.Big), true);
 
       return true;
     }
