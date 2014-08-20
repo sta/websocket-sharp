@@ -42,8 +42,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-	  private string _message;
-	  private Exception _exception;
+    private string _message;
+    private Exception _exception;
 
     #endregion
 
@@ -75,9 +75,9 @@ namespace WebSocketSharp
 	/// Gets the exception.
 	/// </summary>
 	public Exception Exception {
-		get {
-			return _exception;
-		}
+      get {
+        return _exception;
+      }
 	}
 
     #endregion
