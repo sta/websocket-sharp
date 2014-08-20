@@ -42,21 +42,23 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _message;
+	  private string _message;
+	  private Exception _exception;
 
     #endregion
 
     #region Internal Constructors
 
-    internal ErrorEventArgs (string message)
+    internal ErrorEventArgs (string message, Exception exc = null)
     {
       _message = message;
+      _exception = exc;
     }
 
     #endregion
 
     #region Public Properties
-
+	  
     /// <summary>
     /// Gets the error message.
     /// </summary>
@@ -68,6 +70,15 @@ namespace WebSocketSharp
         return _message;
       }
     }
+
+	/// <summary>
+	/// Gets the exception.
+	/// </summary>
+	public Exception Exception {
+		get {
+			return _exception;
+		}
+	}
 
     #endregion
   }

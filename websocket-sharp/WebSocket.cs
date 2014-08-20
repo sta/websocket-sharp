@@ -604,7 +604,7 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while OnClose.");
+        error ("An exception has occurred while OnClose.", ex);
       }
     }
 
@@ -856,10 +856,10 @@ namespace WebSocketSharp
         _messageEventQueue.Enqueue (e);
     }
 
-    private void error (string message)
+    private void error (string message, Exception exc = null)
     {
       try {
-        OnError.Emit (this, new ErrorEventArgs (message));
+        OnError.Emit (this, new ErrorEventArgs (message, exc));
       }
       catch (Exception ex) {
         _logger.Fatal ("An exception has occurred while OnError:\n" + ex.ToString ());
@@ -931,7 +931,7 @@ namespace WebSocketSharp
       else
         _logger.Error (reason);
 
-      error (message ?? code.GetMessage ());
+      error (message ?? code.GetMessage (), exception);
       if (_readyState == WebSocketState.Connecting && !_client)
         Close (HttpStatusCode.BadRequest);
       else
@@ -1068,7 +1068,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          error ("An exception has occurred while sending a data.", ex);
         }
         finally {
           if (compressed)
@@ -1155,7 +1155,7 @@ namespace WebSocketSharp
           }
           catch (Exception ex) {
             _logger.Fatal (ex.ToString ());
-            error ("An exception has occurred while callback.");
+            error ("An exception has occurred while callback.", ex);
           }
         },
         null);
@@ -2046,7 +2046,7 @@ namespace WebSocketSharp
         },
         ex => {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          error ("An exception has occurred while sending a data.", ex);
         });
     }
 
