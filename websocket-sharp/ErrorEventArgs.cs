@@ -43,20 +43,27 @@ namespace WebSocketSharp
     #region Private Fields
 
     private string _message;
+    private Exception _exception;
 
     #endregion
 
     #region Internal Constructors
 
     internal ErrorEventArgs (string message)
+      : this (message, null)
+    {
+    }
+
+    internal ErrorEventArgs (string message, Exception exception)
     {
       _message = message;
+      _exception = exception;
     }
 
     #endregion
 
     #region Public Properties
-
+  
     /// <summary>
     /// Gets the error message.
     /// </summary>
@@ -66,6 +73,18 @@ namespace WebSocketSharp
     public string Message {
       get {
         return _message;
+      }
+    }
+
+    /// <summary>
+    /// Gets the exception that caused the error.
+    /// </summary>
+    /// A <see cref="Exception"/> instance that represents the cause of the error,
+    /// or <see langword="null"/> if the error isn't due to an exception.
+    /// </value>
+    public Exception Exception {
+      get {
+        return _exception;
       }
     }
 
