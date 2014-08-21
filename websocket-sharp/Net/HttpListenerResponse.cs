@@ -91,7 +91,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
-    internal bool CloseConnection {
+    internal bool ConnectionClose {
       get {
         return _headers["Connection"] == "close";
       }
@@ -524,7 +524,8 @@ namespace WebSocketSharp.Net
       if (_contentType != null) {
         var contentType = _contentEncoding != null &&
                           _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1
-                          ? _contentType + "; charset=" + _contentEncoding.WebName
+                          ? String.Format (
+                              "{0}; charset={1}", _contentType, _contentEncoding.WebName)
                           : _contentType;
 
         _headers.SetInternally ("Content-Type", contentType, true);
@@ -547,11 +548,12 @@ namespace WebSocketSharp.Net
           _headers.SetInternally ("Content-Length", _contentLength.ToString (provider), true);
       }
 
-      var ver = _context.Request.ProtocolVersion;
-      if (!_contentLengthWasSet && !_chunked && ver > HttpVersion.Version10)
+      var reqVer = _context.Request.ProtocolVersion;
+      if (!_contentLengthWasSet && !_chunked && reqVer > HttpVersion.Version10)
         _chunked = true;
-        
-      /* Apache forces closing the connection for these status codes:
+
+      /*
+       * Apache forces closing the connection for these status codes:
        * - HttpStatusCode.BadRequest            400
        * - HttpStatusCode.RequestTimeout        408
        * - HttpStatusCode.LengthRequired        411
@@ -593,7 +595,7 @@ namespace WebSocketSharp.Net
         _headers.SetInternally (
           "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 
-        if (_context.Request.ProtocolVersion <= HttpVersion.Version10)
+        if (reqVer < HttpVersion.Version11)
           _headers.SetInternally ("Connection", "keep-alive", true);
       }
 
@@ -607,17 +609,15 @@ namespace WebSocketSharp.Net
       var enc = _contentEncoding ?? Encoding.Default;
       var writer = new StreamWriter (stream, enc, 256);
       writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
-
-      var headers = _headers.ToStringMultiValue (true);
-      writer.Write (headers);
+      writer.Write (_headers.ToStringMultiValue (true));
       writer.Flush ();
 
-      var preamble = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
+      // Assumes that the stream was at position 0.
+      stream.Position = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
+
       if (_outputStream == null)
         _outputStream = _context.Connection.GetResponseStream ();
 
-      // Assumes that the stream was at position 0.
-      stream.Position = preamble;
       _headersWereSent = true;
     }
 
