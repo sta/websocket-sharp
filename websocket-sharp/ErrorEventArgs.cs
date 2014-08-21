@@ -26,6 +26,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Frank Razenberg <frank@zzattack.org>
+ */
+#endregion
+
 using System;
 
 namespace WebSocketSharp
@@ -42,8 +49,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _message;
     private Exception _exception;
+    private string    _message;
 
     #endregion
 
@@ -63,7 +70,20 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Properties
-  
+
+    /// <summary>
+    /// Gets the exception that caused the error.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Exception"/> instance that represents the cause of the error,
+    /// or <see langword="null"/> if the error isn't due to an exception.
+    /// </value>
+    public Exception Exception {
+      get {
+        return _exception;
+      }
+    }
+
     /// <summary>
     /// Gets the error message.
     /// </summary>
@@ -73,18 +93,6 @@ namespace WebSocketSharp
     public string Message {
       get {
         return _message;
-      }
-    }
-
-    /// <summary>
-    /// Gets the exception that caused the error.
-    /// </summary>
-    /// A <see cref="Exception"/> instance that represents the cause of the error,
-    /// or <see langword="null"/> if the error isn't due to an exception.
-    /// </value>
-    public Exception Exception {
-      get {
-        return _exception;
       }
     }
 

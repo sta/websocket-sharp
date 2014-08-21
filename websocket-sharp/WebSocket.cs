@@ -32,6 +32,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Frank Razenberg <frank@zzattack.org>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -856,10 +863,15 @@ namespace WebSocketSharp
         _messageEventQueue.Enqueue (e);
     }
 
-    private void error (string message, Exception exc = null)
+    private void error (string message)
+    {
+      error (message, null);
+    }
+
+    private void error (string message, Exception exception)
     {
       try {
-        OnError.Emit (this, new ErrorEventArgs (message, exc));
+        OnError.Emit (this, new ErrorEventArgs (message, exception));
       }
       catch (Exception ex) {
         _logger.Fatal ("An exception has occurred while OnError:\n" + ex.ToString ());
