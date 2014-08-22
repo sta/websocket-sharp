@@ -41,9 +41,18 @@ namespace WebSocketSharp
   /// Contains the event data associated with a <see cref="WebSocket.OnError"/> event.
   /// </summary>
   /// <remarks>
-  /// A <see cref="WebSocket.OnError"/> event occurs when the <see cref="WebSocket"/> gets an error.
-  /// If you would like to get the error message, you should access the <see cref="Message"/>
-  /// property.
+  ///   <para>
+  ///   A <see cref="WebSocket.OnError"/> event occurs when the <see cref="WebSocket"/> gets
+  ///   an error.
+  ///   </para>
+  ///   <para>
+  ///   If you would like to get the error message, you should access
+  ///   the <see cref="ErrorEventArgs.Message"/> property.
+  ///   </para>
+  ///   <para>
+  ///   And if the error is due to an exception, you can get the <see cref="System.Exception"/>
+  ///   instance by accessing the <see cref="ErrorEventArgs.Exception"/> property.
+  ///   </para>
   /// </remarks>
   public class ErrorEventArgs : EventArgs
   {
@@ -72,10 +81,10 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets the exception that caused the error.
+    /// Gets the <see cref="System.Exception"/> instance that caused the error.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Exception"/> instance that represents the cause of the error,
+    /// An <see cref="System.Exception"/> instance that represents the cause of the error,
     /// or <see langword="null"/> if the error isn't due to an exception.
     /// </value>
     public Exception Exception {
