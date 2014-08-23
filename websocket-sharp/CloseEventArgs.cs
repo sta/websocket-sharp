@@ -35,9 +35,14 @@ namespace WebSocketSharp
   /// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
   /// </summary>
   /// <remarks>
-  /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been closed.
-  /// If you would like to get the reason for the close, you should access the <see cref="Code"/> or
-  /// <see cref="Reason"/> property.
+  ///   <para>
+  ///   A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been
+  ///   closed.
+  ///   </para>
+  ///   <para>
+  ///   If you would like to get the reason for the close, you should access
+  ///   the <see cref="CloseEventArgs.Code"/> or <see cref="CloseEventArgs.Reason"/> property.
+  ///   </para>
   /// </remarks>
   public class CloseEventArgs : EventArgs
   {
