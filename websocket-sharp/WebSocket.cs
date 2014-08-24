@@ -922,7 +922,7 @@ namespace WebSocketSharp
       var e = frame.IsCompressed
               ? new MessageEventArgs (
                   frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-              : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+              : new MessageEventArgs (frame);
 
       enqueueToMessageEventQueue (e);
       return true;
