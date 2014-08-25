@@ -840,6 +840,14 @@ namespace WebSocketSharp.Server
 
       _state = ServerState.Stop;
     }
+    
+    /// <summary>
+    /// Allows the server to be bound to an address that is already in use.
+    /// </summary>
+    public void SetReuseAddress()
+    {
+      _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+    }
 
     #endregion
   }
