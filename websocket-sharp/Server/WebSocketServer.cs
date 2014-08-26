@@ -71,6 +71,7 @@ namespace WebSocketSharp.Server
     private volatile ServerState               _state;
     private object                             _sync;
     private Uri                                _uri;
+    private bool                               _reuseAddress;
 
     #endregion
 
@@ -451,6 +452,39 @@ namespace WebSocketSharp.Server
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the server is allowed to be bound to an address
+    /// that is already in use.
+    /// </summary>
+    /// <remarks>
+    /// If you would like to resolve to wait for socket <c>TIME_WAIT</c>, you should set this
+    /// property to <c>true</c>.
+    /// </remarks>
+    /// <value>
+    /// <c>true</c> if the server is allowed to be bound to an address that is already in use;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool ReuseAddress
+    {
+        get
+        {
+            return _reuseAddress;
+        }
+
+        set
+        {
+            if (!canSet("ReuseAddress"))
+                return;
+
+            if (value ^ _reuseAddress)
+            {
+                _listener.Server.SetSocketOption(
+                  SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, value);
+
+                _reuseAddress = value;
+            }
+        }
+    }
     #endregion
 
     #region Private Methods
@@ -840,15 +874,6 @@ namespace WebSocketSharp.Server
 
       _state = ServerState.Stop;
     }
-    
-    /// <summary>
-    /// Allows the server to be bound to an address that is already in use.
-    /// </summary>
-    public void SetReuseAddress()
-    {
-      _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
-    }
-
     #endregion
   }
 }
