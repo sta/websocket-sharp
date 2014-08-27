@@ -733,6 +733,7 @@ namespace WebSocketSharp
         }
 
         try {
+          _readyState = WebSocketState.Connecting;
           if (_client ? doHandshake () : acceptHandshake ()) {
             _readyState = WebSocketState.Open;
             return true;
