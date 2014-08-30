@@ -29,7 +29,7 @@
 #region Contributors
 /*
  * Contributors:
- *   Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
+ * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  */
 #endregion
 
@@ -40,8 +40,8 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties used for accessing the information in a WebSocket
-  /// service provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// Exposes the methods and properties used to access the information in a WebSocket service
+  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketServiceHost class is an abstract class.
@@ -69,7 +69,9 @@ namespace WebSocketSharp.Server
     /// <c>true</c> if the WebSocket service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
-    public abstract bool KeepClean { get; set; }
+    public abstract bool KeepClean {
+      get; set;
+    }
 
     /// <summary>
     /// Gets the path to the WebSocket service.
@@ -77,7 +79,9 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="string"/> that represents the absolute path to the WebSocket service.
     /// </value>
-    public abstract string Path { get; }
+    public abstract string Path {
+      get;
+    }
 
     /// <summary>
     /// Gets the access to the sessions in the WebSocket service.
@@ -85,7 +89,9 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
     /// </value>
-    public abstract WebSocketSessionManager Sessions { get; }
+    public abstract WebSocketSessionManager Sessions {
+      get;
+    }
 
     /// <summary>
     /// Gets the type of the WebSocket service.
@@ -93,7 +99,9 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="System.Type"/> that represents the type of the WebSocket service.
     /// </value>
-    public abstract Type Type { get; }
+    public abstract Type Type {
+      get;
+    }
 
     #endregion
 
@@ -101,8 +109,7 @@ namespace WebSocketSharp.Server
 
     internal void StartSession (WebSocketContext context)
     {
-      var session = CreateSession ();
-      session.Start (context, Sessions);
+      CreateSession ().Start (context, Sessions);
     }
 
     #endregion
@@ -125,7 +132,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private Func<T>                 _constructor;
+    private Func<T>                 _initializer;
     private string                  _path;
     private WebSocketSessionManager _sessions;
 
@@ -133,10 +140,10 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (string path, Func<T> constructor, Logger logger)
+    internal WebSocketServiceHost (string path, Func<T> initializer, Logger logger)
     {
       _path = HttpUtility.UrlDecode (path).TrimEndSlash ();
-      _constructor = constructor;
+      _initializer = initializer;
       _sessions = new WebSocketSessionManager (logger);
     }
 
@@ -178,7 +185,7 @@ namespace WebSocketSharp.Server
 
     protected override WebSocketService CreateSession ()
     {
-      return _constructor ();
+      return _initializer ();
     }
 
     #endregion
