@@ -52,7 +52,7 @@ namespace WebSocketSharp.Server
   /// Provides a WebSocket protocol server.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServer class provides the multi WebSocket service.
+  /// The WebSocketServer class can provide multiple WebSocket services.
   /// </remarks>
   public class WebSocketServer
   {
@@ -86,7 +86,7 @@ namespace WebSocketSharp.Server
     /// on port 80.
     /// </remarks>
     public WebSocketServer ()
-      : this (80)
+      : this (System.Net.IPAddress.Any, 80, false)
     {
     }
 
@@ -110,7 +110,7 @@ namespace WebSocketSharp.Server
     /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     public WebSocketServer (int port)
-      : this (System.Net.IPAddress.Any, port)
+      : this (System.Net.IPAddress.Any, port, port == 443)
     {
     }
 
@@ -302,8 +302,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (!canSet ("AuthenticationSchemes"))
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
           return;
+        }
 
         _authSchemes = value;
       }
@@ -322,8 +325,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (!canSet ("Certificate"))
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
           return;
+        }
 
         _certificate = value;
       }
@@ -358,8 +364,8 @@ namespace WebSocketSharp.Server
     /// periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive sessions every 60 seconds; otherwise,
-    /// <c>false</c>. The default value is <c>true</c>.
+    /// <c>true</c> if the server cleans up the inactive sessions every 60 seconds;
+    /// otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {
       get {
@@ -413,8 +419,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (!canSet ("Realm"))
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
           return;
+        }
 
         _realm = value;
       }
@@ -438,8 +447,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (!canSet ("ReuseAddress"))
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
           return;
+        }
 
         if (value ^ _reuseAddress) {
           _listener.Server.SetSocketOption (
@@ -465,8 +477,11 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (!canSet ("UserCredentialsFinder"))
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
           return;
+        }
 
         _credentialsFinder = value;
       }
@@ -537,28 +552,15 @@ namespace WebSocketSharp.Server
         }
 
         context.SetUser (scheme, realm, credFinder);
-        if (context.IsAuthenticated)
-          return true;
+        if (!context.IsAuthenticated) {
+          context.SendAuthenticationChallenge (chal);
+          return auth ();
+        }
 
-        context.SendAuthenticationChallenge (chal);
-        return auth ();
+        return true;
       };
 
       return auth ();
-    }
-
-    private bool canSet (string property)
-    {
-      if (_state == ServerState.Start || _state == ServerState.ShuttingDown) {
-        _logger.Error (
-          String.Format (
-            "Set operation of {0} isn't available because the server has already started.",
-            property));
-
-        return false;
-      }
-
-      return true;
     }
 
     private string checkIfCertificateExists ()
@@ -703,8 +705,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method converts <paramref name="path"/> to URL-decoded string and removes <c>'/'</c>
-    ///   from tail end of <paramref name="path"/>.
+    ///   This method converts <paramref name="path"/> to URL-decoded string and
+    ///   removes <c>'/'</c> from tail end of <paramref name="path"/>.
     ///   </para>
     ///   <para>
     ///   <paramref name="initializer"/> returns an initialized specified typed
@@ -745,12 +747,12 @@ namespace WebSocketSharp.Server
     /// Removes the WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
-    /// This method converts <paramref name="path"/> to URL-decoded string and removes <c>'/'</c>
-    /// from tail end of <paramref name="path"/>.
+    /// This method converts <paramref name="path"/> to URL-decoded string and
+    /// removes <c>'/'</c> from tail end of <paramref name="path"/>.
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the WebSocket service is successfully found and removed; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the WebSocket service is successfully found and removed;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.

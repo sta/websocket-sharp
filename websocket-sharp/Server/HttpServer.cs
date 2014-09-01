@@ -51,7 +51,7 @@ namespace WebSocketSharp.Server
   /// Provides a simple HTTP server that allows to accept the WebSocket connection requests.
   /// </summary>
   /// <remarks>
-  /// The HttpServer class can provide the multi WebSocket services.
+  /// The HttpServer class can provide multiple WebSocket services.
   /// </remarks>
   public class HttpServer
   {
@@ -480,12 +480,12 @@ namespace WebSocketSharp.Server
                                 ? OnPatch
                                 : null;
 
-      if (evt != null) {
+      if (evt != null)
         evt (this, new HttpRequestEventArgs (context));
-        return;
-      }
+      else
+        context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
 
-      context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
+      context.Response.Close ();
     }
 
     private void processRequestAsync (HttpListenerContext context)
@@ -504,7 +504,6 @@ namespace WebSocketSharp.Server
             }
 
             processHttpRequest (context);
-            context.Response.Close ();
           }
           catch (Exception ex) {
             _logger.Fatal (ex.ToString ());
