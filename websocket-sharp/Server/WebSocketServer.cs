@@ -147,10 +147,9 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out _uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var host = _uri.DnsSafeHost;
-      _address = host.ToIPAddress ();
+      _address = _uri.DnsSafeHost.ToIPAddress ();
       if (_address == null || !_address.IsLocal ())
-        throw new ArgumentException ("The host part isn't a local host name: " + host, "url");
+        throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
 
       _port = _uri.Port;
       _secure = _uri.Scheme == "wss";

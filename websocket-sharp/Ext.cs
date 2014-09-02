@@ -242,7 +242,7 @@ namespace WebSocketSharp
     internal static string CheckIfValidCloseStatusCode (this ushort code)
     {
       return !code.IsCloseStatusCode ()
-             ? "Invalid close status code."
+             ? "An invalid close status code."
              : null;
     }
 
@@ -289,9 +289,9 @@ namespace WebSocketSharp
       return path == null || path.Length == 0
              ? "'path' is null or empty."
              : path[0] != '/'
-               ? "'path' isn't absolute path."
+               ? "'path' isn't an absolute path."
                : path.IndexOfAny (new[] { '?', '#' }) > -1
-                 ? "'path' contains either or both query and fragment components."
+                 ? "'path' includes either or both query and fragment components."
                  : null;
     }
 
@@ -834,13 +834,13 @@ namespace WebSocketSharp
     {
       result = null;
       if (uriString.Length == 0) {
-        message = "Empty string.";
+        message = "An empty string.";
         return false;
       }
 
       var uri = uriString.ToUri ();
       if (!uri.IsAbsoluteUri) {
-        message = "Not absolute URI: " + uriString;
+        message = "Not an absolute URI: " + uriString;
         return false;
       }
 
@@ -851,7 +851,7 @@ namespace WebSocketSharp
       }
 
       if (uri.Fragment.Length > 0) {
-        message = "Contains the fragment component: " + uriString;
+        message = "Includes the fragment component: " + uriString;
         return false;
       }
 
@@ -863,7 +863,7 @@ namespace WebSocketSharp
         }
 
         if ((schm == "ws" && port == 443) || (schm == "wss" && port == 80)) {
-          message = "Invalid pair of scheme and port: " + uriString;
+          message = "An invalid pair of scheme and port: " + uriString;
           return false;
         }
       }
@@ -1309,7 +1309,7 @@ namespace WebSocketSharp
         throw new ArgumentNullException ("protocol");
 
       if (protocol.Length == 0)
-        throw new ArgumentException ("Empty string.", "protocol");
+        throw new ArgumentException ("An empty string.", "protocol");
 
       return request.Headers.Contains ("Upgrade", protocol) &&
              request.Headers.Contains ("Connection", "Upgrade");
