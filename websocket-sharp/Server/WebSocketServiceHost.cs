@@ -69,9 +69,7 @@ namespace WebSocketSharp.Server
     /// <c>true</c> if the WebSocket service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
-    public abstract bool KeepClean {
-      get; set;
-    }
+    public abstract bool KeepClean { get; set; }
 
     /// <summary>
     /// Gets the path to the WebSocket service.
@@ -79,9 +77,7 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="string"/> that represents the absolute path to the WebSocket service.
     /// </value>
-    public abstract string Path {
-      get;
-    }
+    public abstract string Path { get; }
 
     /// <summary>
     /// Gets the access to the sessions in the WebSocket service.
@@ -89,9 +85,7 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
     /// </value>
-    public abstract WebSocketSessionManager Sessions {
-      get;
-    }
+    public abstract WebSocketSessionManager Sessions { get; }
 
     /// <summary>
     /// Gets the type of the WebSocket service.
@@ -99,9 +93,7 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="System.Type"/> that represents the type of the WebSocket service.
     /// </value>
-    public abstract Type Type {
-      get;
-    }
+    public abstract Type Type { get; }
 
     #endregion
 
