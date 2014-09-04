@@ -452,12 +452,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        if (value ^ _reuseAddress) {
-          _listener.Server.SetSocketOption (
-            SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, value);
-
-          _reuseAddress = value;
-        }
+        _reuseAddress = value;
       }
     }
 
@@ -778,6 +773,10 @@ namespace WebSocketSharp.Server
           _logger.Error (String.Format ("{0}\nstate: {1}\nsecure: {2}", msg, _state, _secure));
           return;
         }
+
+        if (_reuseAddress)
+          _listener.Server.SetSocketOption (
+            SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
         _services.Start ();
         _listener.Start ();

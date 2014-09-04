@@ -39,6 +39,9 @@ namespace Example2
       // Not to remove inactive clients periodically
       //wssv.KeepClean = false;
 
+      // To resolve to wait for socket in TIME_WAIT state
+      //wssv.ReuseAddress = true;
+
       // Adding WebSocket services
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
