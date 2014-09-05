@@ -574,25 +574,6 @@ namespace WebSocketSharp.Server
       _sync = new object ();
     }
 
-    private void processRequestAsync (TcpClient tcpClient)
-    {
-      ThreadPool.QueueUserWorkItem (
-        state => {
-          try {
-            var context = tcpClient.GetWebSocketContext (null, _secure, _certificate, _logger);
-            if (_authSchemes != AuthenticationSchemes.Anonymous &&
-                !authenticateRequest (_authSchemes, context))
-              return;
-
-            processWebSocketRequest (context);
-          }
-          catch (Exception ex) {
-            _logger.Fatal (ex.ToString ());
-            tcpClient.Close ();
-          }
-        });
-    }
-
     private void processWebSocketRequest (TcpListenerWebSocketContext context)
     {
       var uri = context.RequestUri;
@@ -625,7 +606,22 @@ namespace WebSocketSharp.Server
     {
       while (true) {
         try {
-          processRequestAsync (_listener.AcceptTcpClient ());
+          var cl = _listener.AcceptTcpClient ();
+          ThreadPool.QueueUserWorkItem (
+            state => {
+              try {
+                var ctx = cl.GetWebSocketContext (null, _secure, _certificate, _logger);
+                if (_authSchemes != AuthenticationSchemes.Anonymous &&
+                    !authenticateRequest (_authSchemes, ctx))
+                  return;
+
+                processWebSocketRequest (ctx);
+              }
+              catch (Exception ex) {
+                _logger.Fatal (ex.ToString ());
+                cl.Close ();
+              }
+            });
         }
         catch (SocketException ex) {
           _logger.Warn ("Receiving has been stopped.\nreason: " + ex.Message);
@@ -643,12 +639,17 @@ namespace WebSocketSharp.Server
 
     private void startReceiving ()
     {
-      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest)); 
+      if (_reuseAddress)
+        _listener.Server.SetSocketOption (
+          SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+      _listener.Start ();
+      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest));
       _receiveRequestThread.IsBackground = true;
       _receiveRequestThread.Start ();
     }
 
-    private void stopListener (int millisecondsTimeout)
+    private void stopReceiving (int millisecondsTimeout)
     {
       _listener.Stop ();
       _receiveRequestThread.Join (millisecondsTimeout);
@@ -774,12 +775,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        if (_reuseAddress)
-          _listener.Server.SetSocketOption (
-            SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-
         _services.Start ();
-        _listener.Start ();
         startReceiving ();
 
         _state = ServerState.Start;
@@ -801,7 +797,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      stopListener (5000);
+      stopReceiving (5000);
       _services.Stop (new byte[0], true);
 
       _state = ServerState.Stop;
@@ -835,7 +831,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      stopListener (5000);
+      stopReceiving (5000);
       _services.Stop (data, !code.IsReserved ());
 
       _state = ServerState.Stop;
@@ -867,7 +863,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      stopListener (5000);
+      stopReceiving (5000);
       _services.Stop (data, !code.IsReserved ());
 
       _state = ServerState.Stop;
