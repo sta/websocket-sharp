@@ -675,53 +675,54 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds the specified typed WebSocket service with the specified <paramref name="path"/>.
+    /// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
     /// </summary>
     /// <remarks>
-    /// This method converts <paramref name="path"/> to URL-decoded string and removes <c>'/'</c>
-    /// from tail end of <paramref name="path"/>.
+    /// This method converts <paramref name="path"/> to URL-decoded string,
+    /// and removes <c>'/'</c> from tail end of <paramref name="path"/>.
     /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket service to add.
+    /// A <see cref="string"/> that represents the absolute path to the service to add.
     /// </param>
-    /// <typeparam name="TWithNew">
-    /// The type of the WebSocket service. The TWithNew must inherit
-    /// the <see cref="WebSocketService"/> class and must have a public parameterless constructor.
+    /// <typeparam name="TBehaviorWithNew">
+    /// The type of the behavior of the service to add. The TBehaviorWithNew must inherit
+    /// the <see cref="WebSocketBehavior"/> class, and must have a public parameterless
+    /// constructor.
     /// </typeparam>
-    public void AddWebSocketService<TWithNew> (string path)
-      where TWithNew : WebSocketService, new ()
+    public void AddWebSocketService<TBehaviorWithNew> (string path)
+      where TBehaviorWithNew : WebSocketBehavior, new ()
     {
-      AddWebSocketService<TWithNew> (path, () => new TWithNew ());
+      AddWebSocketService<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
     }
 
     /// <summary>
-    /// Adds the specified typed WebSocket service with the specified <paramref name="path"/> and
-    /// <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior, <paramref name="path"/>,
+    /// and <paramref name="initializer"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method converts <paramref name="path"/> to URL-decoded string and
-    ///   removes <c>'/'</c> from tail end of <paramref name="path"/>.
+    ///   This method converts <paramref name="path"/> to URL-decoded string,
+    ///   and removes <c>'/'</c> from tail end of <paramref name="path"/>.
     ///   </para>
     ///   <para>
     ///   <paramref name="initializer"/> returns an initialized specified typed
-    ///   <see cref="WebSocketService"/> instance.
+    ///   <see cref="WebSocketBehavior"/> instance.
     ///   </para>
     /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket service to add.
+    /// A <see cref="string"/> that represents the absolute path to the service to add.
     /// </param>
     /// <param name="initializer">
     /// A Func&lt;T&gt; delegate that references the method used to initialize a new specified
-    /// typed <see cref="WebSocketService"/> instance (a new <see cref="IWebSocketSession"/>
+    /// typed <see cref="WebSocketBehavior"/> instance (a new <see cref="IWebSocketSession"/>
     /// instance).
     /// </param>
-    /// <typeparam name="T">
-    /// The type of the WebSocket service. The T must inherit the <see cref="WebSocketService"/>
-    /// class.
+    /// <typeparam name="TBehavior">
+    /// The type of the behavior of the service to add. The TBehavior must inherit
+    /// the <see cref="WebSocketBehavior"/> class.
     /// </typeparam>
-    public void AddWebSocketService<T> (string path, Func<T> initializer)
-      where T : WebSocketService
+    public void AddWebSocketService<TBehavior> (string path, Func<TBehavior> initializer)
+      where TBehavior : WebSocketBehavior
     {
       var msg = path.CheckIfValidServicePath () ??
                 (initializer == null ? "'initializer' is null." : null);
@@ -731,7 +732,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var host = new WebSocketServiceHost<T> (path, initializer, _logger);
+      var host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
       if (!KeepClean)
         host.KeepClean = false;
 
@@ -742,15 +743,14 @@ namespace WebSocketSharp.Server
     /// Removes the WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
-    /// This method converts <paramref name="path"/> to URL-decoded string and
-    /// removes <c>'/'</c> from tail end of <paramref name="path"/>.
+    /// This method converts <paramref name="path"/> to URL-decoded string,
+    /// and removes <c>'/'</c> from tail end of <paramref name="path"/>.
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the WebSocket service is successfully found and removed;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the service is successfully found and removed; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket service to find.
+    /// A <see cref="string"/> that represents the absolute path to the service to find.
     /// </param>
     public bool RemoveWebSocketService (string path)
     {

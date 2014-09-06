@@ -4,7 +4,7 @@ using WebSocketSharp.Server;
 
 namespace Example2
 {
-  public class Echo : WebSocketService
+  public class Echo : WebSocketBehavior
   {
     protected override void OnMessage (MessageEventArgs e)
     {

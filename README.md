@@ -243,7 +243,7 @@ using WebSocketSharp.Server;
 
 namespace Example
 {
-  public class Laputa : WebSocketService
+  public class Laputa : WebSocketBehavior
   {
     protected override void OnMessage (MessageEventArgs e)
     {
@@ -277,11 +277,11 @@ Required namespace.
 using WebSocketSharp.Server;
 ```
 
-The `WebSocketServer` and `WebSocketService` classes exist in the `WebSocketSharp.Server` namespace.
+The `WebSocketBehavior` and `WebSocketServer` classes exist in the `WebSocketSharp.Server` namespace.
 
 #### Step 2 ####
 
-Creating the class that inherits the `WebSocketService` class.
+Creating the class that inherits the `WebSocketBehavior` class.
 
 For example, if you would like to provide an echo service,
 
@@ -290,7 +290,7 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-public class Echo : WebSocketService
+public class Echo : WebSocketBehavior
 {
   protected override void OnMessage (MessageEventArgs e)
   {
@@ -306,7 +306,7 @@ using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-public class Chat : WebSocketService
+public class Chat : WebSocketBehavior
 {
   private string _suffix;
 
@@ -327,15 +327,17 @@ public class Chat : WebSocketService
 }
 ```
 
-If you override the `WebSocketService.OnMessage (MessageEventArgs)` method, it's called when the `OnMessage` event of the `WebSocket` used in the current session in the WebSocket service occurs.
+You can define the behavior of any WebSocket service by creating the class that inherits the `WebSocketBehavior` class.
 
-And if you override the `WebSocketService.OnOpen ()`, `WebSocketService.OnError (ErrorEventArgs)`, and `WebSocketService.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
+If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in the current session in the service receives a message.
 
-The `WebSocketService.Send` method sends a data to the client on the current session in the WebSocket service.
+And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnError (ErrorEventArgs)`, and `WebSocketBehavior.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
-If you would like to access the sessions in the WebSocket service, you should use the `WebSocketService.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+The `WebSocketBehavior.Send` method sends a data to the client on the current session in the service.
 
-The `WebSocketService.Sessions.Broadcast` method broadcasts a data to every client in the WebSocket service.
+If you would like to access the sessions in the service, you should use the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+
+The `WebSocketBehavior.Sessions.Broadcast` method broadcasts a data to every client in the service.
 
 #### Step 3 ####
 
@@ -348,13 +350,13 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified path to the service, using the `WebSocketServer.AddWebSocketService<TWithNew> (string)` or `WebSocketServer.AddWebSocketService<T> (string, Func<T>)` method.
+You can add any WebSocket service to your `WebSocketServer` with the specified behavior and path to the service, using the `WebSocketServer.AddWebSocketService<TBehaviorWithNew> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
 
-The type of `TWithNew` must inherit the `WebSocketService` class and must have a public parameterless constructor.
+The type of `TBehaviorWithNew` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
 
-And also the type of `T` must inherit the `WebSocketService` class.
+And also the type of `TBehavior` must inherit the `WebSocketBehavior` class.
 
-So you can use the classes created in **Step 2** to add the WebSocket service.
+So you can use the classes created in **Step 2** to add the service.
 
 If you create an instance of the `WebSocketServer` class without a port number, the `WebSocketServer` set the port number to **80** automatically. So it's necessary to run with root permission.
 
@@ -386,7 +388,7 @@ I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and 
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
-You can add any WebSocket service to your `HttpServer` with the specified path to the service, using the `HttpServer.AddWebSocketService<TWithNew> (string)` or `HttpServer.AddWebSocketService<T> (string, Func<T>)` method.
+You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, using the `HttpServer.AddWebSocketService<TBehaviorWithNew> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
 
 ```cs
 var httpsv = new HttpServer (4649);
@@ -438,7 +440,7 @@ ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyE
 };
 ```
 
-If you set this property to nothing, the validation does nothing with the server certificate and returns `true`.
+If you set this property to nothing, the validation does nothing with the server certificate, and returns `true`.
 
 As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, like the following.
 
@@ -502,10 +504,10 @@ And if you would like to send the **Cookies** with the WebSocket connection requ
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketService.Context.QueryString` property, like the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, like the following.
 
 ```cs
-public class Chat : WebSocketService
+public class Chat : WebSocketBehavior
 {
   private string _name;
   ...
@@ -519,7 +521,7 @@ public class Chat : WebSocketService
 }
 ```
 
-And if you would like to check the **Origin header and Cookies** included in each WebSocket connection request, you should set each validation for the Origin header and Cookies in your `WebSocketService`, for example, using the `AddWebSocketService<T> (string, Func<T>)` method with initializing, like the following.
+And if you would like to check the **Origin header and Cookies** included in each WebSocket connection request, you should set each validation for the Origin header and Cookies in your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
 
 ```cs
 wssv.AddWebSocketService<Chat> (
@@ -544,7 +546,7 @@ wssv.AddWebSocketService<Chat> (
   });
 ```
 
-Also, if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketService.Context.Origin` and `WebSocketService.Context.CookieCollection` properties.
+Also, if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
 
 ### Connecting through the HTTP Proxy server ###
 

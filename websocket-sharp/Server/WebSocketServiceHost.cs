@@ -66,7 +66,7 @@ namespace WebSocketSharp.Server
     /// sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service cleans up the inactive sessions periodically;
+    /// <c>true</c> if the service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
     public abstract bool KeepClean { get; set; }
@@ -75,7 +75,7 @@ namespace WebSocketSharp.Server
     /// Gets the path to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket service.
+    /// A <see cref="string"/> that represents the absolute path to the service.
     /// </value>
     public abstract string Path { get; }
 
@@ -83,15 +83,15 @@ namespace WebSocketSharp.Server
     /// Gets the access to the sessions in the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
     /// </value>
     public abstract WebSocketSessionManager Sessions { get; }
 
     /// <summary>
-    /// Gets the type of the WebSocket service.
+    /// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Type"/> that represents the type of the WebSocket service.
+    /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
     /// </value>
     public abstract Type Type { get; }
 
@@ -112,19 +112,19 @@ namespace WebSocketSharp.Server
     /// Creates a new session in the WebSocket service.
     /// </summary>
     /// <returns>
-    /// A <see cref="WebSocketService"/> instance that represents a new session.
+    /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
     /// </returns>
-    protected abstract WebSocketService CreateSession ();
+    protected abstract WebSocketBehavior CreateSession ();
 
     #endregion
   }
 
-  internal class WebSocketServiceHost<T> : WebSocketServiceHost
-    where T : WebSocketService
+  internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
+    where TBehavior : WebSocketBehavior
   {
     #region Private Fields
 
-    private Func<T>                 _initializer;
+    private Func<TBehavior>         _initializer;
     private string                  _path;
     private WebSocketSessionManager _sessions;
 
@@ -132,7 +132,7 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (string path, Func<T> initializer, Logger logger)
+    internal WebSocketServiceHost (string path, Func<TBehavior> initializer, Logger logger)
     {
       _path = HttpUtility.UrlDecode (path).TrimEndSlash ();
       _initializer = initializer;
@@ -167,7 +167,7 @@ namespace WebSocketSharp.Server
 
     public override Type Type {
       get {
-        return typeof (T);
+        return typeof (TBehavior);
       }
     }
 
@@ -175,7 +175,7 @@ namespace WebSocketSharp.Server
 
     #region Protected Methods
 
-    protected override WebSocketService CreateSession ()
+    protected override WebSocketBehavior CreateSession ()
     {
       return _initializer ();
     }
