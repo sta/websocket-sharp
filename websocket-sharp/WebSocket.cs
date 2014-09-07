@@ -913,7 +913,7 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (payload, !payload.ContainsReservedCloseStatusCode, false);
+      close (payload, !payload.IncludesReservedCloseStatusCode, false);
 
       return false;
     }
