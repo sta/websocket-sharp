@@ -73,8 +73,8 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="HttpBase.cs" />
-    <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
+    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="ByteOrder.cs" />

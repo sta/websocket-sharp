@@ -43,6 +43,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -69,9 +70,12 @@ namespace WebSocketSharp.Net
 
         bool force_close_chunked;
 
-        internal HttpListenerResponse(HttpListenerContext context)
+        private readonly ILogger _logger;
+
+        internal HttpListenerResponse(HttpListenerContext context, ILogger logger)
         {
             this.context = context;
+            _logger = logger;
         }
 
         internal bool CloseConnection
@@ -383,6 +387,10 @@ namespace WebSocketSharp.Net
 
         void Close(bool force)
         {
+            if (force)
+            {
+                _logger.Debug("HttpListenerResponse force closing HttpConnection");
+            }
             disposed = true;
             context.Connection.Close(force);
         }
@@ -511,6 +519,19 @@ namespace WebSocketSharp.Net
 
             if (chunked)
                 headers.SetInternal("Transfer-Encoding", "chunked");
+
+            //int reuses = context.Connection.Reuses;
+            //if (reuses >= 100)
+            //{
+            //    _logger.Debug("HttpListenerResponse - keep alive has exceeded 100 uses and will be closed.");
+
+            //    force_close_chunked = true;
+            //    if (!conn_close)
+            //    {
+            //        headers.SetInternal("Connection", "close");
+            //        conn_close = true;
+            //    }
+            //}
 
             if (!conn_close)
             {

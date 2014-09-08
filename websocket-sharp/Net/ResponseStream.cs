@@ -38,9 +38,13 @@
 #endregion
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -56,10 +60,15 @@ namespace WebSocketSharp.Net
         bool trailer_sent;
         Stream stream;
 
-        internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignore_errors)
+        private readonly ILogger _logger;
+        private readonly string _connectionId;
+
+        internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignore_errors, ILogger logger, string connectionId)
         {
             this.response = response;
             this.ignore_errors = ignore_errors;
+            _logger = logger;
+            _connectionId = connectionId;
             this.stream = stream;
         }
 
@@ -95,6 +104,7 @@ namespace WebSocketSharp.Net
             if (disposed == false)
             {
                 disposed = true;
+
                 byte[] bytes = null;
                 MemoryStream ms = GetHeaders(true);
                 bool chunked = response.SendChunked;
@@ -122,6 +132,9 @@ namespace WebSocketSharp.Net
 
         MemoryStream GetHeaders(bool closing)
         {
+            if (response.HeadersSent)
+                return null;
+
             // SendHeaders works on shared headers
             lock (response.headers_lock)
             {
@@ -157,6 +170,22 @@ namespace WebSocketSharp.Net
             else
             {
                 stream.Write(buffer, offset, count);
+            }
+        }
+
+        internal async Task InternalWriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            if (ignore_errors)
+            {
+                try
+                {
+                    await stream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+                }
+                catch { }
+            }
+            else
+            {
+                await stream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -196,6 +225,44 @@ namespace WebSocketSharp.Net
                 InternalWrite(buffer, offset, count);
             if (chunked)
                 InternalWrite(crlf, 0, 2);
+        }
+
+        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            if (disposed)
+                throw new ObjectDisposedException(GetType().ToString());
+
+            byte[] bytes = null;
+            MemoryStream ms = GetHeaders(false);
+            bool chunked = response.SendChunked;
+            if (ms != null)
+            {
+                long start = ms.Position; // After the possible preamble for the encoding
+                ms.Position = ms.Length;
+                if (chunked)
+                {
+                    bytes = GetChunkSizeBytes(count, false);
+                    await ms.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+                }
+
+                int new_count = Math.Min(count, 16384 - (int)ms.Position + (int)start);
+                await ms.WriteAsync(buffer, offset, new_count, cancellationToken).ConfigureAwait(false);
+                count -= new_count;
+                offset += new_count;
+                await InternalWriteAsync(ms.GetBuffer(), (int)start, (int)(ms.Length - start), cancellationToken).ConfigureAwait(false);
+                ms.SetLength(0);
+                ms.Capacity = 0; // 'dispose' the buffer in ms.
+            }
+            else if (chunked)
+            {
+                bytes = GetChunkSizeBytes(count, false);
+                await InternalWriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
+            }
+
+            if (count > 0)
+                await InternalWriteAsync(buffer, offset, count, cancellationToken);
+            if (chunked)
+                await InternalWriteAsync(crlf, 0, 2, cancellationToken).ConfigureAwait(false);
         }
 
         public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count,

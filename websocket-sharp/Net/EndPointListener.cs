@@ -46,6 +46,8 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Threading.Tasks;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -60,9 +62,15 @@ namespace WebSocketSharp.Net
         AsymmetricAlgorithm key;
         bool secure;
         Dictionary<HttpConnection, HttpConnection> unregistered;
+        private readonly ILogger _logger;
+        private bool _closed;
 
-        public EndPointListener(IPAddress addr, int port, bool secure)
+        private readonly ManualResetEventSlim _listenForNextRequest = new ManualResetEventSlim(false);
+
+        public EndPointListener(ILogger logger, IPAddress addr, int port, bool secure)
         {
+            _logger = logger;
+
             if (secure)
             {
                 this.secure = secure;
@@ -70,18 +78,17 @@ namespace WebSocketSharp.Net
             }
 
             endpoint = new IPEndPoint(addr, port);
-            sock = new Socket(addr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            sock = new Socket(endpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
             sock.Bind(endpoint);
 
             // This is the number TcpListener uses.
             sock.Listen(2147483647);
 
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
-            args.UserToken = this;
-            args.Completed += OnAccept;
-            sock.AcceptAsync(args);
             prefixes = new Hashtable();
             unregistered = new Dictionary<HttpConnection, HttpConnection>();
+
+            Task.Factory.StartNew(BeginAccept, TaskCreationOptions.LongRunning);
         }
 
         void LoadCertificateAndKey(IPAddress addr, int port)
@@ -107,49 +114,72 @@ namespace WebSocketSharp.Net
             }
         }
 
-        static void OnAccept(object sender, EventArgs e)
+        private void BeginAccept()
         {
-            SocketAsyncEventArgs args = (SocketAsyncEventArgs)e;
-            EndPointListener epl = (EndPointListener)args.UserToken;
-            Socket accepted = null;
-            if (args.SocketError == SocketError.Success)
+            while (!_closed)
             {
-                accepted = args.AcceptSocket;
-                args.AcceptSocket = null;
+                _listenForNextRequest.Reset();
+                
+                try
+                {
+                    sock.BeginAccept(null, 0, AcceptReceiveDataCallback, this);
+
+                    _listenForNextRequest.Wait();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("Error in BeginAccept", ex);
+                }
+            }
+        }
+
+        private void AcceptReceiveDataCallback(IAsyncResult ar)
+        {
+            _listenForNextRequest.Set();
+
+            if (_closed)
+            {
+                return;
             }
 
             try
             {
-                if (epl.sock != null)
-                    epl.sock.AcceptAsync(args);
+                var accepted = sock.EndAccept(ar);
+
+                ProcessAccept(accepted);
             }
-            catch
+            catch (Exception ex)
             {
-                if (accepted != null)
+                _logger.ErrorException("Error in AcceptReceiveDataCallback", ex);
+            }
+        }
+
+        private void ProcessAccept(Socket accepted)
+        {
+            try
+            {
+                var listener = this;
+
+                if (listener.secure && (listener.cert == null || listener.key == null))
                 {
-                    try
-                    {
-                        accepted.Close();
-                    }
-                    catch { }
-                    accepted = null;
+                    accepted.Close();
+                    return;
                 }
-            }
 
-            if (accepted == null)
-                return;
+                var connectionId = Guid.NewGuid().ToString("N");
 
-            if (epl.secure && (epl.cert == null || epl.key == null))
-            {
-                accepted.Close();
-                return;
+                HttpConnection conn = new HttpConnection(_logger, accepted, listener, listener.secure, connectionId);
+                //_logger.Debug("Adding unregistered connection to {0}. Id: {1}", accepted.RemoteEndPoint, connectionId);
+                lock (listener.unregistered)
+                {
+                    listener.unregistered[conn] = conn;
+                }
+                conn.BeginReadRequest();
             }
-            HttpConnection conn = new HttpConnection(accepted, epl, epl.secure);
-            lock (epl.unregistered)
+            catch (Exception ex)
             {
-                epl.unregistered[conn] = conn;
+                _logger.ErrorException("Error in ProcessAccept", ex);
             }
-            conn.BeginReadRequest();
         }
 
         internal void RemoveConnection(HttpConnection conn)
@@ -310,6 +340,7 @@ namespace WebSocketSharp.Net
 
         public void Close()
         {
+            _closed = true;
             sock.Close();
             lock (unregistered)
             {

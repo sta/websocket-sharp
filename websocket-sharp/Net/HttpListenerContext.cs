@@ -39,6 +39,7 @@
 
 using System;
 using System.Security.Principal;
+using WebSocketSharp.Logging;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Net
@@ -52,12 +53,14 @@ namespace WebSocketSharp.Net
         string error;
         int err_status = 400;
         internal HttpListener Listener;
+        private readonly ILogger _logger;
 
-        internal HttpListenerContext(HttpConnection cnc)
+        internal HttpListenerContext(HttpConnection cnc, ILogger logger)
         {
             this.cnc = cnc;
+            _logger = logger;
             request = new HttpListenerRequest(this);
-            response = new HttpListenerResponse(this);
+            response = new HttpListenerResponse(this, _logger);
         }
 
         internal int ErrorStatus

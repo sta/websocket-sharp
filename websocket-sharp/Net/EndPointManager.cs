@@ -41,6 +41,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -53,7 +54,7 @@ namespace WebSocketSharp.Net
         {
         }
 
-        public static void AddListener(HttpListener listener)
+        public static void AddListener(ILogger logger, HttpListener listener)
         {
             ArrayList added = new ArrayList();
             try
@@ -62,7 +63,7 @@ namespace WebSocketSharp.Net
                 {
                     foreach (string prefix in listener.Prefixes)
                     {
-                        AddPrefixInternal(prefix, listener);
+                        AddPrefixInternal(logger, prefix, listener);
                         added.Add(prefix);
                     }
                 }
@@ -71,21 +72,21 @@ namespace WebSocketSharp.Net
             {
                 foreach (string prefix in added)
                 {
-                    RemovePrefix(prefix, listener);
+                    RemovePrefix(logger, prefix, listener);
                 }
                 throw;
             }
         }
 
-        public static void AddPrefix(string prefix, HttpListener listener)
+        public static void AddPrefix(ILogger logger, string prefix, HttpListener listener)
         {
             lock (ip_to_endpoints)
             {
-                AddPrefixInternal(prefix, listener);
+                AddPrefixInternal(logger, prefix, listener);
             }
         }
 
-        static void AddPrefixInternal(string p, HttpListener listener)
+        static void AddPrefixInternal(ILogger logger, string p, HttpListener listener)
         {
             ListenerPrefix lp = new ListenerPrefix(p);
             if (lp.Path.IndexOf('%') != -1)
@@ -95,14 +96,14 @@ namespace WebSocketSharp.Net
                 throw new System.Net.HttpListenerException(400, "Invalid path.");
 
             // listens on all the interfaces if host name cannot be parsed by IPAddress.
-            EndPointListener epl = GetEPListener(lp.Host, lp.Port, listener, lp.Secure);
+            EndPointListener epl = GetEPListener(logger, lp.Host, lp.Port, listener, lp.Secure);
             epl.AddPrefix(lp, listener);
         }
 
-        static EndPointListener GetEPListener(string host, int port, HttpListener listener, bool secure)
+        static EndPointListener GetEPListener(ILogger logger, string host, int port, HttpListener listener, bool secure)
         {
             IPAddress addr;
-            if (host == "*")
+            if (host == "*" || host == "+")
                 addr = IPAddress.Any;
             else if (IPAddress.TryParse(host, out addr) == false)
             {
@@ -137,7 +138,7 @@ namespace WebSocketSharp.Net
             }
             else
             {
-                epl = new EndPointListener(addr, port, secure);
+                epl = new EndPointListener(logger, addr, port, secure);
                 p[port] = epl;
             }
 
@@ -160,26 +161,26 @@ namespace WebSocketSharp.Net
             }
         }
 
-        public static void RemoveListener(HttpListener listener)
+        public static void RemoveListener(ILogger logger, HttpListener listener)
         {
             lock (ip_to_endpoints)
             {
                 foreach (string prefix in listener.Prefixes)
                 {
-                    RemovePrefixInternal(prefix, listener);
+                    RemovePrefixInternal(logger, prefix, listener);
                 }
             }
         }
 
-        public static void RemovePrefix(string prefix, HttpListener listener)
+        public static void RemovePrefix(ILogger logger, string prefix, HttpListener listener)
         {
             lock (ip_to_endpoints)
             {
-                RemovePrefixInternal(prefix, listener);
+                RemovePrefixInternal(logger, prefix, listener);
             }
         }
 
-        static void RemovePrefixInternal(string prefix, HttpListener listener)
+        static void RemovePrefixInternal(ILogger logger, string prefix, HttpListener listener)
         {
             ListenerPrefix lp = new ListenerPrefix(prefix);
             if (lp.Path.IndexOf('%') != -1)
@@ -188,7 +189,7 @@ namespace WebSocketSharp.Net
             if (lp.Path.IndexOf("//", StringComparison.Ordinal) != -1)
                 return;
 
-            EndPointListener epl = GetEPListener(lp.Host, lp.Port, listener, lp.Secure);
+            EndPointListener epl = GetEPListener(logger, lp.Host, lp.Port, listener, lp.Secure);
             epl.RemovePrefix(lp, listener);
         }
     }

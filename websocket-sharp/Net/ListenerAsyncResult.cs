@@ -39,6 +39,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebSocketSharp.Net
 {
@@ -146,8 +147,10 @@ namespace WebSocketSharp.Net
                     if (handle != null)
                         handle.Set();
 
+                    //if (cb != null)
+                    //    ThreadPool.UnsafeQueueUserWorkItem(InvokeCB, this);
                     if (cb != null)
-                        ThreadPool.UnsafeQueueUserWorkItem(InvokeCB, this);
+                        Task.Factory.StartNew(() => InvokeCB(this));
                 }
             }
         }

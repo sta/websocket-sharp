@@ -46,6 +46,7 @@ using System.Threading;
 
 // TODO: Logging.
 using System.Threading.Tasks;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -64,10 +65,12 @@ namespace WebSocketSharp.Net
         ArrayList ctx_queue;  // List<HttpListenerContext> ctx_queue;
         ArrayList wait_queue; // List<ListenerAsyncResult> wait_queue;
         Hashtable connections;
+        private ILogger _logger;
 
-        public HttpListener()
+        public HttpListener(ILogger logger)
         {
-            prefixes = new HttpListenerPrefixCollection(this);
+            _logger = logger;
+            prefixes = new HttpListenerPrefixCollection(logger, this);
             registry = new Hashtable();
             connections = Hashtable.Synchronized(new Hashtable());
             ctx_queue = new ArrayList();
@@ -177,7 +180,7 @@ namespace WebSocketSharp.Net
         void Close(bool force)
         {
             CheckDisposed();
-            EndPointManager.RemoveListener(this);
+            EndPointManager.RemoveListener(_logger, this);
             Cleanup(force);
         }
 
@@ -288,24 +291,13 @@ namespace WebSocketSharp.Net
                 return auth_schemes;
         }
 
-        public HttpListenerContext GetContext()
-        {
-            // The prefixes are not checked when using the async interface!?
-            if (prefixes.Count == 0)
-                throw new InvalidOperationException("Please, call AddPrefix before using this method.");
-
-            ListenerAsyncResult ares = (ListenerAsyncResult)BeginGetContext(null, null);
-            ares.InGet = true;
-            return EndGetContext(ares);
-        }
-
         public void Start()
         {
             CheckDisposed();
             if (listening)
                 return;
 
-            EndPointManager.AddListener(this);
+            EndPointManager.AddListener(_logger, this);
             listening = true;
         }
 
@@ -324,11 +316,6 @@ namespace WebSocketSharp.Net
             Close(true); //TODO: Should we force here or not?
             disposed = true;
         }
-
-		public Task<HttpListenerContext> GetContextAsync ()
-		{
-			return Task<HttpListenerContext>.Factory.FromAsync (BeginGetContext, EndGetContext, null);
-		}
 
         internal void CheckDisposed()
         {

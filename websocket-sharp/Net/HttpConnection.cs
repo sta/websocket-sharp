@@ -46,6 +46,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -75,8 +76,13 @@ namespace WebSocketSharp.Net
         int[] client_cert_errors;
         X509Certificate2 client_cert;
 
-        public HttpConnection(Socket sock, EndPointListener epl, bool secure)
+        private ILogger _logger;
+        private readonly string _connectionId;
+        
+        public HttpConnection(ILogger logger, Socket sock, EndPointListener epl, bool secure, string connectionId)
         {
+            _connectionId = connectionId;
+            _logger = logger;
             this.sock = sock;
             this.epl = epl;
             this.secure = secure;
@@ -142,7 +148,7 @@ namespace WebSocketSharp.Net
             position = 0;
             input_state = InputState.RequestLine;
             line_state = LineState.None;
-            context = new HttpListenerContext(this);
+            context = new HttpListenerContext(this, _logger);
         }
 
         public bool IsClosed
@@ -185,12 +191,15 @@ namespace WebSocketSharp.Net
 
         void OnTimeout(object unused)
         {
+            _logger.Debug("HttpConnection keep alive timer fired. ConnectionId: {0}.", _connectionId);
             CloseSocket();
             Unbind();
         }
 
         public void BeginReadRequest()
         {
+            //_logger.Debug("HttpConnection - BeginReadRequest");
+
             if (buffer == null)
                 buffer = new byte[BufferSize];
             try
@@ -200,8 +209,10 @@ namespace WebSocketSharp.Net
                 timer.Change(Timeout.Infinite, Timeout.Infinite);
                 stream.BeginRead(buffer, 0, BufferSize, onread_cb, this);
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.ErrorException("Error in HttpConnection.BeginReadRequest. ConnectionId: {0}", ex, _connectionId);
+                
                 timer.Change(Timeout.Infinite, Timeout.Infinite);
                 CloseSocket();
                 Unbind();
@@ -236,7 +247,7 @@ namespace WebSocketSharp.Net
             {
                 HttpListener listener = context.Listener;
                 bool ign = (listener == null) ? true : listener.IgnoreWriteExceptions;
-                o_stream = new ResponseStream(stream, context.Response, ign);
+                o_stream = new ResponseStream(stream, context.Response, ign, _logger, _connectionId);
             }
             return o_stream;
         }
@@ -262,8 +273,10 @@ namespace WebSocketSharp.Net
                     return;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                //_logger.ErrorException("Error in HttpConnection.OnReadInternal", ex);
+
                 if (ms != null && ms.Length > 0)
                     SendError();
                 if (sock != null)
@@ -278,6 +291,7 @@ namespace WebSocketSharp.Net
             {
                 //if (ms.Length > 0)
                 //	SendError (); // Why bother?
+                _logger.Debug("Exiting HttpConnection.OnReadInternal because nread=0. ConnectionId: {0}", _connectionId);
                 CloseSocket();
                 Unbind();
                 return;

@@ -40,6 +40,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using WebSocketSharp.Logging;
 
 namespace WebSocketSharp.Net
 {
@@ -48,8 +49,11 @@ namespace WebSocketSharp.Net
         List<string> prefixes = new List<string>();
         HttpListener listener;
 
-        internal HttpListenerPrefixCollection(HttpListener listener)
+        private ILogger _logger;
+
+        internal HttpListenerPrefixCollection(ILogger logger, HttpListener listener)
         {
+            _logger = logger;
             this.listener = listener;
         }
 
@@ -77,7 +81,7 @@ namespace WebSocketSharp.Net
 
             prefixes.Add(uriPrefix);
             if (listener.IsListening)
-                EndPointManager.AddPrefix(uriPrefix, listener);
+                EndPointManager.AddPrefix(_logger, uriPrefix, listener);
         }
 
         public void Clear()
@@ -85,7 +89,7 @@ namespace WebSocketSharp.Net
             listener.CheckDisposed();
             prefixes.Clear();
             if (listener.IsListening)
-                EndPointManager.RemoveListener(listener);
+                EndPointManager.RemoveListener(_logger, listener);
         }
 
         public bool Contains(string uriPrefix)
@@ -124,7 +128,7 @@ namespace WebSocketSharp.Net
 
             bool result = prefixes.Remove(uriPrefix);
             if (result && listener.IsListening)
-                EndPointManager.RemovePrefix(uriPrefix, listener);
+                EndPointManager.RemovePrefix(_logger, uriPrefix, listener);
 
             return result;
         }
