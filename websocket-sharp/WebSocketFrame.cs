@@ -313,8 +313,8 @@ namespace WebSocketSharp
       }
 
       var spFmt = String.Format ("{{0,{0}}}", cntDigit);
-      var headerFmt = String.Format (
-@"{0} 01234567 89ABCDEF 01234567 89ABCDEF
+      var headerFmt = String.Format (@"
+{0} 01234567 89ABCDEF 01234567 89ABCDEF
 {0}+--------+--------+--------+--------+\n", spFmt);
       var lineFmt = String.Format ("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
       var footerFmt = String.Format ("{0}+--------+--------+--------+--------+", spFmt);
@@ -329,20 +329,20 @@ namespace WebSocketSharp
       output.AppendFormat (headerFmt, String.Empty);
 
       var printLine = linePrinter ();
-      var frameAsBytes = frame.ToByteArray ();
+      var bytes = frame.ToByteArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
         if (i < cnt)
           printLine (
-            Convert.ToString (frameAsBytes[j],     2).PadLeft (8, '0'),
-            Convert.ToString (frameAsBytes[j + 1], 2).PadLeft (8, '0'),
-            Convert.ToString (frameAsBytes[j + 2], 2).PadLeft (8, '0'),
-            Convert.ToString (frameAsBytes[j + 3], 2).PadLeft (8, '0'));
+            Convert.ToString (bytes[j],     2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0'));
         else if (rem > 0)
           printLine (
-            Convert.ToString (frameAsBytes[j], 2).PadLeft (8, '0'),
-            rem >= 2 ? Convert.ToString (frameAsBytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
-            rem == 3 ? Convert.ToString (frameAsBytes[j + 2], 2).PadLeft (8, '0') : String.Empty,
+            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
+            rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
+            rem == 3 ? Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0') : String.Empty,
             String.Empty);
       }
 
@@ -372,13 +372,11 @@ namespace WebSocketSharp
 
       /* Extended Payload Length */
 
-      var ext = frame._extPayloadLength;
-      var size = ext.Length;
-      var extPayloadLen = size == 2
-                          ? ext.ToUInt16 (ByteOrder.Big).ToString ()
-                          : size == 8
-                            ? ext.ToUInt64 (ByteOrder.Big).ToString ()
-                            : String.Empty;
+      var extPayloadLen = payloadLen < 126
+                          ? String.Empty
+                          : payloadLen == 126
+                            ? frame._extPayloadLength.ToUInt16 (ByteOrder.Big).ToString ()
+                            : frame._extPayloadLength.ToUInt64 (ByteOrder.Big).ToString ();
 
       /* Masking Key */
 
@@ -389,14 +387,14 @@ namespace WebSocketSharp
 
       var payload = payloadLen == 0
                     ? String.Empty
-                    : size > 0
+                    : payloadLen > 125
                       ? String.Format ("A {0} frame.", opcode.ToLower ())
                       : !masked && !frame.IsFragmented && frame.IsText
                         ? Encoding.UTF8.GetString (frame._payloadData.ApplicationData)
                         : frame._payloadData.ToString ();
 
-      var fmt =
-@"                    FIN: {0}
+      var fmt = @"
+                    FIN: {0}
                    RSV1: {1}
                    RSV2: {2}
                    RSV3: {3}
@@ -454,7 +452,7 @@ Extended Payload Length: {7}
       if (isControl (opcode) && payloadLen > 125)
         throw new WebSocketException (
           CloseStatusCode.InconsistentData,
-          "The length of payload data of a control frame is greater than 125 bytes.");
+          "The length of payload data of a control frame is greater than the allowable length.");
 
       var frame = new WebSocketFrame ();
       frame._fin = fin;
