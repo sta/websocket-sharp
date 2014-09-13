@@ -666,7 +666,7 @@ Extended Payload Length: {7}
 
     #endregion
 
-    #region Explicitly Implemented Interface Members
+    #region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
