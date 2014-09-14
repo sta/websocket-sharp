@@ -2197,7 +2197,7 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Explicit Interface Implementation
+    #region Explicit Interface Implementations
 
     /// <summary>
     /// Closes the WebSocket connection, and releases all associated resources.
@@ -2207,7 +2207,9 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      Close (CloseStatusCode.Away, null);
+      var data = ((ushort) CloseStatusCode.Away).InternalToByteArray (ByteOrder.Big);
+      var send = _readyState == WebSocketState.Open;
+      close (new PayloadData (data), send, send);
     }
 
     #endregion
