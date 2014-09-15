@@ -122,8 +122,11 @@ namespace WebSocketSharp.Net
                 
                 try
                 {
-                    sock.BeginAccept(null, 0, AcceptReceiveDataCallback, this);
+                    //sock.BeginAccept(null, 0, AcceptReceiveDataCallback, this);
 
+                    // The above overload hangs in mono
+                    sock.BeginAccept(AcceptReceiveDataCallback, this);
+                    
                     _listenForNextRequest.Wait();
                 }
                 catch (Exception ex)
