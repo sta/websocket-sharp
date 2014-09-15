@@ -1341,37 +1341,74 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Retrieves a sub-array from the specified <paramref name="array"/>.
-    /// A sub-array starts at the specified element position.
+    /// A sub-array starts at the specified element position in <paramref name="array"/>.
     /// </summary>
     /// <returns>
-    /// An array of T that receives a sub-array, or an empty array of T if any problems
-    /// with the parameters.
+    /// An array of T that receives a sub-array, or an empty array of T
+    /// if any problems with the parameters.
     /// </returns>
     /// <param name="array">
-    /// An array of T that contains the data to retrieve a sub-array.
+    /// An array of T from which to retrieve a sub-array.
     /// </param>
     /// <param name="startIndex">
-    /// An <see cref="int"/> that contains the zero-based starting position of a sub-array
-    /// in <paramref name="array"/>.
+    /// An <see cref="int"/> that represents the zero-based starting position of
+    /// a sub-array in <paramref name="array"/>.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that contains the number of elements to retrieve a sub-array.
+    /// An <see cref="int"/> that represents the number of elements to retrieve.
     /// </param>
     /// <typeparam name="T">
-    /// The type of elements in the <paramref name="array"/>.
+    /// The type of elements in <paramref name="array"/>.
     /// </typeparam>
     public static T[] SubArray<T> (this T[] array, int startIndex, int length)
     {
-      if (array == null || array.Length == 0)
+      int len;
+      if (array == null || (len = array.Length) == 0)
         return new T[0];
 
-      if (startIndex < 0 || length <= 0)
+      if (startIndex < 0 || length <= 0 || startIndex + length > len)
         return new T[0];
 
-      if (startIndex + length > array.Length)
+      if (startIndex == 0 && length == len)
+        return array;
+
+      var subArray = new T[length];
+      Array.Copy (array, startIndex, subArray, 0, length);
+
+      return subArray;
+    }
+
+    /// <summary>
+    /// Retrieves a sub-array from the specified <paramref name="array"/>.
+    /// A sub-array starts at the specified element position in <paramref name="array"/>.
+    /// </summary>
+    /// <returns>
+    /// An array of T that receives a sub-array, or an empty array of T
+    /// if any problems with the parameters.
+    /// </returns>
+    /// <param name="array">
+    /// An array of T from which to retrieve a sub-array.
+    /// </param>
+    /// <param name="startIndex">
+    /// A <see cref="long"/> that represents the zero-based starting position of
+    /// a sub-array in <paramref name="array"/>.
+    /// </param>
+    /// <param name="length">
+    /// A <see cref="long"/> that represents the number of elements to retrieve.
+    /// </param>
+    /// <typeparam name="T">
+    /// The type of elements in <paramref name="array"/>.
+    /// </typeparam>
+    public static T[] SubArray<T> (this T[] array, long startIndex, long length)
+    {
+      long len;
+      if (array == null || (len = array.LongLength) == 0)
         return new T[0];
 
-      if (startIndex == 0 && array.Length == length)
+      if (startIndex < 0 || length <= 0 || startIndex + length > len)
+        return new T[0];
+
+      if (startIndex == 0 && length == len)
         return array;
 
       var subArray = new T[length];
