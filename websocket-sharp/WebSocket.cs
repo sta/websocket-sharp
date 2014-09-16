@@ -648,7 +648,19 @@ namespace WebSocketSharp
     private bool concatenateFragmentsInto (Stream destination)
     {
       while (true) {
-        var frame = WebSocketFrame.Read (_stream, true);
+        var frame = WebSocketFrame.Read (_stream, false);
+        var masked = frame.IsMasked;
+        if (_client && masked)
+          return processUnsupportedFrame (
+            frame, CloseStatusCode.ProtocolError, "A frame from the server is masked.");
+
+        if (!_client && !masked)
+          return processUnsupportedFrame (
+            frame, CloseStatusCode.ProtocolError, "A frame from a client isn't masked.");
+
+        if (masked)
+          frame.Unmask ();
+
         if (frame.IsFinal) {
           /* FINAL */
 
@@ -1002,6 +1014,18 @@ namespace WebSocketSharp
 
     private bool processWebSocketFrame (WebSocketFrame frame)
     {
+      var masked = frame.IsMasked;
+      if (_client && masked)
+        return processUnsupportedFrame (
+          frame, CloseStatusCode.ProtocolError, "A frame from the server is masked.");
+
+      if (!_client && !masked)
+        return processUnsupportedFrame (
+          frame, CloseStatusCode.ProtocolError, "A frame from a client isn't masked.");
+
+      if (masked)
+        frame.Unmask ();
+
       return frame.IsCompressed && _compression == CompressionMethod.None
              ? processUnsupportedFrame (
                  frame,
@@ -1285,7 +1309,7 @@ namespace WebSocketSharp
       Action receive = null;
       receive = () => WebSocketFrame.ReadAsync (
         _stream,
-        true,
+        false,
         frame => {
           if (processWebSocketFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();

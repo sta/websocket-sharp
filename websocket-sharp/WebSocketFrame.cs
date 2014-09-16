@@ -516,14 +516,10 @@ Extended Payload Length: {7}
         data = new byte[0];
       }
 
-      var payload = new PayloadData (data, masked);
-      if (masked && unmask) {
-        payload.Mask (maskingKey);
-        frame._mask = Mask.Unmask;
-        frame._maskingKey = new byte[0];
-      }
+      frame._payloadData = new PayloadData (data, masked);
+      if (unmask && masked)
+        frame.Unmask ();
 
-      frame._payloadData = payload;
       return frame;
     }
 
@@ -604,6 +600,16 @@ Extended Payload Length: {7}
             completed (frame);
         },
         error);
+    }
+
+    internal void Unmask ()
+    {
+      if (_mask == Mask.Unmask)
+        return;
+
+      _payloadData.Mask (_maskingKey);
+      _maskingKey = new byte[0];
+      _mask = Mask.Unmask;
     }
 
     #endregion
