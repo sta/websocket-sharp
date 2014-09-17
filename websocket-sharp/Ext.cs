@@ -249,7 +249,7 @@ namespace WebSocketSharp
     internal static string CheckIfValidControlData (this byte[] data, string paramName)
     {
       return data.Length > 125
-             ? String.Format ("'{0}' is greater than the allowable size.", paramName)
+             ? String.Format ("'{0}' is greater than the allowable max size.", paramName)
              : null;
     }
 

@@ -389,7 +389,7 @@ namespace WebSocketSharp
                     ? String.Empty
                     : payloadLen > 125
                       ? String.Format ("A {0} frame.", opcode.ToLower ())
-                      : !masked && !frame.IsFragmented && frame.IsText
+                      : !masked && !frame.IsFragmented && !frame.IsCompressed && frame.IsText
                         ? Encoding.UTF8.GetString (frame._payloadData.ApplicationData)
                         : frame._payloadData.ToString ();
 
@@ -438,21 +438,17 @@ Extended Payload Length: {7}
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
 
-      // Check if correct frame.
-      var incorrect = isControl (opcode) && fin == Fin.More
-                      ? "A control frame is fragmented."
-                      : !isData (opcode) && rsv1 == Rsv.On
-                        ? "A non data frame is compressed."
-                        : null;
+      // Check if valid header
+      var err = isControl (opcode) && payloadLen > 125
+                ? "A control frame has a payload data which is greater than the allowable max size."
+                : isControl (opcode) && fin == Fin.More
+                  ? "A control frame is fragmented."
+                  : !isData (opcode) && rsv1 == Rsv.On
+                    ? "A non data frame is compressed."
+                    : null;
 
-      if (incorrect != null)
-        throw new WebSocketException (CloseStatusCode.IncorrectData, incorrect);
-
-      // Check if consistent frame.
-      if (isControl (opcode) && payloadLen > 125)
-        throw new WebSocketException (
-          CloseStatusCode.InconsistentData,
-          "The length of payload data of a control frame is greater than the allowable length.");
+      if (err != null)
+        throw new WebSocketException (CloseStatusCode.ProtocolError, err);
 
       var frame = new WebSocketFrame ();
       frame._fin = fin;
@@ -498,11 +494,11 @@ Extended Payload Length: {7}
 
       byte[] data = null;
       if (len > 0) {
-        // Check if allowable payload data length.
+        // Check if allowable max length.
         if (payloadLen > 126 && len > PayloadData.MaxLength)
           throw new WebSocketException (
             CloseStatusCode.TooBig,
-            "The length of 'Payload Data' of a frame is greater than the allowable length.");
+            "The length of 'Payload Data' of a frame is greater than the allowable max length.");
 
         data = payloadLen > 126
                ? stream.ReadBytes ((long) len, 1024)
@@ -607,9 +603,9 @@ Extended Payload Length: {7}
       if (_mask == Mask.Unmask)
         return;
 
+      _mask = Mask.Unmask;
       _payloadData.Mask (_maskingKey);
       _maskingKey = new byte[0];
-      _mask = Mask.Unmask;
     }
 
     #endregion

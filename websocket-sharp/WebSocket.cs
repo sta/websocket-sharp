@@ -571,6 +571,18 @@ namespace WebSocketSharp
                        : null;
     }
 
+    private string checkIfValidReceivedFrame (WebSocketFrame frame)
+    {
+      var masked = frame.IsMasked;
+      return _client && masked
+             ? "A frame from the server is masked."
+             : !_client && !masked
+               ? "A frame from a client isn't masked."
+               : frame.IsCompressed && _compression == CompressionMethod.None
+                 ? "A compressed frame is without the available decompression method."
+                 : null;
+    }
+
     private void close (CloseStatusCode code, string reason, bool wait)
     {
       close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
@@ -649,18 +661,11 @@ namespace WebSocketSharp
     {
       while (true) {
         var frame = WebSocketFrame.Read (_stream, false);
-        var masked = frame.IsMasked;
-        if (_client && masked)
-          return processUnsupportedFrame (
-            frame, CloseStatusCode.ProtocolError, "A frame from the server is masked.");
+        var msg = checkIfValidReceivedFrame (frame);
+        if (msg != null)
+          return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
 
-        if (!_client && !masked)
-          return processUnsupportedFrame (
-            frame, CloseStatusCode.ProtocolError, "A frame from a client isn't masked.");
-
-        if (masked)
-          frame.Unmask ();
-
+        frame.Unmask ();
         if (frame.IsFinal) {
           /* FINAL */
 
@@ -977,6 +982,26 @@ namespace WebSocketSharp
       return true;
     }
 
+    private bool processReceivedFrame (WebSocketFrame frame)
+    {
+      var msg = checkIfValidReceivedFrame (frame);
+      if (msg != null)
+        return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
+
+      frame.Unmask ();
+      return frame.IsFragmented
+             ? processFragmentedFrame (frame)
+             : frame.IsData
+               ? processDataFrame (frame)
+               : frame.IsPing
+                 ? processPingFrame (frame)
+                 : frame.IsPong
+                   ? processPongFrame (frame)
+                   : frame.IsClose
+                     ? processCloseFrame (frame)
+                     : processUnsupportedFrame (frame, CloseStatusCode.IncorrectData, null);
+    }
+
     // As server
     private void processSecWebSocketExtensionsHeader (string value)
     {
@@ -1010,38 +1035,6 @@ namespace WebSocketSharp
       processException (new WebSocketException (code, reason), null);
 
       return false;
-    }
-
-    private bool processWebSocketFrame (WebSocketFrame frame)
-    {
-      var masked = frame.IsMasked;
-      if (_client && masked)
-        return processUnsupportedFrame (
-          frame, CloseStatusCode.ProtocolError, "A frame from the server is masked.");
-
-      if (!_client && !masked)
-        return processUnsupportedFrame (
-          frame, CloseStatusCode.ProtocolError, "A frame from a client isn't masked.");
-
-      if (masked)
-        frame.Unmask ();
-
-      return frame.IsCompressed && _compression == CompressionMethod.None
-             ? processUnsupportedFrame (
-                 frame,
-                 CloseStatusCode.IncorrectData,
-                 "A compressed data has been received without available decompression method.")
-             : frame.IsFragmented
-               ? processFragmentedFrame (frame)
-               : frame.IsData
-                 ? processDataFrame (frame)
-                 : frame.IsPing
-                   ? processPingFrame (frame)
-                   : frame.IsPong
-                     ? processPongFrame (frame)
-                     : frame.IsClose
-                       ? processCloseFrame (frame)
-                       : processUnsupportedFrame (frame, CloseStatusCode.PolicyViolation, null);
     }
 
     // As client
@@ -1311,7 +1304,7 @@ namespace WebSocketSharp
         _stream,
         false,
         frame => {
-          if (processWebSocketFrame (frame) && _readyState != WebSocketState.Closed) {
+          if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
 
             if (!frame.IsData)
