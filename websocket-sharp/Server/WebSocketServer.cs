@@ -594,7 +594,7 @@ namespace WebSocketSharp.Server
       }
 
       WebSocketServiceHost host;
-      if (!_services.TryGetServiceHostInternally (uri.AbsolutePath, out host)) {
+      if (!_services.InternalTryGetServiceHost (uri.AbsolutePath, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
         return;
       }
@@ -732,11 +732,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
-      if (!KeepClean)
-        host.KeepClean = false;
-
-      _services.Add (host.Path, host);
+      _services.Add<TBehavior> (path, initializer);
     }
 
     /// <summary>

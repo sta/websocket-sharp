@@ -134,7 +134,7 @@ namespace WebSocketSharp.Server
 
     internal WebSocketServiceHost (string path, Func<TBehavior> initializer, Logger logger)
     {
-      _path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      _path = path;
       _initializer = initializer;
       _sessions = new WebSocketSessionManager (logger);
     }

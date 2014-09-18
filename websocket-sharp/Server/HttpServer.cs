@@ -491,7 +491,7 @@ namespace WebSocketSharp.Server
     private void processWebSocketRequest (HttpListenerWebSocketContext context)
     {
       WebSocketServiceHost host;
-      if (!_services.TryGetServiceHostInternally (context.RequestUri.AbsolutePath, out host)) {
+      if (!_services.InternalTryGetServiceHost (context.RequestUri.AbsolutePath, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
         return;
       }
@@ -615,11 +615,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
-      if (!KeepClean)
-        host.KeepClean = false;
-
-      _services.Add (host.Path, host);
+      _services.Add<TBehavior> (path, initializer);
     }
 
     /// <summary>
