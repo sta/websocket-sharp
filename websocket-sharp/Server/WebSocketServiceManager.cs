@@ -105,7 +105,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketServiceHost"/> instance that provides the access to
-    /// the information for the service, or <see langword="null"/> if it's not found.
+    /// the information in the service, or <see langword="null"/> if it's not found.
     /// </value>
     /// <param name="path">
     /// A <see cref="string"/> that represents the absolute path to the service to find.
@@ -401,7 +401,7 @@ namespace WebSocketSharp.Server
     /// An array of <see cref="byte"/> that represents the binary data to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
+    /// An <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
     public void BroadcastAsync (byte[] data, Action completed)
@@ -429,7 +429,7 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the text data to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
+    /// An <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
     public void BroadcastAsync (string data, Action completed)
@@ -461,7 +461,7 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that represents the number of bytes to broadcast.
     /// </param>
     /// <param name="completed">
-    /// A <see cref="Action"/> delegate that references the method(s) called when
+    /// An <see cref="Action"/> delegate that references the method(s) called when
     /// the broadcast is complete.
     /// </param>
     public void BroadcastAsync (Stream stream, int length, Action completed)
@@ -561,7 +561,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="host">
     /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that provides
-    /// the access to the information for the service, or <see langword="null"/> if it's not found.
+    /// the access to the information in the service, or <see langword="null"/> if it's not found.
     /// This parameter is passed uninitialized.
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
