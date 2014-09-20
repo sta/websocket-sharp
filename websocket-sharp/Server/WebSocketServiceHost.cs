@@ -59,11 +59,21 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Internal Properties
+
+    internal ServerState State {
+      get {
+        return Sessions.State;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service cleans up the inactive
-    /// sessions periodically.
+    /// Gets or sets a value indicating whether the WebSocket service cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
     /// <c>true</c> if the service cleans up the inactive sessions periodically;
@@ -99,9 +109,25 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
+    internal void Start ()
+    {
+      Sessions.Start ();
+    }
+
     internal void StartSession (WebSocketContext context)
     {
       CreateSession ().Start (context, Sessions);
+    }
+
+    internal void Stop (ushort code, string reason)
+    {
+      var payload = new PayloadData (code.Append (reason));
+      var e = new CloseEventArgs (payload);
+      var bytes = !code.IsReserved ()
+                  ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
+                  : null;
+
+      Sessions.Stop (e, bytes);
     }
 
     #endregion

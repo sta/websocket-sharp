@@ -276,7 +276,7 @@ namespace WebSocketSharp.Server
           host.KeepClean = false;
 
         if (_state == ServerState.Start)
-          host.Sessions.Start ();
+          host.Start ();
 
         _hosts.Add (path, host);
       }
@@ -309,9 +309,8 @@ namespace WebSocketSharp.Server
         _hosts.Remove (path);
       }
 
-      if (host.Sessions.State == ServerState.Start)
-        host.Sessions.Stop (
-          ((ushort) CloseStatusCode.Away).InternalToByteArray (ByteOrder.Big), true);
+      if (host.State == ServerState.Start)
+        host.Stop ((ushort) CloseStatusCode.Away, null);
 
       return true;
     }
@@ -320,7 +319,7 @@ namespace WebSocketSharp.Server
     {
       lock (_sync) {
         foreach (var host in _hosts.Values)
-          host.Sessions.Start ();
+          host.Start ();
 
         _state = ServerState.Start;
       }
@@ -332,13 +331,13 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
 
         var payload = new PayloadData (data);
-        var args = new CloseEventArgs (payload);
+        var e = new CloseEventArgs (payload);
         var bytes = send
                     ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
                     : null;
 
         foreach (var host in _hosts.Values)
-          host.Sessions.Stop (args, bytes);
+          host.Sessions.Stop (e, bytes);
 
         _hosts.Clear ();
         _state = ServerState.Stop;

@@ -345,25 +345,14 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (byte[] data, bool send)
-    {
-      var payload = new PayloadData (data);
-      var args = new CloseEventArgs (payload);
-      var bytes = send
-                  ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
-                  : null;
-
-      Stop (args, bytes);
-    }
-
-    internal void Stop (CloseEventArgs args, byte[] frameAsBytes)
+    internal void Stop (CloseEventArgs e, byte[] frameAsBytes)
     {
       lock (_sync) {
         _state = ServerState.ShuttingDown;
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (args, frameAsBytes, 1000);
+          session.Context.WebSocket.Close (e, frameAsBytes, 1000);
 
         _state = ServerState.Stop;
       }
