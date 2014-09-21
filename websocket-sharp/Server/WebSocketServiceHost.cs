@@ -121,10 +121,9 @@ namespace WebSocketSharp.Server
 
     internal void Stop (ushort code, string reason)
     {
-      var payload = new PayloadData (code.Append (reason));
-      var e = new CloseEventArgs (payload);
+      var e = new CloseEventArgs (code, reason);
       var bytes = !code.IsReserved ()
-                  ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
+                  ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
                   : null;
 
       Sessions.Stop (e, bytes);

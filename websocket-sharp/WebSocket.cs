@@ -583,12 +583,7 @@ namespace WebSocketSharp
                  : null;
     }
 
-    private void close (CloseStatusCode code, string reason, bool wait)
-    {
-      close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
-    }
-
-    private void close (PayloadData payload, bool send, bool wait)
+    private void close (CloseEventArgs e, bool send, bool wait)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
@@ -601,15 +596,16 @@ namespace WebSocketSharp
 
       _logger.Trace ("Start closing the connection.");
 
-      var e = new CloseEventArgs (payload);
       e.WasClean =
         _client
         ? closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
+            send ? WebSocketFrame.CreateCloseFrame (Mask.Mask, e.PayloadData).ToByteArray ()
+                 : null,
             wait ? 5000 : 0,
             releaseClientResources)
         : closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null,
+            send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
+                 : null,
             wait ? 1000 : 0,
             releaseServerResources);
 
@@ -625,10 +621,10 @@ namespace WebSocketSharp
       }
     }
 
-    private void closeAsync (PayloadData payload, bool send, bool wait)
+    private void closeAsync (CloseEventArgs e, bool send, bool wait)
     {
-      Action<PayloadData, bool, bool> closer = close;
-      closer.BeginInvoke (payload, send, wait, ar => closer.EndInvoke (ar), null);
+      Action<CloseEventArgs, bool, bool> closer = close;
+      closer.BeginInvoke (e, send, wait, ar => closer.EndInvoke (ar), null);
     }
 
     private bool closeHandshake (byte[] frameAsBytes, int millisecondsTimeout, Action release)
@@ -836,7 +832,7 @@ namespace WebSocketSharp
 
         msg = "An error has occurred while connecting.";
         error (msg, null);
-        close (CloseStatusCode.Abnormal, msg, false);
+        close (new CloseEventArgs (CloseStatusCode.Abnormal, msg), false, false);
 
         return false;
       }
@@ -898,7 +894,7 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (payload, !payload.IncludesReservedCloseStatusCode, false);
+      close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false);
 
       return false;
     }
@@ -935,7 +931,7 @@ namespace WebSocketSharp
         return;
       }
 
-      close (code, reason ?? code.GetMessage (), false);
+      close (new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false);
     }
 
     private bool processFragmentedFrame (WebSocketFrame frame)
@@ -1560,7 +1556,7 @@ namespace WebSocketSharp
       }
 
       var send = _readyState == WebSocketState.Open;
-      close (new PayloadData (), send, send);
+      close (new CloseEventArgs (), send, send);
     }
 
     /// <summary>
@@ -1577,7 +1573,18 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      Close (code, null);
+      var msg = _readyState.CheckIfClosable () ??
+                code.CheckIfValidCloseStatusCode ();
+
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      close (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1590,7 +1597,16 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      Close (code, null);
+      var msg = _readyState.CheckIfClosable ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      close (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1599,7 +1615,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-    /// isn't in the allowable range of the close status code, or the size of
+    /// isn't in the allowable range of the close status code or the size of
     /// <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
@@ -1611,20 +1627,20 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
+        _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      close (new PayloadData (data), send, send);
+      close (e, send, send);
     }
 
     /// <summary>
@@ -1644,19 +1660,19 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
+        _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      close (new PayloadData (data), send, send);
+      close (e, send, send);
     }
 
     /// <summary>
@@ -1676,7 +1692,7 @@ namespace WebSocketSharp
       }
 
       var send = _readyState == WebSocketState.Open;
-      closeAsync (new PayloadData (), send, send);
+      closeAsync (new CloseEventArgs (), send, send);
     }
 
     /// <summary>
@@ -1697,7 +1713,18 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      CloseAsync (code, null);
+      var msg = _readyState.CheckIfClosable () ??
+                code.CheckIfValidCloseStatusCode ();
+
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      closeAsync (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1713,7 +1740,16 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      CloseAsync (code, null);
+      var msg = _readyState.CheckIfClosable ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      closeAsync (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1726,7 +1762,7 @@ namespace WebSocketSharp
     ///   </para>
     ///   <para>
     ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/> isn't in
-    ///   the allowable range of the close status code, or the size of <paramref name="reason"/>
+    ///   the allowable range of the close status code or the size of <paramref name="reason"/>
     ///   is greater than 123 bytes.
     ///   </para>
     /// </remarks>
@@ -1738,20 +1774,20 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
+        _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      closeAsync (new PayloadData (data), send, send);
+      closeAsync (e, send, send);
     }
 
     /// <summary>
@@ -1777,19 +1813,19 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
+        _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      closeAsync (new PayloadData (data), send, send);
+      closeAsync (e, send, send);
     }
 
     /// <summary>
@@ -2224,9 +2260,8 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      var data = ((ushort) CloseStatusCode.Away).InternalToByteArray (ByteOrder.Big);
       var send = _readyState == WebSocketState.Open;
-      close (new PayloadData (data), send, send);
+      close (new CloseEventArgs (CloseStatusCode.Away), send, send);
     }
 
     #endregion

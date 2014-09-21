@@ -325,15 +325,12 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (byte[] data, bool send)
+    internal void Stop (CloseEventArgs e, bool send)
     {
       lock (_sync) {
         _state = ServerState.ShuttingDown;
-
-        var payload = new PayloadData (data);
-        var e = new CloseEventArgs (payload);
         var bytes = send
-                    ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray ()
+                    ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
                     : null;
 
         foreach (var host in _hosts.Values)

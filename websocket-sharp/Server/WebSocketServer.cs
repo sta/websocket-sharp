@@ -507,8 +507,7 @@ namespace WebSocketSharp.Server
       }
 
       _listener.Stop ();
-      _services.Stop (
-        ((ushort) CloseStatusCode.ServerError).InternalToByteArray (ByteOrder.Big), true);
+      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true);
 
       _state = ServerState.Stop;
     }
@@ -728,7 +727,7 @@ namespace WebSocketSharp.Server
                 (initializer == null ? "'initializer' is null." : null);
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, path));
+        _logger.Error (msg);
         return;
       }
 
@@ -752,7 +751,7 @@ namespace WebSocketSharp.Server
     {
       var msg = path.CheckIfValidServicePath ();
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\nservice path: {1}", msg, path));
+        _logger.Error (msg);
         return false;
       }
 
@@ -767,7 +766,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         var msg = _state.CheckIfStartable () ?? checkIfCertificateExists ();
         if (msg != null) {
-          _logger.Error (String.Format ("{0}\nstate: {1}\nsecure: {2}", msg, _state, _secure));
+          _logger.Error (msg);
           return;
         }
 
@@ -786,7 +785,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         var msg = _state.CheckIfStart ();
         if (msg != null) {
-          _logger.Error (String.Format ("{0}\nstate: {1}", msg, _state));
+          _logger.Error (msg);
           return;
         }
 
@@ -794,7 +793,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (new byte[0], true);
+      _services.Stop (new CloseEventArgs (), true);
 
       _state = ServerState.Stop;
     }
@@ -811,16 +810,15 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       lock (_sync) {
-        var msg = _state.CheckIfStart () ??
-                  code.CheckIfValidCloseStatusCode () ??
-                  (data = code.Append (reason)).CheckIfValidControlData ("reason");
+        var msg =
+          _state.CheckIfStart () ??
+          code.CheckIfValidCloseStatusCode () ??
+          (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
         if (msg != null) {
-          _logger.Error (
-            String.Format ("{0}\nstate: {1}\ncode: {2}\nreason: {3}", msg, _state, code, reason));
-
+          _logger.Error (msg);
           return;
         }
 
@@ -828,7 +826,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (data, !code.IsReserved ());
+      _services.Stop (e, !code.IsReserved ());
 
       _state = ServerState.Stop;
     }
@@ -846,13 +844,14 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       lock (_sync) {
-        var msg = _state.CheckIfStart () ??
-                  (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
+        var msg =
+          _state.CheckIfStart () ??
+          (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
         if (msg != null) {
-          _logger.Error (String.Format ("{0}\nstate: {1}\nreason: {2}", msg, _state, reason));
+          _logger.Error (msg);
           return;
         }
 
@@ -860,7 +859,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (data, !code.IsReserved ());
+      _services.Stop (e, !code.IsReserved ());
 
       _state = ServerState.Stop;
     }
