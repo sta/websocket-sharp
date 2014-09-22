@@ -1981,9 +1981,9 @@ namespace WebSocketSharp
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
@@ -2009,9 +2009,9 @@ namespace WebSocketSharp
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
@@ -2036,9 +2036,9 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
@@ -2067,9 +2067,9 @@ namespace WebSocketSharp
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
