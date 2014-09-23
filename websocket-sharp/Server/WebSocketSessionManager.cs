@@ -51,6 +51,7 @@ namespace WebSocketSharp.Server
     private volatile bool                         _sweeping;
     private System.Timers.Timer                   _sweepTimer;
     private object                                _sync;
+    private TimeSpan                              _waitTime;
 
     #endregion
 
@@ -70,6 +71,7 @@ namespace WebSocketSharp.Server
       _sessions = new Dictionary<string, IWebSocketSession> ();
       _state = ServerState.Ready;
       _sync = ((ICollection) _sessions).SyncRoot;
+      _waitTime = TimeSpan.FromSeconds (1);
 
       setSweepTimer (60000);
     }
@@ -81,6 +83,21 @@ namespace WebSocketSharp.Server
     internal ServerState State {
       get {
         return _state;
+      }
+    }
+
+    internal TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      set {
+        if (value == _waitTime)
+          return;
+
+        _waitTime = value;
+        foreach (var session in Sessions)
+          session.Context.WebSocket.WaitTime = value;
       }
     }
 
@@ -97,7 +114,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000))
+        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingData, _waitTime))
           if (res.Value)
             yield return res.Key;
       }
@@ -142,7 +159,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000))
+        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingData, _waitTime))
           if (!res.Value)
             yield return res.Key;
       }
@@ -318,14 +335,14 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal Dictionary<string, bool> Broadping (byte[] frameAsBytes, int millisecondsTimeout)
+    internal Dictionary<string, bool> Broadping (byte[] frameAsBytes, TimeSpan timeout)
     {
       var res = new Dictionary<string, bool> ();
       foreach (var session in Sessions) {
         if (_state != ServerState.Start)
           break;
 
-        res.Add (session.ID, session.Context.WebSocket.Ping (frameAsBytes, millisecondsTimeout));
+        res.Add (session.ID, session.Context.WebSocket.Ping (frameAsBytes, timeout));
       }
 
       return res;
@@ -345,14 +362,14 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (CloseEventArgs e, byte[] frameAsBytes)
+    internal void Stop (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
     {
       lock (_sync) {
         _state = ServerState.ShuttingDown;
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (e, frameAsBytes, 1000);
+          session.Context.WebSocket.Close (e, frameAsBytes, timeout);
 
         _state = ServerState.Stop;
       }
@@ -528,7 +545,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (WebSocketFrame.EmptyUnmaskPingData, 1000);
+      return Broadping (WebSocketFrame.EmptyUnmaskPingData, _waitTime);
     }
 
     /// <summary>
@@ -557,7 +574,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToByteArray (), _waitTime);
     }
 
     /// <summary>

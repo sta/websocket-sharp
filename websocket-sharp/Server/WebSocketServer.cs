@@ -507,7 +507,7 @@ namespace WebSocketSharp.Server
       }
 
       _listener.Stop ();
-      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true);
+      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true, false);
 
       _state = ServerState.Stop;
     }
@@ -793,7 +793,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (new CloseEventArgs (), true);
+      _services.Stop (new CloseEventArgs (), true, true);
 
       _state = ServerState.Stop;
     }
@@ -826,7 +826,9 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (e, !code.IsReserved ());
+
+      var send = !code.IsReserved ();
+      _services.Stop (e, send, send);
 
       _state = ServerState.Stop;
     }
@@ -859,7 +861,9 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      _services.Stop (e, !code.IsReserved ());
+
+      var send = !code.IsReserved ();
+      _services.Stop (e, send, send);
 
       _state = ServerState.Stop;
     }

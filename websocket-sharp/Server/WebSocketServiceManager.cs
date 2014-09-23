@@ -49,6 +49,7 @@ namespace WebSocketSharp.Server
     private Logger                                   _logger;
     private volatile ServerState                     _state;
     private object                                   _sync;
+    private TimeSpan                                 _waitTime;
 
     #endregion
 
@@ -67,6 +68,28 @@ namespace WebSocketSharp.Server
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
+      _waitTime = TimeSpan.FromSeconds (1);
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      set {
+        lock (_sync) {
+          if (value == _waitTime)
+            return;
+
+          _waitTime = value;
+          foreach (var host in _hosts.Values)
+            host.WaitTime = value;
+        }
+      }
     }
 
     #endregion
@@ -240,14 +263,14 @@ namespace WebSocketSharp.Server
     }
 
     private Dictionary<string, Dictionary<string, bool>> broadping (
-      byte[] frameAsBytes, int millisecondsTimeout)
+      byte[] frameAsBytes, TimeSpan timeout)
     {
       var res = new Dictionary<string, Dictionary<string, bool>> ();
       foreach (var host in Hosts) {
         if (_state != ServerState.Start)
           break;
 
-        res.Add (host.Path, host.Sessions.Broadping (frameAsBytes, millisecondsTimeout));
+        res.Add (host.Path, host.Sessions.Broadping (frameAsBytes, timeout));
       }
 
       return res;
@@ -274,6 +297,9 @@ namespace WebSocketSharp.Server
         host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
         if (!_clean)
           host.KeepClean = false;
+
+        if (_waitTime != host.WaitTime)
+          host.WaitTime = _waitTime;
 
         if (_state == ServerState.Start)
           host.Start ();
@@ -325,16 +351,17 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (CloseEventArgs e, bool send)
+    internal void Stop (CloseEventArgs e, bool send, bool wait)
     {
       lock (_sync) {
         _state = ServerState.ShuttingDown;
-        var bytes = send
-                    ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
-                    : null;
 
+        var bytes =
+          send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
+
+        var timeout = wait ? _waitTime : TimeSpan.Zero;
         foreach (var host in _hosts.Values)
-          host.Sessions.Stop (e, bytes);
+          host.Sessions.Stop (e, bytes, timeout);
 
         _hosts.Clear ();
         _state = ServerState.Stop;
@@ -512,7 +539,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (WebSocketFrame.EmptyUnmaskPingData, 1000);
+      return broadping (WebSocketFrame.EmptyUnmaskPingData, _waitTime);
     }
 
     /// <summary>
@@ -543,7 +570,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+      return broadping (WebSocketFrame.CreatePingFrame (data, false).ToByteArray (), _waitTime);
     }
 
     /// <summary>

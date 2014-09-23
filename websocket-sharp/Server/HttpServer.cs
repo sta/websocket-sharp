@@ -424,7 +424,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true);
+      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true, false);
       _listener.Abort ();
 
       _state = ServerState.Stop;
@@ -696,7 +696,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      _services.Stop (new CloseEventArgs (), true);
+      _services.Stop (new CloseEventArgs (), true, true);
       stopReceiving (5000);
 
       _state = ServerState.Stop;
@@ -729,7 +729,9 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      _services.Stop (e, !code.IsReserved ());
+      var send = !code.IsReserved ();
+      _services.Stop (e, send, send);
+
       stopReceiving (5000);
 
       _state = ServerState.Stop;
@@ -762,7 +764,9 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      _services.Stop (e, !code.IsReserved ());
+      var send = !code.IsReserved ();
+      _services.Stop (e, send, send);
+
       stopReceiving (5000);
 
       _state = ServerState.Stop;

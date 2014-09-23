@@ -67,6 +67,16 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal TimeSpan WaitTime {
+      get {
+        return Sessions.WaitTime;
+      }
+
+      set {
+        Sessions.WaitTime = value;
+      }
+    }
+
     #endregion
 
     #region Public Properties
@@ -122,11 +132,13 @@ namespace WebSocketSharp.Server
     internal void Stop (ushort code, string reason)
     {
       var e = new CloseEventArgs (code, reason);
-      var bytes = !code.IsReserved ()
-                  ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
-                  : null;
 
-      Sessions.Stop (e, bytes);
+      var send = !code.IsReserved ();
+      var bytes =
+        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
+
+      var timeout = send ? WaitTime : TimeSpan.Zero;
+      Sessions.Stop (e, bytes, timeout);
     }
 
     #endregion

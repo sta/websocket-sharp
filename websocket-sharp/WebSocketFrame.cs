@@ -61,7 +61,7 @@ namespace WebSocketSharp
 
     static WebSocketFrame ()
     {
-      EmptyUnmaskPingData = CreatePingFrame (Mask.Unmask).ToByteArray ();
+      EmptyUnmaskPingData = CreatePingFrame (false).ToByteArray ();
     }
 
     #endregion
@@ -523,30 +523,25 @@ Extended Payload Length: {7}
 
     #region Internal Methods
 
-    internal static WebSocketFrame CreateCloseFrame (Mask mask, byte[] data)
+    internal static WebSocketFrame CreateCloseFrame (byte[] data, bool mask)
     {
-      return new WebSocketFrame (Opcode.Close, mask, new PayloadData (data));
+      return CreateCloseFrame (new PayloadData (data), mask);
     }
 
-    internal static WebSocketFrame CreateCloseFrame (Mask mask, PayloadData payload)
+    internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
     {
-      return new WebSocketFrame (Opcode.Close, mask, payload);
+      return new WebSocketFrame (Opcode.Close, mask ? Mask.Mask : Mask.Unmask, payloadData);
     }
 
-    internal static WebSocketFrame CreateCloseFrame (Mask mask, CloseStatusCode code, string reason)
+    internal static WebSocketFrame CreatePingFrame (bool mask)
+    {
+      return new WebSocketFrame (Opcode.Ping, mask ? Mask.Mask : Mask.Unmask, new PayloadData ());
+    }
+
+    internal static WebSocketFrame CreatePingFrame (byte[] data, bool mask)
     {
       return new WebSocketFrame (
-        Opcode.Close, mask, new PayloadData (((ushort) code).Append (reason)));
-    }
-
-    internal static WebSocketFrame CreatePingFrame (Mask mask)
-    {
-      return new WebSocketFrame (Opcode.Ping, mask, new PayloadData ());
-    }
-
-    internal static WebSocketFrame CreatePingFrame (Mask mask, byte[] data)
-    {
-      return new WebSocketFrame (Opcode.Ping, mask, new PayloadData (data));
+        Opcode.Ping, mask ? Mask.Mask : Mask.Unmask, new PayloadData (data));
     }
 
     internal static WebSocketFrame CreatePongFrame (Mask mask, PayloadData payload)

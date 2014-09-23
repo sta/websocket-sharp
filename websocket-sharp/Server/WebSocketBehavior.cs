@@ -315,8 +315,9 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       _websocket = context.WebSocket;
-      _websocket.Protocol = _protocol;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.Protocol = _protocol;
+      _websocket.WaitTime = sessions.WaitTime;
 
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;

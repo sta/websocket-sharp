@@ -101,6 +101,7 @@ namespace WebSocketSharp
     private TcpClient               _tcpClient;
     private Uri                     _uri;
     private const string            _version = "13";
+    private TimeSpan                _waitTime;
 
     #endregion
 
@@ -122,6 +123,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
+      _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
     }
@@ -136,6 +138,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
+      _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
     }
@@ -191,6 +194,7 @@ namespace WebSocketSharp
       _client = true;
       _logger = new Logger ();
       _secure = _uri.Scheme == "wss";
+      _waitTime = TimeSpan.FromSeconds (5);
 
       init ();
     }
@@ -219,6 +223,16 @@ namespace WebSocketSharp
     internal bool IsConnected {
       get {
         return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
+      }
+    }
+
+    internal TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      set {
+        _waitTime = value;
       }
     }
 
@@ -596,18 +610,10 @@ namespace WebSocketSharp
 
       _logger.Trace ("Start closing the connection.");
 
-      e.WasClean =
-        _client
-        ? closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Mask, e.PayloadData).ToByteArray ()
-                 : null,
-            wait ? 5000 : 0,
-            releaseClientResources)
-        : closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, e.PayloadData).ToByteArray ()
-                 : null,
-            wait ? 1000 : 0,
-            releaseServerResources);
+      e.WasClean = closeHandshake (
+        WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray (),
+        wait ? _waitTime : TimeSpan.Zero,
+        _client ? (Action) releaseClientResources : releaseServerResources);
 
       _logger.Trace ("End closing the connection.");
 
@@ -627,13 +633,11 @@ namespace WebSocketSharp
       closer.BeginInvoke (e, send, wait, ar => closer.EndInvoke (ar), null);
     }
 
-    private bool closeHandshake (byte[] frameAsBytes, int millisecondsTimeout, Action release)
+    private bool closeHandshake (byte[] frameAsBytes, TimeSpan timeout, Action release)
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-      var received = millisecondsTimeout == 0 ||
-                     (sent &&
-                      _exitReceiving != null &&
-                      _exitReceiving.WaitOne (millisecondsTimeout));
+      var received = timeout == TimeSpan.Zero ||
+                     (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeout));
 
       release ();
       if (_receivePong != null) {
@@ -1412,7 +1416,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs e, byte[] frameAsBytes, int millisecondsTimeout)
+    internal void Close (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
@@ -1423,7 +1427,7 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      e.WasClean = closeHandshake (frameAsBytes, millisecondsTimeout, releaseServerResources);
+      e.WasClean = closeHandshake (frameAsBytes, timeout, releaseServerResources);
 
       _readyState = WebSocketState.Closed;
       try {
@@ -1468,14 +1472,14 @@ namespace WebSocketSharp
       return Convert.ToBase64String (src);
     }
 
-    internal bool Ping (byte[] frameAsBytes, int millisecondsTimeout)
+    internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       try {
         AutoResetEvent pong;
         return _readyState == WebSocketState.Open &&
                send (frameAsBytes) &&
                (pong = _receivePong) != null &&
-               pong.WaitOne (millisecondsTimeout);
+               pong.WaitOne (timeout);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -1879,9 +1883,11 @@ namespace WebSocketSharp
     /// </returns>
     public bool Ping ()
     {
-      return _client
-             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask).ToByteArray (), 5000)
-             : Ping (WebSocketFrame.EmptyUnmaskPingData, 1000);
+      var bytes = _client
+                  ? WebSocketFrame.CreatePingFrame (true).ToByteArray ()
+                  : WebSocketFrame.EmptyUnmaskPingData;
+
+      return Ping (bytes, _waitTime);
     }
 
     /// <summary>
@@ -1908,9 +1914,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      return _client
-             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask, data).ToByteArray (), 5000)
-             : Ping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+      return Ping (WebSocketFrame.CreatePingFrame (data, _client).ToByteArray (), _waitTime);
     }
 
     /// <summary>
