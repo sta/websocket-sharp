@@ -53,7 +53,7 @@ namespace WebSocketSharp
 
     #region Internal Fields
 
-    internal static readonly byte[] EmptyUnmaskPingData;
+    internal static readonly byte[] EmptyUnmaskPingBytes;
 
     #endregion
 
@@ -61,7 +61,7 @@ namespace WebSocketSharp
 
     static WebSocketFrame ()
     {
-      EmptyUnmaskPingData = CreatePingFrame (false).ToByteArray ();
+      EmptyUnmaskPingBytes = CreatePingFrame (false).ToByteArray ();
     }
 
     #endregion
@@ -76,32 +76,26 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal WebSocketFrame (Opcode opcode, PayloadData payload)
-      : this (Fin.Final, opcode, Mask.Mask, payload, false)
+    internal WebSocketFrame (Opcode opcode, PayloadData payloadData, bool mask)
+      : this (Fin.Final, opcode, payloadData, false, mask)
     {
     }
 
-    internal WebSocketFrame (Opcode opcode, Mask mask, PayloadData payload)
-      : this (Fin.Final, opcode, mask, payload, false)
-    {
-    }
-
-    internal WebSocketFrame (Fin fin, Opcode opcode, Mask mask, PayloadData payload)
-      : this (fin, opcode, mask, payload, false)
+    internal WebSocketFrame (Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask)
+      : this (fin, opcode, new PayloadData (data), compressed, mask)
     {
     }
 
     internal WebSocketFrame (
-      Fin fin, Opcode opcode, Mask mask, PayloadData payload, bool compressed)
+      Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
     {
       _fin = fin;
       _rsv1 = isData (opcode) && compressed ? Rsv.On : Rsv.Off;
       _rsv2 = Rsv.Off;
       _rsv3 = Rsv.Off;
       _opcode = opcode;
-      _mask = mask;
 
-      var len = payload.Length;
+      var len = payloadData.Length;
       if (len < 126) {
         _payloadLength = (byte) len;
         _extPayloadLength = new byte[0];
@@ -115,15 +109,17 @@ namespace WebSocketSharp
         _extPayloadLength = len.InternalToByteArray (ByteOrder.Big);
       }
 
-      if (mask == Mask.Mask) {
+      if (mask) {
+        _mask = Mask.Mask;
         _maskingKey = createMaskingKey ();
-        payload.Mask (_maskingKey);
+        payloadData.Mask (_maskingKey);
       }
       else {
+        _mask = Mask.Unmask;
         _maskingKey = new byte[0];
       }
 
-      _payloadData = payload;
+      _payloadData = payloadData;
     }
 
     #endregion
@@ -523,36 +519,19 @@ Extended Payload Length: {7}
 
     #region Internal Methods
 
-    internal static WebSocketFrame CreateCloseFrame (byte[] data, bool mask)
-    {
-      return CreateCloseFrame (new PayloadData (data), mask);
-    }
-
     internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
     {
-      return new WebSocketFrame (Opcode.Close, mask ? Mask.Mask : Mask.Unmask, payloadData);
+      return new WebSocketFrame (Fin.Final, Opcode.Close, payloadData, false, mask);
     }
 
     internal static WebSocketFrame CreatePingFrame (bool mask)
     {
-      return new WebSocketFrame (Opcode.Ping, mask ? Mask.Mask : Mask.Unmask, new PayloadData ());
+      return new WebSocketFrame (Fin.Final, Opcode.Ping, new PayloadData (), false, mask);
     }
 
     internal static WebSocketFrame CreatePingFrame (byte[] data, bool mask)
     {
-      return new WebSocketFrame (
-        Opcode.Ping, mask ? Mask.Mask : Mask.Unmask, new PayloadData (data));
-    }
-
-    internal static WebSocketFrame CreatePongFrame (Mask mask, PayloadData payload)
-    {
-      return new WebSocketFrame (Opcode.Pong, mask, payload);
-    }
-
-    internal static WebSocketFrame CreateWebSocketFrame (
-      Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
-    {
-      return new WebSocketFrame (fin, opcode, mask, new PayloadData (data), compressed);
+      return new WebSocketFrame (Fin.Final, Opcode.Ping, new PayloadData (data), false, mask);
     }
 
     internal static WebSocketFrame Read (Stream stream)

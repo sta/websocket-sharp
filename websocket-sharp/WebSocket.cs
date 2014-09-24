@@ -967,8 +967,7 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      var mask = _client ? Mask.Mask : Mask.Unmask;
-      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData).ToByteArray ()))
+      if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
 
       return true;
@@ -1087,7 +1086,7 @@ namespace WebSocketSharp
             compressed = true;
           }
 
-          sent = send (opcode, _client ? Mask.Mask : Mask.Unmask, stream, compressed);
+          sent = send (opcode, stream, compressed);
           if (!sent)
             error ("Sending the data has been interrupted.", null);
         }
@@ -1106,14 +1105,14 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, Mask mask, Stream stream, bool compressed)
+    private bool send (Opcode opcode, Stream stream, bool compressed)
     {
       var len = stream.Length;
 
       /* Not fragmented */
 
       if (len == 0)
-        return send (Fin.Final, opcode, mask, new byte[0], compressed);
+        return send (Fin.Final, opcode, new byte[0], compressed);
 
       var quo = len / FragmentLength;
       var rem = (int) (len % FragmentLength);
@@ -1122,25 +1121,25 @@ namespace WebSocketSharp
       if (quo == 0) {
         buff = new byte[rem];
         return stream.Read (buff, 0, rem) == rem &&
-               send (Fin.Final, opcode, mask, buff, compressed);
+               send (Fin.Final, opcode, buff, compressed);
       }
 
       buff = new byte[FragmentLength];
       if (quo == 1 && rem == 0)
         return stream.Read (buff, 0, FragmentLength) == FragmentLength &&
-               send (Fin.Final, opcode, mask, buff, compressed);
+               send (Fin.Final, opcode, buff, compressed);
 
       /* Send fragmented */
 
       // Begin
       if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-          !send (Fin.More, opcode, mask, buff, compressed))
+          !send (Fin.More, opcode, buff, compressed))
         return false;
 
       var n = rem == 0 ? quo - 2 : quo - 1;
       for (long i = 0; i < n; i++)
         if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-            !send (Fin.More, Opcode.Cont, mask, buff, compressed))
+            !send (Fin.More, Opcode.Cont, buff, compressed))
           return false;
 
       // End
@@ -1150,10 +1149,10 @@ namespace WebSocketSharp
         buff = new byte[rem];
 
       return stream.Read (buff, 0, rem) == rem &&
-             send (Fin.Final, Opcode.Cont, mask, buff, compressed);
+             send (Fin.Final, Opcode.Cont, buff, compressed);
     }
 
-    private bool send (Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
+    private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
@@ -1162,7 +1161,7 @@ namespace WebSocketSharp
         }
 
         return sendBytes (
-          WebSocketFrame.CreateWebSocketFrame (fin, opcode, mask, data, compressed).ToByteArray ());
+          new WebSocketFrame (fin, opcode, data, compressed, _client).ToByteArray ());
       }
     }
 
@@ -1500,12 +1499,12 @@ namespace WebSocketSharp
           try {
             byte[] cached;
             if (!cache.TryGetValue (_compression, out cached)) {
-              cached = WebSocketFrame.CreateWebSocketFrame (
+              cached = new WebSocketFrame (
                 Fin.Final,
                 opcode,
-                Mask.Unmask,
                 data.Compress (_compression),
-                _compression != CompressionMethod.None)
+                _compression != CompressionMethod.None,
+                false)
                 .ToByteArray ();
 
               cache.Add (_compression, cached);
@@ -1534,7 +1533,7 @@ namespace WebSocketSharp
             cached.Position = 0;
           }
 
-          send (opcode, Mask.Unmask, cached, _compression != CompressionMethod.None);
+          send (opcode, cached, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1885,7 +1884,7 @@ namespace WebSocketSharp
     {
       var bytes = _client
                   ? WebSocketFrame.CreatePingFrame (true).ToByteArray ()
-                  : WebSocketFrame.EmptyUnmaskPingData;
+                  : WebSocketFrame.EmptyUnmaskPingBytes;
 
       return Ping (bytes, _waitTime);
     }
