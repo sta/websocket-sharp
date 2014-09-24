@@ -37,11 +37,10 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private byte[]                 _data;
-    private static readonly byte[] _empty;
-    private long                   _extDataLength;
-    private long                   _length;
-    private bool                   _masked;
+    private byte[] _data;
+    private long   _extDataLength;
+    private long   _length;
+    private bool   _masked;
 
     #endregion
 
@@ -51,20 +50,11 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Static Constructor
-
-    static PayloadData ()
-    {
-      _empty = new byte[0];
-    }
-
-    #endregion
-
     #region Internal Constructors
 
     internal PayloadData ()
     {
-      _data = _empty;
+      _data = new byte[0];
     }
 
     internal PayloadData (byte[] data)
@@ -95,8 +85,7 @@ namespace WebSocketSharp
 
     internal bool IncludesReservedCloseStatusCode {
       get {
-        return _length > 1 &&
-               _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
+        return _length > 1 && _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
       }
     }
 
@@ -116,7 +105,7 @@ namespace WebSocketSharp
       get {
         return _extDataLength > 0
                ? _data.SubArray (0, _extDataLength)
-               : _empty;
+               : new byte[0];
       }
     }
 
