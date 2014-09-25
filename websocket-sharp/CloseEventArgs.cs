@@ -60,9 +60,11 @@ namespace WebSocketSharp
 
     internal CloseEventArgs ()
     {
+      _payloadData = new PayloadData ();
+      _rawData = _payloadData.ApplicationData;
+
       _code = (ushort) CloseStatusCode.NoStatusCode;
       _reason = String.Empty;
-      _rawData = new byte[0];
     }
 
     internal CloseEventArgs (ushort code)
