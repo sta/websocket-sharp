@@ -70,17 +70,17 @@ namespace WebSocketSharp
     IncorrectData = 1003,
     /// <summary>
     /// Equivalent to close status 1004.
-    /// Still undefined. Reserved value.
+    /// Still undefined. A Reserved value.
     /// </summary>
     Undefined = 1004,
     /// <summary>
     /// Equivalent to close status 1005.
-    /// Indicates that no status code was actually present. Reserved value.
+    /// Indicates that no status code was actually present. A Reserved value.
     /// </summary>
     NoStatusCode = 1005,
     /// <summary>
     /// Equivalent to close status 1006.
-    /// Indicates that the connection was closed abnormally. Reserved value.
+    /// Indicates that the connection was closed abnormally. A Reserved value.
     /// </summary>
     Abnormal = 1006,
     /// <summary>
@@ -117,7 +117,7 @@ namespace WebSocketSharp
     /// <summary>
     /// Equivalent to close status 1015.
     /// Indicates that the connection was closed due to a failure to perform a TLS handshake.
-    /// Reserved value.
+    /// A Reserved value.
     /// </summary>
     TlsHandshakeFailure = 1015
   }
