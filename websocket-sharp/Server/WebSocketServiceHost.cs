@@ -67,16 +67,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal TimeSpan WaitTime {
-      get {
-        return Sessions.WaitTime;
-      }
-
-      set {
-        Sessions.WaitTime = value;
-      }
-    }
-
     #endregion
 
     #region Public Properties
@@ -114,6 +104,15 @@ namespace WebSocketSharp.Server
     /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
     /// </value>
     public abstract Type Type { get; }
+
+    /// <summary>
+    /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+    /// the same as 1 second.
+    /// </value>
+    public abstract TimeSpan WaitTime { get; set; }
 
     #endregion
 
@@ -162,6 +161,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private Func<TBehavior>         _initializer;
+    private Logger                  _logger;
     private string                  _path;
     private WebSocketSessionManager _sessions;
 
@@ -173,6 +173,7 @@ namespace WebSocketSharp.Server
     {
       _path = path;
       _initializer = initializer;
+      _logger = logger;
       _sessions = new WebSocketSessionManager (logger);
     }
 
@@ -205,6 +206,22 @@ namespace WebSocketSharp.Server
     public override Type Type {
       get {
         return typeof (TBehavior);
+      }
+    }
+
+    public override TimeSpan WaitTime {
+      get {
+        return _sessions.WaitTime;
+      }
+
+      set {
+        var msg = _sessions.State.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _sessions.WaitTime = value;
       }
     }
 

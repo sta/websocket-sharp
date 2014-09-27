@@ -86,21 +86,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal TimeSpan WaitTime {
-      get {
-        return _waitTime;
-      }
-
-      set {
-        if (value == _waitTime)
-          return;
-
-        _waitTime = value;
-        foreach (var session in Sessions)
-          session.Context.WebSocket.WaitTime = value;
-      }
-    }
-
     #endregion
 
     #region Public Properties
@@ -221,6 +206,27 @@ namespace WebSocketSharp.Server
 
         lock (_sync)
           return _sessions.Values.ToList ();
+      }
+    }
+
+    /// <summary>
+    /// Gets the wait time for the response to the WebSocket Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time.
+    /// </value>
+    public TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      internal set {
+        if (value == _waitTime)
+          return;
+
+        _waitTime = value;
+        foreach (var session in Sessions)
+          session.Context.WebSocket.WaitTime = value;
       }
     }
 

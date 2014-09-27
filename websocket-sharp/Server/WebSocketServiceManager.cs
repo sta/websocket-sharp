@@ -73,27 +73,6 @@ namespace WebSocketSharp.Server
 
     #endregion
 
-    #region Internal Properties
-
-    internal TimeSpan WaitTime {
-      get {
-        return _waitTime;
-      }
-
-      set {
-        lock (_sync) {
-          if (value == _waitTime)
-            return;
-
-          _waitTime = value;
-          foreach (var host in _hosts.Values)
-            host.WaitTime = value;
-        }
-      }
-    }
-
-    #endregion
-
     #region Public Properties
 
     /// <summary>
@@ -198,6 +177,29 @@ namespace WebSocketSharp.Server
         }
 
         return cnt;
+      }
+    }
+
+    /// <summary>
+    /// Gets the wait time for the response to the WebSocket Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time.
+    /// </value>
+    public TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      internal set {
+        lock (_sync) {
+          if (value == _waitTime)
+            return;
+
+          _waitTime = value;
+          foreach (var host in _hosts.Values)
+            host.WaitTime = value;
+        }
       }
     }
 

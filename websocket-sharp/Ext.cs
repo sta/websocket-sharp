@@ -302,6 +302,13 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfValidWaitTime (this TimeSpan time)
+    {
+      return time <= TimeSpan.Zero
+             ? "A wait time is zero or less."
+             : null;
+    }
+
     internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
     {
       response.StatusCode = (int) code;
