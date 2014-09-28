@@ -351,6 +351,29 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+    /// the same as 1 second.
+    /// </value>
+    public TimeSpan WaitTime {
+      get {
+        return _services.WaitTime;
+      }
+
+      set {
+        var msg = _state.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _services.WaitTime = value;
+      }
+    }
+
+    /// <summary>
     /// Gets the access to the WebSocket services provided by the server.
     /// </summary>
     /// <value>
