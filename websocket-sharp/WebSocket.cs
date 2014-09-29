@@ -226,16 +226,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal TimeSpan WaitTime {
-      get {
-        return _waitTime;
-      }
-
-      set {
-        _waitTime = value;
-      }
-    }
-
     #endregion
 
     #region Public Properties
@@ -481,6 +471,34 @@ namespace WebSocketSharp
       }
     }
 
+    /// <summary>
+    /// Gets or sets the wait time for the response to the Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+    /// the same as 5 seconds, or 1 second if the <see cref="WebSocket"/> is used by
+    /// a server.
+    /// </value>
+    public TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (true, false) ?? value.CheckIfValidWaitTime ();
+          if (msg != null) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the wait time.", null);
+
+            return;
+          }
+
+          _waitTime = value;
+        }
+      }
+    }
+
     #endregion
 
     #region Public Events
@@ -535,11 +553,11 @@ namespace WebSocketSharp
       return sendHttpResponse (createHandshakeResponse ());
     }
 
-    private string checkIfAvailable (bool availableAsServer, bool availableAsConnected)
+    private string checkIfAvailable (bool asServer, bool asConnected)
     {
-      return !_client && !availableAsServer
+      return !_client && !asServer
              ? "This operation isn't available as a server."
-             : !availableAsConnected
+             : !asConnected
                ? _readyState.CheckIfConnectable ()
                : null;
     }

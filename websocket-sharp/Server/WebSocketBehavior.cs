@@ -317,7 +317,10 @@ namespace WebSocketSharp.Server
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
       _websocket.Protocol = _protocol;
-      _websocket.WaitTime = sessions.WaitTime;
+
+      var waitTime = sessions.WaitTime;
+      if (waitTime != _websocket.WaitTime)
+        _websocket.WaitTime = waitTime;
 
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;
