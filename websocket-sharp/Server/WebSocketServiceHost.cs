@@ -187,6 +187,12 @@ namespace WebSocketSharp.Server
       }
 
       set {
+        var msg = _sessions.State.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
         _sessions.KeepClean = value;
       }
     }
