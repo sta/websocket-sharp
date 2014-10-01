@@ -7,19 +7,28 @@ namespace Example
 {
   public class Program
   {
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
+      /* Create a new instance of the WebSocket class.
+       *
+       * The WebSocket class inherits the System.IDisposable interface, so you can use the using
+       * statement. The WebSocket connection has been closed with close status 1001 (going away)
+       * when the control leaves the using block.
+       *
+       * If you would like to connect to the server with the secure connection, you should create
+       * the instance with the wss scheme WebSocket URL.
+       */
       using (var nf = new Notifier ())
       using (var ws = new WebSocket ("ws://echo.websocket.org"))
-      //using (var ws = new WebSocket ("wss://echo.websocket.org")) // For Secure Connection
+      //using (var ws = new WebSocket ("wss://echo.websocket.org"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo"))
-      //using (var ws = new WebSocket ("wss://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Echo?name=nobita"))
+      //using (var ws = new WebSocket ("wss://localhost:4649/Echo"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat"))
-      //using (var ws = new WebSocket ("wss://localhost:4649/Chat"))
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
+      //using (var ws = new WebSocket ("wss://localhost:4649/Chat"))
       {
-        /* Setting WebSocket events */
+        // To set the WebSocket events.
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
         ws.OnMessage += (sender, e) =>
@@ -45,37 +54,40 @@ namespace Example
               Body = e.Reason,
               Icon = "notification-message-im"
             });
-         
+
 #if DEBUG
-        // Changing the logging level
+        // To change the logging level.
         ws.Log.Level = LogLevel.Trace;
+
+        // To change the wait time for the response to the Ping or Close.
+        ws.WaitTime = TimeSpan.FromSeconds (10);
 #endif
-        // Setting Per-message Compression
+        // To negotiate the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
 
-        /* For Secure Connection
-        ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
-          ws.Log.Debug (String.Format ("\n{0}\n{1}", certificate.Issuer, certificate.Subject));
-          return true; // If the server cert is valid
-        };
-         */
+        // To validate the server certificate.
+        //ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
+        //  ws.Log.Debug (String.Format ("\n{0}\n{1}", certificate.Issuer, certificate.Subject));
+        //  return true; // If the server certificate is valid.
+        //};
 
-        // For HTTP Authentication (Basic/Digest)
+        // To set the credentials for the HTTP Authentication (Basic/Digest).
         //ws.SetCredentials ("nobita", "password", false);
 
-        // Setting Origin header
-        //ws.Origin = "http://echo.websocket.org";
+        // To send the Origin header.
         //ws.Origin = "http://localhost:4649";
 
-        // Setting Cookies
+        // To send the Cookies.
         //ws.SetCookie (new Cookie ("name", "nobita"));
         //ws.SetCookie (new Cookie ("roles", "\"idiot, gunfighter\""));
 
-        // Setting Proxy
+        // To connect through the HTTP Proxy server.
         //ws.SetProxy ("http://localhost:3128", "nobita", "password");
 
-        // Connecting to the server
+        // Connect to the server.
         ws.Connect ();
+
+        // Connect to the server asynchronously.
         //ws.ConnectAsync ();
 
         Console.WriteLine ("\nType 'exit' to exit.\n");
@@ -86,7 +98,7 @@ namespace Example
           if (msg == "exit")
             break;
 
-          // Sending a text message
+          // Send a text message.
           ws.Send (msg);
         }
       }
