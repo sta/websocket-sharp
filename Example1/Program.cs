@@ -5,7 +5,7 @@ namespace Example1
 {
   public class Program
   {
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
       using (var streamer = new AudioStreamer ("ws://agektmr.node-ninja.com:3000/socket"))
       //using (var streamer = new AudioStreamer ("ws://localhost:3000/socket"))
