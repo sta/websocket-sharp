@@ -9,23 +9,31 @@ namespace Example2
 {
   public class Program
   {
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
+      /* Create a new instance of the WebSocketServer class.
+       *
+       * If you would like to provide the secure connection, you should create the instance
+       * with the 'secure' parameter set to true, or the wss scheme WebSocket URL.
+       */
       var wssv = new WebSocketServer (4649);
-      //var wssv = new WebSocketServer (4649, true); // For Secure Connection
+      //var wssv = new WebSocketServer (4649, true);
       //var wssv = new WebSocketServer ("ws://localhost:4649");
-      //var wssv = new WebSocketServer ("wss://localhost:4649"); // For Secure Connection
+      //var wssv = new WebSocketServer ("wss://localhost:4649");
 #if DEBUG
-      // Changing the logging level
+      // To change the logging level.
       wssv.Log.Level = LogLevel.Trace;
+
+      // To change the wait time for the response to the WebSocket Ping or Close.
+      wssv.WaitTime = TimeSpan.FromSeconds (2);
 #endif
-      /* For Secure Connection
-      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
-      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
+      /* To provide the secure connection.
+      var cert = ConfigurationManager.AppSettings["ServerCertFile"];
+      var password = ConfigurationManager.AppSettings["CertFilePassword"];
       wssv.Certificate = new X509Certificate2 (cert, password);
        */
 
-      /* For HTTP Authentication (Basic/Digest)
+      /* To provide the HTTP Authentication (Basic/Digest).
       wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       wssv.Realm = "WebSocket Test";
       wssv.UserCredentialsFinder = identity => {
@@ -36,29 +44,29 @@ namespace Example2
       };
        */
 
-      // Not to remove inactive clients periodically
+      // Not to remove inactive sessions periodically.
       //wssv.KeepClean = false;
 
-      // To resolve to wait for socket in TIME_WAIT state
+      // To resolve to wait for socket in TIME_WAIT state.
       //wssv.ReuseAddress = true;
 
-      // Adding WebSocket services
+      // Add the WebSocket services.
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
 
-      /* With initializing
+      /* Add the WebSocket service with initializing.
       wssv.AddWebSocketService<Chat> (
         "/Chat",
         () => new Chat ("Anon#") {
           Protocol = "chat",
-          // Checking Origin header
+          // To validate the Origin header.
           OriginValidator = value => {
             Uri origin;
             return !value.IsNullOrEmpty () &&
                    Uri.TryCreate (value, UriKind.Absolute, out origin) &&
                    origin.Host == "localhost";
           },
-          // Checking Cookies
+          // To validate the Cookies.
           CookiesValidator = (req, res) => {
             foreach (Cookie cookie in req) {
               cookie.Expired = true;
@@ -72,9 +80,7 @@ namespace Example2
 
       wssv.Start ();
       if (wssv.IsListening) {
-        Console.WriteLine (
-          "A WebSocket server listening on port: {0}, providing services:", wssv.Port);
-
+        Console.WriteLine ("Listening on port {0}, providing services:", wssv.Port);
         foreach (var path in wssv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
