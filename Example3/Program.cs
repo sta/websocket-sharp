@@ -1,6 +1,7 @@
 using System;
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -9,26 +10,32 @@ namespace Example3
 {
   public class Program
   {
-    private static HttpServer _httpsv;
-
-    public static void Main (string [] args)
+    public static void Main (string[] args)
     {
-      _httpsv = new HttpServer (4649);
-      //_httpsv = new HttpServer (4649, true); // For Secure Connection
+      /* Create a new instance of the HttpServer class.
+       *
+       * If you would like to provide the secure connection, you should create the instance
+       * with the 'secure' parameter set to true.
+       */
+      var httpsv = new HttpServer (4649);
+      //httpsv = new HttpServer (4649, true);
 #if DEBUG
-      // Changing the logging level
-      _httpsv.Log.Level = LogLevel.Trace;
+      // To change the logging level.
+      httpsv.Log.Level = LogLevel.Trace;
+
+      // To change the wait time for the response to the WebSocket Ping or Close.
+      httpsv.WaitTime = TimeSpan.FromSeconds (2);
 #endif
-      /* For Secure Connection
-      var cert = ConfigurationManager.AppSettings ["ServerCertFile"];
-      var password = ConfigurationManager.AppSettings ["CertFilePassword"];
-      _httpsv.Certificate = new X509Certificate2 (cert, password);
+      /* To provide the secure connection.
+      var cert = ConfigurationManager.AppSettings["ServerCertFile"];
+      var password = ConfigurationManager.AppSettings["CertFilePassword"];
+      httpsv.Certificate = new X509Certificate2 (cert, password);
        */
 
-      /* For HTTP Authentication (Basic/Digest)
-      _httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
-      _httpsv.Realm = "WebSocket Test";
-      _httpsv.UserCredentialsFinder = identity => {
+      /* To provide the HTTP Authentication (Basic/Digest).
+      httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
+      httpsv.Realm = "WebSocket Test";
+      httpsv.UserCredentialsFinder = identity => {
         var expected = "nobita";
         return identity.Name == expected
                ? new NetworkCredential (expected, "password", "gunfighter")
@@ -36,32 +43,52 @@ namespace Example3
       };
        */
 
-      // Not to remove inactive clients in WebSocket services periodically
-      //_httpsv.KeepClean = false;
+      // To set the document root path.
+      httpsv.RootPath = ConfigurationManager.AppSettings["RootPath"];
 
-      // Setting the document root path
-      _httpsv.RootPath = ConfigurationManager.AppSettings ["RootPath"];
+      // To set the HTTP GET method event.
+      httpsv.OnGet += (sender, e) => {
+        var req = e.Request;
+        var res = e.Response;
 
-      // Setting HTTP method events
-      _httpsv.OnGet += (sender, e) => onGet (e);
+        var path = req.RawUrl;
+        if (path == "/")
+          path += "index.html";
 
-      // Adding WebSocket services
-      _httpsv.AddWebSocketService<Echo> ("/Echo");
-      _httpsv.AddWebSocketService<Chat> ("/Chat");
+        var content = httpsv.GetFile (path);
+        if (content == null) {
+          res.StatusCode = (int) HttpStatusCode.NotFound;
+          return;
+        }
 
-      /* With initializing
-      _httpsv.AddWebSocketService<Chat> (
+        if (path.EndsWith (".html")) {
+          res.ContentType = "text/html";
+          res.ContentEncoding = Encoding.UTF8;
+        }
+
+        res.WriteContent (content);
+      };
+
+      // Not to remove the inactive WebSocket sessions periodically.
+      //httpsv.KeepClean = false;
+
+      // Add the WebSocket services.
+      httpsv.AddWebSocketService<Echo> ("/Echo");
+      httpsv.AddWebSocketService<Chat> ("/Chat");
+
+      /* Add the WebSocket service with initializing.
+      httpsv.AddWebSocketService<Chat> (
         "/Chat",
         () => new Chat ("Anon#") {
           Protocol = "chat",
-          // Checking Origin header
+          // To validate the Origin header.
           OriginValidator = value => {
             Uri origin;
             return !value.IsNullOrEmpty () &&
                    Uri.TryCreate (value, UriKind.Absolute, out origin) &&
                    origin.Host == "localhost";
           },
-          // Checking Cookies
+          // To validate the Cookies.
           CookiesValidator = (req, res) => {
             foreach (Cookie cookie in req) {
               cookie.Expired = true;
@@ -73,40 +100,17 @@ namespace Example3
         });
        */
 
-      _httpsv.Start ();
-      if (_httpsv.IsListening) {
-        Console.WriteLine (
-          "An HTTP server listening on port: {0}, providing WebSocket services:", _httpsv.Port);
-
-        foreach (var path in _httpsv.WebSocketServices.Paths)
+      httpsv.Start ();
+      if (httpsv.IsListening) {
+        Console.WriteLine ("Listening on port {0}, providing WebSocket services:", httpsv.Port);
+        foreach (var path in httpsv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
 
       Console.WriteLine ("\nPress Enter key to stop the server...");
       Console.ReadLine ();
 
-      _httpsv.Stop ();
-    }
-
-    private static byte [] getContent (string path)
-    {
-      if (path == "/")
-        path += "index.html";
-
-      return _httpsv.GetFile (path);
-    }
-
-    private static void onGet (HttpRequestEventArgs e)
-    {
-      var req = e.Request;
-      var res = e.Response;
-      var content = getContent (req.RawUrl);
-      if (content != null) {
-        res.WriteContent (content);
-        return;
-      }
-
-      res.StatusCode = (int) HttpStatusCode.NotFound;
+      httpsv.Stop ();
     }
   }
 }

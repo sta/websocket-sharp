@@ -7,10 +7,9 @@ namespace Example3
 {
   public class Chat : WebSocketBehavior
   {
-    private static int _num = 0;
-
-    private string _name;
-    private string _prefix;
+    private string     _name;
+    private static int _number = 0;
+    private string     _prefix;
 
     public Chat ()
       : this (null)
@@ -24,13 +23,15 @@ namespace Example3
 
     private string getName ()
     {
-      var name = Context.QueryString ["name"];
-      return !name.IsNullOrEmpty () ? name : (_prefix + getNum ());
+      var name = Context.QueryString["name"];
+      return !name.IsNullOrEmpty ()
+             ? name
+             : (_prefix + getNumber ());
     }
 
-    private static int getNum ()
+    private static int getNumber ()
     {
-      return Interlocked.Increment (ref _num);
+      return Interlocked.Increment (ref _number);
     }
 
     protected override void OnOpen ()
