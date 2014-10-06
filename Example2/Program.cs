@@ -44,7 +44,7 @@ namespace Example2
       };
        */
 
-      // Not to remove inactive sessions periodically.
+      // Not to remove the inactive sessions periodically.
       //wssv.KeepClean = false;
 
       // To resolve to wait for socket in TIME_WAIT state.
