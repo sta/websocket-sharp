@@ -106,7 +106,7 @@ using (var ws = new WebSocket ("ws://example.com")) {
 }
 ```
 
-The `WebSocket` class inherits the `System.IDisposable` interface, so you can use the `using` statement.
+The `WebSocket` class inherits the `System.IDisposable` interface, so you can use the `using` statement. And the WebSocket connection is closed with close status `1001` (going away) when the control leaves the `using` block.
 
 #### Step 3 ####
 
@@ -144,14 +144,14 @@ Or if it returns `Opcode.Binary`, you should use `e.RawData` property that retur
 
 ```cs
 if (e.Type == Opcode.Text) {
-  // Do something with e.Data
+  // Do something with e.Data.
   ...
 
   return;
 }
 
 if (e.Type == Opcode.Binary) {
-  // Do something with e.RawData
+  // Do something with e.RawData.
   ...
 
   return;
@@ -461,7 +461,7 @@ ws.SetCredentials ("nobita", "password", preAuth);
 
 If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first connection request to the server.
 
-Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest authentication (determined by the unauthorized response to the first connection request) credentials with the second connection request to the server.
+Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (determined by the unauthorized response to the first connection request) authentication credentials with the second connection request to the server.
 
 As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, like the following.
 
@@ -472,7 +472,7 @@ wssv.UserCredentialsFinder = id => {
   var expected = "nobita";
   return id.Name == expected
          ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles
-         : null; // If the user credentials not found.
+         : null; // If the user credentials aren't found.
 };
 ```
 
@@ -521,27 +521,27 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to check the **Origin header and Cookies** included in each WebSocket connection request, you should set each validation for the Origin header and Cookies in your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
+And if you would like to check the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
 
 ```cs
 wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
     OriginValidator = val => {
-      // Check the value of the Origin header, and return true if valid
+      // Check the value of the Origin header, and return true if valid.
       Uri origin;
       return !val.IsNullOrEmpty () &&
              Uri.TryCreate (val, UriKind.Absolute, out origin) &&
              origin.Host == "example.com";
     },
     CookiesValidator = (req, res) => {
-      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res' if necessary
+      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res' if necessary.
       foreach (Cookie cookie in req) {
         cookie.Expired = true;
         res.Add (cookie);
       }
 
-      return true; // If valid
+      return true; // If valid.
     }
   });
 ```
