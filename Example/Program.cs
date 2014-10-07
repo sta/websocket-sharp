@@ -11,12 +11,12 @@ namespace Example
     {
       /* Create a new instance of the WebSocket class.
        *
-       * The WebSocket class inherits the System.IDisposable interface, so you can use
-       * the using statement. And the WebSocket connection has been closed with close
-       * status 1001 (going away) when the control leaves the using block.
+       * The WebSocket class inherits the System.IDisposable interface, so you can use the using
+       * statement. And the WebSocket connection is closed with close status 1001 (going away)
+       * when the control leaves the using block.
        *
-       * If you would like to connect to the server with the secure connection, you should
-       * create the instance with the wss scheme WebSocket URL.
+       * If you would like to connect to the server with the secure connection, you should create
+       * the instance with the wss scheme WebSocket URL.
        */
       using (var nf = new Notifier ())
       using (var ws = new WebSocket ("ws://echo.websocket.org"))
@@ -67,7 +67,12 @@ namespace Example
 
         /* To validate the server certificate.
         ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
-          ws.Log.Debug (String.Format ("\n{0}\n{1}", certificate.Issuer, certificate.Subject));
+          ws.Log.Debug (
+            String.Format (
+              "Certificate:\n- Issuer: {0}\n- Subject: {1}",
+              certificate.Issuer,
+              certificate.Subject));
+
           return true; // If the server certificate is valid.
         };
          */
