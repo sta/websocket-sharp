@@ -35,11 +35,11 @@ namespace Example3
       /* To provide the HTTP Authentication (Basic/Digest).
       httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       httpsv.Realm = "WebSocket Test";
-      httpsv.UserCredentialsFinder = identity => {
+      httpsv.UserCredentialsFinder = id => {
         var expected = "nobita";
-        return identity.Name == expected
+        return id.Name == expected
                ? new NetworkCredential (expected, "password", "gunfighter")
-               : null;
+               : null; // If the user credentials aren't found.
       };
        */
 
@@ -82,27 +82,30 @@ namespace Example3
         () => new Chat ("Anon#") {
           Protocol = "chat",
           // To validate the Origin header.
-          OriginValidator = value => {
+          OriginValidator = val => {
+            // Check the value of the Origin header, and return true if valid.
             Uri origin;
-            return !value.IsNullOrEmpty () &&
-                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+            return !val.IsNullOrEmpty () &&
+                   Uri.TryCreate (val, UriKind.Absolute, out origin) &&
                    origin.Host == "localhost";
           },
           // To validate the Cookies.
           CookiesValidator = (req, res) => {
+            // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
+            // if necessary.
             foreach (Cookie cookie in req) {
               cookie.Expired = true;
               res.Add (cookie);
             }
 
-            return true;
+            return true; // If valid.
           }
         });
        */
 
       httpsv.Start ();
       if (httpsv.IsListening) {
-        Console.WriteLine ("Listening on port {0}, providing WebSocket services:", httpsv.Port);
+        Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
         foreach (var path in httpsv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
