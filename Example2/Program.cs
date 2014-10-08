@@ -36,11 +36,11 @@ namespace Example2
       /* To provide the HTTP Authentication (Basic/Digest).
       wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       wssv.Realm = "WebSocket Test";
-      wssv.UserCredentialsFinder = identity => {
+      wssv.UserCredentialsFinder = id => {
         var expected = "nobita";
-        return identity.Name == expected
+        return id.Name == expected
                ? new NetworkCredential (expected, "password", "gunfighter")
-               : null;
+               : null; // If the user credentials aren't found.
       };
        */
 
@@ -60,27 +60,30 @@ namespace Example2
         () => new Chat ("Anon#") {
           Protocol = "chat",
           // To validate the Origin header.
-          OriginValidator = value => {
+          OriginValidator = val => {
+            // Check the value of the Origin header, and return true if valid.
             Uri origin;
-            return !value.IsNullOrEmpty () &&
-                   Uri.TryCreate (value, UriKind.Absolute, out origin) &&
+            return !val.IsNullOrEmpty () &&
+                   Uri.TryCreate (val, UriKind.Absolute, out origin) &&
                    origin.Host == "localhost";
           },
           // To validate the Cookies.
           CookiesValidator = (req, res) => {
+            // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
+            // if necessary.
             foreach (Cookie cookie in req) {
               cookie.Expired = true;
               res.Add (cookie);
             }
 
-            return true;
+            return true; // If valid.
           }
         });
        */
 
       wssv.Start ();
       if (wssv.IsListening) {
-        Console.WriteLine ("Listening on port {0}, providing services:", wssv.Port);
+        Console.WriteLine ("Listening on port {0}, and providing WebSocket services:", wssv.Port);
         foreach (var path in wssv.WebSocketServices.Paths)
           Console.WriteLine ("- {0}", path);
       }
