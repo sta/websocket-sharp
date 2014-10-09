@@ -471,7 +471,7 @@ wssv.Realm = "WebSocket Test";
 wssv.UserCredentialsFinder = id => {
   var expected = "nobita";
   return id.Name == expected
-         ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles
+         ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles.
          : null; // If the user credentials aren't found.
 };
 ```
@@ -521,7 +521,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to check the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
+And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
 
 ```cs
 wssv.AddWebSocketService<Chat> (
