@@ -70,6 +70,8 @@ namespace WebSocketSharp
     private string                  _base64Key;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
+    private LocalCertificateSelectionCallback 
+                                    _certSelectionCallback;
     private bool                    _client;
     private Action                  _closeContext;
     private CompressionMethod       _compression;
@@ -456,6 +458,40 @@ namespace WebSocketSharp
         }
       }
     }
+
+    /// <summary>
+    /// Gets or sets the callback used to select a client certificate to supply to the server.
+    /// </summary>
+    /// <remarks>
+    /// If the value of this property is null, no client certificate will be supplied.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
+    /// used to select the client certificate. The default value is <see langword="null"/>.
+    /// </value>
+    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
+    {
+      get {
+        return _certSelectionCallback;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (false, false);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (
+              "An error has occurred in setting the client certificate selection callback.",
+              null);
+
+              return;
+          }
+
+          _certSelectionCallback = value;
+        } 
+      }
+    }    
+
 
     /// <summary>
     /// Gets the WebSocket URL to connect.
@@ -1301,7 +1337,8 @@ namespace WebSocketSharp
         var sslStream = new SslStream (
           _stream,
           false,
-          _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true));
+          _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
+          _certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
 
         sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
         _stream = sslStream;
