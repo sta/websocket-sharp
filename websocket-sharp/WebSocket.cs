@@ -36,6 +36,7 @@
 /*
  * Contributors:
  * - Frank Razenberg <frank@zzattack.org>
+ * - David Wood <dpwood@gmail.com>
  */
 #endregion
 
@@ -68,10 +69,10 @@ namespace WebSocketSharp
 
     private AuthenticationChallenge _authChallenge;
     private string                  _base64Key;
+    private LocalCertificateSelectionCallback
+                                    _certSelectionCallback;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
-    private LocalCertificateSelectionCallback 
-                                    _certSelectionCallback;
     private bool                    _client;
     private Action                  _closeContext;
     private CompressionMethod       _compression;
@@ -231,6 +232,40 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the callback used to select a client certificate to supply to the server.
+    /// </summary>
+    /// <remarks>
+    /// If the value of this property is <see langword="null"/>, no client certificate will be
+    /// supplied.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
+    /// used to select the client certificate. The default value is <see langword="null"/>.
+    /// </value>
+    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
+    {
+      get {
+        return _certSelectionCallback;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (false, false);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (
+              "An error has occurred in setting the client certificate selection callback.",
+              null);
+
+            return;
+          }
+
+          _certSelectionCallback = value;
+        }
+      }
+    }
 
     /// <summary>
     /// Gets or sets the compression method used to compress the message on the WebSocket
@@ -434,7 +469,7 @@ namespace WebSocketSharp
     /// the server certificate, and always returns valid.
     /// </remarks>
     /// <value>
-    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method(s)
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
     /// used to validate the server certificate. The default value is <see langword="null"/>.
     /// </value>
     public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
@@ -458,40 +493,6 @@ namespace WebSocketSharp
         }
       }
     }
-
-    /// <summary>
-    /// Gets or sets the callback used to select a client certificate to supply to the server.
-    /// </summary>
-    /// <remarks>
-    /// If the value of this property is null, no client certificate will be supplied.
-    /// </remarks>
-    /// <value>
-    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
-    /// used to select the client certificate. The default value is <see langword="null"/>.
-    /// </value>
-    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
-    {
-      get {
-        return _certSelectionCallback;
-      }
-
-      set {
-        lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
-          if (msg != null) {
-            _logger.Error (msg);
-            error (
-              "An error has occurred in setting the client certificate selection callback.",
-              null);
-
-              return;
-          }
-
-          _certSelectionCallback = value;
-        } 
-      }
-    }    
-
 
     /// <summary>
     /// Gets the WebSocket URL to connect.
@@ -1338,7 +1339,9 @@ namespace WebSocketSharp
           _stream,
           false,
           _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
-          _certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
+          _certSelectionCallback ??
+            ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
+              null));
 
         sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
         _stream = sslStream;
