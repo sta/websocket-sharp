@@ -58,8 +58,10 @@ namespace WebSocketSharp.Net
     private Func<HttpListenerRequest, AuthenticationSchemes>     _authSchemeSelector;
     private string                                               _certFolderPath;
     private Dictionary<HttpConnection, HttpConnection>           _connections;
-    private List<HttpListenerContext>                            _contextQueue;
-    private Func<IIdentity, NetworkCredential>                   _credentialsFinder;
+    private object                                               _connectionsSync;
+    private List<HttpListenerContext>                            _ctxQueue;
+    private object                                               _ctxQueueSync;
+    private Func<IIdentity, NetworkCredential>                   _credFinder;
     private X509Certificate2                                     _defaultCert;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
@@ -67,7 +69,9 @@ namespace WebSocketSharp.Net
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
     private Dictionary<HttpListenerContext, HttpListenerContext> _registry;
+    private object                                               _registrySync;
     private List<ListenerAsyncResult>                            _waitQueue;
+    private object                                               _waitQueueSync;
 
     #endregion
 
@@ -79,11 +83,20 @@ namespace WebSocketSharp.Net
     public HttpListener ()
     {
       _authSchemes = AuthenticationSchemes.Anonymous;
+
       _connections = new Dictionary<HttpConnection, HttpConnection> ();
-      _contextQueue = new List<HttpListenerContext> ();
+      _connectionsSync = ((ICollection) _connections).SyncRoot;
+
+      _ctxQueue = new List<HttpListenerContext> ();
+      _ctxQueueSync = ((ICollection) _ctxQueue).SyncRoot;
+
       _prefixes = new HttpListenerPrefixCollection (this);
+
       _registry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
+      _registrySync = ((ICollection) _registry).SyncRoot;
+
       _waitQueue = new List<ListenerAsyncResult> ();
+      _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
     #endregion
@@ -335,7 +348,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
-    /// that invokes the method(s) used to find the credentials. The default value is a function
+    /// that invokes the method used to find the credentials. The default value is a function
     /// that only returns <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
@@ -344,12 +357,12 @@ namespace WebSocketSharp.Net
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
         CheckDisposed ();
-        return _credentialsFinder ?? (_credentialsFinder = identity => null);
+        return _credFinder ?? (_credFinder = id => null);
       }
 
       set {
         CheckDisposed ();
-        _credentialsFinder = value;
+        _credFinder = value;
       }
     }
 
@@ -359,7 +372,7 @@ namespace WebSocketSharp.Net
 
     private void cleanup (bool force)
     {
-      lock (((ICollection) _registry).SyncRoot) {
+      lock (_registrySync) {
         if (!force)
           sendServiceUnavailable ();
 
@@ -371,39 +384,39 @@ namespace WebSocketSharp.Net
 
     private void cleanupConnections ()
     {
-      lock (((ICollection) _connections).SyncRoot) {
+      lock (_connectionsSync) {
         if (_connections.Count == 0)
           return;
 
         // Need to copy this since closing will call RemoveConnection.
         var keys = _connections.Keys;
-        var conns = new HttpConnection [keys.Count];
+        var conns = new HttpConnection[keys.Count];
         keys.CopyTo (conns, 0);
         _connections.Clear ();
         for (var i = conns.Length - 1; i >= 0; i--)
-          conns [i].Close (true);
+          conns[i].Close (true);
       }
     }
 
     private void cleanupContextRegistry ()
     {
-      lock (((ICollection) _registry).SyncRoot) {
+      lock (_registrySync) {
         if (_registry.Count == 0)
           return;
 
         // Need to copy this since closing will call UnregisterContext.
         var keys = _registry.Keys;
-        var all = new HttpListenerContext [keys.Count];
+        var all = new HttpListenerContext[keys.Count];
         keys.CopyTo (all, 0);
         _registry.Clear ();
         for (var i = all.Length - 1; i >= 0; i--)
-          all [i].Connection.Close (true);
+          all[i].Connection.Close (true);
       }
     }
 
     private void cleanupWaitQueue ()
     {
-      lock (((ICollection) _waitQueue).SyncRoot) {
+      lock (_waitQueueSync) {
         if (_waitQueue.Count == 0)
           return;
 
@@ -421,28 +434,28 @@ namespace WebSocketSharp.Net
       cleanup (force);
     }
 
-    // Must be called with a lock on _contextQueue.
+    // Must be called with a lock on _ctxQueue.
     private HttpListenerContext getContextFromQueue ()
     {
-      if (_contextQueue.Count == 0)
+      if (_ctxQueue.Count == 0)
         return null;
 
-      var context = _contextQueue [0];
-      _contextQueue.RemoveAt (0);
+      var ctx = _ctxQueue[0];
+      _ctxQueue.RemoveAt (0);
 
-      return context;
+      return ctx;
     }
 
     private void sendServiceUnavailable ()
     {
-      lock (((ICollection) _contextQueue).SyncRoot) {
-        if (_contextQueue.Count == 0)
+      lock (_ctxQueueSync) {
+        if (_ctxQueue.Count == 0)
           return;
 
-        var contexts = _contextQueue.ToArray ();
-        _contextQueue.Clear ();
-        foreach (var context in contexts) {
-          var res = context.Response;
+        var ctxs = _ctxQueue.ToArray ();
+        _ctxQueue.Clear ();
+        foreach (var ctx in ctxs) {
+          var res = ctx.Response;
           res.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
           res.Close ();
         }
@@ -455,8 +468,8 @@ namespace WebSocketSharp.Net
 
     internal void AddConnection (HttpConnection connection)
     {
-      lock (((ICollection) _connections).SyncRoot)
-        _connections [connection] = connection;
+      lock (_connectionsSync)
+        _connections[connection] = connection;
     }
 
     internal ListenerAsyncResult BeginGetContext (ListenerAsyncResult asyncResult)
@@ -469,11 +482,11 @@ namespace WebSocketSharp.Net
         throw new InvalidOperationException ("Please, call Start before using this method.");
 
       // Lock _waitQueue early to avoid race conditions.
-      lock (((ICollection) _waitQueue).SyncRoot) {
-        lock (((ICollection) _contextQueue).SyncRoot) {
-          var context = getContextFromQueue ();
-          if (context != null) {
-            asyncResult.Complete (context, true);
+      lock (_waitQueueSync) {
+        lock (_ctxQueueSync) {
+          var ctx = getContextFromQueue ();
+          if (ctx != null) {
+            asyncResult.Complete (ctx, true);
             return asyncResult;
           }
         }
@@ -492,17 +505,17 @@ namespace WebSocketSharp.Net
 
     internal void RegisterContext (HttpListenerContext context)
     {
-      lock (((ICollection) _registry).SyncRoot)
-        _registry [context] = context;
+      lock (_registrySync)
+        _registry[context] = context;
 
       ListenerAsyncResult ares = null;
-      lock (((ICollection) _waitQueue).SyncRoot) {
+      lock (_waitQueueSync) {
         if (_waitQueue.Count == 0) {
-          lock (((ICollection) _contextQueue).SyncRoot)
-            _contextQueue.Add (context);
+          lock (_ctxQueueSync)
+            _ctxQueue.Add (context);
         }
         else {
-          ares = _waitQueue [0];
+          ares = _waitQueue[0];
           _waitQueue.RemoveAt (0);
         }
       }
@@ -513,7 +526,7 @@ namespace WebSocketSharp.Net
 
     internal void RemoveConnection (HttpConnection connection)
     {
-      lock (((ICollection) _connections).SyncRoot)
+      lock (_connectionsSync)
         _connections.Remove (connection);
     }
 
@@ -526,13 +539,13 @@ namespace WebSocketSharp.Net
 
     internal void UnregisterContext (HttpListenerContext context)
     {
-      lock (((ICollection) _registry).SyncRoot)
+      lock (_registrySync)
         _registry.Remove (context);
 
-      lock (((ICollection) _contextQueue).SyncRoot) {
-        var i = _contextQueue.IndexOf (context);
+      lock (_ctxQueueSync) {
+        var i = _ctxQueue.IndexOf (context);
         if (i >= 0)
-          _contextQueue.RemoveAt (i);
+          _ctxQueue.RemoveAt (i);
       }
     }
 
@@ -643,18 +656,18 @@ namespace WebSocketSharp.Net
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
-      lock (((ICollection) _waitQueue).SyncRoot) {
+      lock (_waitQueueSync) {
         var i = _waitQueue.IndexOf (ares);
         if (i >= 0)
           _waitQueue.RemoveAt (i);
       }
 
-      var context = ares.GetContext ();
-      var scheme = SelectAuthenticationScheme (context);
-      if (scheme != AuthenticationSchemes.Anonymous)
-        context.SetUser (scheme, Realm, UserCredentialsFinder);
+      var ctx = ares.GetContext ();
+      var schm = SelectAuthenticationScheme (ctx);
+      if (schm != AuthenticationSchemes.Anonymous)
+        ctx.SetUser (schm, Realm, UserCredentialsFinder);
 
-      return context; // This will throw on error.
+      return ctx; // This will throw on error.
     }
 
     /// <summary>
