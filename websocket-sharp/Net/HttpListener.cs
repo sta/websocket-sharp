@@ -61,6 +61,8 @@ namespace WebSocketSharp.Net
     private object                                               _connectionsSync;
     private List<HttpListenerContext>                            _ctxQueue;
     private object                                               _ctxQueueSync;
+    private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
+    private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
     private X509Certificate2                                     _defaultCert;
     private bool                                                 _disposed;
@@ -68,8 +70,6 @@ namespace WebSocketSharp.Net
     private bool                                                 _listening;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
-    private Dictionary<HttpListenerContext, HttpListenerContext> _registry;
-    private object                                               _registrySync;
     private List<ListenerAsyncResult>                            _waitQueue;
     private object                                               _waitQueueSync;
 
@@ -90,10 +90,10 @@ namespace WebSocketSharp.Net
       _ctxQueue = new List<HttpListenerContext> ();
       _ctxQueueSync = ((ICollection) _ctxQueue).SyncRoot;
 
-      _prefixes = new HttpListenerPrefixCollection (this);
+      _ctxRegistry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
+      _ctxRegistrySync = ((ICollection) _ctxRegistry).SyncRoot;
 
-      _registry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
-      _registrySync = ((ICollection) _registry).SyncRoot;
+      _prefixes = new HttpListenerPrefixCollection (this);
 
       _waitQueue = new List<ListenerAsyncResult> ();
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
@@ -372,7 +372,7 @@ namespace WebSocketSharp.Net
 
     private void cleanup (bool force)
     {
-      lock (_registrySync) {
+      lock (_ctxRegistrySync) {
         if (!force)
           sendServiceUnavailable ();
 
@@ -400,17 +400,17 @@ namespace WebSocketSharp.Net
 
     private void cleanupContextRegistry ()
     {
-      lock (_registrySync) {
-        if (_registry.Count == 0)
+      lock (_ctxRegistrySync) {
+        if (_ctxRegistry.Count == 0)
           return;
 
         // Need to copy this since closing will call UnregisterContext.
-        var keys = _registry.Keys;
-        var all = new HttpListenerContext[keys.Count];
-        keys.CopyTo (all, 0);
-        _registry.Clear ();
-        for (var i = all.Length - 1; i >= 0; i--)
-          all[i].Connection.Close (true);
+        var keys = _ctxRegistry.Keys;
+        var ctxs = new HttpListenerContext[keys.Count];
+        keys.CopyTo (ctxs, 0);
+        _ctxRegistry.Clear ();
+        for (var i = ctxs.Length - 1; i >= 0; i--)
+          ctxs[i].Connection.Close (true);
       }
     }
 
@@ -476,10 +476,10 @@ namespace WebSocketSharp.Net
     {
       CheckDisposed ();
       if (_prefixes.Count == 0)
-        throw new InvalidOperationException ("Please, call AddPrefix before using this method.");
+        throw new InvalidOperationException ("AddPrefix must be called before using this method.");
 
       if (!_listening)
-        throw new InvalidOperationException ("Please, call Start before using this method.");
+        throw new InvalidOperationException ("Start must be called before using this method.");
 
       // Lock _waitQueue early to avoid race conditions.
       lock (_waitQueueSync) {
@@ -505,8 +505,8 @@ namespace WebSocketSharp.Net
 
     internal void RegisterContext (HttpListenerContext context)
     {
-      lock (_registrySync)
-        _registry[context] = context;
+      lock (_ctxRegistrySync)
+        _ctxRegistry[context] = context;
 
       ListenerAsyncResult ares = null;
       lock (_waitQueueSync) {
@@ -539,8 +539,8 @@ namespace WebSocketSharp.Net
 
     internal void UnregisterContext (HttpListenerContext context)
     {
-      lock (_registrySync)
-        _registry.Remove (context);
+      lock (_ctxRegistrySync)
+        _ctxRegistry.Remove (context);
 
       lock (_ctxQueueSync) {
         var i = _ctxQueue.IndexOf (context);
@@ -566,21 +566,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Begins getting an incoming request information asynchronously.
+    /// Begins getting an incoming request asynchronously.
     /// </summary>
     /// <remarks>
     /// This asynchronous operation must be completed by calling the <c>EndGetContext</c> method.
-    /// Typically, that method is invoked by the <paramref name="callback"/> delegate.
+    /// Typically, the method is invoked by the <paramref name="callback"/> delegate.
     /// </remarks>
     /// <returns>
     /// An <see cref="IAsyncResult"/> that represents the status of the asynchronous operation.
     /// </returns>
     /// <param name="callback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method(s) to invoke
+    /// An <see cref="AsyncCallback"/> delegate that references the method to invoke
     /// when the asynchronous operation completes.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that contains a user defined object to pass to
+    /// An <see cref="object"/> that represents a user defined object to pass to
     /// the <paramref name="callback"/> delegate.
     /// </param>
     /// <exception cref="InvalidOperationException">
@@ -591,7 +591,7 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener hasn't been started or is stopped currently.
+    ///   This listener hasn't been started, or is currently stopped.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
@@ -615,14 +615,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Ends an asynchronous operation to get an incoming request information.
+    /// Ends an asynchronous operation to get an incoming request.
     /// </summary>
     /// <remarks>
     /// This method completes an asynchronous operation started by calling
     /// the <c>BeginGetContext</c> method.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that contains a request information.
+    /// A <see cref="HttpListenerContext"/> that represents a request.
     /// </returns>
     /// <param name="asyncResult">
     /// An <see cref="IAsyncResult"/> obtained by calling the <c>BeginGetContext</c> method.
@@ -647,10 +647,10 @@ namespace WebSocketSharp.Net
 
       var ares = asyncResult as ListenerAsyncResult;
       if (ares == null)
-        throw new ArgumentException ("Wrong IAsyncResult.", "asyncResult");
+        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
 
       if (ares.EndCalled)
-        throw new InvalidOperationException ("Cannot reuse this IAsyncResult.");
+        throw new InvalidOperationException ("This IAsyncResult cannot be reused.");
 
       ares.EndCalled = true;
       if (!ares.IsCompleted)
@@ -671,14 +671,13 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an incoming request information.
+    /// Gets an incoming request.
     /// </summary>
     /// <remarks>
-    /// This method waits for an incoming request and returns a request information
-    /// when the listener receives a request.
+    /// This method waits for an incoming request, and returns when a request is received.
     /// </remarks>
     /// <returns>
-    /// A <see cref="HttpListenerContext"/> that contains a request information.
+    /// A <see cref="HttpListenerContext"/> that represents a request.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     ///   <para>
@@ -688,7 +687,7 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   This listener hasn't been started or is stopped currently.
+    ///   This listener hasn't been started, or is currently stopped.
     ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
@@ -703,7 +702,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Starts to receive incoming requests.
+    /// Starts receiving incoming requests.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -737,17 +736,17 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Explicit Interface Implementation
+    #region Explicit Interface Implementations
 
     /// <summary>
-    /// Releases all resource used by the listener.
+    /// Releases all resources used by the listener.
     /// </summary>
     void IDisposable.Dispose ()
     {
       if (_disposed)
         return;
 
-      close (true); // TODO: Should we force here or not?
+      close (true);
       _disposed = true;
     }
 
