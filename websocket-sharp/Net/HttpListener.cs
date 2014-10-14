@@ -140,18 +140,14 @@ namespace WebSocketSharp.Net
     /// Gets or sets the delegate called to select the scheme used to authenticate the clients.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   If you set this property, the listener uses the authentication scheme selected by
-    ///   the delegate for each request.
-    ///   </para>
-    ///   <para>
-    ///   If you don't set, the listener uses the value of the <c>AuthenticationSchemes</c>
-    ///   property as the authentication scheme for all requests.
-    ///   </para>
+    /// If you set this property, the listener uses the authentication scheme selected by
+    /// the delegate for each request. Or if you don't set, the listener uses the value of
+    /// the <see cref="HttpListener.AuthenticationSchemes"/> property as the authentication
+    /// scheme for all requests.
     /// </remarks>
     /// <value>
     /// A <c>Func&lt;<see cref="HttpListenerRequest"/>, <see cref="AuthenticationSchemes"/>&gt;</c>
-    /// delegate that invokes the method(s) used to select an authentication scheme. The default
+    /// delegate that references the method used to select an authentication scheme. The default
     /// value is <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
@@ -234,8 +230,8 @@ namespace WebSocketSharp.Net
     /// sending the response to the client.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the listener doesn't return exceptions that occur when sending the response
-    /// to the client; otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the listener shouldn't return those exceptions; otherwise, <c>false</c>.
+    /// The default value is <c>false</c>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -297,7 +293,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <c>SECRET AREA</c>.
+    /// <c>"SECRET AREA"</c>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -305,9 +301,9 @@ namespace WebSocketSharp.Net
     public string Realm {
       get {
         CheckDisposed ();
-        return _realm == null || _realm.Length == 0
-               ? (_realm = "SECRET AREA")
-               : _realm;
+        return _realm != null && _realm.Length > 0
+               ? _realm
+               : (_realm = "SECRET AREA");
       }
 
       set {
@@ -348,7 +344,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
-    /// that invokes the method used to find the credentials. The default value is a function
+    /// that references the method used to find the credentials. The default value is a function
     /// that only returns <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
@@ -476,10 +472,10 @@ namespace WebSocketSharp.Net
     {
       CheckDisposed ();
       if (_prefixes.Count == 0)
-        throw new InvalidOperationException ("AddPrefix must be called before using this method.");
+        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
 
       if (!_listening)
-        throw new InvalidOperationException ("Start must be called before using this method.");
+        throw new InvalidOperationException ("The listener hasn't been started.");
 
       // Lock _waitQueue early to avoid race conditions.
       lock (_waitQueueSync) {
@@ -585,7 +581,7 @@ namespace WebSocketSharp.Net
     /// </param>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This listener doesn't have any URI prefixes to listen on.
+    ///   This listener has no URI prefix on which listens.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -681,7 +677,7 @@ namespace WebSocketSharp.Net
     /// </returns>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   This listener doesn't have any URI prefixes to listen on.
+    ///   This listener has no URI prefix on which listens.
     ///   </para>
     ///   <para>
     ///   -or-
