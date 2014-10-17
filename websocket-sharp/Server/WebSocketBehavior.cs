@@ -33,7 +33,9 @@ using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
-  /// <summary>
+	using System.Threading.Tasks;
+
+	/// <summary>
   /// Exposes the methods and properties used to define the behavior of a WebSocket service
   /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
@@ -539,10 +541,14 @@ namespace WebSocketSharp.Server
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    protected void SendAsync (Stream stream, int length, Action<bool> completed)
+    protected Task<bool> SendAsync (Stream stream, int length)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (stream, length, completed);
+	    if (_websocket != null)
+	    {
+		   return  _websocket.SendAsync (stream, length);
+	    }
+
+	    return Task.FromResult(false);
     }
 
     #endregion
