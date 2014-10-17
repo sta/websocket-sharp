@@ -47,7 +47,6 @@ namespace WebSocketSharp.Server
 
 		private volatile bool _clean;
 		private object _forSweep;
-		private Logger _logger;
 		private Dictionary<string, IWebSocketSession> _sessions;
 		private volatile ServerState _state;
 		private volatile bool _sweeping;
@@ -60,14 +59,7 @@ namespace WebSocketSharp.Server
 		#region Internal Constructors
 
 		internal WebSocketSessionManager()
-			: this(new Logger())
 		{
-		}
-
-		internal WebSocketSessionManager(Logger logger)
-		{
-			_logger = logger;
-
 			_clean = true;
 			_forSweep = new object();
 			_sessions = new Dictionary<string, IWebSocketSession>();
@@ -265,10 +257,6 @@ namespace WebSocketSharp.Server
 				if (completed != null)
 					completed();
 			}
-			catch (Exception ex)
-			{
-				_logger.Fatal(ex.ToString());
-			}
 			finally
 			{
 				cache.Clear();
@@ -283,10 +271,6 @@ namespace WebSocketSharp.Server
 				Broadcast(opcode, stream, cache);
 				if (completed != null)
 					completed();
-			}
-			catch (Exception ex)
-			{
-				_logger.Fatal(ex.ToString());
 			}
 			finally
 			{
@@ -323,9 +307,6 @@ namespace WebSocketSharp.Server
 			bool res;
 			lock (_sync)
 				res = _sessions.TryGetValue(id, out session);
-
-			if (!res)
-				_logger.Error("A session with the specified ID isn't found.\nID: " + id);
 
 			return res;
 		}
@@ -430,7 +411,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -451,7 +431,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -481,7 +460,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -510,7 +488,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -546,7 +523,6 @@ namespace WebSocketSharp.Server
 
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -554,16 +530,8 @@ namespace WebSocketSharp.Server
 			var len = data.Length;
 			if (len == 0)
 			{
-				_logger.Error("The data cannot be read from 'stream'.");
 				return;
 			}
-
-			if (len < length)
-				_logger.Warn(
-				  String.Format(
-					"The data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
-					length,
-					len));
 
 			if (len <= WebSocket.FragmentLength)
 				broadcast(Opcode.Binary, data, completed);
@@ -584,7 +552,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return null;
 			}
 
@@ -614,7 +581,6 @@ namespace WebSocketSharp.Server
 
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return null;
 			}
 
@@ -879,7 +845,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionID();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				session = null;
 
 				return false;

@@ -56,9 +56,6 @@ namespace Example
             });
 
 #if DEBUG
-        // To change the logging level.
-        ws.Log.Level = LogLevel.Trace;
-
         // To change the wait time for the response to the Ping or Close.
         ws.WaitTime = TimeSpan.FromSeconds (10);
 #endif

@@ -221,7 +221,7 @@ namespace WebSocketSharp.Net
     ///   <paramref name="protocol"/> contains an invalid character.
     ///   </para>
     /// </exception>
-    public HttpListenerWebSocketContext AcceptWebSocket (string protocol, Logger logger)
+    public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
       if (protocol != null) {
         if (protocol.Length == 0)
@@ -231,7 +231,7 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("Contains an invalid character.", "protocol");
       }
 
-      return new HttpListenerWebSocketContext (this, protocol, logger ?? new Logger ());
+      return new HttpListenerWebSocketContext (this, protocol);
     }
 
     #endregion

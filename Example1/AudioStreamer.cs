@@ -33,9 +33,6 @@ namespace Example1
 
 		private void configure()
 		{
-#if DEBUG
-			_websocket.Log.Level = LogLevel.Trace;
-#endif
 			_websocket.OnOpen += (sender, e) =>
 			  _websocket.Send(createTextMessage("connection", String.Empty));
 

@@ -49,7 +49,6 @@ namespace WebSocketSharp.Server
 
 		private volatile bool _clean;
 		private Dictionary<string, WebSocketServiceHost> _hosts;
-		private Logger _logger;
 		private volatile ServerState _state;
 		private object _sync;
 		private TimeSpan _waitTime;
@@ -59,14 +58,7 @@ namespace WebSocketSharp.Server
 		#region Internal Constructors
 
 		internal WebSocketServiceManager()
-			: this(new Logger())
 		{
-		}
-
-		internal WebSocketServiceManager(Logger logger)
-		{
-			_logger = logger;
-
 			_clean = true;
 			_hosts = new Dictionary<string, WebSocketServiceHost>();
 			_state = ServerState.Ready;
@@ -239,10 +231,6 @@ namespace WebSocketSharp.Server
 					host.Sessions.Broadcast(opcode, data, cache);
 				}
 			}
-			catch (Exception ex)
-			{
-				_logger.Fatal(ex.ToString());
-			}
 			finally
 			{
 				cache.Clear();
@@ -258,10 +246,6 @@ namespace WebSocketSharp.Server
 				{
 					host.Sessions.Broadcast(opcode, stream, cache);
 				}
-			}
-			catch (Exception ex)
-			{
-				_logger.Fatal(ex.ToString());
 			}
 			finally
 			{
@@ -313,13 +297,10 @@ namespace WebSocketSharp.Server
 				WebSocketServiceHost host;
 				if (_hosts.TryGetValue(path, out host))
 				{
-					_logger.Error(
-					  "A WebSocket service with the specified path already exists.\npath: " + path);
-
 					return;
 				}
 
-				host = new WebSocketServiceHost<TBehavior>(path, initializer, _logger);
+				host = new WebSocketServiceHost<TBehavior>(path, initializer);
 				if (!_clean)
 					host.KeepClean = false;
 
@@ -342,9 +323,6 @@ namespace WebSocketSharp.Server
 				res = _hosts.TryGetValue(path, out host);
 			}
 
-			if (!res)
-				_logger.Error("A WebSocket service with the specified path isn't found.\npath: " + path);
-
 			return res;
 		}
 
@@ -356,7 +334,6 @@ namespace WebSocketSharp.Server
 				path = HttpUtility.UrlDecode(path).TrimEndSlash();
 				if (!_hosts.TryGetValue(path, out host))
 				{
-					_logger.Error("A WebSocket service with the specified path isn't found.\npath: " + path);
 					return false;
 				}
 
@@ -413,7 +390,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -438,7 +414,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -472,7 +447,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return Task.Factory.StartNew(() => { });
 			}
 
@@ -498,7 +472,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return Task.Factory.StartNew(() => { });
 			}
 
@@ -531,7 +504,6 @@ namespace WebSocketSharp.Server
 
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return;
 			}
 
@@ -558,7 +530,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return null;
 			}
 
@@ -581,8 +552,10 @@ namespace WebSocketSharp.Server
 		/// </param>
 		public Dictionary<string, Dictionary<string, bool>> Broadping(string message)
 		{
-			if (message == null || message.Length == 0)
+			if (string.IsNullOrEmpty(message))
+			{
 				return Broadping();
+			}
 
 			byte[] data = null;
 			var msg = _state.CheckIfStart() ??
@@ -590,7 +563,6 @@ namespace WebSocketSharp.Server
 
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				return null;
 			}
 
@@ -616,7 +588,6 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? path.CheckIfValidServicePath();
 			if (msg != null)
 			{
-				_logger.Error(msg);
 				host = null;
 
 				return false;

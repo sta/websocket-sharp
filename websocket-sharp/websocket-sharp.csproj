@@ -118,9 +118,6 @@
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
-    <Compile Include="LogData.cs" />
-    <Compile Include="LogLevel.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />
