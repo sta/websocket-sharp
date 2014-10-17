@@ -72,9 +72,16 @@ namespace WebSocketSharp
 
     public string EntityBody {
       get {
-        return EntityBodyData != null && EntityBodyData.LongLength > 0
-               ? getEncoding (_headers["Content-Type"]).GetString (EntityBodyData)
-               : String.Empty;
+        if (EntityBodyData == null || EntityBodyData.LongLength == 0)
+          return String.Empty;
+
+        Encoding enc = null;
+
+        var contentType = _headers["Content-Type"];
+        if (contentType != null && contentType.Length > 0)
+          enc = HttpUtility.GetEncoding (contentType);
+
+        return (enc ?? Encoding.UTF8).GetString (EntityBodyData);
       }
     }
 
@@ -93,23 +100,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Private Methods
-
-    private static Encoding getEncoding (string contentType)
-    {
-      if (contentType == null || contentType.Length == 0)
-        return Encoding.UTF8;
-
-      var i = contentType.IndexOf ("charset=", StringComparison.Ordinal);
-      if (i == -1)
-        return Encoding.UTF8;
-
-      var charset = contentType.Substring (i + 8);
-      i = charset.IndexOf (';');
-      if (i != -1)
-        charset = charset.Substring (0, i).TrimEnd ();
-
-      return Encoding.GetEncoding (charset.Trim ('"'));
-    }
 
     private static byte[] readEntityBody (Stream stream, string length)
     {

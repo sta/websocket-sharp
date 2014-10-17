@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,10 +35,14 @@ namespace WebSocketSharp
   /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
   /// </summary>
   /// <remarks>
-  /// A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  /// a text or binary data frame.
-  /// If you want to get the received data, you access the <see cref="MessageEventArgs.Data"/> or
-  /// <see cref="MessageEventArgs.RawData"/> property.
+  ///   <para>
+  ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
+  ///   a text or binary message.
+  ///   </para>
+  ///   <para>
+  ///   If you would like to get the message data, you should access
+  ///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.RawData"/> property.
+  ///   </para>
   /// </remarks>
   public class MessageEventArgs : EventArgs
   {
@@ -52,21 +56,21 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal MessageEventArgs (Opcode opcode, byte[] data)
+    internal MessageEventArgs (WebSocketFrame frame)
     {
-      if ((ulong) data.LongLength > PayloadData.MaxLength)
+      _opcode = frame.Opcode;
+      _rawData = frame.PayloadData.ApplicationData;
+      _data = convertToString (_opcode, _rawData);
+    }
+
+    internal MessageEventArgs (Opcode opcode, byte[] rawData)
+    {
+      if ((ulong) rawData.LongLength > PayloadData.MaxLength)
         throw new WebSocketException (CloseStatusCode.TooBig);
 
       _opcode = opcode;
-      _rawData = data;
-      _data = convertToString (opcode, data);
-    }
-
-    internal MessageEventArgs (Opcode opcode, PayloadData payload)
-    {
-      _opcode = opcode;
-      _rawData = payload.ApplicationData;
-      _data = convertToString (opcode, _rawData);
+      _rawData = rawData;
+      _data = convertToString (opcode, rawData);
     }
 
     #endregion
@@ -74,10 +78,18 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets the received data as a <see cref="string"/>.
+    /// Gets the message data as a <see cref="string"/>.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   If the message data is empty, this property returns <see cref="String.Empty"/>.
+    ///   </para>
+    ///   <para>
+    ///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
+    ///   </para>
+    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that contains the received data.
+    /// A <see cref="string"/> that represents the message data.
     /// </value>
     public string Data {
       get {
@@ -86,22 +98,22 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the received data as an array of <see cref="byte"/>.
+    /// Gets the message data as an array of <see cref="byte"/>.
     /// </summary>
     /// <value>
-    /// An array of <see cref="byte"/> that contains the received data.
+    /// An array of <see cref="byte"/> that represents the message data.
     /// </value>
-    public byte [] RawData {
+    public byte[] RawData {
       get {
         return _rawData;
       }
     }
 
     /// <summary>
-    /// Gets the type of the received data.
+    /// Gets the type of the message.
     /// </summary>
     /// <value>
-    /// One of the <see cref="Opcode"/> values, indicates the type of the received data.
+    /// <see cref="Opcode.Text"/> or <see cref="Opcode.Binary"/>.
     /// </value>
     public Opcode Type {
       get {
@@ -113,12 +125,12 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static string convertToString (Opcode opcode, byte [] data)
+    private static string convertToString (Opcode opcode, byte[] rawData)
     {
-      return data.LongLength == 0
+      return rawData.LongLength == 0
              ? String.Empty
              : opcode == Opcode.Text
-               ? Encoding.UTF8.GetString (data)
+               ? Encoding.UTF8.GetString (rawData)
                : opcode.ToString ();
     }
 

@@ -32,6 +32,14 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Frank Razenberg <frank@zzattack.org>
+ * - David Wood <dpwood@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +69,8 @@ namespace WebSocketSharp
 
     private AuthenticationChallenge _authChallenge;
     private string                  _base64Key;
+    private LocalCertificateSelectionCallback
+                                    _certSelectionCallback;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
     private bool                    _client;
@@ -94,12 +104,13 @@ namespace WebSocketSharp
     private TcpClient               _tcpClient;
     private Uri                     _uri;
     private const string            _version = "13";
+    private TimeSpan                _waitTime;
 
     #endregion
 
     #region Internal Fields
 
-    internal const int FragmentLength = 1016; // Max value is int.MaxValue - 14.
+    internal const int FragmentLength = 1016; // Max value is Int32.MaxValue - 14.
 
     #endregion
 
@@ -115,6 +126,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
+      _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
     }
@@ -129,6 +141,7 @@ namespace WebSocketSharp
       _closeContext = context.Close;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
+      _waitTime = TimeSpan.FromSeconds (1);
 
       init ();
     }
@@ -138,8 +151,8 @@ namespace WebSocketSharp
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocket"/> class with the specified
-    /// WebSocket URL and subprotocols.
+    /// Initializes a new instance of the <see cref="WebSocket"/> class with
+    /// the specified WebSocket URL and subprotocols.
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that represents the WebSocket URL to connect.
@@ -184,6 +197,7 @@ namespace WebSocketSharp
       _client = true;
       _logger = new Logger ();
       _secure = _uri.Scheme == "wss";
+      _waitTime = TimeSpan.FromSeconds (5);
 
       init ();
     }
@@ -220,6 +234,40 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
+    /// Gets or sets the callback used to select a client certificate to supply to the server.
+    /// </summary>
+    /// <remarks>
+    /// If the value of this property is <see langword="null"/>, no client certificate will be
+    /// supplied.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
+    /// used to select the client certificate. The default value is <see langword="null"/>.
+    /// </value>
+    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
+    {
+      get {
+        return _certSelectionCallback;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (false, false);
+          if (msg != null) {
+            _logger.Error (msg);
+            error (
+              "An error has occurred in setting the client certificate selection callback.",
+              null);
+
+            return;
+          }
+
+          _certSelectionCallback = value;
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the compression method used to compress the message on the WebSocket
     /// connection.
     /// </summary>
@@ -234,10 +282,10 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable ("Set operation of Compression", false, false);
+          var msg = checkIfAvailable (false, false);
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error ("An error has occurred in setting the compression.", null);
 
             return;
           }
@@ -251,8 +299,9 @@ namespace WebSocketSharp
     /// Gets the HTTP cookies included in the WebSocket connection request and response.
     /// </summary>
     /// <value>
-    /// An IEnumerable&lt;Cookie&gt; instance that provides an enumerator which supports the
-    /// iteration over the collection of the cookies.
+    /// An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
+    /// instance that provides an enumerator which supports the iteration over the collection of
+    /// the cookies.
     /// </value>
     public IEnumerable<Cookie> Cookies {
       get {
@@ -266,8 +315,8 @@ namespace WebSocketSharp
     /// Gets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <value>
-    /// A <see cref="NetworkCredential"/> that represents the credentials for the HTTP
-    /// authentication. The default value is <see langword="null"/>.
+    /// A <see cref="NetworkCredential"/> that represents the credentials for the authentication.
+    /// The default value is <see langword="null"/>.
     /// </value>
     public NetworkCredential Credentials {
       get {
@@ -279,8 +328,8 @@ namespace WebSocketSharp
     /// Gets the WebSocket extensions selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the extensions if any. The default value is
-    /// <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that represents the extensions if any.
+    /// The default value is <see cref="String.Empty"/>.
     /// </value>
     public string Extensions {
       get {
@@ -334,17 +383,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the value of the Origin header to send with the WebSocket connection request
-    /// to the server.
+    /// Gets or sets the value of the HTTP Origin header to send with the WebSocket connection
+    /// request to the server.
     /// </summary>
     /// <remarks>
     /// The <see cref="WebSocket"/> sends the Origin header if this property has any.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the
-    ///   <see href="http://tools.ietf.org/html/rfc6454#section-7">HTTP Origin
-    ///   header</see> to send. The default value is <see langword="null"/>.
+    ///   A <see cref="string"/> that represents the value of
+    ///   the <see href="http://tools.ietf.org/html/rfc6454#section-7">Origin</see> header to send.
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     ///   <para>
     ///   The Origin header has the following syntax:
@@ -358,7 +407,7 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable ("Set operation of Origin", false, false);
+          var msg = checkIfAvailable (false, false);
           if (msg == null) {
             if (value.IsNullOrEmpty ()) {
               _origin = value;
@@ -367,12 +416,12 @@ namespace WebSocketSharp
 
             Uri origin;
             if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-              msg = "The syntax of Origin must be '<scheme>://<host>[:<port>]'.";
+              msg = "The syntax of the origin must be '<scheme>://<host>[:<port>]'.";
           }
 
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error ("An error has occurred in setting the origin.", null);
 
             return;
           }
@@ -386,8 +435,8 @@ namespace WebSocketSharp
     /// Gets the WebSocket subprotocol selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the subprotocol if any. The default value is
-    /// <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that represents the subprotocol if any.
+    /// The default value is <see cref="String.Empty"/>.
     /// </value>
     public string Protocol {
       get {
@@ -417,10 +466,10 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     /// If the value of this property is <see langword="null"/>, the validation does nothing with
-    /// the server certificate, always returns valid.
+    /// the server certificate, and always returns valid.
     /// </remarks>
     /// <value>
-    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method(s)
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
     /// used to validate the server certificate. The default value is <see langword="null"/>.
     /// </value>
     public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
@@ -430,12 +479,12 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (
-            "Set operation of ServerCertificateValidationCallback", false, false);
-
+          var msg = checkIfAvailable (false, false);
           if (msg != null) {
             _logger.Error (msg);
-            error (msg);
+            error (
+              "An error has occurred in setting the server certificate validation callback.",
+              null);
 
             return;
           }
@@ -456,6 +505,34 @@ namespace WebSocketSharp
         return _client
                ? _uri
                : _context.RequestUri;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the wait time for the response to the Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+    /// the same as 5 seconds, or 1 second if the <see cref="WebSocket"/> is used by
+    /// a server.
+    /// </value>
+    public TimeSpan WaitTime {
+      get {
+        return _waitTime;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (true, false) ?? value.CheckIfValidWaitTime ();
+          if (msg != null) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the wait time.", null);
+
+            return;
+          }
+
+          _waitTime = value;
+        }
       }
     }
 
@@ -491,13 +568,12 @@ namespace WebSocketSharp
     private bool acceptHandshake ()
     {
       _logger.Debug (
-        String.Format (
-          "A WebSocket connection request from {0}:\n{1}", _context.UserEndPoint, _context));
+        String.Format ("A connection request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       var msg = checkIfValidHandshakeRequest (_context);
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred while connecting.");
+        error ("An error has occurred while connecting.", null);
         Close (HttpStatusCode.BadRequest);
 
         return false;
@@ -514,12 +590,11 @@ namespace WebSocketSharp
       return sendHttpResponse (createHandshakeResponse ());
     }
 
-    private string checkIfAvailable (
-      string operation, bool availableAsServer, bool availableAsConnected)
+    private string checkIfAvailable (bool asServer, bool asConnected)
     {
-      return !_client && !availableAsServer
-             ? operation + " isn't available as a server."
-             : !availableAsConnected
+      return !_client && !asServer
+             ? "This operation isn't available as a server."
+             : !asConnected
                ? _readyState.CheckIfConnectable ()
                : null;
     }
@@ -536,9 +611,9 @@ namespace WebSocketSharp
     {
       var headers = context.Headers;
       return context.RequestUri == null
-             ? "Invalid request url."
+             ? "An invalid request url."
              : !context.IsWebSocketRequest
-               ? "Not WebSocket connection request."
+               ? "Not a WebSocket connection request."
                : !validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])
                  ? "Invalid Sec-WebSocket-Key header."
                  : !validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])
@@ -551,9 +626,9 @@ namespace WebSocketSharp
     {
       var headers = response.Headers;
       return response.IsUnauthorized
-             ? "HTTP authentication is required."
+             ? "An HTTP authentication is required."
              : !response.IsWebSocketResponse
-               ? "Not WebSocket connection response."
+               ? "Not a WebSocket connection response."
                : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
                  ? "Invalid Sec-WebSocket-Accept header."
                  : !validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])
@@ -565,37 +640,37 @@ namespace WebSocketSharp
                        : null;
     }
 
-    private void close (CloseStatusCode code, string reason, bool wait)
+    private string checkIfValidReceivedFrame (WebSocketFrame frame)
     {
-      close (new PayloadData (((ushort) code).Append (reason)), !code.IsReserved (), wait);
+      var masked = frame.IsMasked;
+      return _client && masked
+             ? "A frame from the server is masked."
+             : !_client && !masked
+               ? "A frame from a client isn't masked."
+               : frame.IsCompressed && _compression == CompressionMethod.None
+                 ? "A compressed frame is without the available decompression method."
+                 : null;
     }
 
-    private void close (PayloadData payload, bool send, bool wait)
+    private void close (CloseEventArgs e, bool send, bool wait)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
-          _logger.Info ("Closing the WebSocket connection has already been done.");
+          _logger.Info ("Closing the connection has already been done.");
           return;
         }
 
         _readyState = WebSocketState.Closing;
       }
 
-      _logger.Trace ("Start closing handshake.");
+      _logger.Trace ("Start closing the connection.");
 
-      var e = new CloseEventArgs (payload);
-      e.WasClean =
-        _client
-        ? closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Mask, payload).ToByteArray () : null,
-            wait ? 5000 : 0,
-            closeClientResources)
-        : closeHandshake (
-            send ? WebSocketFrame.CreateCloseFrame (Mask.Unmask, payload).ToByteArray () : null,
-            wait ? 1000 : 0,
-            closeServerResources);
+      e.WasClean = closeHandshake (
+        WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray (),
+        wait ? _waitTime : TimeSpan.Zero,
+        _client ? (Action) releaseClientResources : releaseServerResources);
 
-      _logger.Trace ("End closing handshake.");
+      _logger.Trace ("End closing the connection.");
 
       _readyState = WebSocketState.Closed;
       try {
@@ -603,36 +678,21 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred while OnClose.");
+        error ("An exception has occurred during an OnClose event.", ex);
       }
     }
 
-    private void closeAsync (PayloadData payload, bool send, bool wait)
+    private void closeAsync (CloseEventArgs e, bool send, bool wait)
     {
-      Action<PayloadData, bool, bool> closer = close;
-      closer.BeginInvoke (payload, send, wait, ar => closer.EndInvoke (ar), null);
+      Action<CloseEventArgs, bool, bool> closer = close;
+      closer.BeginInvoke (e, send, wait, ar => closer.EndInvoke (ar), null);
     }
 
-    // As client
-    private void closeClientResources ()
-    {
-      if (_stream != null) {
-        _stream.Dispose ();
-        _stream = null;
-      }
-
-      if (_tcpClient != null) {
-        _tcpClient.Close ();
-        _tcpClient = null;
-      }
-    }
-
-    private bool closeHandshake (byte[] frameAsBytes, int millisecondsTimeout, Action release)
+    private bool closeHandshake (byte[] frameAsBytes, TimeSpan timeout, Action release)
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-      var received =
-        millisecondsTimeout == 0 ||
-        (sent && _exitReceiving != null && _exitReceiving.WaitOne (millisecondsTimeout));
+      var received = timeout == TimeSpan.Zero ||
+                     (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeout));
 
       release ();
       if (_receivePong != null) {
@@ -645,35 +705,28 @@ namespace WebSocketSharp
         _exitReceiving = null;
       }
 
-      var result = sent && received;
+      var res = sent && received;
       _logger.Debug (
-        String.Format ("Was clean?: {0}\nsent: {1} received: {2}", result, sent, received));
+        String.Format ("Was clean?: {0}\nsent: {1} received: {2}", res, sent, received));
 
-      return result;
+      return res;
     }
 
-    // As server
-    private void closeServerResources ()
-    {
-      if (_closeContext == null)
-        return;
-
-      _closeContext ();
-      _closeContext = null;
-      _stream = null;
-      _context = null;
-    }
-
-    private bool concatenateFragmentsInto (Stream dest)
+    private bool concatenateFragmentsInto (Stream destination)
     {
       while (true) {
-        var frame = WebSocketFrame.Read (_stream, true);
+        var frame = WebSocketFrame.Read (_stream, false);
+        var msg = checkIfValidReceivedFrame (frame);
+        if (msg != null)
+          return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
+
+        frame.Unmask ();
         if (frame.IsFinal) {
           /* FINAL */
 
           // CONT
           if (frame.IsContinuation) {
-            dest.WriteBytes (frame.PayloadData.ApplicationData);
+            destination.WriteBytes (frame.PayloadData.ApplicationData);
             break;
           }
 
@@ -698,7 +751,7 @@ namespace WebSocketSharp
 
           // CONT
           if (frame.IsContinuation) {
-            dest.WriteBytes (frame.PayloadData.ApplicationData);
+            destination.WriteBytes (frame.PayloadData.ApplicationData);
             continue;
           }
         }
@@ -707,7 +760,7 @@ namespace WebSocketSharp
         return processUnsupportedFrame (
           frame,
           CloseStatusCode.IncorrectData,
-          "An incorrect data has been received while receiving fragmented data.");
+          "An incorrect data has been received while receiving the fragmented data.");
       }
 
       return true;
@@ -719,12 +772,13 @@ namespace WebSocketSharp
         var msg = _readyState.CheckIfConnectable ();
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred in connecting.", null);
 
           return false;
         }
 
         try {
+          _readyState = WebSocketState.Connecting;
           if (_client ? doHandshake () : acceptHandshake ()) {
             _readyState = WebSocketState.Open;
             return true;
@@ -836,8 +890,8 @@ namespace WebSocketSharp
         _logger.Error (msg);
 
         msg = "An error has occurred while connecting.";
-        error (msg);
-        close (CloseStatusCode.Abnormal, msg, false);
+        error (msg, null);
+        close (new CloseEventArgs (CloseStatusCode.Abnormal, msg), false, false);
 
         return false;
       }
@@ -855,13 +909,13 @@ namespace WebSocketSharp
         _messageEventQueue.Enqueue (e);
     }
 
-    private void error (string message)
+    private void error (string message, Exception exception)
     {
       try {
-        OnError.Emit (this, new ErrorEventArgs (message));
+        OnError.Emit (this, new ErrorEventArgs (message, exception));
       }
       catch (Exception ex) {
-        _logger.Fatal ("An exception has occurred while OnError:\n" + ex.ToString ());
+        _logger.Fatal (ex.ToString ());
       }
     }
 
@@ -887,7 +941,7 @@ namespace WebSocketSharp
             OnOpen.Emit (this, EventArgs.Empty);
           }
           catch (Exception ex) {
-            processException (ex, "An exception has occurred while OnOpen.");
+            processException (ex, "An exception has occurred during an OnOpen event.");
           }
         }
       }
@@ -899,19 +953,19 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (payload, !payload.ContainsReservedCloseStatusCode, false);
+      close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false);
 
       return false;
     }
 
     private bool processDataFrame (WebSocketFrame frame)
     {
-      var e = frame.IsCompressed
-              ? new MessageEventArgs (
-                  frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
-              : new MessageEventArgs (frame.Opcode, frame.PayloadData);
+      enqueueToMessageEventQueue (
+        frame.IsCompressed
+        ? new MessageEventArgs (
+            frame.Opcode, frame.PayloadData.ApplicationData.Decompress (_compression))
+        : new MessageEventArgs (frame));
 
-      enqueueToMessageEventQueue (e);
       return true;
     }
 
@@ -930,18 +984,19 @@ namespace WebSocketSharp
       else
         _logger.Error (reason);
 
-      error (message ?? code.GetMessage ());
-      if (_readyState == WebSocketState.Connecting && !_client)
+      error (message ?? code.GetMessage (), exception);
+      if (!_client && _readyState == WebSocketState.Connecting) {
         Close (HttpStatusCode.BadRequest);
-      else
-        close (code, reason ?? code.GetMessage (), false);
+        return;
+      }
+
+      close (new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false);
     }
 
     private bool processFragmentedFrame (WebSocketFrame frame)
     {
-      return frame.IsContinuation // Not first fragment
-             ? true
-             : processFragments (frame);
+      // Must process first fragment.
+      return frame.IsContinuation || processFragments (frame);
     }
 
     private bool processFragments (WebSocketFrame first)
@@ -967,8 +1022,7 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      var mask = _client ? Mask.Mask : Mask.Unmask;
-      if (send (WebSocketFrame.CreatePongFrame (mask, frame.PayloadData).ToByteArray ()))
+      if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
 
       return true;
@@ -980,6 +1034,26 @@ namespace WebSocketSharp
       _logger.Trace ("Received a Pong.");
 
       return true;
+    }
+
+    private bool processReceivedFrame (WebSocketFrame frame)
+    {
+      var msg = checkIfValidReceivedFrame (frame);
+      if (msg != null)
+        return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
+
+      frame.Unmask ();
+      return frame.IsFragmented
+             ? processFragmentedFrame (frame)
+             : frame.IsData
+               ? processDataFrame (frame)
+               : frame.IsPing
+                 ? processPingFrame (frame)
+                 : frame.IsPong
+                   ? processPongFrame (frame)
+                   : frame.IsClose
+                     ? processCloseFrame (frame)
+                     : processUnsupportedFrame (frame, CloseStatusCode.IncorrectData, null);
     }
 
     // As server
@@ -1011,37 +1085,43 @@ namespace WebSocketSharp
 
     private bool processUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
     {
-      _logger.Debug ("Unsupported frame:\n" + frame.PrintToString (false));
+      _logger.Debug ("An unsupported frame:" + frame.PrintToString (false));
       processException (new WebSocketException (code, reason), null);
 
       return false;
     }
 
-    private bool processWebSocketFrame (WebSocketFrame frame)
+    // As client
+    private void releaseClientResources ()
     {
-      return frame.IsCompressed && _compression == CompressionMethod.None
-             ? processUnsupportedFrame (
-                 frame,
-                 CloseStatusCode.IncorrectData,
-                 "A compressed data has been received without available decompression method.")
-             : frame.IsFragmented
-               ? processFragmentedFrame (frame)
-               : frame.IsData
-                 ? processDataFrame (frame)
-                 : frame.IsPing
-                   ? processPingFrame (frame)
-                   : frame.IsPong
-                     ? processPongFrame (frame)
-                     : frame.IsClose
-                       ? processCloseFrame (frame)
-                       : processUnsupportedFrame (frame, CloseStatusCode.PolicyViolation, null);
+      if (_stream != null) {
+        _stream.Dispose ();
+        _stream = null;
+      }
+
+      if (_tcpClient != null) {
+        _tcpClient.Close ();
+        _tcpClient = null;
+      }
+    }
+
+    // As server
+    private void releaseServerResources ()
+    {
+      if (_closeContext == null)
+        return;
+
+      _closeContext ();
+      _closeContext = null;
+      _stream = null;
+      _context = null;
     }
 
     private bool send (byte[] frameAsBytes)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("Closing the WebSocket connection has been done.");
+          _logger.Error ("Closing the connection has been done.");
           return false;
         }
 
@@ -1061,13 +1141,13 @@ namespace WebSocketSharp
             compressed = true;
           }
 
-          sent = send (opcode, _client ? Mask.Mask : Mask.Unmask, stream, compressed);
+          sent = send (opcode, stream, compressed);
           if (!sent)
-            error ("Sending a data has been interrupted.");
+            error ("Sending the data has been interrupted.", null);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          error ("An exception has occurred while sending the data.", ex);
         }
         finally {
           if (compressed)
@@ -1080,14 +1160,14 @@ namespace WebSocketSharp
       }
     }
 
-    private bool send (Opcode opcode, Mask mask, Stream stream, bool compressed)
+    private bool send (Opcode opcode, Stream stream, bool compressed)
     {
       var len = stream.Length;
 
       /* Not fragmented */
 
       if (len == 0)
-        return send (Fin.Final, opcode, mask, new byte[0], compressed);
+        return send (Fin.Final, opcode, new byte[0], compressed);
 
       var quo = len / FragmentLength;
       var rem = (int) (len % FragmentLength);
@@ -1096,25 +1176,25 @@ namespace WebSocketSharp
       if (quo == 0) {
         buff = new byte[rem];
         return stream.Read (buff, 0, rem) == rem &&
-               send (Fin.Final, opcode, mask, buff, compressed);
+               send (Fin.Final, opcode, buff, compressed);
       }
 
       buff = new byte[FragmentLength];
       if (quo == 1 && rem == 0)
         return stream.Read (buff, 0, FragmentLength) == FragmentLength &&
-               send (Fin.Final, opcode, mask, buff, compressed);
+               send (Fin.Final, opcode, buff, compressed);
 
       /* Send fragmented */
 
       // Begin
       if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-          !send (Fin.More, opcode, mask, buff, compressed))
+          !send (Fin.More, opcode, buff, compressed))
         return false;
 
       var n = rem == 0 ? quo - 2 : quo - 1;
       for (long i = 0; i < n; i++)
         if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-            !send (Fin.More, Opcode.Cont, mask, buff, compressed))
+            !send (Fin.More, Opcode.Cont, buff, compressed))
           return false;
 
       // End
@@ -1124,19 +1204,19 @@ namespace WebSocketSharp
         buff = new byte[rem];
 
       return stream.Read (buff, 0, rem) == rem &&
-             send (Fin.Final, Opcode.Cont, mask, buff, compressed);
+             send (Fin.Final, Opcode.Cont, buff, compressed);
     }
 
-    private bool send (Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
+    private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("Closing the WebSocket connection has been done.");
+          _logger.Error ("Closing the connection has been done.");
           return false;
         }
 
         return sendBytes (
-          WebSocketFrame.CreateWebSocketFrame (fin, opcode, mask, data, compressed).ToByteArray ());
+          new WebSocketFrame (fin, opcode, data, compressed, _client).ToByteArray ());
       }
     }
 
@@ -1154,16 +1234,16 @@ namespace WebSocketSharp
           }
           catch (Exception ex) {
             _logger.Fatal (ex.ToString ());
-            error ("An exception has occurred while callback.");
+            error ("An exception has occurred during a send callback.", ex);
           }
         },
         null);
     }
 
-    private bool sendBytes (byte[] data)
+    private bool sendBytes (byte[] bytes)
     {
       try {
-        _stream.Write (data, 0, data.Length);
+        _stream.Write (bytes, 0, bytes.Length);
         return true;
       }
       catch (Exception ex) {
@@ -1182,7 +1262,7 @@ namespace WebSocketSharp
         if (_credentials != null &&
             (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
           if (res.Headers.Contains ("Connection", "close")) {
-            closeClientResources ();
+            releaseClientResources ();
             setClientStream ();
           }
 
@@ -1214,7 +1294,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private HttpResponse sendProxyConnectRequest ()
+    private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
       var res = sendHttpRequest (req, 90000);
@@ -1222,7 +1302,7 @@ namespace WebSocketSharp
         var authChal = res.ProxyAuthenticationChallenge;
         if (authChal != null && _proxyCredentials != null) {
           if (res.Headers.Contains ("Connection", "close")) {
-            closeClientResources ();
+            releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
             _stream = _tcpClient.GetStream ();
           }
@@ -1231,36 +1311,37 @@ namespace WebSocketSharp
           req.Headers["Proxy-Authorization"] = authRes.ToString ();
           res = sendHttpRequest (req, 15000);
         }
+
+        if (res.IsProxyAuthenticationRequired)
+          throw new WebSocketException ("A proxy authentication is required.");
       }
 
-      return res;
+      if (res.StatusCode[0] != '2')
+        throw new WebSocketException (
+          "The proxy has failed a connection to the requested host and port.");
     }
 
     // As client
     private void setClientStream ()
     {
-      var proxy = _proxyUri != null;
-      _tcpClient = proxy
-                   ? new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port)
-                   : new TcpClient (_uri.DnsSafeHost, _uri.Port);
-
-      _stream = _tcpClient.GetStream ();
-
-      if (proxy) {
-        var res = sendProxyConnectRequest ();
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("Proxy authentication is required.");
-
-        if (res.StatusCode[0] != '2')
-          throw new WebSocketException (
-            "The proxy has failed a connection to the requested host and port.");
+      if (_proxyUri != null) {
+        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _stream = _tcpClient.GetStream ();
+        sendProxyConnectRequest ();
+      }
+      else {
+        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _stream = _tcpClient.GetStream ();
       }
 
       if (_secure) {
         var sslStream = new SslStream (
           _stream,
           false,
-          _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true));
+          _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
+          _certSelectionCallback ??
+            ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
+              null));
 
         sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
         _stream = sslStream;
@@ -1278,9 +1359,9 @@ namespace WebSocketSharp
       Action receive = null;
       receive = () => WebSocketFrame.ReadAsync (
         _stream,
-        true,
+        false,
         frame => {
-          if (processWebSocketFrame (frame) && _readyState != WebSocketState.Closed) {
+          if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
 
             if (!frame.IsData)
@@ -1293,7 +1374,7 @@ namespace WebSocketSharp
                   OnMessage.Emit (this, e);
               }
               catch (Exception ex) {
-                processException (ex, "An exception has occurred while OnMessage.");
+                processException (ex, "An exception has occurred during an OnMessage event.");
               }
             }
           }
@@ -1380,7 +1461,7 @@ namespace WebSocketSharp
       _readyState = WebSocketState.Closing;
 
       sendHttpResponse (response);
-      closeServerResources ();
+      releaseServerResources ();
 
       _readyState = WebSocketState.Closed;
     }
@@ -1392,25 +1473,25 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs e, byte[] frameAsBytes, int millisecondsTimeout)
+    internal void Close (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
-          _logger.Info ("Closing the WebSocket connection has already been done.");
+          _logger.Info ("Closing the connection has already been done.");
           return;
         }
 
         _readyState = WebSocketState.Closing;
       }
 
-      e.WasClean = closeHandshake (frameAsBytes, millisecondsTimeout, closeServerResources);
+      e.WasClean = closeHandshake (frameAsBytes, timeout, releaseServerResources);
 
       _readyState = WebSocketState.Closed;
       try {
         OnClose.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Fatal ("An exception has occurred while OnClose:\n" + ex.ToString ());
+        _logger.Fatal (ex.ToString ());
       }
     }
 
@@ -1448,17 +1529,17 @@ namespace WebSocketSharp
       return Convert.ToBase64String (src);
     }
 
-    internal bool Ping (byte[] frameAsBytes, int millisecondsTimeout)
+    internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       try {
         AutoResetEvent pong;
         return _readyState == WebSocketState.Open &&
                send (frameAsBytes) &&
                (pong = _receivePong) != null &&
-               pong.WaitOne (millisecondsTimeout);
+               pong.WaitOne (timeout);
       }
       catch (Exception ex) {
-        _logger.Fatal ("An exception has occurred while Ping:\n" + ex.ToString ());
+        _logger.Fatal (ex.ToString ());
         return false;
       }
     }
@@ -1469,19 +1550,19 @@ namespace WebSocketSharp
       lock (_forSend) {
         lock (_forConn) {
           if (_readyState != WebSocketState.Open) {
-            _logger.Error ("Closing the WebSocket connection has been done.");
+            _logger.Error ("Closing the connection has been done.");
             return;
           }
 
           try {
             byte[] cached;
             if (!cache.TryGetValue (_compression, out cached)) {
-              cached = WebSocketFrame.CreateWebSocketFrame (
+              cached = new WebSocketFrame (
                 Fin.Final,
                 opcode,
-                Mask.Unmask,
                 data.Compress (_compression),
-                _compression != CompressionMethod.None)
+                _compression != CompressionMethod.None,
+                false)
                 .ToByteArray ();
 
               cache.Add (_compression, cached);
@@ -1510,7 +1591,7 @@ namespace WebSocketSharp
             cached.Position = 0;
           }
 
-          send (opcode, Mask.Unmask, cached, _compression != CompressionMethod.None);
+          send (opcode, cached, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1530,13 +1611,13 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfClosable ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open;
-      close (new PayloadData (), send, send);
+      close (new CloseEventArgs (), send, send);
     }
 
     /// <summary>
@@ -1545,14 +1626,26 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-    /// isn't in the allowable range of the WebSocket close status code.
+    /// isn't in the allowable range of the close status code.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason
+    /// for the close.
     /// </param>
     public void Close (ushort code)
     {
-      Close (code, null);
+      var msg = _readyState.CheckIfClosable () ??
+                code.CheckIfValidCloseStatusCode ();
+
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      close (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1565,7 +1658,16 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      Close (code, null);
+      var msg = _readyState.CheckIfClosable ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      close (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1574,31 +1676,32 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     /// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-    /// isn't in the allowable range of the WebSocket close status code or the size
-    /// of <paramref name="reason"/> is greater than 123 bytes.
+    /// isn't in the allowable range of the close status code or the size of
+    /// <paramref name="reason"/> is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason
+    /// for the close.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for the close.
     /// </param>
     public void Close (ushort code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      close (new PayloadData (data), send, send);
+      close (e, send, send);
     }
 
     /// <summary>
@@ -1606,8 +1709,8 @@ namespace WebSocketSharp
     /// and <see cref="string"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method emits a <see cref="OnError"/> event if the size
-    /// of <paramref name="reason"/> is greater than 123 bytes.
+    /// This method emits a <see cref="OnError"/> event if the size of <paramref name="reason"/>
+    /// is greater than 123 bytes.
     /// </remarks>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
@@ -1618,19 +1721,19 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      close (new PayloadData (data), send, send);
+      close (e, send, send);
     }
 
     /// <summary>
@@ -1644,13 +1747,13 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfClosable ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open;
-      closeAsync (new PayloadData (), send, send);
+      closeAsync (new CloseEventArgs (), send, send);
     }
 
     /// <summary>
@@ -1662,8 +1765,8 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-    ///   isn't in the allowable range of the WebSocket close status code.
+    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/> isn't in
+    ///   the allowable range of the close status code.
     ///   </para>
     /// </remarks>
     /// <param name="code">
@@ -1671,7 +1774,18 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      CloseAsync (code, null);
+      var msg = _readyState.CheckIfClosable () ??
+                code.CheckIfValidCloseStatusCode ();
+
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      closeAsync (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1687,7 +1801,16 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      CloseAsync (code, null);
+      var msg = _readyState.CheckIfClosable ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
+
+        return;
+      }
+
+      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      closeAsync (new CloseEventArgs (code), send, send);
     }
 
     /// <summary>
@@ -1699,9 +1822,9 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-    ///   isn't in the allowable range of the WebSocket close status code or the size
-    ///   of <paramref name="reason"/> is greater than 123 bytes.
+    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/> isn't in
+    ///   the allowable range of the close status code or the size of <paramref name="reason"/>
+    ///   is greater than 123 bytes.
     ///   </para>
     /// </remarks>
     /// <param name="code">
@@ -1712,20 +1835,20 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
                 code.CheckIfValidCloseStatusCode () ??
-                (data = code.Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      closeAsync (new PayloadData (data), send, send);
+      closeAsync (e, send, send);
     }
 
     /// <summary>
@@ -1738,8 +1861,8 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if the size
-    ///   of <paramref name="reason"/> is greater than 123 bytes.
+    ///   This method emits a <see cref="OnError"/> event if the size of <paramref name="reason"/>
+    ///   is greater than 123 bytes.
     ///   </para>
     /// </remarks>
     /// <param name="code">
@@ -1751,19 +1874,19 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
-      byte[] data = null;
+      CloseEventArgs e = null;
       var msg = _readyState.CheckIfClosable () ??
-                (data = ((ushort) code).Append (reason)).CheckIfValidControlData ("reason");
+                (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
 
       if (msg != null) {
-        _logger.Error (String.Format ("{0}\ncode: {1} reason: {2}", msg, code, reason));
-        error (msg);
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
         return;
       }
 
       var send = _readyState == WebSocketState.Open && !code.IsReserved ();
-      closeAsync (new PayloadData (data), send, send);
+      closeAsync (e, send, send);
     }
 
     /// <summary>
@@ -1774,7 +1897,7 @@ namespace WebSocketSharp
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in connecting.", null);
 
         return;
       }
@@ -1794,7 +1917,7 @@ namespace WebSocketSharp
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in connecting.", null);
 
         return;
       }
@@ -1817,9 +1940,11 @@ namespace WebSocketSharp
     /// </returns>
     public bool Ping ()
     {
-      return _client
-             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask).ToByteArray (), 5000)
-             : Ping (WebSocketFrame.EmptyUnmaskPingData, 1000);
+      var bytes = _client
+                  ? WebSocketFrame.CreatePingFrame (true).ToByteArray ()
+                  : WebSocketFrame.EmptyUnmaskPingBytes;
+
+      return Ping (bytes, _waitTime);
     }
 
     /// <summary>
@@ -1841,14 +1966,12 @@ namespace WebSocketSharp
       var msg = data.CheckIfValidControlData ("message");
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the ping.", null);
 
         return false;
       }
 
-      return _client
-             ? Ping (WebSocketFrame.CreatePingFrame (Mask.Mask, data).ToByteArray (), 5000)
-             : Ping (WebSocketFrame.CreatePingFrame (Mask.Unmask, data).ToByteArray (), 1000);
+      return Ping (WebSocketFrame.CreatePingFrame (data, _client).ToByteArray (), _waitTime);
     }
 
     /// <summary>
@@ -1862,7 +1985,7 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -1882,7 +2005,7 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfOpen () ?? file.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -1901,7 +2024,7 @@ namespace WebSocketSharp
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -1919,16 +2042,16 @@ namespace WebSocketSharp
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -1947,16 +2070,16 @@ namespace WebSocketSharp
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ?? file.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -1974,16 +2097,16 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -2005,19 +2128,19 @@ namespace WebSocketSharp
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       var msg = _readyState.CheckIfOpen () ??
                 stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' must be greater than 0." : null);
+                (length < 1 ? "'length' is less than 1." : null);
 
       if (msg != null) {
         _logger.Error (msg);
-        error (msg);
+        error ("An error has occurred in sending the data.", null);
 
         return;
       }
@@ -2027,9 +2150,8 @@ namespace WebSocketSharp
         data => {
           var len = data.Length;
           if (len == 0) {
-            msg = "A data cannot be read from 'stream'.";
-            _logger.Error (msg);
-            error (msg);
+            _logger.Error ("The data cannot be read from 'stream'.");
+            error ("An error has occurred in sending the data.", null);
 
             return;
           }
@@ -2037,7 +2159,7 @@ namespace WebSocketSharp
           if (len < length)
             _logger.Warn (
               String.Format (
-                "A data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
+                "The data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
                 length,
                 len));
 
@@ -2047,7 +2169,7 @@ namespace WebSocketSharp
         },
         ex => {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending a data.");
+          error ("An exception has occurred while sending the data.", ex);
         });
     }
 
@@ -2061,19 +2183,18 @@ namespace WebSocketSharp
     public void SetCookie (Cookie cookie)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable ("SetCookie", false, false) ??
-                  (cookie == null ? "'cookie' must not be null." : null);
+        var msg = checkIfAvailable (false, false) ??
+                  (cookie == null ? "'cookie' is null." : null);
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred in setting the cookie.", null);
 
           return;
         }
 
-        lock (_cookies.SyncRoot) {
+        lock (_cookies.SyncRoot)
           _cookies.SetOrRemove (cookie);
-        }
       }
     }
 
@@ -2095,12 +2216,12 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable ("SetCredentials", false, false);
+        var msg = checkIfAvailable (false, false);
         if (msg == null) {
           if (username.IsNullOrEmpty ()) {
             _credentials = null;
             _preAuth = false;
-            _logger.Warn ("Credentials was set back to the default.");
+            _logger.Warn ("The credentials were set back to the default.");
 
             return;
           }
@@ -2114,7 +2235,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred in setting the credentials.", null);
 
           return;
         }
@@ -2125,11 +2246,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP Proxy server URL to connect through, and a pair of <paramref name="username"/>
-    /// and <paramref name="password"/> for the proxy server authentication (Basic/Digest).
+    /// Sets an HTTP Proxy server URL to connect through, and if necessary, a pair of
+    /// <paramref name="username"/> and <paramref name="password"/> for the proxy server
+    /// authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the HTTP Proxy server URL to connect through.
+    /// A <see cref="string"/> that represents the proxy server URL to connect through.
     /// </param>
     /// <param name="username">
     /// A <see cref="string"/> that represents the user name used to authenticate.
@@ -2138,15 +2260,15 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the password for <paramref name="username"/>
     /// used to authenticate.
     /// </param>
-    public void SetHttpProxy (string url, string username, string password)
+    public void SetProxy (string url, string username, string password)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable ("SetHttpProxy", false, false);
+        var msg = checkIfAvailable (false, false);
         if (msg == null) {
           if (url.IsNullOrEmpty ()) {
             _proxyUri = null;
             _proxyCredentials = null;
-            _logger.Warn ("Proxy url and credentials were set back to the default.");
+            _logger.Warn ("The proxy url and credentials were set back to the default.");
 
             return;
           }
@@ -2155,14 +2277,14 @@ namespace WebSocketSharp
           if (!Uri.TryCreate (url, UriKind.Absolute, out uri) ||
               uri.Scheme != "http" ||
               uri.Segments.Length > 1) {
-            msg = "The syntax of proxy url must be 'http://<host>[:<port>]'.";
+            msg = "The syntax of the proxy url must be 'http://<host>[:<port>]'.";
           }
           else {
             _proxyUri = uri;
 
             if (username.IsNullOrEmpty ()) {
               _proxyCredentials = null;
-              _logger.Warn ("Proxy credentials was set back to the default.");
+              _logger.Warn ("The proxy credentials were set back to the default.");
 
               return;
             }
@@ -2177,7 +2299,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error (msg);
+          error ("An error has occurred in setting the proxy.", null);
 
           return;
         }
@@ -2189,17 +2311,18 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Explicit Interface Implementation
+    #region Explicit Interface Implementations
 
     /// <summary>
     /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method closes the WebSocket connection with <see cref="CloseStatusCode.Away"/>.
+    /// This method closes the connection with <see cref="CloseStatusCode.Away"/>.
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      Close (CloseStatusCode.Away, null);
+      var send = _readyState == WebSocketState.Open;
+      close (new CloseEventArgs (CloseStatusCode.Away), send, send);
     }
 
     #endregion

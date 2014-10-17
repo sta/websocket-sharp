@@ -29,7 +29,7 @@
 #region Contributors
 /*
  * Contributors:
- *   Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
+ * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  */
 #endregion
 
@@ -40,8 +40,8 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties used for accessing the information in a WebSocket
-  /// service provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// Exposes the methods and properties used to access the information in a WebSocket service
+  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketServiceHost class is an abstract class.
@@ -59,14 +59,24 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Internal Properties
+
+    internal ServerState State {
+      get {
+        return Sessions.State;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service cleans up the inactive
-    /// sessions periodically.
+    /// Gets or sets a value indicating whether the WebSocket service cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service cleans up the inactive sessions periodically;
+    /// <c>true</c> if the service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
     public abstract bool KeepClean { get; set; }
@@ -75,7 +85,7 @@ namespace WebSocketSharp.Server
     /// Gets the path to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path to the WebSocket service.
+    /// A <see cref="string"/> that represents the absolute path to the service.
     /// </value>
     public abstract string Path { get; }
 
@@ -83,26 +93,51 @@ namespace WebSocketSharp.Server
     /// Gets the access to the sessions in the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
     /// </value>
     public abstract WebSocketSessionManager Sessions { get; }
 
     /// <summary>
-    /// Gets the type of the WebSocket service.
+    /// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Type"/> that represents the type of the WebSocket service.
+    /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
     /// </value>
     public abstract Type Type { get; }
+
+    /// <summary>
+    /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+    /// the same as 1 second.
+    /// </value>
+    public abstract TimeSpan WaitTime { get; set; }
 
     #endregion
 
     #region Internal Methods
 
+    internal void Start ()
+    {
+      Sessions.Start ();
+    }
+
     internal void StartSession (WebSocketContext context)
     {
-      var session = CreateSession ();
-      session.Start (context, Sessions);
+      CreateSession ().Start (context, Sessions);
+    }
+
+    internal void Stop (ushort code, string reason)
+    {
+      var e = new CloseEventArgs (code, reason);
+
+      var send = !code.IsReserved ();
+      var bytes =
+        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
+
+      var timeout = send ? WaitTime : TimeSpan.Zero;
+      Sessions.Stop (e, bytes, timeout);
     }
 
     #endregion
@@ -113,19 +148,20 @@ namespace WebSocketSharp.Server
     /// Creates a new session in the WebSocket service.
     /// </summary>
     /// <returns>
-    /// A <see cref="WebSocketService"/> instance that represents a new session.
+    /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
     /// </returns>
-    protected abstract WebSocketService CreateSession ();
+    protected abstract WebSocketBehavior CreateSession ();
 
     #endregion
   }
 
-  internal class WebSocketServiceHost<T> : WebSocketServiceHost
-    where T : WebSocketService
+  internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
+    where TBehavior : WebSocketBehavior
   {
     #region Private Fields
 
-    private Func<T>                 _constructor;
+    private Func<TBehavior>         _initializer;
+    private Logger                  _logger;
     private string                  _path;
     private WebSocketSessionManager _sessions;
 
@@ -133,10 +169,11 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (string path, Func<T> constructor, Logger logger)
+    internal WebSocketServiceHost (string path, Func<TBehavior> initializer, Logger logger)
     {
-      _path = HttpUtility.UrlDecode (path).TrimEndSlash ();
-      _constructor = constructor;
+      _path = path;
+      _initializer = initializer;
+      _logger = logger;
       _sessions = new WebSocketSessionManager (logger);
     }
 
@@ -150,6 +187,12 @@ namespace WebSocketSharp.Server
       }
 
       set {
+        var msg = _sessions.State.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
         _sessions.KeepClean = value;
       }
     }
@@ -168,7 +211,23 @@ namespace WebSocketSharp.Server
 
     public override Type Type {
       get {
-        return typeof (T);
+        return typeof (TBehavior);
+      }
+    }
+
+    public override TimeSpan WaitTime {
+      get {
+        return _sessions.WaitTime;
+      }
+
+      set {
+        var msg = _sessions.State.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _sessions.WaitTime = value;
       }
     }
 
@@ -176,9 +235,9 @@ namespace WebSocketSharp.Server
 
     #region Protected Methods
 
-    protected override WebSocketService CreateSession ()
+    protected override WebSocketBehavior CreateSession ()
     {
-      return _constructor ();
+      return _initializer ();
     }
 
     #endregion

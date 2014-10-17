@@ -74,8 +74,8 @@ namespace WebSocketSharp.Server
     /// Gets the state of the <see cref="WebSocket"/> used in the session.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the
-    /// <see cref="WebSocket"/> used in the session.
+    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
+    /// the <see cref="WebSocket"/> used in the session.
     /// </value>
     WebSocketState State { get; }
 

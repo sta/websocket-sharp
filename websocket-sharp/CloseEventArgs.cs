@@ -35,33 +35,91 @@ namespace WebSocketSharp
   /// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
   /// </summary>
   /// <remarks>
-  /// A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been closed.
-  /// If you would like to get the reason for the close, you should access the <see cref="Code"/> or
-  /// <see cref="Reason"/> property.
+  ///   <para>
+  ///   A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection has been
+  ///   closed.
+  ///   </para>
+  ///   <para>
+  ///   If you would like to get the reason for the close, you should access
+  ///   the <see cref="CloseEventArgs.Code"/> or <see cref="CloseEventArgs.Reason"/> property.
+  ///   </para>
   /// </remarks>
   public class CloseEventArgs : EventArgs
   {
     #region Private Fields
 
-    private bool   _clean;
-    private ushort _code;
-    private string _reason;
+    private bool        _clean;
+    private ushort      _code;
+    private PayloadData _payloadData;
+    private byte[]      _rawData;
+    private string      _reason;
 
     #endregion
 
     #region Internal Constructors
 
-    internal CloseEventArgs (PayloadData payload)
+    internal CloseEventArgs ()
     {
-      var data = payload.ApplicationData;
-      var len = data.Length;
+      _payloadData = new PayloadData ();
+      _rawData = _payloadData.ApplicationData;
+
+      _code = (ushort) CloseStatusCode.NoStatusCode;
+      _reason = String.Empty;
+    }
+
+    internal CloseEventArgs (ushort code)
+    {
+      _code = code;
+      _reason = String.Empty;
+      _rawData = code.InternalToByteArray (ByteOrder.Big);
+    }
+
+    internal CloseEventArgs (CloseStatusCode code)
+      : this ((ushort) code)
+    {
+    }
+
+    internal CloseEventArgs (PayloadData payloadData)
+    {
+      _payloadData = payloadData;
+      _rawData = payloadData.ApplicationData;
+
+      var len = _rawData.Length;
       _code = len > 1
-              ? data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
+              ? _rawData.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
               : (ushort) CloseStatusCode.NoStatusCode;
 
       _reason = len > 2
-                ? Encoding.UTF8.GetString (data.SubArray (2, len - 2))
+                ? Encoding.UTF8.GetString (_rawData.SubArray (2, len - 2))
                 : String.Empty;
+    }
+
+    internal CloseEventArgs (ushort code, string reason)
+    {
+      _code = code;
+      _reason = reason ?? String.Empty;
+      _rawData = code.Append (reason);
+    }
+
+    internal CloseEventArgs (CloseStatusCode code, string reason)
+      : this ((ushort) code, reason)
+    {
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal PayloadData PayloadData {
+      get {
+        return _payloadData ?? (_payloadData = new PayloadData (_rawData));
+      }
+    }
+
+    internal byte[] RawData {
+      get {
+        return _rawData;
+      }
     }
 
     #endregion

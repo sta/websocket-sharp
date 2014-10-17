@@ -1,6 +1,6 @@
 #region License
 /*
- * WebSocketService.cs
+ * WebSocketBehavior.cs
  *
  * The MIT License
  *
@@ -34,18 +34,19 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes a set of the methods and properties for a WebSocket service provided by the
-  /// <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// Exposes the methods and properties used to define the behavior of a WebSocket service
+  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
   /// </summary>
   /// <remarks>
-  /// The WebSocketService class is an abstract class.
+  /// The WebSocketBehavior class is an abstract class.
   /// </remarks>
-  public abstract class WebSocketService : IWebSocketSession
+  public abstract class WebSocketBehavior : IWebSocketSession
   {
     #region Private Fields
 
     private WebSocketContext                               _context;
     private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
+    private string                                         _id;
     private Func<string, bool>                             _originValidator;
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
@@ -57,9 +58,9 @@ namespace WebSocketSharp.Server
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketService"/> class.
+    /// Initializes a new instance of the <see cref="WebSocketBehavior"/> class.
     /// </summary>
-    protected WebSocketService ()
+    protected WebSocketBehavior ()
     {
       _start = DateTime.MaxValue;
     }
@@ -71,11 +72,9 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Gets the logging functions.
     /// </summary>
-    /// <remarks>
-    /// This property is available after the WebSocket connection has been established.
-    /// </remarks>
     /// <value>
-    /// A <see cref="Logger"/> that provides the logging functions.
+    /// A <see cref="Logger"/> that provides the logging functions, or <see langword="null"/>
+    /// if the WebSocket connection isn't established.
     /// </value>
     protected Logger Log {
       get {
@@ -88,11 +87,9 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Gets the access to the sessions in the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// This property is available after the WebSocket connection has been established.
-    /// </remarks>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions.
+    /// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions,
+    /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     protected WebSocketSessionManager Sessions {
       get {
@@ -108,7 +105,8 @@ namespace WebSocketSharp.Server
     /// Gets the information in the current connection request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the current connection request.
+    /// A <see cref="WebSocketContext"/> that provides the access to the current connection request,
+    /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public WebSocketContext Context {
       get {
@@ -128,11 +126,11 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate that references
     ///   the method(s) used to validate the cookies. 1st <see cref="CookieCollection"/> passed to
-    ///   this delegate contains the cookies to validate, if any. 2nd <see cref="CookieCollection"/>
+    ///   this delegate contains the cookies to validate if any. 2nd <see cref="CookieCollection"/>
     ///   passed to this delegate receives the cookies to send to the client.
     ///   </para>
     ///   <para>
-    ///   This delegate should return <c>true</c> if the cookies are valid; otherwise, <c>false</c>.
+    ///   This delegate should return <c>true</c> if the cookies are valid.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>, and it does nothing to validate.
@@ -152,10 +150,13 @@ namespace WebSocketSharp.Server
     /// Gets the unique ID of the current session.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the unique ID of the current session.
+    /// A <see cref="string"/> that represents the unique ID of the current session,
+    /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public string ID {
-      get; private set;
+      get {
+        return _id;
+      }
     }
 
     /// <summary>
@@ -170,11 +171,10 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to validate
     ///   the origin header. A <see cref="string"/> passed to this delegate represents the value of
-    ///   the origin header to validate, if any.
+    ///   the origin header to validate if any.
     ///   </para>
     ///   <para>
-    ///   This delegate should return <c>true</c> if the origin header is valid; otherwise,
-    ///   <c>false</c>.
+    ///   This delegate should return <c>true</c> if the origin header is valid.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>, and it does nothing to validate.
@@ -199,8 +199,8 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the subprotocol if any. The default value is
-    ///   <see cref="String.Empty"/>.
+    ///   A <see cref="string"/> that represents the subprotocol if any.
+    ///   The default value is <see cref="String.Empty"/>.
     ///   </para>
     ///   <para>
     ///   The value to set must be a token defined in
@@ -229,7 +229,8 @@ namespace WebSocketSharp.Server
     /// Gets the time that the current session has started.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time that the current session has started.
+    /// A <see cref="DateTime"/> that represents the time that the current session has started,
+    /// or <see cref="DateTime.MaxValue"/> if the WebSocket connection isn't established.
     /// </value>
     public DateTime StartTime {
       get {
@@ -241,8 +242,8 @@ namespace WebSocketSharp.Server
     /// Gets the state of the <see cref="WebSocket"/> used in the current session.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the
-    /// <see cref="WebSocket"/> used in the current session.
+    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
+    /// the <see cref="WebSocket"/> used in the current session.
     /// </value>
     public WebSocketState State {
       get {
@@ -268,10 +269,10 @@ namespace WebSocketSharp.Server
 
     private void onClose (object sender, CloseEventArgs e)
     {
-      if (ID == null)
+      if (_id == null)
         return;
 
-      _sessions.Remove (ID);
+      _sessions.Remove (_id);
       OnClose (e);
     }
 
@@ -287,8 +288,8 @@ namespace WebSocketSharp.Server
 
     private void onOpen (object sender, EventArgs e)
     {
-      ID = _sessions.Add (this);
-      if (ID == null) {
+      _id = _sessions.Add (this);
+      if (_id == null) {
         _websocket.Close (CloseStatusCode.Away);
         return;
       }
@@ -314,8 +315,12 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       _websocket = context.WebSocket;
-      _websocket.Protocol = _protocol;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.Protocol = _protocol;
+
+      var waitTime = sessions.WaitTime;
+      if (waitTime != _websocket.WaitTime)
+        _websocket.WaitTime = waitTime;
 
       _websocket.OnOpen += onOpen;
       _websocket.OnMessage += onMessage;
@@ -330,22 +335,30 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Calls the <see cref="OnError"/> method with the specified <paramref name="message"/>.
+    /// Calls the <see cref="OnError"/> method with the specified <paramref name="message"/> and
+    /// <paramref name="exception"/>.
     /// </summary>
+    /// <remarks>
+    /// This method doesn't call the <see cref="OnError"/> method if <paramref name="message"/> is
+    /// <see langword="null"/> or empty.
+    /// </remarks>
     /// <param name="message">
     /// A <see cref="string"/> that represents the error message.
     /// </param>
-    protected void Error (string message)
+    /// <param name="exception">
+    /// An <see cref="Exception"/> instance that represents the cause of the error if any.
+    /// </param>
+    protected void Error (string message, Exception exception)
     {
       if (message != null && message.Length > 0)
-        OnError (new ErrorEventArgs (message));
+        OnError (new ErrorEventArgs (message, exception));
     }
 
     /// <summary>
     /// Called when the WebSocket connection used in the current session has been closed.
     /// </summary>
     /// <param name="e">
-    /// A <see cref="CloseEventArgs"/> that represents the event data received by
+    /// A <see cref="CloseEventArgs"/> that represents the event data passed to
     /// a <see cref="WebSocket.OnClose"/> event.
     /// </param>
     protected virtual void OnClose (CloseEventArgs e)
@@ -353,10 +366,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the current session gets an error.
+    /// Called when the <see cref="WebSocket"/> used in the current session gets an error.
     /// </summary>
     /// <param name="e">
-    /// A <see cref="ErrorEventArgs"/> that represents the event data received by
+    /// A <see cref="ErrorEventArgs"/> that represents the event data passed to
     /// a <see cref="WebSocket.OnError"/> event.
     /// </param>
     protected virtual void OnError (ErrorEventArgs e)
@@ -364,10 +377,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the current session receives a message.
+    /// Called when the <see cref="WebSocket"/> used in the current session receives a message.
     /// </summary>
     /// <param name="e">
-    /// A <see cref="MessageEventArgs"/> that represents the event data received by
+    /// A <see cref="MessageEventArgs"/> that represents the event data passed to
     /// a <see cref="WebSocket.OnMessage"/> event.
     /// </param>
     protected virtual void OnMessage (MessageEventArgs e)
@@ -384,19 +397,25 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Sends a binary <paramref name="data"/> to the client on the current session.
     /// </summary>
+    /// <remarks>
+    /// This method is available after the WebSocket connection has been established.
+    /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
-    protected void Send (byte [] data)
+    protected void Send (byte[] data)
     {
       if (_websocket != null)
         _websocket.Send (data);
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data to the client on the current
-    /// session.
+    /// Sends the specified <paramref name="file"/> as a binary data to the client
+    /// on the current session.
     /// </summary>
+    /// <remarks>
+    /// This method is available after the WebSocket connection has been established.
+    /// </remarks>
     /// <param name="file">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
@@ -409,6 +428,9 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Sends a text <paramref name="data"/> to the client on the current session.
     /// </summary>
+    /// <remarks>
+    /// This method is available after the WebSocket connection has been established.
+    /// </remarks>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
@@ -422,36 +444,46 @@ namespace WebSocketSharp.Server
     /// Sends a binary <paramref name="data"/> asynchronously to the client on the current session.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    ///   <para>
+    ///   This method is available after the WebSocket connection has been established.
+    ///   </para>
+    ///   <para>
+    ///   This method doesn't wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
-    protected void SendAsync (byte [] data, Action<bool> completed)
+    protected void SendAsync (byte[] data, Action<bool> completed)
     {
       if (_websocket != null)
         _websocket.SendAsync (data, completed);
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data asynchronously to the client
-    /// on the current session.
+    /// Sends the specified <paramref name="file"/> as a binary data asynchronously
+    /// to the client on the current session.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    ///   <para>
+    ///   This method is available after the WebSocket connection has been established.
+    ///   </para>
+    ///   <para>
+    ///   This method doesn't wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="file">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     protected void SendAsync (FileInfo file, Action<bool> completed)
     {
@@ -463,15 +495,20 @@ namespace WebSocketSharp.Server
     /// Sends a text <paramref name="data"/> asynchronously to the client on the current session.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    ///   <para>
+    ///   This method is available after the WebSocket connection has been established.
+    ///   </para>
+    ///   <para>
+    ///   This method doesn't wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     protected void SendAsync (string data, Action<bool> completed)
     {
@@ -480,11 +517,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously to the client on
-    /// the current session.
+    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
+    /// to the client on the current session.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    ///   <para>
+    ///   This method is available after the WebSocket connection has been established.
+    ///   </para>
+    ///   <para>
+    ///   This method doesn't wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="stream">
     /// A <see cref="Stream"/> from which contains the binary data to send.
@@ -493,9 +535,9 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
-    /// An Action&lt;bool&gt; delegate that references the method(s) called when the send is
-    /// complete. A <see cref="bool"/> passed to this delegate is <c>true</c> if the send is
-    /// complete successfully; otherwise, <c>false</c>.
+    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
+    /// if the send is complete successfully.
     /// </param>
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {

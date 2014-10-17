@@ -415,7 +415,7 @@ namespace WebSocketSharp.Net
           var req = _context.Request;
           var res = _context.Response;
           if (req.KeepAlive &&
-              !res.CloseConnection &&
+              !res.ConnectionClose &&
               req.FlushInput () &&
               (!_chunked || (_chunked && !res.ForceCloseChunked))) {
             // Don't close. Keep working.

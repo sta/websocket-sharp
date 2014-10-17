@@ -74,7 +74,6 @@
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
-    <Compile Include="Server\WebSocketService.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\Cookie.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="HttpBase.cs" />
     <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
+    <Compile Include="Server\WebSocketBehavior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

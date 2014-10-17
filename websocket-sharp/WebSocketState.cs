@@ -35,14 +35,13 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   /// The values of the state are defined in
-  /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket
-  /// API</see>.
+  /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket API</see>.
   /// </remarks>
   public enum WebSocketState : ushort
   {
     /// <summary>
     /// Equivalent to numeric value 0.
-    /// Indicates that the connection has not yet been established.
+    /// Indicates that the connection hasn't yet been established.
     /// </summary>
     Connecting = 0,
     /// <summary>

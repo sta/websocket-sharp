@@ -37,59 +37,55 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private byte [] _applicationData;
-    private byte [] _extensionData;
-    private bool    _masked;
+    private byte[] _data;
+    private long   _extDataLength;
+    private long   _length;
+    private bool   _masked;
 
     #endregion
 
-    #region Public Const Fields
+    #region Public Fields
 
-    public const ulong MaxLength = long.MaxValue;
+    public const ulong MaxLength = Int64.MaxValue;
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public PayloadData ()
-      : this (new byte [0], new byte [0], false)
+    internal PayloadData ()
+    {
+      _data = new byte[0];
+    }
+
+    internal PayloadData (byte[] data)
+      : this (data, false)
     {
     }
 
-    public PayloadData (byte [] applicationData)
-      : this (new byte [0], applicationData, false)
+    internal PayloadData (byte[] data, bool masked)
     {
-    }
-
-    public PayloadData (string applicationData)
-      : this (new byte [0], Encoding.UTF8.GetBytes (applicationData), false)
-    {
-    }
-
-    public PayloadData (byte [] applicationData, bool masked)
-      : this (new byte [0], applicationData, masked)
-    {
-    }
-
-    public PayloadData (byte [] extensionData, byte [] applicationData, bool masked)
-    {
-      if ((ulong) extensionData.LongLength + (ulong) applicationData.LongLength > MaxLength)
-        throw new ArgumentOutOfRangeException (
-          "The length of 'extensionData' plus 'applicationData' is greater than MaxLength.");
-
-      _extensionData = extensionData;
-      _applicationData = applicationData;
+      _data = data;
       _masked = masked;
+      _length = data.LongLength;
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal bool ContainsReservedCloseStatusCode {
+    internal long ExtensionDataLength {
       get {
-        return _applicationData.Length > 1 &&
-               _applicationData.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
+        return _extDataLength;
+      }
+
+      set {
+        _extDataLength = value;
+      }
+    }
+
+    internal bool IncludesReservedCloseStatusCode {
+      get {
+        return _length > 1 && _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
       }
     }
 
@@ -97,15 +93,19 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public byte [] ApplicationData {
+    public byte[] ApplicationData {
       get {
-        return _applicationData;
+        return _extDataLength > 0
+               ? _data.SubArray (_extDataLength, _length - _extDataLength)
+               : _data;
       }
     }
 
-    public byte [] ExtensionData {
+    public byte[] ExtensionData {
       get {
-        return _extensionData;
+        return _extDataLength > 0
+               ? _data.SubArray (0, _extDataLength)
+               : new byte[0];
       }
     }
 
@@ -117,18 +117,20 @@ namespace WebSocketSharp
 
     public ulong Length {
       get {
-        return (ulong) (_extensionData.LongLength + _applicationData.LongLength);
+        return (ulong) _length;
       }
     }
 
     #endregion
 
-    #region Private Methods
+    #region Internal Methods
 
-    private static void mask (byte [] src, byte [] key)
+    internal void Mask (byte[] key)
     {
-      for (long i = 0; i < src.LongLength; i++)
-        src [i] = (byte) (src [i] ^ key [i % 4]);
+      for (long i = 0; i < _length; i++)
+        _data[i] = (byte) (_data[i] ^ key[i % 4]);
+
+      _masked = !_masked;
     }
 
     #endregion
@@ -137,39 +139,23 @@ namespace WebSocketSharp
 
     public IEnumerator<byte> GetEnumerator ()
     {
-      foreach (byte b in _extensionData)
-        yield return b;
-
-      foreach (byte b in _applicationData)
+      foreach (var b in _data)
         yield return b;
     }
 
-    public void Mask (byte [] maskingKey)
+    public byte[] ToByteArray ()
     {
-      if (_extensionData.LongLength > 0)
-        mask (_extensionData, maskingKey);
-
-      if (_applicationData.LongLength > 0)
-        mask (_applicationData, maskingKey);
-
-      _masked = !_masked;
-    }
-
-    public byte [] ToByteArray ()
-    {
-      return _extensionData.LongLength > 0
-             ? new List<byte> (this).ToArray ()
-             : _applicationData;
+      return _data;
     }
 
     public override string ToString ()
     {
-      return BitConverter.ToString (ToByteArray ());
+      return BitConverter.ToString (_data);
     }
 
     #endregion
 
-    #region Explicitly Implemented Interface Members
+    #region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
