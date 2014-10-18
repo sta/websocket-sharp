@@ -691,10 +691,10 @@ namespace WebSocketSharp
 			}
 		}
 
-		private void closeAsync(CloseEventArgs e, bool send, bool wait)
+		private Task closeAsync(CloseEventArgs e, bool send, bool wait)
 		{
 			Action<CloseEventArgs, bool, bool> closer = close;
-			closer.BeginInvoke(e, send, wait, ar => closer.EndInvoke(ar), null);
+			return Task.Factory.FromAsync(closer.BeginInvoke, closer.EndInvoke, e, send, wait, null);
 		}
 
 		private bool closeHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
@@ -1249,26 +1249,10 @@ namespace WebSocketSharp
 			}
 		}
 
-		private void sendAsync(Opcode opcode, Stream stream, Action<bool> completed)
+		private Task<bool> sendAsync(Opcode opcode, Stream stream)
 		{
 			Func<Opcode, Stream, bool> sender = send;
-			sender.BeginInvoke(
-			  opcode,
-			  stream,
-			  ar =>
-			  {
-				  try
-				  {
-					  var sent = sender.EndInvoke(ar);
-					  if (completed != null)
-						  completed(sent);
-				  }
-				  catch (Exception ex)
-				  {
-					  error("An exception has occurred during a send callback.", ex);
-				  }
-			  },
-			  null);
+			return Task.Factory.FromAsync<Opcode, Stream, bool>(sender.BeginInvoke, sender.EndInvoke, opcode, stream, null);
 		}
 
 		private bool sendBytes(byte[] bytes)
@@ -1278,7 +1262,7 @@ namespace WebSocketSharp
 				_stream.Write(bytes, 0, bytes.Length);
 				return true;
 			}
-			catch (Exception ex)
+			catch
 			{
 				return false;
 			}
@@ -1779,7 +1763,7 @@ namespace WebSocketSharp
 		/// <remarks>
 		/// This method doesn't wait for the close to be complete.
 		/// </remarks>
-		public void CloseAsync()
+		public async Task CloseAsync()
 		{
 			var msg = _readyState.CheckIfClosable();
 			if (msg != null)
@@ -1790,7 +1774,8 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open;
-			closeAsync(new CloseEventArgs(), send, send);
+
+			await closeAsync(new CloseEventArgs(), send, send);
 		}
 
 		/// <summary>
@@ -1809,10 +1794,9 @@ namespace WebSocketSharp
 		/// <param name="code">
 		/// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
 		/// </param>
-		public void CloseAsync(ushort code)
+		public async Task CloseAsync(ushort code)
 		{
-			var msg = _readyState.CheckIfClosable() ??
-					  code.CheckIfValidCloseStatusCode();
+			var msg = _readyState.CheckIfClosable() ?? code.CheckIfValidCloseStatusCode();
 
 			if (msg != null)
 			{
@@ -1822,7 +1806,7 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(new CloseEventArgs(code), send, send);
+			await closeAsync(new CloseEventArgs(code), send, send);
 		}
 
 		/// <summary>
@@ -1836,7 +1820,7 @@ namespace WebSocketSharp
 		/// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
 		/// indicating the reason for the close.
 		/// </param>
-		public void CloseAsync(CloseStatusCode code)
+		public async Task CloseAsync(CloseStatusCode code)
 		{
 			var msg = _readyState.CheckIfClosable();
 			if (msg != null)
@@ -1847,7 +1831,7 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(new CloseEventArgs(code), send, send);
+			await closeAsync(new CloseEventArgs(code), send, send);
 		}
 
 		/// <summary>
@@ -1870,7 +1854,7 @@ namespace WebSocketSharp
 		/// <param name="reason">
 		/// A <see cref="string"/> that represents the reason for the close.
 		/// </param>
-		public void CloseAsync(ushort code, string reason)
+		public async Task CloseAsync(ushort code, string reason)
 		{
 			CloseEventArgs e = null;
 			var msg = _readyState.CheckIfClosable() ??
@@ -1885,31 +1869,27 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(e, send, send);
+			await closeAsync(e, send, send);
 		}
 
 		/// <summary>
-		/// Closes the WebSocket connection asynchronously with the specified
-		/// <see cref="CloseStatusCode"/> and <see cref="string"/>, and releases
-		/// all associated resources.
+		/// Closes the WebSocket connection asynchronously with the specified <see cref="CloseStatusCode"/> and <see cref="string"/>, and releases all associated resources.
 		/// </summary>
 		/// <remarks>
 		///   <para>
 		///   This method doesn't wait for the close to be complete.
 		///   </para>
 		///   <para>
-		///   This method emits a <see cref="OnError"/> event if the size of <paramref name="reason"/>
-		///   is greater than 123 bytes.
+		///   This method emits a <see cref="OnError"/> event if the size of <paramref name="reason"/> is greater than 123 bytes.
 		///   </para>
 		/// </remarks>
 		/// <param name="code">
-		/// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
-		/// indicating the reason for the close.
+		/// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating the reason for the close.
 		/// </param>
 		/// <param name="reason">
 		/// A <see cref="string"/> that represents the reason for the close.
 		/// </param>
-		public void CloseAsync(CloseStatusCode code, string reason)
+		public async Task CloseAsync(CloseStatusCode code, string reason)
 		{
 			CloseEventArgs e = null;
 			var msg = _readyState.CheckIfClosable() ??
@@ -1923,7 +1903,7 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(e, send, send);
+			await closeAsync(e, send, send);
 		}
 
 		/// <summary>
@@ -1949,24 +1929,24 @@ namespace WebSocketSharp
 		/// <remarks>
 		/// This method doesn't wait for the connect to be complete.
 		/// </remarks>
-		public void ConnectAsync()
+		public Task ConnectAsync()
 		{
 			var msg = checkIfCanConnect();
 			if (msg != null)
 			{
 				error("An error has occurred in connecting.", null);
 
-				return;
+				return Task.Factory.StartNew(() => { });
 			}
 
-			Func<bool> connector = connect;
-			connector.BeginInvoke(
-			  ar =>
-			  {
-				  if (connector.EndInvoke(ar))
-					  open();
-			  },
-			  null);
+			return Task.Factory.StartNew(
+				() =>
+				{
+					if (connect())
+					{
+						open();
+					}
+				});
 		}
 
 		/// <summary>
@@ -1997,8 +1977,10 @@ namespace WebSocketSharp
 		/// </param>
 		public bool Ping(string message)
 		{
-			if (message == null || message.Length == 0)
+			if (string.IsNullOrEmpty(message))
+			{
 				return Ping();
+			}
 
 			var data = Encoding.UTF8.GetBytes(message);
 			var msg = data.CheckIfValidControlData("message");
@@ -2079,22 +2061,17 @@ namespace WebSocketSharp
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public void SendAsync(byte[] data, Action<bool> completed)
+		public Task<bool> SendAsync(byte[] data)
 		{
 			var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
 				error("An error has occurred in sending the data.", null);
 
-				return;
+				return Task.FromResult(false);
 			}
 
-			sendAsync(Opcode.Binary, new MemoryStream(data), completed);
+			return sendAsync(Opcode.Binary, new MemoryStream(data));
 		}
 
 		/// <summary>
@@ -2107,12 +2084,7 @@ namespace WebSocketSharp
 		/// <param name="file">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public void SendAsync(FileInfo file, Action<bool> completed)
+		public async Task SendAsync(FileInfo file)
 		{
 			var msg = _readyState.CheckIfOpen() ?? file.CheckIfValidSendData();
 			if (msg != null)
@@ -2122,7 +2094,7 @@ namespace WebSocketSharp
 				return;
 			}
 
-			sendAsync(Opcode.Binary, file.OpenRead(), completed);
+			await sendAsync(Opcode.Binary, file.OpenRead());
 		}
 
 		/// <summary>
@@ -2134,22 +2106,17 @@ namespace WebSocketSharp
 		/// <param name="data">
 		/// A <see cref="string"/> that represents the text data to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public void SendAsync(string data, Action<bool> completed)
+		public async Task<bool> SendAsync(string data)
 		{
 			var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
 				error("An error has occurred in sending the data.", null);
 
-				return;
+				return false;
 			}
 
-			sendAsync(Opcode.Text, new MemoryStream(Encoding.UTF8.GetBytes(data)), completed);
+			return await sendAsync(Opcode.Text, new MemoryStream(Encoding.UTF8.GetBytes(data)));
 		}
 
 		/// <summary>

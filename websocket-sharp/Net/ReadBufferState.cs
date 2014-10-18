@@ -41,44 +41,53 @@ using System;
 
 namespace WebSocketSharp.Net
 {
-  internal class ReadBufferState
-  {
-    #region Public Constructors
+	internal class ReadBufferState
+	{
+		#region Public Constructors
 
-    public ReadBufferState (
-      byte [] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
-    {
-      Buffer = buffer;
-      Offset = offset;
-      Count = count;
-      InitialCount = count;
-      AsyncResult = asyncResult;
-    }
+		public ReadBufferState(byte[] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
+		{
+			Buffer = buffer;
+			Offset = offset;
+			Count = count;
+			InitialCount = count;
+			AsyncResult = asyncResult;
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Properties
+		#region Public Properties
 
-    public HttpStreamAsyncResult AsyncResult {
-      get; set;
-    }
+		public HttpStreamAsyncResult AsyncResult
+		{
+			get;
+			set;
+		}
 
-    public byte [] Buffer {
-      get; set;
-    }
+		public byte[] Buffer
+		{
+			get;
+			set;
+		}
 
-    public int Count {
-      get; set;
-    }
+		public int Count
+		{
+			get;
+			set;
+		}
 
-    public int InitialCount {
-      get; set;
-    }
+		public int InitialCount
+		{
+			get;
+			set;
+		}
 
-    public int Offset {
-      get; set;
-    }
+		public int Offset
+		{
+			get;
+			set;
+		}
 
-    #endregion
-  }
+		#endregion
+	}
 }

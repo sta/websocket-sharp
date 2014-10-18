@@ -461,15 +461,12 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		protected void SendAsync(byte[] data, Action<bool> completed)
+		protected async Task SendAsync(byte[] data)
 		{
 			if (_websocket != null)
-				_websocket.SendAsync(data, completed);
+			{
+				await _websocket.SendAsync(data);
+			}
 		}
 
 		/// <summary>
@@ -487,15 +484,12 @@ namespace WebSocketSharp.Server
 		/// <param name="file">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		protected void SendAsync(FileInfo file, Action<bool> completed)
+		protected async Task SendAsync(FileInfo file)
 		{
 			if (_websocket != null)
-				_websocket.SendAsync(file, completed);
+			{
+				await _websocket.SendAsync(file);
+			}
 		}
 
 		/// <summary>
@@ -517,10 +511,14 @@ namespace WebSocketSharp.Server
 		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
 		/// if the send is complete successfully.
 		/// </param>
-		protected void SendAsync(string data, Action<bool> completed)
+		protected Task<bool> SendAsync(string data)
 		{
 			if (_websocket != null)
-				_websocket.SendAsync(data, completed);
+			{
+				return _websocket.SendAsync(data);
+			}
+
+			return Task.FromResult(false);
 		}
 
 		/// <summary>

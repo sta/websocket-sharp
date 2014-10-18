@@ -268,19 +268,9 @@ namespace WebSocketSharp.Server
 			return Task.Factory.StartNew(() => broadcast(opcode, stream));
 		}
 
-		private Dictionary<string, Dictionary<string, bool>> broadping(
-		  byte[] frameAsBytes, TimeSpan timeout)
+		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{
-			var res = new Dictionary<string, Dictionary<string, bool>>();
-			foreach (var host in Hosts)
-			{
-				if (_state != ServerState.Start)
-					break;
-
-				res.Add(host.Path, host.Sessions.Broadping(frameAsBytes, timeout));
-			}
-
-			return res;
+			return this.Hosts.TakeWhile(host => this._state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
 		}
 
 		#endregion
@@ -438,10 +428,6 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
 		public Task BroadcastAsync(byte[] data)
 		{
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
@@ -463,11 +449,7 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// A <see cref="string"/> that represents the text data to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
-		public Task BroadcastAsync(string data, Action completed)
+		public Task BroadcastAsync(string data)
 		{
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
@@ -492,10 +474,6 @@ namespace WebSocketSharp.Server
 		/// <param name="length">
 		/// An <see cref="int"/> that represents the number of bytes to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
 		public async Task BroadcastAsync(Stream stream, int length)
 		{
 			var msg = _state.CheckIfStart() ??
@@ -511,9 +489,13 @@ namespace WebSocketSharp.Server
 			var len = data.Length;
 
 			if (len <= WebSocket.FragmentLength)
+			{
 				broadcast(Opcode.Binary, data);
+			}
 			else
+			{
 				broadcast(Opcode.Binary, new MemoryStream(data));
+			}
 		}
 
 		/// <summary>

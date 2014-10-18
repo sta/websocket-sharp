@@ -36,6 +36,7 @@ using System.Timers;
 
 namespace WebSocketSharp.Server
 {
+	using System.Linq;
 	using System.Threading.Tasks;
 
 	/// <summary>
@@ -248,14 +249,12 @@ namespace WebSocketSharp.Server
 
 		#region Private Methods
 
-		private void broadcast(Opcode opcode, byte[] data, Action completed)
+		private void broadcast(Opcode opcode, byte[] data)
 		{
 			var cache = new Dictionary<CompressionMethod, byte[]>();
 			try
 			{
 				Broadcast(opcode, data, cache);
-				if (completed != null)
-					completed();
 			}
 			finally
 			{
@@ -263,32 +262,32 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		private void broadcast(Opcode opcode, Stream stream, Action completed)
+		private void broadcast(Opcode opcode, Stream stream)
 		{
 			var cache = new Dictionary<CompressionMethod, Stream>();
 			try
 			{
 				Broadcast(opcode, stream, cache);
-				if (completed != null)
-					completed();
 			}
 			finally
 			{
 				foreach (var cached in cache.Values)
+				{
 					cached.Dispose();
+				}
 
 				cache.Clear();
 			}
 		}
 
-		private void broadcastAsync(Opcode opcode, byte[] data, Action completed)
+		private Task broadcastAsync(Opcode opcode, byte[] data)
 		{
-			ThreadPool.QueueUserWorkItem(state => broadcast(opcode, data, completed));
+			return Task.Factory.StartNew(() => broadcast(opcode, data));
 		}
 
-		private void broadcastAsync(Opcode opcode, Stream stream, Action completed)
+		private Task broadcastAsync(Opcode opcode, Stream stream)
 		{
-			ThreadPool.QueueUserWorkItem(state => broadcast(opcode, stream, completed));
+			return Task.Factory.StartNew(() => broadcast(opcode, stream));
 		}
 
 		private static string createID()
@@ -415,9 +414,13 @@ namespace WebSocketSharp.Server
 			}
 
 			if (data.LongLength <= WebSocket.FragmentLength)
-				broadcast(Opcode.Binary, data, null);
+			{
+				broadcast(Opcode.Binary, data);
+			}
 			else
-				broadcast(Opcode.Binary, new MemoryStream(data), null);
+			{
+				broadcast(Opcode.Binary, new MemoryStream(data));
+			}
 		}
 
 		/// <summary>
@@ -436,9 +439,13 @@ namespace WebSocketSharp.Server
 
 			var rawData = Encoding.UTF8.GetBytes(data);
 			if (rawData.LongLength <= WebSocket.FragmentLength)
-				broadcast(Opcode.Text, rawData, null);
+			{
+				broadcast(Opcode.Text, rawData);
+			}
 			else
-				broadcast(Opcode.Text, new MemoryStream(rawData), null);
+			{
+				broadcast(Opcode.Text, new MemoryStream(rawData));
+			}
 		}
 
 		/// <summary>
@@ -451,11 +458,7 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
-		public void BroadcastAsync(byte[] data, Action completed)
+		public async Task BroadcastAsync(byte[] data)
 		{
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
@@ -464,9 +467,13 @@ namespace WebSocketSharp.Server
 			}
 
 			if (data.LongLength <= WebSocket.FragmentLength)
-				broadcastAsync(Opcode.Binary, data, completed);
+			{
+				await broadcastAsync(Opcode.Binary, data);
+			}
 			else
-				broadcastAsync(Opcode.Binary, new MemoryStream(data), completed);
+			{
+				await broadcastAsync(Opcode.Binary, new MemoryStream(data));
+			}
 		}
 
 		/// <summary>
@@ -479,11 +486,7 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// A <see cref="string"/> that represents the text data to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
-		public void BroadcastAsync(string data, Action completed)
+		public async Task BroadcastAsync(string data)
 		{
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
@@ -493,9 +496,13 @@ namespace WebSocketSharp.Server
 
 			var rawData = Encoding.UTF8.GetBytes(data);
 			if (rawData.LongLength <= WebSocket.FragmentLength)
-				broadcastAsync(Opcode.Text, rawData, completed);
+			{
+				await broadcastAsync(Opcode.Text, rawData);
+			}
 			else
-				broadcastAsync(Opcode.Text, new MemoryStream(rawData), completed);
+			{
+				await broadcastAsync(Opcode.Text, new MemoryStream(rawData));
+			}
 		}
 
 		/// <summary>
@@ -511,11 +518,7 @@ namespace WebSocketSharp.Server
 		/// <param name="length">
 		/// An <see cref="int"/> that represents the number of bytes to broadcast.
 		/// </param>
-		/// <param name="completed">
-		/// An <see cref="Action"/> delegate that references the method(s) called when
-		/// the broadcast is complete.
-		/// </param>
-		public async Task BroadcastAsync(Stream stream, int length, Action completed)
+		public async Task BroadcastAsync(Stream stream, int length)
 		{
 			var msg = _state.CheckIfStart() ??
 					  stream.CheckIfCanRead() ??
@@ -534,9 +537,13 @@ namespace WebSocketSharp.Server
 			}
 
 			if (len <= WebSocket.FragmentLength)
-				broadcast(Opcode.Binary, data, completed);
+			{
+				broadcast(Opcode.Binary, data);
+			}
 			else
-				broadcast(Opcode.Binary, new MemoryStream(data), completed);
+			{
+				broadcast(Opcode.Binary, new MemoryStream(data));
+			}
 		}
 
 		/// <summary>
@@ -691,7 +698,9 @@ namespace WebSocketSharp.Server
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
+			{
 				session.Context.WebSocket.Send(data);
+			}
 		}
 
 		/// <summary>
@@ -708,7 +717,9 @@ namespace WebSocketSharp.Server
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
+			{
 				session.Context.WebSocket.Send(data);
+			}
 		}
 
 		/// <summary>
@@ -724,16 +735,15 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public void SendToAsync(string id, byte[] data, Action<bool> completed)
+		public Task<bool> SendToAsync(string id, byte[] data)
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
-				session.Context.WebSocket.SendAsync(data, completed);
+			{
+				return session.Context.WebSocket.SendAsync(data);
+			}
+
+			return Task.FromResult(false);
 		}
 
 		/// <summary>
@@ -749,16 +759,15 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// A <see cref="string"/> that represents the text data to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public void SendToAsync(string id, string data, Action<bool> completed)
+		public Task<bool> SendToAsync(string id, string data)
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
-				session.Context.WebSocket.SendAsync(data, completed);
+			{
+				return session.Context.WebSocket.SendAsync(data);
+			}
+
+			return Task.FromResult(false);
 		}
 
 		/// <summary>
@@ -777,12 +786,7 @@ namespace WebSocketSharp.Server
 		/// <param name="length">
 		/// An <see cref="int"/> that represents the number of bytes to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
-		public Task<bool> SendToAsync(string id, Stream stream, int length, Action<bool> completed)
+		public Task<bool> SendToAsync(string id, Stream stream, int length)
 		{
 			IWebSocketSession session;
 			return this.TryGetSession(id, out session) ? session.Context.WebSocket.SendAsync(stream, length) : Task.FromResult(false);
@@ -801,23 +805,25 @@ namespace WebSocketSharp.Server
 			lock (_forSweep)
 			{
 				_sweeping = true;
-				foreach (var id in InactiveIDs)
+				foreach (var id in this.InactiveIDs.TakeWhile(id => this._state == ServerState.Start))
 				{
-					if (_state != ServerState.Start)
-						break;
-
-					lock (_sync)
+					lock (this._sync)
 					{
 						IWebSocketSession session;
-						if (_sessions.TryGetValue(id, out session))
+						if (this._sessions.TryGetValue(id, out session))
 						{
 							var state = session.State;
-							if (state == WebSocketState.Open)
-								session.Context.WebSocket.Close(CloseStatusCode.Abnormal);
-							else if (state == WebSocketState.Closing)
-								continue;
-							else
-								_sessions.Remove(id);
+							switch (state)
+							{
+								case WebSocketState.Open:
+									session.Context.WebSocket.Close(CloseStatusCode.Abnormal);
+									break;
+								case WebSocketState.Closing:
+									continue;
+								default:
+									this._sessions.Remove(id);
+									break;
+							}
 						}
 					}
 				}
