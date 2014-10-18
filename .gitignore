@@ -2,8 +2,8 @@
 
 Backup*
 _UpgradeReport_Files
-bin
-obj
+[Bb]in
+[Oo]bj
 
 *.mdb
 *.pdb
@@ -13,3 +13,4 @@ obj
 *.userprefs
 UpgradeLog*.*
 /packages
+TestResult.xml

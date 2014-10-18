@@ -142,5 +142,7 @@
     <Compile Include="Server\WebSocketBehavior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Settings.StyleCop" />
+  </ItemGroup>
 </Project>

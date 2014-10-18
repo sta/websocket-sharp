@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="websocket-sharp" ToolsVersion="12.0">
+  <Include Path="basicdesignguidelinerules.ruleset" Action="Default" />
+  <Include Path="globalizationrules.ruleset" Action="Default" />
+  <Include Path="minimumrecommendedrules.ruleset" Action="Default" />
+  <Include Path="securityrules.ruleset" Action="Default" />
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1002" Action="None" />
+    <Rule Id="CA1005" Action="None" />
+    <Rule Id="CA1006" Action="None" />
+    <Rule Id="CA1008" Action="None" />
+    <Rule Id="CA1012" Action="None" />
+    <Rule Id="CA1014" Action="None" />
+    <Rule Id="CA1023" Action="None" />
+    <Rule Id="CA1024" Action="None" />
+    <Rule Id="CA1026" Action="None" />
+    <Rule Id="CA1028" Action="None" />
+    <Rule Id="CA1031" Action="None" />
+    <Rule Id="CA1034" Action="None" />
+    <Rule Id="CA1054" Action="None" />
+    <Rule Id="CA1055" Action="None" />
+    <Rule Id="CA1056" Action="None" />
+    <Rule Id="CA1300" Action="None" />
+    <Rule Id="CA1301" Action="None" />
+    <Rule Id="CA1302" Action="None" />
+    <Rule Id="CA1303" Action="None" />
+    <Rule Id="CA1304" Action="None" />
+    <Rule Id="CA1305" Action="None" />
+    <Rule Id="CA1306" Action="None" />
+    <Rule Id="CA1307" Action="None" />
+    <Rule Id="CA1308" Action="None" />
+    <Rule Id="CA1309" Action="None" />
+    <Rule Id="CA1502" Action="None" />
+    <Rule Id="CA1716" Action="None" />
+    <Rule Id="CA1810" Action="None" />
+    <Rule Id="CA1811" Action="None" />
+    <Rule Id="CA1812" Action="None" />
+    <Rule Id="CA1819" Action="None" />
+    <Rule Id="CA1822" Action="None" />
+    <Rule Id="CA2101" Action="None" />
+    <Rule Id="CA2102" Action="None" />
+    <Rule Id="CA2116" Action="None" />
+    <Rule Id="CA2117" Action="None" />
+    <Rule Id="CA2200" Action="None" />
+    <Rule Id="CA2202" Action="None" />
+    <Rule Id="CA2207" Action="None" />
+    <Rule Id="CA2210" Action="None" />
+    <Rule Id="CA2217" Action="None" />
+    <Rule Id="CA2223" Action="None" />
+    <Rule Id="CA2225" Action="None" />
+    <Rule Id="CA2227" Action="None" />
+    <Rule Id="CA2229" Action="None" />
+  </Rules>
+</RuleSet>

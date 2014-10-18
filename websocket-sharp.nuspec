@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+	<metadata>
+		<id>websocket-sharp.clone</id>
+		<title>WebSocket#</title>
+		<version>1.0.0.0-beta</version>
+		<authors>Jacob Reimers</authors>
+		<owners>Jacob Reimers</owners>
+		<projectUrl>https://github.com/jjrdk/websocket-sharp</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+		<description>websocket-sharp provides the WebSocket protocol client and server.</description>
+		<summary>This is a clone of websocket-sharp which is updated to use .NET 4.5 in order to make use of task based asynchronicity.</summary>
+		<releaseNotes />
+		<tags>websocket</tags>
+		<dependencies>
+		</dependencies>
+	</metadata>
+	<files>
+	<file src="websocket-sharp\bin\Release\WebSocketSharp.dll" target="lib\Net452" />
+  </files>
+</package>
