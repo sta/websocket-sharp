@@ -12,3 +12,4 @@ obj
 *.user
 *.userprefs
 UpgradeLog*.*
+/packages
