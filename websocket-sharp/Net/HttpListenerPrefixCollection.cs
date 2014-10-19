@@ -139,8 +139,9 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string uriPrefix)
     {
-      _listener.CheckDisposed ();
       ListenerPrefix.CheckUriPrefix (uriPrefix);
+      _listener.CheckDisposed ();
+
       if (_prefixes.Contains (uriPrefix))
         return;
 
@@ -158,6 +159,7 @@ namespace WebSocketSharp.Net
     public void Clear ()
     {
       _listener.CheckDisposed ();
+
       _prefixes.Clear ();
       if (_listener.IsListening)
         EndPointManager.RemoveListener (_listener);
@@ -182,10 +184,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Contains (string uriPrefix)
     {
-      _listener.CheckDisposed ();
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
+      _listener.CheckDisposed ();
       return _prefixes.Contains (uriPrefix);
     }
 
@@ -257,9 +259,10 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool Remove (string uriPrefix)
     {
-      _listener.CheckDisposed ();
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
+
+      _listener.CheckDisposed ();
 
       var res = _prefixes.Remove (uriPrefix);
       if (res && _listener.IsListening)
