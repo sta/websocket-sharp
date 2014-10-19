@@ -1,5 +1,5 @@
 ## Ignore build results and temporary files.
-
+BuildOutput
 Backup*
 _UpgradeReport_Files
 [Bb]in

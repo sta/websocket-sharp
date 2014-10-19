@@ -4,6 +4,7 @@ properties {
 	$folderPath = ".\"
 	$cleanPackages = $false
 	$oldEnvPath = ""
+	$fwkVersions = "4.5","4.5.1","4.5.2"
 }
 
 task default -depends CleanUpMsBuildPath
@@ -17,18 +18,27 @@ task CleanUpMsBuildPath -depends BuildPackages {
 }
 
 task BuildPackages -depends Test {
-	Exec { nuget pack websocket-sharp.nuspec }
+	Exec { nuget pack websocket-sharp.nuspec -OutputDirectory BuildOutput }
+	Exec { nuget pack websocket-sharp.symbols.nuspec -OutputDirectory BuildOutput -Symbols }
 }
 
 task Test -depends Compile, Clean {
 	'Running Tests'
-	Exec { .\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe .\WebSocketSharp.Tests\bin\$configuration\WebSocketSharp.Tests.dll }
+	foreach($fwk in $fwkVersions) {
+		Write-Host "Building v. $fwk"
+		$output = ".\BuildOutput\$fwk\$configuration"
+		$testAssembly = Resolve-Path "$output\WebSocketSharp.Tests.dll"
+		Exec { .\packages\NUnit.Runners.2.6.3\tools\nunit-console.exe $testAssembly }
+	}
 }
 
 task Compile -depends UpdatePackages {
 	$msbuild = Resolve-Path "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
-	$options = "/p:configuration=$configuration;platform=$platform"
-	Exec { & $msbuild websocket-sharp.sln $options }
+	foreach($fwk in $fwkVersions) {
+		$output = "..\BuildOutput\$fwk\$configuration"
+		$options = "/p:configuration=$configuration;platform=$platform;TargetFrameworkVersion=$fwk;OutputPath=$output"
+		Exec { & $msbuild websocket-sharp.sln $options }
+	}
 	'Executed Compile!'
 }
 

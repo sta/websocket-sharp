@@ -18,10 +18,13 @@
 	</metadata>
 	<files>
 		<file src="BuildOutput\4.5\Release\WebSocketSharp.dll" target="lib\Net45" />
+		<file src="BuildOutput\4.5\Release\WebSocketSharp.pdb" target="lib\Net45" />
 		<file src="BuildOutput\4.5\Release\WebSocketSharp.xml" target="lib\Net45" />
 		<file src="BuildOutput\4.5.1\Release\WebSocketSharp.dll" target="lib\Net451" />
+		<file src="BuildOutput\4.5.1\Release\WebSocketSharp.pdb" target="lib\Net451" />
 		<file src="BuildOutput\4.5.1\Release\WebSocketSharp.xml" target="lib\Net451" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.dll" target="lib\Net452" />
+		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.pdb" target="lib\Net452" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.xml" target="lib\Net452" />
   </files>
 </package>
