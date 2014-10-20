@@ -83,7 +83,8 @@ namespace WebSocketSharp.Net
       int port,
       bool secure,
       string certificateFolderPath,
-      X509Certificate2 defaultCertificate)
+      X509Certificate2 defaultCertificate,
+      bool reuseAddress)
     {
       if (secure) {
         _secure = secure;
@@ -92,13 +93,16 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("No server certificate could be found.");
       }
 
-      _endpoint = new IPEndPoint (address, port);
       _prefixes = new Dictionary<ListenerPrefix, HttpListener> ();
 
       _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
 
       _socket = new Socket (address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+      if (reuseAddress)
+        _socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+      _endpoint = new IPEndPoint (address, port);
       _socket.Bind (_endpoint);
       _socket.Listen (500);
 

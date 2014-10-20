@@ -307,6 +307,34 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the server is allowed to be bound to an address
+    /// that is already in use.
+    /// </summary>
+    /// <remarks>
+    /// If you would like to resolve to wait for socket in <c>TIME_WAIT</c> state, you should set
+    /// this property to <c>true</c>.
+    /// </remarks>
+    /// <value>
+    /// <c>true</c> if the server is allowed to be bound to an address that is already in use;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool ReuseAddress {
+      get {
+        return _listener.ReuseAddress;
+      }
+
+      set {
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _listener.ReuseAddress = value;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the document root path of the server.
     /// </summary>
     /// <value>

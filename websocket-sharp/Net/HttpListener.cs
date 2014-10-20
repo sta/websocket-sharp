@@ -70,6 +70,7 @@ namespace WebSocketSharp.Net
     private bool                                                 _listening;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
+    private bool                                                 _reuseAddress;
     private List<ListenerAsyncResult>                            _waitQueue;
     private object                                               _waitQueueSync;
 
@@ -106,6 +107,16 @@ namespace WebSocketSharp.Net
     internal bool IsDisposed {
       get {
         return _disposed;
+      }
+    }
+
+    internal bool ReuseAddress {
+      get {
+        return _reuseAddress;
+      }
+
+      set {
+        _reuseAddress = value;
       }
     }
 
