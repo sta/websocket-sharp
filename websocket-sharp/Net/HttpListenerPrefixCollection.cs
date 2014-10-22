@@ -50,8 +50,7 @@ namespace WebSocketSharp.Net
   /// The <see cref="HttpListener"/> responds to the request which has a requested URI that
   /// the prefixes most closely match.
   /// </remarks>
-  public class HttpListenerPrefixCollection
-    : ICollection<string>, IEnumerable<string>, IEnumerable
+  public class HttpListenerPrefixCollection : ICollection<string>, IEnumerable<string>, IEnumerable
   {
     #region Private Fields
 
@@ -60,21 +59,12 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Private Constructors
-
-    private HttpListenerPrefixCollection ()
-    {
-      _prefixes = new List<string> ();
-    }
-
-    #endregion
-
     #region Internal Constructors
 
     internal HttpListenerPrefixCollection (HttpListener listener)
-      : this ()
     {
       _listener = listener;
+      _prefixes = new List<string> ();
     }
 
     #endregion
