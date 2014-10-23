@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     private EndPointListener    _listener;
     private ResponseStream      _outputStream;
     private int                 _position;
-    private ListenerPrefix      _prefix;
+    private HttpListenerPrefix  _prefix;
     private MemoryStream        _requestBuffer;
     private int                 _reuses;
     private bool                _secure;
@@ -123,7 +123,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public ListenerPrefix Prefix {
+    public HttpListenerPrefix Prefix {
       get {
         return _prefix;
       }

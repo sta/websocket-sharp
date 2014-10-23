@@ -73,7 +73,7 @@ namespace WebSocketSharp.Net
 
     private static void addPrefix (string uriPrefix, HttpListener httpListener)
     {
-      var pref = new ListenerPrefix (uriPrefix);
+      var pref = new HttpListenerPrefix (uriPrefix);
       if (pref.Path.IndexOf ('%') != -1)
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
@@ -118,7 +118,7 @@ namespace WebSocketSharp.Net
 
     private static void removePrefix (string uriPrefix, HttpListener httpListener)
     {
-      var pref = new ListenerPrefix (uriPrefix);
+      var pref = new HttpListenerPrefix (uriPrefix);
       if (pref.Path.IndexOf ('%') != -1)
         return;
 

@@ -1,6 +1,6 @@
 #region License
 /*
- * ListenerPrefix.cs
+ * HttpListenerPrefix.cs
  *
  * This code is derived from System.Net.ListenerPrefix.cs of Mono
  * (http://www.mono-project.com).
@@ -43,7 +43,7 @@ using System.Net;
 
 namespace WebSocketSharp.Net
 {
-  internal sealed class ListenerPrefix
+  internal sealed class HttpListenerPrefix
   {
     #region Private Fields
 
@@ -59,8 +59,8 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    // Must be called after calling ListenerPrefix.CheckUriPrefix.
-    public ListenerPrefix (string uriPrefix)
+    // Must be called after calling HttpListenerPrefix.CheckPrefix.
+    public HttpListenerPrefix (string uriPrefix)
     {
       _original = uriPrefix;
       parse (uriPrefix);
@@ -140,6 +140,7 @@ namespace WebSocketSharp.Net
       }
 
       _path = uriPrefix.Substring (root);
+
       var pathLen = _path.Length;
       if (pathLen > 1)
         _path = _path.Substring (0, pathLen - 1);
@@ -149,7 +150,7 @@ namespace WebSocketSharp.Net
 
     #region public Methods
 
-    public static void CheckUriPrefix (string uriPrefix)
+    public static void CheckPrefix (string uriPrefix)
     {
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
@@ -189,10 +190,10 @@ namespace WebSocketSharp.Net
         throw new ArgumentException ("Ends without '/'.");
     }
 
-    // Equals and GetHashCode are required to detect duplicates in HttpListenerPrefixCollection.
+    // Equals and GetHashCode are required to detect duplicates in any collection.
     public override bool Equals (Object obj)
     {
-      var pref = obj as ListenerPrefix;
+      var pref = obj as HttpListenerPrefix;
       return pref != null && pref._original == _original;
     }
 

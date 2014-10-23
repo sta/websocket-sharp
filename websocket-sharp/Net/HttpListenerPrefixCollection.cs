@@ -130,7 +130,7 @@ namespace WebSocketSharp.Net
     public void Add (string uriPrefix)
     {
       _listener.CheckDisposed ();
-      ListenerPrefix.CheckUriPrefix (uriPrefix);
+      HttpListenerPrefix.CheckPrefix (uriPrefix);
 
       if (_prefixes.Contains (uriPrefix))
         return;

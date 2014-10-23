@@ -53,16 +53,16 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private List<ListenerPrefix>                       _all; // host == '+'
-    private X509Certificate2                           _cert;
-    private static readonly string                     _defaultCertFolderPath;
-    private IPEndPoint                                 _endpoint;
-    private Dictionary<ListenerPrefix, HttpListener>   _prefixes;
-    private bool                                       _secure;
-    private Socket                                     _socket;
-    private List<ListenerPrefix>                       _unhandled; // host == '*'
-    private Dictionary<HttpConnection, HttpConnection> _unregistered;
-    private object                                     _unregisteredSync;
+    private List<HttpListenerPrefix>                     _all; // host == '+'
+    private X509Certificate2                             _cert;
+    private static readonly string                       _defaultCertFolderPath;
+    private IPEndPoint                                   _endpoint;
+    private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
+    private bool                                         _secure;
+    private Socket                                       _socket;
+    private List<HttpListenerPrefix>                     _unhandled; // host == '*'
+    private Dictionary<HttpConnection, HttpConnection>   _unregistered;
+    private object                                       _unregisteredSync;
 
     #endregion
 
@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("No server certificate could be found.");
       }
 
-      _prefixes = new Dictionary<ListenerPrefix, HttpListener> ();
+      _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
 
       _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
@@ -132,7 +132,7 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static void addSpecial (List<ListenerPrefix> prefixes, ListenerPrefix prefix)
+    private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
       if (prefixes == null)
         return;
@@ -196,7 +196,7 @@ namespace WebSocketSharp.Net
     }
 
     private static HttpListener matchFromList (
-      string host, string path, List<ListenerPrefix> list, out ListenerPrefix prefix)
+      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
     {
       prefix = null;
       if (list == null)
@@ -260,7 +260,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static bool removeSpecial (List<ListenerPrefix> prefixes, ListenerPrefix prefix)
+    private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
       if (prefixes == null)
         return false;
@@ -277,7 +277,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private HttpListener searchListener (Uri uri, out ListenerPrefix prefix)
+    private HttpListener searchListener (Uri uri, out HttpListenerPrefix prefix)
     {
       prefix = null;
       if (uri == null)
@@ -354,15 +354,15 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
-    public void AddPrefix (ListenerPrefix prefix, HttpListener httpListener)
+    public void AddPrefix (HttpListenerPrefix prefix, HttpListener httpListener)
     {
-      List<ListenerPrefix> current, future;
+      List<HttpListenerPrefix> current, future;
       if (prefix.Host == "*") {
         do {
           current = _unhandled;
           future = current != null
-                   ? new List<ListenerPrefix> (current)
-                   : new List<ListenerPrefix> ();
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
 
           prefix.Listener = httpListener;
           addSpecial (future, prefix);
@@ -376,8 +376,8 @@ namespace WebSocketSharp.Net
         do {
           current = _all;
           future = current != null
-                   ? new List<ListenerPrefix> (current)
-                   : new List<ListenerPrefix> ();
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
 
           prefix.Listener = httpListener;
           addSpecial (future, prefix);
@@ -387,7 +387,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<ListenerPrefix, HttpListener> prefs, prefs2;
+      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
       do {
         prefs = _prefixes;
         if (prefs.ContainsKey (prefix)) {
@@ -399,7 +399,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        prefs2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
+        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
         prefs2[prefix] = httpListener;
       }
       while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
@@ -407,7 +407,7 @@ namespace WebSocketSharp.Net
 
     public bool BindContext (HttpListenerContext context)
     {
-      ListenerPrefix pref;
+      HttpListenerPrefix pref;
       var httpl = searchListener (context.Request.Url, out pref);
       if (httpl == null)
         return false;
@@ -432,15 +432,15 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public void RemovePrefix (ListenerPrefix prefix, HttpListener httpListener)
+    public void RemovePrefix (HttpListenerPrefix prefix, HttpListener httpListener)
     {
-      List<ListenerPrefix> current, future;
+      List<HttpListenerPrefix> current, future;
       if (prefix.Host == "*") {
         do {
           current = _unhandled;
           future = current != null
-                   ? new List<ListenerPrefix> (current)
-                   : new List<ListenerPrefix> ();
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
 
           if (!removeSpecial (future, prefix))
             break; // Prefix not found.
@@ -455,8 +455,8 @@ namespace WebSocketSharp.Net
         do {
           current = _all;
           future = current != null
-                   ? new List<ListenerPrefix> (current)
-                   : new List<ListenerPrefix> ();
+                   ? new List<HttpListenerPrefix> (current)
+                   : new List<HttpListenerPrefix> ();
 
           if (!removeSpecial (future, prefix))
             break; // Prefix not found.
@@ -467,13 +467,13 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      Dictionary<ListenerPrefix, HttpListener> prefs, prefs2;
+      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
       do {
         prefs = _prefixes;
         if (!prefs.ContainsKey (prefix))
           break;
 
-        prefs2 = new Dictionary<ListenerPrefix, HttpListener> (prefs);
+        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
         prefs2.Remove (prefix);
       }
       while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
