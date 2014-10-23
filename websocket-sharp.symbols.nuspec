@@ -26,5 +26,6 @@
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.dll" target="lib\Net452" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.pdb" target="lib\Net452" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.xml" target="lib\Net452" />
+		<file src="websocket-sharp\**\*.cs" target="src" />
   </files>
 </package>

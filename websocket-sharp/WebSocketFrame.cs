@@ -88,8 +88,7 @@ namespace WebSocketSharp
 		{
 		}
 
-		internal WebSocketFrame(
-		  Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
+		internal WebSocketFrame(Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
 		{
 			_fin = fin;
 			_rsv1 = isData(opcode) && compressed ? Rsv.On : Rsv.Off;
@@ -595,6 +594,11 @@ Extended Payload Length: {7}
 		internal static WebSocketFrame CreatePingFrame(byte[] data, bool mask)
 		{
 			return new WebSocketFrame(Fin.Final, Opcode.Ping, new PayloadData(data), false, mask);
+		}
+
+		internal static WebSocketFrame CreatePongFrame(byte[] data, bool mask)
+		{
+			return new WebSocketFrame(Fin.Final, Opcode.Pong, new PayloadData(data), false, mask);
 		}
 
 		internal static WebSocketFrame Read(Stream stream)

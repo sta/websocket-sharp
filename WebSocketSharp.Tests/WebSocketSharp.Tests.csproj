@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="SocketTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WebSocketServerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

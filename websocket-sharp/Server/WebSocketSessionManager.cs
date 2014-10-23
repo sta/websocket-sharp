@@ -237,11 +237,15 @@ namespace WebSocketSharp.Server
 			internal set
 			{
 				if (value == _waitTime)
+				{
 					return;
+				}
 
 				_waitTime = value;
 				foreach (var session in Sessions)
+				{
 					session.Context.WebSocket.WaitTime = value;
+				}
 			}
 		}
 
@@ -389,7 +393,9 @@ namespace WebSocketSharp.Server
 
 				_sweepTimer.Enabled = false;
 				foreach (var session in _sessions.Values.ToList())
+				{
 					session.Context.WebSocket.Close(e, frameAsBytes, timeout);
+				}
 
 				_state = ServerState.Stop;
 			}
