@@ -40,7 +40,18 @@ namespace WebSocketSharp.Tests
 			public void Teardown()
 			{
 				_sut.OnError -= PrintError;
-				_sut.Close();
+				if (_sut.ReadyState != WebSocketState.Closed)
+				{
+					_sut.Close();
+				}
+			}
+
+			[Test]
+			public async Task WhenClosingAsyncThenCloses()
+			{
+				await _sut.CloseAsync();
+
+				Assert.AreEqual(WebSocketState.Closed, _sut.ReadyState);
 			}
 
 			[Test]
