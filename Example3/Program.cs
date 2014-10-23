@@ -72,6 +72,9 @@ namespace Example3
 			// Not to remove the inactive WebSocket sessions periodically.
 			//httpsv.KeepClean = false;
 
+      // To resolve to wait for socket in TIME_WAIT state.
+      //httpsv.ReuseAddress = true;
+
 			// Add the WebSocket services.
 			httpsv.AddWebSocketService<Echo>("/Echo");
 			httpsv.AddWebSocketService<Chat>("/Chat");

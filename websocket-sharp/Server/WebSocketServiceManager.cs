@@ -226,7 +226,7 @@ namespace WebSocketSharp.Server
 			var cache = new Dictionary<CompressionMethod, byte[]>();
 			try
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => this._state == ServerState.Start))
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
 				{
 					host.Sessions.Broadcast(opcode, data, cache);
 				}
@@ -242,7 +242,7 @@ namespace WebSocketSharp.Server
 			var cache = new Dictionary<CompressionMethod, Stream>();
 			try
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => this._state == ServerState.Start))
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
 				{
 					host.Sessions.Broadcast(opcode, stream, cache);
 				}
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Server
 
 		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{
-			return this.Hosts.TakeWhile(host => this._state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
+			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
 		}
 
 		#endregion

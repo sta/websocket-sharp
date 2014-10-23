@@ -575,14 +575,13 @@ namespace WebSocketSharp
 			var e = new CloseEventArgs(payload);
 			e.WasClean =
 			  _client
-			  ? closeHandshake(
-				  send ? WebSocketFrame.CreateCloseFrame(payload, true).ToByteArray() : null,
-				  TimeSpan.FromMilliseconds(wait ? 5000 : 0),
-				  closeClientResources)
-			  : closeHandshake(
-				  send ? WebSocketFrame.CreateCloseFrame(payload, false).ToByteArray() : null,
-				  TimeSpan.FromMilliseconds(wait ? 1000 : 0),
-				  closeServerResources);
+			  ? closeHandshake(send ? WebSocketFrame.CreateCloseFrame(payload, true).ToByteArray() : null, TimeSpan.FromMilliseconds(wait ? 5000 : 0), closeClientResources)
+			  : closeHandshake(send ? WebSocketFrame.CreateCloseFrame(payload, false).ToByteArray() : null, TimeSpan.FromMilliseconds(wait ? 1000 : 0), closeServerResources);
+
+			e.WasClean = closeHandshake(
+			  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
+			  wait ? WaitTime : TimeSpan.Zero,
+			  _client ? (Action)closeClientResources : closeServerResources);
 
 			_readyState = WebSocketState.Closed;
 			try
