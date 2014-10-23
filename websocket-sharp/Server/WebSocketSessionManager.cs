@@ -804,7 +804,7 @@ namespace WebSocketSharp.Server
             if (_sessions.TryGetValue (id, out session)) {
               var state = session.State;
               if (state == WebSocketState.Open)
-                session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
+                session.Context.WebSocket.Close (CloseStatusCode.ProtocolError);
               else if (state == WebSocketState.Closing)
                 continue;
               else
