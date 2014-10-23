@@ -666,7 +666,7 @@ namespace WebSocketSharp
       _logger.Trace ("Start closing the connection.");
 
       e.WasClean = closeHandshake (
-        WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray (),
+        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray () : null,
         wait ? _waitTime : TimeSpan.Zero,
         _client ? (Action) releaseClientResources : releaseServerResources);
 
