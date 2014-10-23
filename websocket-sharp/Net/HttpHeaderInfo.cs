@@ -26,94 +26,105 @@
  */
 #endregion
 
-using System;
-
 namespace WebSocketSharp.Net
 {
-  internal class HttpHeaderInfo
-  {
-    #region Private Fields
+	internal class HttpHeaderInfo
+	{
+		#region Private Fields
 
-    private HttpHeaderType _type;
+		private HttpHeaderType _type;
 
-    #endregion
+		#endregion
 
-    #region Public Constructors
+		#region Public Constructors
 
-    public HttpHeaderInfo ()
-    {
-    }
+		public HttpHeaderInfo()
+		{
+		}
 
-    #endregion
+		#endregion
 
-    #region Internal Properties
+		#region Internal Properties
 
-    internal bool IsMultiValueInRequest {
-      get {
-        return (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
-      }
-    }
+		internal bool IsMultiValueInRequest
+		{
+			get
+			{
+				return (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
+			}
+		}
 
-    internal bool IsMultiValueInResponse {
-      get {
-        return (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
-      }
-    }
+		internal bool IsMultiValueInResponse
+		{
+			get
+			{
+				return (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
+			}
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Properties
+		#region Public Properties
 
-    public bool IsRequest {
-      get {
-        return (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
-      }
-    }
+		public bool IsRequest
+		{
+			get
+			{
+				return (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
+			}
+		}
 
-    public bool IsResponse {
-      get {
-        return (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
-      }
-    }
+		public bool IsResponse
+		{
+			get
+			{
+				return (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
+			}
+		}
 
-    public string Name {
-      get; set;
-    }
+		public string Name
+		{
+			get;
+			set;
+		}
 
-    public HttpHeaderType Type {
-      get {
-        return _type;
-      }
+		public HttpHeaderType Type
+		{
+			get
+			{
+				return _type;
+			}
 
-      set {
-        _type = value;
-      }
-    }
+			set
+			{
+				_type = value;
+			}
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Methods
+		#region Public Methods
 
-    public bool IsMultiValue (bool response)
-    {
-      return (_type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
-             ? response
-               ? IsMultiValueInResponse
-               : IsMultiValueInRequest
-             : response
-               ? IsResponse
-               : IsRequest;
-    }
+		public bool IsMultiValue(bool response)
+		{
+			return (_type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
+				   ? response
+					 ? IsMultiValueInResponse
+					 : IsMultiValueInRequest
+				   : response
+					 ? IsResponse
+					 : IsRequest;
+		}
 
-    public bool IsRestricted (bool response)
-    {
-      return (_type & HttpHeaderType.Restricted) != HttpHeaderType.Restricted
-             ? false
-             : response
-               ? IsResponse
-               : IsRequest;
-    }
+		public bool IsRestricted(bool response)
+		{
+			return (_type & HttpHeaderType.Restricted) != HttpHeaderType.Restricted
+				   ? false
+				   : response
+					 ? IsResponse
+					 : IsRequest;
+		}
 
-    #endregion
-  }
+		#endregion
+	}
 }

@@ -884,7 +884,7 @@ namespace WebSocketSharp
 		{
 			try
 			{
-				startReceiving();
+				this.StartReceiving();
 
 				lock (_forEvent)
 				{
@@ -1261,44 +1261,45 @@ namespace WebSocketSharp
 			}
 		}
 
-		private async Task startReceiving()
+		private async Task StartReceiving()
 		{
 			if (_messageEventQueue.Count > 0)
 			{
 				_messageEventQueue.Clear();
 			}
 
-			var frame = await WebSocketFrame.ReadAsync(_stream);
-
-			if (processWebSocketFrame(frame) && _readyState != WebSocketState.Closed)
+			while (true)
 			{
-				if (!frame.IsData)
-				{
-					return;
-				}
+				var frame = await WebSocketFrame.ReadAsync(_stream);
 
-				lock (_forEvent)
+				if (processWebSocketFrame(frame) && _readyState != WebSocketState.Closed)
 				{
-					try
+					if (!frame.IsData)
 					{
-						var e = dequeueFromMessageEventQueue();
-						if (e != null && _readyState == WebSocketState.Open)
+						return;
+					}
+
+					lock (_forEvent)
+					{
+						try
 						{
-							OnMessage.Emit(this, e);
+							var e = dequeueFromMessageEventQueue();
+							if (e != null && _readyState == WebSocketState.Open)
+							{
+								OnMessage.Emit(this, e);
+							}
+						}
+						catch (Exception ex)
+						{
+							processException(ex, "An exception has occurred while OnMessage.");
 						}
 					}
-					catch (Exception ex)
-					{
-						processException(ex, "An exception has occurred while OnMessage.");
-					}
+				}
+				else if (_exitReceiving != null)
+				{
+					_exitReceiving.Set();
 				}
 			}
-			else if (_exitReceiving != null)
-			{
-				_exitReceiving.Set();
-			}
-
-			startReceiving();
 		}
 
 		// As client
@@ -1373,7 +1374,7 @@ namespace WebSocketSharp
 				_stream.Write(data, 0, data.Length);
 				return true;
 			}
-			catch (Exception ex)
+			catch
 			{
 				return false;
 			}

@@ -31,109 +31,99 @@ using System.Text;
 
 namespace WebSocketSharp
 {
-  /// <summary>
-  /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
-  /// </summary>
-  /// <remarks>
-  ///   <para>
-  ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  ///   a text or binary message.
-  ///   </para>
-  ///   <para>
-  ///   If you would like to get the message data, you should access
-  ///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.RawData"/> property.
-  ///   </para>
-  /// </remarks>
-  public class MessageEventArgs : EventArgs
-  {
-    #region Private Fields
+	/// <summary>
+	/// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
+	/// </summary>
+	/// <remarks>
+	///   <para>
+	///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
+	///   a text or binary message.
+	///   </para>
+	///   <para>
+	///   If you would like to get the message data, you should access
+	///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.RawData"/> property.
+	///   </para>
+	/// </remarks>
+	public class MessageEventArgs : EventArgs
+	{
+		private readonly string _data;
+		private readonly Opcode _opcode;
+		private readonly byte[] _rawData;
 
-    private string _data;
-    private Opcode _opcode;
-    private byte[] _rawData;
+		internal MessageEventArgs(WebSocketFrame frame)
+		{
+			_opcode = frame.Opcode;
+			_rawData = frame.PayloadData.ApplicationData;
+			_data = ConvertToString(_opcode, _rawData);
+		}
 
-    #endregion
+		internal MessageEventArgs(Opcode opcode, byte[] rawData)
+		{
+			if ((ulong)rawData.LongLength > PayloadData.MaxLength)
+				throw new WebSocketException(CloseStatusCode.TooBig);
 
-    #region Internal Constructors
+			_opcode = opcode;
+			_rawData = rawData;
+			_data = ConvertToString(opcode, rawData);
+		}
 
-    internal MessageEventArgs (WebSocketFrame frame)
-    {
-      _opcode = frame.Opcode;
-      _rawData = frame.PayloadData.ApplicationData;
-      _data = convertToString (_opcode, _rawData);
-    }
+		/// <summary>
+		/// Gets the message data as a <see cref="string"/>.
+		/// </summary>
+		/// <remarks>
+		///   <para>
+		///   If the message data is empty, this property returns <see cref="String.Empty"/>.
+		///   </para>
+		///   <para>
+		///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
+		///   </para>
+		/// </remarks>
+		/// <value>
+		/// A <see cref="string"/> that represents the message data.
+		/// </value>
+		public string Data
+		{
+			get
+			{
+				return _data;
+			}
+		}
 
-    internal MessageEventArgs (Opcode opcode, byte[] rawData)
-    {
-      if ((ulong) rawData.LongLength > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TooBig);
+		/// <summary>
+		/// Gets the message data as an array of <see cref="byte"/>.
+		/// </summary>
+		/// <value>
+		/// An array of <see cref="byte"/> that represents the message data.
+		/// </value>
+		public byte[] RawData
+		{
+			get
+			{
+				return _rawData;
+			}
+		}
 
-      _opcode = opcode;
-      _rawData = rawData;
-      _data = convertToString (opcode, rawData);
-    }
+		/// <summary>
+		/// Gets the type of the message.
+		/// </summary>
+		/// <value>
+		/// <see cref="Opcode.Text"/> or <see cref="Opcode.Binary"/>.
+		/// </value>
+		public Opcode Type
+		{
+			get
+			{
+				return _opcode;
+			}
+		}
 
-    #endregion
-
-    #region Public Properties
-
-    /// <summary>
-    /// Gets the message data as a <see cref="string"/>.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   If the message data is empty, this property returns <see cref="String.Empty"/>.
-    ///   </para>
-    ///   <para>
-    ///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
-    ///   </para>
-    /// </remarks>
-    /// <value>
-    /// A <see cref="string"/> that represents the message data.
-    /// </value>
-    public string Data {
-      get {
-        return _data;
-      }
-    }
-
-    /// <summary>
-    /// Gets the message data as an array of <see cref="byte"/>.
-    /// </summary>
-    /// <value>
-    /// An array of <see cref="byte"/> that represents the message data.
-    /// </value>
-    public byte[] RawData {
-      get {
-        return _rawData;
-      }
-    }
-
-    /// <summary>
-    /// Gets the type of the message.
-    /// </summary>
-    /// <value>
-    /// <see cref="Opcode.Text"/> or <see cref="Opcode.Binary"/>.
-    /// </value>
-    public Opcode Type {
-      get {
-        return _opcode;
-      }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private static string convertToString (Opcode opcode, byte[] rawData)
-    {
-      return rawData.LongLength == 0
-             ? String.Empty
-             : opcode == Opcode.Text
-               ? Encoding.UTF8.GetString (rawData)
-               : opcode.ToString ();
-    }
-
-    #endregion
-  }
+		private static string ConvertToString(Opcode opcode, byte[] rawData)
+		{
+			return rawData.LongLength == 0
+				   ? String.Empty
+				   : opcode == Opcode.Text
+					 ? Encoding.UTF8.GetString(rawData)
+					 : opcode.ToString();
+		}
+	}
 }

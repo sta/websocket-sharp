@@ -37,8 +37,6 @@
  */
 #endregion
 
-using System;
-
 namespace WebSocketSharp.Net
 {
 	internal class ReadBufferState

@@ -36,7 +36,7 @@ task Compile -depends UpdatePackages {
 	$msbuild = Resolve-Path "${Env:ProgramFiles(x86)}\MSBuild\12.0\Bin\MSBuild.exe"
 	foreach($fwk in $fwkVersions) {
 		$output = "..\BuildOutput\$fwk\$configuration"
-		$options = "/p:configuration=$configuration;platform=$platform;TargetFrameworkVersion=$fwk;OutputPath=$output"
+		$options = "/p:configuration=$configuration;platform=$platform;TargetFrameworkVersion=v$fwk;OutputPath=$output"
 		Exec { & $msbuild websocket-sharp.sln $options }
 	}
 	'Executed Compile!'

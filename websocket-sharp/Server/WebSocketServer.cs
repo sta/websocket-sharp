@@ -37,11 +37,9 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
@@ -56,26 +54,20 @@ namespace WebSocketSharp.Server
 	/// </remarks>
 	public class WebSocketServer
 	{
-		#region Private Fields
-
-		private System.Net.IPAddress _address;
+		private readonly Uri _uri;
+		private readonly bool _secure;
+		private readonly int _port;
+		private readonly System.Net.IPAddress _address;
 		private AuthenticationSchemes _authSchemes;
 		private X509Certificate2 _certificate;
 		private Func<IIdentity, NetworkCredential> _credentialsFinder;
 		private TcpListener _listener;
-		private int _port;
 		private string _realm;
 		private Thread _receiveRequestThread;
 		private bool _reuseAddress;
-		private bool _secure;
 		private WebSocketServiceManager _services;
 		private volatile ServerState _state;
 		private object _sync;
-		private Uri _uri;
-
-		#endregion
-
-		#region Public Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketServer"/> class.
@@ -146,7 +138,7 @@ namespace WebSocketSharp.Server
 			if (!tryCreateUri(url, out _uri, out msg))
 				throw new ArgumentException(msg, "url");
 
-			_address = _uri.DnsSafeHost.ToIPAddress();
+			_address = _uri.DnsSafeHost.ToIpAddress();
 			if (_address == null || !_address.IsLocal())
 				throw new ArgumentException("The host part isn't a local host name: " + url, "url");
 
@@ -269,10 +261,6 @@ namespace WebSocketSharp.Server
 
 			init();
 		}
-
-		#endregion
-
-		#region Public Properties
 
 		/// <summary>
 		/// Gets the local IP address of the server.
@@ -535,10 +523,6 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
 		private void abort()
 		{
 			lock (_sync)
@@ -555,8 +539,7 @@ namespace WebSocketSharp.Server
 			_state = ServerState.Stop;
 		}
 
-		private bool authenticateRequest(
-		  AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
+		private bool authenticateRequest(AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
 		{
 			var chal = scheme == AuthenticationSchemes.Basic
 					   ? AuthenticationChallenge.CreateBasicChallenge(Realm).ToBasicString()
@@ -665,37 +648,41 @@ namespace WebSocketSharp.Server
 						  try
 						  {
 							  var ctx = cl.GetWebSocketContext(null, _secure, _certificate);
-							  if (_authSchemes != AuthenticationSchemes.Anonymous &&
-								  !authenticateRequest(_authSchemes, ctx))
+							  if (_authSchemes != AuthenticationSchemes.Anonymous && !authenticateRequest(_authSchemes, ctx))
+							  {
 								  return;
+							  }
 
 							  processWebSocketRequest(ctx);
 						  }
-						  catch (Exception ex)
+						  catch (Exception)
 						  {
 							  cl.Close();
 						  }
 					  });
 				}
-				catch (SocketException ex)
+				catch (SocketException)
 				{
 					break;
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
 					break;
 				}
 			}
 
 			if (IsListening)
+			{
 				abort();
+			}
 		}
 
 		private void startReceiving()
 		{
 			if (_reuseAddress)
-				_listener.Server.SetSocketOption(
-				  SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			{
+				_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			}
 
 			_listener.Start();
 			_receiveRequestThread = new Thread(new ThreadStart(receiveRequest));
@@ -712,7 +699,9 @@ namespace WebSocketSharp.Server
 		private static bool tryCreateUri(string uriString, out Uri result, out string message)
 		{
 			if (!uriString.TryCreateWebSocketUri(out result, out message))
+			{
 				return false;
+			}
 
 			if (result.PathAndQuery != "/")
 			{
@@ -724,10 +713,6 @@ namespace WebSocketSharp.Server
 
 			return true;
 		}
-
-		#endregion
-
-		#region Public Methods
 
 		/// <summary>
 		/// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
@@ -747,7 +732,7 @@ namespace WebSocketSharp.Server
 		public void AddWebSocketService<TBehaviorWithNew>(string path)
 		  where TBehaviorWithNew : WebSocketBehavior, new()
 		{
-			AddWebSocketService<TBehaviorWithNew>(path, () => new TBehaviorWithNew());
+			AddWebSocketService(path, () => new TBehaviorWithNew());
 		}
 
 		/// <summary>
@@ -927,7 +912,5 @@ namespace WebSocketSharp.Server
 
 			_state = ServerState.Stop;
 		}
-
-		#endregion
 	}
 }

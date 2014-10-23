@@ -3,7 +3,7 @@
 	<metadata>
 		<id>websocket-sharp.clone</id>
 		<title>WebSocket#</title>
-		<version>1.0.0.0-beta</version>
+		<version>1.0.1.0-beta</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<projectUrl>https://github.com/jjrdk/websocket-sharp</projectUrl>

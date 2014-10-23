@@ -34,7 +34,7 @@
 #endregion
 
 using System;
-using WebSocketSharp.Net;
+
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server

@@ -32,120 +32,133 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  internal abstract class AuthenticationBase
-  {
-    #region Private Fields
+	internal abstract class AuthenticationBase
+	{
+		#region Private Fields
 
-    private AuthenticationSchemes _scheme;
+		private AuthenticationSchemes _scheme;
 
-    #endregion
+		#endregion
 
-    #region Internal Fields
+		#region Internal Fields
 
-    internal NameValueCollection Parameters;
+		internal NameValueCollection Parameters;
 
-    #endregion
+		#endregion
 
-    #region Protected Constructors
+		#region Protected Constructors
 
-    protected AuthenticationBase (AuthenticationSchemes scheme, NameValueCollection parameters)
-    {
-      _scheme = scheme;
-      Parameters = parameters;
-    }
+		protected AuthenticationBase(AuthenticationSchemes scheme, NameValueCollection parameters)
+		{
+			_scheme = scheme;
+			Parameters = parameters;
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Properties
+		#region Public Properties
 
-    public string Algorithm {
-      get {
-        return Parameters["algorithm"];
-      }
-    }
+		public string Algorithm
+		{
+			get
+			{
+				return Parameters["algorithm"];
+			}
+		}
 
-    public string Nonce {
-      get {
-        return Parameters["nonce"];
-      }
-    }
+		public string Nonce
+		{
+			get
+			{
+				return Parameters["nonce"];
+			}
+		}
 
-    public string Opaque {
-      get {
-        return Parameters["opaque"];
-      }
-    }
+		public string Opaque
+		{
+			get
+			{
+				return Parameters["opaque"];
+			}
+		}
 
-    public string Qop {
-      get {
-        return Parameters["qop"];
-      }
-    }
+		public string Qop
+		{
+			get
+			{
+				return Parameters["qop"];
+			}
+		}
 
-    public string Realm {
-      get {
-        return Parameters["realm"];
-      }
-    }
+		public string Realm
+		{
+			get
+			{
+				return Parameters["realm"];
+			}
+		}
 
-    public AuthenticationSchemes Scheme {
-      get {
-        return _scheme;
-      }
-    }
+		public AuthenticationSchemes Scheme
+		{
+			get
+			{
+				return _scheme;
+			}
+		}
 
-    #endregion
+		#endregion
 
-    #region Internal Methods
+		#region Internal Methods
 
-    internal static string CreateNonceValue ()
-    {
-      var src = new byte[16];
-      var rand = new Random ();
-      rand.NextBytes (src);
+		internal static string CreateNonceValue()
+		{
+			var src = new byte[16];
+			var rand = new Random();
+			rand.NextBytes(src);
 
-      var res = new StringBuilder (32);
-      foreach (var b in src)
-        res.Append (b.ToString ("x2"));
+			var res = new StringBuilder(32);
+			foreach (var b in src)
+				res.Append(b.ToString("x2"));
 
-      return res.ToString ();
-    }
+			return res.ToString();
+		}
 
-    internal static NameValueCollection ParseParameters (string value)
-    {
-      var res = new NameValueCollection ();
-      foreach (var param in value.SplitHeaderValue (',')) {
-        var i = param.IndexOf ('=');
-        var name = i > 0 ? param.Substring (0, i).Trim () : null;
-        var val = i < 0
-                  ? param.Trim ().Trim ('"')
-                  : i < param.Length - 1
-                    ? param.Substring (i + 1).Trim ().Trim ('"')
-                    : String.Empty;
+		internal static NameValueCollection ParseParameters(string value)
+		{
+			var res = new NameValueCollection();
+			foreach (var param in value.SplitHeaderValue(','))
+			{
+				var i = param.IndexOf('=');
+				var name = i > 0 ? param.Substring(0, i).Trim() : null;
+				var val = i < 0
+						  ? param.Trim().Trim('"')
+						  : i < param.Length - 1
+							? param.Substring(i + 1).Trim().Trim('"')
+							: String.Empty;
 
-        res.Add (name, val);
-      }
+				res.Add(name, val);
+			}
 
-      return res;
-    }
+			return res;
+		}
 
-    internal abstract string ToBasicString ();
+		internal abstract string ToBasicString();
 
-    internal abstract string ToDigestString ();
+		internal abstract string ToDigestString();
 
-    #endregion
+		#endregion
 
-    #region Public Methods
+		#region Public Methods
 
-    public override string ToString ()
-    {
-      return _scheme == AuthenticationSchemes.Basic
-             ? ToBasicString ()
-             : _scheme == AuthenticationSchemes.Digest
-               ? ToDigestString ()
-               : String.Empty;
-    }
+		public override string ToString()
+		{
+			return _scheme == AuthenticationSchemes.Basic
+				   ? ToBasicString()
+				   : _scheme == AuthenticationSchemes.Digest
+					 ? ToDigestString()
+					 : String.Empty;
+		}
 
-    #endregion
-  }
+		#endregion
+	}
 }
