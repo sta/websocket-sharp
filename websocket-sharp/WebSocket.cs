@@ -594,10 +594,11 @@ namespace WebSocketSharp
 			}
 		}
 
-		private void closeAsync(PayloadData payload, bool send, bool wait)
+		private Task closeAsync(PayloadData payload, bool send, bool wait)
 		{
 			Action<PayloadData, bool, bool> closer = close;
-			closer.BeginInvoke(payload, send, wait, ar => closer.EndInvoke(ar), null);
+
+			return Task.Factory.FromAsync(closer.BeginInvoke, closer.EndInvoke, payload, send, wait, null);
 		}
 
 		// As client
@@ -1659,18 +1660,18 @@ namespace WebSocketSharp
 		/// <remarks>
 		/// This method doesn't wait for the close to be complete.
 		/// </remarks>
-		public void CloseAsync()
+		public async Task CloseAsync()
 		{
 			var msg = _readyState.CheckIfClosable();
 			if (msg != null)
 			{
-				error(msg, null);
+				error(msg);
 
 				return;
 			}
 
 			var send = _readyState == WebSocketState.Open;
-			closeAsync(new PayloadData(), send, send);
+			await closeAsync(new PayloadData(), send, send);
 		}
 
 		/// <summary>
@@ -1689,9 +1690,9 @@ namespace WebSocketSharp
 		/// <param name="code">
 		/// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
 		/// </param>
-		public void CloseAsync(ushort code)
+		public Task CloseAsync(ushort code)
 		{
-			CloseAsync(code, null);
+			return CloseAsync(code, null);
 		}
 
 		/// <summary>
@@ -1705,9 +1706,9 @@ namespace WebSocketSharp
 		/// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
 		/// indicating the reason for the close.
 		/// </param>
-		public void CloseAsync(CloseStatusCode code)
+		public Task CloseAsync(CloseStatusCode code)
 		{
-			CloseAsync(code, null);
+			return CloseAsync(code, null);
 		}
 
 		/// <summary>
@@ -1730,7 +1731,7 @@ namespace WebSocketSharp
 		/// <param name="reason">
 		/// A <see cref="string"/> that represents the reason for the close.
 		/// </param>
-		public void CloseAsync(ushort code, string reason)
+		public async Task CloseAsync(ushort code, string reason)
 		{
 			byte[] data = null;
 			var msg = _readyState.CheckIfClosable() ??
@@ -1745,7 +1746,7 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(new PayloadData(data), send, send);
+			await closeAsync(new PayloadData(data), send, send);
 		}
 
 		/// <summary>
@@ -1769,11 +1770,10 @@ namespace WebSocketSharp
 		/// <param name="reason">
 		/// A <see cref="string"/> that represents the reason for the close.
 		/// </param>
-		public void CloseAsync(CloseStatusCode code, string reason)
+		public async Task CloseAsync(CloseStatusCode code, string reason)
 		{
 			byte[] data = null;
-			var msg = _readyState.CheckIfClosable() ??
-					  (data = ((ushort)code).Append(reason)).CheckIfValidControlData("reason");
+			var msg = _readyState.CheckIfClosable() ?? (data = ((ushort)code).Append(reason)).CheckIfValidControlData("reason");
 
 			if (msg != null)
 			{
@@ -1783,7 +1783,7 @@ namespace WebSocketSharp
 			}
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			closeAsync(new PayloadData(data), send, send);
+			await closeAsync(new PayloadData(data), send, send);
 		}
 
 		/// <summary>
@@ -1800,7 +1800,9 @@ namespace WebSocketSharp
 			}
 
 			if (connect())
+			{
 				open();
+			}
 		}
 
 		/// <summary>

@@ -610,7 +610,9 @@ Extended Payload Length: {7}
 		{
 			var header = stream.ReadBytes(2);
 			if (header.Length != 2)
+			{
 				throw new WebSocketException("The header part of a frame cannot be read from the data source.");
+			}
 
 			return read(header, stream, unmask);
 		}

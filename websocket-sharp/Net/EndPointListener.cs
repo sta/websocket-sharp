@@ -78,13 +78,7 @@ namespace WebSocketSharp.Net
 
 		#region Public Constructors
 
-		public EndPointListener(
-	  IPAddress address,
-	  int port,
-	  bool secure,
-	  string certificateFolderPath,
-	  X509Certificate2 defaultCertificate,
-	  bool reuseAddress)
+		public EndPointListener(IPAddress address, int port, bool secure, string certificateFolderPath, X509Certificate2 defaultCertificate, bool reuseAddress)
 		{
 			if (secure)
 			{
@@ -253,20 +247,26 @@ namespace WebSocketSharp.Net
 			catch
 			{
 				if (accepted != null)
+				{
 					accepted.Close();
+				}
 
 				return;
 			}
 
 			if (accepted == null)
+			{
 				return;
+			}
 
 			HttpConnection conn = null;
 			try
 			{
 				conn = new HttpConnection(accepted, epl);
 				lock (epl._unregisteredSync)
+				{
 					epl._unregistered[conn] = conn;
+				}
 
 				conn.BeginReadRequest();
 			}
