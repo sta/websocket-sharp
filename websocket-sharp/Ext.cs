@@ -671,14 +671,28 @@ namespace WebSocketSharp
         0,
         length,
         ar => {
+          byte[] bytes = null;
+
           try {
             var len = stream.EndRead (ar);
-            var bytes = len < 1
-                        ? new byte[0]
-                        : len < length
-                          ? stream.readBytes (buff, len, length - len)
-                          : buff;
+            bytes = len < 1
+                    ? new byte[0]
+                    : len < length
+                      ? stream.readBytes (buff, len, length - len)
+                      : buff;
+          }
+          catch (ObjectDisposedException) {
+            // The Stream has been closed.
+            return;
+          }
+          catch (Exception ex) {
+            if (error != null)
+              error (ex);
 
+            return;
+          }
+
+          try {
             if (completed != null)
               completed (bytes);
           }
