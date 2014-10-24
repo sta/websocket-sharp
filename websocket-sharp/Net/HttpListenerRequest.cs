@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 	/// <remarks>
 	/// The HttpListenerRequest class cannot be inherited.
 	/// </remarks>
-	public sealed class HttpListenerRequest
+	internal sealed class HttpListenerRequest
 	{
 		#region Private Fields
 

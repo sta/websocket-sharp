@@ -57,7 +57,7 @@ namespace WebSocketSharp.Net
 	/// </summary>
 	[Serializable]
 	[ComVisible(true)]
-	public class WebHeaderCollection : NameValueCollection, ISerializable
+	internal class WebHeaderCollection : NameValueCollection, ISerializable
 	{
 		#region Private Static Fields
 
@@ -78,443 +78,443 @@ namespace WebSocketSharp.Net
 		{
 			_headers =
 			  new Dictionary<string, HttpHeaderInfo>(StringComparer.InvariantCultureIgnoreCase) {
-          {
-            "Accept",
-            new HttpHeaderInfo () {
-              Name = "Accept",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "AcceptCharset",
-            new HttpHeaderInfo () {
-              Name = "Accept-Charset",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "AcceptEncoding",
-            new HttpHeaderInfo () {
-              Name = "Accept-Encoding",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "AcceptLanguage",
-            new HttpHeaderInfo () {
-              Name = "Accept-language",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "AcceptRanges",
-            new HttpHeaderInfo () {
-              Name = "Accept-Ranges",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Age",
-            new HttpHeaderInfo () {
-              Name = "Age",
-              Type = HttpHeaderType.Response
-            }
-          },
-          {
-            "Allow",
-            new HttpHeaderInfo () {
-              Name = "Allow",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Authorization",
-            new HttpHeaderInfo () {
-              Name = "Authorization",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "CacheControl",
-            new HttpHeaderInfo () {
-              Name = "Cache-Control",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Connection",
-            new HttpHeaderInfo () {
-              Name = "Connection",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.Restricted |
-                     HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "ContentEncoding",
-            new HttpHeaderInfo () {
-              Name = "Content-Encoding",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "ContentLanguage",
-            new HttpHeaderInfo () {
-              Name = "Content-Language",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "ContentLength",
-            new HttpHeaderInfo () {
-              Name = "Content-Length",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "ContentLocation",
-            new HttpHeaderInfo () {
-              Name = "Content-Location",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "ContentMd5",
-            new HttpHeaderInfo () {
-              Name = "Content-MD5",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "ContentRange",
-            new HttpHeaderInfo () {
-              Name = "Content-Range",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "ContentType",
-            new HttpHeaderInfo () {
-              Name = "Content-Type",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "Cookie",
-            new HttpHeaderInfo () {
-              Name = "Cookie",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Cookie2",
-            new HttpHeaderInfo () {
-              Name = "Cookie2",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Date",
-            new HttpHeaderInfo () {
-              Name = "Date",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.Restricted
-            }
-          },
-          {
-            "Expect",
-            new HttpHeaderInfo () {
-              Name = "Expect",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Expires",
-            new HttpHeaderInfo () {
-              Name = "Expires",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "ETag",
-            new HttpHeaderInfo () {
-              Name = "ETag",
-              Type = HttpHeaderType.Response
-            }
-          },
-          {
-            "From",
-            new HttpHeaderInfo () {
-              Name = "From",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Host",
-            new HttpHeaderInfo () {
-              Name = "Host",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "IfMatch",
-            new HttpHeaderInfo () {
-              Name = "If-Match",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "IfModifiedSince",
-            new HttpHeaderInfo () {
-              Name = "If-Modified-Since",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "IfNoneMatch",
-            new HttpHeaderInfo () {
-              Name = "If-None-Match",
-              Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "IfRange",
-            new HttpHeaderInfo () {
-              Name = "If-Range",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "IfUnmodifiedSince",
-            new HttpHeaderInfo () {
-              Name = "If-Unmodified-Since",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "KeepAlive",
-            new HttpHeaderInfo () {
-              Name = "Keep-Alive",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "LastModified",
-            new HttpHeaderInfo () {
-              Name = "Last-Modified",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "Location",
-            new HttpHeaderInfo () {
-              Name = "Location",
-              Type = HttpHeaderType.Response
-            }
-          },
-          {
-            "MaxForwards",
-            new HttpHeaderInfo () {
-              Name = "Max-Forwards",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Pragma",
-            new HttpHeaderInfo () {
-              Name = "Pragma",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "ProxyConnection",
-            new HttpHeaderInfo () {
-              Name = "Proxy-Connection",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "ProxyAuthenticate",
-            new HttpHeaderInfo () {
-              Name = "Proxy-Authenticate",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "ProxyAuthorization",
-            new HttpHeaderInfo () {
-              Name = "Proxy-Authorization",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Public",
-            new HttpHeaderInfo () {
-              Name = "Public",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Range",
-            new HttpHeaderInfo () {
-              Name = "Range",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Referer",
-            new HttpHeaderInfo () {
-              Name = "Referer",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "RetryAfter",
-            new HttpHeaderInfo () {
-              Name = "Retry-After",
-              Type = HttpHeaderType.Response
-            }
-          },
-          {
-            "SecWebSocketAccept",
-            new HttpHeaderInfo () {
-              Name = "Sec-WebSocket-Accept",
-              Type = HttpHeaderType.Response | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "SecWebSocketExtensions",
-            new HttpHeaderInfo () {
-              Name = "Sec-WebSocket-Extensions",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.Restricted |
-                     HttpHeaderType.MultiValueInRequest
-            }
-          },
-          {
-            "SecWebSocketKey",
-            new HttpHeaderInfo () {
-              Name = "Sec-WebSocket-Key",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "SecWebSocketProtocol",
-            new HttpHeaderInfo () {
-              Name = "Sec-WebSocket-Protocol",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.MultiValueInRequest
-            }
-          },
-          {
-            "SecWebSocketVersion",
-            new HttpHeaderInfo () {
-              Name = "Sec-WebSocket-Version",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.Restricted |
-                     HttpHeaderType.MultiValueInResponse
-            }
-          },
-          {
-            "Server",
-            new HttpHeaderInfo () {
-              Name = "Server",
-              Type = HttpHeaderType.Response
-            }
-          },
-          {
-            "SetCookie",
-            new HttpHeaderInfo () {
-              Name = "Set-Cookie",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "SetCookie2",
-            new HttpHeaderInfo () {
-              Name = "Set-Cookie2",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Te",
-            new HttpHeaderInfo () {
-              Name = "TE",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Trailer",
-            new HttpHeaderInfo () {
-              Name = "Trailer",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response
-            }
-          },
-          {
-            "TransferEncoding",
-            new HttpHeaderInfo () {
-              Name = "Transfer-Encoding",
-              Type = HttpHeaderType.Request |
-                     HttpHeaderType.Response |
-                     HttpHeaderType.Restricted |
-                     HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Translate",
-            new HttpHeaderInfo () {
-              Name = "Translate",
-              Type = HttpHeaderType.Request
-            }
-          },
-          {
-            "Upgrade",
-            new HttpHeaderInfo () {
-              Name = "Upgrade",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "UserAgent",
-            new HttpHeaderInfo () {
-              Name = "User-Agent",
-              Type = HttpHeaderType.Request | HttpHeaderType.Restricted
-            }
-          },
-          {
-            "Vary",
-            new HttpHeaderInfo () {
-              Name = "Vary",
-              Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Via",
-            new HttpHeaderInfo () {
-              Name = "Via",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "Warning",
-            new HttpHeaderInfo () {
-              Name = "Warning",
-              Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
-            }
-          },
-          {
-            "WwwAuthenticate",
-            new HttpHeaderInfo () {
-              Name = "WWW-Authenticate",
-              Type = HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
-            }
-          }
-        };
+		  {
+			"Accept",
+			new HttpHeaderInfo () {
+			  Name = "Accept",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"AcceptCharset",
+			new HttpHeaderInfo () {
+			  Name = "Accept-Charset",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"AcceptEncoding",
+			new HttpHeaderInfo () {
+			  Name = "Accept-Encoding",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"AcceptLanguage",
+			new HttpHeaderInfo () {
+			  Name = "Accept-language",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"AcceptRanges",
+			new HttpHeaderInfo () {
+			  Name = "Accept-Ranges",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Age",
+			new HttpHeaderInfo () {
+			  Name = "Age",
+			  Type = HttpHeaderType.Response
+			}
+		  },
+		  {
+			"Allow",
+			new HttpHeaderInfo () {
+			  Name = "Allow",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Authorization",
+			new HttpHeaderInfo () {
+			  Name = "Authorization",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"CacheControl",
+			new HttpHeaderInfo () {
+			  Name = "Cache-Control",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Connection",
+			new HttpHeaderInfo () {
+			  Name = "Connection",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.Restricted |
+					 HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"ContentEncoding",
+			new HttpHeaderInfo () {
+			  Name = "Content-Encoding",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"ContentLanguage",
+			new HttpHeaderInfo () {
+			  Name = "Content-Language",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"ContentLength",
+			new HttpHeaderInfo () {
+			  Name = "Content-Length",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"ContentLocation",
+			new HttpHeaderInfo () {
+			  Name = "Content-Location",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"ContentMd5",
+			new HttpHeaderInfo () {
+			  Name = "Content-MD5",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"ContentRange",
+			new HttpHeaderInfo () {
+			  Name = "Content-Range",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"ContentType",
+			new HttpHeaderInfo () {
+			  Name = "Content-Type",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"Cookie",
+			new HttpHeaderInfo () {
+			  Name = "Cookie",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Cookie2",
+			new HttpHeaderInfo () {
+			  Name = "Cookie2",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Date",
+			new HttpHeaderInfo () {
+			  Name = "Date",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"Expect",
+			new HttpHeaderInfo () {
+			  Name = "Expect",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Expires",
+			new HttpHeaderInfo () {
+			  Name = "Expires",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"ETag",
+			new HttpHeaderInfo () {
+			  Name = "ETag",
+			  Type = HttpHeaderType.Response
+			}
+		  },
+		  {
+			"From",
+			new HttpHeaderInfo () {
+			  Name = "From",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Host",
+			new HttpHeaderInfo () {
+			  Name = "Host",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"IfMatch",
+			new HttpHeaderInfo () {
+			  Name = "If-Match",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"IfModifiedSince",
+			new HttpHeaderInfo () {
+			  Name = "If-Modified-Since",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"IfNoneMatch",
+			new HttpHeaderInfo () {
+			  Name = "If-None-Match",
+			  Type = HttpHeaderType.Request | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"IfRange",
+			new HttpHeaderInfo () {
+			  Name = "If-Range",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"IfUnmodifiedSince",
+			new HttpHeaderInfo () {
+			  Name = "If-Unmodified-Since",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"KeepAlive",
+			new HttpHeaderInfo () {
+			  Name = "Keep-Alive",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"LastModified",
+			new HttpHeaderInfo () {
+			  Name = "Last-Modified",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"Location",
+			new HttpHeaderInfo () {
+			  Name = "Location",
+			  Type = HttpHeaderType.Response
+			}
+		  },
+		  {
+			"MaxForwards",
+			new HttpHeaderInfo () {
+			  Name = "Max-Forwards",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Pragma",
+			new HttpHeaderInfo () {
+			  Name = "Pragma",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"ProxyConnection",
+			new HttpHeaderInfo () {
+			  Name = "Proxy-Connection",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"ProxyAuthenticate",
+			new HttpHeaderInfo () {
+			  Name = "Proxy-Authenticate",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"ProxyAuthorization",
+			new HttpHeaderInfo () {
+			  Name = "Proxy-Authorization",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Public",
+			new HttpHeaderInfo () {
+			  Name = "Public",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Range",
+			new HttpHeaderInfo () {
+			  Name = "Range",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Referer",
+			new HttpHeaderInfo () {
+			  Name = "Referer",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"RetryAfter",
+			new HttpHeaderInfo () {
+			  Name = "Retry-After",
+			  Type = HttpHeaderType.Response
+			}
+		  },
+		  {
+			"SecWebSocketAccept",
+			new HttpHeaderInfo () {
+			  Name = "Sec-WebSocket-Accept",
+			  Type = HttpHeaderType.Response | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"SecWebSocketExtensions",
+			new HttpHeaderInfo () {
+			  Name = "Sec-WebSocket-Extensions",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.Restricted |
+					 HttpHeaderType.MultiValueInRequest
+			}
+		  },
+		  {
+			"SecWebSocketKey",
+			new HttpHeaderInfo () {
+			  Name = "Sec-WebSocket-Key",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"SecWebSocketProtocol",
+			new HttpHeaderInfo () {
+			  Name = "Sec-WebSocket-Protocol",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.MultiValueInRequest
+			}
+		  },
+		  {
+			"SecWebSocketVersion",
+			new HttpHeaderInfo () {
+			  Name = "Sec-WebSocket-Version",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.Restricted |
+					 HttpHeaderType.MultiValueInResponse
+			}
+		  },
+		  {
+			"Server",
+			new HttpHeaderInfo () {
+			  Name = "Server",
+			  Type = HttpHeaderType.Response
+			}
+		  },
+		  {
+			"SetCookie",
+			new HttpHeaderInfo () {
+			  Name = "Set-Cookie",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"SetCookie2",
+			new HttpHeaderInfo () {
+			  Name = "Set-Cookie2",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Te",
+			new HttpHeaderInfo () {
+			  Name = "TE",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Trailer",
+			new HttpHeaderInfo () {
+			  Name = "Trailer",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response
+			}
+		  },
+		  {
+			"TransferEncoding",
+			new HttpHeaderInfo () {
+			  Name = "Transfer-Encoding",
+			  Type = HttpHeaderType.Request |
+					 HttpHeaderType.Response |
+					 HttpHeaderType.Restricted |
+					 HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Translate",
+			new HttpHeaderInfo () {
+			  Name = "Translate",
+			  Type = HttpHeaderType.Request
+			}
+		  },
+		  {
+			"Upgrade",
+			new HttpHeaderInfo () {
+			  Name = "Upgrade",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"UserAgent",
+			new HttpHeaderInfo () {
+			  Name = "User-Agent",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Restricted
+			}
+		  },
+		  {
+			"Vary",
+			new HttpHeaderInfo () {
+			  Name = "Vary",
+			  Type = HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Via",
+			new HttpHeaderInfo () {
+			  Name = "Via",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"Warning",
+			new HttpHeaderInfo () {
+			  Name = "Warning",
+			  Type = HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.MultiValue
+			}
+		  },
+		  {
+			"WwwAuthenticate",
+			new HttpHeaderInfo () {
+			  Name = "WWW-Authenticate",
+			  Type = HttpHeaderType.Response | HttpHeaderType.Restricted | HttpHeaderType.MultiValue
+			}
+		  }
+		};
 		}
 
 		#endregion

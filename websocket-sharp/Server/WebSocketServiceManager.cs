@@ -40,7 +40,7 @@ namespace WebSocketSharp.Server
 	using System.Threading.Tasks;
 
 	/// <summary>
-	/// Manages the WebSocket services provided by the <see cref="HttpServer"/> or
+	/// Manages the WebSocket services provided by the <see cref="WebSocketServer"/> or
 	/// <see cref="WebSocketServer"/>.
 	/// </summary>
 	public class WebSocketServiceManager

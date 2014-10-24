@@ -48,7 +48,7 @@ namespace WebSocketSharp.Net
 	/// processing an HTTP request.
 	/// </summary>
 	[Serializable]
-	public class HttpListenerException : Win32Exception
+	internal class HttpListenerException : Win32Exception
 	{
 		#region Protected Constructors
 

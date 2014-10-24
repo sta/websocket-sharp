@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 	/// <remarks>
 	/// The HttpListenerResponse class cannot be inherited.
 	/// </remarks>
-	public sealed class HttpListenerResponse : IDisposable
+	internal sealed class HttpListenerResponse : IDisposable
 	{
 		private readonly HttpListenerContext _context;
 		private bool _chunked;

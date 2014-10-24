@@ -38,7 +38,7 @@ namespace WebSocketSharp.Net.WebSockets
 	/// Provides the properties used to access the information in a WebSocket connection request
 	/// received by the <see cref="HttpListener"/>.
 	/// </summary>
-	public class HttpListenerWebSocketContext : WebSocketContext
+	internal class HttpListenerWebSocketContext : WebSocketContext
 	{
 		#region Private Fields
 
