@@ -274,7 +274,7 @@ namespace WebSocketSharp
 				case 507: return "Insufficient Storage";
 			}
 
-			return String.Empty;
+			return string.Empty;
 		}
 
 		/// <summary>
@@ -587,7 +587,7 @@ namespace WebSocketSharp
 		/// </summary>
 		/// <returns>
 		/// A <see cref="string"/> converted from <paramref name="array"/>,
-		/// or <see cref="String.Empty"/> if <paramref name="array"/> is empty.
+		/// or <see cref="string.Empty"/> if <paramref name="array"/> is empty.
 		/// </returns>
 		/// <param name="array">
 		/// An array of T to convert.
@@ -604,14 +604,20 @@ namespace WebSocketSharp
 		public static string ToString<T>(this T[] array, string separator)
 		{
 			if (array == null)
+			{
 				throw new ArgumentNullException("array");
+			}
 
 			var len = array.Length;
 			if (len == 0)
-				return String.Empty;
+			{
+				return string.Empty;
+			}
 
 			if (separator == null)
-				separator = String.Empty;
+			{
+				separator = string.Empty;
+			}
 
 			var buff = new StringBuilder(64);
 			(len - 1).Times(i => buff.AppendFormat("{0}{1}", array[i].ToString(), separator));
@@ -679,7 +685,7 @@ namespace WebSocketSharp
 			{
 				var bytes = code.InternalToByteArray(ByteOrder.Big);
 				buff.Write(bytes, 0, 2);
-				if (reason != null && reason.Length > 0)
+				if (!string.IsNullOrEmpty(reason))
 				{
 					bytes = Encoding.UTF8.GetBytes(reason);
 					buff.Write(bytes, 0, bytes.Length);
@@ -756,7 +762,7 @@ namespace WebSocketSharp
 		internal static string CheckIfValidControlData(this byte[] data, string paramName)
 		{
 			return data.Length > 125
-				   ? String.Format("'{0}' is greater than the allowable max size.", paramName)
+				   ? string.Format("'{0}' is greater than the allowable max size.", paramName)
 				   : null;
 		}
 
@@ -912,7 +918,9 @@ namespace WebSocketSharp
 		internal static bool EqualsWith(this int value, char c, Action<int> action)
 		{
 			if (value < 0 || value > 255)
+			{
 				throw new ArgumentOutOfRangeException("value");
+			}
 
 			action(value);
 			return value == c - 0;
@@ -931,11 +939,15 @@ namespace WebSocketSharp
 		internal static string GetAbsolutePath(this Uri uri)
 		{
 			if (uri.IsAbsoluteUri)
+			{
 				return uri.AbsolutePath;
+			}
 
 			var original = uri.OriginalString;
 			if (original[0] != '/')
+			{
 				return null;
+			}
 
 			var i = original.IndexOfAny(new[] { '?', '#' });
 			return i > 0
@@ -963,7 +975,7 @@ namespace WebSocketSharp
 								 ? "WebSocket server got an internal error."
 								 : code == CloseStatusCode.TlsHandshakeFailure
 								   ? "An error has occurred while handshaking."
-								   : String.Empty;
+								   : string.Empty;
 		}
 
 		/// <summary>
@@ -992,7 +1004,9 @@ namespace WebSocketSharp
 		{
 			var i = nameAndValue.IndexOf(separator);
 			if (i < 0 || i == nameAndValue.Length - 1)
+			{
 				return null;
+			}
 
 			var val = nameAndValue.Substring(i + 1).Trim();
 			return unquote
@@ -1000,11 +1014,7 @@ namespace WebSocketSharp
 				   : val;
 		}
 
-		internal static TcpListenerWebSocketContext GetWebSocketContext(
-		  this TcpClient tcpClient,
-		  string protocol,
-		  bool secure,
-		  X509Certificate certificate)
+		internal static TcpListenerWebSocketContext GetWebSocketContext(this TcpClient tcpClient, string protocol, bool secure, X509Certificate certificate)
 		{
 			return new TcpListenerWebSocketContext(tcpClient, protocol, secure, certificate);
 		}
@@ -1013,7 +1023,9 @@ namespace WebSocketSharp
 		{
 			var bytes = BitConverter.GetBytes(value);
 			if (!order.IsHostOrder())
+			{
 				Array.Reverse(bytes);
+			}
 
 			return bytes;
 		}
@@ -1022,7 +1034,9 @@ namespace WebSocketSharp
 		{
 			var bytes = BitConverter.GetBytes(value);
 			if (!order.IsHostOrder())
+			{
 				Array.Reverse(bytes);
+			}
 
 			return bytes;
 		}
@@ -1060,7 +1074,9 @@ namespace WebSocketSharp
 			{
 				var c = value[i];
 				if (c < 0x20 && !"\r\n\t".Contains(c))
+				{
 					return false;
+				}
 
 				if (c == 0x7f)
 					return false;
@@ -1069,7 +1085,9 @@ namespace WebSocketSharp
 				{
 					c = value[i];
 					if (!" \t".Contains(c))
+					{
 						return false;
+					}
 				}
 			}
 
@@ -1078,16 +1096,12 @@ namespace WebSocketSharp
 
 		internal static bool IsToken(this string value)
 		{
-			foreach (var c in value)
-				if (c < 0x20 || c >= 0x7f || Tspecials.Contains(c))
-					return false;
-
-			return true;
+			return value.All(c => c >= 0x20 && c < 0x7f && !Tspecials.Contains(c));
 		}
 
 		internal static string Quote(this string value)
 		{
-			return String.Format("\"{0}\"", value.Replace("\"", "\\\""));
+			return string.Format("\"{0}\"", value.Replace("\"", "\\\""));
 		}
 
 		internal static byte[] ReadBytes(this Stream stream, int length)
@@ -1114,7 +1128,9 @@ namespace WebSocketSharp
 				}
 
 				if (!end && rem > 0)
+				{
 					stream.InnerReadBytes(new byte[rem], 0, rem, res);
+				}
 
 				res.Close();
 				return res.ToArray();
@@ -1124,12 +1140,9 @@ namespace WebSocketSharp
 		internal static async Task<byte[]> ReadBytesAsync(this Stream stream, int length)
 		{
 			var buff = new byte[length];
-			var len = await stream.ReadAsync(
-			  buff,
-			  0,
-			  length);
+			var len = await stream.ReadAsync(buff, 0, length);
 
-            bytes = len < 1
+			var bytes = len < 1
 								  ? new byte[0]
 								  : len < length
 									? stream.InnerReadBytes(buff, len, length - len)
@@ -1240,8 +1253,8 @@ namespace WebSocketSharp
 		internal static string ToExtensionString(this CompressionMethod method)
 		{
 			return method != CompressionMethod.None
-				   ? String.Format("permessage-{0}", method.ToString().ToLower())
-				   : String.Empty;
+				   ? string.Format("permessage-{0}", method.ToString().ToLower())
+				   : string.Empty;
 		}
 
 		internal static System.Net.IPAddress ToIpAddress(this string hostNameOrAddress)
@@ -1291,7 +1304,7 @@ namespace WebSocketSharp
 		/// </param>
 		/// <param name="message">
 		/// When this method returns, a <see cref="string"/> that represents the error message
-		/// if <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
+		/// if <paramref name="uriString"/> is invalid; otherwise, <see cref="string.Empty"/>.
 		/// </param>
 		internal static bool TryCreateWebSocketUri(this string uriString, out Uri result, out string message)
 		{
@@ -1340,12 +1353,12 @@ namespace WebSocketSharp
 			else
 			{
 				uri = new Uri(
-				  String.Format(
+				  string.Format(
 					"{0}://{1}:{2}{3}", schm, uri.Host, schm == "ws" ? 80 : 443, uri.PathAndQuery));
 			}
 
 			result = uri;
-			message = String.Empty;
+			message = string.Empty;
 
 			return true;
 		}
@@ -1362,7 +1375,7 @@ namespace WebSocketSharp
 			return len < 0
 				   ? value
 				   : len == 0
-					 ? String.Empty
+					 ? string.Empty
 					 : value.Substring(start + 1, len).Replace("\\\"", "\"");
 		}
 
