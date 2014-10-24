@@ -37,7 +37,7 @@ namespace WebSocketSharp.Server
 
 	/// <summary>
 	/// Exposes the methods and properties used to define the behavior of a WebSocket service
-	/// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+	/// provided by the <see cref="WebSocketServer"/> or <see cref="WebSocketServer"/>.
 	/// </summary>
 	/// <remarks>
 	/// The WebSocketBehavior class is an abstract class.
@@ -75,8 +75,7 @@ namespace WebSocketSharp.Server
 		/// Gets the access to the sessions in the WebSocket service.
 		/// </summary>
 		/// <value>
-		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions,
-		/// or <see langword="null"/> if the WebSocket connection isn't established.
+		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
 		/// </value>
 		protected WebSocketSessionManager Sessions
 		{

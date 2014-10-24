@@ -26,50 +26,28 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Security.Principal;
-
 namespace WebSocketSharp.Net.WebSockets
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.Specialized;
+	using System.IO;
+	using System.Security.Principal;
+
 	/// <summary>
 	/// Provides the properties used to access the information in a WebSocket connection request
 	/// received by the <see cref="HttpListener"/>.
 	/// </summary>
-	public class HttpListenerWebSocketContext : WebSocketContext
+	internal class HttpListenerWebSocketContext : WebSocketContext
 	{
-		#region Private Fields
-
-		private HttpListenerContext _context;
-		private WebSocket _websocket;
-
-		#endregion
-
-		#region Internal Constructors
+		private readonly HttpListenerContext _context;
+		private readonly WebSocket _websocket;
 
 		internal HttpListenerWebSocketContext(HttpListenerContext context, string protocol)
 		{
 			_context = context;
 			_websocket = new WebSocket(this, protocol);
 		}
-
-		#endregion
-
-		#region Internal Properties
-
-		internal Stream Stream
-		{
-			get
-			{
-				return _context.Connection.Stream;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
 
 		/// <summary>
 		/// Gets the HTTP cookies included in the request.
@@ -325,23 +303,13 @@ namespace WebSocketSharp.Net.WebSockets
 			}
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void Close()
+		internal Stream Stream
 		{
-			_context.Connection.Close(true);
+			get
+			{
+				return _context.Connection.Stream;
+			}
 		}
-
-		internal void Close(HttpStatusCode code)
-		{
-			_context.Response.Close(code);
-		}
-
-		#endregion
-
-		#region Public Methods
 
 		/// <summary>
 		/// Returns a <see cref="string"/> that represents the current
@@ -356,6 +324,9 @@ namespace WebSocketSharp.Net.WebSockets
 			return _context.Request.ToString();
 		}
 
-		#endregion
+		internal void Close()
+		{
+			_context.Connection.Close(true);
+		}
 	}
 }

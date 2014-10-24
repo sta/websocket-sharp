@@ -45,7 +45,7 @@ namespace WebSocketSharp.Net
 	/// <summary>
 	/// Holds the user name and password from the HTTP Basic authentication credentials.
 	/// </summary>
-	public class HttpBasicIdentity : GenericIdentity
+	internal class HttpBasicIdentity : GenericIdentity
 	{
 		#region Private Fields
 

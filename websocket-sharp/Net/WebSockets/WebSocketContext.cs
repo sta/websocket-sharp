@@ -26,13 +26,13 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Security.Principal;
-
 namespace WebSocketSharp.Net.WebSockets
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.Specialized;
+	using System.Security.Principal;
+
 	/// <summary>
 	/// Exposes the properties used to access the information in a WebSocket connection request.
 	/// </summary>
@@ -41,19 +41,6 @@ namespace WebSocketSharp.Net.WebSockets
 	/// </remarks>
 	public abstract class WebSocketContext
 	{
-		#region Protected Constructors
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WebSocketContext"/> class.
-		/// </summary>
-		protected WebSocketContext()
-		{
-		}
-
-		#endregion
-
-		#region Public Properties
-
 		/// <summary>
 		/// Gets the HTTP cookies included in the request.
 		/// </summary>
@@ -202,7 +189,5 @@ namespace WebSocketSharp.Net.WebSockets
 		/// A <see cref="WebSocketSharp.WebSocket"/>.
 		/// </value>
 		public abstract WebSocket WebSocket { get; }
-
-		#endregion
 	}
 }

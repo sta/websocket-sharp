@@ -34,7 +34,7 @@ namespace WebSocketSharp.Net
 	/// <summary>
 	/// Holds the user name and other parameters from the HTTP Digest authentication credentials.
 	/// </summary>
-	public class HttpDigestIdentity : GenericIdentity
+	internal class HttpDigestIdentity : GenericIdentity
 	{
 		#region Private Fields
 

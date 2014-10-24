@@ -50,7 +50,7 @@ namespace WebSocketSharp.Net
 	/// <remarks>
 	/// The HttpListenerContext class cannot be inherited.
 	/// </remarks>
-	public sealed class HttpListenerContext
+	internal sealed class HttpListenerContext
 	{
 		#region Private Fields
 
@@ -244,10 +244,14 @@ namespace WebSocketSharp.Net
 			if (protocol != null)
 			{
 				if (protocol.Length == 0)
+				{
 					throw new ArgumentException("An empty string.", "protocol");
+				}
 
 				if (!protocol.IsToken())
+				{
 					throw new ArgumentException("Contains an invalid character.", "protocol");
+				}
 			}
 
 			return new HttpListenerWebSocketContext(this, protocol);

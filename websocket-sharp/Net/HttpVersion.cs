@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
 	/// <summary>
 	/// Provides the HTTP version numbers.
 	/// </summary>
-	public class HttpVersion
+	internal class HttpVersion
 	{
 		#region Public Static Fields
 
