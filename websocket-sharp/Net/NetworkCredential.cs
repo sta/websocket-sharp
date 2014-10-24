@@ -116,7 +116,7 @@ namespace WebSocketSharp.Net
 		{
 			get
 			{
-				return _domain ?? String.Empty;
+				return _domain ?? string.Empty;
 			}
 
 			internal set
@@ -136,7 +136,7 @@ namespace WebSocketSharp.Net
 		{
 			get
 			{
-				return _password ?? String.Empty;
+				return _password ?? string.Empty;
 			}
 
 			internal set

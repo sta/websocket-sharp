@@ -550,7 +550,7 @@ namespace WebSocketSharp.Net
 			{
 				var contentType = _contentEncoding != null &&
 								  _contentType.IndexOf("charset=", StringComparison.Ordinal) == -1
-								  ? String.Format(
+								  ? string.Format(
 									  "{0}; charset={1}", _contentType, _contentEncoding.WebName)
 								  : _contentType;
 
@@ -625,7 +625,7 @@ namespace WebSocketSharp.Net
 			if (!connClose)
 			{
 				_headers.SetInternally(
-				  "Keep-Alive", String.Format("timeout=15,max={0}", 100 - reuses), true);
+				  "Keep-Alive", string.Format("timeout=15,max={0}", 100 - reuses), true);
 
 				if (reqVer < HttpVersion.Version11)
 					_headers.SetInternally("Connection", "keep-alive", true);

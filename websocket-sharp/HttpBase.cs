@@ -73,7 +73,7 @@ namespace WebSocketSharp
     public string EntityBody {
       get {
         if (EntityBodyData == null || EntityBodyData.LongLength == 0)
-          return String.Empty;
+          return string.Empty;
 
         Encoding enc = null;
 

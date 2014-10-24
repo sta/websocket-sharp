@@ -101,15 +101,15 @@ namespace WebSocketSharp.Net
 		/// </summary>
 		public Cookie()
 		{
-			_comment = String.Empty;
-			_domain = String.Empty;
+			_comment = string.Empty;
+			_domain = string.Empty;
 			_expires = DateTime.MinValue;
-			_name = String.Empty;
-			_path = String.Empty;
-			_port = String.Empty;
+			_name = string.Empty;
+			_path = string.Empty;
+			_port = string.Empty;
 			_ports = new int[0];
 			_timestamp = DateTime.Now;
-			_value = String.Empty;
+			_value = string.Empty;
 			_version = 0;
 		}
 
@@ -299,7 +299,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				_comment = value ?? String.Empty;
+				_comment = value ?? string.Empty;
 			}
 		}
 
@@ -361,7 +361,7 @@ namespace WebSocketSharp.Net
 			{
 				if (value.IsNullOrEmpty())
 				{
-					_domain = String.Empty;
+					_domain = string.Empty;
 					ExactDomain = true;
 				}
 				else
@@ -482,7 +482,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				_path = value ?? String.Empty;
+				_path = value ?? string.Empty;
 			}
 		}
 
@@ -507,7 +507,7 @@ namespace WebSocketSharp.Net
 			{
 				if (value.IsNullOrEmpty())
 				{
-					_port = String.Empty;
+					_port = string.Empty;
 					_ports = new int[0];
 
 					return;
@@ -520,7 +520,7 @@ namespace WebSocketSharp.Net
 				string err;
 				if (!tryCreatePorts(value, out _ports, out err))
 					throw new CookieException(
-					  String.Format(
+					  string.Format(
 						"The value specified for the Port attribute contains an invalid value: {0}", err));
 
 				_port = value;
@@ -644,7 +644,7 @@ namespace WebSocketSharp.Net
 				return false;
 			}
 
-			message = String.Empty;
+			message = string.Empty;
 			return true;
 		}
 
@@ -662,7 +662,7 @@ namespace WebSocketSharp.Net
 				return false;
 			}
 
-			message = String.Empty;
+			message = string.Empty;
 			return true;
 		}
 
@@ -765,7 +765,7 @@ namespace WebSocketSharp.Net
 			}
 
 			result = res;
-			parseError = String.Empty;
+			parseError = string.Empty;
 
 			return true;
 		}
@@ -778,10 +778,10 @@ namespace WebSocketSharp.Net
 		internal string ToRequestString(Uri uri)
 		{
 			if (_name.Length == 0)
-				return String.Empty;
+				return string.Empty;
 
 			if (_version == 0)
-				return String.Format("{0}={1}", _name, _value);
+				return string.Format("{0}={1}", _name, _value);
 
 			var output = new StringBuilder(64);
 			output.AppendFormat("$Version={0}; {1}={2}", _version, _name, _value);
@@ -813,7 +813,7 @@ namespace WebSocketSharp.Net
 		{
 			return _name.Length > 0
 				   ? (_version == 0 ? toResponseStringVersion0() : toResponseStringVersion1())
-				   : String.Empty;
+				   : string.Empty;
 		}
 
 		#endregion

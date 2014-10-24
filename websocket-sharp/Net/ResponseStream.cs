@@ -129,7 +129,7 @@ namespace WebSocketSharp.Net
 
 		private static byte[] getChunkSizeBytes(int size, bool final)
 		{
-			return Encoding.ASCII.GetBytes(String.Format("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
+			return Encoding.ASCII.GetBytes(string.Format("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
 		}
 
 		private MemoryStream getHeaders(bool closing)

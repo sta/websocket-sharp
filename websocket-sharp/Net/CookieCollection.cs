@@ -272,7 +272,7 @@ namespace WebSocketSharp.Net
 						cookies.Add(cookie);
 
 					string name;
-					string val = String.Empty;
+					string val = string.Empty;
 
 					var pos = pair.IndexOf('=');
 					if (pos == -1)
@@ -393,7 +393,7 @@ namespace WebSocketSharp.Net
 						cookies.Add(cookie);
 
 					string name;
-					string val = String.Empty;
+					string val = string.Empty;
 
 					var pos = pair.IndexOf('=');
 					if (pos == -1)

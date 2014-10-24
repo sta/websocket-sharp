@@ -198,7 +198,7 @@ namespace WebSocketSharp.Server
 		/// <value>
 		///   <para>
 		///   A <see cref="string"/> that represents the subprotocol if any.
-		///   The default value is <see cref="String.Empty"/>.
+		///   The default value is <see cref="string.Empty"/>.
 		///   </para>
 		///   <para>
 		///   The value to set must be a token defined in
@@ -211,7 +211,7 @@ namespace WebSocketSharp.Server
 			{
 				return _websocket != null
 					   ? _websocket.Protocol
-					   : _protocol ?? String.Empty;
+					   : _protocol ?? string.Empty;
 			}
 
 			set

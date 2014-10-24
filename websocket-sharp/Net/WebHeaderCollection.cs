@@ -795,7 +795,7 @@ namespace WebSocketSharp.Net
 		private static string checkValue(string value)
 		{
 			if (value == null || value.Length == 0)
-				return String.Empty;
+				return string.Empty;
 
 			value = value.Trim();
 			if (value.Length > 65535)
@@ -812,7 +812,7 @@ namespace WebSocketSharp.Net
 			HttpHeaderInfo info;
 			return _headers.TryGetValue(key, out info)
 				   ? info.Name
-				   : String.Empty;
+				   : string.Empty;
 		}
 
 		private void doWithCheckingState(

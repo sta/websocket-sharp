@@ -252,7 +252,7 @@ namespace WebSocketSharp.Server
 
 			if ((port == 80 && secure) || (port == 443 && !secure))
 				throw new ArgumentException(
-				  String.Format("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+				  string.Format("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
 			_address = address;
 			_port = port;

@@ -72,7 +72,7 @@ namespace WebSocketSharp
 		/// </summary>
 		/// <remarks>
 		///   <para>
-		///   If the message data is empty, this property returns <see cref="String.Empty"/>.
+		///   If the message data is empty, this property returns <see cref="string.Empty"/>.
 		///   </para>
 		///   <para>
 		///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
@@ -120,7 +120,7 @@ namespace WebSocketSharp
 		private static string ConvertToString(Opcode opcode, byte[] rawData)
 		{
 			return rawData.LongLength == 0
-				   ? String.Empty
+				   ? string.Empty
 				   : opcode == Opcode.Text
 					 ? Encoding.UTF8.GetString(rawData)
 					 : opcode.ToString();

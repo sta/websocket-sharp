@@ -625,7 +625,7 @@ namespace WebSocketSharp.Net
 				_chunked = enc.ToLower() == "chunked";
 				if (!_chunked)
 				{
-					_context.ErrorMessage = String.Empty;
+					_context.ErrorMessage = string.Empty;
 					_context.ErrorStatus = 501;
 
 					return;
@@ -637,7 +637,7 @@ namespace WebSocketSharp.Net
 				var method = _method.ToLower();
 				if (method == "post" || method == "put")
 				{
-					_context.ErrorMessage = String.Empty;
+					_context.ErrorMessage = string.Empty;
 					_context.ErrorStatus = 411;
 
 					return;

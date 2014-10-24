@@ -381,8 +381,8 @@ namespace WebSocketSharp.Net
 				certificateFolderPath = _defaultCertFolderPath;
 			}
 
-			var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
-			var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
+			var cer = Path.Combine(certificateFolderPath, string.Format("{0}.cer", port));
+			var key = Path.Combine(certificateFolderPath, string.Format("{0}.key", port));
 
 			return File.Exists(cer) && File.Exists(key);
 		}
@@ -445,7 +445,7 @@ namespace WebSocketSharp.Net
 					var other = prefs[prefix];
 					if (other != httpListener)
 						throw new HttpListenerException(
-						  400, String.Format("There's another listener for {0}.", prefix)); // TODO: Code?
+						  400, string.Format("There's another listener for {0}.", prefix)); // TODO: Code?
 
 					return;
 				}

@@ -109,7 +109,7 @@ namespace WebSocketSharp.Net
 
 		internal override string ToBasicString()
 		{
-			return String.Format("Basic realm=\"{0}\"", Parameters["realm"]);
+			return string.Format("Basic realm=\"{0}\"", Parameters["realm"]);
 		}
 
 		internal override string ToDigestString()

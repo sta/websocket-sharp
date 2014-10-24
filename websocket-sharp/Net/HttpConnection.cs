@@ -526,8 +526,8 @@ namespace WebSocketSharp.Net
 
           var desc = status.GetStatusDescription ();
           var msg = message != null && message.Length > 0
-                    ? String.Format ("<h1>{0} ({1})</h1>", desc, message)
-                    : String.Format ("<h1>{0}</h1>", desc);
+                    ? string.Format ("<h1>{0} ({1})</h1>", desc, message)
+                    : string.Format ("<h1>{0}</h1>", desc);
 
           var entity = res.ContentEncoding.GetBytes (msg);
           res.Close (entity, false);
