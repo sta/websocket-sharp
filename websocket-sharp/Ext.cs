@@ -1129,7 +1129,7 @@ namespace WebSocketSharp
 			  0,
 			  length);
 
-			var bytes = len < 1
+            bytes = len < 1
 								  ? new byte[0]
 								  : len < length
 									? stream.InnerReadBytes(buff, len, length - len)
