@@ -19,6 +19,7 @@ namespace WebSocketSharp.Tests
 {
 	using System;
 	using System.Diagnostics;
+	using System.Security.Cryptography.X509Certificates;
 	using System.Threading;
 	using System.Threading.Tasks;
 
@@ -28,6 +29,7 @@ namespace WebSocketSharp.Tests
 
 	public sealed class SecureWebSocketServerTests
 	{
+		[Ignore("Must create test certificate.")]
 		public class GivenASecureWebSocketServer
 		{
 			private WebSocketServer _sut;
@@ -35,7 +37,8 @@ namespace WebSocketSharp.Tests
 			[SetUp]
 			public void Setup()
 			{
-				_sut = new WebSocketServer(443, true);
+				var cert = GetRandomCertificate();
+				_sut = new WebSocketServer(443, cert);
 				_sut.AddWebSocketService<TestEchoService>("/echo");
 				_sut.Start();
 			}
@@ -187,6 +190,22 @@ namespace WebSocketSharp.Tests
 
 					client.OnMessage -= onMessage;
 					client.Close();
+				}
+			}
+			
+			private static X509Certificate2 GetRandomCertificate()
+			{
+				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+				st.Open(OpenFlags.ReadOnly);
+				try
+				{
+					var certCollection = st.Certificates;
+
+					return certCollection.Count == 0 ? null : certCollection[0];
+				}
+				finally
+				{
+					st.Close();
 				}
 			}
 		}

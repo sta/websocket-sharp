@@ -34,29 +34,15 @@ namespace WebSocketSharp.Net
 {
 	internal abstract class AuthenticationBase
 	{
-		#region Private Fields
-
 		private AuthenticationSchemes _scheme;
 
-		#endregion
-
-		#region Internal Fields
-
 		internal NameValueCollection Parameters;
-
-		#endregion
-
-		#region Protected Constructors
 
 		protected AuthenticationBase(AuthenticationSchemes scheme, NameValueCollection parameters)
 		{
 			_scheme = scheme;
 			Parameters = parameters;
 		}
-
-		#endregion
-
-		#region Public Properties
 
 		public string Algorithm
 		{
@@ -106,10 +92,6 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Internal Methods
-
 		internal static string CreateNonceValue()
 		{
 			var src = new byte[16];
@@ -146,10 +128,6 @@ namespace WebSocketSharp.Net
 
 		internal abstract string ToDigestString();
 
-		#endregion
-
-		#region Public Methods
-
 		public override string ToString()
 		{
 			return _scheme == AuthenticationSchemes.Basic
@@ -158,7 +136,5 @@ namespace WebSocketSharp.Net
 					 ? ToDigestString()
 					 : string.Empty;
 		}
-
-		#endregion
 	}
 }

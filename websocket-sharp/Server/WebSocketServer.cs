@@ -77,7 +77,7 @@ namespace WebSocketSharp.Server
 		/// on port 80.
 		/// </remarks>
 		public WebSocketServer()
-			: this(System.Net.IPAddress.Any, 80, false)
+			: this(System.Net.IPAddress.Any, 80, null)
 		{
 		}
 
@@ -101,7 +101,7 @@ namespace WebSocketSharp.Server
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
 		public WebSocketServer(int port)
-			: this(System.Net.IPAddress.Any, port, port == 443)
+			: this(System.Net.IPAddress.Any, port, null)
 		{
 		}
 
@@ -169,8 +169,8 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
-		public WebSocketServer(int port, bool secure)
-			: this(System.Net.IPAddress.Any, port, secure)
+		public WebSocketServer(int port, X509Certificate2 certificate)
+			: this(System.Net.IPAddress.Any, port, certificate)
 		{
 		}
 
@@ -203,7 +203,7 @@ namespace WebSocketSharp.Server
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
 		public WebSocketServer(System.Net.IPAddress address, int port)
-			: this(address, port, port == 443)
+			: this(address, port, null)
 		{
 		}
 
@@ -242,21 +242,28 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
-		public WebSocketServer(System.Net.IPAddress address, int port, bool secure)
+		public WebSocketServer(System.Net.IPAddress address, int port, X509Certificate2 certificate)
 		{
 			if (!address.IsLocal())
+			{
 				throw new ArgumentException("Not a local IP address: " + address, "address");
+			}
 
 			if (!port.IsPortNumber())
+			{
 				throw new ArgumentOutOfRangeException("port", "Not between 1 and 65535: " + port);
+			}
 
-			if ((port == 80 && secure) || (port == 443 && !secure))
-				throw new ArgumentException(
-				  string.Format("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+			var secure = certificate == null;
+			if ((port == 80 && certificate != null) || (port == 443 && secure))
+			{
+				throw new ArgumentException(string.Format("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+			}
 
 			_address = address;
 			_port = port;
 			_secure = secure;
+			_certificate = certificate;
 			_uri = "/".ToUri();
 
 			init();
@@ -300,32 +307,6 @@ namespace WebSocketSharp.Server
 				}
 
 				_authSchemes = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the certificate used to authenticate the server on the secure connection.
-		/// </summary>
-		/// <value>
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </value>
-		public X509Certificate2 Certificate
-		{
-			get
-			{
-				return _certificate;
-			}
-
-			set
-			{
-				var msg = _state.CheckIfStartable();
-				if (msg != null)
-				{
-					return;
-				}
-
-				_certificate = value;
 			}
 		}
 
