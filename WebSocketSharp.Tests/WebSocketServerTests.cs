@@ -93,6 +93,27 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
+			public void WhenClientConnectsToNonExistingPathThenStateIsClosed()
+			{
+				using (var client = new WebSocket("ws://localhost:8080/fjgkdfjhgld"))
+				{
+					client.Connect();
+
+					Assert.True(client.ReadyState == WebSocketState.Closed);
+					client.Close();
+				}
+			}
+
+			[Test]
+			public void WhenClientConnectsToNonExistingPathThenDoesNotThrow()
+			{
+				using (var client = new WebSocket("ws://localhost:8080/fjgkdfjhgld"))
+				{
+					Assert.DoesNotThrow(client.Connect);
+				}
+			}
+
+			[Test]
 			public async Task WhenClientSendsAsyncTextMessageThenResponds()
 			{
 				const string Message = "Message";
