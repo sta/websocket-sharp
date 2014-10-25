@@ -44,27 +44,14 @@ namespace WebSocketSharp.Net
 {
 	internal class ListenerAsyncResult : IAsyncResult
 	{
-		#region Private Fields
-
-		private AsyncCallback _callback;
+		private readonly AsyncCallback _callback;
+		private readonly object _state;
+		private readonly object _sync;
 		private bool _completed;
 		private HttpListenerContext _context;
 		private Exception _exception;
 		private ManualResetEvent _waitHandle;
-		private object _state;
-		private object _sync;
 		private bool _syncCompleted;
-
-		#endregion
-
-		#region Internal Fields
-
-		internal bool EndCalled;
-		internal bool InGet;
-
-		#endregion
-
-		#region Public Constructors
 
 		public ListenerAsyncResult(AsyncCallback callback, object state)
 		{
@@ -72,10 +59,6 @@ namespace WebSocketSharp.Net
 			_state = state;
 			_sync = new object();
 		}
-
-		#endregion
-
-		#region Public Properties
 
 		public object AsyncState
 		{
@@ -107,29 +90,15 @@ namespace WebSocketSharp.Net
 			get
 			{
 				lock (_sync)
+				{
 					return _completed;
+				}
 			}
 		}
 
-		#endregion
+		internal bool InGet { private get; set; }
 
-		#region Private Methods
-
-		private static void invokeCallback(object state)
-		{
-			try
-			{
-				var ares = (ListenerAsyncResult)state;
-				ares._callback(ares);
-			}
-			catch
-			{
-			}
-		}
-
-		#endregion
-
-		#region Internal Methods
+		internal bool EndCalled { get; set; }
 
 		internal void Complete(Exception exception)
 		{
@@ -141,19 +110,18 @@ namespace WebSocketSharp.Net
 			{
 				_completed = true;
 				if (_waitHandle != null)
+				{
 					_waitHandle.Set();
+				}
 
 				if (_callback != null)
-					ThreadPool.UnsafeQueueUserWorkItem(invokeCallback, this);
+				{
+					ThreadPool.UnsafeQueueUserWorkItem(InvokeCallback, this);
+				}
 			}
 		}
 
-		internal void Complete(HttpListenerContext context)
-		{
-			Complete(context, false);
-		}
-
-		internal void Complete(HttpListenerContext context, bool syncCompleted)
+		internal void Complete(HttpListenerContext context, bool syncCompleted = false)
 		{
 			var listener = context.Listener;
 			var scheme = listener.SelectAuthenticationScheme(context);
@@ -166,8 +134,7 @@ namespace WebSocketSharp.Net
 			}
 
 			var header = context.Request.Headers["Authorization"];
-			if (scheme == AuthenticationSchemes.Basic &&
-				(header == null || !header.StartsWith("basic", StringComparison.OrdinalIgnoreCase)))
+			if (scheme == AuthenticationSchemes.Basic && (header == null || !header.StartsWith("basic", StringComparison.OrdinalIgnoreCase)))
 			{
 				context.Response.CloseWithAuthChallenge(
 				  AuthenticationChallenge.CreateBasicChallenge(listener.Realm).ToBasicString());
@@ -176,8 +143,7 @@ namespace WebSocketSharp.Net
 				return;
 			}
 
-			if (scheme == AuthenticationSchemes.Digest &&
-				(header == null || !header.StartsWith("digest", StringComparison.OrdinalIgnoreCase)))
+			if (scheme == AuthenticationSchemes.Digest && (header == null || !header.StartsWith("digest", StringComparison.OrdinalIgnoreCase)))
 			{
 				context.Response.CloseWithAuthChallenge(
 				  AuthenticationChallenge.CreateDigestChallenge(listener.Realm).ToDigestString());
@@ -193,19 +159,39 @@ namespace WebSocketSharp.Net
 			{
 				_completed = true;
 				if (_waitHandle != null)
+				{
 					_waitHandle.Set();
+				}
 
 				if (_callback != null)
-					ThreadPool.UnsafeQueueUserWorkItem(invokeCallback, this);
+				{
+					ThreadPool.UnsafeQueueUserWorkItem(InvokeCallback, this);
+				}
 			}
 		}
 
 		internal HttpListenerContext GetContext()
 		{
 			if (_exception != null)
+			{
 				throw _exception;
+			}
 
 			return _context;
+		}
+
+		#region Private Methods
+
+		private static void InvokeCallback(object state)
+		{
+			try
+			{
+				var ares = (ListenerAsyncResult)state;
+				ares._callback(ares);
+			}
+			catch
+			{
+			}
 		}
 
 		#endregion
