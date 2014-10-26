@@ -131,16 +131,21 @@ namespace WebSocketSharp
 
     private static byte[] readBytes (this Stream stream, byte[] buffer, int offset, int length)
     {
-      var len = stream.Read (buffer, offset, length);
-      if (len < 1)
-        return buffer.SubArray (0, offset);
+      var len = 0;
+      try {
+        len = stream.Read (buffer, offset, length);
+        if (len < 1)
+          return buffer.SubArray (0, offset);
 
-      while (len < length) {
-        var readLen = stream.Read (buffer, offset + len, length - len);
-        if (readLen < 1)
-          break;
+        while (len < length) {
+          var readLen = stream.Read (buffer, offset + len, length - len);
+          if (readLen < 1)
+            break;
 
-        len += readLen;
+          len += readLen;
+        }
+      }
+      catch {
       }
 
       return len < length
@@ -681,12 +686,8 @@ namespace WebSocketSharp
                         ? stream.readBytes (buff, len, length - len)
                         : buff;
             }
-            catch (ObjectDisposedException) {
-              // The Stream has been closed.
-              return;
-            }
             catch {
-              throw;
+              bytes = new byte[0];
             }
 
             if (completed != null)
