@@ -50,10 +50,10 @@ namespace WebSocketSharp.Net
     private bool                _completed;
     private HttpListenerContext _context;
     private Exception           _exception;
-    private ManualResetEvent    _waitHandle;
     private object              _state;
     private object              _sync;
     private bool                _syncCompleted;
+    private ManualResetEvent    _waitHandle;
 
     #endregion
 
@@ -105,20 +105,6 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Private Methods
-
-    private static void invokeCallback (object state)
-    {
-      try {
-        var ares = (ListenerAsyncResult) state;
-        ares._callback (ares);
-      }
-      catch {
-      }
-    }
-
-    #endregion
-
     #region Internal Methods
 
     internal void Complete (Exception exception)
@@ -133,7 +119,15 @@ namespace WebSocketSharp.Net
           _waitHandle.Set ();
 
         if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (invokeCallback, this);
+          ThreadPool.UnsafeQueueUserWorkItem (
+            state => {
+              try {
+                _callback (this);
+              }
+              catch {
+              }
+            },
+            null);
       }
     }
 
@@ -145,17 +139,17 @@ namespace WebSocketSharp.Net
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
       var listener = context.Listener;
-      var scheme = listener.SelectAuthenticationScheme (context);
-      if (scheme == AuthenticationSchemes.None) {
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm == AuthenticationSchemes.None) {
         context.Response.Close (HttpStatusCode.Forbidden);
         listener.BeginGetContext (this);
 
         return;
       }
 
-      var header = context.Request.Headers ["Authorization"];
-      if (scheme == AuthenticationSchemes.Basic &&
-          (header == null || !header.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
+      var res = context.Request.Headers["Authorization"];
+      if (schm == AuthenticationSchemes.Basic &&
+          (res == null || !res.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
 
@@ -163,8 +157,8 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (scheme == AuthenticationSchemes.Digest &&
-          (header == null || !header.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
+      if (schm == AuthenticationSchemes.Digest &&
+          (res == null || !res.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
 
@@ -181,7 +175,15 @@ namespace WebSocketSharp.Net
           _waitHandle.Set ();
 
         if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (invokeCallback, this);
+          ThreadPool.UnsafeQueueUserWorkItem (
+            state => {
+              try {
+                _callback (this);
+              }
+              catch {
+              }
+            },
+            null);
       }
     }
 
