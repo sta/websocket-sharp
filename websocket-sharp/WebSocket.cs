@@ -37,6 +37,7 @@
  * Contributors:
  * - Frank Razenberg <frank@zzattack.org>
  * - David Wood <dpwood@gmail.com>
+ * - Rob Myers <developer@robandjen.com>
  */
 #endregion
 
@@ -105,6 +106,7 @@ namespace WebSocketSharp
     private Uri                     _uri;
     private const string            _version = "13";
     private TimeSpan                _waitTime;
+    private NameValueCollection     _extraClientHeaders;
 
     #endregion
 
@@ -535,7 +537,35 @@ namespace WebSocketSharp
         }
       }
     }
+    
+      /// <summary>
+      /// Get or set headers sent on the initial connect to the server
+      /// </summary>
+      /// <value>A <see cref="NameValueCollection"> of header values that will be added
+	  /// on connection. These will be overridden by anything used by the Websocket protocol
+	  ///</value>
+    public NameValueCollection ExtraClientHeaders
+    {
+        get
+        {
+            return _extraClientHeaders;
+        }
+        set
+        {
+            lock (_forConn)
+            {
+                var msg = checkIfAvailable(false, false);
+                if (msg != null)
+                {
+                    _logger.Error(msg);
+                    error("An error has occurred setting extra client headers", null);
+                    return;
+                }
 
+                _extraClientHeaders = value;
+            }
+        }
+    }
     #endregion
 
     #region Public Events
@@ -820,6 +850,10 @@ namespace WebSocketSharp
       var req = HttpRequest.CreateWebSocketRequest (_uri);
 
       var headers = req.Headers;
+        if (_extraClientHeaders != null)
+        {
+            headers.Add(_extraClientHeaders);
+        }
       if (!_origin.IsNullOrEmpty ())
         headers["Origin"] = _origin;
 
