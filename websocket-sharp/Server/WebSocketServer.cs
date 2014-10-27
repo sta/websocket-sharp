@@ -60,8 +60,8 @@ namespace WebSocketSharp.Server
 		private readonly bool _secure;
 		private readonly int _port;
 		private readonly System.Net.IPAddress _address;
+		private readonly X509Certificate2 _certificate;
 		private AuthenticationSchemes _authSchemes;
-		private X509Certificate2 _certificate;
 		private Func<IIdentity, NetworkCredential> _credentialsFinder;
 		private TcpListener _listener;
 		private string _realm;
@@ -154,7 +154,7 @@ namespace WebSocketSharp.Server
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-		/// <paramref name="port"/> and <paramref name="secure"/>.
+		/// <paramref name="port"/> and <paramref name="certificate"/>.
 		/// </summary>
 		/// <remarks>
 		/// An instance initialized by this constructor listens for the incoming connection requests
@@ -163,12 +163,11 @@ namespace WebSocketSharp.Server
 		/// <param name="port">
 		/// An <see cref="int"/> that represents the port number on which to listen.
 		/// </param>
-		/// <param name="secure">
-		/// A <see cref="bool"/> that indicates providing a secure connection or not.
-		/// (<c>true</c> indicates providing a secure connection.)
+		/// <param name="certificate">
+		/// A <see cref="X509Certificate2"/> used to secure the connection.
 		/// </param>
 		/// <exception cref="ArgumentException">
-		/// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+		/// Pair of <paramref name="port"/> and <paramref name="certificate"/> is invalid.
 		/// </exception>
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="port"/> isn't between 1 and 65535.
@@ -225,9 +224,8 @@ namespace WebSocketSharp.Server
 		/// <param name="port">
 		/// An <see cref="int"/> that represents the port number on which to listen.
 		/// </param>
-		/// <param name="secure">
-		/// A <see cref="bool"/> that indicates providing a secure connection or not.
-		/// (<c>true</c> indicates providing a secure connection.)
+		/// <param name="certificate">
+		/// A <see cref="X509Certificate2"/> used to secure the connection.
 		/// </param>
 		/// <exception cref="ArgumentException">
 		///   <para>
@@ -910,9 +908,6 @@ namespace WebSocketSharp.Server
 
 			_listener.Start();
 			return ReceiveRequest(cancellationToken);
-			//_receiveRequestThread = new Thread(ReceiveRequest);
-			//_receiveRequestThread.IsBackground = true;
-			//_receiveRequestThread.Start();
 		}
 	}
 }

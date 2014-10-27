@@ -26,14 +26,16 @@
  */
 #endregion
 
-using System;
-using System.IO;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
-
 namespace WebSocketSharp.Server
 {
+	using System;
+	using System.IO;
 	using System.Threading.Tasks;
+
+	using WebSocketSharp.Net;
+	using WebSocketSharp.Net.WebSockets;
+
+	using ErrorEventArgs = WebSocketSharp.ErrorEventArgs;
 
 	/// <summary>
 	/// Exposes the methods and properties used to define the behavior of a WebSocket service
@@ -44,8 +46,6 @@ namespace WebSocketSharp.Server
 	/// </remarks>
 	public abstract class WebSocketBehavior : IWebSocketSession
 	{
-		#region Private Fields
-
 		private WebSocketContext _context;
 		private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
 		private string _id;
@@ -55,10 +55,6 @@ namespace WebSocketSharp.Server
 		private DateTime _start;
 		private WebSocket _websocket;
 
-		#endregion
-
-		#region Protected Constructors
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketBehavior"/> class.
 		/// </summary>
@@ -66,28 +62,6 @@ namespace WebSocketSharp.Server
 		{
 			_start = DateTime.MaxValue;
 		}
-
-		#endregion
-
-		#region Protected Properties
-
-		/// <summary>
-		/// Gets the access to the sessions in the WebSocket service.
-		/// </summary>
-		/// <value>
-		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
-		/// </value>
-		protected WebSocketSessionManager Sessions
-		{
-			get
-			{
-				return _sessions;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
 
 		/// <summary>
 		/// Gets the information in the current connection request to the WebSocket service.
@@ -258,55 +232,19 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		private string checkIfValidConnectionRequest(WebSocketContext context)
+		/// <summary>
+		/// Gets the access to the sessions in the WebSocket service.
+		/// </summary>
+		/// <value>
+		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
+		/// </value>
+		protected WebSocketSessionManager Sessions
 		{
-			return _originValidator != null && !_originValidator(context.Origin)
-				   ? "Invalid Origin header."
-				   : _cookiesValidator != null &&
-					 !_cookiesValidator(context.CookieCollection, context.WebSocket.CookieCollection)
-					 ? "Invalid Cookies."
-					 : null;
-		}
-
-		private void onClose(object sender, CloseEventArgs e)
-		{
-			if (_id == null)
-				return;
-
-			_sessions.Remove(_id);
-			OnClose(e);
-		}
-
-		private void onError(object sender, ErrorEventArgs e)
-		{
-			OnError(e);
-		}
-
-		private void onMessage(object sender, MessageEventArgs e)
-		{
-			OnMessage(e);
-		}
-
-		private void onOpen(object sender, EventArgs e)
-		{
-			_id = _sessions.Add(this);
-			if (_id == null)
+			get
 			{
-				_websocket.Close(CloseStatusCode.Away);
-				return;
+				return _sessions;
 			}
-
-			_start = DateTime.Now;
-			OnOpen();
 		}
-
-		#endregion
-
-		#region Internal Methods
 
 		internal void Start(WebSocketContext context, WebSocketSessionManager sessions)
 		{
@@ -321,23 +259,19 @@ namespace WebSocketSharp.Server
 			_sessions = sessions;
 
 			_websocket = context.WebSocket;
-			_websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+			_websocket.CustomHandshakeRequestChecker = CheckIfValidConnectionRequest;
 			_websocket.Protocol = _protocol;
 
 			var waitTime = sessions.WaitTime;
 			_websocket.WaitTime = waitTime;
 			
-			_websocket.OnOpen += onOpen;
-			_websocket.OnMessage += onMessage;
-			_websocket.OnError += onError;
-			_websocket.OnClose += onClose;
+			_websocket.OnOpen += InnerOnOpen;
+			_websocket.OnMessage += InnerOnMessage;
+			_websocket.OnError += InnerOnError;
+			_websocket.OnClose += InnerOnClose;
 
 			_websocket.ConnectAsServer();
 		}
-
-		#endregion
-
-		#region Protected Methods
 
 		/// <summary>
 		/// Calls the <see cref="OnError"/> method with the specified <paramref name="message"/> and
@@ -411,7 +345,9 @@ namespace WebSocketSharp.Server
 		protected void Send(byte[] data)
 		{
 			if (_websocket != null)
+			{
 				_websocket.Send(data);
+			}
 		}
 
 		/// <summary>
@@ -427,7 +363,9 @@ namespace WebSocketSharp.Server
 		protected void Send(FileInfo file)
 		{
 			if (_websocket != null)
+			{
 				_websocket.Send(file);
+			}
 		}
 
 		/// <summary>
@@ -442,7 +380,9 @@ namespace WebSocketSharp.Server
 		protected void Send(string data)
 		{
 			if (_websocket != null)
+			{
 				_websocket.Send(data);
+			}
 		}
 
 		/// <summary>
@@ -552,6 +492,46 @@ namespace WebSocketSharp.Server
 			return Task.FromResult(false);
 		}
 
-		#endregion
+		private string CheckIfValidConnectionRequest(WebSocketContext context)
+		{
+			return _originValidator != null && !_originValidator(context.Origin)
+				   ? "Invalid Origin header."
+				   : _cookiesValidator != null &&
+					 !_cookiesValidator(context.CookieCollection, context.WebSocket.CookieCollection)
+					 ? "Invalid Cookies."
+					 : null;
+		}
+
+		private void InnerOnClose(object sender, CloseEventArgs e)
+		{
+			if (_id == null)
+				return;
+
+			_sessions.Remove(_id);
+			OnClose(e);
+		}
+
+		private void InnerOnError(object sender, ErrorEventArgs e)
+		{
+			OnError(e);
+		}
+
+		private void InnerOnMessage(object sender, MessageEventArgs e)
+		{
+			OnMessage(e);
+		}
+
+		private void InnerOnOpen(object sender, EventArgs e)
+		{
+			_id = _sessions.Add(this);
+			if (_id == null)
+			{
+				_websocket.Close(CloseStatusCode.Away);
+				return;
+			}
+
+			_start = DateTime.Now;
+			OnOpen();
+		}
 	}
 }

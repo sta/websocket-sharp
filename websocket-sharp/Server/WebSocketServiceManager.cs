@@ -219,154 +219,6 @@ namespace WebSocketSharp.Server
 
 		#endregion
 
-		#region Private Methods
-
-		private void broadcast(Opcode opcode, byte[] data)
-		{
-			var cache = new Dictionary<CompressionMethod, byte[]>();
-			try
-			{
-				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
-				{
-					host.Sessions.Broadcast(opcode, data, cache);
-				}
-			}
-			finally
-			{
-				cache.Clear();
-			}
-		}
-
-		private void broadcast(Opcode opcode, Stream stream)
-		{
-			var cache = new Dictionary<CompressionMethod, Stream>();
-			try
-			{
-				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
-				{
-					host.Sessions.Broadcast(opcode, stream, cache);
-				}
-			}
-			finally
-			{
-				foreach (var cached in cache.Values)
-				{
-					cached.Dispose();
-				}
-
-				cache.Clear();
-			}
-		}
-
-		private Task broadcastAsync(Opcode opcode, byte[] data)
-		{
-			return Task.Factory.StartNew(() => broadcast(opcode, data));
-		}
-
-		private Task broadcastAsync(Opcode opcode, Stream stream)
-		{
-			return Task.Factory.StartNew(() => broadcast(opcode, stream));
-		}
-
-		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
-		{
-			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
-		}
-
-		#endregion
-
-		#region Internal Methods
-
-		internal void Add<TBehavior>(string path, Func<TBehavior> initializer)
-		  where TBehavior : WebSocketBehavior
-		{
-			lock (_sync)
-			{
-				path = HttpUtility.UrlDecode(path).TrimEndSlash();
-
-				WebSocketServiceHost host;
-				if (_hosts.TryGetValue(path, out host))
-				{
-					return;
-				}
-
-				host = new WebSocketServiceHost<TBehavior>(path, initializer);
-				if (!_clean)
-					host.KeepClean = false;
-
-				if (_waitTime != host.WaitTime)
-					host.WaitTime = _waitTime;
-
-				if (_state == ServerState.Start)
-					host.Start();
-
-				_hosts.Add(path, host);
-			}
-		}
-
-		internal bool InternalTryGetServiceHost(string path, out WebSocketServiceHost host)
-		{
-			bool res;
-			lock (_sync)
-			{
-				path = HttpUtility.UrlDecode(path).TrimEndSlash();
-				res = _hosts.TryGetValue(path, out host);
-			}
-
-			return res;
-		}
-
-		internal bool Remove(string path)
-		{
-			WebSocketServiceHost host;
-			lock (_sync)
-			{
-				path = HttpUtility.UrlDecode(path).TrimEndSlash();
-				if (!_hosts.TryGetValue(path, out host))
-				{
-					return false;
-				}
-
-				_hosts.Remove(path);
-			}
-
-			if (host.State == ServerState.Start)
-				host.Stop((ushort)CloseStatusCode.Away, null);
-
-			return true;
-		}
-
-		internal void Start()
-		{
-			lock (_sync)
-			{
-				foreach (var host in _hosts.Values)
-					host.Start();
-
-				_state = ServerState.Start;
-			}
-		}
-
-		internal void Stop(CloseEventArgs e, bool send, bool wait)
-		{
-			lock (_sync)
-			{
-				_state = ServerState.ShuttingDown;
-
-				var bytes =
-				  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
-
-				var timeout = wait ? _waitTime : TimeSpan.Zero;
-				foreach (var host in _hosts.Values)
-					host.Sessions.Stop(e, bytes, timeout);
-
-				_hosts.Clear();
-				_state = ServerState.Stop;
-			}
-		}
-
-		#endregion
-
 		#region Public Methods
 
 		/// <summary>
@@ -576,6 +428,154 @@ namespace WebSocketSharp.Server
 			}
 
 			return InternalTryGetServiceHost(path, out host);
+		}
+
+		#endregion
+
+		#region Internal Methods
+
+		internal void Add<TBehavior>(string path, Func<TBehavior> initializer)
+		  where TBehavior : WebSocketBehavior
+		{
+			lock (_sync)
+			{
+				path = HttpUtility.UrlDecode(path).TrimEndSlash();
+
+				WebSocketServiceHost host;
+				if (_hosts.TryGetValue(path, out host))
+				{
+					return;
+				}
+
+				host = new WebSocketServiceHost<TBehavior>(path, initializer);
+				if (!_clean)
+					host.KeepClean = false;
+
+				if (_waitTime != host.WaitTime)
+					host.WaitTime = _waitTime;
+
+				if (_state == ServerState.Start)
+					host.Start();
+
+				_hosts.Add(path, host);
+			}
+		}
+
+		internal bool InternalTryGetServiceHost(string path, out WebSocketServiceHost host)
+		{
+			bool res;
+			lock (_sync)
+			{
+				path = HttpUtility.UrlDecode(path).TrimEndSlash();
+				res = _hosts.TryGetValue(path, out host);
+			}
+
+			return res;
+		}
+
+		internal bool Remove(string path)
+		{
+			WebSocketServiceHost host;
+			lock (_sync)
+			{
+				path = HttpUtility.UrlDecode(path).TrimEndSlash();
+				if (!_hosts.TryGetValue(path, out host))
+				{
+					return false;
+				}
+
+				_hosts.Remove(path);
+			}
+
+			if (host.State == ServerState.Start)
+				host.Stop((ushort)CloseStatusCode.Away, null);
+
+			return true;
+		}
+
+		internal void Start()
+		{
+			lock (_sync)
+			{
+				foreach (var host in _hosts.Values)
+					host.Start();
+
+				_state = ServerState.Start;
+			}
+		}
+
+		internal void Stop(CloseEventArgs e, bool send, bool wait)
+		{
+			lock (_sync)
+			{
+				_state = ServerState.ShuttingDown;
+
+				var bytes =
+				  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
+
+				var timeout = wait ? _waitTime : TimeSpan.Zero;
+				foreach (var host in _hosts.Values)
+					host.Sessions.Stop(e, bytes, timeout);
+
+				_hosts.Clear();
+				_state = ServerState.Stop;
+			}
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		private void broadcast(Opcode opcode, byte[] data)
+		{
+			var cache = new Dictionary<CompressionMethod, byte[]>();
+			try
+			{
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
+				{
+					host.Sessions.Broadcast(opcode, data, cache);
+				}
+			}
+			finally
+			{
+				cache.Clear();
+			}
+		}
+
+		private void broadcast(Opcode opcode, Stream stream)
+		{
+			var cache = new Dictionary<CompressionMethod, Stream>();
+			try
+			{
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
+				{
+					host.Sessions.Broadcast(opcode, stream, cache);
+				}
+			}
+			finally
+			{
+				foreach (var cached in cache.Values)
+				{
+					cached.Dispose();
+				}
+
+				cache.Clear();
+			}
+		}
+
+		private Task broadcastAsync(Opcode opcode, byte[] data)
+		{
+			return Task.Factory.StartNew(() => broadcast(opcode, data));
+		}
+
+		private Task broadcastAsync(Opcode opcode, Stream stream)
+		{
+			return Task.Factory.StartNew(() => broadcast(opcode, stream));
+		}
+
+		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
+		{
+			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
 		}
 
 		#endregion

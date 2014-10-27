@@ -1210,7 +1210,7 @@ namespace WebSocketSharp
 		{
 			try
 			{
-				if (this.AcceptHandshake())
+				if (AcceptHandshake())
 				{
 					_readyState = WebSocketState.Open;
 					Open();
@@ -1733,7 +1733,7 @@ namespace WebSocketSharp
 		{
 			try
 			{
-				this.StartReceiving();
+				StartReceiving();
 
 				lock (_forEvent)
 				{
