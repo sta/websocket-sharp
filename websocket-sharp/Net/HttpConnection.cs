@@ -87,7 +87,10 @@ namespace WebSocketSharp.Net
       var netStream = new NetworkStream (socket, false);
       if (_secure) {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (listener.Certificate);
+        var certificateConfig = listener.CertificateConfig;
+        sslStream.AuthenticateAsServer(certificateConfig.ServerCertificate,
+            certificateConfig.ClientCertificateRequired, certificateConfig.EnabledSslProtocols,
+            certificateConfig.CheckCertificateRevocation);
         _stream = sslStream;
       }
       else {

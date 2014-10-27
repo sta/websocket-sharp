@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
-    private X509Certificate2                                     _defaultCert;
+    private ServerCertAuthConfiguration                          _defaultCert;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private bool                                                 _listening;
@@ -224,7 +224,8 @@ namespace WebSocketSharp.Net
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
-    public X509Certificate2 DefaultCertificate {
+    public ServerCertAuthConfiguration DefaultCertificateConfig
+    {
       get {
         CheckDisposed ();
         return _defaultCert;

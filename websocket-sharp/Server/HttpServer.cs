@@ -187,9 +187,10 @@ namespace WebSocketSharp.Server
     /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
     /// the server.
     /// </value>
-    public X509Certificate2 Certificate {
+    public ServerCertAuthConfiguration CertificateConfig
+    {
       get {
-        return _listener.DefaultCertificate;
+        return _listener.DefaultCertificateConfig;
       }
 
       set {
@@ -202,7 +203,7 @@ namespace WebSocketSharp.Server
         if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
           _logger.Warn ("The server certificate associated with the port number already exists.");
 
-        _listener.DefaultCertificate = value;
+        _listener.DefaultCertificateConfig = value;
       }
     }
 
@@ -508,7 +509,7 @@ namespace WebSocketSharp.Server
     {
       return _secure &&
              !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
-             _listener.DefaultCertificate == null
+             _listener.DefaultCertificateConfig == null
              ? "The secure connection requires a server certificate."
              : null;
     }

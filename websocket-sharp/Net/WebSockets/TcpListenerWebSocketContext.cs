@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient tcpClient, string protocol, bool secure, X509Certificate certificate, Logger logger)
+      TcpClient tcpClient, string protocol, bool secure, ServerCertAuthConfiguration certificateConfig, Logger logger)
     {
       _tcpClient = tcpClient;
       _secure = secure;
@@ -69,7 +69,9 @@ namespace WebSocketSharp.Net.WebSockets
       var netStream = tcpClient.GetStream ();
       if (secure) {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (certificate);
+        sslStream.AuthenticateAsServer(certificateConfig.ServerCertificate,
+            certificateConfig.ClientCertificateRequired, certificateConfig.EnabledSslProtocols,
+            certificateConfig.CheckCertificateRevocation);
         _stream = sslStream;
       }
       else {

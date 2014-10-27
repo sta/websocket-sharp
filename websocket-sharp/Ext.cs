@@ -554,10 +554,10 @@ namespace WebSocketSharp
       this TcpClient tcpClient,
       string protocol,
       bool secure,
-      X509Certificate certificate,
+      ServerCertAuthConfiguration certificateConfig,
       Logger logger)
     {
-      return new TcpListenerWebSocketContext (tcpClient, protocol, secure, certificate, logger);
+      return new TcpListenerWebSocketContext (tcpClient, protocol, secure, certificateConfig, logger);
     }
 
     internal static byte[] InternalToByteArray (this ushort value, ByteOrder order)
