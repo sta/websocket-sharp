@@ -105,6 +105,31 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Private Methods
+
+    private static void complete (ListenerAsyncResult asyncResult)
+    {
+      asyncResult._completed = true;
+
+      var waitHandle = asyncResult._waitHandle;
+      if (waitHandle != null)
+        waitHandle.Set ();
+
+      var callback = asyncResult._callback;
+      if (callback != null)
+        ThreadPool.UnsafeQueueUserWorkItem (
+          state => {
+            try {
+              callback (asyncResult);
+            }
+            catch {
+            }
+          },
+          null);
+    }
+
+    #endregion
+
     #region Internal Methods
 
     internal void Complete (Exception exception)
@@ -113,22 +138,8 @@ namespace WebSocketSharp.Net
                    ? new HttpListenerException (500, "Listener closed.")
                    : exception;
 
-      lock (_sync) {
-        _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
-
-        if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (
-            state => {
-              try {
-                _callback (this);
-              }
-              catch {
-              }
-            },
-            null);
-      }
+      lock (_sync)
+        complete (this);
     }
 
     internal void Complete (HttpListenerContext context)
@@ -169,22 +180,8 @@ namespace WebSocketSharp.Net
       _context = context;
       _syncCompleted = syncCompleted;
 
-      lock (_sync) {
-        _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
-
-        if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (
-            state => {
-              try {
-                _callback (this);
-              }
-              catch {
-              }
-            },
-            null);
-      }
+      lock (_sync)
+        complete (this);
     }
 
     internal HttpListenerContext GetContext ()
