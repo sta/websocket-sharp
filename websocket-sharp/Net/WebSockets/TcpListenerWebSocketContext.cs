@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient tcpClient, string protocol, bool secure, ServerCertAuthConfiguration certificateConfig, Logger logger)
+      TcpClient tcpClient, string protocol, bool secure, ServerSslAuthConfiguration certificateConfig, Logger logger)
     {
       _tcpClient = tcpClient;
       _secure = secure;

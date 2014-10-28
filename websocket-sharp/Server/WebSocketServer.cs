@@ -60,7 +60,7 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
-    private ServerCertAuthConfiguration        _certificateConfig;
+    private ServerSslAuthConfiguration         _certificateConfig;
     private Func<IIdentity, NetworkCredential> _credentialsFinder;
     private TcpListener                        _listener;
     private Logger                             _logger;
@@ -315,10 +315,10 @@ namespace WebSocketSharp.Server
     /// Gets or sets the certificate configuration used to authenticate the server on the secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerCertAuthConfiguration"/> that represents the certificate configuration used to authenticate
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
     /// the server.
     /// </value>
-    public ServerCertAuthConfiguration CertificateConfig
+    public ServerSslAuthConfiguration SslAuthenticationConfig
     {
       get {
         return _certificateConfig;

@@ -181,16 +181,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the certificate used to authenticate the server on the secure connection.
+    /// Gets or sets the Ssl configuration used to authenticate the server on the secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the Ssl configuration used to authenticate
     /// the server.
     /// </value>
-    public ServerCertAuthConfiguration CertificateConfig
+    public ServerSslAuthConfiguration CertificateConfig
     {
       get {
-        return _listener.DefaultCertificateConfig;
+        return _listener.DefaultSslAuthenticationConfig;
       }
 
       set {
@@ -203,7 +203,7 @@ namespace WebSocketSharp.Server
         if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
           _logger.Warn ("The server certificate associated with the port number already exists.");
 
-        _listener.DefaultCertificateConfig = value;
+        _listener.DefaultSslAuthenticationConfig = value;
       }
     }
 
@@ -509,7 +509,7 @@ namespace WebSocketSharp.Server
     {
       return _secure &&
              !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
-             _listener.DefaultCertificateConfig == null
+             _listener.DefaultSslAuthenticationConfig == null
              ? "The secure connection requires a server certificate."
              : null;
     }

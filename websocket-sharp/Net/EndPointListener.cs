@@ -54,7 +54,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>                     _all; // host == '+'
-    private ServerCertAuthConfiguration                  _certConfig;
+    private ServerSslAuthConfiguration                   _sslAuthenticationConfig;
     private static readonly string                       _defaultCertFolderPath;
     private IPEndPoint                                   _endpoint;
     private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
@@ -83,13 +83,13 @@ namespace WebSocketSharp.Net
       int port,
       bool secure,
       string certificateFolderPath,
-      ServerCertAuthConfiguration defaultCertificate,
+      ServerSslAuthConfiguration defaultCertificate,
       bool reuseAddress)
     {
       if (secure) {
         _secure = secure;
-        _certConfig = getCertificate (port, certificateFolderPath, defaultCertificate);
-        if (_certConfig == null)
+        _sslAuthenticationConfig = getCertificate(port, certificateFolderPath, defaultCertificate);
+        if (_sslAuthenticationConfig == null)
           throw new ArgumentException ("No server certificate could be found.");
       }
 
@@ -116,10 +116,10 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public ServerCertAuthConfiguration CertificateConfig
+    public ServerSslAuthConfiguration CertificateConfig
     {
       get {
-        return _certConfig;
+          return _sslAuthenticationConfig;
       }
     }
 
@@ -174,8 +174,8 @@ namespace WebSocketSharp.Net
       return rsa;
     }
 
-    private static ServerCertAuthConfiguration getCertificate(
-      int port, string certificateFolderPath, ServerCertAuthConfiguration defaultCertificate)
+    private static ServerSslAuthConfiguration getCertificate(
+      int port, string certificateFolderPath, ServerSslAuthConfiguration defaultCertificate)
     {
       if (certificateFolderPath == null || certificateFolderPath.Length == 0)
         certificateFolderPath = _defaultCertFolderPath;
@@ -187,7 +187,7 @@ namespace WebSocketSharp.Net
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
 
-          return new ServerCertAuthConfiguration(cert);
+          return new ServerSslAuthConfiguration(cert);
         }
       }
       catch {

@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
-    private ServerCertAuthConfiguration                          _defaultCert;
+    private ServerSslAuthConfiguration                           _defaultSslAuthenticationConfig;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private bool                                                 _listening;
@@ -213,27 +213,27 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the default certificate used to authenticate the server on the secure
+    /// Gets or sets the default Ssl configuration used to authenticate the server on the secure
     /// connection.
     /// </summary>
     /// <value>
-    /// A <see cref="X509Certificate2"/> used to authenticate the server if the certificate
+    /// A <see cref="ServerSslAuthConfiguration"/> used to authenticate the server if the certificate
     /// files aren't found in the <see cref="CertificateFolderPath"/>. The default value is
     /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
-    public ServerCertAuthConfiguration DefaultCertificateConfig
+    public ServerSslAuthConfiguration DefaultSslAuthenticationConfig
     {
       get {
         CheckDisposed ();
-        return _defaultCert;
+        return _defaultSslAuthenticationConfig;
       }
 
       set {
         CheckDisposed ();
-        _defaultCert = value;
+        _defaultSslAuthenticationConfig = value;
       }
     }
 

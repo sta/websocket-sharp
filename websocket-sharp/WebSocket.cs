@@ -71,7 +71,7 @@ namespace WebSocketSharp
     private string                  _base64Key;
     private LocalCertificateSelectionCallback
                                     _certSelectionCallback;
-    private ClientCertAuthConfiguration
+    private ClientSslAuthConfiguration
                                     _certificateConfig;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
@@ -467,10 +467,10 @@ namespace WebSocketSharp
     /// Gets or sets the certificate configuration used to authenticate the client on the secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ClientCertAuthConfiguration"/> that represents the certificate configuration used to authenticate
+    /// A <see cref="ClientSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
     /// the client.
     /// </value>
-    public ClientCertAuthConfiguration CertificateConfig
+    public ClientSslAuthConfiguration SslAuthenticationConfig
     {
         get
         {
