@@ -93,7 +93,7 @@ namespace WebSocketSharp
 		private Stream _stream;
 		private TcpClient _tcpClient;
 		private Uri _uri;
-		
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocket"/> class with the specified
 		/// WebSocket URL and subprotocols.
@@ -1519,23 +1519,21 @@ namespace WebSocketSharp
 						return ProcessCloseFrame(frame);
 					}
 				}
-				else
+				else if (frame.IsContinuation)
 				{
 					/* MORE */
 
 					// CONT
-					if (frame.IsContinuation)
-					{
-						dest.WriteBytes(frame.PayloadData.ApplicationData);
-						continue;
-					}
+					dest.WriteBytes(frame.PayloadData.ApplicationData);
 				}
-
-				// ?
-				return ProcessUnsupportedFrame(
-				  frame,
-				  CloseStatusCode.IncorrectData,
-				  "An incorrect data has been received while receiving fragmented data.");
+				else
+				{
+					// ?
+					return ProcessUnsupportedFrame(
+						frame,
+						CloseStatusCode.IncorrectData,
+						"An incorrect data has been received while receiving fragmented data.");
+				}
 			}
 
 			return true;
@@ -1756,19 +1754,17 @@ namespace WebSocketSharp
 		private bool ProcessCloseFrame(WebSocketFrame frame)
 		{
 			var payload = frame.PayloadData;
-			this.InnerClose(payload, !payload.IncludesReservedCloseStatusCode, false);
+			InnerClose(payload, !payload.IncludesReservedCloseStatusCode, false);
 
-			return false;
+			return true;
 		}
 
 		private bool ProcessDataFrame(WebSocketFrame frame)
 		{
-			var e = frame.IsCompressed
-					? new MessageEventArgs(
-						frame.Opcode, frame.PayloadData.ApplicationData.Decompress(_compression))
+			var e = frame.IsCompressed 
+					? new MessageEventArgs(frame.Opcode, frame.PayloadData.ApplicationData.Decompress(_compression))
 					: new MessageEventArgs(frame.Opcode, frame.PayloadData.ToByteArray());
 
-			EnqueueToMessageEventQueue(e);
 			return true;
 		}
 
@@ -1790,13 +1786,13 @@ namespace WebSocketSharp
 			}
 			else
 			{
-				this.InnerClose(code, reason ?? code.GetMessage(), false);
+				InnerClose(code, reason ?? code.GetMessage(), false);
 			}
 		}
 
 		private bool ProcessFragmentedFrame(WebSocketFrame frame)
 		{
-			return frame.IsContinuation || this.ProcessFragments(frame);
+			return frame.IsContinuation || ProcessFragments(frame);
 		}
 
 		private bool ProcessFragments(WebSocketFrame first)
@@ -1804,8 +1800,10 @@ namespace WebSocketSharp
 			using (var buff = new MemoryStream())
 			{
 				buff.WriteBytes(first.PayloadData.ApplicationData);
-				if (!this.ConcatenateFragmentsInto(buff))
+				if (!ConcatenateFragmentsInto(buff))
+				{
 					return false;
+				}
 
 				byte[] data;
 				if (_compression != CompressionMethod.None)
@@ -1878,10 +1876,7 @@ namespace WebSocketSharp
 		private bool ProcessWebSocketFrame(WebSocketFrame frame)
 		{
 			return frame.IsCompressed && _compression == CompressionMethod.None
-				   ? ProcessUnsupportedFrame(
-					   frame,
-					   CloseStatusCode.IncorrectData,
-					   "A compressed data has been received without available decompression method.")
+				   ? ProcessUnsupportedFrame(frame, CloseStatusCode.IncorrectData, "A compressed data has been received without available decompression method.")
 				   : frame.IsFragmented
 					 ? ProcessFragmentedFrame(frame)
 					 : frame.IsData
@@ -2120,7 +2115,6 @@ namespace WebSocketSharp
 			while (true)
 			{
 				var frame = await WebSocketFrame.ReadAsync(_stream);
-
 				if (ProcessWebSocketFrame(frame) && _readyState != WebSocketState.Closed)
 				{
 					if (!frame.IsData)
@@ -2132,8 +2126,8 @@ namespace WebSocketSharp
 					{
 						try
 						{
-							var e = this.DequeueFromMessageEventQueue();
-							if (e != null && _readyState == WebSocketState.Open)
+							var e = DequeueFromMessageEventQueue();
+							if (_readyState == WebSocketState.Open)
 							{
 								OnMessage.Emit(this, e);
 							}

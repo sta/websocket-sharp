@@ -27,7 +27,7 @@ namespace WebSocketSharp.Tests
 
 	using NUnit.Framework;
 
-	using WebSocketSharp.Server;
+	using global::WebSocketSharp.Server;
 
 	public sealed class WebSocketServerTests
 	{

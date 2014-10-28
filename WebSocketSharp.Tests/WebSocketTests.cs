@@ -23,6 +23,11 @@ namespace WebSocketSharp.Tests
 
 	using NUnit.Framework;
 
+	namespace WebSocketSharp.Tests
+	{
+		using System;
+
+	}
 	public class WebSocketTests
 	{
 		public class GivenAWebSocket
