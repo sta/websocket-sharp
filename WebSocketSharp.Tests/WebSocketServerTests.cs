@@ -58,13 +58,13 @@ namespace WebSocketSharp.Tests
 			[Test]
 			public void ClientCanConnectToServer()
 			{
-				var client = new WebSocket("ws://localhost:8080/echo");
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
 
-				client.Connect();
+					client.Connect();
 
-				Assert.AreEqual(WebSocketState.Open, client.ReadyState);
-
-				client.Close();
+					Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+				}
 			}
 
 			[Test]
@@ -76,7 +76,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -125,7 +125,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -154,7 +154,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -189,7 +189,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -227,7 +227,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 25000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -269,7 +269,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 25000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -313,7 +313,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 1000000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -343,7 +343,7 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
-			public async Task CanReceiveOneMillionAsynchronousResponsesInSixSecond()
+			public async Task CanReceiveOneMillionAsynchronousResponsesInTenSecond()
 			{
 				var responseWatch = new Stopwatch();
 
@@ -357,7 +357,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 1000000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message && Interlocked.Increment(ref count) == Multiplicity)
+							if (e.Message.Text.ReadToEnd() == Message && Interlocked.Increment(ref count) == Multiplicity)
 							{
 								responseWatch.Stop();
 								waitHandle.Set();
@@ -376,7 +376,7 @@ namespace WebSocketSharp.Tests
 
 					Console.WriteLine(responseWatch.Elapsed);
 
-					Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(6));
+					Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(10));
 
 					client.OnMessage -= onMessage;
 					client.Close();
@@ -393,13 +393,13 @@ namespace WebSocketSharp.Tests
 
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				switch (e.Type)
+				switch (e.Message.Code)
 				{
 					case Opcode.Text:
-						Send(e.Data);
+						Send(e.Message.Text.ReadToEnd());
 						break;
 					case Opcode.Binary:
-						Send(e.RawData);
+						Send(e.Message.RawData.ToByteArray());
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:

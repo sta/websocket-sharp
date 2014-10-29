@@ -76,7 +76,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -104,7 +104,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -133,7 +133,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -168,7 +168,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Message.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -214,13 +214,13 @@ namespace WebSocketSharp.Tests
 		{
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				switch (e.Type)
+				switch (e.Message.Code)
 				{
 					case Opcode.Text:
-						this.Send(e.Data);
+						this.Send(e.Message.Text.ReadToEnd());
 						break;
 					case Opcode.Binary:
-						this.Send(e.RawData);
+						this.Send(e.Message.RawData.ToByteArray());
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:

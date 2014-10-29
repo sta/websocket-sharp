@@ -23,11 +23,6 @@ namespace WebSocketSharp.Tests
 
 	using NUnit.Framework;
 
-	namespace WebSocketSharp.Tests
-	{
-		using System;
-
-	}
 	public class WebSocketTests
 	{
 		public class GivenAWebSocket
@@ -47,7 +42,7 @@ namespace WebSocketSharp.Tests
 				_sut.OnError -= PrintError;
 				if (_sut.ReadyState != WebSocketState.Closed)
 				{
-					_sut.Close();
+					_sut.Dispose();
 				}
 			}
 
@@ -75,7 +70,7 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						echoReceived = e.Data == Message;
+						echoReceived = e.Message.Text.ReadToEnd() == Message;
 						waitHandle.Set();
 					};
 				_sut.OnMessage += onMessage;
@@ -98,7 +93,8 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						echoReceived = e.Data == Message;
+						var readToEnd = e.Message.Text.ReadToEnd();
+						echoReceived = readToEnd == Message;
 						waitHandle.Set();
 					};
 				_sut.OnMessage += onMessage;

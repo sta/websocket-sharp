@@ -49,28 +49,4 @@ namespace WebSocketSharp
 			_waitHandle.Set();
 		}
 	}
-
-	internal class SimpleMessage : WebSocketMessage
-	{
-		public SimpleMessage(Opcode opcode, ManualResetEventSlim waitHandle)
-			: base(opcode, waitHandle)
-		{
-		}
-
-		public override Stream RawData
-		{
-			get
-			{
-				return null;
-			}
-		}
-
-		public override StreamReader Text
-		{
-			get
-			{
-				return null;
-			}
-		}
-	}
 }

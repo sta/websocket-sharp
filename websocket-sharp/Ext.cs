@@ -175,7 +175,9 @@ namespace WebSocketSharp
 		  where TEventArgs : EventArgs
 		{
 			if (eventHandler != null)
+			{
 				eventHandler(sender, e);
+			}
 		}
 
 		/// <summary>
@@ -1231,6 +1233,11 @@ namespace WebSocketSharp
 
 		internal static byte[] ToByteArray(this Stream stream)
 		{
+			if (stream == null)
+			{
+				return null;
+			}
+
 			using (var output = new MemoryStream())
 			{
 				stream.Position = 0;
@@ -1241,13 +1248,14 @@ namespace WebSocketSharp
 			}
 		}
 
+		internal static bool IncludesReservedCloseStatusCode(this byte[] byteArray)
+		{
+			return byteArray.Length > 1 && byteArray.SubArray(0, 2).ToUInt16(ByteOrder.Big).IsReserved();
+		}
+
 		internal static CompressionMethod ToCompressionMethod(this string value)
 		{
-			foreach (CompressionMethod method in Enum.GetValues(typeof(CompressionMethod)))
-				if (method.ToExtensionString() == value)
-					return method;
-
-			return CompressionMethod.None;
+			return Enum.GetValues(typeof(CompressionMethod)).Cast<CompressionMethod>().FirstOrDefault(method => method.ToExtensionString() == value);
 		}
 
 		internal static string ToExtensionString(this CompressionMethod method)

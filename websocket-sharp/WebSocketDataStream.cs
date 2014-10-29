@@ -61,10 +61,15 @@ namespace WebSocketSharp
 				_readInfo.PayloadLength -= toread;
 
 				bytesRead += _innerStream.Read(buffer, position, (int)toread);
-				var i = (int)toread;
-				for (var pos = position; pos < position + i; pos++)
+
+				if (_readInfo.MaskingKey.Length > 0)
 				{
-					buffer[pos] = (byte)(buffer[pos] ^ _readInfo.MaskingKey[pos % 4]);
+					var i = (int)toread;
+
+					for (var pos = position; pos < position + i; pos++)
+					{
+						buffer[pos] = (byte)(buffer[pos] ^ _readInfo.MaskingKey[pos % 4]);
+					}
 				}
 
 				position += (int)toread;
