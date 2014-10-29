@@ -518,15 +518,15 @@ namespace WebSocketSharp.Net
                               "{0}; charset={1}", _contentType, _contentEncoding.WebName)
                           : _contentType;
 
-        _headers.SetInternally ("Content-Type", contentType, true);
+        _headers.InternalSet ("Content-Type", contentType, true);
       }
 
       if (_headers["Server"] == null)
-        _headers.SetInternally ("Server", "websocket-sharp/1.0", true);
+        _headers.InternalSet ("Server", "websocket-sharp/1.0", true);
 
       var provider = CultureInfo.InvariantCulture;
       if (_headers["Date"] == null)
-        _headers.SetInternally ("Date", DateTime.UtcNow.ToString ("r", provider), true);
+        _headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", provider), true);
 
       if (!_chunked) {
         if (!_contentLengthWasSet && closing) {
@@ -535,7 +535,7 @@ namespace WebSocketSharp.Net
         }
 
         if (_contentLengthWasSet)
-          _headers.SetInternally ("Content-Length", _contentLength.ToString (provider), true);
+          _headers.InternalSet ("Content-Length", _contentLength.ToString (provider), true);
       }
 
       var reqVer = _context.Request.ProtocolVersion;
@@ -565,36 +565,36 @@ namespace WebSocketSharp.Net
 
       // They sent both KeepAlive: true and Connection: close!?
       if (!_keepAlive || connClose) {
-        _headers.SetInternally ("Connection", "close", true);
+        _headers.InternalSet ("Connection", "close", true);
         connClose = true;
       }
 
       if (_chunked)
-        _headers.SetInternally ("Transfer-Encoding", "chunked", true);
+        _headers.InternalSet ("Transfer-Encoding", "chunked", true);
 
       var reuses = _context.Connection.Reuses;
       if (reuses >= 100) {
         _forceCloseChunked = true;
         if (!connClose) {
-          _headers.SetInternally ("Connection", "close", true);
+          _headers.InternalSet ("Connection", "close", true);
           connClose = true;
         }
       }
 
       if (!connClose) {
-        _headers.SetInternally (
+        _headers.InternalSet (
           "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 
         if (reqVer < HttpVersion.Version11)
-          _headers.SetInternally ("Connection", "keep-alive", true);
+          _headers.InternalSet ("Connection", "keep-alive", true);
       }
 
       if (_location != null)
-        _headers.SetInternally ("Location", _location, true);
+        _headers.InternalSet ("Location", _location, true);
 
       if (_cookies != null)
         foreach (Cookie cookie in _cookies)
-          _headers.SetInternally ("Set-Cookie", cookie.ToResponseString (), true);
+          _headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
 
       var enc = _contentEncoding ?? Encoding.Default;
       var writer = new StreamWriter (stream, enc, 256);

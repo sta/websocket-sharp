@@ -59,16 +59,11 @@ namespace WebSocketSharp.Net
   [ComVisible (true)]
   public class WebHeaderCollection : NameValueCollection, ISerializable
   {
-    #region Private Static Fields
-
-    private static readonly Dictionary<string, HttpHeaderInfo> _headers;
-
-    #endregion
-
     #region Private Fields
 
-    private bool           _internallyCreated;
-    private HttpHeaderType _state;
+    private static readonly Dictionary<string, HttpHeaderInfo> _headers;
+    private bool                                               _internallyCreated;
+    private HttpHeaderType                                     _state;
 
     #endregion
 
@@ -557,11 +552,11 @@ namespace WebSocketSharp.Net
         _internallyCreated = serializationInfo.GetBoolean ("InternallyCreated");
         _state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
 
-        var count = serializationInfo.GetInt32 ("Count");
-        for (int i = 0; i < count; i++) {
+        var cnt = serializationInfo.GetInt32 ("Count");
+        for (var i = 0; i < cnt; i++) {
           base.Add (
             serializationInfo.GetString (i.ToString ()),
-            serializationInfo.GetString ((count + i).ToString ()));
+            serializationInfo.GetString ((cnt + i).ToString ()));
         }
       }
       catch (SerializationException ex) {
@@ -578,7 +573,6 @@ namespace WebSocketSharp.Net
     /// </summary>
     public WebHeaderCollection ()
     {
-      _internallyCreated = false;
       _state = HttpHeaderType.Unspecified;
     }
 
@@ -592,7 +586,7 @@ namespace WebSocketSharp.Net
     /// <value>
     /// An array of <see cref="string"/> that contains all header names in the collection.
     /// </value>
-    public override string [] AllKeys {
+    public override string[] AllKeys {
       get {
         return base.AllKeys;
       }
@@ -638,7 +632,7 @@ namespace WebSocketSharp.Net
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
     /// <paramref name="header"/>.
     /// </exception>
-    public string this [HttpRequestHeader header] {
+    public string this[HttpRequestHeader header] {
       get {
         return Get (Convert (header));
       }
@@ -676,7 +670,7 @@ namespace WebSocketSharp.Net
     /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
     /// <paramref name="header"/>.
     /// </exception>
-    public string this [HttpResponseHeader header] {
+    public string this[HttpResponseHeader header] {
       get {
         return Get (Convert (header));
       }
@@ -705,11 +699,9 @@ namespace WebSocketSharp.Net
 
     private void add (string name, string value, bool ignoreRestricted)
     {
-      Action <string, string> act;
-      if (ignoreRestricted)
-        act = addWithoutCheckingNameAndRestricted;
-      else
-        act = addWithoutCheckingName;
+      var act = ignoreRestricted
+                ? (Action <string, string>) addWithoutCheckingNameAndRestricted
+                : addWithoutCheckingName;
 
       doWithCheckingState (act, checkName (name), value, true);
     }
@@ -728,7 +720,7 @@ namespace WebSocketSharp.Net
     {
       var i = header.IndexOf (':');
       if (i == -1)
-        throw new ArgumentException ("No colon found.", "header");
+        throw new ArgumentException ("No colon could be found.", "header");
 
       return i;
     }
@@ -867,6 +859,26 @@ namespace WebSocketSharp.Net
       return convert (header.ToString ());
     }
 
+    internal void InternalRemove (string name)
+    {
+      base.Remove (name);
+    }
+
+    internal void InternalSet (string header, bool response)
+    {
+      var pos = checkColonSeparated (header);
+      InternalSet (header.Substring (0, pos), header.Substring (pos + 1), response);
+    }
+
+    internal void InternalSet (string name, string value, bool response)
+    {
+      value = checkValue (value);
+      if (IsMultiValue (name, response))
+        base.Add (name, value);
+      else
+        base.Set (name, value);
+    }
+
     internal static bool IsHeaderName (string name)
     {
       return name != null && name.Length > 0 && name.IsToken ();
@@ -886,26 +898,6 @@ namespace WebSocketSharp.Net
       return info != null && info.IsMultiValue (response);
     }
 
-    internal void RemoveInternally (string name)
-    {
-      base.Remove (name);
-    }
-
-    internal void SetInternally (string header, bool response)
-    {
-      var pos = checkColonSeparated (header);
-      SetInternally (header.Substring (0, pos), header.Substring (pos + 1), response);
-    }
-
-    internal void SetInternally (string name, string value, bool response)
-    {
-      value = checkValue (value);
-      if (IsMultiValue (name, response))
-        base.Add (name, value);
-      else
-        base.Set (name, value);
-    }
-
     internal string ToStringMultiValue (bool response)
     {
       var buff = new StringBuilder ();
@@ -913,8 +905,8 @@ namespace WebSocketSharp.Net
         i => {
           var key = GetKey (i);
           if (IsMultiValue (key, response))
-            foreach (var value in GetValues (i))
-              buff.AppendFormat ("{0}: {1}\r\n", key, value);
+            foreach (var val in GetValues (i))
+              buff.AppendFormat ("{0}: {1}\r\n", key, val);
           else
             buff.AppendFormat ("{0}: {1}\r\n", key, Get (i));
         });
@@ -963,7 +955,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <param name="header">
     /// A <see cref="string"/> that represents the header with the name and value separated by
-    /// a colon (<c>:</c>).
+    /// a colon (<c>':'</c>).
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="header"/> is <see langword="null"/>, empty, or the name part of
@@ -1189,11 +1181,11 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index"/> is out of allowable range of indexes for the collection.
     /// </exception>
-    public override string [] GetValues (int index)
+    public override string[] GetValues (int index)
     {
-      var values = base.GetValues (index);
-      return values != null && values.Length > 0
-             ? values
+      var vals = base.GetValues (index);
+      return vals != null && vals.Length > 0
+             ? vals
              : null;
     }
 
@@ -1207,11 +1199,11 @@ namespace WebSocketSharp.Net
     /// <param name="header">
     /// A <see cref="string"/> that represents the name of the header to find.
     /// </param>
-    public override string [] GetValues (string header)
+    public override string[] GetValues (string header)
     {
-      var values = base.GetValues (header);
-      return values != null && values.Length > 0
-             ? values
+      var vals = base.GetValues (header);
+      return vals != null && vals.Length > 0
+             ? vals
              : null;
     }
 
@@ -1239,12 +1231,12 @@ namespace WebSocketSharp.Net
       serializationInfo.AddValue ("InternallyCreated", _internallyCreated);
       serializationInfo.AddValue ("State", (int) _state);
 
-      var count = Count;
-      serializationInfo.AddValue ("Count", count);
-      count.Times (
+      var cnt = Count;
+      serializationInfo.AddValue ("Count", cnt);
+      cnt.Times (
         i => {
           serializationInfo.AddValue (i.ToString (), GetKey (i));
-          serializationInfo.AddValue ((count + i).ToString (), Get (i));
+          serializationInfo.AddValue ((cnt + i).ToString (), Get (i));
         });
     }
 
@@ -1477,7 +1469,7 @@ namespace WebSocketSharp.Net
     /// An array of <see cref="byte"/> that receives the converted current
     /// <see cref="WebHeaderCollection"/>.
     /// </returns>
-    public byte [] ToByteArray ()
+    public byte[] ToByteArray ()
     {
       return Encoding.UTF8.GetBytes (ToString ());
     }
@@ -1499,7 +1491,7 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Explicit Interface Implementation
+    #region Explicit Interface Implementations
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize

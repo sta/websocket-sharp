@@ -323,7 +323,7 @@ namespace WebSocketSharp
     internal static void CloseWithAuthChallenge (
       this HttpListenerResponse response, string challenge)
     {
-      response.Headers.SetInternally ("WWW-Authenticate", challenge, true);
+      response.Headers.InternalSet ("WWW-Authenticate", challenge, true);
       response.Close (HttpStatusCode.Unauthorized);
     }
 

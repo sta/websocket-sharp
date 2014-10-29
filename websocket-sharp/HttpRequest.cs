@@ -154,7 +154,7 @@ namespace WebSocketSharp
 
       var headers = new WebHeaderCollection ();
       for (int i = 1; i < headerParts.Length; i++)
-        headers.SetInternally (headerParts[i], false);
+        headers.InternalSet (headerParts[i], false);
 
       return new HttpRequest (
         requestLine[0], requestLine[1], new Version (requestLine[2].Substring (5)), headers);

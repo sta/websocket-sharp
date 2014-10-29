@@ -491,7 +491,7 @@ namespace WebSocketSharp.Net
 
       var name = header.Substring (0, colon).Trim ();
       var val = header.Substring (colon + 1).Trim ();
-      _headers.SetInternally (name, val, false);
+      _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "accept") {
