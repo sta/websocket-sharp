@@ -10,7 +10,7 @@
     <RootNamespace>WebSocketSharp</RootNamespace>
     <AssemblyName>WebSocketSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\websocket-sharp.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -71,7 +71,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FragmentedMessage.cs" />
     <Compile Include="MessageEventArgs.cs" />

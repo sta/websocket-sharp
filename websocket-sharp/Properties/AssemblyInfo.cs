@@ -42,4 +42,4 @@ using System.Runtime.CompilerServices;
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 [assembly: AssemblyFileVersionAttribute("1.0.2.0")]
-[assembly: InternalsVisibleTo("WebSocketSharp.Tests")]
+[assembly: InternalsVisibleTo("WebSocketSharp.Tests, PublicKey=00240000048000009400000006020000002400005253413100040000110000002917fb89fec391f72bcb8be261d23f05936d65a89e6372a6f5d52cf29d20fa0bc0706af6887e8b903f39f576c848e0bb7bb27bedd310a71a0f70980f7ff44b5309d2a5ef36c356b4aaf0917263250789e0933e3f2ef2b9730e12155d4356c3f470a589fef7f6ac3e77c2d8d08491f40cd1f38edcc3c3b8383d0cbf17de2078c1")]
