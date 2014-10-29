@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WebSocketMessage.cs" company="Reimers.dk">
+// <copyright file="FragmentedMessage.cs" company="Reimers.dk">
 //   The MIT License
 //   Copyright (c) 2012-2014 sta.blockhead
 //   Copyright (c) 2014 Reimers.dk
@@ -11,57 +11,33 @@
 //   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the WebSocketMessage type.
+//   Defines the FragmentedMessage type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace WebSocketSharp
 {
+	using System;
 	using System.IO;
 	using System.Threading;
 
-	public abstract class WebSocketMessage
+	internal class FragmentedMessage : WebSocketMessage
 	{
-		private readonly ManualResetEventSlim _waitHandle;
+		private readonly Stream _stream;
+		private readonly StreamReader _reader;
 
-		protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle)
-		{
-			_waitHandle = waitHandle;
-			Code = opcode;
-		}
-
-		public Opcode Code { get; set; }
-
-		public abstract Stream RawData { get; }
-
-		public abstract StreamReader Text { get; }
-
-		internal void Consume()
-		{
-			if (RawData != null)
-			{
-				var buffer = new byte[2048];
-				while (RawData.Read(buffer, 0, 2048) == 2048)
-				{
-				}
-			}
-
-			_waitHandle.Set();
-		}
-	}
-
-	internal class SimpleMessage : WebSocketMessage
-	{
-		public SimpleMessage(Opcode opcode, ManualResetEventSlim waitHandle)
+		public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<StreamReadInfo> payloadFunc, ManualResetEventSlim waitHandle)
 			: base(opcode, waitHandle)
 		{
+			_stream = new WebSocketDataStream(stream, initialRead, payloadFunc, Consume);
+			_reader = new StreamReader(_stream, true);
 		}
 
 		public override Stream RawData
 		{
 			get
 			{
-				return null;
+				return _stream;
 			}
 		}
 
@@ -69,7 +45,7 @@ namespace WebSocketSharp
 		{
 			get
 			{
-				return null;
+				return _reader;
 			}
 		}
 	}

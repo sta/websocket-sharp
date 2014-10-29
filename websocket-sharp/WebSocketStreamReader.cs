@@ -9,69 +9,66 @@ namespace WebSocketSharp
 	internal class WebSocketStreamReader
 	{
 		private readonly Stream _innerStream;
+		private readonly ManualResetEventSlim _waitHandle = new ManualResetEventSlim(false);
+		private bool _isReading = false;
 
-		private readonly bool _unmask;
-
-		public WebSocketStreamReader(Stream innerStream, bool unmask = true)
+		public WebSocketStreamReader(Stream innerStream)
 		{
 			_innerStream = innerStream;
-			_unmask = unmask;
 		}
 
 		public IEnumerable<WebSocketMessage> Read()
 		{
-			var waitHandle = new ManualResetEventSlim(false);
-			while (true)
+			lock (_innerStream)
 			{
-				waitHandle.Reset();
+				if (_isReading)
+				{
+					yield break;
+				}
+
+				_isReading = true;
+			}
+
+			var closed = false;
+			while (!closed)
+			{
+				_waitHandle.Reset();
 				var header = ReadHeader();
+				if (header == null)
+				{
+					yield break;
+				}
 
 				var readInfo = GetStreamReadInfo(header);
 
-				//byte[] data = null;
-
-				//if (len > 0)
-				//{
-				//	// Check if allowable max length.
-				//	if (header.PayloadLength > 126 && len > PayloadData.MaxLength)
-				//	{
-				//		throw new WebSocketException(CloseStatusCode.TooBig, "The length of 'Payload Data' of a frame is greater than the allowable max length.");
-				//	}
-
-				//	data = header.PayloadLength > 126
-				//	? _innerStream.ReadBytes((long)len, 1024)
-				//	: _innerStream.ReadBytes((int)len);
-
-				//	if (data.LongLength != (long)len)
-				//	{
-				//		throw new WebSocketException("The 'Payload Data' of a frame cannot be read from the data source.");
-				//	}
-				//}
-				//else
-				//{
-				//	data = new byte[0];
-				//}
-
-				//frame._payloadData = new PayloadData(data, masked);
-				//if (unmask && masked)
-				//{
-				//	frame.Unmask();
-				//}
-
-				WebSocketMessage msg;
-				switch (header.Opcode)
+				var msg = CreateMessage(header, readInfo, _waitHandle);
+				if (msg.Code == Opcode.Close)
 				{
-					case Opcode.Binary:
-						msg = new FragmentedMessage(header.Opcode, _innerStream, readInfo, GetStreamReadInfo, waitHandle);
-						yield return msg;
-						break;
-					default:
-						msg = new SimpleMessage(header.Opcode, waitHandle);
-						msg.Consume();
-						break;
+					closed = true;
 				}
 
-				waitHandle.Wait();
+				yield return msg;
+
+				_waitHandle.Wait();
+			}
+		}
+
+		private WebSocketMessage CreateMessage(WebSocketFrameHeader header, StreamReadInfo readInfo, ManualResetEventSlim waitHandle)
+		{
+			switch (header.Opcode)
+			{
+				case Opcode.Cont:
+					throw new WebSocketException(CloseStatusCode.InconsistentData, "Did not expect continuation frame.");
+				case Opcode.Binary:
+					return new FragmentedMessage(header.Opcode, _innerStream, readInfo, GetStreamReadInfo, waitHandle);
+				case Opcode.Close:
+					var msg = new SimpleMessage(Opcode.Close, waitHandle);
+					msg.Consume();
+					return msg;
+				default:
+					msg = new SimpleMessage(header.Opcode, waitHandle);
+					msg.Consume();
+					return msg;
 			}
 		}
 
@@ -121,6 +118,11 @@ namespace WebSocketSharp
 		{
 			var header = new byte[2];
 			var headerLength = _innerStream.Read(header, 0, 2);
+			if (headerLength == 0)
+			{
+				return null;
+			}
+
 			if (headerLength != 2)
 			{
 				throw new WebSocketException("The header part of a frame cannot be read from the data source.");

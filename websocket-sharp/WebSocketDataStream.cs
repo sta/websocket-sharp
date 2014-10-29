@@ -23,15 +23,16 @@ namespace WebSocketSharp
 	internal class WebSocketDataStream : Stream
 	{
 		private readonly Func<StreamReadInfo> _readInfoFunc;
-
+		private readonly Action _consumedAction;
 		private readonly Stream _innerStream;
 		private StreamReadInfo _readInfo;
 
-		public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<StreamReadInfo> readInfoFunc)
+		public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<StreamReadInfo> readInfoFunc, Action consumedAction)
 		{
 			_innerStream = innerStream;
 			_readInfo = initialReadInfo;
 			_readInfoFunc = readInfoFunc;
+			_consumedAction = consumedAction;
 		}
 
 		public override void Flush()
@@ -67,9 +68,16 @@ namespace WebSocketSharp
 				}
 
 				position += (int)toread;
-				if (_readInfo.PayloadLength == 0 && !_readInfo.IsFinal)
+				if (_readInfo.PayloadLength == 0)
 				{
-					_readInfo = _readInfoFunc();
+					if (!_readInfo.IsFinal)
+					{
+						_readInfo = _readInfoFunc();
+					}
+					else
+					{
+						_consumedAction();
+					}
 				}
 			}
 
