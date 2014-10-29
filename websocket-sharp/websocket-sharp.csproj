@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -68,7 +68,7 @@
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="Net\ClientSslAuthConfiguration.cs" />
-    <Compile Include="Server\ServerSslAuthConfiguration.cs" />
+    <Compile Include="Net\ServerSslAuthConfiguration.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />

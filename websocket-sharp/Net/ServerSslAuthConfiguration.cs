@@ -36,8 +36,12 @@
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Net
 {
+    /// <summary>
+    /// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
+    /// as a server.
+    /// </summary>
     public class ServerSslAuthConfiguration
     {
         /// <summary>
