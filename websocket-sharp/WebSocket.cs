@@ -1978,7 +1978,7 @@ namespace WebSocketSharp
 					var reader = new WebSocketStreamReader(_stream);
 					foreach (var message in reader.Read())
 					{
-						switch (message.Code)
+						switch (message.Opcode)
 						{
 							case Opcode.Cont:
 								break;

@@ -57,7 +57,7 @@ namespace WebSocketSharp
 				var readInfo = GetStreamReadInfo(header);
 
 				var msg = CreateMessage(header, readInfo, _waitHandle);
-				if (msg.Code == Opcode.Close)
+				if (msg.Opcode == Opcode.Close)
 				{
 					closed = true;
 				}

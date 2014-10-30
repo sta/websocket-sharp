@@ -27,10 +27,10 @@ namespace WebSocketSharp
 		protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle)
 		{
 			_waitHandle = waitHandle;
-			Code = opcode;
+			Opcode = opcode;
 		}
 
-		public Opcode Code { get; set; }
+		public Opcode Opcode { get; set; }
 
 		public abstract Stream RawData { get; }
 

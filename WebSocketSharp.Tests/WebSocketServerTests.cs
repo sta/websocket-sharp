@@ -76,7 +76,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -125,7 +125,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -154,7 +154,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -189,7 +189,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -200,7 +200,7 @@ namespace WebSocketSharp.Tests
 					client.OnMessage += onMessage;
 
 					client.Connect();
-					for (int i = 0; i < multiplicity; i++)
+					for (var i = 0; i < multiplicity; i++)
 					{
 						client.Send(Message);
 					}
@@ -215,7 +215,7 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
-			public void CanSendTwentyFiveThousandSynchronousRequestsPerSecond()
+			public void CanSendTwentyThousandSynchronousRequestsPerSecond()
 			{
 				var stopwatch = new Stopwatch();
 				int count = 0;
@@ -224,10 +224,10 @@ namespace WebSocketSharp.Tests
 				var waitHandle = new ManualResetEventSlim(false);
 				using (var client = new WebSocket("ws://localhost:8080/echo"))
 				{
-					const int Multiplicity = 25000;
+					const int Multiplicity = 20000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -269,7 +269,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 25000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -313,7 +313,7 @@ namespace WebSocketSharp.Tests
 					const int Multiplicity = 1000000;
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Message.Text.ReadToEnd() == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == Multiplicity)
 								{
@@ -352,54 +352,48 @@ namespace WebSocketSharp.Tests
 				var stream = new MemoryStream(Encoding.UTF8.GetBytes(Message));
 				var length = (int)stream.Length;
 				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("ws://localhost:8080/echo"))
-				{
-					const int Multiplicity = 1000000;
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+				var client = new WebSocket("ws://localhost:8080/echo");
+
+				const int Multiplicity = 1000000;
+				EventHandler<MessageEventArgs> onMessage = (s, e) =>
+					{
+						if (e.Text.ReadToEnd() == Message && Interlocked.Increment(ref count) == Multiplicity)
 						{
-							if (e.Message.Text.ReadToEnd() == Message && Interlocked.Increment(ref count) == Multiplicity)
-							{
-								responseWatch.Stop();
-								waitHandle.Set();
-							}
-						};
-					client.OnMessage += onMessage;
+							responseWatch.Stop();
+							waitHandle.Set();
+						}
+					};
+				client.OnMessage += onMessage;
 
-					client.Connect();
-					responseWatch.Start();
+				client.Connect();
+				responseWatch.Start();
 
-					var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.SendAsync(stream, length));
+				var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.SendAsync(stream, length));
 
-					await Task.WhenAll(tasks);
+				await Task.WhenAll(tasks);
 
-					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+				waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
-					Console.WriteLine(responseWatch.Elapsed);
+				Console.WriteLine(responseWatch.Elapsed);
 
-					Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(10));
+				Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(10));
 
-					client.OnMessage -= onMessage;
-					client.Close();
-				}
+				client.OnMessage -= onMessage;
+				client.Dispose();
 			}
 		}
 
 		private class TestEchoService : WebSocketBehavior
 		{
-			protected override void OnOpen()
-			{
-				base.OnOpen();
-			}
-
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				switch (e.Message.Code)
+				switch (e.Opcode)
 				{
 					case Opcode.Text:
-						Send(e.Message.Text.ReadToEnd());
+						Send(e.Text.ReadToEnd());
 						break;
 					case Opcode.Binary:
-						Send(e.Message.RawData.ToByteArray());
+						Send(e.Data.ToByteArray());
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:

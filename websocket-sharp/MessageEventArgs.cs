@@ -31,6 +31,8 @@ using System.Text;
 
 namespace WebSocketSharp
 {
+	using System.IO;
+
 	/// <summary>
 	/// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
 	/// </summary>
@@ -46,11 +48,35 @@ namespace WebSocketSharp
 	/// </remarks>
 	public class MessageEventArgs : EventArgs
 	{
+		private readonly WebSocketMessage _message;
+
 		internal MessageEventArgs(WebSocketMessage message)
 		{
-			Message = message;
+			_message = message;
 		}
 
-		public WebSocketMessage Message { get; private set; }
+		public Opcode Opcode
+		{
+			get
+			{
+				return _message.Opcode;
+			}
+		}
+
+		public StreamReader Text
+		{
+			get
+			{
+				return _message.Text;
+			}
+		}
+
+		public Stream Data
+		{
+			get
+			{
+				return _message.RawData;
+			}
+		}
 	}
 }

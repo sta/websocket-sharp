@@ -70,7 +70,7 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						echoReceived = e.Message.Text.ReadToEnd() == Message;
+						echoReceived = e.Text.ReadToEnd() == Message;
 						waitHandle.Set();
 					};
 				_sut.OnMessage += onMessage;
@@ -93,7 +93,7 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						var readToEnd = e.Message.Text.ReadToEnd();
+						var readToEnd = e.Text.ReadToEnd();
 						echoReceived = readToEnd == Message;
 						waitHandle.Set();
 					};
