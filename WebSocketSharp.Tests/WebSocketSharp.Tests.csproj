@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumerableStream.cs" />
     <Compile Include="SecureWebSocketServerTests.cs" />
     <Compile Include="WebSocketStreamReaderTests.cs" />
     <Compile Include="WebSocketTests.cs" />

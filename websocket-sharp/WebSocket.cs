@@ -829,15 +829,20 @@ namespace WebSocketSharp
 		}
 
 		/// <summary>
-		/// Sends the specified <paramref name="file"/> as a binary data
+		/// Sends the specified <paramref name="stream"/> as a binary data
 		/// using the WebSocket connection.
 		/// </summary>
-		/// <param name="file">
+		/// <param name="stream">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		public void Send(FileInfo file)
+		public void Send(Stream stream)
 		{
-			var msg = _readyState.CheckIfOpen() ?? file.CheckIfValidSendData();
+			if (stream == null)
+			{
+				return;
+			}
+
+			var msg = _readyState.CheckIfOpen();
 			if (msg != null)
 			{
 				Error(msg);
@@ -845,7 +850,7 @@ namespace WebSocketSharp
 				return;
 			}
 
-			InnerSend(Opcode.Binary, file.OpenRead());
+			InnerSend(Opcode.Binary, stream);
 		}
 
 		/// <summary>
@@ -890,18 +895,23 @@ namespace WebSocketSharp
 		}
 
 		/// <summary>
-		/// Sends the specified <paramref name="file"/> as a binary data asynchronously
+		/// Sends the specified <paramref name="stream"/> as a binary data asynchronously
 		/// using the WebSocket connection.
 		/// </summary>
 		/// <remarks>
 		/// This method doesn't wait for the send to be complete.
 		/// </remarks>
-		/// <param name="file">
+		/// <param name="stream">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		public Task<bool> SendAsync(FileInfo file)
+		public Task<bool> SendAsync(Stream stream)
 		{
-			var msg = _readyState.CheckIfOpen() ?? file.CheckIfValidSendData();
+			if (stream == null)
+			{
+				return Task.FromResult(false);
+			}
+
+			var msg = _readyState.CheckIfOpen();
 			if (msg != null)
 			{
 				Error(msg);
@@ -909,7 +919,7 @@ namespace WebSocketSharp
 				return Task.FromResult(false);
 			}
 
-			return InnerSendAsync(Opcode.Binary, file.OpenRead());
+			return InnerSendAsync(Opcode.Binary, stream);
 		}
 
 		/// <summary>
@@ -1782,7 +1792,9 @@ namespace WebSocketSharp
 
 					sent = InnerSend(opcode, _client ? Mask.Mask : Mask.Unmask, stream, compressed);
 					if (!sent)
+					{
 						Error("Sending a data has been interrupted.");
+					}
 				}
 				catch (Exception ex)
 				{
@@ -1802,50 +1814,25 @@ namespace WebSocketSharp
 
 		private bool InnerSend(Opcode opcode, Mask mask, Stream stream, bool compressed)
 		{
-			var len = stream.Length;
-
-			/* Not fragmented */
-
-			if (len == 0)
-				return InnerSend(Fin.Final, opcode, mask, new byte[0], compressed);
-
-			var quo = len / FragmentLength;
-			var rem = (int)(len % FragmentLength);
-
-			byte[] buff = null;
-			if (quo == 0)
+			int bytesRead;
+			do
 			{
-				buff = new byte[rem];
-				return stream.Read(buff, 0, rem) == rem &&
-					   InnerSend(Fin.Final, opcode, mask, buff, compressed);
-			}
+				var buffer = new byte[FragmentLength];
+				bytesRead = stream.Read(buffer, 0, FragmentLength);
+				var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
 
-			buff = new byte[FragmentLength];
-			if (quo == 1 && rem == 0)
-				return stream.Read(buff, 0, FragmentLength) == FragmentLength &&
-					   InnerSend(Fin.Final, opcode, mask, buff, compressed);
+				var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
 
-			/* Send fragmented */
-
-			// Begin
-			if (stream.Read(buff, 0, FragmentLength) != FragmentLength ||
-				!InnerSend(Fin.More, opcode, mask, buff, compressed))
-				return false;
-
-			var n = rem == 0 ? quo - 2 : quo - 1;
-			for (long i = 0; i < n; i++)
-				if (stream.Read(buff, 0, FragmentLength) != FragmentLength ||
-					!InnerSend(Fin.More, Opcode.Cont, mask, buff, compressed))
+				if (!InnerSend(finalCode, opcode, mask, data, compressed))
+				{
 					return false;
+				}
 
-			// End
-			if (rem == 0)
-				rem = FragmentLength;
-			else
-				buff = new byte[rem];
+				opcode = Opcode.Cont;
+			}
+			while (bytesRead == FragmentLength);
 
-			return stream.Read(buff, 0, rem) == rem &&
-				   InnerSend(Fin.Final, Opcode.Cont, mask, buff, compressed);
+			return true;
 		}
 
 		private bool InnerSend(Fin fin, Opcode opcode, Mask mask, byte[] data, bool compressed)
@@ -2002,48 +1989,6 @@ namespace WebSocketSharp
 					}
 				});
 		}
-
-		//private async Task StartReceiving()
-		//{
-		//	if (_messageEventQueue.Count > 0)
-		//	{
-		//		_messageEventQueue.Clear();
-		//	}
-
-		//	while (true)
-		//	{
-		//		var frame = await WebSocketFrame.ReadAsync(_stream);
-		//		if (ProcessWebSocketFrame(frame) && _readyState != WebSocketState.Closed)
-		//		{
-		//			if (!frame.IsData)
-		//			{
-		//				return;
-		//			}
-
-		//			lock (_forEvent)
-		//			{
-		//				try
-		//				{
-		//					var e = DequeueFromMessageEventQueue();
-		//					if (_readyState == WebSocketState.Open)
-		//					{
-		//						OnMessage.Emit(this, e);
-		//					}
-		//				}
-		//				catch (Exception ex)
-		//				{
-		//					ProcessException(ex, "An exception has occurred while OnMessage.");
-		//				}
-		//			}
-		//		}
-		//		else if (_exitReceiving != null)
-		//		{
-		//			_exitReceiving.Set();
-		//		}
-		//	}
-		//}
-
-		// As client
 
 		private bool ValidateSecWebSocketAcceptHeader(string value)
 		{

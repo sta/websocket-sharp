@@ -140,7 +140,6 @@ namespace WebSocketSharp.Tests
 					Assert.True(result);
 
 					client.OnMessage -= onMessage;
-					client.Close();
 				}
 			}
 
@@ -381,6 +380,37 @@ namespace WebSocketSharp.Tests
 				client.OnMessage -= onMessage;
 				client.Dispose();
 			}
+
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
+			{
+				var responseLength = 0;
+				const int Length = 10000000;
+
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+						{
+							while (e.Data.ReadByte() != -1)
+							{
+								responseLength++;
+							}
+						};
+
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					await client.SendAsync(stream);
+
+					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+
+					Assert.AreEqual(Length, responseLength);
+
+					client.OnMessage -= onMessage;
+				}
+			}
 		}
 
 		private class TestEchoService : WebSocketBehavior
@@ -393,7 +423,7 @@ namespace WebSocketSharp.Tests
 						Send(e.Text.ReadToEnd());
 						break;
 					case Opcode.Binary:
-						Send(e.Data.ToByteArray());
+						Send(e.Data);
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:

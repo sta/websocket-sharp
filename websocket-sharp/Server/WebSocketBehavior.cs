@@ -351,20 +351,20 @@ namespace WebSocketSharp.Server
 		}
 
 		/// <summary>
-		/// Sends the specified <paramref name="file"/> as a binary data to the client
+		/// Sends the specified <paramref name="stream"/> as a binary data to the client
 		/// on the current session.
 		/// </summary>
 		/// <remarks>
 		/// This method is available after the WebSocket connection has been established.
 		/// </remarks>
-		/// <param name="file">
+		/// <param name="stream">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		protected void Send(FileInfo file)
+		protected void Send(Stream stream)
 		{
 			if (_websocket != null)
 			{
-				_websocket.Send(file);
+				_websocket.Send(stream);
 			}
 		}
 
@@ -408,7 +408,7 @@ namespace WebSocketSharp.Server
 		}
 
 		/// <summary>
-		/// Sends the specified <paramref name="file"/> as a binary data asynchronously
+		/// Sends the specified <paramref name="stream"/> as a binary data asynchronously
 		/// to the client on the current session.
 		/// </summary>
 		/// <remarks>
@@ -419,14 +419,14 @@ namespace WebSocketSharp.Server
 		///   This method doesn't wait for the send to be complete.
 		///   </para>
 		/// </remarks>
-		/// <param name="file">
+		/// <param name="stream">
 		/// A <see cref="FileInfo"/> that represents the file to send.
 		/// </param>
-		protected async Task SendAsync(FileInfo file)
+		protected async Task SendAsync(Stream stream)
 		{
 			if (_websocket != null)
 			{
-				await _websocket.SendAsync(file);
+				await _websocket.SendAsync(stream);
 			}
 		}
 
