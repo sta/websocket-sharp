@@ -71,6 +71,8 @@ namespace WebSocketSharp
     private string                  _base64Key;
     private LocalCertificateSelectionCallback
                                     _certSelectionCallback;
+    private ClientSslAuthConfiguration
+                                    _certificateConfig;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
     private bool                    _client;
@@ -459,6 +461,40 @@ namespace WebSocketSharp
       get {
         return _readyState;
       }
+    }
+
+    /// <summary>
+    /// Gets or sets the certificate configuration used to authenticate the client on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ClientSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
+    /// the client.
+    /// </value>
+    public ClientSslAuthConfiguration SslAuthenticationConfig
+    {
+        get
+        {
+            return _certificateConfig;
+        }
+
+        set
+        {
+            lock (_forConn)
+            {
+                var msg = checkIfAvailable(false, false);
+                if (msg != null)
+                {
+                    _logger.Error(msg);
+                    error(
+                      "An error has occurred in setting the server certificate configuration.",
+                      null);
+
+                    return;
+                }
+
+                _certificateConfig = value;
+            }
+        }
     }
 
     /// <summary>
@@ -1343,7 +1379,13 @@ namespace WebSocketSharp
             ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
               null));
 
-        sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
+        if (_certificateConfig == null)
+            sslStream.AuthenticateAsClient(_uri.DnsSafeHost);
+        else
+        {
+            sslStream.AuthenticateAsClient(_uri.DnsSafeHost, _certificateConfig.clientCertificates,
+                _certificateConfig.EnabledSslProtocols, _certificateConfig.CheckCertificateRevocation);
+        }
         _stream = sslStream;
       }
     }

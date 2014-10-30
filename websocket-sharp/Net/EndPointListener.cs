@@ -54,7 +54,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>                     _all; // host == '+'
-    private X509Certificate2                             _cert;
+    private ServerSslAuthConfiguration                   _sslAuthenticationConfig;
     private static readonly string                       _defaultCertFolderPath;
     private IPEndPoint                                   _endpoint;
     private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
@@ -83,13 +83,13 @@ namespace WebSocketSharp.Net
       int port,
       bool secure,
       string certificateFolderPath,
-      X509Certificate2 defaultCertificate,
+      ServerSslAuthConfiguration defaultCertificate,
       bool reuseAddress)
     {
       if (secure) {
         _secure = secure;
-        _cert = getCertificate (port, certificateFolderPath, defaultCertificate);
-        if (_cert == null)
+        _sslAuthenticationConfig = getCertificate(port, certificateFolderPath, defaultCertificate);
+        if (_sslAuthenticationConfig == null)
           throw new ArgumentException ("No server certificate could be found.");
       }
 
@@ -116,9 +116,10 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public X509Certificate2 Certificate {
+    public ServerSslAuthConfiguration CertificateConfig
+    {
       get {
-        return _cert;
+          return _sslAuthenticationConfig;
       }
     }
 
@@ -173,8 +174,8 @@ namespace WebSocketSharp.Net
       return rsa;
     }
 
-    private static X509Certificate2 getCertificate (
-      int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
+    private static ServerSslAuthConfiguration getCertificate(
+      int port, string certificateFolderPath, ServerSslAuthConfiguration defaultCertificate)
     {
       if (certificateFolderPath == null || certificateFolderPath.Length == 0)
         certificateFolderPath = _defaultCertFolderPath;
@@ -186,7 +187,7 @@ namespace WebSocketSharp.Net
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
 
-          return cert;
+          return new ServerSslAuthConfiguration(cert);
         }
       }
       catch {

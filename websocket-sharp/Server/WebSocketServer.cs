@@ -60,7 +60,7 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
-    private X509Certificate2                   _certificate;
+    private ServerSslAuthConfiguration         _certificateConfig;
     private Func<IIdentity, NetworkCredential> _credentialsFinder;
     private TcpListener                        _listener;
     private Logger                             _logger;
@@ -312,15 +312,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the certificate used to authenticate the server on the secure connection.
+    /// Gets or sets the certificate configuration used to authenticate the server on the secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
     /// the server.
     /// </value>
-    public X509Certificate2 Certificate {
+    public ServerSslAuthConfiguration SslAuthenticationConfig
+    {
       get {
-        return _certificate;
+        return _certificateConfig;
       }
 
       set {
@@ -330,7 +331,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _certificate = value;
+        _certificateConfig = value;
       }
     }
 
@@ -587,7 +588,8 @@ namespace WebSocketSharp.Server
 
     private string checkIfCertificateExists ()
     {
-      return _secure && _certificate == null
+      return _secure && (_certificateConfig == null
+          || _certificateConfig != null && _certificateConfig.ServerCertificate == null)
              ? "The secure connection requires a server certificate."
              : null;
     }
@@ -638,7 +640,7 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx = cl.GetWebSocketContext (null, _secure, _certificate, _logger);
+                var ctx = cl.GetWebSocketContext (null, _secure, _certificateConfig, _logger);
                 if (_authSchemes != AuthenticationSchemes.Anonymous &&
                     !authenticateRequest (_authSchemes, ctx))
                   return;
