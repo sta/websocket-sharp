@@ -36,6 +36,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -554,10 +561,11 @@ namespace WebSocketSharp
       this TcpClient tcpClient,
       string protocol,
       bool secure,
-      ServerSslAuthConfiguration certificateConfig,
+      ServerSslAuthConfiguration sslConfiguration,
       Logger logger)
     {
-      return new TcpListenerWebSocketContext (tcpClient, protocol, secure, certificateConfig, logger);
+      return new TcpListenerWebSocketContext (
+        tcpClient, protocol, secure, sslConfiguration, logger);
     }
 
     internal static byte[] InternalToByteArray (this ushort value, ByteOrder order)

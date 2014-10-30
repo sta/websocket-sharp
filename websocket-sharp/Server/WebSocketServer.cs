@@ -33,6 +33,7 @@
  * Contributors:
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  * - Jonas Hovgaard <j@jhovgaard.dk>
+ * - Liryna <liryna.stark@gmail.com>
  */
 #endregion
 
@@ -60,7 +61,6 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
-    private ServerSslAuthConfiguration         _certificateConfig;
     private Func<IIdentity, NetworkCredential> _credentialsFinder;
     private TcpListener                        _listener;
     private Logger                             _logger;
@@ -70,6 +70,7 @@ namespace WebSocketSharp.Server
     private bool                               _reuseAddress;
     private bool                               _secure;
     private WebSocketServiceManager            _services;
+    private ServerSslAuthConfiguration         _sslConfig;
     private volatile ServerState               _state;
     private object                             _sync;
     private Uri                                _uri;
@@ -312,30 +313,6 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the certificate configuration used to authenticate the server on the secure connection.
-    /// </summary>
-    /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
-    /// the server.
-    /// </value>
-    public ServerSslAuthConfiguration SslAuthenticationConfig
-    {
-      get {
-        return _certificateConfig;
-      }
-
-      set {
-        var msg = _state.CheckIfStartable ();
-        if (msg != null) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _certificateConfig = value;
-      }
-    }
-
-    /// <summary>
     /// Gets a value indicating whether the server has started.
     /// </summary>
     /// <value>
@@ -464,6 +441,30 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+    /// on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
+    /// authenticate the server and optionally the client.
+    /// </value>
+    public ServerSslAuthConfiguration SslConfiguration {
+      get {
+        return _sslConfig;
+      }
+
+      set {
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _sslConfig = value;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the delegate called to find the credentials for an identity used to
     /// authenticate a client.
     /// </summary>
@@ -588,8 +589,7 @@ namespace WebSocketSharp.Server
 
     private string checkIfCertificateExists ()
     {
-      return _secure && (_certificateConfig == null
-          || _certificateConfig != null && _certificateConfig.ServerCertificate == null)
+      return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
              ? "The secure connection requires a server certificate."
              : null;
     }
@@ -640,7 +640,7 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx = cl.GetWebSocketContext (null, _secure, _certificateConfig, _logger);
+                var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
                 if (_authSchemes != AuthenticationSchemes.Anonymous &&
                     !authenticateRequest (_authSchemes, ctx))
                   return;

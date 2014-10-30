@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,7 +71,7 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
-    private ServerSslAuthConfiguration                           _defaultSslAuthenticationConfig;
+    private ServerSslAuthConfiguration                           _defaultSslConfig;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private bool                                                 _listening;
@@ -213,27 +220,25 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the default Ssl configuration used to authenticate the server on the secure
-    /// connection.
+    /// Gets or sets the default SSL configuration used to authenticate the server and
+    /// optionally the client on the secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> used to authenticate the server if the certificate
-    /// files aren't found in the <see cref="CertificateFolderPath"/>. The default value is
-    /// <see langword="null"/>.
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
+    /// authenticate the server optionally the client. The default value is <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
     /// </exception>
-    public ServerSslAuthConfiguration DefaultSslAuthenticationConfig
-    {
+    public ServerSslAuthConfiguration DefaultSslConfiguration {
       get {
         CheckDisposed ();
-        return _defaultSslAuthenticationConfig;
+        return _defaultSslConfig;
       }
 
       set {
         CheckDisposed ();
-        _defaultSslAuthenticationConfig = value;
+        _defaultSslConfig = value;
       }
     }
 

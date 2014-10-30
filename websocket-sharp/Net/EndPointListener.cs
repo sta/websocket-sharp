@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,12 +61,12 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<HttpListenerPrefix>                     _all; // host == '+'
-    private ServerSslAuthConfiguration                   _sslAuthenticationConfig;
     private static readonly string                       _defaultCertFolderPath;
     private IPEndPoint                                   _endpoint;
     private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
     private bool                                         _secure;
     private Socket                                       _socket;
+    private ServerSslAuthConfiguration                   _sslConfig;
     private List<HttpListenerPrefix>                     _unhandled; // host == '*'
     private Dictionary<HttpConnection, HttpConnection>   _unregistered;
     private object                                       _unregisteredSync;
@@ -83,14 +90,17 @@ namespace WebSocketSharp.Net
       int port,
       bool secure,
       string certificateFolderPath,
-      ServerSslAuthConfiguration defaultCertificate,
+      ServerSslAuthConfiguration sslConfiguration,
       bool reuseAddress)
     {
       if (secure) {
-        _secure = secure;
-        _sslAuthenticationConfig = getCertificate(port, certificateFolderPath, defaultCertificate);
-        if (_sslAuthenticationConfig == null)
+        var cert = getCertificate (port, certificateFolderPath, sslConfiguration.ServerCertificate);
+        if (cert == null)
           throw new ArgumentException ("No server certificate could be found.");
+
+        _secure = secure;
+        _sslConfig = sslConfiguration;
+        _sslConfig.ServerCertificate = cert;
       }
 
       _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
@@ -116,16 +126,15 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
-    public ServerSslAuthConfiguration CertificateConfig
-    {
-      get {
-          return _sslAuthenticationConfig;
-      }
-    }
-
     public bool IsSecure {
       get {
         return _secure;
+      }
+    }
+
+    public ServerSslAuthConfiguration SslConfiguration {
+      get {
+        return _sslConfig;
       }
     }
 
@@ -174,8 +183,8 @@ namespace WebSocketSharp.Net
       return rsa;
     }
 
-    private static ServerSslAuthConfiguration getCertificate(
-      int port, string certificateFolderPath, ServerSslAuthConfiguration defaultCertificate)
+    private static X509Certificate2 getCertificate (
+      int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
     {
       if (certificateFolderPath == null || certificateFolderPath.Length == 0)
         certificateFolderPath = _defaultCertFolderPath;
@@ -187,7 +196,7 @@ namespace WebSocketSharp.Net
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
 
-          return new ServerSslAuthConfiguration(cert);
+          return cert;
         }
       }
       catch {

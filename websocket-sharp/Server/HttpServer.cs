@@ -32,6 +32,7 @@
 /*
  * Contributors:
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
+ * - Liryna <liryna.stark@gmail.com>
  */
 #endregion
 
@@ -177,33 +178,6 @@ namespace WebSocketSharp.Server
         }
 
         _listener.AuthenticationSchemes = value;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the Ssl configuration used to authenticate the server on the secure connection.
-    /// </summary>
-    /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the Ssl configuration used to authenticate
-    /// the server.
-    /// </value>
-    public ServerSslAuthConfiguration CertificateConfig
-    {
-      get {
-        return _listener.DefaultSslAuthenticationConfig;
-      }
-
-      set {
-        var msg = _state.CheckIfStartable ();
-        if (msg != null) {
-          _logger.Error (msg);
-          return;
-        }
-
-        if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
-          _logger.Warn ("The server certificate associated with the port number already exists.");
-
-        _listener.DefaultSslAuthenticationConfig = value;
       }
     }
 
@@ -361,6 +335,33 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+    /// on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
+    /// authenticate the server and optionally the client.
+    /// </value>
+    public ServerSslAuthConfiguration SslConfiguration {
+      get {
+        return _listener.DefaultSslConfiguration;
+      }
+
+      set {
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
+          _logger.Warn ("The server certificate associated with the port number already exists.");
+
+        _listener.DefaultSslConfiguration = value;
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the delegate called to find the credentials for an identity used to
     /// authenticate a client.
     /// </summary>
@@ -509,7 +510,8 @@ namespace WebSocketSharp.Server
     {
       return _secure &&
              !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
-             _listener.DefaultSslAuthenticationConfig == null
+             (_listener.DefaultSslConfiguration == null ||
+              _listener.DefaultSslConfiguration.ServerCertificate == null)
              ? "The secure connection requires a server certificate."
              : null;
     }

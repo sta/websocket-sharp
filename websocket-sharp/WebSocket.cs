@@ -37,6 +37,7 @@
  * Contributors:
  * - Frank Razenberg <frank@zzattack.org>
  * - David Wood <dpwood@gmail.com>
+ * - Liryna <liryna.stark@gmail.com>
  */
 #endregion
 
@@ -71,8 +72,6 @@ namespace WebSocketSharp
     private string                  _base64Key;
     private LocalCertificateSelectionCallback
                                     _certSelectionCallback;
-    private ClientSslAuthConfiguration
-                                    _certificateConfig;
     private RemoteCertificateValidationCallback
                                     _certValidationCallback;
     private bool                    _client;
@@ -102,6 +101,8 @@ namespace WebSocketSharp
     private volatile WebSocketState _readyState;
     private AutoResetEvent          _receivePong;
     private bool                    _secure;
+    private ClientSslAuthConfiguration
+                                    _sslConfig;
     private Stream                  _stream;
     private TcpClient               _tcpClient;
     private Uri                     _uri;
@@ -464,40 +465,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the certificate configuration used to authenticate the client on the secure connection.
-    /// </summary>
-    /// <value>
-    /// A <see cref="ClientSslAuthConfiguration"/> that represents the certificate configuration used to authenticate
-    /// the client.
-    /// </value>
-    public ClientSslAuthConfiguration SslAuthenticationConfig
-    {
-        get
-        {
-            return _certificateConfig;
-        }
-
-        set
-        {
-            lock (_forConn)
-            {
-                var msg = checkIfAvailable(false, false);
-                if (msg != null)
-                {
-                    _logger.Error(msg);
-                    error(
-                      "An error has occurred in setting the server certificate configuration.",
-                      null);
-
-                    return;
-                }
-
-                _certificateConfig = value;
-            }
-        }
-    }
-
-    /// <summary>
     /// Gets or sets the callback used to validate the certificate supplied by the server.
     /// </summary>
     /// <remarks>
@@ -526,6 +493,34 @@ namespace WebSocketSharp
           }
 
           _certValidationCallback = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+    /// on the secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ClientSslAuthConfiguration"/> that represents the SSL configuration used to
+    /// authenticate the server and optionally the client.
+    /// </value>
+    public ClientSslAuthConfiguration SslConfiguration {
+      get {
+        return _sslConfig;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (false, false);
+          if (msg != null) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the ssl configuration.", null);
+
+            return;
+          }
+
+          _sslConfig = value;
         }
       }
     }
@@ -1379,13 +1374,15 @@ namespace WebSocketSharp
             ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
               null));
 
-        if (_certificateConfig == null)
-            sslStream.AuthenticateAsClient(_uri.DnsSafeHost);
+        if (_sslConfig == null)
+          sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
         else
-        {
-            sslStream.AuthenticateAsClient(_uri.DnsSafeHost, _certificateConfig.clientCertificates,
-                _certificateConfig.EnabledSslProtocols, _certificateConfig.CheckCertificateRevocation);
-        }
+          sslStream.AuthenticateAsClient (
+            _uri.DnsSafeHost,
+            _sslConfig.ClientCertificates,
+            _sslConfig.EnabledSslProtocols,
+            _sslConfig.CheckCertificateRevocation);
+
         _stream = sslStream;
       }
     }

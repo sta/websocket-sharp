@@ -26,6 +26,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -61,7 +68,11 @@ namespace WebSocketSharp.Net.WebSockets
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient tcpClient, string protocol, bool secure, ServerSslAuthConfiguration certificateConfig, Logger logger)
+      TcpClient tcpClient,
+      string protocol,
+      bool secure,
+      ServerSslAuthConfiguration sslConfiguration,
+      Logger logger)
     {
       _tcpClient = tcpClient;
       _secure = secure;
@@ -69,9 +80,12 @@ namespace WebSocketSharp.Net.WebSockets
       var netStream = tcpClient.GetStream ();
       if (secure) {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer(certificateConfig.ServerCertificate,
-            certificateConfig.ClientCertificateRequired, certificateConfig.EnabledSslProtocols,
-            certificateConfig.CheckCertificateRevocation);
+        sslStream.AuthenticateAsServer (
+          sslConfiguration.ServerCertificate,
+          sslConfiguration.ClientCertificateRequired,
+          sslConfiguration.EnabledSslProtocols,
+          sslConfiguration.CheckCertificateRevocation);
+
         _stream = sslStream;
       }
       else {
