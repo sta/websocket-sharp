@@ -336,15 +336,15 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-    /// on the secure connection.
+    /// for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
-    /// authenticate the server and optionally the client.
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
     /// </value>
     public ServerSslAuthConfiguration SslConfiguration {
       get {
-        return _listener.DefaultSslConfiguration;
+        return _listener.SslConfiguration;
       }
 
       set {
@@ -354,10 +354,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        if (EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath))
-          _logger.Warn ("The server certificate associated with the port number already exists.");
-
-        _listener.DefaultSslConfiguration = value;
+        _listener.SslConfiguration = value;
       }
     }
 
@@ -508,10 +505,17 @@ namespace WebSocketSharp.Server
 
     private string checkIfCertificateExists ()
     {
-      return _secure &&
-             !EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath) &&
-             (_listener.DefaultSslConfiguration == null ||
-              _listener.DefaultSslConfiguration.ServerCertificate == null)
+      if (!_secure)
+        return null;
+
+      var usr = _listener.SslConfiguration.ServerCertificate != null;
+      var port = EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath);
+      if (usr && port) {
+        _logger.Warn ("The server certificate associated with the port number already exists.");
+        return null;
+      }
+
+      return !(usr || port)
              ? "The secure connection requires a server certificate."
              : null;
     }

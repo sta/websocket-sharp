@@ -28,8 +28,8 @@ namespace Example3
 #endif
       /* To provide the secure connection.
       var cert = ConfigurationManager.AppSettings["ServerCertFile"];
-      var password = ConfigurationManager.AppSettings["CertFilePassword"];
-      httpsv.Certificate = new X509Certificate2 (cert, password);
+      var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
+      httpsv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
        */
 
       /* To provide the HTTP Authentication (Basic/Digest).

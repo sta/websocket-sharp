@@ -114,7 +114,7 @@ namespace WebSocketSharp.Net
           port,
           secure,
           httpListener.CertificateFolderPath,
-          httpListener.DefaultSslConfiguration,
+          httpListener.SslConfiguration,
           httpListener.ReuseAddress);
 
         eps[port] = epl;

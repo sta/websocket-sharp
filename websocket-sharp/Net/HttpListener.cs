@@ -71,13 +71,13 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
-    private ServerSslAuthConfiguration                           _defaultSslConfig;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private bool                                                 _listening;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
     private bool                                                 _reuseAddress;
+    private ServerSslAuthConfiguration                           _sslConfig;
     private List<ListenerAsyncResult>                            _waitQueue;
     private object                                               _waitQueueSync;
 
@@ -220,29 +220,6 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the default SSL configuration used to authenticate the server and
-    /// optionally the client on the secure connection.
-    /// </summary>
-    /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
-    /// authenticate the server optionally the client. The default value is <see langword="null"/>.
-    /// </value>
-    /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
-    /// </exception>
-    public ServerSslAuthConfiguration DefaultSslConfiguration {
-      get {
-        CheckDisposed ();
-        return _defaultSslConfig;
-      }
-
-      set {
-        CheckDisposed ();
-        _defaultSslConfig = value;
-      }
-    }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the listener returns exceptions that occur when
     /// sending the response to the client.
     /// </summary>
@@ -326,6 +303,29 @@ namespace WebSocketSharp.Net
       set {
         CheckDisposed ();
         _realm = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+    /// for secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
+    /// </value>
+    /// <exception cref="ObjectDisposedException">
+    /// This listener has been closed.
+    /// </exception>
+    public ServerSslAuthConfiguration SslConfiguration {
+      get {
+        CheckDisposed ();
+        return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration (null));
+      }
+
+      set {
+        CheckDisposed ();
+        _sslConfig = value;
       }
     }
 
