@@ -9,12 +9,21 @@
 		<projectUrl>https://github.com/jjrdk/websocket-sharp</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-		<description>WebSocket# provides the WebSocket protocol client and server.</description>
+		<description>WebSocket# provides the WebSocket protocol client and server.
+
+It supports:
+- WebSocket Client and Server
+- RFC 6455
+- Per-message Compression extension
+- Secure Connection
+- HTTP Authentication
+- Query String, Origin header and Cookies
+- Infinite streaming
+- .NET 4.5 or later</description>
 		<summary>This is a clone of websocket-sharp which is updated to use .NET 4.5 in order to make use of task based asynchronicity.</summary>
 		<releaseNotes />
 		<tags>websocket</tags>
-		<dependencies>
-		</dependencies>
+		<dependencies />
 	</metadata>
 	<files>
 		<file src="BuildOutput\4.5\Release\WebSocketSharp.dll" target="lib\Net45" />
