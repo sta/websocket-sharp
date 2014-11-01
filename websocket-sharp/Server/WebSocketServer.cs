@@ -442,15 +442,15 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-    /// on the secure connection.
+    /// for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the SSL configuration used to
-    /// authenticate the server and optionally the client.
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
     /// </value>
     public ServerSslAuthConfiguration SslConfiguration {
       get {
-        return _sslConfig;
+        return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration (null));
       }
 
       set {

@@ -29,8 +29,8 @@ namespace Example2
 #endif
       /* To provide the secure connection.
       var cert = ConfigurationManager.AppSettings["ServerCertFile"];
-      var password = ConfigurationManager.AppSettings["CertFilePassword"];
-      wssv.Certificate = new X509Certificate2 (cert, password);
+      var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
+      wssv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
        */
 
       /* To provide the HTTP Authentication (Basic/Digest).
