@@ -3,13 +3,13 @@
 	<metadata>
 		<id>websocket-sharp.clone</id>
 		<title>WebSocket#</title>
-		<version>1.0.0.0-beta</version>
+		<version>1.0.2.0</version>
 		<authors>Jacob Reimers</authors>
 		<owners>Jacob Reimers</owners>
 		<projectUrl>https://github.com/jjrdk/websocket-sharp</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
-		<description>websocket-sharp provides the WebSocket protocol client and server.</description>
+		<description>WebSocket# provides the WebSocket protocol client and server.</description>
 		<summary>This is a clone of websocket-sharp which is updated to use .NET 4.5 in order to make use of task based asynchronicity.</summary>
 		<releaseNotes />
 		<tags>websocket</tags>
@@ -26,5 +26,6 @@
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.dll" target="lib\Net452" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.pdb" target="lib\Net452" />
 		<file src="BuildOutput\4.5.2\Release\WebSocketSharp.xml" target="lib\Net452" />
+		<file src="websocket-sharp\**\*.cs" target="src" />
   </files>
 </package>

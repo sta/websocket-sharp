@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     private EndPointListener    _listener;
     private ResponseStream      _outputStream;
     private int                 _position;
-    private ListenerPrefix      _prefix;
+    private HttpListenerPrefix  _prefix;
     private MemoryStream        _requestBuffer;
     private int                 _reuses;
     private bool                _secure;
@@ -123,7 +123,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public ListenerPrefix Prefix {
+    public HttpListenerPrefix Prefix {
       get {
         return _prefix;
       }
@@ -526,8 +526,8 @@ namespace WebSocketSharp.Net
 
           var desc = status.GetStatusDescription ();
           var msg = message != null && message.Length > 0
-                    ? String.Format ("<h1>{0} ({1})</h1>", desc, message)
-                    : String.Format ("<h1>{0}</h1>", desc);
+                    ? string.Format ("<h1>{0} ({1})</h1>", desc, message)
+                    : string.Format ("<h1>{0}</h1>", desc);
 
           var entity = res.ContentEncoding.GetBytes (msg);
           res.Close (entity, false);

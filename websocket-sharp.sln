@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution 
 		README.md = README.md
 		tasks.ps1 = tasks.ps1
 		websocket-sharp.nuspec = websocket-sharp.nuspec
+		websocket-sharp.symbols.nuspec = websocket-sharp.symbols.nuspec
 	EndProjectSection
 EndProject
 Global

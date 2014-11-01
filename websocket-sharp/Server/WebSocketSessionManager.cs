@@ -237,11 +237,15 @@ namespace WebSocketSharp.Server
 			internal set
 			{
 				if (value == _waitTime)
+				{
 					return;
+				}
 
 				_waitTime = value;
 				foreach (var session in Sessions)
+				{
 					session.Context.WebSocket.WaitTime = value;
+				}
 			}
 		}
 
@@ -389,7 +393,9 @@ namespace WebSocketSharp.Server
 
 				_sweepTimer.Enabled = false;
 				foreach (var session in _sessions.Values.ToList())
+				{
 					session.Context.WebSocket.Close(e, frameAsBytes, timeout);
+				}
 
 				_state = ServerState.Stop;
 			}
@@ -604,7 +610,9 @@ namespace WebSocketSharp.Server
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
+			{
 				session.Context.WebSocket.Close();
+			}
 		}
 
 		/// <summary>
@@ -805,23 +813,23 @@ namespace WebSocketSharp.Server
 			lock (_forSweep)
 			{
 				_sweeping = true;
-				foreach (var id in this.InactiveIDs.TakeWhile(id => this._state == ServerState.Start))
+				foreach (var id in this.InactiveIDs.TakeWhile(id => _state == ServerState.Start))
 				{
-					lock (this._sync)
+					lock (_sync)
 					{
 						IWebSocketSession session;
-						if (this._sessions.TryGetValue(id, out session))
+						if (_sessions.TryGetValue(id, out session))
 						{
 							var state = session.State;
 							switch (state)
 							{
 								case WebSocketState.Open:
-									session.Context.WebSocket.Close(CloseStatusCode.Abnormal);
+									session.Context.WebSocket.Close(CloseStatusCode.ProtocolError);
 									break;
 								case WebSocketState.Closing:
 									continue;
 								default:
-									this._sessions.Remove(id);
+									_sessions.Remove(id);
 									break;
 							}
 						}
@@ -848,7 +856,7 @@ namespace WebSocketSharp.Server
 		/// </param>
 		public bool TryGetSession(string id, out IWebSocketSession session)
 		{
-			var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionID();
+			var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionId();
 			if (msg != null)
 			{
 				session = null;

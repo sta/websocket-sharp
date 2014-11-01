@@ -31,7 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
+
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
@@ -40,7 +40,7 @@ namespace WebSocketSharp.Server
 	using System.Threading.Tasks;
 
 	/// <summary>
-	/// Manages the WebSocket services provided by the <see cref="HttpServer"/> or
+	/// Manages the WebSocket services provided by the <see cref="WebSocketServer"/> or
 	/// <see cref="WebSocketServer"/>.
 	/// </summary>
 	public class WebSocketServiceManager
@@ -226,7 +226,7 @@ namespace WebSocketSharp.Server
 			var cache = new Dictionary<CompressionMethod, byte[]>();
 			try
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => this._state == ServerState.Start))
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
 				{
 					host.Sessions.Broadcast(opcode, data, cache);
 				}
@@ -242,7 +242,7 @@ namespace WebSocketSharp.Server
 			var cache = new Dictionary<CompressionMethod, Stream>();
 			try
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => this._state == ServerState.Start))
+				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
 				{
 					host.Sessions.Broadcast(opcode, stream, cache);
 				}
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Server
 
 		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{
-			return this.Hosts.TakeWhile(host => this._state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
+			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
 		}
 
 		#endregion

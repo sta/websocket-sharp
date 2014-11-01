@@ -119,7 +119,7 @@ namespace WebSocketSharp
     {
       var host = uri.DnsSafeHost;
       var port = uri.Port;
-      var authority = String.Format ("{0}:{1}", host, port);
+      var authority = string.Format ("{0}:{1}", host, port);
       var req = new HttpRequest ("CONNECT", authority);
       req.Headers["Host"] = port == 80 ? host : authority;
 

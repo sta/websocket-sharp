@@ -11,7 +11,7 @@
     <AssemblyName>WebSocketSharp</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>websocket-sharp.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\websocket-sharp.snk</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -96,11 +96,9 @@
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpUtility.cs" />
     <Compile Include="Net\ListenerAsyncResult.cs" />
-    <Compile Include="Net\ListenerPrefix.cs" />
     <Compile Include="Net\RequestStream.cs" />
     <Compile Include="Net\ResponseStream.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
-    <Compile Include="Server\HttpServer.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
@@ -113,7 +111,6 @@
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
-    <Compile Include="Server\HttpRequestEventArgs.cs" />
     <Compile Include="Net\HttpHeaderType.cs" />
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
@@ -141,6 +138,7 @@
     <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
     <Compile Include="Server\WebSocketBehavior.cs" />
+    <Compile Include="Net\HttpListenerPrefix.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

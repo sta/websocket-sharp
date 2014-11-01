@@ -88,8 +88,7 @@ namespace WebSocketSharp
 		{
 		}
 
-		internal WebSocketFrame(
-		  Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
+		internal WebSocketFrame(Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
 		{
 			_fin = fin;
 			_rsv1 = isData(opcode) && compressed ? Rsv.On : Rsv.Off;
@@ -367,12 +366,12 @@ namespace WebSocketSharp
 				cntFmt = "{0,16:X}";
 			}
 
-			var spFmt = String.Format("{{0,{0}}}", cntDigit);
-			var headerFmt = String.Format(@"
+			var spFmt = string.Format("{{0,{0}}}", cntDigit);
+			var headerFmt = string.Format(@"
 {0} 01234567 89ABCDEF 01234567 89ABCDEF
 {0}+--------+--------+--------+--------+\n", spFmt);
-			var lineFmt = String.Format("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
-			var footerFmt = String.Format("{0}+--------+--------+--------+--------+", spFmt);
+			var lineFmt = string.Format("{0}|{{1,8}} {{2,8}} {{3,8}} {{4,8}}|\n", cntFmt);
+			var footerFmt = string.Format("{0}+--------+--------+--------+--------+", spFmt);
 
 			var output = new StringBuilder(64);
 			Func<Action<string, string, string, string>> linePrinter = () =>
@@ -382,7 +381,7 @@ namespace WebSocketSharp
 				  output.AppendFormat(lineFmt, ++lineCnt, arg1, arg2, arg3, arg4);
 			};
 
-			output.AppendFormat(headerFmt, String.Empty);
+			output.AppendFormat(headerFmt, string.Empty);
 
 			var printLine = linePrinter();
 			var bytes = frame.ToByteArray();
@@ -398,12 +397,12 @@ namespace WebSocketSharp
 				else if (rem > 0)
 					printLine(
 					  Convert.ToString(bytes[j], 2).PadLeft(8, '0'),
-					  rem >= 2 ? Convert.ToString(bytes[j + 1], 2).PadLeft(8, '0') : String.Empty,
-					  rem == 3 ? Convert.ToString(bytes[j + 2], 2).PadLeft(8, '0') : String.Empty,
-					  String.Empty);
+					  rem >= 2 ? Convert.ToString(bytes[j + 1], 2).PadLeft(8, '0') : string.Empty,
+					  rem == 3 ? Convert.ToString(bytes[j + 2], 2).PadLeft(8, '0') : string.Empty,
+					  string.Empty);
 			}
 
-			output.AppendFormat(footerFmt, String.Empty);
+			output.AppendFormat(footerFmt, string.Empty);
 			return output.ToString();
 		}
 
@@ -430,7 +429,7 @@ namespace WebSocketSharp
 			/* Extended Payload Length */
 
 			var extPayloadLen = payloadLen < 126
-								? String.Empty
+								? string.Empty
 								: payloadLen == 126
 								  ? frame._extPayloadLength.ToUInt16(ByteOrder.Big).ToString()
 								  : frame._extPayloadLength.ToUInt64(ByteOrder.Big).ToString();
@@ -438,14 +437,14 @@ namespace WebSocketSharp
 			/* Masking Key */
 
 			var masked = frame.IsMasked;
-			var maskingKey = masked ? BitConverter.ToString(frame._maskingKey) : String.Empty;
+			var maskingKey = masked ? BitConverter.ToString(frame._maskingKey) : string.Empty;
 
 			/* Payload Data */
 
 			var payload = payloadLen == 0
-						  ? String.Empty
+						  ? string.Empty
 						  : payloadLen > 125
-							? String.Format("A {0} frame.", opcode.ToLower())
+							? string.Format("A {0} frame.", opcode.ToLower())
 							: !masked && !frame.IsFragmented && !frame.IsCompressed && frame.IsText
 							  ? Encoding.UTF8.GetString(frame._payloadData.ApplicationData)
 							  : frame._payloadData.ToString();
@@ -462,7 +461,7 @@ Extended Payload Length: {7}
 			Masking Key: {8}
 		   Payload Data: {9}";
 
-			return String.Format(
+			return string.Format(
 			  fmt,
 			  frame._fin,
 			  frame._rsv1,
@@ -597,6 +596,11 @@ Extended Payload Length: {7}
 			return new WebSocketFrame(Fin.Final, Opcode.Ping, new PayloadData(data), false, mask);
 		}
 
+		internal static WebSocketFrame CreatePongFrame(byte[] data, bool mask)
+		{
+			return new WebSocketFrame(Fin.Final, Opcode.Pong, new PayloadData(data), false, mask);
+		}
+
 		internal static WebSocketFrame Read(Stream stream)
 		{
 			return Read(stream, true);
@@ -606,7 +610,9 @@ Extended Payload Length: {7}
 		{
 			var header = stream.ReadBytes(2);
 			if (header.Length != 2)
+			{
 				throw new WebSocketException("The header part of a frame cannot be read from the data source.");
+			}
 
 			return read(header, stream, unmask);
 		}

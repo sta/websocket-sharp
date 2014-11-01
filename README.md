@@ -382,23 +382,6 @@ The `WebSocketServer.Stop` method is overloaded.
 
 You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string)`, or `WebSocketServer.Stop (WebSocketSharp.CloseStatusCode, string)` method to stop the server.
 
-### HTTP Server with the WebSocket ###
-
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that allows to accept the WebSocket connection requests.
-
-So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
-
-You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, using the `HttpServer.AddWebSocketService<TBehaviorWithNew> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
-
-```cs
-var httpsv = new HttpServer (4649);
-httpsv.AddWebSocketService<Echo> ("/Echo");
-httpsv.AddWebSocketService<Chat> ("/Chat");
-httpsv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
-```
-
-For more information, would you see **[Example3]**?
-
 ### WebSocket Extensions ###
 
 #### Per-message Compression ####

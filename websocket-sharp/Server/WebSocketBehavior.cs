@@ -37,7 +37,7 @@ namespace WebSocketSharp.Server
 
 	/// <summary>
 	/// Exposes the methods and properties used to define the behavior of a WebSocket service
-	/// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+	/// provided by the <see cref="WebSocketServer"/> or <see cref="WebSocketServer"/>.
 	/// </summary>
 	/// <remarks>
 	/// The WebSocketBehavior class is an abstract class.
@@ -75,8 +75,7 @@ namespace WebSocketSharp.Server
 		/// Gets the access to the sessions in the WebSocket service.
 		/// </summary>
 		/// <value>
-		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions,
-		/// or <see langword="null"/> if the WebSocket connection isn't established.
+		/// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
 		/// </value>
 		protected WebSocketSessionManager Sessions
 		{
@@ -199,7 +198,7 @@ namespace WebSocketSharp.Server
 		/// <value>
 		///   <para>
 		///   A <see cref="string"/> that represents the subprotocol if any.
-		///   The default value is <see cref="String.Empty"/>.
+		///   The default value is <see cref="string.Empty"/>.
 		///   </para>
 		///   <para>
 		///   The value to set must be a token defined in
@@ -212,7 +211,7 @@ namespace WebSocketSharp.Server
 			{
 				return _websocket != null
 					   ? _websocket.Protocol
-					   : _protocol ?? String.Empty;
+					   : _protocol ?? string.Empty;
 			}
 
 			set
@@ -326,9 +325,8 @@ namespace WebSocketSharp.Server
 			_websocket.Protocol = _protocol;
 
 			var waitTime = sessions.WaitTime;
-			if (waitTime != _websocket.WaitTime)
-				_websocket.WaitTime = waitTime;
-
+			_websocket.WaitTime = waitTime;
+			
 			_websocket.OnOpen += onOpen;
 			_websocket.OnMessage += onMessage;
 			_websocket.OnError += onError;
