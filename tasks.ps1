@@ -18,8 +18,11 @@ task CleanUpMsBuildPath -depends BuildPackages {
 }
 
 task BuildPackages -depends Test {
-	Exec { nuget pack websocket-sharp.nuspec -OutputDirectory BuildOutput }
-	Exec { nuget pack websocket-sharp.symbols.nuspec -OutputDirectory BuildOutput -Symbols }
+	if($configuration -eq "Release")
+	{
+		Exec { nuget pack websocket-sharp.nuspec -OutputDirectory BuildOutput }
+		Exec { nuget pack websocket-sharp.symbols.nuspec -OutputDirectory BuildOutput -Symbols }
+	}
 }
 
 task Test -depends Compile, Clean {
