@@ -43,20 +43,21 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.IO.Compression;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
-using WebSocketSharp.Server;
-
 namespace WebSocketSharp
 {
+
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.Specialized;
+	using System.IO;
+	using System.IO.Compression;
+	using System.Linq;
+	using System.Net.Sockets;
+	using System.Security.Cryptography.X509Certificates;
+	using System.Text;
+	using WebSocketSharp.Net;
+	using WebSocketSharp.Net.WebSockets;
+	using WebSocketSharp.Server;
 	using System.Threading.Tasks;
 
 	/// <summary>
@@ -80,7 +81,6 @@ namespace WebSocketSharp
 
 			using (var input = new MemoryStream(data))
 				return input.compressToArray();
-			}
 		}
 
 		private static MemoryStream compress(this Stream stream)
@@ -91,7 +91,7 @@ namespace WebSocketSharp
 
 			stream.Position = 0;
 			using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
-		{
+			{
 				stream.CopyTo(ds);
 				ds.Close(); // "BFINAL" set to 1.
 				output.Position = 0;
@@ -103,10 +103,10 @@ namespace WebSocketSharp
 		private static byte[] compressToArray(this Stream stream)
 		{
 			using (var output = stream.compress())
-		{
+			{
 				output.Close();
 				return output.ToArray();
-		}
+			}
 		}
 
 		private static byte[] decompress(this byte[] data)
@@ -126,7 +126,7 @@ namespace WebSocketSharp
 
 			stream.Position = 0;
 			using (var ds = new DeflateStream(stream, CompressionMode.Decompress, true))
-		{
+			{
 				ds.CopyTo(output);
 				output.Position = 0;
 
@@ -141,44 +141,44 @@ namespace WebSocketSharp
 				output.Close();
 				return output.ToArray();
 			}
-			}
+		}
 
 		private static byte[] readBytes(this Stream stream, byte[] buffer, int offset, int length)
-			{
+		{
 			var len = 0;
 			try
-		{
+			{
 				len = stream.Read(buffer, offset, length);
 				if (len < 1)
 					return buffer.SubArray(0, offset);
 
 				while (len < length)
-		{
+				{
 					var readLen = stream.Read(buffer, offset + len, length - len);
 					if (readLen < 1)
 						break;
 
 					len += readLen;
-		}
-		}
+				}
+			}
 			catch
-		{
-		}
+			{
+			}
 
 			return len < length
 				   ? buffer.SubArray(0, offset + len)
 				   : buffer;
-			}
+		}
 
 		private static bool readBytes(
 		  this Stream stream, byte[] buffer, int offset, int length, Stream destination)
-			{
+		{
 			var bytes = stream.readBytes(buffer, offset, length);
 			var len = bytes.Length;
 			destination.Write(bytes, 0, len);
 
 			return len == offset + length;
-			}
+		}
 
 		private static void times(this ulong n, Action action)
 		{
@@ -642,8 +642,8 @@ namespace WebSocketSharp
 					c = value[i];
 					if (!" \t".Contains(c))
 						return false;
-					}
 				}
+			}
 
 			return true;
 		}
@@ -757,12 +757,12 @@ namespace WebSocketSharp
 						escaped = !escaped;
 					else
 						quoted = !quoted;
-					}
+				}
 				else if (c == '\\')
 				{
 					if (i < len - 1 && value[i + 1] == '"')
 						escaped = true;
-					}
+				}
 				else if (seps.Contains(c))
 				{
 					if (!quoted)
@@ -782,7 +782,7 @@ namespace WebSocketSharp
 
 			if (buff.Length > 0)
 				yield return buff.ToString();
-			}
+		}
 
 		internal static byte[] ToByteArray(this Stream stream)
 		{
@@ -1046,7 +1046,7 @@ namespace WebSocketSharp
 		/// A <see cref="EventArgs"/> that contains no event data.
 		/// </param>
 		public static void Emit(this EventHandler eventHandler, object sender, EventArgs e)
-			{
+		{
 			if (eventHandler != null)
 				eventHandler(sender, e);
 		}
@@ -1073,7 +1073,7 @@ namespace WebSocketSharp
 		{
 			if (eventHandler != null)
 				eventHandler(sender, e);
-			}
+		}
 
 		/// <summary>
 		/// Gets the collection of the HTTP cookies from the specified HTTP <paramref name="headers"/>.
@@ -1120,7 +1120,7 @@ namespace WebSocketSharp
 		/// An <see cref="int"/> that represents the HTTP status code.
 		/// </param>
 		public static string GetStatusDescription(this int code)
-			{
+		{
 			switch (code)
 			{
 				case 100: return "Continue";
@@ -1259,7 +1259,7 @@ namespace WebSocketSharp
 		/// <paramref name="address"/> is <see langword="null"/>.
 		/// </exception>
 		public static bool IsLocal(this System.Net.IPAddress address)
-			{
+		{
 			if (address == null)
 				throw new ArgumentNullException("address");
 
@@ -1273,7 +1273,7 @@ namespace WebSocketSharp
 					return true;
 
 			return false;
-			}
+		}
 
 		/// <summary>
 		/// Determines whether the specified <see cref="string"/> is <see langword="null"/> or empty.
@@ -1378,7 +1378,7 @@ namespace WebSocketSharp
 		/// A <see cref="string"/> to test.
 		/// </param>
 		public static bool MaybeUri(this string value)
-			{
+		{
 			if (value == null || value.Length == 0)
 				return false;
 
@@ -1390,7 +1390,7 @@ namespace WebSocketSharp
 				return false;
 
 			return value.Substring(0, i).IsPredefinedScheme();
-			}
+		}
 
 		/// <summary>
 		/// Retrieves a sub-array from the specified <paramref name="array"/>.
@@ -1483,7 +1483,7 @@ namespace WebSocketSharp
 		{
 			if (n > 0 && action != null)
 				((ulong)n).times(action);
-	}
+		}
 
 		/// <summary>
 		/// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.

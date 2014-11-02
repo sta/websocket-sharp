@@ -19,6 +19,7 @@ namespace WebSocketSharp.Tests
 {
 	using System;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Security.Cryptography.X509Certificates;
 	using System.Threading;
 	using System.Threading.Tasks;
@@ -89,7 +90,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -117,7 +118,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -146,7 +147,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -181,7 +182,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -206,6 +207,39 @@ namespace WebSocketSharp.Tests
 				}
 			}
 
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
+			{
+				var responseLength = 0;
+				const int Length = 1000000;
+
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("wss://localhost:443/echo"))
+				{
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+					{
+						while (e.Data.ReadByte() != -1)
+						{
+							responseLength++;
+						}
+					};
+
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					await client.SendAsync(stream);
+
+					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+
+					Assert.AreEqual(Length, responseLength);
+
+					client.OnMessage -= onMessage;
+
+					await client.CloseAsync();
+				}
+			}
+
 			private static X509Certificate2 GetRandomCertificate()
 			{
 				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
@@ -227,13 +261,13 @@ namespace WebSocketSharp.Tests
 		{
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				switch (e.Type)
+				switch (e.Opcode)
 				{
 					case Opcode.Text:
 						this.Send(e.Data);
 						break;
 					case Opcode.Binary:
-						this.Send(e.RawData);
+						this.Send(e.Data);
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:

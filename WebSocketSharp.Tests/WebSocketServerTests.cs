@@ -398,7 +398,7 @@ namespace WebSocketSharp.Tests
 			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
 			{
 				var responseLength = 0;
-				const int Length = 10000000;
+				const int Length = 1000000;
 
 				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
 				var waitHandle = new ManualResetEventSlim(false);
