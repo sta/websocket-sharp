@@ -99,7 +99,7 @@ namespace WebSocketSharp
 		private NetworkCredential _proxyCredentials;
 		private Uri _proxyUri;
 		private volatile WebSocketState _readyState;
-		private AutoResetEvent _receivePong;
+		private AutoResetEvent _receivePong = new AutoResetEvent(false);
 		private Stream _stream;
 		private TcpClient _tcpClient;
 		private TimeSpan _waitTime;
@@ -1695,6 +1695,7 @@ namespace WebSocketSharp
 		{
 			if (_stream != null)
 			{
+				_stream.Flush();
 				_stream.Dispose();
 				_stream = null;
 			}
@@ -1710,10 +1711,13 @@ namespace WebSocketSharp
 		private void ReleaseServerResources()
 		{
 			if (_closeContext == null)
+			{
 				return;
+			}
 
 			_closeContext();
 			_closeContext = null;
+			_stream.Flush();
 			_stream = null;
 			_context = null;
 		}
@@ -1790,6 +1794,7 @@ namespace WebSocketSharp
 			}
 			while (bytesRead == FragmentLength);
 
+			_stream.Flush();
 			return true;
 		}
 
