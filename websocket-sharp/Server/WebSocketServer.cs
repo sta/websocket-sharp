@@ -631,9 +631,10 @@ namespace WebSocketSharp.Server
 						  try
 						  {
 							  var ctx = cl.GetWebSocketContext(null, _secure, _sslConfig);
-							  if (_authSchemes != AuthenticationSchemes.Anonymous &&
-								  !authenticateRequest(_authSchemes, ctx))
+							  if (_authSchemes != AuthenticationSchemes.Anonymous && !authenticateRequest(_authSchemes, ctx))
+							  {
 								  return;
+							  }
 
 							  processWebSocketRequest(ctx);
 						  }
@@ -654,14 +655,17 @@ namespace WebSocketSharp.Server
 			}
 
 			if (IsListening)
+			{
 				abort();
+			}
 		}
 
 		private void startReceiving()
 		{
 			if (_reuseAddress)
-				_listener.Server.SetSocketOption(
-				  SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			{
+				_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			}
 
 			_listener.Start();
 			_receiveRequestThread = new Thread(new ThreadStart(receiveRequest));

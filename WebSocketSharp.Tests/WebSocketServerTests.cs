@@ -214,6 +214,11 @@ namespace WebSocketSharp.Tests
 
 		private class TestEchoService : WebSocketBehavior
 		{
+			protected override void OnOpen()
+			{
+				base.OnOpen();
+			}
+
 			protected override void OnMessage(MessageEventArgs e)
 			{
 				switch (e.Type)

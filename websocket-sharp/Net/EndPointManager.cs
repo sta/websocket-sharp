@@ -92,11 +92,11 @@ namespace WebSocketSharp.Net
 			}
 
 			// Always listens on all the interfaces, no matter the host name/ip used.
-			var epl = getEndPointListener(IPAddress.Any, prefix.Port, prefix.IsSecure, httpListener);
+			var epl = getEndPointListener(IPAddress.Any, prefix.Port, httpListener);
 			epl.AddPrefix(prefix, httpListener);
 		}
 
-		private static EndPointListener getEndPointListener(IPAddress address, int port, bool secure, HttpListener httpListener)
+		private static EndPointListener getEndPointListener(IPAddress address, int port, HttpListener httpListener)
 		{
 			Dictionary<int, EndPointListener> eps = null;
 			if (_ipToEndpoints.ContainsKey(address))
@@ -128,12 +128,16 @@ namespace WebSocketSharp.Net
 		{
 			var pref = new HttpListenerPrefix(uriPrefix);
 			if (pref.Path.IndexOf('%') != -1)
+			{
 				return;
+			}
 
 			if (pref.Path.IndexOf("//", StringComparison.Ordinal) != -1)
+			{
 				return;
+			}
 
-			var epl = getEndPointListener(IPAddress.Any, pref.Port, pref.IsSecure, httpListener);
+			var epl = getEndPointListener(IPAddress.Any, pref.Port, httpListener);
 			epl.RemovePrefix(pref, httpListener);
 		}
 

@@ -1435,7 +1435,7 @@ namespace WebSocketSharp
 
 			while (true)
 			{
-				var frame = await WebSocketFrame.ReadAsync(_stream);
+				var frame = await WebSocketFrame.ReadAsync(_stream, _client);
 
 				if (processReceivedFrame(frame) && _readyState != WebSocketState.Closed)
 				{

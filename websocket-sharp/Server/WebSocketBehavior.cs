@@ -537,11 +537,6 @@ namespace WebSocketSharp.Server
 		/// <param name="length">
 		/// An <see cref="int"/> that represents the number of bytes to send.
 		/// </param>
-		/// <param name="completed">
-		/// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-		/// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-		/// if the send is complete successfully.
-		/// </param>
 		protected Task<bool> SendAsync(Stream stream, int length)
 		{
 			if (_websocket != null)
