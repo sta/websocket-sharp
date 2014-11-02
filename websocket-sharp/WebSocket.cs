@@ -264,7 +264,7 @@ namespace WebSocketSharp
 			{
 				lock (_forConn)
 				{
-					var msg = checkIfAvailable(false, false);
+					var msg = CheckIfAvailable(false, false);
 					if (msg != null)
 					{
 						error(
@@ -298,7 +298,7 @@ namespace WebSocketSharp
 			{
 				lock (_forConn)
 				{
-					var msg = checkIfAvailable(false, false);
+					var msg = CheckIfAvailable(false, false);
 					if (msg != null)
 					{
 						error("An error has occurred in setting the compression.", null);
@@ -416,7 +416,7 @@ namespace WebSocketSharp
 			{
 				lock (_forConn)
 				{
-					var msg = checkIfAvailable(false, false);
+					var msg = CheckIfAvailable(false, false);
 					if (msg == null)
 					{
 						if (value.IsNullOrEmpty())
@@ -499,7 +499,7 @@ namespace WebSocketSharp
 			{
 				lock (_forConn)
 				{
-					var msg = checkIfAvailable(false, false);
+					var msg = CheckIfAvailable(false, false);
 					if (msg != null)
 					{
 						error(
@@ -514,37 +514,37 @@ namespace WebSocketSharp
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-		/// on the secure connection.
-		/// </summary>
-		/// <value>
-		/// A <see cref="ClientSslAuthConfiguration"/> that represents the SSL configuration used to
-		/// authenticate the server and optionally the client.
-		/// </value>
-		public ClientSslAuthConfiguration SslConfiguration
-		{
-			get
-			{
-				return _sslConfig;
-			}
+		///// <summary>
+		///// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+		///// on the secure connection.
+		///// </summary>
+		///// <value>
+		///// A <see cref="ClientSslAuthConfiguration"/> that represents the SSL configuration used to
+		///// authenticate the server and optionally the client.
+		///// </value>
+		//public ClientSslAuthConfiguration SslConfiguration
+		//{
+		//	get
+		//	{
+		//		return _sslConfig;
+		//	}
 
-			set
-			{
-				lock (_forConn)
-				{
-					var msg = checkIfAvailable(false, false);
-					if (msg != null)
-					{
-						error("An error has occurred in setting the ssl configuration.", null);
+		//	set
+		//	{
+		//		lock (_forConn)
+		//		{
+		//			var msg = checkIfAvailable(false, false);
+		//			if (msg != null)
+		//			{
+		//				error("An error has occurred in setting the ssl configuration.", null);
 
-						return;
-					}
+		//				return;
+		//			}
 
-					_sslConfig = value;
-				}
-			}
-		}
+		//			_sslConfig = value;
+		//		}
+		//	}
+		//}
 
 		/// <summary>
 		/// Gets the WebSocket URL to connect.
@@ -581,7 +581,7 @@ namespace WebSocketSharp
 			{
 				lock (_forConn)
 				{
-					var msg = checkIfAvailable(true, false) ?? value.CheckIfValidWaitTime();
+					var msg = CheckIfAvailable(true, false) ?? value.CheckIfValidWaitTime();
 					if (msg != null)
 					{
 						error("An error has occurred in setting the wait time.", null);
@@ -622,22 +622,22 @@ namespace WebSocketSharp
 
 		#region Private Methods
 
-		// As server
-		private bool acceptHandshake()
-		{
-			_readyState = WebSocketState.Closing;
+		//// As server
+		//private bool acceptHandshake()
+		//{
+		//	_readyState = WebSocketState.Closing;
 
-			SendHttpResponse(response);
-			this.CloseServerResources();
+		//	SendHttpResponse(response);
+		//	this.CloseServerResources();
 
-			_readyState = WebSocketState.Closed;
-		}
+		//	_readyState = WebSocketState.Closed;
+		//}
 
-		// As server
-		internal void Close(HttpStatusCode code)
-		{
-			Close(InnerCreateHandshakeCloseResponse(code));
-		}
+		//// As server
+		//internal void InnerClose(HttpStatusCode code)
+		//{
+		//	Close(InnerCreateHandshakeCloseResponse(code));
+		//}
 
 		// As server
 		internal void Close(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
@@ -652,16 +652,11 @@ namespace WebSocketSharp
 				_readyState = WebSocketState.Closing;
 			}
 
-			e.WasClean = this.CloseHandshake(frameAsBytes, timeout, this.CloseServerResources);
+			e.WasClean = closeHandshake(frameAsBytes, timeout, releaseServerResources);
 
 			_readyState = WebSocketState.Closed;
-			try
-			{
-				OnClose.Emit(this, e);
-			}
-			catch (Exception)
-			{
-			}
+
+			OnClose.Emit(this, e);
 		}
 
 		// As server
@@ -686,89 +681,10 @@ namespace WebSocketSharp
 			return Ping(frameAsBytes, TimeSpan.FromMilliseconds(timeoutMilliseconds));
 		}
 
-		internal bool Ping(byte[] frameAsBytes, TimeSpan timeout)
-		{
-			try
-			{
-				AutoResetEvent pong;
-				return _readyState == WebSocketState.Open &&
-					   InnerSend(frameAsBytes) &&
-					   (pong = _receivePong) != null &&
-					   pong.WaitOne(timeout);
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-
-		// As server, used to broadcast
-		internal void Send(Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
-		{
-			lock (_forSend)
-			{
-				lock (_forConn)
-				{
-					if (_readyState != WebSocketState.Open)
-					{
-						return;
-					}
-
-					try
-					{
-						byte[] cached;
-						if (!cache.TryGetValue(_compression, out cached))
-						{
-							cached = new WebSocketFrame(
-							  Fin.Final,
-							  opcode,
-							  data.Compress(_compression),
-							  _compression != CompressionMethod.None,
-							  false)
-							  .ToByteArray();
-
-							cache.Add(_compression, cached);
-						}
-
-						WriteBytes(cached);
-					}
-					catch (Exception)
-					{
-					}
-				}
-			}
-		}
-
-		// As server, used to broadcast
-		internal void Send(Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache)
-		{
-			lock (_forSend)
-			{
-				try
-				{
-					Stream cached;
-					if (!cache.TryGetValue(_compression, out cached))
-					{
-						cached = stream.Compress(_compression);
-						cache.Add(_compression, cached);
-					}
-					else
-					{
-						cached.Position = 0;
-					}
-
-					InnerSend(opcode, Mask.Unmask, cached, _compression != CompressionMethod.None);
-				}
-				catch (Exception)
-				{
-				}
-			}
-		}
-
 		// As server
 		private bool AcceptHandshake()
 		{
-			var msg = this.CheckIfValidHandshakeRequest(_context);
+			var msg = CheckIfValidHandshakeRequest(_context);
 			if (msg != null)
 			{
 				error("An error has occurred while connecting.", null);
@@ -777,18 +693,21 @@ namespace WebSocketSharp
 				return false;
 			}
 
-			if (_protocol != null &&
-				!_context.SecWebSocketProtocols.Contains(protocol => protocol == _protocol))
+			if (_protocol != null && !_context.SecWebSocketProtocols.Contains(protocol => protocol == _protocol))
+			{
 				_protocol = null;
+			}
 
 			var extensions = _context.Headers["Sec-WebSocket-Extensions"];
-			if (extensions != null && extensions.Length > 0)
+			if (!string.IsNullOrEmpty(extensions))
+			{
 				processSecWebSocketExtensionsHeader(extensions);
+			}
 
-			return sendHttpResponse(createHandshakeResponse());
+			return SendHttpResponse(InnerCreateHandshakeResponse());
 		}
 
-		private string checkIfAvailable(bool asServer, bool asConnected)
+		private string CheckIfAvailable(bool asServer, bool asConnected)
 		{
 			return !_client && !asServer
 				   ? "This operation isn't available as a server."
@@ -797,7 +716,7 @@ namespace WebSocketSharp
 					 : null;
 		}
 
-		private string checkIfCanConnect()
+		private string CheckIfCanConnect()
 		{
 			return !_client && _readyState == WebSocketState.Closed
 				   ? "Connect isn't available to reconnect as a server."
@@ -805,7 +724,7 @@ namespace WebSocketSharp
 		}
 
 		// As server
-		private string checkIfValidHandshakeRequest(WebSocketContext context)
+		private string CheckIfValidHandshakeRequest(WebSocketContext context)
 		{
 			var headers = context.Headers;
 			return context.RequestUri == null
@@ -888,8 +807,7 @@ namespace WebSocketSharp
 		private bool closeHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
 		{
 			var sent = frameAsBytes != null && sendBytes(frameAsBytes);
-			var received = timeout == TimeSpan.Zero ||
-						   (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
+			var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
 
 			release();
 			if (_receivePong != null)
@@ -985,7 +903,7 @@ namespace WebSocketSharp
 				try
 				{
 					_readyState = WebSocketState.Connecting;
-					if (_client ? doHandshake() : acceptHandshake())
+					if (_client ? doHandshake() : AcceptHandshake())
 					{
 						_readyState = WebSocketState.Open;
 						return true;
@@ -993,7 +911,7 @@ namespace WebSocketSharp
 				}
 				catch (Exception ex)
 				{
-					processException(ex, "An exception has occurred while connecting.");
+					ProcessException(ex, "An exception has occurred while connecting.");
 				}
 
 				return false;
@@ -1014,7 +932,7 @@ namespace WebSocketSharp
 		}
 
 		// As server
-		private HttpResponse createHandshakeCloseResponse(HttpStatusCode code)
+		private HttpResponse CreateHandshakeCloseResponse(HttpStatusCode code)
 		{
 			var res = HttpResponse.CreateCloseResponse(code);
 			res.Headers["Sec-WebSocket-Version"] = _version;
@@ -1063,7 +981,7 @@ namespace WebSocketSharp
 		}
 
 		// As server
-		private HttpResponse createHandshakeResponse()
+		private HttpResponse InnerCreateHandshakeResponse()
 		{
 			var res = HttpResponse.CreateWebSocketResponse();
 
@@ -1135,7 +1053,7 @@ namespace WebSocketSharp
 			_readyState = WebSocketState.Connecting;
 		}
 
-		private void open()
+		private void Open()
 		{
 			try
 			{
@@ -1149,13 +1067,13 @@ namespace WebSocketSharp
 					}
 					catch (Exception ex)
 					{
-						processException(ex, "An exception has occurred during an OnOpen event.");
+						ProcessException(ex, "An exception has occurred during an OnOpen event.");
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				processException(ex, "An exception has occurred while opening.");
+				ProcessException(ex, "An exception has occurred while opening.");
 			}
 		}
 
@@ -1178,7 +1096,7 @@ namespace WebSocketSharp
 			return true;
 		}
 
-		private void processException(Exception exception, string message)
+		private void ProcessException(Exception exception, string message)
 		{
 			var code = CloseStatusCode.Abnormal;
 			var reason = message;
@@ -1296,7 +1214,7 @@ namespace WebSocketSharp
 
 		private bool processUnsupportedFrame(WebSocketFrame frame, CloseStatusCode code, string reason)
 		{
-			processException(new WebSocketException(code, reason), null);
+			ProcessException(new WebSocketException(code, reason), null);
 
 			return false;
 		}
@@ -1495,7 +1413,7 @@ namespace WebSocketSharp
 		}
 
 		// As server
-		private bool sendHttpResponse(HttpResponse response)
+		private bool SendHttpResponse(HttpResponse response)
 		{
 			return sendBytes(response.ToByteArray());
 		}
@@ -1599,7 +1517,7 @@ namespace WebSocketSharp
 						}
 						catch (Exception ex)
 						{
-							processException(ex, "An exception has occurred while OnMessage.");
+							ProcessException(ex, "An exception has occurred while OnMessage.");
 						}
 					}
 				}
@@ -1680,11 +1598,11 @@ namespace WebSocketSharp
 		#region Internal Methods
 
 		// As server
-		internal void Close(HttpResponse response)
+		internal void InnerClose(HttpResponse response)
 		{
 			_readyState = WebSocketState.Closing;
 
-			sendHttpResponse(response);
+			SendHttpResponse(response);
 			releaseServerResources();
 
 			_readyState = WebSocketState.Closed;
@@ -1693,11 +1611,11 @@ namespace WebSocketSharp
 		// As server
 		internal void Close(HttpStatusCode code)
 		{
-			Close(createHandshakeCloseResponse(code));
+			InnerClose(CreateHandshakeCloseResponse(code));
 		}
 
 		// As server
-		internal void Close(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
+		internal void InnerClose(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
 		{
 			lock (_forConn)
 			{
@@ -1717,19 +1635,19 @@ namespace WebSocketSharp
 		}
 
 		// As server
-		internal void ConnectAsServer()
+		internal void InnerConnectAsServer()
 		{
 			try
 			{
-				if (acceptHandshake())
+				if (AcceptHandshake())
 				{
 					_readyState = WebSocketState.Open;
-					open();
+					Open();
 				}
 			}
 			catch (Exception ex)
 			{
-				processException(ex, "An exception has occurred while connecting.");
+				ProcessException(ex, "An exception has occurred while connecting.");
 			}
 		}
 
@@ -2115,7 +2033,7 @@ namespace WebSocketSharp
 		/// </summary>
 		public void Connect()
 		{
-			var msg = checkIfCanConnect();
+			var msg = CheckIfCanConnect();
 			if (msg != null)
 			{
 				error("An error has occurred in connecting.", null);
@@ -2124,7 +2042,7 @@ namespace WebSocketSharp
 			}
 
 			if (connect())
-				open();
+				Open();
 		}
 
 		/// <summary>
@@ -2135,7 +2053,7 @@ namespace WebSocketSharp
 		/// </remarks>
 		public async Task<bool> ConnectAsync()
 		{
-			var msg = checkIfCanConnect();
+			var msg = CheckIfCanConnect();
 			if (msg != null)
 			{
 				error("An error has occurred in connecting.", null);
@@ -2148,7 +2066,7 @@ namespace WebSocketSharp
 			var result = await Task.Factory.FromAsync<bool>(connector.BeginInvoke, connector.EndInvoke, null);
 			if (result)
 			{
-				open();
+				Open();
 			}
 
 			return result;
@@ -2381,7 +2299,7 @@ namespace WebSocketSharp
 		{
 			lock (_forConn)
 			{
-				var msg = checkIfAvailable(false, false) ??
+				var msg = CheckIfAvailable(false, false) ??
 						  (cookie == null ? "'cookie' is null." : null);
 
 				if (msg != null)
@@ -2415,7 +2333,7 @@ namespace WebSocketSharp
 		{
 			lock (_forConn)
 			{
-				var msg = checkIfAvailable(false, false);
+				var msg = CheckIfAvailable(false, false);
 				if (msg == null)
 				{
 					if (username.IsNullOrEmpty())
@@ -2464,7 +2382,7 @@ namespace WebSocketSharp
 		{
 			lock (_forConn)
 			{
-				var msg = checkIfAvailable(false, false);
+				var msg = CheckIfAvailable(false, false);
 				if (msg == null)
 				{
 					if (url.IsNullOrEmpty())

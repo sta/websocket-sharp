@@ -384,7 +384,7 @@ namespace WebSocketSharp.Net.WebSockets
 
 		internal void Close(HttpStatusCode code)
 		{
-			_websocket.Close(HttpResponse.CreateCloseResponse(code));
+			_websocket.InnerClose(HttpResponse.CreateCloseResponse(code));
 		}
 
 		internal void SendAuthenticationChallenge(string challenge)
@@ -401,11 +401,15 @@ namespace WebSocketSharp.Net.WebSockets
 		{
 			var authRes = _request.AuthenticationResponse;
 			if (authRes == null)
+			{
 				return;
+			}
 
 			var id = authRes.ToIdentity();
 			if (id == null)
+			{
 				return;
+			}
 
 			NetworkCredential cred = null;
 			try

@@ -30,7 +30,6 @@ namespace WebSocketSharp.Tests
 
 	public sealed class SecureWebSocketServerTests
 	{
-		//[Ignore("Must create test certificate.")]
 		public class GivenASecureWebSocketServer
 		{
 			private WebSocketServer _sut;
