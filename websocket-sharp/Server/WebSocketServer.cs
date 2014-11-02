@@ -353,6 +353,30 @@ namespace WebSocketSharp.Server
 		}
 
 		/// <summary>
+    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+    /// for secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
+    /// </value>
+    public ServerSslAuthConfiguration SslConfiguration {
+      get {
+        return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration (null));
+      }
+
+      set {
+        var msg = _state.CheckIfStartable ();
+        if (msg != null) {
+          _logger.Error (msg);
+          return;
+        }
+
+        _sslConfig = value;
+      }
+    }
+
+    /// <summary>
 		/// Gets or sets the delegate called to find the credentials for an identity used to
 		/// authenticate a client.
 		/// </summary>

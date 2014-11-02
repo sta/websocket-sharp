@@ -114,9 +114,14 @@ namespace WebSocketSharp.Net
 			{
 				epl = eps[port];
 			}
-			else
-			{
-				epl = new EndPointListener(address, port, httpListener.DefaultSslConfiguration, httpListener.ReuseAddress);
+      else {
+        epl = new EndPointListener (
+          address,
+          port,
+          secure,
+          httpListener.CertificateFolderPath,
+          httpListener.SslConfiguration,
+          httpListener.ReuseAddress);
 
 				eps[port] = epl;
 			}
