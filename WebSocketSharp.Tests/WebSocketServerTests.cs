@@ -68,6 +68,19 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
+			public async Task ClientCanConnectAsyncToServer()
+			{
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					await client.ConnectAsync();
+
+					Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+
+					await client.CloseAsync();
+				}
+			}
+
+			[Test]
 			public void WhenClientSendsTextMessageThenResponds()
 			{
 				const string Message = "Message";

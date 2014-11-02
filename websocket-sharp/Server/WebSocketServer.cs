@@ -136,7 +136,7 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="url"/> is <see langword="null"/>.
 		/// </exception>
-		public WebSocketServer(string url, ServerSslAuthConfiguration certificate2)
+		public WebSocketServer(string url, ServerSslAuthConfiguration certificate2, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
 		{
 			if (url == null)
 			{
@@ -144,7 +144,7 @@ namespace WebSocketSharp.Server
 			}
 
 			string msg;
-			if (!tryCreateUri(url, out _uri, out msg))
+			if (!TryCreateUri(url, out _uri, out msg))
 			{
 				throw new ArgumentException(msg, "url");
 			}
@@ -163,7 +163,7 @@ namespace WebSocketSharp.Server
 			_port = _uri.Port;
 			_secure = _uri.Scheme == "wss";
 
-			Init();
+			Init(authenticationSchemes);
 		}
 
 		/// <summary>
@@ -225,7 +225,7 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
-		public WebSocketServer(System.Net.IPAddress address, int port, ServerSslAuthConfiguration certificate)
+		public WebSocketServer(System.Net.IPAddress address, int port, ServerSslAuthConfiguration certificate, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
 		{
 			if (!address.IsLocal())
 			{
@@ -250,34 +250,7 @@ namespace WebSocketSharp.Server
 			_secure = secure;
 			_uri = "/".ToUri();
 
-			Init();
-		}
-
-		/// <summary>
-		/// Gets or sets the scheme used to authenticate the clients.
-		/// </summary>
-		/// <value>
-		/// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum values,
-		/// indicates the scheme used to authenticate the clients. The default value is
-		/// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
-		/// </value>
-		public AuthenticationSchemes AuthenticationSchemes
-		{
-			get
-			{
-				return _authSchemes;
-			}
-
-			set
-			{
-				var msg = _state.CheckIfStartable();
-				if (msg != null)
-				{
-					return;
-				}
-
-				_authSchemes = value;
-			}
+			Init(authenticationSchemes);
 		}
 
 		/// <summary>
@@ -305,33 +278,6 @@ namespace WebSocketSharp.Server
 			get
 			{
 				return _secure;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the server cleans up the inactive sessions
-		/// periodically.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the server cleans up the inactive sessions every 60 seconds;
-		/// otherwise, <c>false</c>. The default value is <c>true</c>.
-		/// </value>
-		public bool KeepClean
-		{
-			get
-			{
-				return _services.KeepClean;
-			}
-
-			set
-			{
-				var msg = _state.CheckIfStartable();
-				if (msg != null)
-				{
-					return;
-				}
-
-				_services.KeepClean = value;
 			}
 		}
 
@@ -474,137 +420,6 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		private void abort()
-		{
-			lock (_sync)
-			{
-				if (!IsListening)
-					return;
-
-				_state = ServerState.ShuttingDown;
-			}
-
-			_listener.Stop();
-			_services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false);
-
-			_state = ServerState.Stop;
-		}
-
-		private bool authenticateRequest(
-		  AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
-		{
-			var chal = scheme == AuthenticationSchemes.Basic
-					   ? AuthenticationChallenge.CreateBasicChallenge(Realm).ToBasicString()
-					   : scheme == AuthenticationSchemes.Digest
-						 ? AuthenticationChallenge.CreateDigestChallenge(Realm).ToDigestString()
-						 : null;
-
-			if (chal == null)
-			{
-				context.Close(HttpStatusCode.Forbidden);
-				return false;
-			}
-
-			var retry = -1;
-			var schm = scheme.ToString();
-			var realm = Realm;
-			var credFinder = UserCredentialsFinder;
-			Func<bool> auth = null;
-			auth = () =>
-			{
-				retry++;
-				if (retry > 99)
-				{
-					context.Close(HttpStatusCode.Forbidden);
-					return false;
-				}
-
-				var res = context.Headers["Authorization"];
-				if (res == null || !res.StartsWith(schm, StringComparison.OrdinalIgnoreCase))
-				{
-					context.SendAuthenticationChallenge(chal);
-					return auth();
-				}
-
-				context.SetUser(scheme, realm, credFinder);
-				if (!context.IsAuthenticated)
-				{
-					context.SendAuthenticationChallenge(chal);
-					return auth();
-				}
-
-				return true;
-			};
-
-			return auth();
-		}
-
-		private string checkIfCertificateExists()
-		{
-			return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
-				   ? "The secure connection requires a server certificate."
-				   : null;
-		}
-
-		private void processWebSocketRequest(TcpListenerWebSocketContext context)
-		{
-			var uri = context.RequestUri;
-			if (uri == null)
-			{
-				context.Close(HttpStatusCode.BadRequest);
-				return;
-			}
-
-			if (_uri.IsAbsoluteUri)
-			{
-				var actual = uri.DnsSafeHost;
-				var expected = _uri.DnsSafeHost;
-				if (Uri.CheckHostName(actual) == UriHostNameType.Dns &&
-					Uri.CheckHostName(expected) == UriHostNameType.Dns &&
-					actual != expected)
-				{
-					context.Close(HttpStatusCode.NotFound);
-					return;
-				}
-			}
-
-			WebSocketServiceHost host;
-			if (!_services.InternalTryGetServiceHost(uri.AbsolutePath, out host))
-			{
-				context.Close(HttpStatusCode.NotImplemented);
-				return;
-			}
-
-			host.StartSession(context);
-		}
-
-		//private void startReceiving()
-		//{
-		//	if (_reuseAddress)
-		//	{
-		//		_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-		//	}
-
-		//	_listener.Start();
-		//	_receiveTask = StartReceiving(_tokenSource.Token);
-		//}
-
-		private static bool tryCreateUri(string uriString, out Uri result, out string message)
-		{
-			if (!uriString.TryCreateWebSocketUri(out result, out message))
-				return false;
-
-			if (result.PathAndQuery != "/")
-			{
-				result = null;
-				message = "Includes the path or query component: " + uriString;
-
-				return false;
-			}
-
-			return true;
-		}
-
 		/// <summary>
 		/// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
 		/// </summary>
@@ -697,7 +512,7 @@ namespace WebSocketSharp.Server
 		{
 			lock (_sync)
 			{
-				var msg = _state.CheckIfStartable() ?? checkIfCertificateExists();
+				var msg = _state.CheckIfStartable() ?? CheckIfCertificateExists();
 				if (msg != null)
 				{
 					return;
@@ -766,6 +581,31 @@ namespace WebSocketSharp.Server
 			_services.Stop(e, send, send);
 
 			_state = ServerState.Stop;
+		}
+
+		private static bool TryCreateUri(string uriString, out Uri result, out string message)
+		{
+			if (!uriString.TryCreateWebSocketUri(out result, out message))
+			{
+				return false;
+			}
+
+			if (result.PathAndQuery != "/")
+			{
+				result = null;
+				message = "Includes the path or query component: " + uriString;
+
+				return false;
+			}
+
+			return true;
+		}
+
+		private string CheckIfCertificateExists()
+		{
+			return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
+				   ? "The secure connection requires a server certificate."
+				   : null;
 		}
 
 		private void StopReceiving()
@@ -846,9 +686,9 @@ namespace WebSocketSharp.Server
 			return auth();
 		}
 
-		private void Init()
+		private void Init(AuthenticationSchemes authenticationSchemes)
 		{
-			_authSchemes = AuthenticationSchemes.Anonymous;
+			_authSchemes = authenticationSchemes;
 			_listener = new TcpListener(_address, _port);
 			_services = new WebSocketServiceManager();
 			_state = ServerState.Ready;

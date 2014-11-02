@@ -57,9 +57,9 @@ namespace WebSocketSharp.Server
 
 		#region Internal Constructors
 
-		internal WebSocketServiceManager()
+		internal WebSocketServiceManager(bool keepClean = true)
 		{
-			_clean = true;
+			_clean = keepClean;
 			_hosts = new Dictionary<string, WebSocketServiceHost>();
 			_state = ServerState.Ready;
 			_sync = ((ICollection)_hosts).SyncRoot;
@@ -97,7 +97,9 @@ namespace WebSocketSharp.Server
 			get
 			{
 				lock (_sync)
+				{
 					return _hosts.Values.ToList();
+				}
 			}
 		}
 
@@ -123,35 +125,6 @@ namespace WebSocketSharp.Server
 		}
 
 		/// <summary>
-		/// Gets a value indicating whether the manager cleans up the inactive sessions
-		/// in the WebSocket services periodically.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the manager cleans up the inactive sessions every 60 seconds;
-		/// otherwise, <c>false</c>.
-		/// </value>
-		public bool KeepClean
-		{
-			get
-			{
-				return _clean;
-			}
-
-			internal set
-			{
-				lock (_sync)
-				{
-					if (!(value ^ _clean))
-						return;
-
-					_clean = value;
-					foreach (var host in _hosts.Values)
-						host.KeepClean = value;
-				}
-			}
-		}
-
-		/// <summary>
 		/// Gets the paths for the WebSocket services.
 		/// </summary>
 		/// <value>
@@ -163,7 +136,9 @@ namespace WebSocketSharp.Server
 			get
 			{
 				lock (_sync)
+				{
 					return _hosts.Keys.ToList();
+				}
 			}
 		}
 
@@ -177,16 +152,7 @@ namespace WebSocketSharp.Server
 		{
 			get
 			{
-				var cnt = 0;
-				foreach (var host in Hosts)
-				{
-					if (_state != ServerState.Start)
-						break;
-
-					cnt += host.Sessions.Count;
-				}
-
-				return cnt;
+				return Hosts.TakeWhile(host => _state == ServerState.Start).Sum(host => host.Sessions.Count);
 			}
 		}
 
