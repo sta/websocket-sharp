@@ -856,7 +856,7 @@ namespace WebSocketSharp.Server
 		/// </param>
 		public bool TryGetSession(string id, out IWebSocketSession session)
 		{
-			var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionId();
+			var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionID();
 			if (msg != null)
 			{
 				session = null;

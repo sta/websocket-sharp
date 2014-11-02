@@ -25,11 +25,11 @@ namespace WebSocketSharp.Tests
 
 	using NUnit.Framework;
 
-	using global::WebSocketSharp.Server;
+	using WebSocketSharp.Net;
+	using WebSocketSharp.Server;
 
 	public sealed class SecureWebSocketServerTests
 	{
-		[Ignore("Must create test certificate.")]
 		public class GivenASecureWebSocketServer
 		{
 			private WebSocketServer _sut;
@@ -38,7 +38,7 @@ namespace WebSocketSharp.Tests
 			public void Setup()
 			{
 				var cert = GetRandomCertificate();
-				_sut = new WebSocketServer(443, cert);
+				_sut = new WebSocketServer(443, new ServerSslAuthConfiguration(cert));
 				_sut.AddWebSocketService<TestEchoService>("/echo");
 				_sut.Start();
 			}
@@ -68,6 +68,19 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
+			public async Task ClientCanConnectAsyncToServer()
+			{
+				using (var client = new WebSocket("wss://localhost:443/echo"))
+				{
+					await client.ConnectAsync();
+
+					Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+
+					await client.CloseAsync();
+				}
+			}
+
+			[Test]
 			public void WhenClientSendsTextMessageThenResponds()
 			{
 				const string Message = "Message";
@@ -76,7 +89,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Text.ReadToEnd() == Message)
+							if (e.Data == Message)
 							{
 								waitHandle.Set();
 							}
@@ -104,7 +117,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Text.ReadToEnd() == Message)
+							if (e.Data == Message)
 							{
 								waitHandle.Set();
 							}
@@ -133,7 +146,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Text.ReadToEnd() == Message)
+							if (e.Data == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -168,7 +181,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Text.ReadToEnd() == Message)
+							if (e.Data == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -192,7 +205,7 @@ namespace WebSocketSharp.Tests
 					client.Close();
 				}
 			}
-			
+
 			private static X509Certificate2 GetRandomCertificate()
 			{
 				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
@@ -214,13 +227,13 @@ namespace WebSocketSharp.Tests
 		{
 			protected override void OnMessage(MessageEventArgs e)
 			{
-				switch (e.Opcode)
+				switch (e.Type)
 				{
 					case Opcode.Text:
-						this.Send(e.Text.ReadToEnd());
+						this.Send(e.Data);
 						break;
 					case Opcode.Binary:
-						this.Send(e.Data.ToByteArray());
+						this.Send(e.RawData);
 						break;
 					case Opcode.Cont:
 					case Opcode.Close:
