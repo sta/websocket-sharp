@@ -251,10 +251,11 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				return Task.Factory.StartNew(() => { });
+				return Task.FromResult(0);
 			}
 
-			return data.LongLength <= WebSocket.FragmentLength ? this.broadcastAsync(Opcode.Binary, data) : this.broadcastAsync(Opcode.Binary, new MemoryStream(data));
+			return data.LongLength <= WebSocket.FragmentLength
+				? BroadcastAsync(Opcode.Binary, data) : BroadcastAsync(Opcode.Binary, new MemoryStream(data));
 		}
 
 		/// <summary>
@@ -272,11 +273,11 @@ namespace WebSocketSharp.Server
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
 			{
-				return Task.Factory.StartNew(() => { });
+				return Task.FromResult(0);
 			}
 
 			var rawData = Encoding.UTF8.GetBytes(data);
-			return rawData.LongLength <= WebSocket.FragmentLength ? this.broadcastAsync(Opcode.Text, rawData) : this.broadcastAsync(Opcode.Text, new MemoryStream(rawData));
+			return rawData.LongLength <= WebSocket.FragmentLength ? BroadcastAsync(Opcode.Text, rawData) : BroadcastAsync(Opcode.Text, new MemoryStream(rawData));
 		}
 
 		/// <summary>
@@ -292,28 +293,17 @@ namespace WebSocketSharp.Server
 		/// <param name="length">
 		/// An <see cref="int"/> that represents the number of bytes to broadcast.
 		/// </param>
-		public async Task BroadcastAsync(Stream stream, int length)
+		public Task BroadcastAsync(Stream stream)
 		{
 			var msg = _state.CheckIfStart() ??
-					  stream.CheckIfCanRead() ??
-					  (length < 1 ? "'length' is less than 1." : null);
+					  stream.CheckIfCanRead();
 
 			if (msg != null)
 			{
-				return;
+				return Task.FromResult(0);
 			}
 
-			var data = await stream.ReadBytesAsync(length);
-			var len = data.Length;
-
-			if (len <= WebSocket.FragmentLength)
-			{
-				broadcast(Opcode.Binary, data);
-			}
-			else
-			{
-				broadcast(Opcode.Binary, new MemoryStream(data));
-			}
+			return BroadcastAsync(Opcode.Binary, stream);
 		}
 
 		/// <summary>
@@ -508,15 +498,77 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		private Task broadcastAsync(Opcode opcode, byte[] data)
+		/// <summary>
+		/// Broadcasts a binary <paramref name="data"/> asynchronously to every client
+		/// in the WebSocket service.
+		/// </summary>
+		/// <remarks>
+		/// This method doesn't wait for the broadcast to be complete.
+		/// </remarks>
+		/// <param name="data">
+		/// An array of <see cref="byte"/> that represents the binary data to broadcast.
+		/// </param>
+		internal async Task BroadcastAsync(Opcode opcode, byte[] data)
 		{
-			return Task.Factory.StartNew(() => broadcast(opcode, data));
+			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
+			if (msg != null)
+			{
+				return;
+			}
+
+			await BroadcastAsync(opcode, new MemoryStream(data));
 		}
 
-		private Task broadcastAsync(Opcode opcode, Stream stream)
+		/// <summary>
+		/// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously
+		/// to every client in the WebSocket service.
+		/// </summary>
+		/// <remarks>
+		/// This method doesn't wait for the broadcast to be complete.
+		/// </remarks>
+		/// <param name="stream">
+		/// A <see cref="Stream"/> from which contains the binary data to broadcast.
+		/// </param>
+		internal async Task BroadcastAsync(Opcode opcode, Stream stream)
 		{
-			return Task.Factory.StartNew(() => broadcast(opcode, stream));
+			var msg = _state.CheckIfStart() ?? stream.CheckIfCanRead();
+
+			if (msg != null)
+			{
+				return;
+			}
+
+
+			var buffer = new byte[WebSocket.FragmentLength];
+			var sentCode = opcode;
+			var bytesRead = 0;
+			do
+			{
+				bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
+				var isFinal = bytesRead != WebSocket.FragmentLength;
+				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
+				sentCode = Opcode.Cont;
+			}
+			while (bytesRead == WebSocket.FragmentLength);
 		}
+
+		internal Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
+		{
+			var tasks = Hosts.TakeWhile(host => _state == ServerState.Start)
+					.Select(host => host.Sessions.BroadcastAsync(final, opcode, data));
+
+			return Task.WhenAll(tasks.ToArray());
+		}
+
+		//private Task broadcastAsync(Opcode opcode, byte[] data)
+		//{
+		//	return Task.Factory.StartNew(() => broadcast(opcode, data));
+		//}
+
+		//private Task broadcastAsync(Opcode opcode, Stream stream)
+		//{
+		//	return Task.Factory.StartNew(() => broadcast(opcode, stream));
+		//}
 
 		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{

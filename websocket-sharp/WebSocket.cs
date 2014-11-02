@@ -1360,6 +1360,12 @@ namespace WebSocketSharp
 			SendBytes(frame.ToByteArray());
 		}
 
+		internal Task SendAsync(Fin final, Opcode opcode, byte[] data)
+		{
+			var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
+			return SendBytesAsync(frame.ToByteArray());
+		}
+
 		// As server
 		internal void Close(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
 		{
@@ -1929,8 +1935,7 @@ namespace WebSocketSharp
 					return false;
 				}
 
-				return SendBytes(
-				  new WebSocketFrame(fin, opcode, data, compressed, _client).ToByteArray());
+				return SendBytes(new WebSocketFrame(fin, opcode, data, compressed, _client).ToByteArray());
 			}
 		}
 
@@ -1946,6 +1951,19 @@ namespace WebSocketSharp
 			try
 			{
 				_stream.Write(bytes, 0, bytes.Length);
+				return true;
+			}
+			catch (Exception ex)
+			{
+				return false;
+			}
+		}
+
+		private async Task<bool> SendBytesAsync(byte[] bytes)
+		{
+			try
+			{
+				await _stream.WriteAsync(bytes, 0, bytes.Length);
 				return true;
 			}
 			catch (Exception ex)

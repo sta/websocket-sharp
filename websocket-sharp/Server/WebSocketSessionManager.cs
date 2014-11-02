@@ -448,7 +448,7 @@ namespace WebSocketSharp.Server
 		/// <param name="data">
 		/// An array of <see cref="byte"/> that represents the binary data to broadcast.
 		/// </param>
-		public async Task BroadcastAsync(Opcode opcode, byte[] data)
+		internal async Task BroadcastAsync(Opcode opcode, byte[] data)
 		{
 			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
 			if (msg != null)
@@ -513,7 +513,7 @@ namespace WebSocketSharp.Server
 		/// <param name="stream">
 		/// A <see cref="Stream"/> from which contains the binary data to broadcast.
 		/// </param>
-		public async Task BroadcastAsync(Opcode opcode, Stream stream)
+		internal async Task BroadcastAsync(Opcode opcode, Stream stream)
 		{
 			var msg = _state.CheckIfStart() ?? stream.CheckIfCanRead();
 
@@ -530,10 +530,18 @@ namespace WebSocketSharp.Server
 			{
 				bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
 				var isFinal = bytesRead != WebSocket.FragmentLength;
-				Broadcast(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
+				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
 				sentCode = Opcode.Cont;
 			}
 			while (bytesRead == WebSocket.FragmentLength);
+		}
+
+		internal Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
+		{
+			var tasks = Sessions.TakeWhile(session => _state == ServerState.Start)
+					.Select(session => session.Context.WebSocket.SendAsync(final, opcode, data));
+
+			return Task.WhenAll(tasks.ToArray());
 		}
 
 		/// <summary>
