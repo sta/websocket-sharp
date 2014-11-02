@@ -25,6 +25,7 @@ namespace WebSocketSharp.Tests
 
 	using NUnit.Framework;
 
+	using WebSocketSharp.Net;
 	using WebSocketSharp.Server;
 
 	public sealed class SecureWebSocketServerTests
@@ -38,7 +39,7 @@ namespace WebSocketSharp.Tests
 			public void Setup()
 			{
 				var cert = GetRandomCertificate();
-				_sut = new WebSocketServer(443, cert);
+				_sut = new WebSocketServer(443, new ServerSslAuthConfiguration(cert));
 				_sut.AddWebSocketService<TestEchoService>("/echo");
 				_sut.Start();
 			}
@@ -192,7 +193,7 @@ namespace WebSocketSharp.Tests
 					client.Close();
 				}
 			}
-			
+
 			private static X509Certificate2 GetRandomCertificate()
 			{
 				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);

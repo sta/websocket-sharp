@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,12 +61,11 @@ namespace WebSocketSharp.Net
 		#region Private Fields
 
 		private List<HttpListenerPrefix> _all; // host == '+'
-		private X509Certificate2 _cert;
 		private static readonly string _defaultCertFolderPath;
 		private IPEndPoint _endpoint;
 		private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
-		private bool _secure;
 		private Socket _socket;
+		private ServerSslAuthConfiguration _sslConfig;
 		private List<HttpListenerPrefix> _unhandled; // host == '*'
 		private Dictionary<HttpConnection, HttpConnection> _unregistered;
 		private object _unregisteredSync;
@@ -78,17 +84,26 @@ namespace WebSocketSharp.Net
 
 		#region Public Constructors
 
-		public EndPointListener(IPAddress address, int port, bool secure, string certificateFolderPath, X509Certificate2 defaultCertificate, bool reuseAddress)
+		public EndPointListener(
+		  IPAddress address,
+		  int port,
+		  ServerSslAuthConfiguration sslConfiguration,
+		  bool reuseAddress)
 		{
-			if (secure)
-			{
-				_secure = secure;
-				_cert = getCertificate(port, certificateFolderPath, defaultCertificate);
-				if (_cert == null)
-				{
-					throw new ArgumentException("No server certificate could be found.");
-				}
-			}
+			//if (secure)
+			//{
+			//	var cert = getCertificate(port, certificateFolderPath, sslConfiguration.ServerCertificate);
+			//	if (cert == null)
+			//	{
+			//		throw new ArgumentException("No server certificate could be found.");
+			//	}
+
+			//	_secure = true;
+			//	_sslConfig = sslConfiguration;
+			//	_sslConfig.ServerCertificate = cert;
+			//}
+
+			_sslConfig = sslConfiguration;
 
 			_prefixes = new Dictionary<HttpListenerPrefix, HttpListener>();
 
@@ -115,19 +130,19 @@ namespace WebSocketSharp.Net
 
 		#region Public Properties
 
-		public X509Certificate2 Certificate
-		{
-			get
-			{
-				return _cert;
-			}
-		}
-
 		public bool IsSecure
 		{
 			get
 			{
-				return _secure;
+				return _sslConfig != null;
+			}
+		}
+
+		public ServerSslAuthConfiguration SslConfiguration
+		{
+			get
+			{
+				return _sslConfig;
 			}
 		}
 
@@ -179,15 +194,13 @@ namespace WebSocketSharp.Net
 
 		private static X509Certificate2 getCertificate(int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
 		{
-			if (string.IsNullOrEmpty(certificateFolderPath))
-			{
+			if (certificateFolderPath == null || certificateFolderPath.Length == 0)
 				certificateFolderPath = _defaultCertFolderPath;
-			}
 
 			try
 			{
-				var cer = Path.Combine(certificateFolderPath, string.Format("{0}.cer", port));
-				var key = Path.Combine(certificateFolderPath, string.Format("{0}.key", port));
+				var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
+				var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
 				if (File.Exists(cer) && File.Exists(key))
 				{
 					var cert = new X509Certificate2(cer);
@@ -204,7 +217,7 @@ namespace WebSocketSharp.Net
 		}
 
 		private static HttpListener matchFromList(
-	  string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
+		  string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
 		{
 			prefix = null;
 			if (list == null)
@@ -247,26 +260,20 @@ namespace WebSocketSharp.Net
 			catch
 			{
 				if (accepted != null)
-				{
 					accepted.Close();
-				}
 
 				return;
 			}
 
 			if (accepted == null)
-			{
 				return;
-			}
 
 			HttpConnection conn = null;
 			try
 			{
 				conn = new HttpConnection(accepted, epl);
 				lock (epl._unregisteredSync)
-				{
 					epl._unregistered[conn] = conn;
-				}
 
 				conn.BeginReadRequest();
 			}
@@ -288,8 +295,8 @@ namespace WebSocketSharp.Net
 				return false;
 
 			var path = prefix.Path;
-			var count = prefixes.Count;
-			for (int i = 0; i < count; i++)
+			var cnt = prefixes.Count;
+			for (var i = 0; i < cnt; i++)
 			{
 				if (prefixes[i].Path == path)
 				{
@@ -313,59 +320,45 @@ namespace WebSocketSharp.Net
 			var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
 
 			HttpListener bestMatch = null;
-			var bestLength = -1;
+			var bestLen = -1;
 			if (host != null && host.Length > 0)
 			{
 				foreach (var pref in _prefixes.Keys)
 				{
 					var ppath = pref.Path;
-					if (ppath.Length < bestLength)
-					{
+					if (ppath.Length < bestLen)
 						continue;
-					}
 
 					if (pref.Host != host || pref.Port != port)
-					{
 						continue;
-					}
 
 					if (path.StartsWith(ppath) || pathSlash.StartsWith(ppath))
 					{
-						bestLength = ppath.Length;
+						bestLen = ppath.Length;
 						bestMatch = _prefixes[pref];
 						prefix = pref;
 					}
 				}
 
-				if (bestLength != -1)
-				{
+				if (bestLen != -1)
 					return bestMatch;
-				}
 			}
 
 			var list = _unhandled;
 			bestMatch = matchFromList(host, path, list, out prefix);
 			if (path != pathSlash && bestMatch == null)
-			{
 				bestMatch = matchFromList(host, pathSlash, list, out prefix);
-			}
 
 			if (bestMatch != null)
-			{
 				return bestMatch;
-			}
 
 			list = _all;
 			bestMatch = matchFromList(host, path, list, out prefix);
 			if (path != pathSlash && bestMatch == null)
-			{
 				bestMatch = matchFromList(host, pathSlash, list, out prefix);
-			}
 
 			if (bestMatch != null)
-			{
 				return bestMatch;
-			}
 
 			return null;
 		}
@@ -376,23 +369,19 @@ namespace WebSocketSharp.Net
 
 		internal static bool CertificateExists(int port, string certificateFolderPath)
 		{
-			if (string.IsNullOrEmpty(certificateFolderPath))
-			{
+			if (certificateFolderPath == null || certificateFolderPath.Length == 0)
 				certificateFolderPath = _defaultCertFolderPath;
-			}
 
-			var cer = Path.Combine(certificateFolderPath, string.Format("{0}.cer", port));
-			var key = Path.Combine(certificateFolderPath, string.Format("{0}.key", port));
+			var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
+			var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
 
 			return File.Exists(cer) && File.Exists(key);
 		}
 
 		internal void RemoveConnection(HttpConnection connection)
 		{
-			lock (((ICollection)_unregistered).SyncRoot)
-			{
+			lock (_unregisteredSync)
 				_unregistered.Remove(connection);
-			}
 		}
 
 		#endregion
@@ -408,8 +397,8 @@ namespace WebSocketSharp.Net
 				{
 					current = _unhandled;
 					future = current != null
-				   ? new List<HttpListenerPrefix>(current)
-				   : new List<HttpListenerPrefix>();
+							 ? new List<HttpListenerPrefix>(current)
+							 : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
 					addSpecial(future, prefix);
@@ -425,8 +414,8 @@ namespace WebSocketSharp.Net
 				{
 					current = _all;
 					future = current != null
-				   ? new List<HttpListenerPrefix>(current)
-				   : new List<HttpListenerPrefix>();
+							 ? new List<HttpListenerPrefix>(current)
+							 : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
 					addSpecial(future, prefix);
@@ -445,7 +434,7 @@ namespace WebSocketSharp.Net
 					var other = prefs[prefix];
 					if (other != httpListener)
 						throw new HttpListenerException(
-						  400, string.Format("There's another listener for {0}.", prefix)); // TODO: Code?
+						  400, String.Format("There's another listener for {0}.", prefix)); // TODO: Code?
 
 					return;
 				}
@@ -473,7 +462,7 @@ namespace WebSocketSharp.Net
 		{
 			_socket.Close();
 
-			lock (((ICollection)_unregistered).SyncRoot)
+			lock (_unregisteredSync)
 			{
 				var conns = new List<HttpConnection>(_unregistered.Keys);
 				_unregistered.Clear();
@@ -493,8 +482,8 @@ namespace WebSocketSharp.Net
 				{
 					current = _unhandled;
 					future = current != null
-				   ? new List<HttpListenerPrefix>(current)
-				   : new List<HttpListenerPrefix>();
+							 ? new List<HttpListenerPrefix>(current)
+							 : new List<HttpListenerPrefix>();
 
 					if (!removeSpecial(future, prefix))
 						break; // Prefix not found.
@@ -511,8 +500,8 @@ namespace WebSocketSharp.Net
 				{
 					current = _all;
 					future = current != null
-				   ? new List<HttpListenerPrefix>(current)
-				   : new List<HttpListenerPrefix>();
+							 ? new List<HttpListenerPrefix>(current)
+							 : new List<HttpListenerPrefix>();
 
 					if (!removeSpecial(future, prefix))
 						break; // Prefix not found.

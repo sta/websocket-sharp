@@ -26,6 +26,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -44,17 +51,27 @@ namespace WebSocketSharp.Net.WebSockets
 	/// </summary>
 	internal class TcpListenerWebSocketContext : WebSocketContext
 	{
-		private readonly bool _secure;
-		private readonly Stream _stream;
-		private readonly TcpClient _tcpClient;
-		private readonly Uri _uri;
-		private readonly WebSocket _websocket;
+		#region Private Fields
+
 		private CookieCollection _cookies;
 		private NameValueCollection _queryString;
 		private HttpRequest _request;
+		private bool _secure;
+		private Stream _stream;
+		private TcpClient _tcpClient;
+		private Uri _uri;
 		private IPrincipal _user;
+		private WebSocket _websocket;
 
-		internal TcpListenerWebSocketContext(TcpClient tcpClient, string protocol, bool secure, X509Certificate certificate)
+		#endregion
+
+		#region Internal Constructors
+
+		internal TcpListenerWebSocketContext(
+		  TcpClient tcpClient,
+		  string protocol,
+		  bool secure,
+		  ServerSslAuthConfiguration sslConfiguration)
 		{
 			_tcpClient = tcpClient;
 			_secure = secure;
@@ -63,7 +80,12 @@ namespace WebSocketSharp.Net.WebSockets
 			if (secure)
 			{
 				var sslStream = new SslStream(netStream, false);
-				sslStream.AuthenticateAsServer(certificate);
+				sslStream.AuthenticateAsServer(
+				  sslConfiguration.ServerCertificate,
+				  sslConfiguration.ClientCertificateRequired,
+				  sslConfiguration.EnabledSslProtocols,
+				  sslConfiguration.CheckCertificateRevocation);
+
 				_stream = sslStream;
 			}
 			else
@@ -77,6 +99,22 @@ namespace WebSocketSharp.Net.WebSockets
 
 			_websocket = new WebSocket(this, protocol);
 		}
+
+		#endregion
+
+		#region Internal Properties
+
+		internal Stream Stream
+		{
+			get
+			{
+				return _stream;
+			}
+		}
+
+		#endregion
+
+		#region Public Properties
 
 		/// <summary>
 		/// Gets the HTTP cookies included in the request.
@@ -334,26 +372,9 @@ namespace WebSocketSharp.Net.WebSockets
 			}
 		}
 
-		internal Stream Stream
-		{
-			get
-			{
-				return _stream;
-			}
-		}
+		#endregion
 
-		/// <summary>
-		/// Returns a <see cref="string"/> that represents the current
-		/// <see cref="TcpListenerWebSocketContext"/>.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="string"/> that represents the current
-		/// <see cref="TcpListenerWebSocketContext"/>.
-		/// </returns>
-		public override string ToString()
-		{
-			return _request.ToString();
-		}
+		#region Internal Methods
 
 		internal void Close()
 		{
@@ -408,5 +429,24 @@ namespace WebSocketSharp.Net.WebSockets
 			if (valid)
 				_user = new GenericPrincipal(id, cred.Roles);
 		}
+
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Returns a <see cref="string"/> that represents the current
+		/// <see cref="TcpListenerWebSocketContext"/>.
+		/// </summary>
+		/// <returns>
+		/// A <see cref="string"/> that represents the current
+		/// <see cref="TcpListenerWebSocketContext"/>.
+		/// </returns>
+		public override string ToString()
+		{
+			return _request.ToString();
+		}
+
+		#endregion
 	}
 }

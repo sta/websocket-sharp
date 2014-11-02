@@ -42,158 +42,156 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-	internal class ListenerAsyncResult : IAsyncResult
-	{
-		private readonly AsyncCallback _callback;
-		private readonly object _state;
-		private readonly object _sync;
-		private bool _completed;
-		private HttpListenerContext _context;
-		private Exception _exception;
-		private ManualResetEvent _waitHandle;
-		private bool _syncCompleted;
+  internal class ListenerAsyncResult : IAsyncResult
+  {
+    #region Private Fields
 
-		public ListenerAsyncResult(AsyncCallback callback, object state)
-		{
-			_callback = callback;
-			_state = state;
-			_sync = new object();
-		}
+    private AsyncCallback       _callback;
+    private bool                _completed;
+    private HttpListenerContext _context;
+    private Exception           _exception;
+    private object              _state;
+    private object              _sync;
+    private bool                _syncCompleted;
+    private ManualResetEvent    _waitHandle;
 
-		public object AsyncState
-		{
-			get
-			{
-				return _state;
-			}
-		}
+    #endregion
 
-		public WaitHandle AsyncWaitHandle
-		{
-			get
-			{
-				lock (_sync)
-					return _waitHandle ?? (_waitHandle = new ManualResetEvent(_completed));
-			}
-		}
+    #region Internal Fields
 
-		public bool CompletedSynchronously
-		{
-			get
-			{
-				return _syncCompleted;
-			}
-		}
+    internal bool EndCalled;
+    internal bool InGet;
 
-		public bool IsCompleted
-		{
-			get
-			{
-				lock (_sync)
-				{
-					return _completed;
-				}
-			}
-		}
+    #endregion
 
-		internal bool InGet { private get; set; }
+    #region Public Constructors
 
-		internal bool EndCalled { get; set; }
+    public ListenerAsyncResult (AsyncCallback callback, object state)
+    {
+      _callback = callback;
+      _state = state;
+      _sync = new object ();
+    }
 
-		internal void Complete(Exception exception)
-		{
-			_exception = InGet && (exception is ObjectDisposedException)
-						 ? new HttpListenerException(500, "Listener closed.")
-						 : exception;
+    #endregion
 
-			lock (_sync)
-			{
-				_completed = true;
-				if (_waitHandle != null)
-				{
-					_waitHandle.Set();
-				}
+    #region Public Properties
 
-				if (_callback != null)
-				{
-					ThreadPool.UnsafeQueueUserWorkItem(InvokeCallback, this);
-				}
-			}
-		}
+    public object AsyncState {
+      get {
+        return _state;
+      }
+    }
 
-		internal void Complete(HttpListenerContext context, bool syncCompleted = false)
-		{
-			var listener = context.Listener;
-			var scheme = listener.SelectAuthenticationScheme(context);
-			if (scheme == AuthenticationSchemes.None)
-			{
-				context.Response.Close(HttpStatusCode.Forbidden);
-				listener.BeginGetContext(this);
+    public WaitHandle AsyncWaitHandle {
+      get {
+        lock (_sync)
+          return _waitHandle ?? (_waitHandle = new ManualResetEvent (_completed));
+      }
+    }
 
-				return;
-			}
+    public bool CompletedSynchronously {
+      get {
+        return _syncCompleted;
+      }
+    }
 
-			var header = context.Request.Headers["Authorization"];
-			if (scheme == AuthenticationSchemes.Basic && (header == null || !header.StartsWith("basic", StringComparison.OrdinalIgnoreCase)))
-			{
-				context.Response.CloseWithAuthChallenge(
-				  AuthenticationChallenge.CreateBasicChallenge(listener.Realm).ToBasicString());
+    public bool IsCompleted {
+      get {
+        lock (_sync)
+          return _completed;
+      }
+    }
 
-				listener.BeginGetContext(this);
-				return;
-			}
+    #endregion
 
-			if (scheme == AuthenticationSchemes.Digest && (header == null || !header.StartsWith("digest", StringComparison.OrdinalIgnoreCase)))
-			{
-				context.Response.CloseWithAuthChallenge(
-				  AuthenticationChallenge.CreateDigestChallenge(listener.Realm).ToDigestString());
+    #region Private Methods
 
-				listener.BeginGetContext(this);
-				return;
-			}
+    private static void complete (ListenerAsyncResult asyncResult)
+    {
+      asyncResult._completed = true;
 
-			_context = context;
-			_syncCompleted = syncCompleted;
+      var waitHandle = asyncResult._waitHandle;
+      if (waitHandle != null)
+        waitHandle.Set ();
 
-			lock (_sync)
-			{
-				_completed = true;
-				if (_waitHandle != null)
-				{
-					_waitHandle.Set();
-				}
+      var callback = asyncResult._callback;
+      if (callback != null)
+        ThreadPool.UnsafeQueueUserWorkItem (
+          state => {
+            try {
+              callback (asyncResult);
+            }
+            catch {
+            }
+          },
+          null);
+    }
 
-				if (_callback != null)
-				{
-					ThreadPool.UnsafeQueueUserWorkItem(InvokeCallback, this);
-				}
-			}
-		}
+    #endregion
 
-		internal HttpListenerContext GetContext()
-		{
-			if (_exception != null)
-			{
-				throw _exception;
-			}
+    #region Internal Methods
 
-			return _context;
-		}
+    internal void Complete (Exception exception)
+    {
+      _exception = InGet && (exception is ObjectDisposedException)
+                   ? new HttpListenerException (500, "Listener closed.")
+                   : exception;
 
-		#region Private Methods
+      lock (_sync)
+        complete (this);
+    }
 
-		private static void InvokeCallback(object state)
-		{
-			try
-			{
-				var ares = (ListenerAsyncResult)state;
-				ares._callback(ares);
-			}
-			catch
-			{
-			}
-		}
+    internal void Complete (HttpListenerContext context)
+    {
+      Complete (context, false);
+    }
 
-		#endregion
-	}
+    internal void Complete (HttpListenerContext context, bool syncCompleted)
+    {
+      var listener = context.Listener;
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm == AuthenticationSchemes.None) {
+        context.Response.Close (HttpStatusCode.Forbidden);
+        listener.BeginGetContext (this);
+
+        return;
+      }
+
+      var res = context.Request.Headers["Authorization"];
+      if (schm == AuthenticationSchemes.Basic &&
+          (res == null || !res.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
+
+        listener.BeginGetContext (this);
+        return;
+      }
+
+      if (schm == AuthenticationSchemes.Digest &&
+          (res == null || !res.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
+
+        listener.BeginGetContext (this);
+        return;
+      }
+
+      _context = context;
+      _syncCompleted = syncCompleted;
+
+      lock (_sync)
+        complete (this);
+    }
+
+    internal HttpListenerContext GetContext ()
+    {
+      if (_exception != null)
+        throw _exception;
+
+      return _context;
+    }
+
+    #endregion
+  }
 }

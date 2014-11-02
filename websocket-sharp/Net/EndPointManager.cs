@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -109,13 +116,7 @@ namespace WebSocketSharp.Net
 			}
 			else
 			{
-				epl = new EndPointListener(
-						  address,
-						  port,
-						  secure,
-						  httpListener.CertificateFolderPath,
-				  httpListener.DefaultCertificate,
-				  httpListener.ReuseAddress);
+				epl = new EndPointListener(address, port, httpListener.DefaultSslConfiguration, httpListener.ReuseAddress);
 
 				eps[port] = epl;
 			}
