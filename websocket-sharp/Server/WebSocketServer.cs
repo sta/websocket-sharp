@@ -59,29 +59,21 @@ namespace WebSocketSharp.Server
 	/// </remarks>
 	public class WebSocketServer
 	{
-		#region Private Fields
-
-		private CancellationTokenSource _tokenSource;
+		private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+		private readonly System.Net.IPAddress _address;
+		private readonly int _port;
+		private readonly Uri _uri;
+		private readonly ServerSslAuthConfiguration _sslConfig;
+		private readonly bool _secure;
 		private Task _receiveTask;
-		private System.Net.IPAddress _address;
 		private AuthenticationSchemes _authSchemes;
 		private Func<IIdentity, NetworkCredential> _credentialsFinder;
 		private TcpListener _listener;
-		private int _port;
 		private string _realm;
-		private Thread _receiveRequestThread;
 		private bool _reuseAddress;
 		private WebSocketServiceManager _services;
-		private ServerSslAuthConfiguration _sslConfig;
 		private volatile ServerState _state;
 		private object _sync;
-		private Uri _uri;
-
-		private readonly bool _secure;
-
-		#endregion
-
-		#region Public Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketServer"/> class.
@@ -171,7 +163,7 @@ namespace WebSocketSharp.Server
 			_port = _uri.Port;
 			_secure = _uri.Scheme == "wss";
 
-			init();
+			Init();
 		}
 
 		/// <summary>
@@ -258,25 +250,7 @@ namespace WebSocketSharp.Server
 			_secure = secure;
 			_uri = "/".ToUri();
 
-			init();
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
-		/// Gets the local IP address of the server.
-		/// </summary>
-		/// <value>
-		/// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
-		/// </value>
-		public System.Net.IPAddress Address
-		{
-			get
-			{
-				return _address;
-			}
+			Init();
 		}
 
 		/// <summary>
@@ -500,10 +474,6 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
 		private void abort()
 		{
 			lock (_sync)
@@ -576,15 +546,6 @@ namespace WebSocketSharp.Server
 				   : null;
 		}
 
-		private void init()
-		{
-			_authSchemes = AuthenticationSchemes.Anonymous;
-			_listener = new TcpListener(_address, _port);
-			_services = new WebSocketServiceManager();
-			_state = ServerState.Ready;
-			_sync = new object();
-		}
-
 		private void processWebSocketRequest(TcpListenerWebSocketContext context)
 		{
 			var uri = context.RequestUri;
@@ -617,66 +578,16 @@ namespace WebSocketSharp.Server
 			host.StartSession(context);
 		}
 
-		private void receiveRequest()
-		{
-			while (true)
-			{
-				try
-				{
-					var cl = _listener.AcceptTcpClient();
-					ThreadPool.QueueUserWorkItem(
-					  state =>
-					  {
-						  try
-						  {
-							  var ctx = cl.GetWebSocketContext(null, _secure, _sslConfig);
-							  if (_authSchemes != AuthenticationSchemes.Anonymous && !authenticateRequest(_authSchemes, ctx))
-							  {
-								  return;
-							  }
+		//private void startReceiving()
+		//{
+		//	if (_reuseAddress)
+		//	{
+		//		_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+		//	}
 
-							  processWebSocketRequest(ctx);
-						  }
-						  catch (Exception ex)
-						  {
-							  cl.Close();
-						  }
-					  });
-				}
-				catch (SocketException ex)
-				{
-					break;
-				}
-				catch (Exception ex)
-				{
-					break;
-				}
-			}
-
-			if (IsListening)
-			{
-				abort();
-			}
-		}
-
-		private void startReceiving()
-		{
-			if (_reuseAddress)
-			{
-				_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-			}
-
-			_listener.Start();
-			_receiveRequestThread = new Thread(new ThreadStart(receiveRequest));
-			_receiveRequestThread.IsBackground = true;
-			_receiveRequestThread.Start();
-		}
-
-		private void stopReceiving(int millisecondsTimeout)
-		{
-			_listener.Stop();
-			_receiveRequestThread.Join(millisecondsTimeout);
-		}
+		//	_listener.Start();
+		//	_receiveTask = StartReceiving(_tokenSource.Token);
+		//}
 
 		private static bool tryCreateUri(string uriString, out Uri result, out string message)
 		{
@@ -693,10 +604,6 @@ namespace WebSocketSharp.Server
 
 			return true;
 		}
-
-		#endregion
-
-		#region Public Methods
 
 		/// <summary>
 		/// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
@@ -797,7 +704,7 @@ namespace WebSocketSharp.Server
 				}
 
 				_services.Start();
-				startReceiving();
+				_receiveTask = StartReceiving(_tokenSource.Token);
 
 				_state = ServerState.Start;
 			}
@@ -819,44 +726,8 @@ namespace WebSocketSharp.Server
 				_state = ServerState.ShuttingDown;
 			}
 
-			stopReceiving(5000);
+			StopReceiving();
 			_services.Stop(new CloseEventArgs(), true, true);
-
-			_state = ServerState.Stop;
-		}
-
-		/// <summary>
-		/// Stops receiving the WebSocket connection requests with the specified <see cref="ushort"/>
-		/// and <see cref="string"/>.
-		/// </summary>
-		/// <param name="code">
-		/// A <see cref="ushort"/> that represents the status code indicating the reason for stop.
-		/// </param>
-		/// <param name="reason">
-		/// A <see cref="string"/> that represents the reason for stop.
-		/// </param>
-		public void Stop(ushort code, string reason)
-		{
-			CloseEventArgs e = null;
-			lock (_sync)
-			{
-				var msg =
-				  _state.CheckIfStart() ??
-				  code.CheckIfValidCloseStatusCode() ??
-				  (e = new CloseEventArgs(code, reason)).RawData.CheckIfValidControlData("reason");
-
-				if (msg != null)
-				{
-					return;
-				}
-
-				_state = ServerState.ShuttingDown;
-			}
-
-			stopReceiving(5000);
-
-			var send = !code.IsReserved();
-			_services.Stop(e, send, send);
 
 			_state = ServerState.Stop;
 		}
@@ -889,27 +760,13 @@ namespace WebSocketSharp.Server
 				_state = ServerState.ShuttingDown;
 			}
 
-			stopReceiving(5000);
+			StopReceiving();
 
 			var send = !code.IsReserved();
 			_services.Stop(e, send, send);
 
 			_state = ServerState.Stop;
 		}
-
-		#endregion
-	//}
-
-	//		if (result.PathAndQuery != "/")
-	//		{
-	//			result = null;
-	//			message = "Includes the path or query component: " + uriString;
-
-	//			return false;
-	//		}
-
-	//		return true;
-	//	}
 
 		private void StopReceiving()
 		{
@@ -988,13 +845,6 @@ namespace WebSocketSharp.Server
 
 			return auth();
 		}
-
-		//private string CheckIfCertificateExists()
-		//{
-		//	return _secure && _certificate == null
-		//		   ? "The secure connection requires a server certificate."
-		//		   : null;
-		//}
 
 		private void Init()
 		{
