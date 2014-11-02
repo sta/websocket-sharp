@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AssemblyInfo.cs" company="Reimers.dk">
+// <copyright file="StreamReadInfo.cs" company="Reimers.dk">
 //   The MIT License
 //   Copyright (c) 2012-2014 sta.blockhead
 //   Copyright (c) 2014 Reimers.dk
@@ -11,33 +11,25 @@
 //   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   AssemblyInfo.cs
+//   Defines the StreamReadInfo type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
+namespace WebSocketSharp
+{
+	internal class StreamReadInfo
+	{
+		public StreamReadInfo(bool isFinal, ulong payloadLength, byte[] maskingKey)
+		{
+			IsFinal = isFinal;
+			PayloadLength = payloadLength;
+			MaskingKey = maskingKey;
+		}
 
-// Information about this assembly is defined by the following attributes. 
-// Change them to the values specific to your project.
+		public bool IsFinal { get; set; }
 
-[assembly: AssemblyTitle("WebSocket#")]
-[assembly: AssemblyDescription("A C# implementation of the WebSocket protocol client and server")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Reimers.dk")]
-[assembly: AssemblyProduct("websocket-sharp.dll")]
-[assembly: AssemblyCopyright("sta.blockhead, Reimers.dk")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
+		public ulong PayloadLength { get; set; }
 
-// The assembly version has the format "{Major}.{Minor}.{Build}.{Revision}".
-// The form "{Major}.{Minor}.*" will automatically update the build and revision,
-// and "{Major}.{Minor}.{Build}.*" will update just the revision.
-
-[assembly: AssemblyVersion("1.0.2.*")]
-
-// The following attributes are used to specify the signing key for the assembly, 
-// if desired. See the Mono documentation for more information about signing.
-
-//[assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile("")]
-[assembly: AssemblyFileVersionAttribute("1.0.2.0")]
+		public byte[] MaskingKey { get; set; }
+	}
+}

@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,7 +51,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Threading;
 
-// TODO: Logging.
 namespace WebSocketSharp.Net
 {
 	/// <summary>
@@ -54,25 +60,24 @@ namespace WebSocketSharp.Net
 	{
 		#region Private Fields
 
+		private readonly Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
 		private readonly Dictionary<HttpConnection, HttpConnection> _connections;
 		private readonly object _connectionsSync;
 		private readonly List<HttpListenerContext> _ctxQueue;
 		private readonly object _ctxQueueSync;
 		private readonly Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
 		private readonly object _ctxRegistrySync;
-		private readonly HttpListenerPrefixCollection _prefixes;
 		private readonly List<ListenerAsyncResult> _waitQueue;
 		private readonly object _waitQueueSync;
-		private AuthenticationSchemes _authSchemes;
-		private Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
-		private string _certFolderPath;
+		private readonly HttpListenerPrefixCollection _prefixes;
 		private Func<IIdentity, NetworkCredential> _credFinder;
-		private X509Certificate2 _defaultCert;
 		private bool _disposed;
+		private AuthenticationSchemes _authSchemes;
 		private bool _ignoreWriteExceptions;
 		private bool _listening;
 		private string _realm;
 		private bool _reuseAddress;
+		private ServerSslAuthConfiguration _sslConfig;
 
 		#endregion
 
@@ -98,6 +103,13 @@ namespace WebSocketSharp.Net
 
 			_waitQueue = new List<ListenerAsyncResult>();
 			_waitQueueSync = ((ICollection)_waitQueue).SyncRoot;
+		}
+
+		public HttpListener(ServerSslAuthConfiguration serverSslAuthConfiguration, Func<HttpListenerRequest, AuthenticationSchemes> authSchemeSelector)
+			: this()
+		{
+			_sslConfig = serverSslAuthConfiguration;
+			_authSchemeSelector = authSchemeSelector;
 		}
 
 		#endregion
@@ -178,78 +190,6 @@ namespace WebSocketSharp.Net
 			{
 				CheckDisposed();
 				return _authSchemeSelector;
-			}
-
-			set
-			{
-				CheckDisposed();
-				_authSchemeSelector = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the path to the folder in which stores the certificate files used to
-		/// authenticate the server on the secure connection.
-		/// </summary>
-		/// <remarks>
-		///   <para>
-		///   This property represents the path to the folder in which stores the certificate files
-		///   associated with each port number of added URI prefixes. A set of the certificate files
-		///   is a pair of the <c>'port number'.cer</c> (DER) and <c>'port number'.key</c>
-		///   (DER, RSA Private Key).
-		///   </para>
-		///   <para>
-		///   If this property is <see langword="null"/> or empty, the result of
-		///   <c>System.Environment.GetFolderPath
-		///   (<see cref="Environment.SpecialFolder.ApplicationData"/>)</c> is used as the default path.
-		///   </para>
-		/// </remarks>
-		/// <value>
-		/// A <see cref="string"/> that represents the path to the folder in which stores
-		/// the certificate files. The default value is <see langword="null"/>.
-		/// </value>
-		/// <exception cref="ObjectDisposedException">
-		/// This listener has been closed.
-		/// </exception>
-		public string CertificateFolderPath
-		{
-			get
-			{
-				CheckDisposed();
-				return _certFolderPath;
-			}
-
-			set
-			{
-				CheckDisposed();
-				_certFolderPath = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the default certificate used to authenticate the server on the secure
-		/// connection.
-		/// </summary>
-		/// <value>
-		/// A <see cref="X509Certificate2"/> used to authenticate the server if the certificate
-		/// files aren't found in the <see cref="CertificateFolderPath"/>. The default value is
-		/// <see langword="null"/>.
-		/// </value>
-		/// <exception cref="ObjectDisposedException">
-		/// This listener has been closed.
-		/// </exception>
-		public X509Certificate2 DefaultCertificate
-		{
-			get
-			{
-				CheckDisposed();
-				return _defaultCert;
-			}
-
-			set
-			{
-				CheckDisposed();
-				_defaultCert = value;
 			}
 		}
 
@@ -349,6 +289,32 @@ namespace WebSocketSharp.Net
 			{
 				CheckDisposed();
 				_realm = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+		/// for secure connection.
+		/// </summary>
+		/// <value>
+		/// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+		/// authenticate the server and optionally the client for secure connection.
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This listener has been closed.
+		/// </exception>
+		public ServerSslAuthConfiguration SslConfiguration
+		{
+			get
+			{
+				CheckDisposed();
+				return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration(null));
+			}
+
+			set
+			{
+				CheckDisposed();
+				_sslConfig = value;
 			}
 		}
 
@@ -767,7 +733,9 @@ namespace WebSocketSharp.Net
 		{
 			CheckDisposed();
 			if (_listening)
+			{
 				return;
+			}
 
 			EndPointManager.AddListener(this);
 			_listening = true;
@@ -783,7 +751,9 @@ namespace WebSocketSharp.Net
 		{
 			CheckDisposed();
 			if (!_listening)
+			{
 				return;
+			}
 
 			_listening = false;
 			EndPointManager.RemoveListener(this);

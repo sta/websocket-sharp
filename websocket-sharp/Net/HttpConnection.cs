@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.IO;
 using System.Net;
@@ -87,7 +94,13 @@ namespace WebSocketSharp.Net
       var netStream = new NetworkStream (socket, false);
       if (_secure) {
         var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (listener.Certificate);
+        var sslConfig = listener.SslConfiguration;
+        sslStream.AuthenticateAsServer (
+          sslConfig.ServerCertificate,
+          sslConfig.ClientCertificateRequired,
+          sslConfig.EnabledSslProtocols,
+          sslConfig.CheckCertificateRevocation);
+
         _stream = sslStream;
       }
       else {

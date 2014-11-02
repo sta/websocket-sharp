@@ -42,7 +42,7 @@ namespace WebSocketSharp.Tests
 				_sut.OnError -= PrintError;
 				if (_sut.ReadyState != WebSocketState.Closed)
 				{
-					_sut.Close();
+					_sut.Dispose();
 				}
 			}
 
@@ -70,7 +70,7 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						echoReceived = e.Data == Message;
+						echoReceived = e.Text.ReadToEnd() == Message;
 						waitHandle.Set();
 					};
 				_sut.OnMessage += onMessage;
@@ -93,7 +93,8 @@ namespace WebSocketSharp.Tests
 				var echoReceived = false;
 				EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						echoReceived = e.Data == Message;
+						var readToEnd = e.Text.ReadToEnd();
+						echoReceived = readToEnd == Message;
 						waitHandle.Set();
 					};
 				_sut.OnMessage += onMessage;

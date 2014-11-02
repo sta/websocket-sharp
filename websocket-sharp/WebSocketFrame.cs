@@ -504,7 +504,9 @@ Extended Payload Length: {7}
 						  : null;
 
 			if (err != null)
+			{
 				throw new WebSocketException(CloseStatusCode.ProtocolError, err);
+			}
 
 			var frame = new WebSocketFrame();
 			frame._fin = fin;
@@ -525,8 +527,9 @@ Extended Payload Length: {7}
 
 			var extPayloadLen = size > 0 ? stream.ReadBytes(size) : new byte[0];
 			if (size > 0 && extPayloadLen.Length != size)
-				throw new WebSocketException(
-				  "The 'Extended Payload Length' of a frame cannot be read from the data source.");
+			{
+				throw new WebSocketException("The 'Extended Payload Length' of a frame cannot be read from the data source.");
+			}
 
 			frame._extPayloadLength = extPayloadLen;
 
@@ -535,8 +538,9 @@ Extended Payload Length: {7}
 			var masked = mask == Mask.Mask;
 			var maskingKey = masked ? stream.ReadBytes(4) : new byte[0];
 			if (masked && maskingKey.Length != 4)
-				throw new WebSocketException(
-				  "The 'Masking Key' of a frame cannot be read from the data source.");
+			{
+				throw new WebSocketException("The 'Masking Key' of a frame cannot be read from the data source.");
+			}
 
 			frame._maskingKey = maskingKey;
 
@@ -549,21 +553,23 @@ Extended Payload Length: {7}
 						  : extPayloadLen.ToUInt64(ByteOrder.Big);
 
 			byte[] data = null;
+
 			if (len > 0)
 			{
 				// Check if allowable max length.
 				if (payloadLen > 126 && len > PayloadData.MaxLength)
-					throw new WebSocketException(
-					  CloseStatusCode.TooBig,
-					  "The length of 'Payload Data' of a frame is greater than the allowable max length.");
+				{
+					throw new WebSocketException(CloseStatusCode.TooBig, "The length of 'Payload Data' of a frame is greater than the allowable max length.");
+				}
 
 				data = payloadLen > 126
-					   ? stream.ReadBytes((long)len, 1024)
-					   : stream.ReadBytes((int)len);
+					? stream.ReadBytes((long)len, 1024)
+				: stream.ReadBytes((int)len);
 
 				if (data.LongLength != (long)len)
-					throw new WebSocketException(
-					  "The 'Payload Data' of a frame cannot be read from the data source.");
+				{
+					throw new WebSocketException("The 'Payload Data' of a frame cannot be read from the data source.");
+				}
 			}
 			else
 			{
@@ -572,7 +578,9 @@ Extended Payload Length: {7}
 
 			frame._payloadData = new PayloadData(data, masked);
 			if (unmask && masked)
+			{
 				frame.Unmask();
+			}
 
 			return frame;
 		}
@@ -653,8 +661,7 @@ Extended Payload Length: {7}
 
 		public IEnumerator<byte> GetEnumerator()
 		{
-			foreach (var b in ToByteArray())
-				yield return b;
+			return ((IEnumerable<byte>)ToByteArray()).GetEnumerator();
 		}
 
 		public void Print(bool dumped)
@@ -683,18 +690,26 @@ Extended Payload Length: {7}
 				buff.Write(((ushort)header).InternalToByteArray(ByteOrder.Big), 0, 2);
 
 				if (_payloadLength > 125)
+				{
 					buff.Write(_extPayloadLength, 0, _extPayloadLength.Length);
+				}
 
 				if (_mask == Mask.Mask)
+				{
 					buff.Write(_maskingKey, 0, _maskingKey.Length);
+				}
 
 				if (_payloadLength > 0)
 				{
 					var payload = _payloadData.ToByteArray();
 					if (_payloadLength < 127)
+					{
 						buff.Write(payload, 0, payload.Length);
+					}
 					else
+					{
 						buff.WriteBytes(payload);
+					}
 				}
 
 				buff.Close();

@@ -53,14 +53,16 @@ namespace WebSocketSharp.Net
 	/// <remarks>
 	/// The HttpListenerResponse class cannot be inherited.
 	/// </remarks>
-	internal sealed class HttpListenerResponse : IDisposable
+	public sealed class HttpListenerResponse : IDisposable
 	{
-		private readonly HttpListenerContext _context;
+		#region Private Fields
+
 		private bool _chunked;
 		private Encoding _contentEncoding;
 		private long _contentLength;
 		private bool _contentLengthWasSet;
 		private string _contentType;
+		private HttpListenerContext _context;
 		private CookieCollection _cookies;
 		private bool _disposed;
 		private bool _forceCloseChunked;
@@ -73,6 +75,10 @@ namespace WebSocketSharp.Net
 		private string _statusDescription;
 		private Version _version;
 
+		#endregion
+
+		#region Internal Constructors
+
 		internal HttpListenerResponse(HttpListenerContext context)
 		{
 			_context = context;
@@ -82,6 +88,10 @@ namespace WebSocketSharp.Net
 			_statusDescription = "OK";
 			_version = HttpVersion.Version11;
 		}
+
+		#endregion
+
+		#region Internal Properties
 
 		internal bool ConnectionClose
 		{
@@ -107,6 +117,10 @@ namespace WebSocketSharp.Net
 			}
 		}
 
+		#endregion
+
+		#region Public Properties
+
 		/// <summary>
 		/// Gets or sets the encoding for the entity body data included in the response.
 		/// </summary>
@@ -129,7 +143,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				_contentEncoding = value;
 			}
 		}
@@ -159,7 +173,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value < 0)
 					throw new ArgumentOutOfRangeException("Less than zero.", "value");
 
@@ -195,16 +209,12 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value == null)
-				{
 					throw new ArgumentNullException("value");
-				}
 
 				if (value.Length == 0)
-				{
 					throw new ArgumentException("An empty string.", "value");
-				}
 
 				_contentType = value;
 			}
@@ -231,7 +241,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				_cookies = value;
 			}
 		}
@@ -270,7 +280,7 @@ namespace WebSocketSharp.Net
 
 				// TODO: Check if this is marked readonly after headers are sent.
 
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value == null)
 					throw new ArgumentNullException("value");
 
@@ -300,7 +310,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				_keepAlive = value;
 			}
 		}
@@ -318,7 +328,7 @@ namespace WebSocketSharp.Net
 		{
 			get
 			{
-				this.CheckDisposed();
+				checkDisposed();
 				return _outputStream ?? (_outputStream = _context.Connection.GetResponseStream());
 			}
 		}
@@ -351,7 +361,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value == null)
 					throw new ArgumentNullException("value");
 
@@ -386,7 +396,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value.Length == 0)
 					throw new ArgumentException("An empty string.", "value");
 
@@ -415,7 +425,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				_chunked = value;
 			}
 		}
@@ -445,7 +455,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				if (value < 100 || value > 999)
 					throw new System.Net.ProtocolViolationException(
 					  "StatusCode isn't between 100 and 999.");
@@ -476,21 +486,25 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				this.CheckDisposedOrHeadersSent();
+				checkDisposedOrHeadersSent();
 				_statusDescription = value != null && value.Length > 0
 									 ? value
 									 : _statusCode.GetStatusDescription();
 			}
 		}
 
-		private bool CanAddOrUpdate(Cookie cookie)
+		#endregion
+
+		#region Private Methods
+
+		private bool canAddOrUpdate(Cookie cookie)
 		{
 			if (_cookies == null || _cookies.Count == 0)
 			{
 				return true;
 			}
 
-			var found = this.FindCookie(cookie).ToList();
+			var found = findCookie(cookie).ToList();
 			if (found.Count == 0)
 			{
 				return true;
@@ -500,7 +514,7 @@ namespace WebSocketSharp.Net
 			return found.Any(c => c.Version == ver);
 		}
 
-		private void CheckDisposed()
+		private void checkDisposed()
 		{
 			if (_disposed)
 			{
@@ -508,7 +522,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		private void CheckDisposedOrHeadersSent()
+		private void checkDisposedOrHeadersSent()
 		{
 			if (_disposed)
 			{
@@ -516,7 +530,9 @@ namespace WebSocketSharp.Net
 			}
 
 			if (_headersWereSent)
+			{
 				throw new InvalidOperationException("Cannot be changed after headers are sent.");
+			}
 		}
 
 		private void close(bool force)
@@ -525,24 +541,27 @@ namespace WebSocketSharp.Net
 			_context.Connection.Close(force);
 		}
 
-		private IEnumerable<Cookie> FindCookie(Cookie cookie)
+		private IEnumerable<Cookie> findCookie(Cookie cookie)
 		{
 			var name = cookie.Name;
 			var domain = cookie.Domain;
 			var path = cookie.Path;
 			if (_cookies != null)
 			{
-				foreach (var c in from Cookie c in _cookies
-								  where
-									  c.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
-									  && c.Domain.Equals(domain, StringComparison.OrdinalIgnoreCase)
-									  && c.Path.Equals(path, StringComparison.Ordinal)
-								  select c)
-				{
-					yield return c;
-				}
+				return from Cookie c in _cookies
+				       where
+					       c.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
+					       && c.Domain.Equals(domain, StringComparison.OrdinalIgnoreCase)
+					       && c.Path.Equals(path, StringComparison.Ordinal)
+				       select c;
 			}
+
+			return Enumerable.Empty<Cookie>();
 		}
+
+		#endregion
+
+		#region Internal Methods
 
 		internal void SendHeaders(MemoryStream stream, bool closing)
 		{
@@ -550,19 +569,19 @@ namespace WebSocketSharp.Net
 			{
 				var contentType = _contentEncoding != null &&
 								  _contentType.IndexOf("charset=", StringComparison.Ordinal) == -1
-								  ? string.Format(
+								  ? String.Format(
 									  "{0}; charset={1}", _contentType, _contentEncoding.WebName)
 								  : _contentType;
 
-				_headers.SetInternally("Content-Type", contentType, true);
+				_headers.InternalSet("Content-Type", contentType, true);
 			}
 
 			if (_headers["Server"] == null)
-				_headers.SetInternally("Server", "websocket-sharp/1.0", true);
+				_headers.InternalSet("Server", "websocket-sharp/1.0", true);
 
 			var provider = CultureInfo.InvariantCulture;
 			if (_headers["Date"] == null)
-				_headers.SetInternally("Date", DateTime.UtcNow.ToString("r", provider), true);
+				_headers.InternalSet("Date", DateTime.UtcNow.ToString("r", provider), true);
 
 			if (!_chunked)
 			{
@@ -573,7 +592,7 @@ namespace WebSocketSharp.Net
 				}
 
 				if (_contentLengthWasSet)
-					_headers.SetInternally("Content-Length", _contentLength.ToString(provider), true);
+					_headers.InternalSet("Content-Length", _contentLength.ToString(provider), true);
 			}
 
 			var reqVer = _context.Request.ProtocolVersion;
@@ -604,12 +623,12 @@ namespace WebSocketSharp.Net
 			// They sent both KeepAlive: true and Connection: close!?
 			if (!_keepAlive || connClose)
 			{
-				_headers.SetInternally("Connection", "close", true);
+				_headers.InternalSet("Connection", "close", true);
 				connClose = true;
 			}
 
 			if (_chunked)
-				_headers.SetInternally("Transfer-Encoding", "chunked", true);
+				_headers.InternalSet("Transfer-Encoding", "chunked", true);
 
 			var reuses = _context.Connection.Reuses;
 			if (reuses >= 100)
@@ -617,26 +636,26 @@ namespace WebSocketSharp.Net
 				_forceCloseChunked = true;
 				if (!connClose)
 				{
-					_headers.SetInternally("Connection", "close", true);
+					_headers.InternalSet("Connection", "close", true);
 					connClose = true;
 				}
 			}
 
 			if (!connClose)
 			{
-				_headers.SetInternally(
-				  "Keep-Alive", string.Format("timeout=15,max={0}", 100 - reuses), true);
+				_headers.InternalSet(
+				  "Keep-Alive", String.Format("timeout=15,max={0}", 100 - reuses), true);
 
 				if (reqVer < HttpVersion.Version11)
-					_headers.SetInternally("Connection", "keep-alive", true);
+					_headers.InternalSet("Connection", "keep-alive", true);
 			}
 
 			if (_location != null)
-				_headers.SetInternally("Location", _location, true);
+				_headers.InternalSet("Location", _location, true);
 
 			if (_cookies != null)
 				foreach (Cookie cookie in _cookies)
-					_headers.SetInternally("Set-Cookie", cookie.ToResponseString(), true);
+					_headers.InternalSet("Set-Cookie", cookie.ToResponseString(), true);
 
 			var enc = _contentEncoding ?? Encoding.Default;
 			var writer = new StreamWriter(stream, enc, 256);
@@ -653,15 +672,17 @@ namespace WebSocketSharp.Net
 			_headersWereSent = true;
 		}
 
+		#endregion
+
+		#region Public Methods
+
 		/// <summary>
 		/// Closes the connection to the client without returning a response.
 		/// </summary>
 		public void Abort()
 		{
 			if (_disposed)
-			{
 				return;
-			}
 
 			close(true);
 		}
@@ -709,7 +730,7 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void AddHeader(string name, string value)
 		{
-			this.CheckDisposedOrHeadersSent();
+			checkDisposedOrHeadersSent();
 			_headers.Set(name, value);
 		}
 
@@ -730,7 +751,7 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void AppendCookie(Cookie cookie)
 		{
-			this.CheckDisposedOrHeadersSent();
+			checkDisposedOrHeadersSent();
 			Cookies.Add(cookie);
 		}
 
@@ -777,7 +798,7 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void AppendHeader(string name, string value)
 		{
-			this.CheckDisposedOrHeadersSent();
+			checkDisposedOrHeadersSent();
 			_headers.Add(name, value);
 		}
 
@@ -788,9 +809,7 @@ namespace WebSocketSharp.Net
 		public void Close()
 		{
 			if (_disposed)
-			{
 				return;
-			}
 
 			close(false);
 		}
@@ -858,7 +877,7 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void CopyFrom(HttpListenerResponse templateResponse)
 		{
-			this.CheckDisposedOrHeadersSent();
+			checkDisposedOrHeadersSent();
 
 			_headers.Clear();
 			_headers.Add(templateResponse._headers);
@@ -908,31 +927,31 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void SetCookie(Cookie cookie)
 		{
-			this.CheckDisposedOrHeadersSent();
+			checkDisposedOrHeadersSent();
 			if (cookie == null)
-			{
 				throw new ArgumentNullException("cookie");
-			}
 
-			if (!this.CanAddOrUpdate(cookie))
-			{
+			if (!canAddOrUpdate(cookie))
 				throw new ArgumentException("Cannot be replaced.", "cookie");
-			}
 
 			Cookies.Add(cookie);
 		}
 
+		#endregion
+
+		#region Explicit Interface Implementation
+
 		/// <summary>
 		/// Releases all resources used by the <see cref="HttpListenerResponse"/>.
 		/// </summary>
-		public void Dispose()
+		void IDisposable.Dispose()
 		{
 			if (_disposed)
-			{
 				return;
-			}
 
 			close(true); // Same as Abort.
 		}
+
+		#endregion
 	}
 }

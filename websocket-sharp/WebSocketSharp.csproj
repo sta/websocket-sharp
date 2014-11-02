@@ -71,12 +71,16 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="FragmentedMessage.cs" />
     <Compile Include="MessageEventArgs.cs" />
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
+    <Compile Include="Net\ClientSslAuthConfiguration.cs" />
+    <Compile Include="Net\ServerSslAuthConfiguration.cs" />
+    <Compile Include="StreamReadInfo.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
@@ -115,6 +119,8 @@
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
+    <Compile Include="WebSocketFrameHeader.cs" />
+    <Compile Include="WebSocketMessage.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />
@@ -139,6 +145,8 @@
     <Compile Include="HttpResponse.cs" />
     <Compile Include="Server\WebSocketBehavior.cs" />
     <Compile Include="Net\HttpListenerPrefix.cs" />
+    <Compile Include="WebSocketDataStream.cs" />
+    <Compile Include="WebSocketStreamReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -19,17 +19,18 @@ namespace WebSocketSharp.Tests
 {
 	using System;
 	using System.Diagnostics;
+	using System.Linq;
 	using System.Security.Cryptography.X509Certificates;
 	using System.Threading;
 	using System.Threading.Tasks;
 
 	using NUnit.Framework;
 
+	using WebSocketSharp.Net;
 	using WebSocketSharp.Server;
 
 	public sealed class SecureWebSocketServerTests
 	{
-		[Ignore("Must create test certificate.")]
 		public class GivenASecureWebSocketServer
 		{
 			private WebSocketServer _sut;
@@ -38,8 +39,9 @@ namespace WebSocketSharp.Tests
 			public void Setup()
 			{
 				var cert = GetRandomCertificate();
-				_sut = new WebSocketServer(443, cert);
+				_sut = new WebSocketServer(443, new ServerSslAuthConfiguration(cert));
 				_sut.AddWebSocketService<TestEchoService>("/echo");
+				_sut.AddWebSocketService<TestRadioService>("/radio");
 				_sut.Start();
 			}
 
@@ -68,6 +70,19 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
+			public async Task ClientCanConnectAsyncToServer()
+			{
+				using (var client = new WebSocket("wss://localhost:443/echo"))
+				{
+					await client.ConnectAsync();
+
+					Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+
+					await client.CloseAsync();
+				}
+			}
+
+			[Test]
 			public void WhenClientSendsTextMessageThenResponds()
 			{
 				const string Message = "Message";
@@ -76,7 +91,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -104,7 +119,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								waitHandle.Set();
 							}
@@ -133,7 +148,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -168,7 +183,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							if (e.Data == Message)
+							if (e.Text.ReadToEnd() == Message)
 							{
 								if (Interlocked.Increment(ref count) == multiplicity)
 								{
@@ -192,7 +207,78 @@ namespace WebSocketSharp.Tests
 					client.Close();
 				}
 			}
-			
+
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
+			{
+				var responseLength = 0;
+				const int Length = 1000000;
+
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("wss://localhost:443/echo"))
+				{
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+					{
+						while (e.Data.ReadByte() == 123)
+						{
+							responseLength++;
+						}
+					};
+
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					await client.SendAsync(stream);
+
+					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+
+					Assert.AreEqual(Length, responseLength);
+
+					client.OnMessage -= onMessage;
+
+					await client.CloseAsync();
+				}
+			}
+
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
+			{
+				var responseLength = 0;
+				const int Length = 1000000;
+
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+
+				var sender = new WebSocket("wss://localhost:443/radio");
+				var client = new WebSocket("wss://localhost:443/radio");
+
+				EventHandler<MessageEventArgs> onMessage = (s, e) =>
+				{
+					while (e.Data.ReadByte() == 123)
+					{
+						responseLength++;
+					}
+				};
+
+				client.OnMessage += onMessage;
+
+				sender.Connect();
+				client.Connect();
+				await sender.SendAsync(stream);
+
+				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 5000);
+
+				Assert.AreEqual(Length, responseLength);
+
+				await client.CloseAsync();
+				await sender.CloseAsync();
+
+				client.OnMessage -= onMessage;
+				sender.Dispose();
+				client.Dispose();
+			}
+
 			private static X509Certificate2 GetRandomCertificate()
 			{
 				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
@@ -207,30 +293,6 @@ namespace WebSocketSharp.Tests
 				{
 					st.Close();
 				}
-			}
-		}
-
-		private class TestEchoService : WebSocketBehavior
-		{
-			protected override void OnMessage(MessageEventArgs e)
-			{
-				switch (e.Type)
-				{
-					case Opcode.Text:
-						this.Send(e.Data);
-						break;
-					case Opcode.Binary:
-						this.Send(e.RawData);
-						break;
-					case Opcode.Cont:
-					case Opcode.Close:
-					case Opcode.Ping:
-					case Opcode.Pong:
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-
-				base.OnMessage(e);
 			}
 		}
 	}

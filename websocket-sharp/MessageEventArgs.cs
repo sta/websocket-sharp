@@ -31,6 +31,8 @@ using System.Text;
 
 namespace WebSocketSharp
 {
+	using System.IO;
+
 	/// <summary>
 	/// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
 	/// </summary>
@@ -46,84 +48,35 @@ namespace WebSocketSharp
 	/// </remarks>
 	public class MessageEventArgs : EventArgs
 	{
-		private readonly string _data;
-		private readonly Opcode _opcode;
-		private readonly byte[] _rawData;
+		private readonly WebSocketMessage _message;
 
-		internal MessageEventArgs(WebSocketFrame frame)
+		internal MessageEventArgs(WebSocketMessage message)
 		{
-			_opcode = frame.Opcode;
-			_rawData = frame.PayloadData.ApplicationData;
-			_data = ConvertToString(_opcode, _rawData);
+			_message = message;
 		}
 
-		internal MessageEventArgs(Opcode opcode, byte[] rawData)
-		{
-			if ((ulong)rawData.LongLength > PayloadData.MaxLength)
-				throw new WebSocketException(CloseStatusCode.TooBig);
-
-			_opcode = opcode;
-			_rawData = rawData;
-			_data = ConvertToString(opcode, rawData);
-		}
-
-		/// <summary>
-		/// Gets the message data as a <see cref="string"/>.
-		/// </summary>
-		/// <remarks>
-		///   <para>
-		///   If the message data is empty, this property returns <see cref="string.Empty"/>.
-		///   </para>
-		///   <para>
-		///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
-		///   </para>
-		/// </remarks>
-		/// <value>
-		/// A <see cref="string"/> that represents the message data.
-		/// </value>
-		public string Data
+		public Opcode Opcode
 		{
 			get
 			{
-				return _data;
+				return _message.Opcode;
 			}
 		}
 
-		/// <summary>
-		/// Gets the message data as an array of <see cref="byte"/>.
-		/// </summary>
-		/// <value>
-		/// An array of <see cref="byte"/> that represents the message data.
-		/// </value>
-		public byte[] RawData
+		public StreamReader Text
 		{
 			get
 			{
-				return _rawData;
+				return _message.Text;
 			}
 		}
 
-		/// <summary>
-		/// Gets the type of the message.
-		/// </summary>
-		/// <value>
-		/// <see cref="Opcode.Text"/> or <see cref="Opcode.Binary"/>.
-		/// </value>
-		public Opcode Type
+		public Stream Data
 		{
 			get
 			{
-				return _opcode;
+				return _message.RawData;
 			}
-		}
-
-		private static string ConvertToString(Opcode opcode, byte[] rawData)
-		{
-			return rawData.LongLength == 0
-				   ? string.Empty
-				   : opcode == Opcode.Text
-					 ? Encoding.UTF8.GetString(rawData)
-					 : opcode.ToString();
 		}
 	}
 }
