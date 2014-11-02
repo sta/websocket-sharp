@@ -80,7 +80,6 @@ namespace WebSocketSharp
 		private readonly ClientSslAuthConfiguration _sslConfig;
 		private AuthenticationChallenge _authChallenge;
 		private string _base64Key;
-		private LocalCertificateSelectionCallback _certSelectionCallback;
 		private RemoteCertificateValidationCallback _certValidationCallback;
 		private Action _closeContext;
 		private CompressionMethod _compression = CompressionMethod.Deflate;
@@ -243,43 +242,6 @@ namespace WebSocketSharp
 		/// Occurs when the WebSocket connection has been established.
 		/// </summary>
 		public event EventHandler OnOpen;
-
-		/// <summary>
-		/// Gets or sets the callback used to select a client certificate to supply to the server.
-		/// </summary>
-		/// <remarks>
-		/// If the value of this property is <see langword="null"/>, no client certificate will be
-		/// supplied.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
-		/// used to select the client certificate. The default value is <see langword="null"/>.
-		/// </value>
-		public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
-		{
-			get
-			{
-				return _certSelectionCallback;
-			}
-
-			set
-			{
-				lock (_forConn)
-				{
-					var msg = CheckIfAvailable(false, false);
-					if (msg != null)
-					{
-						Error(
-						  "An error has occurred in setting the client certificate selection callback.",
-						  null);
-
-						return;
-					}
-
-					_certSelectionCallback = value;
-				}
-			}
-		}
 
 		/// <summary>
 		/// Gets the HTTP cookies included in the WebSocket connection request and response.
@@ -612,34 +574,6 @@ namespace WebSocketSharp
 		}
 
 		/// <summary>
-		/// Closes the WebSocket connection with the specified <see cref="ushort"/>,
-		/// and releases all associated resources.
-		/// </summary>
-		/// <remarks>
-		/// This method emits a <see cref="OnError"/> event if <paramref name="code"/>
-		/// isn't in the allowable range of the close status code.
-		/// </remarks>
-		/// <param name="code">
-		/// A <see cref="ushort"/> that represents the status code indicating the reason
-		/// for the close.
-		/// </param>
-		public void Close(ushort code)
-		{
-			var msg = _readyState.CheckIfClosable() ??
-					  code.CheckIfValidCloseStatusCode();
-
-			if (msg != null)
-			{
-				Error("An error has occurred in closing the connection.", null);
-
-				return;
-			}
-
-			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			InnerClose(new CloseEventArgs(code), send, send);
-		}
-
-		/// <summary>
 		/// Closes the WebSocket connection with the specified <see cref="CloseStatusCode"/>,
 		/// and releases all associated resources.
 		/// </summary>
@@ -736,44 +670,6 @@ namespace WebSocketSharp
 
 			var send = _readyState == WebSocketState.Open && !code.IsReserved();
 			InnerCloseAsync(new CloseEventArgs(code), send, send);
-		}
-
-		/// <summary>
-		/// Closes the WebSocket connection asynchronously with the specified <see cref="ushort"/>
-		/// and <see cref="string"/>, and releases all associated resources.
-		/// </summary>
-		/// <remarks>
-		///   <para>
-		///   This method doesn't wait for the close to be complete.
-		///   </para>
-		///   <para>
-		///   This method emits a <see cref="OnError"/> event if <paramref name="code"/> isn't in
-		///   the allowable range of the close status code or the size of <paramref name="reason"/>
-		///   is greater than 123 bytes.
-		///   </para>
-		/// </remarks>
-		/// <param name="code">
-		/// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
-		/// </param>
-		/// <param name="reason">
-		/// A <see cref="string"/> that represents the reason for the close.
-		/// </param>
-		public void CloseAsync(ushort code, string reason)
-		{
-			CloseEventArgs e = null;
-			var msg = _readyState.CheckIfClosable() ??
-					  code.CheckIfValidCloseStatusCode() ??
-					  (e = new CloseEventArgs(code, reason)).RawData.CheckIfValidControlData("reason");
-
-			if (msg != null)
-			{
-				Error("An error has occurred in closing the connection.", null);
-
-				return;
-			}
-
-			var send = _readyState == WebSocketState.Open && !code.IsReserved();
-			InnerCloseAsync(e, send, send);
 		}
 
 		/// <summary>
@@ -2032,11 +1928,12 @@ namespace WebSocketSharp
 
 			if (_secure)
 			{
+				var certSelectionCallback = _sslConfig != null ? _sslConfig.CertificateSelection : null;
 				var sslStream = new SslStream(
 				  _stream,
 				  false,
 				  _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
-				  _certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
+				  certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
 
 				if (_sslConfig == null)
 				{

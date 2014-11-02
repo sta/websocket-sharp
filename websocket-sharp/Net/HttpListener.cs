@@ -733,7 +733,9 @@ namespace WebSocketSharp.Net
 		{
 			CheckDisposed();
 			if (_listening)
+			{
 				return;
+			}
 
 			EndPointManager.AddListener(this);
 			_listening = true;
@@ -749,7 +751,9 @@ namespace WebSocketSharp.Net
 		{
 			CheckDisposed();
 			if (!_listening)
+			{
 				return;
+			}
 
 			_listening = false;
 			EndPointManager.RemoveListener(this);

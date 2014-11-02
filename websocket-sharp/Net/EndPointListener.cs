@@ -90,19 +90,6 @@ namespace WebSocketSharp.Net
 		  ServerSslAuthConfiguration sslConfiguration,
 		  bool reuseAddress)
 		{
-			//if (secure)
-			//{
-			//	var cert = getCertificate(port, certificateFolderPath, sslConfiguration.ServerCertificate);
-			//	if (cert == null)
-			//	{
-			//		throw new ArgumentException("No server certificate could be found.");
-			//	}
-
-			//	_secure = true;
-			//	_sslConfig = sslConfiguration;
-			//	_sslConfig.ServerCertificate = cert;
-			//}
-
 			_sslConfig = sslConfiguration;
 
 			_prefixes = new Dictionary<HttpListenerPrefix, HttpListener>();
@@ -177,51 +164,13 @@ namespace WebSocketSharp.Net
 			EndPointManager.RemoveEndPoint(this, _endpoint);
 		}
 
-		private static RSACryptoServiceProvider createRSAFromFile(string filename)
-		{
-			byte[] pvk = null;
-			using (var fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-			{
-				pvk = new byte[fs.Length];
-				fs.Read(pvk, 0, pvk.Length);
-			}
-
-			var rsa = new RSACryptoServiceProvider();
-			rsa.ImportCspBlob(pvk);
-
-			return rsa;
-		}
-
-		private static X509Certificate2 getCertificate(int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
-		{
-			if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-				certificateFolderPath = _defaultCertFolderPath;
-
-			try
-			{
-				var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
-				var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
-				if (File.Exists(cer) && File.Exists(key))
-				{
-					var cert = new X509Certificate2(cer);
-					cert.PrivateKey = createRSAFromFile(key);
-
-					return cert;
-				}
-			}
-			catch
-			{
-			}
-
-			return defaultCertificate;
-		}
-
-		private static HttpListener matchFromList(
-		  string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
+		private static HttpListener MatchFromList(string path, IEnumerable<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
 		{
 			prefix = null;
 			if (list == null)
+			{
 				return null;
+			}
 
 			HttpListener bestMatch = null;
 			var bestLen = -1;
@@ -229,7 +178,9 @@ namespace WebSocketSharp.Net
 			{
 				var ppath = pref.Path;
 				if (ppath.Length < bestLen)
+				{
 					continue;
+				}
 
 				if (path.StartsWith(ppath))
 				{
@@ -341,24 +292,34 @@ namespace WebSocketSharp.Net
 				}
 
 				if (bestLen != -1)
+				{
 					return bestMatch;
+				}
 			}
 
 			var list = _unhandled;
-			bestMatch = matchFromList(host, path, list, out prefix);
+			bestMatch = MatchFromList(path, list, out prefix);
 			if (path != pathSlash && bestMatch == null)
-				bestMatch = matchFromList(host, pathSlash, list, out prefix);
+			{
+				bestMatch = MatchFromList(pathSlash, list, out prefix);
+			}
 
 			if (bestMatch != null)
+			{
 				return bestMatch;
+			}
 
 			list = _all;
-			bestMatch = matchFromList(host, path, list, out prefix);
+			bestMatch = MatchFromList(path, list, out prefix);
 			if (path != pathSlash && bestMatch == null)
-				bestMatch = matchFromList(host, pathSlash, list, out prefix);
+			{
+				bestMatch = MatchFromList(pathSlash, list, out prefix);
+			}
 
 			if (bestMatch != null)
+			{
 				return bestMatch;
+			}
 
 			return null;
 		}

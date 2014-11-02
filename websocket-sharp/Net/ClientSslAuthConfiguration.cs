@@ -34,105 +34,102 @@
  */
 #endregion
 
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-
 namespace WebSocketSharp.Net
 {
-  /// <summary>
-  /// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
-  /// as a client.
-  /// </summary>
-  public class ClientSslAuthConfiguration
-  {
-    #region Public Constructors
+	using System.Net.Security;
+	using System.Security.Authentication;
+	using System.Security.Cryptography.X509Certificates;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/>.
-    /// </summary>
-    /// <param name="clientCertificates">
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
-    /// </param>
-    public ClientSslAuthConfiguration (X509CertificateCollection clientCertificates)
-      : this (clientCertificates, SslProtocols.Default, false)
-    {
-    }
+	/// <summary>
+	/// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
+	/// as a client.
+	/// </summary>
+	public class ClientSslAuthConfiguration
+	{
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
+		/// the specified <paramref name="clientCertificates"/>.
+		/// </summary>
+		/// <param name="clientCertificates">
+		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
+		/// </param>
+		public ClientSslAuthConfiguration(X509CertificateCollection clientCertificates)
+			: this(clientCertificates, SslProtocols.Default, null, false)
+		{
+		}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/> and
-    /// <paramref name="enabledSslProtocols"/>.
-    /// </summary>
-    /// <param name="clientCertificates">
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
-    /// </param>
-    /// <param name="enabledSslProtocols">
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </param>
-    public ClientSslAuthConfiguration (
-      X509CertificateCollection clientCertificates, SslProtocols enabledSslProtocols)
-      : this (clientCertificates, enabledSslProtocols, false)
-    {
-    }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
+		/// the specified <paramref name="clientCertificates"/> and
+		/// <paramref name="enabledSslProtocols"/>.
+		/// </summary>
+		/// <param name="clientCertificates">
+		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
+		/// </param>
+		/// <param name="enabledSslProtocols">
+		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+		/// authentication.
+		/// </param>
+		public ClientSslAuthConfiguration(
+		  X509CertificateCollection clientCertificates, SslProtocols enabledSslProtocols)
+			: this(clientCertificates, enabledSslProtocols, null, false)
+		{
+		}
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>,
-    /// and <paramref name="checkCertificateRevocation"/>.
-    /// </summary>
-    /// <param name="clientCertificates">
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
-    /// </param>
-    /// <param name="enabledSslProtocols">
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </param>
-    /// <param name="checkCertificateRevocation">
-    /// <c>true</c> if the certificate revocation list is checked during authentication;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public ClientSslAuthConfiguration (
-      X509CertificateCollection clientCertificates,
-      SslProtocols enabledSslProtocols,
-      bool checkCertificateRevocation)
-    {
-      ClientCertificates = clientCertificates;
-      EnabledSslProtocols = enabledSslProtocols;
-      CheckCertificateRevocation = checkCertificateRevocation;
-    }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
+		/// the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>,
+		/// and <paramref name="checkCertificateRevocation"/>.
+		/// </summary>
+		/// <param name="clientCertificates">
+		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
+		/// </param>
+		/// <param name="enabledSslProtocols">
+		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+		/// authentication.
+		/// </param>
+		/// <param name="checkCertificateRevocation">
+		/// <c>true</c> if the certificate revocation list is checked during authentication;
+		/// otherwise, <c>false</c>.
+		/// </param>
+		public ClientSslAuthConfiguration(
+		  X509CertificateCollection clientCertificates,
+		  SslProtocols enabledSslProtocols,
+		LocalCertificateSelectionCallback certificateSelection,
+		  bool checkCertificateRevocation)
+		{
+			ClientCertificates = clientCertificates;
+			EnabledSslProtocols = enabledSslProtocols;
+			CertificateSelection = certificateSelection;
+			CheckCertificateRevocation = checkCertificateRevocation;
+		}
 
-    #endregion
+		/// <summary>
+		/// Gets or sets a value indicating whether the certificate revocation list is checked
+		/// during authentication.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
+		/// </value>
+		public bool CheckCertificateRevocation { get; set; }
 
-    #region Public Properties
+		/// <summary>
+		/// Gets or sets the collection that contains client certificates.
+		/// </summary>
+		/// <value>
+		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
+		/// </value>
+		public X509CertificateCollection ClientCertificates { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the certificate revocation list is checked
-    /// during authentication.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
-    /// </value>
-    public bool CheckCertificateRevocation { get; set; }
+		/// <summary>
+		/// Gets or sets the SSL protocols used for authentication.
+		/// </summary>
+		/// <value>
+		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+		/// authentication.
+		/// </value>
+		public SslProtocols EnabledSslProtocols { get; set; }
 
-    /// <summary>
-    /// Gets or sets the collection that contains client certificates.
-    /// </summary>
-    /// <value>
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
-    /// </value>
-    public X509CertificateCollection ClientCertificates { get; set; }
-
-    /// <summary>
-    /// Gets or sets the SSL protocols used for authentication.
-    /// </summary>
-    /// <value>
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </value>
-    public SslProtocols EnabledSslProtocols { get; set; }
-
-    #endregion
-  }
+		public LocalCertificateSelectionCallback CertificateSelection { get; set; }
+	}
 }
