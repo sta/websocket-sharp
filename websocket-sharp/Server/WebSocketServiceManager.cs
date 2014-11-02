@@ -494,38 +494,17 @@ namespace WebSocketSharp.Server
 
 		private void broadcast(Opcode opcode, byte[] data)
 		{
-			var cache = new Dictionary<CompressionMethod, byte[]>();
-			try
+			foreach (var host in Hosts.TakeWhile(host => _state == ServerState.Start))
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
-				{
-					host.Sessions.Broadcast(opcode, data, cache);
-				}
-			}
-			finally
-			{
-				cache.Clear();
+				host.Sessions.Broadcast(opcode, data);
 			}
 		}
 
 		private void broadcast(Opcode opcode, Stream stream)
 		{
-			var cache = new Dictionary<CompressionMethod, Stream>();
-			try
+			foreach (var host in Hosts.TakeWhile(host => _state == ServerState.Start))
 			{
-				foreach (var host in this.Hosts.TakeWhile(host => _state == ServerState.Start))
-				{
-					host.Sessions.Broadcast(opcode, stream, cache);
-				}
-			}
-			finally
-			{
-				foreach (var cached in cache.Values)
-				{
-					cached.Dispose();
-				}
-
-				cache.Clear();
+				host.Sessions.Broadcast(opcode, stream);
 			}
 		}
 

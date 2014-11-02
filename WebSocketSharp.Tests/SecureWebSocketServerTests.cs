@@ -219,7 +219,7 @@ namespace WebSocketSharp.Tests
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 					{
-						while (e.Data.ReadByte() != -1)
+						while (e.Data.ReadByte() == 123)
 						{
 							responseLength++;
 						}

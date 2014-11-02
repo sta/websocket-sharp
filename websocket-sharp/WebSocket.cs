@@ -1322,7 +1322,7 @@ namespace WebSocketSharp
 		}
 
 		// As server, used to broadcast
-		internal void Send(Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
+		internal void Send(Opcode opcode, byte[] data)
 		{
 			lock (_forSend)
 			{
@@ -1333,43 +1333,31 @@ namespace WebSocketSharp
 						return;
 					}
 
-					byte[] cached;
-					if (!cache.TryGetValue(_compression, out cached))
-					{
-						cached = new WebSocketFrame(
-						  Fin.Final,
-						  opcode,
-						  data.Compress(_compression),
-						  _compression != CompressionMethod.None,
-						  false)
-						  .ToByteArray();
+					var cached = new WebSocketFrame(
+						Fin.Final,
+						opcode,
+						data.Compress(_compression),
+						_compression != CompressionMethod.None,
+						false);
 
-						cache.Add(_compression, cached);
-					}
-
-					SendBytes(cached);
+					SendBytes(cached.ToByteArray());
 				}
 			}
 		}
 
 		// As server, used to broadcast
-		internal void Send(Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache)
+		internal void Send(Opcode opcode, Stream stream)
 		{
 			lock (_forSend)
 			{
-				Stream cached;
-				if (!cache.TryGetValue(_compression, out cached))
-				{
-					cached = stream.Compress(_compression);
-					cache.Add(_compression, cached);
-				}
-				else
-				{
-					cached.Position = 0;
-				}
-
-				InnerSend(opcode, cached, _compression != CompressionMethod.None);
+				InnerSend(opcode, stream.Compress(_compression), _compression != CompressionMethod.None);
 			}
+		}
+
+		internal void Send(Fin final, Opcode opcode, byte[] data)
+		{
+			var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
+			SendBytes(frame.ToByteArray());
 		}
 
 		// As server

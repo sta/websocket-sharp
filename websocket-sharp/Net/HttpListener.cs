@@ -69,7 +69,6 @@ namespace WebSocketSharp.Net
 		private readonly object _ctxRegistrySync;
 		private readonly List<ListenerAsyncResult> _waitQueue;
 		private readonly object _waitQueueSync;
-		private readonly ServerSslAuthConfiguration _defaultSslConfig;
 		private readonly HttpListenerPrefixCollection _prefixes;
 		private Func<IIdentity, NetworkCredential> _credFinder;
 		private bool _disposed;
@@ -78,9 +77,7 @@ namespace WebSocketSharp.Net
 		private bool _listening;
 		private string _realm;
 		private bool _reuseAddress;
-    private ServerSslAuthConfiguration                           _sslConfig;
-    private List<ListenerAsyncResult>                            _waitQueue;
-    private object                                               _waitQueueSync;
+		private ServerSslAuthConfiguration _sslConfig;
 
 		#endregion
 
@@ -111,7 +108,7 @@ namespace WebSocketSharp.Net
 		public HttpListener(ServerSslAuthConfiguration serverSslAuthConfiguration, Func<HttpListenerRequest, AuthenticationSchemes> authSchemeSelector)
 			: this()
 		{
-			_defaultSslConfig = serverSslAuthConfiguration;
+			_sslConfig = serverSslAuthConfiguration;
 			_authSchemeSelector = authSchemeSelector;
 		}
 
@@ -296,29 +293,32 @@ namespace WebSocketSharp.Net
 		}
 
 		/// <summary>
-    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-    /// for secure connection.
-    /// </summary>
-    /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
-    /// authenticate the server and optionally the client for secure connection.
-    /// </value>
-    /// <exception cref="ObjectDisposedException">
-    /// This listener has been closed.
-    /// </exception>
-    public ServerSslAuthConfiguration SslConfiguration {
-      get {
-        CheckDisposed ();
-        return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration (null));
-      }
+		/// Gets or sets the SSL configuration used to authenticate the server and optionally the client
+		/// for secure connection.
+		/// </summary>
+		/// <value>
+		/// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration used to
+		/// authenticate the server and optionally the client for secure connection.
+		/// </value>
+		/// <exception cref="ObjectDisposedException">
+		/// This listener has been closed.
+		/// </exception>
+		public ServerSslAuthConfiguration SslConfiguration
+		{
+			get
+			{
+				CheckDisposed();
+				return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration(null));
+			}
 
-      set {
-        CheckDisposed ();
-        _sslConfig = value;
-      }
-    }
+			set
+			{
+				CheckDisposed();
+				_sslConfig = value;
+			}
+		}
 
-    /// <summary>
+		/// <summary>
 		/// Gets or sets a value indicating whether, when NTLM authentication is used,
 		/// the authentication information of first request is used to authenticate
 		/// additional requests on the same connection.

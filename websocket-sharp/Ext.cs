@@ -1361,14 +1361,23 @@ namespace WebSocketSharp
 		private static byte[] compress(this byte[] data)
 		{
 			if (data.LongLength == 0)
+			{
 				//return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
 				return data;
+			}
 
 			using (var input = new MemoryStream(data))
+			{
 				return input.compressToArray();
+			}
 		}
 
-		private static MemoryStream compress(this Stream stream)
+		private static Stream compress(this Stream stream)
+		{
+			return new DeflateStream(stream, CompressionLevel.Optimal, true);
+		}
+
+		private static MemoryStream compressToMemory(this Stream stream)
 		{
 			var output = new MemoryStream();
 			if (stream.Length == 0)
@@ -1387,7 +1396,7 @@ namespace WebSocketSharp
 
 		private static byte[] compressToArray(this Stream stream)
 		{
-			using (var output = stream.compress())
+			using (var output = stream.compressToMemory())
 			{
 				output.Close();
 				return output.ToArray();
