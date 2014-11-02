@@ -41,6 +41,7 @@ namespace WebSocketSharp.Tests
 				var cert = GetRandomCertificate();
 				_sut = new WebSocketServer(443, new ServerSslAuthConfiguration(cert));
 				_sut.AddWebSocketService<TestEchoService>("/echo");
+				_sut.AddWebSocketService<TestRadioService>("/radio");
 				_sut.Start();
 			}
 
@@ -240,6 +241,44 @@ namespace WebSocketSharp.Tests
 				}
 			}
 
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
+			{
+				var responseLength = 0;
+				const int Length = 1000000;
+
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+
+				var sender = new WebSocket("wss://localhost:443/radio");
+				var client = new WebSocket("wss://localhost:443/radio");
+
+				EventHandler<MessageEventArgs> onMessage = (s, e) =>
+				{
+					while (e.Data.ReadByte() == 123)
+					{
+						responseLength++;
+					}
+				};
+
+				client.OnMessage += onMessage;
+
+				sender.Connect();
+				client.Connect();
+				await sender.SendAsync(stream);
+
+				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 5000);
+
+				Assert.AreEqual(Length, responseLength);
+
+				await client.CloseAsync();
+				await sender.CloseAsync();
+
+				client.OnMessage -= onMessage;
+				sender.Dispose();
+				client.Dispose();
+			}
+
 			private static X509Certificate2 GetRandomCertificate()
 			{
 				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
@@ -254,30 +293,6 @@ namespace WebSocketSharp.Tests
 				{
 					st.Close();
 				}
-			}
-		}
-
-		private class TestEchoService : WebSocketBehavior
-		{
-			protected override void OnMessage(MessageEventArgs e)
-			{
-				switch (e.Opcode)
-				{
-					case Opcode.Text:
-						this.Send(e.Data);
-						break;
-					case Opcode.Binary:
-						this.Send(e.Data);
-						break;
-					case Opcode.Cont:
-					case Opcode.Close:
-					case Opcode.Ping:
-					case Opcode.Pong:
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-
-				base.OnMessage(e);
 			}
 		}
 	}

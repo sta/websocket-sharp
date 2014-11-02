@@ -282,38 +282,6 @@ namespace WebSocketSharp
 		}
 
 		/// <summary>
-		/// Gets or sets the compression method used to compress the message on the WebSocket
-		/// connection.
-		/// </summary>
-		/// <value>
-		/// One of the <see cref="CompressionMethod"/> enum values, indicates the compression method
-		/// used to compress the message. The default value is <see cref="CompressionMethod.None"/>.
-		/// </value>
-		public CompressionMethod Compression
-		{
-			get
-			{
-				return _compression;
-			}
-
-			set
-			{
-				lock (_forConn)
-				{
-					var msg = CheckIfAvailable(false, false);
-					if (msg != null)
-					{
-						Error("An error has occurred in setting the compression.", null);
-
-						return;
-					}
-
-					_compression = value;
-				}
-			}
-		}
-
-		/// <summary>
 		/// Gets the HTTP cookies included in the WebSocket connection request and response.
 		/// </summary>
 		/// <value>
@@ -1324,25 +1292,26 @@ namespace WebSocketSharp
 		// As server, used to broadcast
 		internal void Send(Opcode opcode, byte[] data)
 		{
-			lock (_forSend)
-			{
-				lock (_forConn)
-				{
-					if (_readyState != WebSocketState.Open)
-					{
-						return;
-					}
+			Send(opcode, new MemoryStream(data));
+			//lock (_forSend)
+			//{
+			//	lock (_forConn)
+			//	{
+			//		if (_readyState != WebSocketState.Open)
+			//		{
+			//			return;
+			//		}
 
-					var cached = new WebSocketFrame(
-						Fin.Final,
-						opcode,
-						data.Compress(_compression),
-						_compression != CompressionMethod.None,
-						false);
+			//		var cached = new WebSocketFrame(
+			//			Fin.Final,
+			//			opcode,
+			//			data.Compress(_compression, opcode),
+			//			_compression != CompressionMethod.None,
+			//			false);
 
-					SendBytes(cached.ToByteArray());
-				}
-			}
+			//		SendBytes(cached.ToByteArray());
+			//	}
+			//}
 		}
 
 		// As server, used to broadcast
@@ -1894,7 +1863,9 @@ namespace WebSocketSharp
 				finally
 				{
 					if (compressed)
+					{
 						stream.Dispose();
+					}
 
 					src.Dispose();
 				}
@@ -2098,7 +2069,10 @@ namespace WebSocketSharp
 								break;
 							case Opcode.Text:
 							case Opcode.Binary:
-								OnMessage.Emit(this, new MessageEventArgs(message));
+								if (!OnMessage.Emit(this, new MessageEventArgs(message)))
+								{
+									message.Consume();
+								}
 								break;
 							case Opcode.Close:
 								ProcessCloseFrame(message);

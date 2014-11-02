@@ -60,7 +60,7 @@ namespace WebSocketSharp
 				toread = Math.Min(toread, int.MaxValue);
 				_readInfo.PayloadLength -= toread;
 
-				bytesRead += _innerStream.Read(buffer, position, (int)toread);
+				bytesRead += _innerStream.Read(buffer, offset, (int)toread);
 
 				if (_readInfo.MaskingKey.Length > 0)
 				{

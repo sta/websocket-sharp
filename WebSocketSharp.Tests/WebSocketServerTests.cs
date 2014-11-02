@@ -40,6 +40,7 @@ namespace WebSocketSharp.Tests
 			{
 				_sut = new WebSocketServer(8080);
 				_sut.AddWebSocketService<TestEchoService>("/echo");
+				_sut.AddWebSocketService<TestRadioService>("/radio");
 				_sut.Start();
 			}
 
@@ -424,29 +425,43 @@ namespace WebSocketSharp.Tests
 					client.OnMessage -= onMessage;
 				}
 			}
-		}
 
-		private class TestEchoService : WebSocketBehavior
-		{
-			protected override void OnMessage(MessageEventArgs e)
+			[Test]
+			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
 			{
-				switch (e.Opcode)
-				{
-					case Opcode.Text:
-						Send(e.Text.ReadToEnd());
-						break;
-					case Opcode.Binary:
-						Send(e.Data);
-						break;
-					case Opcode.Cont:
-					case Opcode.Close:
-					case Opcode.Ping:
-					case Opcode.Pong:
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
+				var responseLength = 0;
+				const int Length = 1000000;
 
-				base.OnMessage(e);
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var waitHandle = new ManualResetEventSlim(false);
+
+				var sender = new WebSocket("ws://localhost:8080/radio");
+				var client = new WebSocket("ws://localhost:8080/radio");
+
+				EventHandler<MessageEventArgs> onMessage = (s, e) =>
+					{
+						while (e.Data.ReadByte() == 123)
+						{
+							responseLength++;
+						}
+					};
+
+				client.OnMessage += onMessage;
+
+				sender.Connect();
+				client.Connect();
+				await sender.SendAsync(stream);
+
+				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 5000);
+
+				Assert.AreEqual(Length, responseLength);
+
+				await client.CloseAsync();
+				await sender.CloseAsync();
+
+				client.OnMessage -= onMessage;
+				sender.Dispose();
+				client.Dispose();
 			}
 		}
 	}

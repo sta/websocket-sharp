@@ -1,5 +1,5 @@
 // --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WebSocketMessage.cs" company="Reimers.dk">
+// <copyright file="TestRadioService.cs" company="Reimers.dk">
 //   The MIT License
 //   Copyright (c) 2012-2014 sta.blockhead
 //   Copyright (c) 2014 Reimers.dk
@@ -11,43 +11,37 @@
 //   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // </copyright>
 // <summary>
-//   Defines the WebSocketMessage type.
+//   Defines the TestRadioService type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Tests
 {
-	using System.IO;
-	using System.Threading;
+	using System;
 
-	public abstract class WebSocketMessage
+	using WebSocketSharp.Server;
+
+	public class TestRadioService : WebSocketBehavior
 	{
-		private readonly ManualResetEventSlim _waitHandle;
-
-		protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle)
+		protected override void OnMessage(MessageEventArgs e)
 		{
-			_waitHandle = waitHandle;
-			Opcode = opcode;
-		}
-
-		public Opcode Opcode { get; set; }
-
-		public abstract Stream RawData { get; }
-
-		public abstract StreamReader Text { get; }
-
-		internal void Consume()
-		{
-			int length = WebSocket.FragmentLength;
-			if (RawData != null)
+			switch (e.Opcode)
 			{
-				var buffer = new byte[length];
-				while (RawData.Read(buffer, 0, length) == length)
-				{
-				}
+				case Opcode.Text:
+					Sessions.BroadcastAsync(e.Text.ReadToEnd());
+					break;
+				case Opcode.Binary:
+					Sessions.BroadcastAsync(e.Data);
+					break;
+				case Opcode.Cont:
+				case Opcode.Close:
+				case Opcode.Ping:
+				case Opcode.Pong:
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
 
-			_waitHandle.Set();
+			base.OnMessage(e);
 		}
 	}
 }

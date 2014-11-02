@@ -127,7 +127,17 @@ namespace WebSocketSharp
 		private WebSocketFrameHeader ReadHeader()
 		{
 			var header = new byte[2];
-			var headerLength = _innerStream.Read(header, 0, 2);
+
+			var headerLength = 0;
+			try
+			{
+				headerLength = _innerStream.Read(header, 0, 2);
+			}
+			catch (IOException)
+			{
+				return null;
+			}
+
 			if (headerLength == 0)
 			{
 				return null;

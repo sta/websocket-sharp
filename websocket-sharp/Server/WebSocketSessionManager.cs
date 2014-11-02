@@ -522,18 +522,16 @@ namespace WebSocketSharp.Server
 				return;
 			}
 
-
 			var buffer = new byte[WebSocket.FragmentLength];
 			var sentCode = opcode;
-			var bytesRead = 0;
-			do
+			var isFinal = false;
+			while (!isFinal)
 			{
-				bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
-				var isFinal = bytesRead != WebSocket.FragmentLength;
-				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
+				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
+				isFinal = bytesRead != WebSocket.FragmentLength;
+				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer);
 				sentCode = Opcode.Cont;
 			}
-			while (bytesRead == WebSocket.FragmentLength);
 		}
 
 		internal Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
