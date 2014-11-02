@@ -15,7 +15,6 @@ namespace WebSocketSharp.Tests
 
 		public override void Flush()
 		{
-			throw new NotSupportedException();
 		}
 
 		public override long Seek(long offset, SeekOrigin origin)
