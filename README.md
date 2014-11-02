@@ -446,7 +446,7 @@ As a **WebSocket Server**, you should create an instance of the `WebSocketServer
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
-wssv.Certificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
+wssv.SslConfiguration.ServerCertificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
 ```
 
 ### HTTP Authentication ###
