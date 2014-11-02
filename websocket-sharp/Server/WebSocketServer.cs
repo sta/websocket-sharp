@@ -60,6 +60,7 @@ namespace WebSocketSharp.Server
 		#region Private Fields
 
 		private System.Net.IPAddress _address;
+		private readonly X509Certificate2 _certificate;
 		private AuthenticationSchemes _authSchemes;
 		private Func<IIdentity, NetworkCredential> _credentialsFinder;
 		private TcpListener _listener;
@@ -175,7 +176,7 @@ namespace WebSocketSharp.Server
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-		/// <paramref name="port"/> and <paramref name="secure"/>.
+		/// <paramref name="port"/> and <paramref name="certificate"/>.
 		/// </summary>
 		/// <remarks>
 		/// An instance initialized by this constructor listens for the incoming connection requests.
@@ -185,8 +186,7 @@ namespace WebSocketSharp.Server
 		/// An <see cref="int"/> that represents the port number on which to listen.
 		/// </param>
 		/// <param name="certificate">
-		/// An <see cref="X509Certificate2"/> to use for securing connection.
-		/// (<c>true</c> indicates providing a secure connection).
+		/// A <see cref="X509Certificate2"/> used to secure the connection.
 		/// </param>
 		/// <exception cref="ArgumentException">
 		/// Pair of <paramref name="port"/> and <paramref name="certificate"/> is invalid.
@@ -214,8 +214,7 @@ namespace WebSocketSharp.Server
 		/// An <see cref="int"/> that represents the port number on which to listen.
 		/// </param>
 		/// <param name="certificate">
-		/// An <see cref="X509Certificate2"/> to use for securing connection.
-		/// (<c>true</c> indicates providing a secure connection.)
+		/// A <see cref="X509Certificate2"/> used to secure the connection.
 		/// </param>
 		/// <exception cref="ArgumentException">
 		///   <para>
@@ -899,5 +898,191 @@ namespace WebSocketSharp.Server
 		}
 
 		#endregion
+	}
+
+			if (result.PathAndQuery != "/")
+			{
+				result = null;
+				message = "Includes the path or query component: " + uriString;
+
+				return false;
+			}
+
+			return true;
+		}
+
+		private void StopReceiving()
+		{
+			_listener.Stop();
+			if (_tokenSource != null)
+			{
+				_tokenSource.Cancel();
+				_tokenSource.Dispose();
+				_receiveTask.Wait();
+				_receiveTask.Dispose();
+			}
+		}
+
+		private void Abort()
+		{
+			lock (_sync)
+			{
+				if (!IsListening)
+					return;
+
+				_state = ServerState.ShuttingDown;
+			}
+
+			_listener.Stop();
+			_services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false);
+
+			_state = ServerState.Stop;
+		}
+
+		private bool AuthenticateRequest(AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
+		{
+			var chal = scheme == AuthenticationSchemes.Basic
+					   ? AuthenticationChallenge.CreateBasicChallenge(Realm).ToBasicString()
+					   : scheme == AuthenticationSchemes.Digest
+						 ? AuthenticationChallenge.CreateDigestChallenge(Realm).ToDigestString()
+						 : null;
+
+			if (chal == null)
+			{
+				context.Close(HttpStatusCode.Forbidden);
+				return false;
+			}
+
+			var retry = -1;
+			var schm = scheme.ToString();
+			var realm = Realm;
+			var credFinder = UserCredentialsFinder;
+			Func<bool> auth = null;
+			auth = () =>
+			{
+				retry++;
+				if (retry > 99)
+				{
+					context.Close(HttpStatusCode.Forbidden);
+					return false;
+				}
+
+				var res = context.Headers["Authorization"];
+				if (res == null || !res.StartsWith(schm, StringComparison.OrdinalIgnoreCase))
+				{
+					context.SendAuthenticationChallenge(chal);
+					return auth();
+				}
+
+				context.SetUser(scheme, realm, credFinder);
+				if (!context.IsAuthenticated)
+				{
+					context.SendAuthenticationChallenge(chal);
+					return auth();
+				}
+
+				return true;
+			};
+
+			return auth();
+		}
+
+		private string CheckIfCertificateExists()
+		{
+			return _secure && _certificate == null
+				   ? "The secure connection requires a server certificate."
+				   : null;
+		}
+
+		private void Init()
+		{
+			_authSchemes = AuthenticationSchemes.Anonymous;
+			_listener = new TcpListener(_address, _port);
+			_services = new WebSocketServiceManager();
+			_state = ServerState.Ready;
+			_sync = new object();
+		}
+
+		private void ProcessWebSocketRequest(TcpListenerWebSocketContext context)
+		{
+			var uri = context.RequestUri;
+			if (uri == null)
+			{
+				context.Close(HttpStatusCode.BadRequest);
+				return;
+			}
+
+			if (_uri.IsAbsoluteUri)
+			{
+				var actual = uri.DnsSafeHost;
+				var expected = _uri.DnsSafeHost;
+				if (Uri.CheckHostName(actual) == UriHostNameType.Dns &&
+					Uri.CheckHostName(expected) == UriHostNameType.Dns &&
+					actual != expected)
+				{
+					context.Close(HttpStatusCode.NotFound);
+					return;
+				}
+			}
+
+			WebSocketServiceHost host;
+			if (!_services.InternalTryGetServiceHost(uri.AbsolutePath, out host))
+			{
+				context.Close(HttpStatusCode.NotImplemented);
+				return;
+			}
+
+			host.StartSession(context);
+		}
+
+		private async Task ReceiveRequest(CancellationToken cancellationToken)
+		{
+			while (!cancellationToken.IsCancellationRequested)
+			{
+				try
+				{
+					var client = await _listener.AcceptTcpClientAsync();
+
+					try
+					{
+						var ctx = client.GetWebSocketContext(null, _secure, _certificate);
+						if (_authSchemes != AuthenticationSchemes.Anonymous && !AuthenticateRequest(_authSchemes, ctx))
+						{
+							return;
+						}
+
+						ProcessWebSocketRequest(ctx);
+					}
+					catch (Exception)
+					{
+						client.Close();
+					}
+				}
+				catch (SocketException)
+				{
+					break;
+				}
+				catch (Exception)
+				{
+					break;
+				}
+			}
+
+			if (IsListening)
+			{
+				Abort();
+			}
+		}
+
+		private Task StartReceiving(CancellationToken cancellationToken)
+		{
+			if (_reuseAddress)
+			{
+				_listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+			}
+
+			_listener.Start();
+			return ReceiveRequest(cancellationToken);
+		}
 	}
 }

@@ -625,7 +625,150 @@ namespace WebSocketSharp
 		// As server
 		private bool acceptHandshake()
 		{
-			var msg = checkIfValidHandshakeRequest(_context);
+			_readyState = WebSocketState.Closing;
+
+			SendHttpResponse(response);
+			this.CloseServerResources();
+
+			_readyState = WebSocketState.Closed;
+		}
+
+		// As server
+		internal void Close(HttpStatusCode code)
+		{
+			Close(InnerCreateHandshakeCloseResponse(code));
+		}
+
+		// As server
+		internal void Close(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
+		{
+			lock (_forConn)
+			{
+				if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed)
+				{
+					return;
+				}
+
+				_readyState = WebSocketState.Closing;
+			}
+
+			e.WasClean = this.CloseHandshake(frameAsBytes, timeout, this.CloseServerResources);
+
+			_readyState = WebSocketState.Closed;
+			try
+			{
+				OnClose.Emit(this, e);
+			}
+			catch (Exception)
+			{
+			}
+		}
+
+		// As server
+		internal void ConnectAsServer()
+		{
+			try
+			{
+				if (AcceptHandshake())
+				{
+					_readyState = WebSocketState.Open;
+					Open();
+				}
+			}
+			catch (Exception ex)
+			{
+				ProcessException(ex, "An exception has occurred while connecting.");
+			}
+		}
+
+		internal bool Ping(byte[] frameAsBytes, int timeoutMilliseconds)
+		{
+			return Ping(frameAsBytes, TimeSpan.FromMilliseconds(timeoutMilliseconds));
+		}
+
+		internal bool Ping(byte[] frameAsBytes, TimeSpan timeout)
+		{
+			try
+			{
+				AutoResetEvent pong;
+				return _readyState == WebSocketState.Open &&
+					   InnerSend(frameAsBytes) &&
+					   (pong = _receivePong) != null &&
+					   pong.WaitOne(timeout);
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
+		// As server, used to broadcast
+		internal void Send(Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
+		{
+			lock (_forSend)
+			{
+				lock (_forConn)
+				{
+					if (_readyState != WebSocketState.Open)
+					{
+						return;
+					}
+
+					try
+					{
+						byte[] cached;
+						if (!cache.TryGetValue(_compression, out cached))
+						{
+							cached = new WebSocketFrame(
+							  Fin.Final,
+							  opcode,
+							  data.Compress(_compression),
+							  _compression != CompressionMethod.None,
+							  false)
+							  .ToByteArray();
+
+							cache.Add(_compression, cached);
+						}
+
+						WriteBytes(cached);
+					}
+					catch (Exception)
+					{
+					}
+				}
+			}
+		}
+
+		// As server, used to broadcast
+		internal void Send(Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache)
+		{
+			lock (_forSend)
+			{
+				try
+				{
+					Stream cached;
+					if (!cache.TryGetValue(_compression, out cached))
+					{
+						cached = stream.Compress(_compression);
+						cache.Add(_compression, cached);
+					}
+					else
+					{
+						cached.Position = 0;
+					}
+
+					InnerSend(opcode, Mask.Unmask, cached, _compression != CompressionMethod.None);
+				}
+				catch (Exception)
+				{
+				}
+			}
+		}
+
+		// As server
+		private bool AcceptHandshake()
+		{
+			var msg = this.CheckIfValidHandshakeRequest(_context);
 			if (msg != null)
 			{
 				error("An error has occurred while connecting.", null);

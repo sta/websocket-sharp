@@ -19,6 +19,9 @@ namespace WebSocketSharp.Tests
 {
 	using System;
 	using System.Diagnostics;
+	using System.IO;
+	using System.Linq;
+	using System.Text;
 	using System.Threading;
 	using System.Threading.Tasks;
 
@@ -205,6 +208,175 @@ namespace WebSocketSharp.Tests
 					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
 					Assert.True(result);
+
+					client.OnMessage -= onMessage;
+					client.Close();
+				}
+			}
+
+			[Test]
+			public void CanSendTwentyFiveThousandSynchronousRequestsPerSecond()
+			{
+				var stopwatch = new Stopwatch();
+				int count = 0;
+				const string Message = "Message";
+				var stream = Encoding.UTF8.GetBytes(Message);
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					const int Multiplicity = 25000;
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+						{
+							if (e.Data == Message)
+							{
+								if (Interlocked.Increment(ref count) == Multiplicity)
+								{
+									waitHandle.Set();
+								}
+							}
+						};
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					stopwatch.Start();
+					for (int i = 0; i < Multiplicity; i++)
+					{
+						client.Send(stream);
+					}
+
+					stopwatch.Stop();
+
+					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+
+					Console.WriteLine(stopwatch.Elapsed);
+					Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1));
+
+					client.OnMessage -= onMessage;
+					client.Close();
+				}
+			}
+
+			[Test]
+			public void CanReceiveTwentyFiveThousandSynchronousRequestsInSixSeconds()
+			{
+				var responseWatch = new Stopwatch();
+				int count = 0;
+				const string Message = "Message";
+				var stream = Encoding.UTF8.GetBytes(Message);
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					const int Multiplicity = 25000;
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+						{
+							if (e.Data == Message)
+							{
+								if (Interlocked.Increment(ref count) == Multiplicity)
+								{
+									responseWatch.Stop();
+									waitHandle.Set();
+								}
+							}
+						};
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					responseWatch.Start();
+					for (int i = 0; i < Multiplicity; i++)
+					{
+						client.Send(stream);
+					}
+
+
+					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+
+					Console.WriteLine(responseWatch.Elapsed);
+					Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(6));
+
+					client.OnMessage -= onMessage;
+					client.Close();
+				}
+			}
+
+			[Test]
+			public async Task CanSendOneMillionAsynchronousRequestsPerSecond()
+			{
+				var stopwatch = new Stopwatch();
+
+				int count = 0;
+				const string Message = "Message";
+				var stream = new MemoryStream(Encoding.UTF8.GetBytes(Message));
+				var length = (int)stream.Length;
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					const int Multiplicity = 1000000;
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+						{
+							if (e.Data == Message)
+							{
+								if (Interlocked.Increment(ref count) == Multiplicity)
+								{
+									waitHandle.Set();
+								}
+							}
+						};
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					stopwatch.Start();
+
+					var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.SendAsync(stream, length));
+
+					await Task.WhenAll(tasks);
+					stopwatch.Stop();
+
+					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+
+					Console.WriteLine(stopwatch.Elapsed);
+
+					Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1));
+
+					client.OnMessage -= onMessage;
+					client.Close();
+				}
+			}
+
+			[Test]
+			public async Task CanReceiveOneMillionAsynchronousResponsesInSixSecond()
+			{
+				var responseWatch = new Stopwatch();
+
+				int count = 0;
+				const string Message = "Message";
+				var stream = new MemoryStream(Encoding.UTF8.GetBytes(Message));
+				var length = (int)stream.Length;
+				var waitHandle = new ManualResetEventSlim(false);
+				using (var client = new WebSocket("ws://localhost:8080/echo"))
+				{
+					const int Multiplicity = 1000000;
+					EventHandler<MessageEventArgs> onMessage = (s, e) =>
+						{
+							if (e.Data == Message && Interlocked.Increment(ref count) == Multiplicity)
+							{
+								responseWatch.Stop();
+								waitHandle.Set();
+							}
+						};
+					client.OnMessage += onMessage;
+
+					client.Connect();
+					responseWatch.Start();
+
+					var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.SendAsync(stream, length));
+
+					await Task.WhenAll(tasks);
+
+					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+
+					Console.WriteLine(responseWatch.Elapsed);
+
+					Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(6));
 
 					client.OnMessage -= onMessage;
 					client.Close();
