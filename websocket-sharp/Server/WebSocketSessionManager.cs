@@ -623,26 +623,6 @@ namespace WebSocketSharp.Server
 		/// A <see cref="string"/> that represents the ID of the session to close.
 		/// </param>
 		/// <param name="code">
-		/// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
-		/// </param>
-		/// <param name="reason">
-		/// A <see cref="string"/> that represents the reason for the close.
-		/// </param>
-		public void CloseSession(string id, ushort code, string reason)
-		{
-			IWebSocketSession session;
-			if (TryGetSession(id, out session))
-				session.Context.WebSocket.Close(code, reason);
-		}
-
-		/// <summary>
-		/// Closes the session with the specified <paramref name="id"/>, <paramref name="code"/>,
-		/// and <paramref name="reason"/>.
-		/// </summary>
-		/// <param name="id">
-		/// A <see cref="string"/> that represents the ID of the session to close.
-		/// </param>
-		/// <param name="code">
 		/// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
 		/// indicating the reason for the close.
 		/// </param>
@@ -653,7 +633,9 @@ namespace WebSocketSharp.Server
 		{
 			IWebSocketSession session;
 			if (TryGetSession(id, out session))
+			{
 				session.Context.WebSocket.Close(code, reason);
+			}
 		}
 
 		/// <summary>

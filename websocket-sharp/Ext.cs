@@ -1072,7 +1072,9 @@ namespace WebSocketSharp
 		  where TEventArgs : EventArgs
 		{
 			if (eventHandler != null)
+			{
 				eventHandler(sender, e);
+			}
 		}
 
 		/// <summary>
