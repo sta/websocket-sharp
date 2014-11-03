@@ -498,16 +498,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-    /// on the secure connection.
+    /// Gets or sets the SSL configuration used to authenticate the server and
+    /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ClientSslAuthConfiguration"/> that represents the SSL configuration used to
-    /// authenticate the server and optionally the client.
+    /// A <see cref="ClientSslAuthConfiguration"/> that represents the configuration
+    /// used to authenticate the server and optionally the client for secure connection,
+    /// or <see langword="null"/> if the <see cref="WebSocket"/> is used as server.
     /// </value>
     public ClientSslAuthConfiguration SslConfiguration {
       get {
-        return _sslConfig;
+        return _client
+               ? (_sslConfig ?? (_sslConfig = new ClientSslAuthConfiguration (_uri.DnsSafeHost)))
+               : null;
       }
 
       set {
@@ -1366,24 +1369,31 @@ namespace WebSocketSharp
       }
 
       if (_secure) {
-        var sslStream = new SslStream (
-          _stream,
-          false,
-          _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
-          _certSelectionCallback ??
-            ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
-              null));
+        var conf = SslConfiguration;
+        if (conf.TargetHost != _uri.DnsSafeHost)
+          throw new WebSocketException (
+            CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
 
-        if (_sslConfig == null)
-          sslStream.AuthenticateAsClient (_uri.DnsSafeHost);
-        else
+        try {
+          var sslStream = new SslStream (
+            _stream,
+            false,
+            _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
+            _certSelectionCallback ??
+              ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
+                null));
+
           sslStream.AuthenticateAsClient (
-            _uri.DnsSafeHost,
-            _sslConfig.ClientCertificates,
-            _sslConfig.EnabledSslProtocols,
-            _sslConfig.CheckCertificateRevocation);
+            conf.TargetHost,
+            conf.ClientCertificates,
+            conf.EnabledSslProtocols,
+            conf.CheckCertificateRevocation);
 
-        _stream = sslStream;
+          _stream = sslStream;
+        }
+        catch (Exception ex) {
+          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
+        }
       }
     }
 

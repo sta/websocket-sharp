@@ -34,14 +34,14 @@
  */
 #endregion
 
+using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
-  /// as a client.
+  /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
   /// </summary>
   public class ClientSslAuthConfiguration
   {
@@ -49,39 +49,26 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/>.
+    /// the specified <paramref name="targetHost"/>.
     /// </summary>
-    /// <param name="clientCertificates">
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
+    /// <param name="targetHost">
+    /// A <see cref="string"/> that represents the name of the server that shares
+    /// a secure connection.
     /// </param>
-    public ClientSslAuthConfiguration (X509CertificateCollection clientCertificates)
-      : this (clientCertificates, SslProtocols.Default, false)
+    public ClientSslAuthConfiguration (string targetHost)
+      : this (targetHost, null, SslProtocols.Default, false)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/> and
-    /// <paramref name="enabledSslProtocols"/>.
+    /// the specified <paramref name="targetHost"/>, <paramref name="clientCertificates"/>,
+    /// <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.
     /// </summary>
-    /// <param name="clientCertificates">
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
+    /// <param name="targetHost">
+    /// A <see cref="string"/> that represents the name of the server that shares
+    /// a secure connection.
     /// </param>
-    /// <param name="enabledSslProtocols">
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </param>
-    public ClientSslAuthConfiguration (
-      X509CertificateCollection clientCertificates, SslProtocols enabledSslProtocols)
-      : this (clientCertificates, enabledSslProtocols, false)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-    /// the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>,
-    /// and <paramref name="checkCertificateRevocation"/>.
-    /// </summary>
     /// <param name="clientCertificates">
     /// A <see cref="X509CertificateCollection"/> that contains client certificates.
     /// </param>
@@ -94,10 +81,12 @@ namespace WebSocketSharp.Net
     /// otherwise, <c>false</c>.
     /// </param>
     public ClientSslAuthConfiguration (
+      string targetHost,
       X509CertificateCollection clientCertificates,
       SslProtocols enabledSslProtocols,
       bool checkCertificateRevocation)
     {
+      TargetHost = targetHost;
       ClientCertificates = clientCertificates;
       EnabledSslProtocols = enabledSslProtocols;
       CheckCertificateRevocation = checkCertificateRevocation;
@@ -132,6 +121,15 @@ namespace WebSocketSharp.Net
     /// authentication.
     /// </value>
     public SslProtocols EnabledSslProtocols { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the server that shares a secure connection.
+    /// </summary>
+    /// <value>
+    /// A <see cref="string"/> that represents the name of the server that shares
+    /// a secure connection.
+    /// </value>
+    public string TargetHost { get; set; }
 
     #endregion
   }
