@@ -72,8 +72,6 @@ namespace WebSocketSharp
     private string                  _base64Key;
     private LocalCertificateSelectionCallback
                                     _certSelectionCallback;
-    private RemoteCertificateValidationCallback
-                                    _certValidationCallback;
     private bool                    _client;
     private Action                  _closeContext;
     private CompressionMethod       _compression;
@@ -461,39 +459,6 @@ namespace WebSocketSharp
     public WebSocketState ReadyState {
       get {
         return _readyState;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the callback used to validate the certificate supplied by the server.
-    /// </summary>
-    /// <remarks>
-    /// If the value of this property is <see langword="null"/>, the validation does nothing with
-    /// the server certificate, and always returns valid.
-    /// </remarks>
-    /// <value>
-    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
-    /// used to validate the server certificate. The default value is <see langword="null"/>.
-    /// </value>
-    public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
-      get {
-        return _certValidationCallback;
-      }
-
-      set {
-        lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
-          if (msg != null) {
-            _logger.Error (msg);
-            error (
-              "An error has occurred in setting the server certificate validation callback.",
-              null);
-
-            return;
-          }
-
-          _certValidationCallback = value;
-        }
       }
     }
 
@@ -1378,7 +1343,7 @@ namespace WebSocketSharp
           var sslStream = new SslStream (
             _stream,
             false,
-            _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
+            conf.ServerCertificateValidationCallback,
             _certSelectionCallback ??
               ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
                 null));

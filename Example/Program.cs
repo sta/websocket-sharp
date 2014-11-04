@@ -66,15 +66,16 @@ namespace Example
         //ws.Compression = CompressionMethod.Deflate;
 
         /* To validate the server certificate.
-        ws.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
-          ws.Log.Debug (
-            String.Format (
-              "Certificate:\n- Issuer: {0}\n- Subject: {1}",
-              certificate.Issuer,
-              certificate.Subject));
+        ws.SslConfiguration.ServerCertificateValidationCallback =
+          (sender, certificate, chain, sslPolicyErrors) => {
+            ws.Log.Debug (
+              String.Format (
+                "Certificate:\n- Issuer: {0}\n- Subject: {1}",
+                certificate.Issuer,
+                certificate.Subject));
 
-          return true; // If the server certificate is valid.
-        };
+            return true; // If the server certificate is valid.
+          };
          */
 
         // To set the credentials for the HTTP Authentication (Basic/Digest).

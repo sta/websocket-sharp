@@ -45,6 +45,12 @@ namespace WebSocketSharp.Net
   /// </summary>
   public class ClientSslAuthConfiguration
   {
+    #region Private Fields
+
+    private RemoteCertificateValidationCallback _serverCertValidationCallback;
+
+    #endregion
+
     #region Public Constructors
 
     /// <summary>
@@ -121,6 +127,26 @@ namespace WebSocketSharp.Net
     /// authentication.
     /// </value>
     public SslProtocols EnabledSslProtocols { get; set; }
+
+    /// <summary>
+    /// Gets or sets the callback used to validate the certificate supplied by the server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
+    /// used to validate the server certificate. The default value is a function that only returns
+    /// <c>true</c>.
+    /// </value>
+    public RemoteCertificateValidationCallback ServerCertificateValidationCallback {
+      get {
+        return _serverCertValidationCallback ??
+               (_serverCertValidationCallback =
+                 (sender, certificate, chain, sslPolicyErrors) => true);
+      }
+
+      set {
+        _serverCertValidationCallback = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the name of the server that shares a secure connection.
