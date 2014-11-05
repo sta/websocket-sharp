@@ -1107,7 +1107,9 @@ namespace WebSocketSharp
 				}
 
 				if (!end && rem > 0)
+				{
 					stream.readBytes(new byte[rem], 0, rem, res);
+				}
 
 				res.Close();
 				return res.ToArray();
@@ -1118,7 +1120,7 @@ namespace WebSocketSharp
 		{
 			var buff = new byte[length];
 
-			var len = await stream.ReadAsync(buff, 0, length);
+			var len = await stream.ReadAsync(buff, 0, length).ConfigureAwait(false);
 
 			byte[] bytes = null;
 			bytes = len < 1
@@ -1132,15 +1134,7 @@ namespace WebSocketSharp
 
 		internal static string RemovePrefix(this string value, params string[] prefixes)
 		{
-			var i = 0;
-			foreach (var prefix in prefixes)
-			{
-				if (value.StartsWith(prefix))
-				{
-					i = prefix.Length;
-					break;
-				}
-			}
+			var i = (from prefix in prefixes where value.StartsWith(prefix) select prefix.Length).FirstOrDefault();
 
 			return i > 0
 				   ? value.Substring(i)

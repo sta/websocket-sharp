@@ -456,7 +456,7 @@ namespace WebSocketSharp.Server
 				return;
 			}
 
-			await BroadcastAsync(opcode, new MemoryStream(data));
+			await BroadcastAsync(opcode, new MemoryStream(data)).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -480,11 +480,11 @@ namespace WebSocketSharp.Server
 			var rawData = Encoding.UTF8.GetBytes(data);
 			if (rawData.LongLength <= WebSocket.FragmentLength)
 			{
-				await BroadcastAsync(Opcode.Text, rawData);
+				await BroadcastAsync(Opcode.Text, rawData).ConfigureAwait(false);
 			}
 			else
 			{
-				await BroadcastAsync(Opcode.Text, new MemoryStream(rawData));
+				await BroadcastAsync(Opcode.Text, new MemoryStream(rawData)).ConfigureAwait(false);
 			}
 		}
 
@@ -527,19 +527,19 @@ namespace WebSocketSharp.Server
 			var isFinal = false;
 			while (!isFinal)
 			{
-				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
+				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength).ConfigureAwait(false);
 				isFinal = bytesRead != WebSocket.FragmentLength;
-				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer);
+				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);
 				sentCode = Opcode.Cont;
 			}
 		}
 
-		internal Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
+		internal async Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
 		{
 			var tasks = Sessions.TakeWhile(session => _state == ServerState.Start)
 					.Select(session => session.Context.WebSocket.SendAsync(final, opcode, data));
 
-			return Task.WhenAll(tasks.ToArray());
+			await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
 		}
 
 		/// <summary>

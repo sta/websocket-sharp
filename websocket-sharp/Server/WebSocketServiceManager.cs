@@ -516,7 +516,7 @@ namespace WebSocketSharp.Server
 				return;
 			}
 
-			await BroadcastAsync(opcode, new MemoryStream(data));
+			await BroadcastAsync(opcode, new MemoryStream(data)).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -543,30 +543,20 @@ namespace WebSocketSharp.Server
 			var isFinal = false;
 			while (!isFinal)
 			{
-				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength);
+				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength).ConfigureAwait(false);
 				isFinal = bytesRead != WebSocket.FragmentLength;
-				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer);
+				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);
 				sentCode = Opcode.Cont;
 			}
 		}
 
-		internal Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
+		internal async Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
 		{
 			var tasks = Hosts.TakeWhile(host => _state == ServerState.Start)
 					.Select(host => host.Sessions.BroadcastAsync(final, opcode, data));
 
-			return Task.WhenAll(tasks.ToArray());
+			await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
 		}
-
-		//private Task broadcastAsync(Opcode opcode, byte[] data)
-		//{
-		//	return Task.Factory.StartNew(() => broadcast(opcode, data));
-		//}
-
-		//private Task broadcastAsync(Opcode opcode, Stream stream)
-		//{
-		//	return Task.Factory.StartNew(() => broadcast(opcode, stream));
-		//}
 
 		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{

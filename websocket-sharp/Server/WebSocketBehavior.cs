@@ -403,7 +403,7 @@ namespace WebSocketSharp.Server
 		{
 			if (_websocket != null)
 			{
-				await _websocket.SendAsync(data);
+				await _websocket.SendAsync(data).ConfigureAwait(false);
 			}
 		}
 
@@ -426,7 +426,7 @@ namespace WebSocketSharp.Server
 		{
 			if (_websocket != null)
 			{
-				await _websocket.SendAsync(stream);
+				await _websocket.SendAsync(stream).ConfigureAwait(false);
 			}
 		}
 

@@ -224,6 +224,8 @@ namespace WebSocketSharp.Tests
 						{
 							responseLength++;
 						}
+
+						waitHandle.Set();
 					};
 
 					client.OnMessage += onMessage;
@@ -231,13 +233,11 @@ namespace WebSocketSharp.Tests
 					client.Connect();
 					await client.SendAsync(stream);
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+					var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
 
 					Assert.AreEqual(Length, responseLength);
 
 					client.OnMessage -= onMessage;
-
-					await client.CloseAsync();
 				}
 			}
 
@@ -259,6 +259,8 @@ namespace WebSocketSharp.Tests
 					{
 						responseLength++;
 					}
+
+					waitHandle.Set();
 				};
 
 				client.OnMessage += onMessage;
@@ -267,7 +269,7 @@ namespace WebSocketSharp.Tests
 				client.Connect();
 				await sender.SendAsync(stream);
 
-				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 5000);
+				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
 
 				Assert.AreEqual(Length, responseLength);
 

@@ -733,7 +733,7 @@ namespace WebSocketSharp.Server
 			{
 				try
 				{
-					var client = await _listener.AcceptTcpClientAsync();
+					var client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
 
 					try
 					{

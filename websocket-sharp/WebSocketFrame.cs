@@ -632,7 +632,7 @@ Extended Payload Length: {7}
 
 		internal static async Task<WebSocketFrame> ReadAsync(Stream stream, bool unmask)
 		{
-			var header = await stream.ReadBytesAsync(2);
+			var header = await stream.ReadBytesAsync(2).ConfigureAwait(false);
 
 			if (header.Length != 2)
 			{

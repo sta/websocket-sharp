@@ -242,10 +242,12 @@ namespace WebSocketSharp.Tests
 						{
 							if (e.Text.ReadToEnd() == Message)
 							{
-								if (Interlocked.Increment(ref count) == Multiplicity)
-								{
-									waitHandle.Set();
-								}
+								count++;
+							}
+
+							if (count == Multiplicity)
+							{
+								waitHandle.Set();
 							}
 						};
 					client.OnMessage += onMessage;
@@ -262,6 +264,7 @@ namespace WebSocketSharp.Tests
 					waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
 					Console.WriteLine(stopwatch.Elapsed);
+
 					Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1));
 
 					client.OnMessage -= onMessage;

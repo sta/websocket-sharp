@@ -78,6 +78,8 @@ namespace WebSocketSharp
 		private readonly bool _client;
 		private readonly string[] _protocols;
 		private readonly ClientSslAuthConfiguration _sslConfig;
+
+		private bool _istransmitting;
 		private AuthenticationChallenge _authChallenge;
 		private string _base64Key;
 		private RemoteCertificateValidationCallback _certValidationCallback;
@@ -747,7 +749,7 @@ namespace WebSocketSharp
 
 			Func<bool> connector = InnerConnect;
 
-			var result = await Task.Factory.FromAsync<bool>(connector.BeginInvoke, connector.EndInvoke, null);
+			var result = await Task.Factory.FromAsync<bool>(connector.BeginInvoke, connector.EndInvoke, null).ConfigureAwait(false);
 			if (result)
 			{
 				Open();
@@ -965,7 +967,7 @@ namespace WebSocketSharp
 				return false;
 			}
 
-			var data = await stream.ReadBytesAsync(length);
+			var data = await stream.ReadBytesAsync(length).ConfigureAwait(false);
 			var len = data.Length;
 			if (len == 0)
 			{
@@ -974,7 +976,7 @@ namespace WebSocketSharp
 				return false;
 			}
 
-			return await InnerSendAsync(Opcode.Binary, new MemoryStream(data));
+			return await InnerSendAsync(Opcode.Binary, new MemoryStream(data)).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -1132,26 +1134,6 @@ namespace WebSocketSharp
 			InnerClose(new CloseEventArgs(CloseStatusCode.Away), send, send);
 		}
 
-		// As client
-		internal static string CreateBase64Key()
-		{
-			var src = new byte[16];
-			var rand = new Random();
-			rand.NextBytes(src);
-
-			return Convert.ToBase64String(src);
-		}
-
-		internal static string CreateResponseKey(string base64Key)
-		{
-			var buff = new StringBuilder(base64Key, 64);
-			buff.Append(GuidId);
-			SHA1 sha1 = new SHA1CryptoServiceProvider();
-			var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(buff.ToString()));
-
-			return Convert.ToBase64String(src);
-		}
-
 		// As server
 		internal void InnerClose(HttpResponse response)
 		{
@@ -1179,7 +1161,7 @@ namespace WebSocketSharp
 					   (pong = _receivePong) != null &&
 					   pong.WaitOne(timeout);
 			}
-			catch (Exception ex)
+			catch
 			{
 				return false;
 			}
@@ -1189,34 +1171,6 @@ namespace WebSocketSharp
 		internal void Send(Opcode opcode, byte[] data)
 		{
 			Send(opcode, new MemoryStream(data));
-			//lock (_forSend)
-			//{
-			//	lock (_forConn)
-			//	{
-			//		if (_readyState != WebSocketState.Open)
-			//		{
-			//			return;
-			//		}
-
-			//		var cached = new WebSocketFrame(
-			//			Fin.Final,
-			//			opcode,
-			//			data.Compress(_compression, opcode),
-			//			_compression != CompressionMethod.None,
-			//			false);
-
-			//		SendBytes(cached.ToByteArray());
-			//	}
-			//}
-		}
-
-		// As server, used to broadcast
-		internal void Send(Opcode opcode, Stream stream)
-		{
-			lock (_forSend)
-			{
-				InnerSend(opcode, stream.Compress(_compression), _compression != CompressionMethod.None);
-			}
 		}
 
 		internal void Send(Fin final, Opcode opcode, byte[] data)
@@ -1225,10 +1179,29 @@ namespace WebSocketSharp
 			SendBytes(frame.ToByteArray());
 		}
 
-		internal Task SendAsync(Fin final, Opcode opcode, byte[] data)
+		internal async Task<bool> SendAsync(Fin final, Opcode opcode, byte[] data)
 		{
+			lock (_forSend)
+			{
+				while (_istransmitting)
+				{
+					Monitor.Wait(_forSend);
+				}
+
+				_istransmitting = true;
+			}
+
 			var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
-			return SendBytesAsync(frame.ToByteArray());
+			var result = await SendBytesAsync(frame.ToByteArray()).ConfigureAwait(false);
+
+			lock (_forSend)
+			{
+				_istransmitting = false;
+
+				Monitor.PulseAll(_forSend);
+			}
+
+			return result;
 		}
 
 		// As server
@@ -1268,6 +1241,26 @@ namespace WebSocketSharp
 			}
 		}
 
+		// As client
+		private static string CreateBase64Key()
+		{
+			var src = new byte[16];
+			var rand = new Random();
+			rand.NextBytes(src);
+
+			return Convert.ToBase64String(src);
+		}
+
+		private static string CreateResponseKey(string base64Key)
+		{
+			var buff = new StringBuilder(base64Key, 64);
+			buff.Append(GuidId);
+			SHA1 sha1 = new SHA1CryptoServiceProvider();
+			var src = sha1.ComputeHash(Encoding.UTF8.GetBytes(buff.ToString()));
+
+			return Convert.ToBase64String(src);
+		}
+
 		// As server
 		private bool AcceptHandshake()
 		{
@@ -1294,10 +1287,19 @@ namespace WebSocketSharp
 			return SendHttpResponse(InnerCreateHandshakeResponse());
 		}
 
+		// As server, used to broadcast
+		private void Send(Opcode opcode, Stream stream)
+		{
+			lock (_forSend)
+			{
+				InnerSend(opcode, stream.Compress(_compression), _compression != CompressionMethod.None);
+			}
+		}
+
 		// As server
 		private void InnerClose(CloseStatusCode code, string reason, bool wait)
 		{
-			this.InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), wait);
+			InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), wait);
 		}
 
 		private void InnerClose(PayloadData payload, bool send, bool wait)
@@ -1313,15 +1315,10 @@ namespace WebSocketSharp
 			}
 
 			var e = new CloseEventArgs(payload);
-			e.WasClean =
-			  _client
-			  ? CloseHandshake(send ? WebSocketFrame.CreateCloseFrame(payload, true).ToByteArray() : null, TimeSpan.FromMilliseconds(wait ? 5000 : 0), this.ReleaseClientResources)
-			  : CloseHandshake(send ? WebSocketFrame.CreateCloseFrame(payload, false).ToByteArray() : null, TimeSpan.FromMilliseconds(wait ? 1000 : 0), this.ReleaseServerResources);
-
 			e.WasClean = CloseHandshake(
 			  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
 			  wait ? WaitTime : TimeSpan.Zero,
-			  _client ? (Action)this.ReleaseClientResources : this.ReleaseServerResources);
+			  _client ? (Action)ReleaseClientResources : ReleaseServerResources);
 
 			_readyState = WebSocketState.Closed;
 			try
@@ -1421,7 +1418,25 @@ namespace WebSocketSharp
 
 		private bool CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
 		{
+			lock (_forSend)
+			{
+				while (_istransmitting)
+				{
+					Monitor.Wait(_forSend);
+				}
+
+				_istransmitting = true;
+			}
+
 			var sent = frameAsBytes != null && SendBytes(frameAsBytes);
+
+			lock (_forSend)
+			{
+				_istransmitting = false;
+
+				Monitor.PulseAll(_forSend);
+			}
+
 			var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
 
 			release();
@@ -1571,7 +1586,9 @@ namespace WebSocketSharp
 
 			var cookies = res.Cookies;
 			if (cookies.Count > 0)
+			{
 				_cookies.SetOrRemove(cookies);
+			}
 
 			return true;
 		}
@@ -1776,26 +1793,38 @@ namespace WebSocketSharp
 
 		private bool InnerSend(Opcode opcode, Stream stream, bool compressed)
 		{
-			int bytesRead;
-			do
+			lock (_forSend)
 			{
-				var buffer = new byte[FragmentLength];
-				bytesRead = stream.Read(buffer, 0, FragmentLength);
-				var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
-
-				var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
-
-				if (!InnerSend(finalCode, opcode, data, compressed))
+				while (_istransmitting)
 				{
-					return false;
+					Monitor.Wait(_forSend);
 				}
 
-				opcode = Opcode.Cont;
-			}
-			while (bytesRead == FragmentLength);
+				_istransmitting = true;
+				int bytesRead;
+				do
+				{
+					var buffer = new byte[FragmentLength];
+					bytesRead = stream.Read(buffer, 0, FragmentLength);
+					var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
 
-			_stream.Flush();
-			return true;
+					var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
+
+					if (!InnerSend(finalCode, opcode, data, compressed))
+					{
+						return false;
+					}
+
+					opcode = Opcode.Cont;
+				}
+				while (bytesRead == FragmentLength);
+
+				_stream.Flush();
+
+				_istransmitting = false;
+				Monitor.PulseAll(_forSend);
+				return true;
+			}
 		}
 
 		private bool InnerSend(Fin fin, Opcode opcode, byte[] data, bool compressed)
@@ -1825,7 +1854,7 @@ namespace WebSocketSharp
 				_stream.Write(bytes, 0, bytes.Length);
 				return true;
 			}
-			catch (Exception ex)
+			catch
 			{
 				return false;
 			}
@@ -1835,10 +1864,10 @@ namespace WebSocketSharp
 		{
 			try
 			{
-				await _stream.WriteAsync(bytes, 0, bytes.Length);
+				await _stream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
 				return true;
 			}
-			catch (Exception ex)
+			catch
 			{
 				return false;
 			}
