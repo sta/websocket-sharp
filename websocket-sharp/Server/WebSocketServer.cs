@@ -175,7 +175,7 @@ namespace WebSocketSharp.Server
 		/// on <paramref name="port"/>.
 		/// </remarks>
 		/// <param name="port">
-		/// An <see cref="int"/> that represents the port number on which to listen.
+		/// An <see cref="uint"/> that represents the port number on which to listen.
 		/// </param>
 		/// <param name="certificate">
 		/// A <see cref="X509Certificate2"/> used to secure the connection.
@@ -222,9 +222,7 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="address"/> is <see langword="null"/>.
 		/// </exception>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <paramref name="port"/> isn't between 1 and 65535.
-		/// </exception>
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="port"/> isn't between 1 and 65535.</exception>
 		public WebSocketServer(System.Net.IPAddress address, int port, ServerSslAuthConfiguration certificate, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
 		{
 			if (!address.IsLocal())
@@ -689,7 +687,7 @@ namespace WebSocketSharp.Server
 		private void Init(AuthenticationSchemes authenticationSchemes)
 		{
 			_authSchemes = authenticationSchemes;
-			_listener = new TcpListener(_address, _port);
+			_listener = new TcpListener(_address, (int)_port);
 			_services = new WebSocketServiceManager();
 			_state = ServerState.Ready;
 			_sync = new object();

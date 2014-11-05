@@ -47,62 +47,27 @@ namespace WebSocketSharp.Net
 	public class ClientSslAuthConfiguration
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-		/// the specified <paramref name="clientCertificates"/>.
-		/// </summary>
-		/// <param name="clientCertificates">
-		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
-		/// </param>
-		public ClientSslAuthConfiguration(X509CertificateCollection clientCertificates)
-			: this(clientCertificates, SslProtocols.Default, null, false)
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-		/// the specified <paramref name="clientCertificates"/> and
-		/// <paramref name="enabledSslProtocols"/>.
-		/// </summary>
-		/// <param name="clientCertificates">
-		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
-		/// </param>
-		/// <param name="enabledSslProtocols">
-		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-		/// authentication.
-		/// </param>
+		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.</summary>
+		/// <param name="clientCertificates">A <see cref="X509CertificateCollection"/> that contains client certificates.</param>
+		/// <param name="enabledSslProtocols">The <see cref="SslProtocols"/> enum value that represents the protocols used for authentication.</param>
+		/// <param name="certificateSelection">The <see cref="LocalCertificateSelectionCallback"/> for selecting the local certificate.</param>
+		/// <param name="checkCertificateRevocation"><c>true</c> if the certificate revocation list is checked during authentication; otherwise, <c>false.</c>.</param>
+		/// <param name="certificateValidationCallback">The <see cref="RemoteCertificateValidationCallback"/> for validating the remote certificate.</param>
 		public ClientSslAuthConfiguration(
-		  X509CertificateCollection clientCertificates, SslProtocols enabledSslProtocols)
-			: this(clientCertificates, enabledSslProtocols, null, false)
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
-		/// the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>,
-		/// and <paramref name="checkCertificateRevocation"/>.
-		/// </summary>
-		/// <param name="clientCertificates">
-		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
-		/// </param>
-		/// <param name="enabledSslProtocols">
-		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-		/// authentication.
-		/// </param>
-		/// <param name="checkCertificateRevocation">
-		/// <c>true</c> if the certificate revocation list is checked during authentication;
-		/// otherwise, <c>false</c>.
-		/// </param>
-		public ClientSslAuthConfiguration(
-		  X509CertificateCollection clientCertificates,
-		  SslProtocols enabledSslProtocols,
-		LocalCertificateSelectionCallback certificateSelection,
-		  bool checkCertificateRevocation)
+			X509CertificateCollection clientCertificates,
+			SslProtocols enabledSslProtocols = SslProtocols.Default,
+			LocalCertificateSelectionCallback certificateSelection = null,
+			bool checkCertificateRevocation = false,
+			RemoteCertificateValidationCallback certificateValidationCallback = null)
 		{
 			ClientCertificates = clientCertificates;
 			EnabledSslProtocols = enabledSslProtocols;
 			CertificateSelection = certificateSelection;
 			CheckCertificateRevocation = checkCertificateRevocation;
+			CertificateValidationCallback = certificateValidationCallback;
 		}
+
+		public RemoteCertificateValidationCallback CertificateValidationCallback { get; private set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the certificate revocation list is checked
@@ -111,7 +76,7 @@ namespace WebSocketSharp.Net
 		/// <value>
 		/// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
 		/// </value>
-		public bool CheckCertificateRevocation { get; set; }
+		public bool CheckCertificateRevocation { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the collection that contains client certificates.
@@ -119,7 +84,7 @@ namespace WebSocketSharp.Net
 		/// <value>
 		/// A <see cref="X509CertificateCollection"/> that contains client certificates.
 		/// </value>
-		public X509CertificateCollection ClientCertificates { get; set; }
+		public X509CertificateCollection ClientCertificates { get; private set; }
 
 		/// <summary>
 		/// Gets or sets the SSL protocols used for authentication.
@@ -128,8 +93,8 @@ namespace WebSocketSharp.Net
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
 		/// authentication.
 		/// </value>
-		public SslProtocols EnabledSslProtocols { get; set; }
+		public SslProtocols EnabledSslProtocols { get; private set; }
 
-		public LocalCertificateSelectionCallback CertificateSelection { get; set; }
+		public LocalCertificateSelectionCallback CertificateSelection { get; private set; }
 	}
 }

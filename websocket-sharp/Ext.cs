@@ -1053,16 +1053,22 @@ namespace WebSocketSharp
 			{
 				var c = value[i];
 				if (c < 0x20 && !"\r\n\t".Contains(c))
+				{
 					return false;
+				}
 
 				if (c == 0x7f)
+				{
 					return false;
+				}
 
 				if (c == '\n' && ++i < len)
 				{
 					c = value[i];
 					if (!" \t".Contains(c))
+					{
 						return false;
+					}
 				}
 			}
 

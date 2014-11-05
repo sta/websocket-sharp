@@ -39,6 +39,8 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace WebSocketSharp.Net
 {
+	using System.Net.Security;
+
 	/// <summary>
 	/// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
 	/// as a server.
@@ -95,7 +97,10 @@ namespace WebSocketSharp.Net
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
 		/// authentication.
 		/// </param>
-		public ServerSslAuthConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired, SslProtocols enabledSslProtocols)
+		public ServerSslAuthConfiguration(
+			X509Certificate2 serverCertificate,
+			bool clientCertificateRequired,
+			SslProtocols enabledSslProtocols)
 			: this(serverCertificate, clientCertificateRequired, enabledSslProtocols, false)
 		{
 		}
@@ -123,10 +128,10 @@ namespace WebSocketSharp.Net
 		/// otherwise, <c>false</c>.
 		/// </param>
 		public ServerSslAuthConfiguration(
-		  X509Certificate2 serverCertificate,
-		  bool clientCertificateRequired,
-		  SslProtocols enabledSslProtocols,
-		  bool checkCertificateRevocation)
+			X509Certificate2 serverCertificate,
+			bool clientCertificateRequired,
+			SslProtocols enabledSslProtocols,
+			bool checkCertificateRevocation)
 		{
 			ServerCertificate = serverCertificate;
 			ClientCertificateRequired = clientCertificateRequired;

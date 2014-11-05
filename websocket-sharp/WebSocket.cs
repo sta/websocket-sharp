@@ -82,7 +82,6 @@ namespace WebSocketSharp
 		private bool _istransmitting;
 		private AuthenticationChallenge _authChallenge;
 		private string _base64Key;
-		private RemoteCertificateValidationCallback _certValidationCallback;
 		private Action _closeContext;
 		private CompressionMethod _compression = CompressionMethod.Deflate;
 		private WebSocketContext _context;
@@ -263,20 +262,20 @@ namespace WebSocketSharp
 			}
 		}
 
-		/// <summary>
-		/// Gets the credentials for the HTTP authentication (Basic/Digest).
-		/// </summary>
-		/// <value>
-		/// A <see cref="NetworkCredential"/> that represents the credentials for the authentication.
-		/// The default value is <see langword="null"/>.
-		/// </value>
-		public NetworkCredential Credentials
-		{
-			get
-			{
-				return _credentials;
-			}
-		}
+		///// <summary>
+		///// Gets the credentials for the HTTP authentication (Basic/Digest).
+		///// </summary>
+		///// <value>
+		///// A <see cref="NetworkCredential"/> that represents the credentials for the authentication.
+		///// The default value is <see langword="null"/>.
+		///// </value>
+		//public NetworkCredential Credentials
+		//{
+		//	get
+		//	{
+		//		return _credentials;
+		//	}
+		//}
 
 		/// <summary>
 		/// Gets the WebSocket extensions selected by the server.
@@ -408,43 +407,6 @@ namespace WebSocketSharp
 			get
 			{
 				return _readyState;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the callback used to validate the certificate supplied by the server.
-		/// </summary>
-		/// <remarks>
-		/// If the value of this property is <see langword="null"/>, the validation does nothing with
-		/// the server certificate, and always returns valid.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
-		/// used to validate the server certificate. The default value is <see langword="null"/>.
-		/// </value>
-		public RemoteCertificateValidationCallback ServerCertificateValidationCallback
-		{
-			get
-			{
-				return _certValidationCallback;
-			}
-
-			set
-			{
-				lock (_forConn)
-				{
-					var msg = CheckIfAvailable(false, false);
-					if (msg != null)
-					{
-						Error(
-						  "An error has occurred in setting the server certificate validation callback.",
-						  null);
-
-						return;
-					}
-
-					_certValidationCallback = value;
-				}
 			}
 		}
 
@@ -1963,10 +1925,13 @@ namespace WebSocketSharp
 			if (_secure)
 			{
 				var certSelectionCallback = _sslConfig != null ? _sslConfig.CertificateSelection : null;
+				var certificateValidationCallback = _sslConfig != null && _sslConfig.CertificateValidationCallback != null
+														? _sslConfig.CertificateValidationCallback
+														: ((sender, certificate, chain, sslPolicyErrors) => true);
 				var sslStream = new SslStream(
 				  _stream,
 				  false,
-				  _certValidationCallback ?? ((sender, certificate, chain, sslPolicyErrors) => true),
+				  certificateValidationCallback,
 				  certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
 
 				if (_sslConfig == null)
