@@ -47,6 +47,11 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private X509CertificateCollection           _certs;
+    private LocalCertificateSelectionCallback   _certSelectionCallback;
+    private bool                                _checkCertRevocation;
+    private SslProtocols                        _enabledProtocols;
+    private string                              _host;
     private RemoteCertificateValidationCallback _serverCertValidationCallback;
 
     #endregion
@@ -92,10 +97,10 @@ namespace WebSocketSharp.Net
       SslProtocols enabledSslProtocols,
       bool checkCertificateRevocation)
     {
-      TargetHost = targetHost;
-      ClientCertificates = clientCertificates;
-      EnabledSslProtocols = enabledSslProtocols;
-      CheckCertificateRevocation = checkCertificateRevocation;
+      _host = targetHost;
+      _certs = clientCertificates;
+      _enabledProtocols = enabledSslProtocols;
+      _checkCertRevocation = checkCertificateRevocation;
     }
 
     #endregion
@@ -109,7 +114,15 @@ namespace WebSocketSharp.Net
     /// <value>
     /// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
     /// </value>
-    public bool CheckCertificateRevocation { get; set; }
+    public bool CheckCertificateRevocation {
+      get {
+        return _checkCertRevocation;
+      }
+
+      set {
+        _checkCertRevocation = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the collection that contains client certificates.
@@ -117,7 +130,39 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="X509CertificateCollection"/> that contains client certificates.
     /// </value>
-    public X509CertificateCollection ClientCertificates { get; set; }
+    public X509CertificateCollection ClientCertificates {
+      get {
+        return _certs;
+      }
+
+      set {
+        _certs = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the callback used to select a client certificate to supply to the server.
+    /// </summary>
+    /// <remarks>
+    /// If this callback returns <see langword="null"/>, no client certificate will be supplied.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
+    /// used to select the client certificate. The default value is a function that only returns
+    /// <see langword="null"/>.
+    /// </value>
+    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
+      get {
+        return _certSelectionCallback ??
+               (_certSelectionCallback =
+                 (sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
+                   null);
+      }
+
+      set {
+        _certSelectionCallback = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the SSL protocols used for authentication.
@@ -126,11 +171,22 @@ namespace WebSocketSharp.Net
     /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
     /// authentication.
     /// </value>
-    public SslProtocols EnabledSslProtocols { get; set; }
+    public SslProtocols EnabledSslProtocols {
+      get {
+        return _enabledProtocols;
+      }
+
+      set {
+        _enabledProtocols = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the callback used to validate the certificate supplied by the server.
     /// </summary>
+    /// <remarks>
+    /// If this callback returns <c>true</c>, the server certificate will be valid.
+    /// </remarks>
     /// <value>
     /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
     /// used to validate the server certificate. The default value is a function that only returns
@@ -155,7 +211,15 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the name of the server that shares
     /// a secure connection.
     /// </value>
-    public string TargetHost { get; set; }
+    public string TargetHost {
+      get {
+        return _host;
+      }
+
+      set {
+        _host = value;
+      }
+    }
 
     #endregion
   }

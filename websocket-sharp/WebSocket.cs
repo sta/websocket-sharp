@@ -70,8 +70,6 @@ namespace WebSocketSharp
 
     private AuthenticationChallenge _authChallenge;
     private string                  _base64Key;
-    private LocalCertificateSelectionCallback
-                                    _certSelectionCallback;
     private bool                    _client;
     private Action                  _closeContext;
     private CompressionMethod       _compression;
@@ -233,40 +231,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// Gets or sets the callback used to select a client certificate to supply to the server.
-    /// </summary>
-    /// <remarks>
-    /// If the value of this property is <see langword="null"/>, no client certificate will be
-    /// supplied.
-    /// </remarks>
-    /// <value>
-    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
-    /// used to select the client certificate. The default value is <see langword="null"/>.
-    /// </value>
-    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback
-    {
-      get {
-        return _certSelectionCallback;
-      }
-
-      set {
-        lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
-          if (msg != null) {
-            _logger.Error (msg);
-            error (
-              "An error has occurred in setting the client certificate selection callback.",
-              null);
-
-            return;
-          }
-
-          _certSelectionCallback = value;
-        }
-      }
-    }
 
     /// <summary>
     /// Gets or sets the compression method used to compress the message on the WebSocket
@@ -1335,7 +1299,8 @@ namespace WebSocketSharp
 
       if (_secure) {
         var conf = SslConfiguration;
-        if (conf.TargetHost != _uri.DnsSafeHost)
+        var host = conf.TargetHost;
+        if (host != _uri.DnsSafeHost)
           throw new WebSocketException (
             CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
 
@@ -1344,12 +1309,10 @@ namespace WebSocketSharp
             _stream,
             false,
             conf.ServerCertificateValidationCallback,
-            _certSelectionCallback ??
-              ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
-                null));
+            conf.ClientCertificateSelectionCallback);
 
           sslStream.AuthenticateAsClient (
-            conf.TargetHost,
+            host,
             conf.ClientCertificates,
             conf.EnabledSslProtocols,
             conf.CheckCertificateRevocation);
