@@ -34,17 +34,27 @@
  */
 #endregion
 
+using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Stores the parameters used in configuring <see cref="System.Net.Security.SslStream"/>
-  /// as a server.
+  /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
   /// </summary>
   public class ServerSslAuthConfiguration
   {
+    #region Private Fields
+
+    private X509Certificate2                    _cert;
+    private bool                                _checkCertRevocation;
+    private bool                                _clientCertRequired;
+    private RemoteCertificateValidationCallback _clientCertValidationCallback;
+    private SslProtocols                        _enabledProtocols;
+
+    #endregion
+
     #region Public Constructors
 
     /// <summary>
@@ -57,50 +67,6 @@ namespace WebSocketSharp.Net
     /// </param>
     public ServerSslAuthConfiguration (X509Certificate2 serverCertificate)
       : this (serverCertificate, false, SslProtocols.Default, false)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
-    /// the specified <paramref name="serverCertificate"/> and
-    /// <paramref name="clientCertificateRequired"/>.
-    /// </summary>
-    /// <param name="serverCertificate">
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-    /// the server.
-    /// </param>
-    /// <param name="clientCertificateRequired">
-    /// <c>true</c> if the client must supply a certificate for authentication;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public ServerSslAuthConfiguration (
-      X509Certificate2 serverCertificate, bool clientCertificateRequired)
-      : this (serverCertificate, clientCertificateRequired, SslProtocols.Default, false)
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
-    /// the specified <paramref name="serverCertificate"/>,
-    /// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
-    /// </summary>
-    /// <param name="serverCertificate">
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-    /// the server.
-    /// </param>
-    /// <param name="clientCertificateRequired">
-    /// <c>true</c> if the client must supply a certificate for authentication;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    /// <param name="enabledSslProtocols">
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </param>
-    public ServerSslAuthConfiguration (
-      X509Certificate2 serverCertificate,
-      bool clientCertificateRequired,
-      SslProtocols enabledSslProtocols)
-      : this (serverCertificate, clientCertificateRequired, enabledSslProtocols, false)
     {
     }
 
@@ -132,10 +98,10 @@ namespace WebSocketSharp.Net
       SslProtocols enabledSslProtocols,
       bool checkCertificateRevocation)
     {
-      ServerCertificate = serverCertificate;
-      ClientCertificateRequired = clientCertificateRequired;
-      EnabledSslProtocols = enabledSslProtocols;
-      CheckCertificateRevocation = checkCertificateRevocation;
+      _cert = serverCertificate;
+      _clientCertRequired = clientCertificateRequired;
+      _enabledProtocols = enabledSslProtocols;
+      _checkCertRevocation = checkCertificateRevocation;
     }
 
     #endregion
@@ -149,7 +115,15 @@ namespace WebSocketSharp.Net
     /// <value>
     /// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
     /// </value>
-    public bool CheckCertificateRevocation { get; set; }
+    public bool CheckCertificateRevocation {
+      get {
+        return _checkCertRevocation;
+      }
+
+      set {
+        _checkCertRevocation = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the client must supply a certificate for
@@ -158,7 +132,38 @@ namespace WebSocketSharp.Net
     /// <value>
     /// <c>true</c> if the client must supply a certificate; otherwise, <c>false</c>.
     /// </value>
-    public bool ClientCertificateRequired { get; set; }
+    public bool ClientCertificateRequired {
+      get {
+        return _clientCertRequired;
+      }
+
+      set {
+        _clientCertRequired = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the callback used to validate the certificate supplied by the client.
+    /// </summary>
+    /// <remarks>
+    /// If this callback returns <c>true</c>, the client certificate will be valid.
+    /// </remarks>
+    /// <value>
+    /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
+    /// used to validate the client certificate. The default value is a function that only returns
+    /// <c>true</c>.
+    /// </value>
+    public RemoteCertificateValidationCallback ClientCertificateValidationCallback {
+      get {
+        return _clientCertValidationCallback ??
+               (_clientCertValidationCallback =
+                 (sender, certificate, chain, sslPolicyErrors) => true);
+      }
+
+      set {
+        _clientCertValidationCallback = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the SSL protocols used for authentication.
@@ -167,7 +172,15 @@ namespace WebSocketSharp.Net
     /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
     /// authentication.
     /// </value>
-    public SslProtocols EnabledSslProtocols { get; set; }
+    public SslProtocols EnabledSslProtocols {
+      get {
+        return _enabledProtocols;
+      }
+
+      set {
+        _enabledProtocols = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the certificate used to authenticate the server on the secure connection.
@@ -176,7 +189,15 @@ namespace WebSocketSharp.Net
     /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
     /// the server.
     /// </value>
-    public X509Certificate2 ServerCertificate { get; set; }
+    public X509Certificate2 ServerCertificate {
+      get {
+        return _cert;
+      }
+
+      set {
+        _cert = value;
+      }
+    }
 
     #endregion
   }

@@ -71,7 +71,7 @@ namespace WebSocketSharp.Net.WebSockets
       TcpClient tcpClient,
       string protocol,
       bool secure,
-      ServerSslAuthConfiguration sslConfiguration,
+      ServerSslAuthConfiguration sslConfig,
       Logger logger)
     {
       _tcpClient = tcpClient;
@@ -79,12 +79,14 @@ namespace WebSocketSharp.Net.WebSockets
 
       var netStream = tcpClient.GetStream ();
       if (secure) {
-        var sslStream = new SslStream (netStream, false);
+        var sslStream = new SslStream (
+          netStream, false, sslConfig.ClientCertificateValidationCallback);
+
         sslStream.AuthenticateAsServer (
-          sslConfiguration.ServerCertificate,
-          sslConfiguration.ClientCertificateRequired,
-          sslConfiguration.EnabledSslProtocols,
-          sslConfiguration.CheckCertificateRevocation);
+          sslConfig.ServerCertificate,
+          sslConfig.ClientCertificateRequired,
+          sslConfig.EnabledSslProtocols,
+          sslConfig.CheckCertificateRevocation);
 
         _stream = sslStream;
       }
