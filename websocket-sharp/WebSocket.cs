@@ -97,8 +97,7 @@ namespace WebSocketSharp
     private volatile WebSocketState _readyState;
     private AutoResetEvent          _receivePong;
     private bool                    _secure;
-    private ClientSslAuthConfiguration
-                                    _sslConfig;
+    private ClientSslConfiguration  _sslConfig;
     private Stream                  _stream;
     private TcpClient               _tcpClient;
     private Uri                     _uri;
@@ -431,14 +430,14 @@ namespace WebSocketSharp
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ClientSslAuthConfiguration"/> that represents the configuration
-    /// used to authenticate the server and optionally the client for secure connection,
+    /// A <see cref="ClientSslConfiguration"/> that represents the configuration used
+    /// to authenticate the server and optionally the client for secure connection,
     /// or <see langword="null"/> if the <see cref="WebSocket"/> is used as server.
     /// </value>
-    public ClientSslAuthConfiguration SslConfiguration {
+    public ClientSslConfiguration SslConfiguration {
       get {
         return _client
-               ? (_sslConfig ?? (_sslConfig = new ClientSslAuthConfiguration (_uri.DnsSafeHost)))
+               ? (_sslConfig ?? (_sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost)))
                : null;
       }
 

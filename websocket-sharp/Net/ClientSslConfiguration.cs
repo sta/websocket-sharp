@@ -1,6 +1,6 @@
 ﻿#region License
 /*
- * ClientSslAuthConfiguration.cs
+ * ClientSslConfiguration.cs
  *
  * The MIT License
  *
@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
   /// <summary>
   /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
   /// </summary>
-  public class ClientSslAuthConfiguration
+  public class ClientSslConfiguration
   {
     #region Private Fields
 
@@ -59,20 +59,20 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
     /// the specified <paramref name="targetHost"/>.
     /// </summary>
     /// <param name="targetHost">
     /// A <see cref="string"/> that represents the name of the server that shares
     /// a secure connection.
     /// </param>
-    public ClientSslAuthConfiguration (string targetHost)
+    public ClientSslConfiguration (string targetHost)
       : this (targetHost, null, SslProtocols.Default, false)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
     /// the specified <paramref name="targetHost"/>, <paramref name="clientCertificates"/>,
     /// <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.
     /// </summary>
@@ -91,7 +91,7 @@ namespace WebSocketSharp.Net
     /// <c>true</c> if the certificate revocation list is checked during authentication;
     /// otherwise, <c>false</c>.
     /// </param>
-    public ClientSslAuthConfiguration (
+    public ClientSslConfiguration (
       string targetHost,
       X509CertificateCollection clientCertificates,
       SslProtocols enabledSslProtocols,
