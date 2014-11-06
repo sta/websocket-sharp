@@ -56,7 +56,7 @@ namespace WebSocketSharp
 
 			while (bytesRead < count && _readInfo.PayloadLength > 0)
 			{
-				var toread = Math.Min((ulong)count, _readInfo.PayloadLength);
+				var toread = Math.Min((ulong)(count - bytesRead), _readInfo.PayloadLength);
 				toread = Math.Min(toread, int.MaxValue);
 				_readInfo.PayloadLength -= toread;
 
