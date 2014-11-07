@@ -419,7 +419,7 @@ namespace WebSocketSharp.Tests
 
 					client.OnMessage += onMessage;
 
-					client.Connect();
+					await client.ConnectAsync();
 					await client.SendAsync(stream);
 
 					var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 20000);

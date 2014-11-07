@@ -89,6 +89,64 @@ namespace WebSocketSharp.Tests
 
 				Assert.IsNull(second);
 			}
+
+			[Test]
+			public void WhenReadingStreamWithPingsThenReadsAllData()
+			{
+				var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
+				var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
+				var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
+				var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
+				var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+				var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1, false, true);
+				var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+
+				var stream = new MemoryStream(
+					frame1.ToByteArray()
+					.Concat(frame2.ToByteArray())
+					.Concat(frame3.ToByteArray())
+					.Concat(frame4.ToByteArray())
+					.Concat(frame5.ToByteArray())
+					.ToArray());
+				_sut = new WebSocketStreamReader(stream);
+
+				var messages = _sut.Read().Select(x =>
+				{
+					x.Consume();
+					return x;
+				}).Count();
+
+				Assert.AreEqual(4, messages);
+			}
+
+			[Test]
+			public void WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
+			{
+				var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
+				var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+				var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
+				var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+				var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+				var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+				var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+
+				var stream = new MemoryStream(
+					frame1.ToByteArray()
+					.Concat(frame2.ToByteArray())
+					.Concat(frame3.ToByteArray())
+					.Concat(frame4.ToByteArray())
+					.Concat(frame5.ToByteArray())
+					.ToArray());
+				_sut = new WebSocketStreamReader(stream);
+
+				var messages = _sut.Read().Select(x =>
+				{
+					x.Consume();
+					return x;
+				}).Count();
+
+				Assert.AreEqual(4, messages);
+			}
 		}
 	}
 }
