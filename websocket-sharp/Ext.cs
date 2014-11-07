@@ -561,7 +561,7 @@ namespace WebSocketSharp
       this TcpClient tcpClient,
       string protocol,
       bool secure,
-      ServerSslAuthConfiguration sslConfig,
+      ServerSslConfiguration sslConfig,
       Logger logger)
     {
       return new TcpListenerWebSocketContext (tcpClient, protocol, secure, sslConfig, logger);

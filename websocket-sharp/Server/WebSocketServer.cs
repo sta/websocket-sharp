@@ -70,7 +70,7 @@ namespace WebSocketSharp.Server
     private bool                               _reuseAddress;
     private bool                               _secure;
     private WebSocketServiceManager            _services;
-    private ServerSslAuthConfiguration         _sslConfig;
+    private ServerSslConfiguration             _sslConfig;
     private volatile ServerState               _state;
     private object                             _sync;
     private Uri                                _uri;
@@ -445,12 +445,12 @@ namespace WebSocketSharp.Server
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration
-    /// used to authenticate the server and optionally the client for secure connection.
+    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used
+    /// to authenticate the server and optionally the client for secure connection.
     /// </value>
-    public ServerSslAuthConfiguration SslConfiguration {
+    public ServerSslConfiguration SslConfiguration {
       get {
-        return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration (null));
+        return _sslConfig ?? (_sslConfig = new ServerSslConfiguration (null));
       }
 
       set {

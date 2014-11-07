@@ -71,7 +71,7 @@ namespace WebSocketSharp.Net.WebSockets
       TcpClient tcpClient,
       string protocol,
       bool secure,
-      ServerSslAuthConfiguration sslConfig,
+      ServerSslConfiguration sslConfig,
       Logger logger)
     {
       _tcpClient = tcpClient;

@@ -339,10 +339,10 @@ namespace WebSocketSharp.Server
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration
-    /// used to authenticate the server and optionally the client for secure connection.
+    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used
+    /// to authenticate the server and optionally the client for secure connection.
     /// </value>
-    public ServerSslAuthConfiguration SslConfiguration {
+    public ServerSslConfiguration SslConfiguration {
       get {
         return _listener.SslConfiguration;
       }

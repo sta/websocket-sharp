@@ -1,6 +1,6 @@
 ﻿#region License
 /*
- * ServerSslAuthConfiguration.cs
+ * ServerSslConfiguration.cs
  *
  * The MIT License
  *
@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
   /// <summary>
   /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
   /// </summary>
-  public class ServerSslAuthConfiguration
+  public class ServerSslConfiguration
   {
     #region Private Fields
 
@@ -58,20 +58,20 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
     /// the specified <paramref name="serverCertificate"/>.
     /// </summary>
     /// <param name="serverCertificate">
     /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
     /// the server.
     /// </param>
-    public ServerSslAuthConfiguration (X509Certificate2 serverCertificate)
+    public ServerSslConfiguration (X509Certificate2 serverCertificate)
       : this (serverCertificate, false, SslProtocols.Default, false)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
     /// the specified <paramref name="serverCertificate"/>,
     /// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
     /// and <paramref name="checkCertificateRevocation"/>.
@@ -92,7 +92,7 @@ namespace WebSocketSharp.Net
     /// <c>true</c> if the certificate revocation list is checked during authentication;
     /// otherwise, <c>false</c>.
     /// </param>
-    public ServerSslAuthConfiguration (
+    public ServerSslConfiguration (
       X509Certificate2 serverCertificate,
       bool clientCertificateRequired,
       SslProtocols enabledSslProtocols,
@@ -183,7 +183,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the certificate used to authenticate the server on the secure connection.
+    /// Gets or sets the certificate used to authenticate the server for secure connection.
     /// </summary>
     /// <value>
     /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate

@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
     private bool                                         _secure;
     private Socket                                       _socket;
-    private ServerSslAuthConfiguration                   _sslConfig;
+    private ServerSslConfiguration                       _sslConfig;
     private List<HttpListenerPrefix>                     _unhandled; // host == '*'
     private Dictionary<HttpConnection, HttpConnection>   _unregistered;
     private object                                       _unregisteredSync;
@@ -90,16 +90,16 @@ namespace WebSocketSharp.Net
       int port,
       bool secure,
       string certificateFolderPath,
-      ServerSslAuthConfiguration sslConfiguration,
+      ServerSslConfiguration sslConfig,
       bool reuseAddress)
     {
       if (secure) {
-        var cert = getCertificate (port, certificateFolderPath, sslConfiguration.ServerCertificate);
+        var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
         if (cert == null)
           throw new ArgumentException ("No server certificate could be found.");
 
         _secure = secure;
-        _sslConfig = sslConfiguration;
+        _sslConfig = sslConfig;
         _sslConfig.ServerCertificate = cert;
       }
 
@@ -132,7 +132,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public ServerSslAuthConfiguration SslConfiguration {
+    public ServerSslConfiguration SslConfiguration {
       get {
         return _sslConfig;
       }
