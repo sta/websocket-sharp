@@ -136,6 +136,7 @@
     <Compile Include="Net\HttpListenerPrefix.cs" />
     <Compile Include="Net\ClientSslConfiguration.cs" />
     <Compile Include="Net\ServerSslConfiguration.cs" />
+    <Compile Include="Net\SslConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

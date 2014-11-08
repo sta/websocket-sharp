@@ -43,15 +43,12 @@ namespace WebSocketSharp.Net
   /// <summary>
   /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
   /// </summary>
-  public class ServerSslConfiguration
+  public class ServerSslConfiguration : SslConfiguration
   {
     #region Private Fields
 
-    private X509Certificate2                    _cert;
-    private bool                                _checkCertRevocation;
-    private bool                                _clientCertRequired;
-    private RemoteCertificateValidationCallback _clientCertValidationCallback;
-    private SslProtocols                        _enabledProtocols;
+    private X509Certificate2 _cert;
+    private bool             _clientCertRequired;
 
     #endregion
 
@@ -97,33 +94,15 @@ namespace WebSocketSharp.Net
       bool clientCertificateRequired,
       SslProtocols enabledSslProtocols,
       bool checkCertificateRevocation)
+      : base (enabledSslProtocols, checkCertificateRevocation)
     {
       _cert = serverCertificate;
       _clientCertRequired = clientCertificateRequired;
-      _enabledProtocols = enabledSslProtocols;
-      _checkCertRevocation = checkCertificateRevocation;
     }
 
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the certificate revocation list is checked
-    /// during authentication.
-    /// </summary>
-    /// <value>
-    /// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
-    /// </value>
-    public bool CheckCertificateRevocation {
-      get {
-        return _checkCertRevocation;
-      }
-
-      set {
-        _checkCertRevocation = value;
-      }
-    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the client must supply a certificate for
@@ -155,30 +134,11 @@ namespace WebSocketSharp.Net
     /// </value>
     public RemoteCertificateValidationCallback ClientCertificateValidationCallback {
       get {
-        return _clientCertValidationCallback ??
-               (_clientCertValidationCallback =
-                 (sender, certificate, chain, sslPolicyErrors) => true);
+        return CertificateValidationCallback;
       }
 
       set {
-        _clientCertValidationCallback = value;
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the SSL protocols used for authentication.
-    /// </summary>
-    /// <value>
-    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-    /// authentication.
-    /// </value>
-    public SslProtocols EnabledSslProtocols {
-      get {
-        return _enabledProtocols;
-      }
-
-      set {
-        _enabledProtocols = value;
+        CertificateValidationCallback = value;
       }
     }
 
