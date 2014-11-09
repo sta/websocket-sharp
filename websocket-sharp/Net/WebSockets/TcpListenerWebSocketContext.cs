@@ -81,10 +81,10 @@ namespace WebSocketSharp.Net.WebSockets
 			{
 				var sslStream = new SslStream(netStream, false);
 				sslStream.AuthenticateAsServer(
-				  sslConfiguration.ServerCertificate,
-				  sslConfiguration.ClientCertificateRequired,
-				  sslConfiguration.EnabledSslProtocols,
-				  sslConfiguration.CheckCertificateRevocation);
+          sslConfig.ServerCertificate,
+          sslConfig.ClientCertificateRequired,
+          sslConfig.EnabledSslProtocols,
+          sslConfig.CheckCertificateRevocation);
 
 				_stream = sslStream;
 			}

@@ -1374,6 +1374,11 @@ namespace WebSocketSharp
 
 			return Task.Factory.FromAsync(closer.BeginInvoke, closer.EndInvoke, e, send, wait, null);
 		}
+        catch (Exception ex) {
+          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
+        }
+      }
+    }
 
 		private bool CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
 		{

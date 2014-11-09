@@ -93,13 +93,13 @@ namespace WebSocketSharp.Net
 
       var netStream = new NetworkStream (socket, false);
       if (_secure) {
-        var sslStream = new SslStream (netStream, false);
-        var sslConfig = listener.SslConfiguration;
+        var conf = listener.SslConfiguration;
+        var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
         sslStream.AuthenticateAsServer (
-          sslConfig.ServerCertificate,
-          sslConfig.ClientCertificateRequired,
-          sslConfig.EnabledSslProtocols,
-          sslConfig.CheckCertificateRevocation);
+          conf.ServerCertificate,
+          conf.ClientCertificateRequired,
+          conf.EnabledSslProtocols,
+          conf.CheckCertificateRevocation);
 
         _stream = sslStream;
       }
