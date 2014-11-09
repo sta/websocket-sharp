@@ -419,7 +419,7 @@ If the server supports this extension, it returns the same header. And when your
 
 ### Secure Connection ###
 
-websocket-sharp supports the **Secure Connection** with **SSL**.
+websocket-sharp supports the **Secure Connection** with **SSL/TLS**.
 
 As a **WebSocket Client**, you should create an instance of the `WebSocket` class with the **wss** scheme WebSocket URL.
 
@@ -432,21 +432,23 @@ using (var ws = new WebSocket ("wss://example.com")) {
 And if you would like to use the custom validation for the server certificate, you should set the `WebSocket.SslConfiguration.ServerCertificateValidationCallback` property.
 
 ```cs
-ws.SslConfiguration.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => {
-  // Do something to validate the server certificate.
-  ...
+ws.SslConfiguration.ServerCertificateValidationCallback =
+  (sender, certificate, chain, sslPolicyErrors) => {
+    // Do something to validate the server certificate.
+    ...
 
-  return true; // If the server certificate is valid.
-};
+    return true; // If the server certificate is valid.
+  };
 ```
 
 If you set this property to nothing, the validation does nothing with the server certificate, and returns `true`.
 
-As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, like the following.
+As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, such as the following.
 
 ```cs
 var wssv = new WebSocketServer (4649, true);
-wssv.SslConfiguration.ServerCertificate = new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
+wssv.SslConfiguration.ServerCertificate =
+  new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
 ```
 
 ### HTTP Authentication ###
