@@ -44,10 +44,7 @@
 namespace WebSocketSharp
 {
 	using System;
-	using System.Collections;
 	using System.Collections.Generic;
-	using System.Collections.Specialized;
-	using System.Diagnostics;
 	using System.IO;
 	using System.Net.Security;
 	using System.Net.Sockets;
@@ -68,7 +65,7 @@ namespace WebSocketSharp
 	/// </remarks>
 	public class WebSocket : IDisposable
 	{
-		internal const int FragmentLength = 10232; // Max value is int.MaxValue - 14.
+		internal const int FragmentLength = 102392; // Max value is int.MaxValue - 14.
 
 		private const string GuidId = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 		private const string SocketVersion = "13";
@@ -1160,7 +1157,7 @@ namespace WebSocketSharp
 			{
 				_istransmitting = false;
 
-				Monitor.PulseAll(_forSend);
+				Monitor.Pulse(_forSend);
 			}
 
 			return result;
@@ -1396,7 +1393,7 @@ namespace WebSocketSharp
 			{
 				_istransmitting = false;
 
-				Monitor.PulseAll(_forSend);
+				Monitor.Pulse(_forSend);
 			}
 
 			var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
@@ -1762,6 +1759,7 @@ namespace WebSocketSharp
 					Monitor.Wait(_forSend);
 				}
 
+				long totalSent = 0;
 				_istransmitting = true;
 				int bytesRead;
 				do
@@ -1778,13 +1776,14 @@ namespace WebSocketSharp
 					}
 
 					opcode = Opcode.Cont;
+					totalSent += bytesRead;
 				}
 				while (bytesRead == FragmentLength);
 
 				_stream.Flush();
 
 				_istransmitting = false;
-				Monitor.PulseAll(_forSend);
+				Monitor.Pulse(_forSend);
 				return true;
 			}
 		}
@@ -1969,6 +1968,7 @@ namespace WebSocketSharp
 								{
 									message.Consume();
 								}
+
 								break;
 							case Opcode.Close:
 								ProcessCloseFrame(message);

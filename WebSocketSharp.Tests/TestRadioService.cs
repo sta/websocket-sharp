@@ -23,15 +23,15 @@ namespace WebSocketSharp.Tests
 
 	public class TestRadioService : WebSocketBehavior
 	{
-		protected override void OnMessage(MessageEventArgs e)
+		protected override async void OnMessage(MessageEventArgs e)
 		{
 			switch (e.Opcode)
 			{
 				case Opcode.Text:
-					Sessions.BroadcastAsync(e.Text.ReadToEnd());
+					await Sessions.BroadcastAsync(e.Text.ReadToEnd());
 					break;
 				case Opcode.Binary:
-					Sessions.BroadcastAsync(e.Data);
+					await Sessions.BroadcastAsync(e.Data);
 					break;
 				case Opcode.Cont:
 				case Opcode.Close:

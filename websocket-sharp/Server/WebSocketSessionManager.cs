@@ -319,17 +319,17 @@ namespace WebSocketSharp.Server
 
 		internal void Broadcast(Opcode opcode, Stream stream)
 		{
-			var buffer = new byte[WebSocket.FragmentLength];
 			var sentCode = opcode;
-			var bytesRead = 0;
+			bool isFinal;
 			do
 			{
-				bytesRead = stream.Read(buffer, 0, WebSocket.FragmentLength);
-				var isFinal = bytesRead != WebSocket.FragmentLength;
+				var buffer = new byte[WebSocket.FragmentLength];
+				var bytesRead = stream.Read(buffer, 0, WebSocket.FragmentLength);
+				isFinal = bytesRead != WebSocket.FragmentLength;
 				Broadcast(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
 				sentCode = Opcode.Cont;
 			}
-			while (bytesRead == WebSocket.FragmentLength);
+			while (!isFinal);
 		}
 
 		internal Dictionary<string, bool> Broadping(byte[] frameAsBytes, TimeSpan timeout)
@@ -396,6 +396,23 @@ namespace WebSocketSharp.Server
 			{
 				Broadcast(Opcode.Binary, new MemoryStream(data));
 			}
+		}
+
+		/// <summary>
+		/// Broadcasts a binary <paramref name="data"/> to every client in the WebSocket service.
+		/// </summary>
+		/// <param name="data">
+		/// An array of <see cref="Stream"/> that represents the binary data to broadcast.
+		/// </param>
+		public void Broadcast(Stream data)
+		{
+			var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
+			if (msg != null)
+			{
+				return;
+			}
+
+			Broadcast(Opcode.Binary, data);
 		}
 
 		/// <summary>
@@ -522,11 +539,11 @@ namespace WebSocketSharp.Server
 				return;
 			}
 
-			var buffer = new byte[WebSocket.FragmentLength];
 			var sentCode = opcode;
 			var isFinal = false;
 			while (!isFinal)
 			{
+				var buffer = new byte[WebSocket.FragmentLength];
 				var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength).ConfigureAwait(false);
 				isFinal = bytesRead != WebSocket.FragmentLength;
 				await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);

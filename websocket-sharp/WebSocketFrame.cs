@@ -664,18 +664,6 @@ Extended Payload Length: {7}
 			return ((IEnumerable<byte>)ToByteArray()).GetEnumerator();
 		}
 
-		public void Print(bool dumped)
-		{
-			Console.WriteLine(dumped ? dump(this) : print(this));
-		}
-
-		public string PrintToString(bool dumped)
-		{
-			return dumped
-				   ? dump(this)
-				   : print(this);
-		}
-
 		public byte[] ToByteArray()
 		{
 			using (var buff = new MemoryStream())

@@ -763,28 +763,36 @@ namespace WebSocketSharp
 		internal static string CheckIfValidControlData(this byte[] data, string paramName)
 		{
 			return data.Length > 125
-				   ? String.Format("'{0}' is greater than the allowable max size.", paramName)
+				   ? string.Format("'{0}' is greater than the allowable max size.", paramName)
 				   : null;
 		}
 
 		internal static string CheckIfValidProtocols(this string[] protocols)
 		{
 			return protocols.Contains(
-					 protocol => protocol == null || protocol.Length == 0 || !protocol.IsToken())
+					 protocol => string.IsNullOrEmpty(protocol) || !protocol.IsToken())
 				   ? "Contains an invalid value."
 				   : protocols.ContainsTwice()
 					 ? "Contains a value twice."
 					 : null;
 		}
 
+		internal static string CheckIfValidSendData(this Stream data)
+		{
+			return IsDataNull(data);
+		}
+
 		internal static string CheckIfValidSendData(this byte[] data)
 		{
-			return data == null
-				   ? "'data' is null."
-				   : null;
+			return IsDataNull(data);
 		}
 
 		internal static string CheckIfValidSendData(this string data)
+		{
+			return IsDataNull(data);
+		}
+
+		internal static string IsDataNull(object data)
 		{
 			return data == null
 				   ? "'data' is null."
@@ -793,7 +801,7 @@ namespace WebSocketSharp
 
 		internal static string CheckIfValidServicePath(this string path)
 		{
-			return path == null || path.Length == 0
+			return string.IsNullOrEmpty(path)
 				   ? "'path' is null or empty."
 				   : path[0] != '/'
 					 ? "'path' isn't an absolute path."
@@ -804,7 +812,7 @@ namespace WebSocketSharp
 
 		internal static string CheckIfValidSessionID(this string id)
 		{
-			return id == null || id.Length == 0
+			return string.IsNullOrEmpty(id)
 				   ? "'id' is null or empty."
 				   : null;
 		}

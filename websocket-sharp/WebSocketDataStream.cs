@@ -18,6 +18,7 @@
 namespace WebSocketSharp
 {
 	using System;
+	using System.Diagnostics;
 	using System.IO;
 
 	internal class WebSocketDataStream : Stream
@@ -58,9 +59,10 @@ namespace WebSocketSharp
 			{
 				var toread = Math.Min((ulong)(count - bytesRead), _readInfo.PayloadLength);
 				toread = Math.Min(toread, int.MaxValue);
-				_readInfo.PayloadLength -= toread;
 
 				bytesRead += _innerStream.Read(buffer, offset, (int)toread);
+
+				_readInfo.PayloadLength -= (ulong)bytesRead;
 
 				if (_readInfo.MaskingKey.Length > 0)
 				{
@@ -73,11 +75,19 @@ namespace WebSocketSharp
 				}
 
 				position += (int)toread;
+				Position += bytesRead;
 				if (_readInfo.PayloadLength == 0)
 				{
 					if (!_readInfo.IsFinal)
 					{
-						_readInfo = _readInfoFunc();
+						try
+						{
+							_readInfo = _readInfoFunc();
+						}
+						catch
+						{
+							Debug.WriteLine("Failed at position {0}", Position);
+						}
 					}
 					else
 					{

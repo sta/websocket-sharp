@@ -17,7 +17,9 @@
 
 namespace WebSocketSharp
 {
+	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.IO;
 	using System.Threading;
 
@@ -25,7 +27,7 @@ namespace WebSocketSharp
 	{
 		private readonly Stream _innerStream;
 		private readonly ManualResetEventSlim _waitHandle = new ManualResetEventSlim(false);
-		private bool _isReading = false;
+		private bool _isReading;
 
 		public WebSocketStreamReader(Stream innerStream)
 		{
@@ -100,8 +102,6 @@ namespace WebSocketSharp
 				throw new WebSocketException("The 'Extended Payload Length' of a frame cannot be read from the data source.");
 			}
 
-			//frame._extPayloadLength = extPayloadLen;
-
 			/* Masking Key */
 
 			var masked = header.Mask == Mask.Mask;
@@ -110,8 +110,6 @@ namespace WebSocketSharp
 			{
 				throw new WebSocketException("The 'Masking Key' of a frame cannot be read from the data source.");
 			}
-
-			//frame._maskingKey = maskingKey;
 
 			/* Payload Data */
 

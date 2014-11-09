@@ -17,6 +17,8 @@
 
 namespace WebSocketSharp
 {
+	using System.Diagnostics;
+
 	internal class WebSocketFrameHeader
 	{
 		public WebSocketFrameHeader(byte[] header)
@@ -61,8 +63,13 @@ namespace WebSocketSharp
 					  : IsControl(header.Opcode) && header.Fin == Fin.More
 						? "A control frame is fragmented."
 						: !IsData(header.Opcode) && header.Rsv1 == Rsv.On
-						  ? "A non data frame is compressed."
+						  ? "A non data frame (" + header.Opcode + ") is compressed."
 						  : null;
+
+			if (!string.IsNullOrWhiteSpace(err))
+			{
+				Debug.WriteLine(err);
+			}
 
 			return err;
 		}

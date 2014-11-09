@@ -38,6 +38,7 @@ namespace WebSocketSharp.Tests
 			[SetUp]
 			public void Setup()
 			{
+				Debug.Listeners.Add(new ConsoleTraceListener());
 				_sut = new WebSocketServer(8080);
 				_sut.AddWebSocketService<TestEchoService>("/echo");
 				_sut.AddWebSocketService<TestRadioService>("/radio");
@@ -48,6 +49,7 @@ namespace WebSocketSharp.Tests
 			public void Teardown()
 			{
 				_sut.Stop();
+				Debug.Listeners.Clear();
 			}
 
 			[Test]
