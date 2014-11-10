@@ -39,7 +39,7 @@ namespace WebSocketSharp.Tests
 			public void Setup()
 			{
 				var cert = GetRandomCertificate();
-				_sut = new WebSocketServer(443, new ServerSslAuthConfiguration(cert));
+				_sut = new WebSocketServer(443, new ServerSslConfiguration(cert));
 				_sut.AddWebSocketService<TestEchoService>("/echo");
 				_sut.AddWebSocketService<TestRadioService>("/radio");
 				_sut.Start();

@@ -105,7 +105,7 @@ namespace WebSocketSharp.Net
 			_waitQueueSync = ((ICollection)_waitQueue).SyncRoot;
 		}
 
-		public HttpListener(ServerSslAuthConfiguration serverSslAuthConfiguration, Func<HttpListenerRequest, AuthenticationSchemes> authSchemeSelector)
+		public HttpListener(ServerSslConfiguration serverSslAuthConfiguration, Func<HttpListenerRequest, AuthenticationSchemes> authSchemeSelector)
 			: this()
 		{
 			_sslConfig = serverSslAuthConfiguration;
@@ -303,12 +303,12 @@ namespace WebSocketSharp.Net
 		/// <exception cref="ObjectDisposedException">
 		/// This listener has been closed.
 		/// </exception>
-		public ServerSslAuthConfiguration SslConfiguration
+		public ServerSslConfiguration SslConfiguration
 		{
 			get
 			{
 				CheckDisposed();
-				return _sslConfig ?? (_sslConfig = new ServerSslAuthConfiguration(null));
+				return _sslConfig ?? (_sslConfig = new ServerSslConfiguration(null));
 			}
 
 			set

@@ -49,7 +49,12 @@ using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
+	using System.Net;
 	using System.Threading.Tasks;
+
+	using AuthenticationSchemes = WebSocketSharp.Net.AuthenticationSchemes;
+	using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
+	using NetworkCredential = WebSocketSharp.Net.NetworkCredential;
 
 	/// <summary>
 	/// Provides a WebSocket protocol server.
@@ -60,10 +65,10 @@ namespace WebSocketSharp.Server
 	public class WebSocketServer
 	{
 		private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
-		private readonly System.Net.IPAddress _address;
+		private readonly IPAddress _address;
 		private readonly int _port;
 		private readonly Uri _uri;
-		private readonly ServerSslAuthConfiguration _sslConfig;
+		private readonly ServerSslConfiguration _sslConfig;
 		private readonly bool _secure;
 		private Task _receiveTask;
 		private AuthenticationSchemes _authSchemes;
@@ -83,7 +88,7 @@ namespace WebSocketSharp.Server
 		/// on port 80.
 		/// </remarks>
 		public WebSocketServer()
-			: this(System.Net.IPAddress.Any, 80, null)
+			: this(IPAddress.Any, 80, null, AuthenticationSchemes.None)
 		{
 		}
 
@@ -136,7 +141,7 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="url"/> is <see langword="null"/>.
 		/// </exception>
-		public WebSocketServer(string url, ServerSslAuthConfiguration certificate2, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
+		public WebSocketServer(string url, ServerSslConfiguration certificate2, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
 		{
 			if (url == null)
 			{
@@ -186,7 +191,7 @@ namespace WebSocketSharp.Server
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <paramref name="port"/> isn't between 1 and 65535.
 		/// </exception>
-		public WebSocketServer(int port, ServerSslAuthConfiguration certificate)
+		public WebSocketServer(int port, ServerSslConfiguration certificate)
 			: this(System.Net.IPAddress.Any, port, certificate)
 		{
 		}
@@ -223,7 +228,7 @@ namespace WebSocketSharp.Server
 		/// <paramref name="address"/> is <see langword="null"/>.
 		/// </exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="port"/> isn't between 1 and 65535.</exception>
-		public WebSocketServer(System.Net.IPAddress address, int port, ServerSslAuthConfiguration certificate, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
+		public WebSocketServer(System.Net.IPAddress address, int port, ServerSslConfiguration certificate, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
 		{
 			if (!address.IsLocal())
 			{

@@ -59,13 +59,21 @@ namespace WebSocketSharp.Net
 		#region Private Fields
 
 		private List<HttpListenerPrefix> _all; // host == '+'
+
 		private static readonly string DefaultCertFolderPath;
+
 		private readonly IPEndPoint _endpoint;
+
 		private readonly Socket _socket;
-		private readonly ServerSslAuthConfiguration _sslConfig;
+
+		private readonly ServerSslConfiguration _sslConfig;
+
 		private readonly Dictionary<HttpConnection, HttpConnection> _unregistered;
+
 		private readonly object _unregisteredSync;
+
 		private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
+
 		private List<HttpListenerPrefix> _unhandled; // host == '*'
 
 		#endregion
@@ -74,21 +82,16 @@ namespace WebSocketSharp.Net
 
 		static EndPointListener()
 		{
-			DefaultCertFolderPath =
-			  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+			DefaultCertFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		}
 
 		#endregion
 
 		#region Public Constructors
 
-		public EndPointListener(
-		  IPAddress address,
-		  int port,
-      ServerSslConfiguration sslConfig,
-		  bool reuseAddress)
+		public EndPointListener(IPAddress address, int port, ServerSslConfiguration sslConfig, bool reuseAddress)
 		{
-        _sslConfig = sslConfig;
+			_sslConfig = sslConfig;
 
 			_prefixes = new Dictionary<HttpListenerPrefix, HttpListener>();
 
@@ -123,7 +126,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		public ServerSslAuthConfiguration SslConfiguration
+		public ServerSslConfiguration SslConfiguration
 		{
 			get
 			{
@@ -137,32 +140,29 @@ namespace WebSocketSharp.Net
 
 		private static void addSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
 		{
-			if (prefixes == null)
-				return;
+			if (prefixes == null) return;
 
 			var path = prefix.Path;
-			foreach (var pref in prefixes)
-				if (pref.Path == path)
-					throw new HttpListenerException(400, "The prefix is already in use."); // TODO: Code?
+			foreach (var pref in prefixes) if (pref.Path == path) throw new HttpListenerException(400, "The prefix is already in use."); // TODO: Code?
 
 			prefixes.Add(prefix);
 		}
 
 		private void checkIfRemove()
 		{
-			if (_prefixes.Count > 0)
-				return;
+			if (_prefixes.Count > 0) return;
 
-			if (_unhandled != null && _unhandled.Count > 0)
-				return;
+			if (_unhandled != null && _unhandled.Count > 0) return;
 
-			if (_all != null && _all.Count > 0)
-				return;
+			if (_all != null && _all.Count > 0) return;
 
 			EndPointManager.RemoveEndPoint(this, _endpoint);
 		}
 
-		private static HttpListener MatchFromList(string path, IEnumerable<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
+		private static HttpListener MatchFromList(
+			string path,
+			IEnumerable<HttpListenerPrefix> list,
+			out HttpListenerPrefix prefix)
 		{
 			prefix = null;
 			if (list == null)
@@ -208,21 +208,18 @@ namespace WebSocketSharp.Net
 			}
 			catch
 			{
-				if (accepted != null)
-					accepted.Close();
+				if (accepted != null) accepted.Close();
 
 				return;
 			}
 
-			if (accepted == null)
-				return;
+			if (accepted == null) return;
 
 			HttpConnection conn = null;
 			try
 			{
 				conn = new HttpConnection(accepted, epl);
-				lock (epl._unregisteredSync)
-					epl._unregistered[conn] = conn;
+				lock (epl._unregisteredSync) epl._unregistered[conn] = conn;
 
 				conn.BeginReadRequest();
 			}
@@ -240,8 +237,7 @@ namespace WebSocketSharp.Net
 
 		private static bool removeSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
 		{
-			if (prefixes == null)
-				return false;
+			if (prefixes == null) return false;
 
 			var path = prefix.Path;
 			var cnt = prefixes.Count;
@@ -260,8 +256,7 @@ namespace WebSocketSharp.Net
 		private HttpListener searchListener(Uri uri, out HttpListenerPrefix prefix)
 		{
 			prefix = null;
-			if (uri == null)
-				return null;
+			if (uri == null) return null;
 
 			var host = uri.Host;
 			var port = uri.Port;
@@ -275,11 +270,9 @@ namespace WebSocketSharp.Net
 				foreach (var pref in _prefixes.Keys)
 				{
 					var ppath = pref.Path;
-					if (ppath.Length < bestLen)
-						continue;
+					if (ppath.Length < bestLen) continue;
 
-					if (pref.Host != host || pref.Port != port)
-						continue;
+					if (pref.Host != host || pref.Port != port) continue;
 
 					if (path.StartsWith(ppath) || pathSlash.StartsWith(ppath))
 					{
@@ -328,8 +321,7 @@ namespace WebSocketSharp.Net
 
 		internal static bool CertificateExists(int port, string certificateFolderPath)
 		{
-			if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-				certificateFolderPath = DefaultCertFolderPath;
+			if (certificateFolderPath == null || certificateFolderPath.Length == 0) certificateFolderPath = DefaultCertFolderPath;
 
 			var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
 			var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
@@ -339,8 +331,7 @@ namespace WebSocketSharp.Net
 
 		internal void RemoveConnection(HttpConnection connection)
 		{
-			lock (_unregisteredSync)
-				_unregistered.Remove(connection);
+			lock (_unregisteredSync) _unregistered.Remove(connection);
 		}
 
 		#endregion
@@ -355,9 +346,7 @@ namespace WebSocketSharp.Net
 				do
 				{
 					current = _unhandled;
-					future = current != null
-							 ? new List<HttpListenerPrefix>(current)
-							 : new List<HttpListenerPrefix>();
+					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
 					addSpecial(future, prefix);
@@ -372,9 +361,7 @@ namespace WebSocketSharp.Net
 				do
 				{
 					current = _all;
-					future = current != null
-							 ? new List<HttpListenerPrefix>(current)
-							 : new List<HttpListenerPrefix>();
+					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
 					addSpecial(future, prefix);
@@ -391,9 +378,7 @@ namespace WebSocketSharp.Net
 				if (prefs.ContainsKey(prefix))
 				{
 					var other = prefs[prefix];
-					if (other != httpListener)
-						throw new HttpListenerException(
-						  400, String.Format("There's another listener for {0}.", prefix)); // TODO: Code?
+					if (other != httpListener) throw new HttpListenerException(400, String.Format("There's another listener for {0}.", prefix)); // TODO: Code?
 
 					return;
 				}
@@ -408,8 +393,7 @@ namespace WebSocketSharp.Net
 		{
 			HttpListenerPrefix pref;
 			var httpl = searchListener(context.Request.Url, out pref);
-			if (httpl == null)
-				return false;
+			if (httpl == null) return false;
 
 			context.Listener = httpl;
 			context.Connection.Prefix = pref;
@@ -425,8 +409,7 @@ namespace WebSocketSharp.Net
 			{
 				var conns = new List<HttpConnection>(_unregistered.Keys);
 				_unregistered.Clear();
-				foreach (var conn in conns)
-					conn.Close(true);
+				foreach (var conn in conns) conn.Close(true);
 
 				conns.Clear();
 			}
@@ -440,12 +423,9 @@ namespace WebSocketSharp.Net
 				do
 				{
 					current = _unhandled;
-					future = current != null
-							 ? new List<HttpListenerPrefix>(current)
-							 : new List<HttpListenerPrefix>();
+					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
-					if (!removeSpecial(future, prefix))
-						break; // Prefix not found.
+					if (!removeSpecial(future, prefix)) break; // Prefix not found.
 				}
 				while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
 
@@ -458,12 +438,9 @@ namespace WebSocketSharp.Net
 				do
 				{
 					current = _all;
-					future = current != null
-							 ? new List<HttpListenerPrefix>(current)
-							 : new List<HttpListenerPrefix>();
+					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
-					if (!removeSpecial(future, prefix))
-						break; // Prefix not found.
+					if (!removeSpecial(future, prefix)) break; // Prefix not found.
 				}
 				while (Interlocked.CompareExchange(ref _all, future, current) != current);
 
@@ -475,8 +452,7 @@ namespace WebSocketSharp.Net
 			do
 			{
 				prefs = _prefixes;
-				if (!prefs.ContainsKey(prefix))
-					break;
+				if (!prefs.ContainsKey(prefix)) break;
 
 				prefs2 = new Dictionary<HttpListenerPrefix, HttpListener>(prefs);
 				prefs2.Remove(prefix);
@@ -488,8 +464,7 @@ namespace WebSocketSharp.Net
 
 		public void UnbindContext(HttpListenerContext context)
 		{
-			if (context == null || context.Listener == null)
-				return;
+			if (context == null || context.Listener == null) return;
 
 			context.Listener.UnregisterContext(context);
 		}

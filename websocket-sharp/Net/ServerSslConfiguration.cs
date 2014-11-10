@@ -46,20 +46,20 @@ namespace WebSocketSharp.Net
   public class ServerSslConfiguration : SslConfiguration
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+		/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/>.
 		/// </summary>
 		/// <param name="serverCertificate">
 		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
 		/// the server.
 		/// </param>
-		public ServerSslAuthConfiguration(X509Certificate2 serverCertificate)
+		public ServerSslConfiguration(X509Certificate2 serverCertificate)
 			: this(serverCertificate, false, SslProtocols.Default, false)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+		/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/> and
 		/// <paramref name="clientCertificateRequired"/>.
 		/// </summary>
@@ -71,13 +71,13 @@ namespace WebSocketSharp.Net
 		/// <c>true</c> if the client must supply a certificate for authentication;
 		/// otherwise, <c>false</c>.
 		/// </param>
-		public ServerSslAuthConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired)
+		public ServerSslConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired)
 			: this(serverCertificate, clientCertificateRequired, SslProtocols.Default, false)
 		{
 		}
 
 		/// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+	/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/>,
 		/// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
 		/// </summary>
@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
 		/// authentication.
 		/// </param>
-		public ServerSslAuthConfiguration(
+		public ServerSslConfiguration(
 			X509Certificate2 serverCertificate,
 			bool clientCertificateRequired,
 			SslProtocols enabledSslProtocols)
@@ -102,7 +102,7 @@ namespace WebSocketSharp.Net
 		}
 
 		/// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+	/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/>,
 		/// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
 		/// and <paramref name="checkCertificateRevocation"/>.
@@ -123,12 +123,12 @@ namespace WebSocketSharp.Net
 		/// <c>true</c> if the certificate revocation list is checked during authentication;
 		/// otherwise, <c>false</c>.
 		/// </param>
-		public ServerSslAuthConfiguration(
+		public ServerSslConfiguration(
 			X509Certificate2 serverCertificate,
 			bool clientCertificateRequired,
 			SslProtocols enabledSslProtocols,
 			bool checkCertificateRevocation)
-      : base (enabledSslProtocols, checkCertificateRevocation)
+	  : base (enabledSslProtocols, checkCertificateRevocation)
 		{
 			ServerCertificate = serverCertificate;
 			ClientCertificateRequired = clientCertificateRequired;
@@ -168,7 +168,7 @@ namespace WebSocketSharp.Net
 		public RemoteCertificateValidationCallback ClientCertificateValidationCallback { get; private set; }
 
 		/// <summary>
-    /// Gets or sets the certificate used to authenticate the server for secure connection.
+	/// Gets or sets the certificate used to authenticate the server for secure connection.
 		/// </summary>
 		/// <value>
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for

@@ -74,7 +74,7 @@ namespace WebSocketSharp
 		private readonly bool _secure;
 		private readonly bool _client;
 		private readonly string[] _protocols;
-		private readonly ClientSslAuthConfiguration _sslConfig;
+		private readonly ClientSslConfiguration _sslConfig;
 
 		private bool _istransmitting;
 		private AuthenticationChallenge _authChallenge;
@@ -160,7 +160,7 @@ namespace WebSocketSharp
 		/// <exception cref="ArgumentNullException">
 		/// <paramref name="url"/> is <see langword="null"/>.
 		/// </exception>
-		public WebSocket(string url, ClientSslAuthConfiguration sslAuthConfiguration, params string[] protocols)
+		public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, params string[] protocols)
 		{
 			if (url == null)
 			{
