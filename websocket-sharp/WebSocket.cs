@@ -1374,11 +1374,6 @@ namespace WebSocketSharp
 
 			return Task.Factory.FromAsync(closer.BeginInvoke, closer.EndInvoke, e, send, wait, null);
 		}
-        catch (Exception ex) {
-          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
-        }
-      }
-    }
 
 		private bool CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
 		{
@@ -1764,33 +1759,36 @@ namespace WebSocketSharp
 					Monitor.Wait(_forSend);
 				}
 
-				long totalSent = 0;
 				_istransmitting = true;
-				int bytesRead;
-				do
+			}
+
+			int bytesRead;
+			do
+			{
+				var buffer = new byte[FragmentLength];
+				bytesRead = stream.Read(buffer, 0, FragmentLength);
+				var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
+
+				var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
+
+				if (!InnerSend(finalCode, opcode, data, compressed))
 				{
-					var buffer = new byte[FragmentLength];
-					bytesRead = stream.Read(buffer, 0, FragmentLength);
-					var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
-
-					var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
-
-					if (!InnerSend(finalCode, opcode, data, compressed))
-					{
-						return false;
-					}
-
-					opcode = Opcode.Cont;
-					totalSent += bytesRead;
+					return false;
 				}
-				while (bytesRead == FragmentLength);
 
-				_stream.Flush();
+				opcode = Opcode.Cont;
+			}
+			while (bytesRead == FragmentLength);
 
+			_stream.Flush();
+
+			lock (_forSend)
+			{
 				_istransmitting = false;
 				Monitor.Pulse(_forSend);
-				return true;
 			}
+
+			return true;
 		}
 
 		private bool InnerSend(Fin fin, Opcode opcode, byte[] data, bool compressed)

@@ -33,45 +33,39 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
-using System.Text;
-
 namespace WebSocketSharp.Net.WebSockets
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.Specialized;
+	using System.IO;
+	using System.Net.Security;
+	using System.Net.Sockets;
+	using System.Security.Cryptography.X509Certificates;
+	using System.Security.Principal;
+	using System.Text;
+
 	/// <summary>
 	/// Provides the properties used to access the information in a WebSocket connection request
 	/// received by the <see cref="TcpListener"/>.
 	/// </summary>
 	internal class TcpListenerWebSocketContext : WebSocketContext
 	{
-		#region Private Fields
-
+		private readonly bool _secure;
+		private readonly Stream _stream;
+		private readonly TcpClient _tcpClient;
+		private readonly Uri _uri;
+		private readonly WebSocket _websocket;
 		private CookieCollection _cookies;
 		private NameValueCollection _queryString;
 		private HttpRequest _request;
-		private bool _secure;
-		private Stream _stream;
-		private TcpClient _tcpClient;
-		private Uri _uri;
 		private IPrincipal _user;
-		private WebSocket _websocket;
-
-		#endregion
-
-		#region Internal Constructors
 
 		internal TcpListenerWebSocketContext(
-		  TcpClient tcpClient,
-		  string protocol,
-		  bool secure,
-		  ServerSslAuthConfiguration sslConfiguration)
+			TcpClient tcpClient,
+			string protocol,
+			bool secure,
+			ServerSslAuthConfiguration sslConfiguration)
 		{
 			_tcpClient = tcpClient;
 			_secure = secure;
@@ -81,10 +75,10 @@ namespace WebSocketSharp.Net.WebSockets
 			{
 				var sslStream = new SslStream(netStream, false);
 				sslStream.AuthenticateAsServer(
-          sslConfig.ServerCertificate,
-          sslConfig.ClientCertificateRequired,
-          sslConfig.EnabledSslProtocols,
-          sslConfig.CheckCertificateRevocation);
+					sslConfiguration.ServerCertificate,
+					sslConfiguration.ClientCertificateRequired,
+					sslConfiguration.EnabledSslProtocols,
+					sslConfiguration.CheckCertificateRevocation);
 
 				_stream = sslStream;
 			}
@@ -95,12 +89,13 @@ namespace WebSocketSharp.Net.WebSockets
 
 			_request = HttpRequest.Read(_stream, 90000);
 			_uri = HttpUtility.CreateRequestUrl(
-			  _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure);
+				_request.RequestUri,
+				_request.Headers["Host"],
+				_request.IsWebSocketRequest,
+				secure);
 
 			_websocket = new WebSocket(this, protocol);
 		}
-
-		#endregion
 
 		#region Internal Properties
 
@@ -238,9 +233,8 @@ namespace WebSocketSharp.Net.WebSockets
 		{
 			get
 			{
-				return _queryString ??
-					   (_queryString = HttpUtility.InternalParseQueryString(
-						 _uri != null ? _uri.Query : null, Encoding.UTF8));
+				return _queryString
+					   ?? (_queryString = HttpUtility.InternalParseQueryString(_uri != null ? _uri.Query : null, Encoding.UTF8));
 			}
 		}
 
@@ -292,9 +286,7 @@ namespace WebSocketSharp.Net.WebSockets
 			get
 			{
 				var protocols = _request.Headers["Sec-WebSocket-Protocol"];
-				if (protocols != null)
-					foreach (var protocol in protocols.Split(','))
-						yield return protocol.Trim();
+				if (protocols != null) foreach (var protocol in protocols.Split(',')) yield return protocol.Trim();
 			}
 		}
 
@@ -395,9 +387,9 @@ namespace WebSocketSharp.Net.WebSockets
 		}
 
 		internal void SetUser(
-		  AuthenticationSchemes scheme,
-		  string realm,
-		  Func<IIdentity, NetworkCredential> credentialsFinder)
+			AuthenticationSchemes scheme,
+			string realm,
+			Func<IIdentity, NetworkCredential> credentialsFinder)
 		{
 			var authRes = _request.AuthenticationResponse;
 			if (authRes == null)
@@ -420,18 +412,15 @@ namespace WebSocketSharp.Net.WebSockets
 			{
 			}
 
-			if (cred == null)
-				return;
+			if (cred == null) return;
 
 			var valid = scheme == AuthenticationSchemes.Basic
-						? ((HttpBasicIdentity)id).Password == cred.Password
-						: scheme == AuthenticationSchemes.Digest
-						  ? ((HttpDigestIdentity)id).IsValid(
-							  cred.Password, realm, _request.HttpMethod, null)
-						  : false;
+							? ((HttpBasicIdentity)id).Password == cred.Password
+							: scheme == AuthenticationSchemes.Digest
+								  ? ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null)
+								  : false;
 
-			if (valid)
-				_user = new GenericPrincipal(id, cred.Roles);
+			if (valid) _user = new GenericPrincipal(id, cred.Roles);
 		}
 
 		#endregion

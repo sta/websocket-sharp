@@ -41,7 +41,7 @@ namespace WebSocketSharp.Net
 	using System.Security.Cryptography.X509Certificates;
 
 	/// <summary>
-  /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
+	/// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
 	/// </summary>
 	public class ClientSslAuthConfiguration
 	{
@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 		/// <param name="checkCertificateRevocation"><c>true</c> if the certificate revocation list is checked during authentication; otherwise, <c>false.</c>.</param>
 		/// <param name="certificateValidationCallback">The <see cref="RemoteCertificateValidationCallback"/> for validating the remote certificate.</param>
 		public ClientSslAuthConfiguration(
-      string targetHost,
+			string targetHost,
 			X509CertificateCollection clientCertificates,
 			SslProtocols enabledSslProtocols = SslProtocols.Default,
 			LocalCertificateSelectionCallback certificateSelection = null,
@@ -78,11 +78,6 @@ namespace WebSocketSharp.Net
 		/// </value>
 		public bool CheckCertificateRevocation { get; private set; }
 
-      set {
-        _checkCertRevocation = value;
-      }
-    }
-
 		/// <summary>
 		/// Gets or sets the collection that contains client certificates.
 		/// </summary>
@@ -91,36 +86,20 @@ namespace WebSocketSharp.Net
 		/// </value>
 		public X509CertificateCollection ClientCertificates { get; private set; }
 
-      set {
-        _certs = value;
-      }
-    }
+		/// <summary>
+		/// Gets or sets the callback used to select a client certificate to supply to the server.
+		/// </summary>
+		/// <remarks>
+		/// If this callback returns <see langword="null"/>, no client certificate will be supplied.
+		/// </remarks>
+		/// <value>
+		/// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
+		/// used to select the client certificate. The default value is a function that only returns
+		/// <see langword="null"/>.
+		/// </value>
+		public LocalCertificateSelectionCallback ClientCertificateSelectionCallback { get; private set; }
 
 		/// <summary>
-    /// Gets or sets the callback used to select a client certificate to supply to the server.
-    /// </summary>
-    /// <remarks>
-    /// If this callback returns <see langword="null"/>, no client certificate will be supplied.
-    /// </remarks>
-    /// <value>
-    /// A <see cref="LocalCertificateSelectionCallback"/> delegate that references the method
-    /// used to select the client certificate. The default value is a function that only returns
-    /// <see langword="null"/>.
-    /// </value>
-    public LocalCertificateSelectionCallback ClientCertificateSelectionCallback {
-      get {
-        return _certSelectionCallback ??
-               (_certSelectionCallback =
-                 (sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
-                   null);
-      }
-
-      set {
-        _certSelectionCallback = value;
-      }
-    }
-
-    /// <summary>
 		/// Gets or sets the SSL protocols used for authentication.
 		/// </summary>
 		/// <value>

@@ -43,238 +43,244 @@ using System.Collections.Generic;
 
 namespace WebSocketSharp.Net
 {
-  /// <summary>
-  /// Provides the collection used to store the URI prefixes for the <see cref="HttpListener"/>.
-  /// </summary>
-  /// <remarks>
-  /// The <see cref="HttpListener"/> responds to the request which has a requested URI that
-  /// the prefixes most closely match.
-  /// </remarks>
-  internal class HttpListenerPrefixCollection : ICollection<string>
-  {
-    #region Private Fields
+	/// <summary>
+	/// Provides the collection used to store the URI prefixes for the <see cref="HttpListener"/>.
+	/// </summary>
+	/// <remarks>
+	/// The <see cref="HttpListener"/> responds to the request which has a requested URI that
+	/// the prefixes most closely match.
+	/// </remarks>
+	internal class HttpListenerPrefixCollection : ICollection<string>
+	{
+		#region Private Fields
 
-    private HttpListener _listener;
-    private List<string> _prefixes;
+		private HttpListener _listener;
+		private List<string> _prefixes;
 
-    #endregion
+		#endregion
 
-    #region Internal Constructors
+		#region Internal Constructors
 
-    internal HttpListenerPrefixCollection (HttpListener listener)
-    {
-      _listener = listener;
-      _prefixes = new List<string> ();
-    }
+		internal HttpListenerPrefixCollection(HttpListener listener)
+		{
+			_listener = listener;
+			_prefixes = new List<string>();
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Properties
+		#region Public Properties
 
-    /// <summary>
-    /// Gets the number of prefixes in the collection.
-    /// </summary>
-    /// <value>
-    /// An <see cref="int"/> that represents the number of prefixes.
-    /// </value>
-    public int Count {
-      get {
-        return _prefixes.Count;
-      }
-    }
+		/// <summary>
+		/// Gets the number of prefixes in the collection.
+		/// </summary>
+		/// <value>
+		/// An <see cref="int"/> that represents the number of prefixes.
+		/// </value>
+		public int Count
+		{
+			get
+			{
+				return _prefixes.Count;
+			}
+		}
 
-    /// <summary>
-    /// Gets a value indicating whether the access to the collection is read-only.
-    /// </summary>
-    /// <value>
-    /// Always returns <c>false</c>.
-    /// </value>
-    public bool IsReadOnly {
-      get {
-        return false;
-      }
-    }
+		/// <summary>
+		/// Gets a value indicating whether the access to the collection is read-only.
+		/// </summary>
+		/// <value>
+		/// Always returns <c>false</c>.
+		/// </value>
+		public bool IsReadOnly
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-    /// <summary>
-    /// Gets a value indicating whether the access to the collection is synchronized.
-    /// </summary>
-    /// <value>
-    /// Always returns <c>false</c>.
-    /// </value>
-    public bool IsSynchronized {
-      get {
-        return false;
-      }
-    }
+		/// <summary>
+		/// Gets a value indicating whether the access to the collection is synchronized.
+		/// </summary>
+		/// <value>
+		/// Always returns <c>false</c>.
+		/// </value>
+		public bool IsSynchronized
+		{
+			get
+			{
+				return false;
+			}
+		}
 
-    #endregion
+		#endregion
 
-    #region Public Methods
+		#region Public Methods
 
-    /// <summary>
-    /// Adds the specified <paramref name="uriPrefix"/> to the collection.
-    /// </summary>
-    /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix to add. The prefix must be
-    /// a well-formed URI prefix with http or https scheme, and must end with a <c>'/'</c>.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="uriPrefix"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="uriPrefix"/> is invalid.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public void Add (string uriPrefix)
-    {
-      _listener.CheckDisposed ();
-      HttpListenerPrefix.CheckPrefix (uriPrefix);
+		/// <summary>
+		/// Adds the specified <paramref name="uriPrefix"/> to the collection.
+		/// </summary>
+		/// <param name="uriPrefix">
+		/// A <see cref="string"/> that represents the URI prefix to add. The prefix must be
+		/// a well-formed URI prefix with http or https scheme, and must end with a <c>'/'</c>.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="uriPrefix"/> is <see langword="null"/>.
+		/// </exception>
+		/// <exception cref="ArgumentException">
+		/// <paramref name="uriPrefix"/> is invalid.
+		/// </exception>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public void Add(string uriPrefix)
+		{
+			_listener.CheckDisposed();
+			HttpListenerPrefix.CheckPrefix(uriPrefix);
 
-      if (_prefixes.Contains (uriPrefix))
-        return;
+			if (_prefixes.Contains(uriPrefix))
+				return;
 
-      _prefixes.Add (uriPrefix);
-      if (_listener.IsListening)
-        EndPointManager.AddPrefix (uriPrefix, _listener);
-    }
+			_prefixes.Add(uriPrefix);
+			if (_listener.IsListening)
+				EndPointManager.AddPrefix(uriPrefix, _listener);
+		}
 
-    /// <summary>
-    /// Removes all URI prefixes from the collection.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public void Clear ()
-    {
-      _listener.CheckDisposed ();
+		/// <summary>
+		/// Removes all URI prefixes from the collection.
+		/// </summary>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public void Clear()
+		{
+			_listener.CheckDisposed();
 
-      _prefixes.Clear ();
-      if (_listener.IsListening)
-        EndPointManager.RemoveListener (_listener);
-    }
+			_prefixes.Clear();
+			if (_listener.IsListening)
+				EndPointManager.RemoveListener(_listener);
+		}
 
-    /// <summary>
-    /// Returns a value indicating whether the collection contains the specified
-    /// <paramref name="uriPrefix"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if the collection contains <paramref name="uriPrefix"/>;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix to test.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="uriPrefix"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public bool Contains (string uriPrefix)
-    {
-      _listener.CheckDisposed ();
-      if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+		/// <summary>
+		/// Returns a value indicating whether the collection contains the specified
+		/// <paramref name="uriPrefix"/>.
+		/// </summary>
+		/// <returns>
+		/// <c>true</c> if the collection contains <paramref name="uriPrefix"/>;
+		/// otherwise, <c>false</c>.
+		/// </returns>
+		/// <param name="uriPrefix">
+		/// A <see cref="string"/> that represents the URI prefix to test.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="uriPrefix"/> is <see langword="null"/>.
+		/// </exception>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public bool Contains(string uriPrefix)
+		{
+			_listener.CheckDisposed();
+			if (uriPrefix == null)
+				throw new ArgumentNullException("uriPrefix");
 
-      return _prefixes.Contains (uriPrefix);
-    }
+			return _prefixes.Contains(uriPrefix);
+		}
 
-    /// <summary>
-    /// Copies the contents of the collection to the specified <see cref="Array"/>.
-    /// </summary>
-    /// <param name="array">
-    /// An <see cref="Array"/> that receives the URI prefix strings in the collection.
-    /// </param>
-    /// <param name="offset">
-    /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-    /// at which copying begins.
-    /// </param>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public void CopyTo (Array array, int offset)
-    {
-      _listener.CheckDisposed ();
-      ((ICollection) _prefixes).CopyTo (array, offset);
-    }
+		/// <summary>
+		/// Copies the contents of the collection to the specified <see cref="Array"/>.
+		/// </summary>
+		/// <param name="array">
+		/// An <see cref="Array"/> that receives the URI prefix strings in the collection.
+		/// </param>
+		/// <param name="offset">
+		/// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
+		/// at which copying begins.
+		/// </param>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public void CopyTo(Array array, int offset)
+		{
+			_listener.CheckDisposed();
+			((ICollection)_prefixes).CopyTo(array, offset);
+		}
 
-    /// <summary>
-    /// Copies the contents of the collection to the specified array of <see cref="string"/>.
-    /// </summary>
-    /// <param name="array">
-    /// An array of <see cref="string"/> that receives the URI prefix strings in the collection.
-    /// </param>
-    /// <param name="offset">
-    /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-    /// at which copying begins.
-    /// </param>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public void CopyTo (string[] array, int offset)
-    {
-      _listener.CheckDisposed ();
-      _prefixes.CopyTo (array, offset);
-    }
+		/// <summary>
+		/// Copies the contents of the collection to the specified array of <see cref="string"/>.
+		/// </summary>
+		/// <param name="array">
+		/// An array of <see cref="string"/> that receives the URI prefix strings in the collection.
+		/// </param>
+		/// <param name="offset">
+		/// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
+		/// at which copying begins.
+		/// </param>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public void CopyTo(string[] array, int offset)
+		{
+			_listener.CheckDisposed();
+			_prefixes.CopyTo(array, offset);
+		}
 
-    /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="T:System.Collections.Generic.IEnumerator{string}"/> instance used to iterate
-    /// through the collection.
-    /// </returns>
-    public IEnumerator<string> GetEnumerator ()
-    {
-      return _prefixes.GetEnumerator ();
-    }
+		/// <summary>
+		/// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
+		/// </summary>
+		/// <returns>
+		/// An <see cref="T:System.Collections.Generic.IEnumerator{string}"/> instance used to iterate
+		/// through the collection.
+		/// </returns>
+		public IEnumerator<string> GetEnumerator()
+		{
+			return _prefixes.GetEnumerator();
+		}
 
-    /// <summary>
-    /// Removes the specified <paramref name="uriPrefix"/> from the collection.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="uriPrefix"/> is successfully found and removed;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="uriPrefix">
-    /// A <see cref="string"/> that represents the URI prefix to remove.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="uriPrefix"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The <see cref="HttpListener"/> associated with this collection is closed.
-    /// </exception>
-    public bool Remove (string uriPrefix)
-    {
-      _listener.CheckDisposed ();
-      if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+		/// <summary>
+		/// Removes the specified <paramref name="uriPrefix"/> from the collection.
+		/// </summary>
+		/// <returns>
+		/// <c>true</c> if <paramref name="uriPrefix"/> is successfully found and removed;
+		/// otherwise, <c>false</c>.
+		/// </returns>
+		/// <param name="uriPrefix">
+		/// A <see cref="string"/> that represents the URI prefix to remove.
+		/// </param>
+		/// <exception cref="ArgumentNullException">
+		/// <paramref name="uriPrefix"/> is <see langword="null"/>.
+		/// </exception>
+		/// <exception cref="ObjectDisposedException">
+		/// The <see cref="HttpListener"/> associated with this collection is closed.
+		/// </exception>
+		public bool Remove(string uriPrefix)
+		{
+			_listener.CheckDisposed();
+			if (uriPrefix == null)
+				throw new ArgumentNullException("uriPrefix");
 
-      var res = _prefixes.Remove (uriPrefix);
-      if (res && _listener.IsListening)
-        EndPointManager.RemovePrefix (uriPrefix, _listener);
+			var res = _prefixes.Remove(uriPrefix);
+			if (res && _listener.IsListening)
+				EndPointManager.RemovePrefix(uriPrefix, _listener);
 
-      return res;
-    }
+			return res;
+		}
 
-    #endregion
+		#endregion
 
-    #region Explicit Interface Implementations
+		#region Explicit Interface Implementations
 
-    /// <summary>
-    /// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
-    /// </summary>
-    /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through the collection.
-    /// </returns>
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return _prefixes.GetEnumerator ();
-    }
+		/// <summary>
+		/// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
+		/// </summary>
+		/// <returns>
+		/// An <see cref="IEnumerator"/> instance used to iterate through the collection.
+		/// </returns>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return _prefixes.GetEnumerator();
+		}
 
-    #endregion
-  }
+		#endregion
+	}
 }

@@ -44,31 +44,29 @@
  */
 #endregion
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-
 namespace WebSocketSharp.Net
 {
+	using System;
+	using System.Collections;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Net;
+	using System.Net.Sockets;
+	using System.Threading;
+
 	internal sealed class EndPointListener
 	{
 		#region Private Fields
 
 		private List<HttpListenerPrefix> _all; // host == '+'
-		private static readonly string _defaultCertFolderPath;
-		private IPEndPoint _endpoint;
+		private static readonly string DefaultCertFolderPath;
+		private readonly IPEndPoint _endpoint;
+		private readonly Socket _socket;
+		private readonly ServerSslAuthConfiguration _sslConfig;
+		private readonly Dictionary<HttpConnection, HttpConnection> _unregistered;
+		private readonly object _unregisteredSync;
 		private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
-		private Socket _socket;
-		private ServerSslAuthConfiguration _sslConfig;
 		private List<HttpListenerPrefix> _unhandled; // host == '*'
-		private Dictionary<HttpConnection, HttpConnection> _unregistered;
-		private object _unregisteredSync;
 
 		#endregion
 
@@ -76,7 +74,7 @@ namespace WebSocketSharp.Net
 
 		static EndPointListener()
 		{
-			_defaultCertFolderPath =
+			DefaultCertFolderPath =
 			  Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		}
 
@@ -331,7 +329,7 @@ namespace WebSocketSharp.Net
 		internal static bool CertificateExists(int port, string certificateFolderPath)
 		{
 			if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-				certificateFolderPath = _defaultCertFolderPath;
+				certificateFolderPath = DefaultCertFolderPath;
 
 			var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
 			var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));

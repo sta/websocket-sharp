@@ -992,7 +992,9 @@ namespace WebSocketSharp
 		{
 			var i = nameAndValue.IndexOf(separator);
 			if (i < 0 || i == nameAndValue.Length - 1)
+			{
 				return null;
+			}
 
 			var val = nameAndValue.Substring(i + 1).Trim();
 			return unquote
