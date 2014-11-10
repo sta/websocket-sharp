@@ -1,6 +1,6 @@
 ﻿#region License
 /*
- * ClientSslAuthConfiguration.cs
+ * ClientSslConfiguration.cs
  *
  * The MIT License
  *
@@ -43,23 +43,61 @@ namespace WebSocketSharp.Net
 	/// <summary>
 	/// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
 	/// </summary>
-	public class ClientSslAuthConfiguration
+  public class ClientSslConfiguration : SslConfiguration
 	{
+    #region Private Fields
+
+    private X509CertificateCollection _certs;
+    private string                    _host;
+
+    #endregion
+
+    #region Public Constructors
+
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ClientSslAuthConfiguration"/> class with the specified <paramref name="clientCertificates"/>, <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.</summary>
-		/// <param name="clientCertificates">A <see cref="X509CertificateCollection"/> that contains client certificates.</param>
-		/// <param name="enabledSslProtocols">The <see cref="SslProtocols"/> enum value that represents the protocols used for authentication.</param>
-		/// <param name="certificateSelection">The <see cref="LocalCertificateSelectionCallback"/> for selecting the local certificate.</param>
-		/// <param name="checkCertificateRevocation"><c>true</c> if the certificate revocation list is checked during authentication; otherwise, <c>false.</c>.</param>
-		/// <param name="certificateValidationCallback">The <see cref="RemoteCertificateValidationCallback"/> for validating the remote certificate.</param>
-		public ClientSslAuthConfiguration(
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
+    /// the specified <paramref name="targetHost"/>.
+    /// </summary>
+    /// <param name="targetHost">
+    /// A <see cref="string"/> that represents the name of the server that shares
+    /// a secure connection.
+    /// </param>
+    public ClientSslConfiguration (string targetHost)
+      : this (targetHost, null, SslProtocols.Default, false)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
+    /// the specified <paramref name="targetHost"/>, <paramref name="clientCertificates"/>,
+    /// <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.
+    /// </summary>
+    /// <param name="targetHost">
+    /// A <see cref="string"/> that represents the name of the server that shares
+    /// a secure connection.
+    /// </param>
+    /// <param name="clientCertificates">
+    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
+    /// </param>
+    /// <param name="enabledSslProtocols">
+    /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+    /// authentication.
+    /// </param>
+    /// <param name="checkCertificateRevocation">
+    /// <c>true</c> if the certificate revocation list is checked during authentication;
+    /// otherwise, <c>false</c>.
+    /// </param>
+    public ClientSslConfiguration (
 			string targetHost,
 			X509CertificateCollection clientCertificates,
 			SslProtocols enabledSslProtocols = SslProtocols.Default,
 			LocalCertificateSelectionCallback certificateSelection = null,
 			bool checkCertificateRevocation = false,
 			RemoteCertificateValidationCallback certificateValidationCallback = null)
+      : base (enabledSslProtocols, checkCertificateRevocation)
 		{
+      _host = targetHost;
+      _certs = clientCertificates;
 			ClientCertificates = clientCertificates;
 			EnabledSslProtocols = enabledSslProtocols;
 			CertificateSelection = certificateSelection;

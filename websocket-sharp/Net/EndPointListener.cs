@@ -85,10 +85,10 @@ namespace WebSocketSharp.Net
 		public EndPointListener(
 		  IPAddress address,
 		  int port,
-		  ServerSslAuthConfiguration sslConfiguration,
+      ServerSslConfiguration sslConfig,
 		  bool reuseAddress)
 		{
-			_sslConfig = sslConfiguration;
+        _sslConfig = sslConfig;
 
 			_prefixes = new Dictionary<HttpListenerPrefix, HttpListener>();
 

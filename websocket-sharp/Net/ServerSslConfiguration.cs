@@ -1,6 +1,6 @@
 ﻿#region License
 /*
- * ServerSslAuthConfiguration.cs
+ * ServerSslConfiguration.cs
  *
  * The MIT License
  *
@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
 	/// <summary>
 	/// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
 	/// </summary>
-	public class ServerSslAuthConfiguration
+  public class ServerSslConfiguration : SslConfiguration
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
@@ -77,7 +77,7 @@ namespace WebSocketSharp.Net
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/>,
 		/// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
 		/// </summary>
@@ -102,7 +102,7 @@ namespace WebSocketSharp.Net
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslAuthConfiguration"/> class with
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
 		/// the specified <paramref name="serverCertificate"/>,
 		/// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
 		/// and <paramref name="checkCertificateRevocation"/>.
@@ -128,6 +128,7 @@ namespace WebSocketSharp.Net
 			bool clientCertificateRequired,
 			SslProtocols enabledSslProtocols,
 			bool checkCertificateRevocation)
+      : base (enabledSslProtocols, checkCertificateRevocation)
 		{
 			ServerCertificate = serverCertificate;
 			ClientCertificateRequired = clientCertificateRequired;
@@ -167,7 +168,7 @@ namespace WebSocketSharp.Net
 		public RemoteCertificateValidationCallback ClientCertificateValidationCallback { get; private set; }
 
 		/// <summary>
-		/// Gets or sets the SSL protocols used for authentication.
+    /// Gets or sets the certificate used to authenticate the server for secure connection.
 		/// </summary>
 		/// <value>
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for

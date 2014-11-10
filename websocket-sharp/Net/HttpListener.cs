@@ -77,7 +77,7 @@ namespace WebSocketSharp.Net
 		private bool _listening;
 		private string _realm;
 		private bool _reuseAddress;
-		private ServerSslAuthConfiguration _sslConfig;
+    private ServerSslConfiguration                               _sslConfig;
 
 		#endregion
 
@@ -297,8 +297,8 @@ namespace WebSocketSharp.Net
     /// optionally the client for secure connection.
 		/// </summary>
 		/// <value>
-    /// A <see cref="ServerSslAuthConfiguration"/> that represents the configuration
-    /// used to authenticate the server and optionally the client for secure connection.
+    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used
+    /// to authenticate the server and optionally the client for secure connection.
 		/// </value>
 		/// <exception cref="ObjectDisposedException">
 		/// This listener has been closed.
