@@ -23,15 +23,15 @@
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
-websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for the **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in the MonoDevelop.
+websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in MonoDevelop.
 
 ## Install ##
 
 ### Self Build ###
 
-You should add **websocket-sharp.dll** (e.g. `/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll`) built yourself to the library references of your project.
+You should add your **websocket-sharp.dll** (e.g. `/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll`) to the library references of your project.
 
-If you would like to use that websocket-sharp.dll in your **[Unity]** project, you should add that dll to any folder of your project (e.g. `Assets/Plugins`) in the **Unity Editor**.
+If you would like to use that dll in your **[Unity]** project, you should add it to any folder of your project (e.g. `Assets/Plugins`) in **Unity Editor**.
 
 ### NuGet Gallery ###
 
@@ -405,7 +405,7 @@ For more information, would you see **[Example3]**?
 
 websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
 
-If you would like to enable this extension as a WebSocket client, you should set like the following.
+If you would like to enable this extension as a WebSocket client, you should set such as the following.
 
 ```cs
 ws.Compression = CompressionMethod.Deflate;
@@ -465,20 +465,22 @@ If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentia
 
 Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (determined by the unauthorized response to the first connection request) authentication credentials with the second connection request to the server.
 
-As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, like the following.
+As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.
 
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
 wssv.Realm = "WebSocket Test";
 wssv.UserCredentialsFinder = id => {
-  var expected = "nobita";
-  return id.Name == expected
-         ? new NetworkCredential (expected, "password", "gunfighter") // User name, password, and roles.
+  var name = id.Name;
+
+  // Return user name, password, and roles.
+  return name == "nobita"
+         ? new NetworkCredential (name, "password", "gunfighter")
          : null; // If the user credentials aren't found.
 };
 ```
 
-If you would like to provide the Digest authentication, you should set like the following.
+If you would like to provide the Digest authentication, you should set such as the following.
 
 ```cs
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
@@ -494,19 +496,19 @@ using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
 }
 ```
 
-And if you would like to send the **Origin header** with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, like the following.
+And if you would like to send the **Origin header** with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, such as the following.
 
 ```cs
 ws.Origin = "http://example.com";
 ```
 
-And if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, like the following.
+And if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
 
 ```cs
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, like the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```cs
 public class Chat : WebSocketBehavior
@@ -523,7 +525,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, like the following.
+And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```cs
 wssv.AddWebSocketService<Chat> (
@@ -537,7 +539,8 @@ wssv.AddWebSocketService<Chat> (
              origin.Host == "example.com";
     },
     CookiesValidator = (req, res) => {
-      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res' if necessary.
+      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
+      // if necessary.
       foreach (Cookie cookie in req) {
         cookie.Expired = true;
         res.Add (cookie);
@@ -572,7 +575,7 @@ I tested this with the [Squid]. And it's necessary to disable the following conf
 
 The `WebSocket` class includes the own logging function.
 
-You can access it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
+You can use it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
 So if you would like to change the current logging level (`WebSocketSharp.LogLevel.Error` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
