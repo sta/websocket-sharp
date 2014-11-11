@@ -98,15 +98,15 @@ The `WebSocket` class exists in the `WebSocketSharp` namespace.
 
 #### Step 2 ####
 
-Creating an instance of the `WebSocket` class with the WebSocket URL to connect.
+Creating a new instance of the `WebSocket` class with the WebSocket URL to connect.
 
-```cs
+```csharp
 using (var ws = new WebSocket ("ws://example.com")) {
   ...
 }
 ```
 
-The `WebSocket` class inherits the `System.IDisposable` interface, so you can use the `using` statement. And the WebSocket connection is closed with close status `1001` (going away) when the control leaves the `using` block.
+The `WebSocket` class inherits the `System.IDisposable` interface, so you can use the `using` statement. And the WebSocket connection will be closed with close status `1001` (going away) when the control leaves the `using` block.
 
 #### Step 3 ####
 

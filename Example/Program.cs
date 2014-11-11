@@ -12,7 +12,7 @@ namespace Example
       /* Create a new instance of the WebSocket class.
        *
        * The WebSocket class inherits the System.IDisposable interface, so you can use the using
-       * statement. And the WebSocket connection is closed with close status 1001 (going away)
+       * statement. And the WebSocket connection will be closed with close status 1001 (going away)
        * when the control leaves the using block.
        *
        * If you would like to connect to the server with the secure connection, you should create
@@ -62,7 +62,7 @@ namespace Example
         // To change the wait time for the response to the Ping or Close.
         ws.WaitTime = TimeSpan.FromSeconds (10);
 #endif
-        // To negotiate the Per-message Compression extension.
+        // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
 
         /* To validate the server certificate.
