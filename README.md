@@ -63,7 +63,7 @@ And it's priced at **US$15**. I think your $15 makes this project more better an
 
 ### WebSocket Client ###
 
-```cs
+```csharp
 using System;
 using WebSocketSharp;
 
@@ -90,7 +90,7 @@ namespace Example
 
 Required namespace.
 
-```cs
+```csharp
 using WebSocketSharp;
 ```
 
@@ -116,7 +116,7 @@ Setting the `WebSocket` events.
 
 A `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
 
-```cs
+```csharp
 ws.OnOpen += (sender, e) => {
   ...
 };
@@ -128,7 +128,7 @@ ws.OnOpen += (sender, e) => {
 
 A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a message.
 
-```cs
+```csharp
 ws.OnMessage += (sender, e) => {
   ...
 };
@@ -142,7 +142,7 @@ If it returns `Opcode.Text`, you should use `e.Data` property that returns a `st
 
 Or if it returns `Opcode.Binary`, you should use `e.RawData` property that returns a `byte[]` (represents the **Binary** message).
 
-```cs
+```csharp
 if (e.Type == Opcode.Text) {
   // Do something with e.Data.
   ...
@@ -162,7 +162,7 @@ if (e.Type == Opcode.Binary) {
 
 A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
 
-```cs
+```csharp
 ws.OnError += (sender, e) => {
   ...
 };
@@ -178,7 +178,7 @@ And if the error is due to an exception, you can get the `System.Exception` inst
 
 A `WebSocket.OnClose` event occurs when the WebSocket connection has been closed.
 
-```cs
+```csharp
 ws.OnClose += (sender, e) => {
   ...
 };
@@ -192,7 +192,7 @@ ws.OnClose += (sender, e) => {
 
 Connecting to the WebSocket server.
 
-```cs
+```csharp
 ws.Connect ();
 ```
 
@@ -202,7 +202,7 @@ If you would like to connect to the server asynchronously, you should use the `W
 
 Sending a data to the WebSocket server.
 
-```cs
+```csharp
 ws.Send (data);
 ```
 
@@ -212,7 +212,7 @@ You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSoc
 
 If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
 
-```cs
+```csharp
 ws.SendAsync (data, completed);
 ```
 
@@ -222,7 +222,7 @@ And also if you would like to do something when the send is complete, you should
 
 Closing the WebSocket connection.
 
-```cs
+```csharp
 ws.Close (code, reason);
 ```
 
@@ -236,7 +236,7 @@ If you would like to close the connection asynchronously, you should use the `We
 
 ### WebSocket Server ###
 
-```cs
+```csharp
 using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -273,7 +273,7 @@ namespace Example
 
 Required namespace.
 
-```cs
+```csharp
 using WebSocketSharp.Server;
 ```
 
@@ -285,7 +285,7 @@ Creating the class that inherits the `WebSocketBehavior` class.
 
 For example, if you would like to provide an echo service,
 
-```cs
+```csharp
 using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -301,7 +301,7 @@ public class Echo : WebSocketBehavior
 
 And if you would like to provide a chat service,
 
-```cs
+```csharp
 using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -343,7 +343,7 @@ The `WebSocketBehavior.Sessions.Broadcast` method broadcasts a data to every cli
 
 Creating an instance of the `WebSocketServer` class.
 
-```cs
+```csharp
 var wssv = new WebSocketServer (4649);
 wssv.AddWebSocketService<Echo> ("/Echo");
 wssv.AddWebSocketService<Chat> ("/Chat");
@@ -366,7 +366,7 @@ If you create an instance of the `WebSocketServer` class without a port number, 
 
 Starting the WebSocket server.
 
-```cs
+```csharp
 wssv.Start ();
 ```
 
@@ -374,7 +374,7 @@ wssv.Start ();
 
 Stopping the WebSocket server.
 
-```cs
+```csharp
 wssv.Stop (code, reason);
 ```
 
@@ -390,7 +390,7 @@ So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
 You can add any WebSocket service to your `HttpServer` with the specified behavior and path to the service, using the `HttpServer.AddWebSocketService<TBehaviorWithNew> (string)` or `HttpServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
 
-```cs
+```csharp
 var httpsv = new HttpServer (4649);
 httpsv.AddWebSocketService<Echo> ("/Echo");
 httpsv.AddWebSocketService<Chat> ("/Chat");
@@ -407,7 +407,7 @@ websocket-sharp supports the **[Per-message Compression][compression]** extensio
 
 If you would like to enable this extension as a WebSocket client, you should set such as the following.
 
-```cs
+```csharp
 ws.Compression = CompressionMethod.Deflate;
 ```
 
@@ -423,7 +423,7 @@ websocket-sharp supports the **Secure Connection** with **SSL/TLS**.
 
 As a **WebSocket Client**, you should create an instance of the `WebSocket` class with the **wss** scheme WebSocket URL.
 
-```cs
+```csharp
 using (var ws = new WebSocket ("wss://example.com")) {
   ...
 }
@@ -431,7 +431,7 @@ using (var ws = new WebSocket ("wss://example.com")) {
 
 And if you would like to use the custom validation for the server certificate, you should set the `WebSocket.SslConfiguration.ServerCertificateValidationCallback` property.
 
-```cs
+```csharp
 ws.SslConfiguration.ServerCertificateValidationCallback =
   (sender, certificate, chain, sslPolicyErrors) => {
     // Do something to validate the server certificate.
@@ -445,7 +445,7 @@ If you set this property to nothing, the validation does nothing with the server
 
 As a **WebSocket Server**, you should create an instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, such as the following.
 
-```cs
+```csharp
 var wssv = new WebSocketServer (4649, true);
 wssv.SslConfiguration.ServerCertificate =
   new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
@@ -457,7 +457,7 @@ websocket-sharp supports the **[HTTP Authentication (Basic/Digest)][rfc2617]**.
 
 As a **WebSocket Client**, you should set a pair of user name and password for the HTTP authentication, using the `WebSocket.SetCredentials (string, string, bool)` method before connecting.
 
-```cs
+```csharp
 ws.SetCredentials ("nobita", "password", preAuth);
 ```
 
@@ -467,7 +467,7 @@ Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (de
 
 As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.
 
-```cs
+```csharp
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
 wssv.Realm = "WebSocket Test";
 wssv.UserCredentialsFinder = id => {
@@ -482,7 +482,7 @@ wssv.UserCredentialsFinder = id => {
 
 If you would like to provide the Digest authentication, you should set such as the following.
 
-```cs
+```csharp
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
@@ -490,7 +490,7 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket connection request to the server, you should create an instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
 
-```cs
+```csharp
 using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
   ...
 }
@@ -498,19 +498,19 @@ using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
 
 And if you would like to send the **Origin header** with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, such as the following.
 
-```cs
+```csharp
 ws.Origin = "http://example.com";
 ```
 
 And if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
 
-```cs
+```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
 As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
-```cs
+```csharp
 public class Chat : WebSocketBehavior
 {
   private string _name;
@@ -527,7 +527,7 @@ public class Chat : WebSocketBehavior
 
 And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
-```cs
+```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
@@ -559,7 +559,7 @@ websocket-sharp supports to connect through the **HTTP Proxy** server.
 
 If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), using the `WebSocket.SetProxy (string, string, string)` method before connecting.
 
-```cs
+```csharp
 var ws = new WebSocket ("ws://example.com");
 ws.SetProxy ("http://localhost:3128", "nobita", "password");
 ```
@@ -579,7 +579,7 @@ You can use it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logg
 
 So if you would like to change the current logging level (`WebSocketSharp.LogLevel.Error` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
 
-```cs
+```csharp
 ws.Log.Level = LogLevel.Debug;
 ```
 
@@ -587,7 +587,7 @@ The above means a log with lower than `LogLevel.Debug` cannot be outputted.
 
 And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.Debug`.
 
-```cs
+```csharp
 ws.Log.Debug ("This is a debug message.");
 ```
 
