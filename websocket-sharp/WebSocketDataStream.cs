@@ -66,9 +66,12 @@ namespace WebSocketSharp
 
 				if (_readInfo.MaskingKey.Length > 0)
 				{
-					var i = (int)toread;
+					var max = position + (int)toread;
+					if (max > buffer.Length)
+					{
+					}
 
-					for (var pos = position; pos < position + i; pos++)
+					for (var pos = position; pos < max; pos++)
 					{
 						buffer[pos] = (byte)(buffer[pos] ^ _readInfo.MaskingKey[pos % 4]);
 					}

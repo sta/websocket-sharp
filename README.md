@@ -11,7 +11,7 @@
 - **[HTTP Authentication](#http-authentication)**
 - **[Query String, Origin header and Cookies](#query-string-origin-header-and-cookies)**
 - **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
-- .NET **3.5** or later (includes compatible)
+- .NET **4.5** or later (includes compatible)
 
 ## Branches ##
 
@@ -35,29 +35,13 @@ If you would like to use that dll in your **[Unity]** project, you should add it
 
 ### NuGet Gallery ###
 
-websocket-sharp is available on the **[NuGet Gallery]**, as still a **prerelease** version.
+websocket-sharp is available on the **[NuGet Gallery]**.
 
 - **[NuGet Gallery: websocket-sharp]**
 
 You can add websocket-sharp to your project using the **NuGet Package Manager**, the following command in the **Package Manager Console**.
 
-    PM> Install-Package WebSocketSharp -Pre
-
-### Unity Asset Store ###
-
-websocket-sharp is available on the **Unity Asset Store**.
-
-- **[WebSocket-Sharp for Unity]**
-
-It works with **Unity Free**, but there are some limitations:
-
-- **[Security Sandbox of the Webplayer]** (server doesn't work in the webplayer)
-- **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
-- **.NET API 2.0 compatibility level for iOS/Android**
-
-Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
-
-And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
+    PM> Install-Package WebSocketSharp.clone
 
 ## Usage ##
 

@@ -400,21 +400,26 @@ namespace WebSocketSharp.Tests
 			}
 
 			[Test]
-			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
+			public async Task WhenStreamVeryLargeStreamToServerThenResponds([Random(750000, 1500000, 5)]int length)
 			{
 				var responseLength = 0;
-				const int Length = 1000000;
+				//const int Length = 1000000;
 
-				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
 				var waitHandle = new ManualResetEventSlim(false);
 				using (var client = new WebSocket("ws://localhost:8080/echo"))
 				{
 					EventHandler<MessageEventArgs> onMessage = (s, e) =>
 						{
-							while (e.Data.ReadByte() == 123)
+							var bytesRead = 0;
+							var readLength = 10240;
+							do
 							{
-								responseLength++;
+								var buffer = new byte[readLength];
+								bytesRead = e.Data.Read(buffer, 0, readLength);
+								responseLength += buffer.Count(x => x == 123);
 							}
+							while (bytesRead == readLength);
 
 							waitHandle.Set();
 						};
@@ -426,19 +431,19 @@ namespace WebSocketSharp.Tests
 
 					var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 20000);
 
-					Assert.AreEqual(Length, responseLength);
+					Assert.AreEqual(length, responseLength);
 
 					client.OnMessage -= onMessage;
 				}
 			}
 
 			[Test]
-			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
+			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)]int length)
 			{
 				var responseLength = 0;
-				const int Length = 1000000;
+				//const int Length = 1000000;
 
-				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
 				var waitHandle = new ManualResetEventSlim(false);
 
 				var sender = new WebSocket("ws://localhost:8080/radio");
@@ -462,7 +467,7 @@ namespace WebSocketSharp.Tests
 
 				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 15000);
 
-				Assert.AreEqual(Length, responseLength);
+				Assert.AreEqual(length, responseLength);
 
 				await client.CloseAsync();
 				await sender.CloseAsync();

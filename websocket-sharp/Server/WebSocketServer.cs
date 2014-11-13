@@ -753,10 +753,6 @@ namespace WebSocketSharp.Server
 						client.Close();
 					}
 				}
-				catch (SocketException)
-				{
-					break;
-				}
 				catch (Exception)
 				{
 					break;
