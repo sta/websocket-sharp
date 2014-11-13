@@ -45,6 +45,7 @@ namespace WebSocketSharp
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.IO;
 	using System.Net.Security;
 	using System.Net.Sockets;
@@ -1818,8 +1819,9 @@ namespace WebSocketSharp
 				_stream.Write(bytes, 0, bytes.Length);
 				return true;
 			}
-			catch
+			catch (Exception ex)
 			{
+				Debug.WriteLine(ex.Message);
 				return false;
 			}
 		}
