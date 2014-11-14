@@ -669,18 +669,7 @@ namespace WebSocketSharp.Net
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
-      lock (_waitQueueSync) {
-        var i = _waitQueue.IndexOf (ares);
-        if (i >= 0)
-          _waitQueue.RemoveAt (i);
-      }
-
-      var ctx = ares.GetContext ();
-      var schm = SelectAuthenticationScheme (ctx);
-      if (schm != AuthenticationSchemes.Anonymous)
-        ctx.SetUser (schm, Realm, UserCredentialsFinder);
-
-      return ctx; // This will throw on error.
+      return ares.GetContext (); // This will throw on error.
     }
 
     /// <summary>

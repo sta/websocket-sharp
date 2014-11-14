@@ -107,6 +107,57 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private static bool authenticate (HttpListenerContext context)
+    {
+      var listener = context.Listener;
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm == AuthenticationSchemes.None) {
+        context.Response.Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var req = context.Request;
+      var authRes = req.Headers["Authorization"];
+      if (schm == AuthenticationSchemes.Basic) {
+        if (authRes == null || !authRes.StartsWith ("basic", StringComparison.OrdinalIgnoreCase)) {
+          context.Response.CloseWithAuthChallenge (
+            AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
+
+          return false;
+        }
+      }
+      else if (schm == AuthenticationSchemes.Digest) {
+        if (authRes == null || !authRes.StartsWith ("digest", StringComparison.OrdinalIgnoreCase)) {
+          context.Response.CloseWithAuthChallenge (
+            AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
+
+          return false;
+        }
+      }
+      else {
+        context.Response.Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var realm = listener.Realm;
+      context.SetUser (schm, realm, listener.UserCredentialsFinder);
+      if (req.IsAuthenticated)
+        return true;
+
+      if (schm == AuthenticationSchemes.Basic)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
+
+      if (schm == AuthenticationSchemes.Digest)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
+
+      return false;
+    }
+
     private static void complete (ListenerAsyncResult asyncResult)
     {
       asyncResult._completed = true;
@@ -149,31 +200,8 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      var listener = context.Listener;
-      var schm = listener.SelectAuthenticationScheme (context);
-      if (schm == AuthenticationSchemes.None) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        listener.BeginGetContext (this);
-
-        return;
-      }
-
-      var res = context.Request.Headers["Authorization"];
-      if (schm == AuthenticationSchemes.Basic &&
-          (res == null || !res.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
-
-        listener.BeginGetContext (this);
-        return;
-      }
-
-      if (schm == AuthenticationSchemes.Digest &&
-          (res == null || !res.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
-
-        listener.BeginGetContext (this);
+      if (!authenticate (context)) {
+        context.Listener.BeginGetContext (this);
         return;
       }
 

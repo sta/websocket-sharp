@@ -486,23 +486,6 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
-    private bool authenticateRequest (AuthenticationSchemes scheme, HttpListenerContext context)
-    {
-      if (context.Request.IsAuthenticated)
-        return true;
-
-      if (scheme == AuthenticationSchemes.Basic)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (_listener.Realm).ToBasicString ());
-      else if (scheme == AuthenticationSchemes.Digest)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (_listener.Realm).ToDigestString ());
-      else
-        context.Response.Close (HttpStatusCode.Forbidden);
-
-      return false;
-    }
-
     private string checkIfCertificateExists ()
     {
       if (!_secure)
@@ -570,11 +553,6 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var schm = _listener.SelectAuthenticationScheme (ctx);
-                if (schm != AuthenticationSchemes.Anonymous &&
-                    !authenticateRequest (schm, ctx))
-                  return;
-
                 if (ctx.Request.IsUpgradeTo ("websocket")) {
                   processWebSocketRequest (ctx.AcceptWebSocket (null, _logger));
                   return;
