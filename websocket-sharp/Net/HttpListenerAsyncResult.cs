@@ -1,6 +1,6 @@
 #region License
 /*
- * ListenerAsyncResult.cs
+ * HttpListenerAsyncResult.cs
  *
  * This code is derived from System.Net.ListenerAsyncResult.cs of Mono
  * (http://www.mono-project.com).
@@ -42,7 +42,7 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-  internal class ListenerAsyncResult : IAsyncResult
+  internal class HttpListenerAsyncResult : IAsyncResult
   {
     #region Private Fields
 
@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    public ListenerAsyncResult (AsyncCallback callback, object state)
+    public HttpListenerAsyncResult (AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
@@ -114,14 +114,9 @@ namespace WebSocketSharp.Net
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (schm == AuthenticationSchemes.None) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
       var req = context.Request;
-      var authRes = req.Headers["Authorization"];
       if (schm == AuthenticationSchemes.Basic) {
+        var authRes = req.Headers["Authorization"];
         if (authRes == null || !authRes.StartsWith ("basic", StringComparison.OrdinalIgnoreCase)) {
           context.Response.CloseWithAuthChallenge (
             AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
@@ -130,6 +125,7 @@ namespace WebSocketSharp.Net
         }
       }
       else if (schm == AuthenticationSchemes.Digest) {
+        var authRes = req.Headers["Authorization"];
         if (authRes == null || !authRes.StartsWith ("digest", StringComparison.OrdinalIgnoreCase)) {
           context.Response.CloseWithAuthChallenge (
             AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
@@ -158,7 +154,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private static void complete (ListenerAsyncResult asyncResult)
+    private static void complete (HttpListenerAsyncResult asyncResult)
     {
       asyncResult._completed = true;
 

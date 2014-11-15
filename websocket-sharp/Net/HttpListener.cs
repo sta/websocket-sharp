@@ -78,7 +78,7 @@ namespace WebSocketSharp.Net
     private string                                               _realm;
     private bool                                                 _reuseAddress;
     private ServerSslConfiguration                               _sslConfig;
-    private List<ListenerAsyncResult>                            _waitQueue;
+    private List<HttpListenerAsyncResult>                        _waitQueue;
     private object                                               _waitQueueSync;
 
     #endregion
@@ -103,7 +103,7 @@ namespace WebSocketSharp.Net
 
       _prefixes = new HttpListenerPrefixCollection (this);
 
-      _waitQueue = new List<ListenerAsyncResult> ();
+      _waitQueue = new List<HttpListenerAsyncResult> ();
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
@@ -485,7 +485,7 @@ namespace WebSocketSharp.Net
         _connections[connection] = connection;
     }
 
-    internal ListenerAsyncResult BeginGetContext (ListenerAsyncResult asyncResult)
+    internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
       CheckDisposed ();
       if (_prefixes.Count == 0)
@@ -521,7 +521,7 @@ namespace WebSocketSharp.Net
       lock (_ctxRegistrySync)
         _ctxRegistry[context] = context;
 
-      ListenerAsyncResult ares = null;
+      HttpListenerAsyncResult ares = null;
       lock (_waitQueueSync) {
         if (_waitQueue.Count == 0) {
           lock (_ctxQueueSync)
@@ -612,7 +612,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
-      return BeginGetContext (new ListenerAsyncResult (callback, state));
+      return BeginGetContext (new HttpListenerAsyncResult (callback, state));
     }
 
     /// <summary>
@@ -658,7 +658,7 @@ namespace WebSocketSharp.Net
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
-      var ares = asyncResult as ListenerAsyncResult;
+      var ares = asyncResult as HttpListenerAsyncResult;
       if (ares == null)
         throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
 
@@ -697,7 +697,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerContext GetContext ()
     {
-      var ares = BeginGetContext (new ListenerAsyncResult (null, null));
+      var ares = BeginGetContext (new HttpListenerAsyncResult (null, null));
       ares.InGet = true;
 
       return EndGetContext (ares);
