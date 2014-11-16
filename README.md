@@ -502,7 +502,7 @@ And if you would like to send the **Origin header** with the WebSocket connectio
 ws.Origin = "http://example.com";
 ```
 
-And if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
+And also if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
@@ -551,7 +551,7 @@ wssv.AddWebSocketService<Chat> (
   });
 ```
 
-Also, if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
+And also if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
 
 ### Connecting through the HTTP Proxy server ###
 
