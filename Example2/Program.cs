@@ -37,9 +37,11 @@ namespace Example2
       wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       wssv.Realm = "WebSocket Test";
       wssv.UserCredentialsFinder = id => {
-        var expected = "nobita";
-        return id.Name == expected
-               ? new NetworkCredential (expected, "password", "gunfighter")
+        var name = id.Name;
+
+        // Return user name, password, and roles.
+        return name == "nobita"
+               ? new NetworkCredential (name, "password", "gunfighter")
                : null; // If the user credentials aren't found.
       };
        */
