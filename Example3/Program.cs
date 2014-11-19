@@ -36,9 +36,11 @@ namespace Example3
       httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       httpsv.Realm = "WebSocket Test";
       httpsv.UserCredentialsFinder = id => {
-        var expected = "nobita";
-        return id.Name == expected
-               ? new NetworkCredential (expected, "password", "gunfighter")
+        var name = id.Name;
+
+        // Return user name, password, and roles.
+        return name == "nobita"
+               ? new NetworkCredential (name, "password", "gunfighter")
                : null; // If the user credentials aren't found.
       };
        */
