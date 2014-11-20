@@ -44,8 +44,8 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides a set of methods and properties used to access the HTTP request and response
-  /// information used by the <see cref="HttpListener"/>.
+  /// Provides the access to the HTTP request and response information
+  /// used by the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
   /// The HttpListenerContext class cannot be inherited.
@@ -160,15 +160,16 @@ namespace WebSocketSharp.Net
     #region Internal Methods
 
     internal void SetUser (
+      string response,
       AuthenticationSchemes scheme,
       string realm,
       Func<IIdentity, NetworkCredential> credentialsFinder)
     {
-      var authRes = AuthenticationResponse.Parse (_request.Headers ["Authorization"]);
-      if (authRes == null)
+      var res = AuthenticationResponse.Parse (response);
+      if (res == null)
         return;
 
-      var id = authRes.ToIdentity ();
+      var id = res.ToIdentity ();
       if (id == null)
         return;
 

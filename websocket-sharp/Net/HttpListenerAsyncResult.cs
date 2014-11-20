@@ -115,8 +115,9 @@ namespace WebSocketSharp.Net
         return true;
 
       var req = context.Request;
+      var authRes = req.Headers["Authorization"];
+
       if (schm == AuthenticationSchemes.Basic) {
-        var authRes = req.Headers["Authorization"];
         if (authRes == null || !authRes.StartsWith ("basic", StringComparison.OrdinalIgnoreCase)) {
           context.Response.CloseWithAuthChallenge (
             AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
@@ -125,7 +126,6 @@ namespace WebSocketSharp.Net
         }
       }
       else if (schm == AuthenticationSchemes.Digest) {
-        var authRes = req.Headers["Authorization"];
         if (authRes == null || !authRes.StartsWith ("digest", StringComparison.OrdinalIgnoreCase)) {
           context.Response.CloseWithAuthChallenge (
             AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
@@ -139,7 +139,7 @@ namespace WebSocketSharp.Net
       }
 
       var realm = listener.Realm;
-      context.SetUser (schm, realm, listener.UserCredentialsFinder);
+      context.SetUser (authRes, schm, realm, listener.UserCredentialsFinder);
       if (req.IsAuthenticated)
         return true;
 
