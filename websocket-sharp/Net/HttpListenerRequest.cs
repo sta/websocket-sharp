@@ -59,6 +59,7 @@ namespace WebSocketSharp.Net
 
     private static readonly byte[] _100continue;
     private string[]               _acceptTypes;
+    private bool                   _authenticated;
     private bool                   _chunked;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
@@ -241,8 +242,11 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsAuthenticated {
       get {
-        var user = _context.User;
-        return user != null && user.Identity.IsAuthenticated;
+        return _authenticated;
+      }
+
+      internal set {
+        _authenticated = value;
       }
     }
 

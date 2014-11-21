@@ -38,6 +38,7 @@
 #endregion
 
 using System;
+using System.Security.Principal;
 using System.Threading;
 
 namespace WebSocketSharp.Net
@@ -114,42 +115,31 @@ namespace WebSocketSharp.Net
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      var req = context.Request;
-      var authRes = req.Headers["Authorization"];
-
-      if (schm == AuthenticationSchemes.Basic) {
-        if (authRes == null || !authRes.StartsWith ("basic", StringComparison.OrdinalIgnoreCase)) {
-          context.Response.CloseWithAuthChallenge (
-            AuthenticationChallenge.CreateBasicChallenge (listener.Realm).ToBasicString ());
-
-          return false;
-        }
-      }
-      else if (schm == AuthenticationSchemes.Digest) {
-        if (authRes == null || !authRes.StartsWith ("digest", StringComparison.OrdinalIgnoreCase)) {
-          context.Response.CloseWithAuthChallenge (
-            AuthenticationChallenge.CreateDigestChallenge (listener.Realm).ToDigestString ());
-
-          return false;
-        }
-      }
-      else {
+      if (schm == AuthenticationSchemes.None) {
         context.Response.Close (HttpStatusCode.Forbidden);
         return false;
       }
 
+      var req = context.Request;
       var realm = listener.Realm;
-      context.SetUser (authRes, schm, realm, listener.UserCredentialsFinder);
-      if (req.IsAuthenticated)
+      var user = createUser (
+        req.Headers["Authorization"], schm, realm, req.HttpMethod, listener.UserCredentialsFinder);
+
+      if (user != null && user.Identity.IsAuthenticated) {
+        context.User = user;
+        req.IsAuthenticated = true;
+
         return true;
+      }
 
       if (schm == AuthenticationSchemes.Basic)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-
-      if (schm == AuthenticationSchemes.Digest)
+      else if (schm == AuthenticationSchemes.Digest)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
+      else
+        context.Response.Close (HttpStatusCode.Forbidden);
 
       return false;
     }
@@ -173,6 +163,46 @@ namespace WebSocketSharp.Net
             }
           },
           null);
+    }
+
+    private static IPrincipal createUser (
+      string response,
+      AuthenticationSchemes scheme,
+      string realm,
+      string method,
+      Func<IIdentity, NetworkCredential> credentialsFinder)
+    {
+      if (response == null ||
+          !response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+        return null;
+
+      var res = AuthenticationResponse.Parse (response);
+      if (res == null)
+        return null;
+
+      var id = res.ToIdentity ();
+      if (id == null)
+        return null;
+
+      NetworkCredential cred = null;
+      try {
+        cred = credentialsFinder (id);
+      }
+      catch {
+      }
+
+      if (cred == null)
+        return null;
+
+      var valid = scheme == AuthenticationSchemes.Basic
+                  ? ((HttpBasicIdentity) id).Password == cred.Password
+                  : scheme == AuthenticationSchemes.Digest
+                    ? ((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
+                    : false;
+
+      return valid
+             ? new GenericPrincipal (id, cred.Roles)
+             : null;
     }
 
     #endregion

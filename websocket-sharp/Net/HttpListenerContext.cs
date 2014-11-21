@@ -57,15 +57,10 @@ namespace WebSocketSharp.Net
     private HttpConnection       _connection;
     private string               _error;
     private int                  _errorStatus;
+    private HttpListener         _listener;
     private HttpListenerRequest  _request;
     private HttpListenerResponse _response;
     private IPrincipal           _user;
-
-    #endregion
-
-    #region Internal Fields
-
-    internal HttpListener Listener;
 
     #endregion
 
@@ -115,6 +110,16 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal HttpListener Listener {
+      get {
+        return _listener;
+      }
+
+      set {
+        _listener = value;
+      }
+    }
+
     #endregion
 
     #region Public Properties
@@ -147,51 +152,16 @@ namespace WebSocketSharp.Net
     /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> that represents the client information.
+    /// A <see cref="IPrincipal"/> instance that represents the client information.
     /// </value>
     public IPrincipal User {
       get {
         return _user;
       }
-    }
 
-    #endregion
-
-    #region Internal Methods
-
-    internal void SetUser (
-      string response,
-      AuthenticationSchemes scheme,
-      string realm,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
-    {
-      var res = AuthenticationResponse.Parse (response);
-      if (res == null)
-        return;
-
-      var id = res.ToIdentity ();
-      if (id == null)
-        return;
-
-      NetworkCredential cred = null;
-      try {
-        cred = credentialsFinder (id);
+      internal set {
+        _user = value;
       }
-      catch {
-      }
-
-      if (cred == null)
-        return;
-
-      var valid = scheme == AuthenticationSchemes.Basic
-                  ? ((HttpBasicIdentity) id).Password == cred.Password
-                  : scheme == AuthenticationSchemes.Digest
-                    ? ((HttpDigestIdentity) id).IsValid (
-                        cred.Password, realm, _request.HttpMethod, null)
-                    : false;
-
-      if (valid)
-        _user = new GenericPrincipal (id, cred.Roles);
     }
 
     #endregion
