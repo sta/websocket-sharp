@@ -122,7 +122,7 @@ namespace WebSocketSharp.Net
 
       var req = context.Request;
       var realm = listener.Realm;
-      var user = createUser (
+      var user = HttpUtility.CreateUser (
         req.Headers["Authorization"], schm, realm, req.HttpMethod, listener.UserCredentialsFinder);
 
       if (user != null && user.Identity.IsAuthenticated) {
@@ -163,46 +163,6 @@ namespace WebSocketSharp.Net
             }
           },
           null);
-    }
-
-    private static IPrincipal createUser (
-      string response,
-      AuthenticationSchemes scheme,
-      string realm,
-      string method,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
-    {
-      if (response == null ||
-          !response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
-        return null;
-
-      var res = AuthenticationResponse.Parse (response);
-      if (res == null)
-        return null;
-
-      var id = res.ToIdentity ();
-      if (id == null)
-        return null;
-
-      NetworkCredential cred = null;
-      try {
-        cred = credentialsFinder (id);
-      }
-      catch {
-      }
-
-      if (cred == null)
-        return null;
-
-      var valid = scheme == AuthenticationSchemes.Basic
-                  ? ((HttpBasicIdentity) id).Password == cred.Password
-                  : scheme == AuthenticationSchemes.Digest
-                    ? ((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
-                    : false;
-
-      return valid
-             ? new GenericPrincipal (id, cred.Roles)
-             : null;
     }
 
     #endregion

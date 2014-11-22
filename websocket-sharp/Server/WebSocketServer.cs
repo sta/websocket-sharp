@@ -543,13 +543,16 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
-    private bool authenticateRequest (
-      AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
+    private static bool authenticate (
+      TcpListenerWebSocketContext context,
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder)
     {
       var chal = scheme == AuthenticationSchemes.Basic
-                 ? AuthenticationChallenge.CreateBasicChallenge (Realm).ToBasicString ()
+                 ? AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ()
                  : scheme == AuthenticationSchemes.Digest
-                   ? AuthenticationChallenge.CreateDigestChallenge (Realm).ToDigestString ()
+                   ? AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ()
                    : null;
 
       if (chal == null) {
@@ -558,9 +561,6 @@ namespace WebSocketSharp.Server
       }
 
       var retry = -1;
-      var schm = scheme.ToString ();
-      var realm = Realm;
-      var credFinder = UserCredentialsFinder;
       Func<bool> auth = null;
       auth = () => {
         retry++;
@@ -569,19 +569,16 @@ namespace WebSocketSharp.Server
           return false;
         }
 
-        var res = context.Headers["Authorization"];
-        if (res == null || !res.StartsWith (schm, StringComparison.OrdinalIgnoreCase)) {
-          context.SendAuthenticationChallenge (chal);
-          return auth ();
+        var user = HttpUtility.CreateUser (
+          context.Headers["Authorization"], scheme, realm, context.HttpMethod, credentialsFinder);
+
+        if (user != null && user.Identity.IsAuthenticated) {
+          context.SetUser (user);
+          return true;
         }
 
-        context.SetUser (scheme, realm, credFinder);
-        if (!context.IsAuthenticated) {
-          context.SendAuthenticationChallenge (chal);
-          return auth ();
-        }
-
-        return true;
+        context.SendAuthenticationChallenge (chal);
+        return auth ();
       };
 
       return auth ();
@@ -642,7 +639,7 @@ namespace WebSocketSharp.Server
               try {
                 var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
                 if (_authSchemes != AuthenticationSchemes.Anonymous &&
-                    !authenticateRequest (_authSchemes, ctx))
+                    !authenticate (ctx, _authSchemes, Realm, UserCredentialsFinder))
                   return;
 
                 processWebSocketRequest (ctx);

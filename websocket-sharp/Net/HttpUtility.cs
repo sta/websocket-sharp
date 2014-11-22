@@ -46,6 +46,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
+using System.Security.Principal;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -546,6 +547,46 @@ namespace WebSocketSharp.Net
         return null;
 
       return res;
+    }
+
+    internal static IPrincipal CreateUser (
+      string response,
+      AuthenticationSchemes scheme,
+      string realm,
+      string method,
+      Func<IIdentity, NetworkCredential> credentialsFinder)
+    {
+      if (response == null ||
+          !response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+        return null;
+
+      var res = AuthenticationResponse.Parse (response);
+      if (res == null)
+        return null;
+
+      var id = res.ToIdentity ();
+      if (id == null)
+        return null;
+
+      NetworkCredential cred = null;
+      try {
+        cred = credentialsFinder (id);
+      }
+      catch {
+      }
+
+      if (cred == null)
+        return null;
+
+      var valid = scheme == AuthenticationSchemes.Basic
+                  ? ((HttpBasicIdentity) id).Password == cred.Password
+                  : scheme == AuthenticationSchemes.Digest
+                    ? ((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
+                    : false;
+
+      return valid
+             ? new GenericPrincipal (id, cred.Roles)
+             : null;
     }
 
     internal static Encoding GetEncoding (string contentType)
