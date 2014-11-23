@@ -108,34 +108,30 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool authenticate (HttpListenerContext context)
+    private static bool authenticate (
+      HttpListenerContext context,
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder)
     {
-      var listener = context.Listener;
-      var schm = listener.SelectAuthenticationScheme (context);
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (schm == AuthenticationSchemes.None) {
+      if (scheme == AuthenticationSchemes.None) {
         context.Response.Close (HttpStatusCode.Forbidden);
         return false;
       }
 
       var req = context.Request;
-      var realm = listener.Realm;
       var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], schm, realm, req.HttpMethod, listener.UserCredentialsFinder);
+        req.Headers["Authorization"], scheme, realm, req.HttpMethod, credentialsFinder);
 
       if (user != null && user.Identity.IsAuthenticated) {
         context.User = user;
-        req.IsAuthenticated = true;
-
         return true;
       }
 
-      if (schm == AuthenticationSchemes.Basic)
+      if (scheme == AuthenticationSchemes.Basic)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-      else if (schm == AuthenticationSchemes.Digest)
+      else if (scheme == AuthenticationSchemes.Digest)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
       else
@@ -186,8 +182,11 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      if (!authenticate (context)) {
-        context.Listener.BeginGetContext (this);
+      var listener = context.Listener;
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm != AuthenticationSchemes.Anonymous &&
+          !authenticate (context, schm, listener.Realm, listener.UserCredentialsFinder)) {
+        listener.BeginGetContext (this);
         return;
       }
 
