@@ -114,7 +114,7 @@ namespace WebSocketSharp.Net
       string realm,
       Func<IIdentity, NetworkCredential> credentialsFinder)
     {
-      if (scheme == AuthenticationSchemes.None) {
+      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest)) {
         context.Response.Close (HttpStatusCode.Forbidden);
         return false;
       }
@@ -131,11 +131,10 @@ namespace WebSocketSharp.Net
       if (scheme == AuthenticationSchemes.Basic)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-      else if (scheme == AuthenticationSchemes.Digest)
+
+      if (scheme == AuthenticationSchemes.Digest)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
-      else
-        context.Response.Close (HttpStatusCode.Forbidden);
 
       return false;
     }
