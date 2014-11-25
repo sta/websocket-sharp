@@ -61,7 +61,7 @@ namespace WebSocketSharp.Server
     private HttpListener            _listener;
     private Logger                  _logger;
     private int                     _port;
-    private Thread                  _receiveRequestThread;
+    private Thread                  _receiveThread;
     private string                  _rootPath;
     private bool                    _secure;
     private WebSocketServiceManager _services;
@@ -149,8 +149,8 @@ namespace WebSocketSharp.Server
       var os = Environment.OSVersion;
       _windows = os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX;
 
-      var prefix = String.Format ("http{0}://*:{1}/", _secure ? "s" : "", _port);
-      _listener.Prefixes.Add (prefix);
+      var pref = String.Format ("http{0}://*:{1}/", _secure ? "s" : "", _port);
+      _listener.Prefixes.Add (pref);
     }
 
     #endregion
@@ -503,7 +503,7 @@ namespace WebSocketSharp.Server
              : null;
     }
 
-    private void processHttpRequest (HttpListenerContext context)
+    private void processRequest (HttpListenerContext context)
     {
       var method = context.Request.HttpMethod;
       var evt = method == "GET"
@@ -534,7 +534,7 @@ namespace WebSocketSharp.Server
       context.Response.Close ();
     }
 
-    private void processWebSocketRequest (HttpListenerWebSocketContext context)
+    private void processRequest (HttpListenerWebSocketContext context)
     {
       WebSocketServiceHost host;
       if (!_services.InternalTryGetServiceHost (context.RequestUri.AbsolutePath, out host)) {
@@ -554,11 +554,11 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 if (ctx.Request.IsUpgradeTo ("websocket")) {
-                  processWebSocketRequest (ctx.AcceptWebSocket (null, _logger));
+                  processRequest (ctx.AcceptWebSocket (null, _logger));
                   return;
                 }
 
-                processHttpRequest (ctx);
+                processRequest (ctx);
               }
               catch (Exception ex) {
                 _logger.Fatal (ex.ToString ());
@@ -583,15 +583,15 @@ namespace WebSocketSharp.Server
     private void startReceiving ()
     {
       _listener.Start ();
-      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest));
-      _receiveRequestThread.IsBackground = true;
-      _receiveRequestThread.Start ();
+      _receiveThread = new Thread (new ThreadStart (receiveRequest));
+      _receiveThread.IsBackground = true;
+      _receiveThread.Start ();
     }
 
     private void stopReceiving (int millisecondsTimeout)
     {
       _listener.Close ();
-      _receiveRequestThread.Join (millisecondsTimeout);
+      _receiveThread.Join (millisecondsTimeout);
     }
 
     #endregion
@@ -671,12 +671,12 @@ namespace WebSocketSharp.Server
     /// </param>
     public byte[] GetFile (string path)
     {
-      var filePath = RootPath + path;
+      path = RootPath + path;
       if (_windows)
-        filePath = filePath.Replace ("/", "\\");
+        path = path.Replace ("/", "\\");
 
-      return File.Exists (filePath)
-             ? File.ReadAllBytes (filePath)
+      return File.Exists (path)
+             ? File.ReadAllBytes (path)
              : null;
     }
 
