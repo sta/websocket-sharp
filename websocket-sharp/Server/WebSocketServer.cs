@@ -66,7 +66,7 @@ namespace WebSocketSharp.Server
     private Logger                             _logger;
     private int                                _port;
     private string                             _realm;
-    private Thread                             _receiveRequestThread;
+    private Thread                             _receiveThread;
     private bool                               _reuseAddress;
     private bool                               _secure;
     private WebSocketServiceManager            _services;
@@ -601,7 +601,7 @@ namespace WebSocketSharp.Server
       _sync = new object ();
     }
 
-    private void processWebSocketRequest (TcpListenerWebSocketContext context)
+    private void processRequest (TcpListenerWebSocketContext context)
     {
       var uri = context.RequestUri;
       if (uri == null) {
@@ -642,7 +642,7 @@ namespace WebSocketSharp.Server
                     !authenticate (ctx, _authSchemes, Realm, UserCredentialsFinder))
                   return;
 
-                processWebSocketRequest (ctx);
+                processRequest (ctx);
               }
               catch (Exception ex) {
                 _logger.Fatal (ex.ToString ());
@@ -671,15 +671,15 @@ namespace WebSocketSharp.Server
           SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
       _listener.Start ();
-      _receiveRequestThread = new Thread (new ThreadStart (receiveRequest));
-      _receiveRequestThread.IsBackground = true;
-      _receiveRequestThread.Start ();
+      _receiveThread = new Thread (new ThreadStart (receiveRequest));
+      _receiveThread.IsBackground = true;
+      _receiveThread.Start ();
     }
 
     private void stopReceiving (int millisecondsTimeout)
     {
       _listener.Stop ();
-      _receiveRequestThread.Join (millisecondsTimeout);
+      _receiveThread.Join (millisecondsTimeout);
     }
 
     private static bool tryCreateUri (string uriString, out Uri result, out string message)
