@@ -170,9 +170,9 @@ ws.OnError += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.ErrorEventArgs`.
 
-`e.Message` property returns a `string` that represents the error message. So you should use it to get the error message.
+`e.Message` property returns a `string` that represents the error message.
 
-And if the error is due to an exception, you can get a `System.Exception` instance that caused the error, by using `e.Exception` property.
+If the error is due to an exception, you can get a `System.Exception` instance that caused the error, by using `e.Exception` property.
 
 ##### WebSocket.OnClose Event #####
 
