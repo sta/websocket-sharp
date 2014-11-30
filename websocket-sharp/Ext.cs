@@ -424,7 +424,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Determines whether the specified <see cref="int"/> equals the specified <see cref="char"/>,
-    /// and invokes the specified Action&lt;int&gt; delegate at the same time.
+    /// and invokes the specified <c>Action&lt;int&gt;</c> delegate at the same time.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="value"/> equals <paramref name="c"/>;
@@ -437,18 +437,12 @@ namespace WebSocketSharp
     /// A <see cref="char"/> to compare.
     /// </param>
     /// <param name="action">
-    /// An Action&lt;int&gt; delegate that references the method(s) called at
-    /// the same time as comparing. An <see cref="int"/> parameter to pass to
+    /// An <c>Action&lt;int&gt;</c> delegate that references the method(s) called
+    /// at the same time as comparing. An <see cref="int"/> parameter to pass to
     /// the method(s) is <paramref name="value"/>.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="value"/> isn't between 0 and 255.
-    /// </exception>
     internal static bool EqualsWith (this int value, char c, Action<int> action)
     {
-      if (value < 0 || value > 255)
-        throw new ArgumentOutOfRangeException ("value");
-
       action (value);
       return value == c - 0;
     }

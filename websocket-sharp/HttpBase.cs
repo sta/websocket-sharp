@@ -122,6 +122,9 @@ namespace WebSocketSharp
       var buff = new List<byte> ();
       var cnt = 0;
       Action<int> add = i => {
+        if (i == -1)
+          throw new EndOfStreamException ("The header cannot be read from the data source.");
+
         buff.Add ((byte) i);
         cnt++;
       };
