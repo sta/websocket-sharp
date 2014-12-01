@@ -395,18 +395,21 @@ namespace WebSocketSharp.Net
 
     private void removeConnection ()
     {
-      if (_lastListener == null)
+      if (_lastListener == null) {
         _listener.RemoveConnection (this);
-      else
-        _lastListener.RemoveConnection (this);
+        return;
+      }
+
+      _lastListener.RemoveConnection (this);
     }
 
     private void unbind ()
     {
-      if (_contextWasBound) {
-        _listener.UnbindContext (_context);
-        _contextWasBound = false;
-      }
+      if (!_contextWasBound)
+        return;
+
+      _listener.UnbindContext (_context);
+      _contextWasBound = false;
     }
 
     #endregion
