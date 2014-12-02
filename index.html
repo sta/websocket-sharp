@@ -120,13 +120,13 @@
 <div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> System;
 <span class="pl-k">using</span> WebSocketSharp;
 
-<span class="pl-k">namespace</span> Example
+<span class="pl-k">namespace</span> <span class="pl-en">Example</span>
 {
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Program</span>
+  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Program</span>
   {
-    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-s">void</span> <span class="pl-enf">Main</span> (<span class="pl-s">string[]</span> <span class="pl-vpf">args</span>)
+    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-st">void</span> <span class="pl-en">Main</span> (<span class="pl-st">string[]</span> <span class="pl-vpf">args</span>)
     {
-      <span class="pl-ko">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://dragonsnest.far/Laputa<span class="pl-pds">"</span></span>)) {
+      <span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://dragonsnest.far/Laputa<span class="pl-pds">"</span></span>)) {
         ws.OnMessage += (sender, e) =&gt;
           Console.WriteLine (<span class="pl-s1"><span class="pl-pds">"</span>Laputa says: <span class="pl-pds">"</span></span> + e.Data);
 
@@ -152,7 +152,7 @@
 
 <p>Creating a new instance of the <code>WebSocket</code> class with the WebSocket URL to connect.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-ko">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
@@ -216,9 +216,9 @@
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.ErrorEventArgs</code>.</p>
 
-<p><code>e.Message</code> property returns a <code>string</code> that represents the error message. So you should use it to get the error message.</p>
+<p><code>e.Message</code> property returns a <code>string</code> that represents the error message.</p>
 
-<p>And if the error is due to an exception, you can get a <code>System.Exception</code> instance that caused the error, by using <code>e.Exception</code> property.</p>
+<p>If the error is due to an exception, <code>e.Exception</code> property returns a <code>System.Exception</code> instance that caused the error.</p>
 
 <h5>
 <a id="websocketonclose-event" class="anchor" href="#websocketonclose-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnClose Event</h5>
@@ -231,7 +231,7 @@
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.CloseEventArgs</code>.</p>
 
-<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code indicating the reason for the close, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for the close. So you should use them to get the reason for the close.</p>
+<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code indicating the reason for the close, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for the close.</p>
 
 <h4>
 <a id="step-4" class="anchor" href="#step-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 4</h4>
@@ -281,11 +281,11 @@
 <span class="pl-k">using</span> WebSocketSharp;
 <span class="pl-k">using</span> WebSocketSharp.Server;
 
-<span class="pl-k">namespace</span> Example
+<span class="pl-k">namespace</span> <span class="pl-en">Example</span>
 {
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Laputa</span> : <span class="pl-s">WebSocketBehavior</span>
+  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Laputa</span> : <span class="pl-st">WebSocketBehavior</span>
   {
-    <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-s">void</span> <span class="pl-enf">OnMessage</span> (<span class="pl-s">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+    <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
     {
       <span class="pl-k">var</span> msg = e.Data == <span class="pl-s1"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>
                 ? <span class="pl-s1"><span class="pl-pds">"</span>I've been balused already...<span class="pl-pds">"</span></span>
@@ -295,9 +295,9 @@
     }
   }
 
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Program</span>
+  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Program</span>
   {
-    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-s">void</span> <span class="pl-enf">Main</span> (<span class="pl-s">string[]</span> <span class="pl-vpf">args</span>)
+    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-st">void</span> <span class="pl-en">Main</span> (<span class="pl-st">string[]</span> <span class="pl-vpf">args</span>)
     {
       <span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-s1"><span class="pl-pds">"</span>ws://dragonsnest.far<span class="pl-pds">"</span></span>);
       wssv.AddWebSocketService&lt;Laputa&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Laputa<span class="pl-pds">"</span></span>);
@@ -328,9 +328,9 @@
 <span class="pl-k">using</span> WebSocketSharp;
 <span class="pl-k">using</span> WebSocketSharp.Server;
 
-<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Echo</span> : <span class="pl-s">WebSocketBehavior</span>
+<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Echo</span> : <span class="pl-st">WebSocketBehavior</span>
 {
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-s">void</span> <span class="pl-enf">OnMessage</span> (<span class="pl-s">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
   {
     Send (e.Data);
   }
@@ -342,21 +342,21 @@
 <span class="pl-k">using</span> WebSocketSharp;
 <span class="pl-k">using</span> WebSocketSharp.Server;
 
-<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Chat</span> : <span class="pl-s">WebSocketBehavior</span>
+<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Chat</span> : <span class="pl-st">WebSocketBehavior</span>
 {
-  <span class="pl-s">private</span> <span class="pl-s">string</span> _suffix;
+  <span class="pl-s">private</span> <span class="pl-st">string</span> _suffix;
 
-  <span class="pl-s">public</span> <span class="pl-enf">Chat</span> ()
+  <span class="pl-s">public</span> <span class="pl-en">Chat</span> ()
     : <span class="pl-c1">this</span> (null)
   {
   }
 
-  <span class="pl-s">public</span> <span class="pl-enf">Chat</span> (<span class="pl-s">string</span> <span class="pl-vpf">suffix</span>)
+  <span class="pl-s">public</span> <span class="pl-en">Chat</span> (<span class="pl-st">string</span> <span class="pl-vpf">suffix</span>)
   {
     _suffix = suffix ?? String.Empty;
   }
 
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-s">void</span> <span class="pl-enf">OnMessage</span> (<span class="pl-s">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
   {
     Sessions.Broadcast (e.Data + _suffix);
   }
@@ -379,7 +379,7 @@
 
 <p>Creating a new instance of the <code>WebSocketServer</code> class.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-cn">4649</span>);
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-c1">4649</span>);
 wssv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
 wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
 wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-s">new</span> Chat (<span class="pl-s1"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
@@ -424,7 +424,7 @@ wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"
 
 <p>You can add any WebSocket service to your <code>HttpServer</code> with the specified behavior and path to the service, by using the <code>HttpServer.AddWebSocketService&lt;TBehaviorWithNew&gt; (string)</code> or <code>HttpServer.AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> httpsv = <span class="pl-s">new</span> HttpServer (<span class="pl-cn">4649</span>);
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> httpsv = <span class="pl-s">new</span> HttpServer (<span class="pl-c1">4649</span>);
 httpsv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
 httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
 httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-s">new</span> Chat (<span class="pl-s1"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
@@ -457,7 +457,7 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 
 <p>As a <strong>WebSocket Client</strong>, you should create a new instance of the <code>WebSocket</code> class with the <strong>wss</strong> scheme WebSocket URL.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-ko">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>wss://example.com<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>wss://example.com<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
@@ -475,7 +475,7 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 
 <p>As a <strong>WebSocket Server</strong>, you should create a new instance of the <code>WebSocketServer</code> or <code>HttpServer</code> class with some settings for secure connection, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-cn">4649</span>, <span class="pl-c1">true</span>);
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-c1">4649</span>, <span class="pl-c1">true</span>);
 wssv.SslConfiguration.ServerCertificate =
   <span class="pl-s">new</span> X509Certificate2 (<span class="pl-s1"><span class="pl-pds">"</span>/path/to/cert.pfx<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>password for cert.pfx<span class="pl-pds">"</span></span>);</pre></div>
 
@@ -514,7 +514,7 @@ wssv.UserCredentialsFinder = id =&gt; {
 
 <p>As a <strong>WebSocket Client</strong>, if you would like to send the <strong>Query String</strong> with the WebSocket connection request to the server, you should create a new instance of the <code>WebSocket</code> class with the WebSocket URL that includes the <a href="http://tools.ietf.org/html/rfc3986#section-3.4">Query</a> string parameters.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-ko">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com/?name=nobita<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com/?name=nobita<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
@@ -528,12 +528,12 @@ wssv.UserCredentialsFinder = id =&gt; {
 
 <p>As a <strong>WebSocket Server</strong>, if you would like to get the <strong>Query String</strong> included in each WebSocket connection request, you should access the <code>WebSocketBehavior.Context.QueryString</code> property, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-entc">Chat</span> : <span class="pl-s">WebSocketBehavior</span>
+<div class="highlight highlight-csharp"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Chat</span> : <span class="pl-st">WebSocketBehavior</span>
 {
-  <span class="pl-s">private</span> <span class="pl-s">string</span> _name;
+  <span class="pl-s">private</span> <span class="pl-st">string</span> _name;
   ...
 
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-s">void</span> <span class="pl-enf">OnOpen</span> ()
+  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnOpen</span> ()
   {
     _name = Context.QueryString[<span class="pl-s1"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>];
   }
