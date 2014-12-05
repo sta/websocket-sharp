@@ -41,10 +41,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal HttpHeaderInfo ()
-    {
-    }
-
     internal HttpHeaderInfo (string name, HttpHeaderType type)
     {
       _name = name;
@@ -87,19 +83,11 @@ namespace WebSocketSharp.Net
       get {
         return _name;
       }
-
-      internal set {
-        _name = value;
-      }
     }
 
     public HttpHeaderType Type {
       get {
         return _type;
-      }
-
-      internal set {
-        _type = value;
       }
     }
 
