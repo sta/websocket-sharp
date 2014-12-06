@@ -94,7 +94,7 @@ namespace WebSocketSharp.Net
           {
             "AcceptLanguage",
             new HttpHeaderInfo (
-              "Accept-language",
+              "Accept-Language",
               HttpHeaderType.Request | HttpHeaderType.MultiValue)
           },
           {
@@ -287,12 +287,6 @@ namespace WebSocketSharp.Net
               HttpHeaderType.Request | HttpHeaderType.Response)
           },
           {
-            "ProxyConnection",
-            new HttpHeaderInfo (
-              "Proxy-Connection",
-              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
-          },
-          {
             "ProxyAuthenticate",
             new HttpHeaderInfo (
               "Proxy-Authenticate",
@@ -303,6 +297,12 @@ namespace WebSocketSharp.Net
             new HttpHeaderInfo (
               "Proxy-Authorization",
               HttpHeaderType.Request)
+          },
+          {
+            "ProxyConnection",
+            new HttpHeaderInfo (
+              "Proxy-Connection",
+              HttpHeaderType.Request | HttpHeaderType.Response | HttpHeaderType.Restricted)
           },
           {
             "Public",
