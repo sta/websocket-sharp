@@ -138,6 +138,7 @@
     <Compile Include="Net\SslConfiguration.cs" />
     <Compile Include="Net\HttpListenerAsyncResult.cs" />
     <Compile Include="Net\HttpRequestHeader.cs" />
+    <Compile Include="Net\HttpResponseHeader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
