@@ -44,7 +44,8 @@ namespace WebSocketSharp.Net
   /// </summary>
   /// <remarks>
   /// The HttpResponseHeader enumeration contains the HTTP response headers defined in
-  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> for HTTP/1.1.
+  /// <see href="http://tools.ietf.org/html/rfc2616#section-14">RFC 2616</see> for the HTTP/1.1 and
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-11.3">RFC 6455</see> for the WebSocket.
   /// </remarks>
   public enum HttpResponseHeader
   {
@@ -167,6 +168,22 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Indicates the WWW-Authenticate header.
     /// </summary>
-    WwwAuthenticate
+    WwwAuthenticate,
+    /// <summary>
+    /// Indicates the Sec-WebSocket-Extensions header.
+    /// </summary>
+    SecWebSocketExtensions,
+    /// <summary>
+    /// Indicates the Sec-WebSocket-Accept header.
+    /// </summary>
+    SecWebSocketAccept,
+    /// <summary>
+    /// Indicates the Sec-WebSocket-Protocol header.
+    /// </summary>
+    SecWebSocketProtocol,
+    /// <summary>
+    /// Indicates the Sec-WebSocket-Version header.
+    /// </summary>
+    SecWebSocketVersion
   }
 }
