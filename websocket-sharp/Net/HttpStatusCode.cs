@@ -43,7 +43,7 @@ namespace WebSocketSharp.Net
   /// </summary>
   /// <remarks>
   /// The HttpStatusCode enumeration contains the values of the HTTP status codes defined in
-  /// <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see> for HTTP 1.1.
+  /// <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see> for the HTTP/1.1.
   /// </remarks>
   public enum HttpStatusCode
   {
