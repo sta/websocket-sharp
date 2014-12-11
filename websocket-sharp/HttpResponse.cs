@@ -92,6 +92,12 @@ namespace WebSocketSharp
       }
     }
 
+    public bool IsRedirect {
+      get {
+        return _code == "302";
+      }
+    }
+
     public bool IsUnauthorized {
       get {
         return _code == "401";
