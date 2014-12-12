@@ -86,6 +86,12 @@ namespace WebSocketSharp
       }
     }
 
+    public bool IsMoved {
+      get {
+        return _code == "301";
+      }
+    }
+
     public bool IsProxyAuthenticationRequired {
       get {
         return _code == "407";
