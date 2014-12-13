@@ -86,12 +86,6 @@ namespace WebSocketSharp
       }
     }
 
-    public bool IsMoved {
-      get {
-        return _code == "301";
-      }
-    }
-
     public bool IsProxyAuthenticationRequired {
       get {
         return _code == "407";
@@ -100,7 +94,7 @@ namespace WebSocketSharp
 
     public bool IsRedirect {
       get {
-        return _code == "302";
+        return _code == "301" || _code == "302";
       }
     }
 
