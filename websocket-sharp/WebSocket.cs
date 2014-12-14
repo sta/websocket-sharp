@@ -587,19 +587,21 @@ namespace WebSocketSharp
     private string checkIfValidHandshakeResponse (HttpResponse response)
     {
       var headers = response.Headers;
-      return response.IsUnauthorized
-             ? "An HTTP authentication is required."
-             : !response.IsWebSocketResponse
-               ? "Not a WebSocket connection response."
-               : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
-                 ? "Invalid Sec-WebSocket-Accept header."
-                 : !validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])
-                   ? "Invalid Sec-WebSocket-Protocol header."
-                   : !validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])
-                     ? "Invalid Sec-WebSocket-Extensions header."
-                     : !validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])
-                       ? "Invalid Sec-WebSocket-Version header."
-                       : null;
+      return response.IsRedirect
+             ? "A Redirect response was received."
+             : response.IsUnauthorized
+               ? "An HTTP authentication is required."
+               : !response.IsWebSocketResponse
+                 ? "Not a WebSocket connection response."
+                 : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
+                   ? "Invalid Sec-WebSocket-Accept header."
+                   : !validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])
+                     ? "Invalid Sec-WebSocket-Protocol header."
+                     : !validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])
+                       ? "Invalid Sec-WebSocket-Extensions header."
+                       : !validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])
+                         ? "Invalid Sec-WebSocket-Version header."
+                         : null;
     }
 
     private string checkIfValidReceivedFrame (WebSocketFrame frame)
@@ -1233,6 +1235,13 @@ namespace WebSocketSharp
           req.Headers["Authorization"] = authRes.ToString ();
           res = sendHttpRequest (req, 15000);
         }
+      }
+
+      if (res.IsRedirect) {
+        var url = res.Headers["Location"];
+        _logger.Warn (
+          String.Format (
+            "Received a Redirect response that specifies the Location to '{0}'.", url));
       }
 
       return res;
