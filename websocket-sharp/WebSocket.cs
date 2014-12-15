@@ -76,6 +76,7 @@ namespace WebSocketSharp
     private WebSocketContext        _context;
     private CookieCollection        _cookies;
     private NetworkCredential       _credentials;
+    private bool                    _enableRedirection;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
     private object                  _forConn;
@@ -1242,6 +1243,28 @@ namespace WebSocketSharp
         _logger.Warn (
           String.Format (
             "Received a Redirect response that specifies the Location to '{0}'.", url));
+
+        if (_enableRedirection) {
+          if (url == null) {
+            _logger.Error ("No url to redirect is specified.");
+            return res;
+          }
+
+          Uri uri;
+          string msg;
+          if (!url.TryCreateWebSocketUri (out uri, out msg)) {
+            _logger.Error ("An invalid url to redirect: " + msg);
+            return res;
+          }
+
+          releaseClientResources ();
+
+          _uri = uri;
+          _secure = uri.Scheme == "wss";
+
+          setClientStream ();
+          return sendHandshakeRequest ();
+        }
       }
 
       return res;
