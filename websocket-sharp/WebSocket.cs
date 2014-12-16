@@ -290,6 +290,34 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects to
+    /// the new URL located in the handshake response.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the <see cref="WebSocket"/> redirects to the new URL;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool EnableRedirection {
+      get {
+        return _enableRedirection;
+      }
+
+      set {
+        lock (_forConn) {
+          var msg = checkIfAvailable (false, false);
+          if (msg != null) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the enable redirection.", null);
+
+            return;
+          }
+
+          _enableRedirection = value;
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets the WebSocket extensions selected by the server.
     /// </summary>
     /// <value>
