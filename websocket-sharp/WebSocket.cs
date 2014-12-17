@@ -602,13 +602,13 @@ namespace WebSocketSharp
     {
       var headers = context.Headers;
       return context.RequestUri == null
-             ? "An invalid request url."
+             ? "Specifies an invalid Request-URI."
              : !context.IsWebSocketRequest
                ? "Not a WebSocket connection request."
                : !validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])
-                 ? "Invalid Sec-WebSocket-Key header."
+                 ? "Includes an invalid Sec-WebSocket-Key header."
                  : !validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])
-                   ? "Invalid Sec-WebSocket-Version header."
+                   ? "Includes an invalid Sec-WebSocket-Version header."
                    : CustomHandshakeRequestChecker (context);
     }
 
@@ -617,19 +617,19 @@ namespace WebSocketSharp
     {
       var headers = response.Headers;
       return response.IsRedirect
-             ? "A Redirect response was received."
+             ? "Indicates the redirection."
              : response.IsUnauthorized
-               ? "An HTTP authentication is required."
+               ? "Requires the HTTP authentication."
                : !response.IsWebSocketResponse
                  ? "Not a WebSocket connection response."
                  : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
-                   ? "Invalid Sec-WebSocket-Accept header."
+                   ? "Includes an invalid Sec-WebSocket-Accept header."
                    : !validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])
-                     ? "Invalid Sec-WebSocket-Protocol header."
+                     ? "Includes an invalid Sec-WebSocket-Protocol header."
                      : !validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])
-                       ? "Invalid Sec-WebSocket-Extensions header."
+                       ? "Includes an invalid Sec-WebSocket-Extensions header."
                        : !validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])
-                         ? "Invalid Sec-WebSocket-Version header."
+                         ? "Includes an invalid Sec-WebSocket-Version header."
                          : null;
     }
 
@@ -1268,20 +1268,17 @@ namespace WebSocketSharp
 
       if (res.IsRedirect) {
         var url = res.Headers["Location"];
-        _logger.Warn (
-          String.Format (
-            "Received a Redirect response that specifies the Location to '{0}'.", url));
-
+        _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
         if (_enableRedirection) {
           if (url == null) {
-            _logger.Error ("No url to redirect is specified.");
+            _logger.Error ("No url to redirect is located.");
             return res;
           }
 
           Uri uri;
           string msg;
           if (!url.TryCreateWebSocketUri (out uri, out msg)) {
-            _logger.Error ("An invalid url to redirect: " + msg);
+            _logger.Error ("An invalid url to redirect is located: " + msg);
             return res;
           }
 
