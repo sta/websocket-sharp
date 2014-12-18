@@ -91,6 +91,9 @@ namespace Example
         // To connect through the HTTP Proxy server.
         //ws.SetProxy ("http://localhost:3128", "nobita", "password");
 
+        // To enable the redirection.
+        //ws.EnableRedirection = true;
+
         // Connect to the server.
         ws.Connect ();
 
