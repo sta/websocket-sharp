@@ -86,6 +86,12 @@ namespace WebSocketSharp
       }
     }
 
+    public bool HasConnectionClose {
+      get {
+        return Headers.Contains ("Connection", "close");
+      }
+    }
+
     public bool IsProxyAuthenticationRequired {
       get {
         return _code == "407";
