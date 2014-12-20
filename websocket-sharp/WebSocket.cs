@@ -1254,7 +1254,7 @@ namespace WebSocketSharp
         _authChallenge = res.AuthenticationChallenge;
         if (_credentials != null &&
             (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
-          if (res.Headers.Contains ("Connection", "close")) {
+          if (res.HasConnectionClose) {
             releaseClientResources ();
             setClientStream ();
           }
@@ -1270,7 +1270,7 @@ namespace WebSocketSharp
         var url = res.Headers["Location"];
         _logger.Warn (String.Format ("Received a redirection to '{0}'.", url));
         if (_enableRedirection) {
-          if (url == null) {
+          if (url.IsNullOrEmpty ()) {
             _logger.Error ("No url to redirect is located.");
             return res;
           }
