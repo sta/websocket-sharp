@@ -144,6 +144,9 @@ namespace WebSocketSharp.Server
       if (url == null)
         throw new ArgumentNullException ("url");
 
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
+
       string msg;
       if (!tryCreateUri (url, out _uri, out msg))
         throw new ArgumentException (msg, "url");

@@ -852,10 +852,6 @@ namespace WebSocketSharp
       this string uriString, out Uri result, out string message)
     {
       result = null;
-      if (uriString.Length == 0) {
-        message = "An empty string.";
-        return false;
-      }
 
       var uri = uriString.ToUri ();
       if (!uri.IsAbsoluteUri) {
