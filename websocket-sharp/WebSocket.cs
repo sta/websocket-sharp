@@ -1254,7 +1254,19 @@ namespace WebSocketSharp
       var req = createHandshakeRequest ();
       var res = sendHttpRequest (req, 90000);
       if (res.IsUnauthorized) {
-        _authChallenge = res.AuthenticationChallenge;
+        var chal = res.Headers["WWW-Authenticate"];
+        _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
+        if (chal.IsNullOrEmpty ()) {
+          _logger.Error ("No authentication challenge is specified.");
+          return res;
+        }
+
+        _authChallenge = AuthenticationChallenge.Parse (chal);
+        if (_authChallenge == null) {
+          _logger.Error ("An invalid authentication challenge is specified.");
+          return res;
+        }
+
         if (_credentials != null &&
             (!_preAuth || _authChallenge.Scheme == AuthenticationSchemes.Digest)) {
           if (res.HasConnectionClose) {
