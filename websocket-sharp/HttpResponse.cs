@@ -71,15 +71,6 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public AuthenticationChallenge AuthenticationChallenge {
-      get {
-        var chal = Headers["WWW-Authenticate"];
-        return chal != null && chal.Length > 0
-               ? AuthenticationChallenge.Parse (chal)
-               : null;
-      }
-    }
-
     public CookieCollection Cookies {
       get {
         return Headers.GetCookies (true);
