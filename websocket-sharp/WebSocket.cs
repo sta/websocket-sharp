@@ -1333,9 +1333,19 @@ namespace WebSocketSharp
       var req = HttpRequest.CreateConnectRequest (_uri);
       var res = sendHttpRequest (req, 90000);
       if (res.IsProxyAuthenticationRequired) {
-        var authChal = res.ProxyAuthenticationChallenge;
-        if (authChal != null && _proxyCredentials != null) {
-          if (res.Headers.Contains ("Connection", "close")) {
+        var chal = res.Headers["Proxy-Authenticate"];
+        _logger.Warn (
+          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
+
+        if (chal.IsNullOrEmpty ())
+          throw new WebSocketException ("No proxy authentication challenge is specified.");
+
+        var authChal = AuthenticationChallenge.Parse (chal);
+        if (authChal == null)
+          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
+
+        if (_proxyCredentials != null) {
+          if (res.HasConnectionClose) {
             releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
             _stream = _tcpClient.GetStream ();
