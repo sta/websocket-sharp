@@ -111,15 +111,6 @@ namespace WebSocketSharp
       }
     }
 
-    public AuthenticationChallenge ProxyAuthenticationChallenge {
-      get {
-        var chal = Headers["Proxy-Authenticate"];
-        return chal != null && chal.Length > 0
-               ? AuthenticationChallenge.Parse (chal)
-               : null;
-      }
-    }
-
     public string Reason {
       get {
         return _reason;
