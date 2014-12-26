@@ -622,7 +622,7 @@ namespace WebSocketSharp
       return response.IsRedirect
              ? "Indicates the redirection."
              : response.IsUnauthorized
-               ? "Requires the HTTP authentication."
+               ? "Requires the authentication."
                : !response.IsWebSocketResponse
                  ? "Not a WebSocket connection response."
                  : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
