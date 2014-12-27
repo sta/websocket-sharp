@@ -270,6 +270,26 @@ namespace WebSocketSharp.Net
       }
     }
 
+    private static void processAccepted (Socket socket, EndPointListener listener)
+    {
+      HttpConnection conn = null;
+      try {
+        conn = new HttpConnection (socket, listener);
+        lock (listener._unregisteredSync)
+          listener._unregistered[conn] = conn;
+
+        conn.BeginReadRequest ();
+      }
+      catch {
+        if (conn != null) {
+          conn.Close (true);
+          return;
+        }
+
+        socket.Close ();
+      }
+    }
+
     private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
       if (prefixes == null)
