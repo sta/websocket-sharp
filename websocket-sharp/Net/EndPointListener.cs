@@ -233,6 +233,7 @@ namespace WebSocketSharp.Net
     {
       var args = (SocketAsyncEventArgs) e;
       var epl = (EndPointListener) args.UserToken;
+
       Socket accepted = null;
       if (args.SocketError == SocketError.Success) {
         accepted = args.AcceptSocket;
@@ -240,7 +241,13 @@ namespace WebSocketSharp.Net
       }
 
       try {
-        epl._socket.AcceptAsync (args);
+        if (!epl._socket.AcceptAsync (args)) {
+          if (accepted != null)
+            processAccepted (accepted, epl);
+
+          onAccept (sender, args);
+          return;
+        }
       }
       catch {
         if (accepted != null)
@@ -249,25 +256,8 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (accepted == null)
-        return;
-
-      HttpConnection conn = null;
-      try {
-        conn = new HttpConnection (accepted, epl);
-        lock (epl._unregisteredSync)
-          epl._unregistered[conn] = conn;
-
-        conn.BeginReadRequest ();
-      }
-      catch {
-        if (conn != null) {
-          conn.Close (true);
-          return;
-        }
-
-        accepted.Close ();
-      }
+      if (accepted != null)
+        processAccepted (accepted, epl);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
