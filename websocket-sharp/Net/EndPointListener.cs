@@ -232,32 +232,30 @@ namespace WebSocketSharp.Net
     private static void onAccept (object sender, EventArgs e)
     {
       var args = (SocketAsyncEventArgs) e;
-      var epl = (EndPointListener) args.UserToken;
+      var listener = (EndPointListener) args.UserToken;
 
-      Socket accepted = null;
+      Socket sock = null;
       if (args.SocketError == SocketError.Success) {
-        accepted = args.AcceptSocket;
+        sock = args.AcceptSocket;
         args.AcceptSocket = null;
       }
 
+      var res = true;
       try {
-        if (!epl._socket.AcceptAsync (args)) {
-          if (accepted != null)
-            processAccepted (accepted, epl);
-
-          onAccept (sender, args);
-          return;
-        }
+        res = listener._socket.AcceptAsync (args);
       }
       catch {
-        if (accepted != null)
-          accepted.Close ();
+        if (sock != null)
+          sock.Close ();
 
         return;
       }
 
-      if (accepted != null)
-        processAccepted (accepted, epl);
+      if (sock != null)
+        processAccepted (sock, listener);
+
+      if (!res)
+        onAccept (sender, args);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
