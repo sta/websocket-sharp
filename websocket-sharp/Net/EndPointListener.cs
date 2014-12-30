@@ -119,7 +119,8 @@ namespace WebSocketSharp.Net
       var args = new SocketAsyncEventArgs ();
       args.UserToken = this;
       args.Completed += onAccept;
-      _socket.AcceptAsync (args);
+      if (!_socket.AcceptAsync (args))
+        onAccept (this, args);
     }
 
     #endregion
