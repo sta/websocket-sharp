@@ -83,9 +83,9 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public EndPointListener (
+    internal EndPointListener (
       IPAddress address,
       int port,
       bool secure,
@@ -427,11 +427,11 @@ namespace WebSocketSharp.Net
     public bool BindContext (HttpListenerContext context)
     {
       HttpListenerPrefix pref;
-      var httpl = searchListener (context.Request.Url, out pref);
-      if (httpl == null)
+      var listener = searchListener (context.Request.Url, out pref);
+      if (listener == null)
         return false;
 
-      context.Listener = httpl;
+      context.Listener = listener;
       context.Connection.Prefix = pref;
 
       return true;
