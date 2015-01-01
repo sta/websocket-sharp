@@ -37,27 +37,29 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net.Security;
 
 namespace WebSocketSharp.Net
 {
   internal sealed class HttpConnection
   {
-    #region Private Const Fields
-
-    private const int _bufferSize = 8192;
-
-    #endregion
-
     #region Private Fields
 
-    private byte []             _buffer;
+    private byte[]              _buffer;
+    private const int           _bufferSize = 8192;
     private bool                _chunked;
     private HttpListenerContext _context;
     private bool                _contextWasBound;
@@ -69,9 +71,10 @@ namespace WebSocketSharp.Net
     private EndPointListener    _listener;
     private ResponseStream      _outputStream;
     private int                 _position;
-    private ListenerPrefix      _prefix;
+    private HttpListenerPrefix  _prefix;
     private MemoryStream        _requestBuffer;
     private int                 _reuses;
+    private bool                _secure;
     private Socket              _socket;
     private Stream              _stream;
     private object              _sync;
@@ -86,11 +89,18 @@ namespace WebSocketSharp.Net
     {
       _socket = socket;
       _listener = listener;
+      _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (listener.IsSecure) {
-        var sslStream = new SslStream (netStream, false);
-        sslStream.AuthenticateAsServer (listener.Certificate);
+      if (_secure) {
+        var conf = listener.SslConfiguration;
+        var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
+        sslStream.AuthenticateAsServer (
+          conf.ServerCertificate,
+          conf.ClientCertificateRequired,
+          conf.EnabledSslProtocols,
+          conf.CheckCertificateRevocation);
+
         _stream = sslStream;
       }
       else {
@@ -116,7 +126,7 @@ namespace WebSocketSharp.Net
 
     public bool IsSecure {
       get {
-        return _listener.IsSecure;
+        return _secure;
       }
     }
 
@@ -126,7 +136,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public ListenerPrefix Prefix {
+    public HttpListenerPrefix Prefix {
       get {
         return _prefix;
       }
@@ -200,6 +210,9 @@ namespace WebSocketSharp.Net
       if (_stream == null)
         return;
 
+      _inputStream = null;
+      _outputStream = null;
+
       _stream.Dispose ();
       _stream = null;
     }
@@ -268,10 +281,10 @@ namespace WebSocketSharp.Net
         }
 
         if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
-          if (!conn._context.HasError) {
+          if (!conn._context.HasError)
             conn._context.Request.FinishInitialization ();
-          }
-          else {
+
+          if (conn._context.HasError) {
             conn.SendError ();
             conn.Close (true);
 
@@ -310,7 +323,7 @@ namespace WebSocketSharp.Net
 
     // true -> Done processing.
     // false -> Need more input.
-    private bool processInput (byte [] data)
+    private bool processInput (byte[] data)
     {
       var len = data.Length;
       var used = 0;
@@ -352,7 +365,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private string readLine (byte [] buffer, int offset, int length, ref int used)
+    private string readLine (byte[] buffer, int offset, int length, ref int used)
     {
       if (_currentLine == null)
         _currentLine = new StringBuilder ();
@@ -361,7 +374,7 @@ namespace WebSocketSharp.Net
       used = 0;
       for (int i = offset; i < last && _lineState != LineState.LF; i++) {
         used++;
-        var b = buffer [i];
+        var b = buffer[i];
         if (b == 13)
           _lineState = LineState.CR;
         else if (b == 10)
@@ -382,18 +395,21 @@ namespace WebSocketSharp.Net
 
     private void removeConnection ()
     {
-      if (_lastListener == null)
+      if (_lastListener == null) {
         _listener.RemoveConnection (this);
-      else
-        _lastListener.RemoveConnection (this);
+        return;
+      }
+
+      _lastListener.RemoveConnection (this);
     }
 
     private void unbind ()
     {
-      if (_contextWasBound) {
-        _listener.UnbindContext (_context);
-        _contextWasBound = false;
-      }
+      if (!_contextWasBound)
+        return;
+
+      _listener.UnbindContext (_context);
+      _contextWasBound = false;
     }
 
     #endregion
@@ -409,29 +425,24 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return;
 
-        if (_outputStream != null) {
-          _outputStream.Close ();
-          _outputStream = null;
-        }
+        if (!force) {
+          GetResponseStream ().Close ();
 
-        var req = _context.Request;
-        var res = _context.Response;
+          var req = _context.Request;
+          var res = _context.Response;
+          if (req.KeepAlive &&
+              !res.ConnectionClose &&
+              req.FlushInput () &&
+              (!_chunked || (_chunked && !res.ForceCloseChunked))) {
+            // Don't close. Keep working.
+            _reuses++;
+            disposeRequestBuffer ();
+            unbind ();
+            init ();
+            BeginReadRequest ();
 
-        force |= !req.KeepAlive;
-        if (!force)
-          force = res.Headers ["Connection"] == "close";
-
-        if (!force &&
-            req.FlushInput () &&
-            (!_chunked || (_chunked && !res.ForceCloseChunked))) {
-          // Don't close. Keep working.
-          _reuses++;
-          disposeRequestBuffer ();
-          unbind ();
-          init ();
-          BeginReadRequest ();
-
-          return;
+            return;
+          }
         }
 
         close ();
@@ -445,7 +456,7 @@ namespace WebSocketSharp.Net
     public void BeginReadRequest ()
     {
       if (_buffer == null)
-        _buffer = new byte [_bufferSize];
+        _buffer = new byte[_bufferSize];
 
       if (_reuses == 1)
         _timeout = 15000;
@@ -479,7 +490,7 @@ namespace WebSocketSharp.Net
         if (chunked) {
           _chunked = true;
           _context.Response.SendChunked = true;
-          _inputStream = new ChunkedInputStream (
+          _inputStream = new ChunkedRequestStream (
             _context, _stream, buff, _position, len - _position);
         }
         else {

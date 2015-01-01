@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -37,14 +38,11 @@ namespace WebSocketSharp.Net.WebSockets
   /// Provides the properties used to access the information in a WebSocket connection request
   /// received by the <see cref="HttpListener"/>.
   /// </summary>
-  /// <remarks>
-  /// </remarks>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
     #region Private Fields
 
     private HttpListenerContext _context;
-    private WsStream            _stream;
     private WebSocket           _websocket;
 
     #endregion
@@ -55,7 +53,6 @@ namespace WebSocketSharp.Net.WebSockets
       HttpListenerContext context, string protocol, Logger logger)
     {
       _context = context;
-      _stream = WsStream.CreateServerStream (context);
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -63,9 +60,9 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WsStream Stream {
+    internal Stream Stream {
       get {
-        return _stream;
+        return _context.Connection.Stream;
       }
     }
 
@@ -105,7 +102,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Host {
       get {
-        return _context.Request.Headers ["Host"];
+        return _context.Request.Headers["Host"];
       }
     }
 
@@ -117,7 +114,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsAuthenticated {
       get {
-        return _context.Request.IsAuthenticated;
+        return _context.User != null;
       }
     }
 
@@ -141,7 +138,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _context.Request.IsSecureConnection;
+        return _context.Connection.IsSecure;
       }
     }
 
@@ -165,27 +162,15 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Origin {
       get {
-        return _context.Request.Headers ["Origin"];
+        return _context.Request.Headers["Origin"];
       }
     }
 
     /// <summary>
-    /// Gets the absolute path of the requested URI.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested URI.
-    /// </value>
-    public override string Path {
-      get {
-        return _context.Request.Url.GetAbsolutePath ();
-      }
-    }
-
-    /// <summary>
-    /// Gets the query string variables included in the request.
-    /// </summary>
-    /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public override NameValueCollection QueryString {
       get {
@@ -217,7 +202,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketKey {
       get {
-        return _context.Request.Headers ["Sec-WebSocket-Key"];
+        return _context.Request.Headers["Sec-WebSocket-Key"];
       }
     }
 
@@ -234,7 +219,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var protocols = _context.Request.Headers ["Sec-WebSocket-Protocol"];
+        var protocols = _context.Request.Headers["Sec-WebSocket-Protocol"];
         if (protocols != null)
           foreach (var protocol in protocols.Split (','))
             yield return protocol.Trim ();
@@ -252,7 +237,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketVersion {
       get {
-        return _context.Request.Headers ["Sec-WebSocket-Version"];
+        return _context.Request.Headers["Sec-WebSocket-Version"];
       }
     }
 
@@ -272,7 +257,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> that represents the client information.
+    /// A <see cref="IPrincipal"/> instance that represents the client information.
     /// </value>
     public override IPrincipal User {
       get {

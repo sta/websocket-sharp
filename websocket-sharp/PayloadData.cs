@@ -4,8 +4,8 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2013 sta.blockhead
- * 
+ * Copyright (c) 2012-2014 sta.blockhead
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
@@ -15,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,105 +29,109 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace WebSocketSharp
 {
   internal class PayloadData : IEnumerable<byte>
   {
-    #region Public Const Fields
+    #region Private Fields
 
-    public const ulong MaxLength = long.MaxValue;
+    private byte[] _data;
+    private long   _extDataLength;
+    private long   _length;
+    private bool   _masked;
 
     #endregion
 
-    #region Public Constructors
+    #region Public Fields
 
-    public PayloadData ()
-      : this (new byte []{})
+    public const ulong MaxLength = Int64.MaxValue;
+
+    #endregion
+
+    #region Internal Constructors
+
+    internal PayloadData ()
+    {
+      _data = new byte[0];
+    }
+
+    internal PayloadData (byte[] data)
+      : this (data, false)
     {
     }
 
-    public PayloadData (byte [] appData)
-      : this (new byte []{}, appData)
+    internal PayloadData (byte[] data, bool masked)
     {
-    }
-
-    public PayloadData (string appData)
-      : this (Encoding.UTF8.GetBytes (appData))
-    {
-    }
-
-    public PayloadData (byte [] appData, bool masked)
-      : this (new byte []{}, appData, masked)
-    {
-    }
-
-    public PayloadData (byte [] extData, byte [] appData)
-      : this (extData, appData, false)
-    {
-    }
-
-    public PayloadData (byte [] extData, byte [] appData, bool masked)
-    {
-      if ((ulong) extData.LongLength + (ulong) appData.LongLength > MaxLength)
-        throw new ArgumentOutOfRangeException (
-          "The length of 'extData' plus 'appData' must be less than MaxLength.");
-
-      ExtensionData = extData;
-      ApplicationData = appData;
-      IsMasked = masked;
+      _data = data;
+      _masked = masked;
+      _length = data.LongLength;
     }
 
     #endregion
 
     #region Internal Properties
 
-    internal bool ContainsReservedCloseStatusCode {
+    internal long ExtensionDataLength {
       get {
-        return ApplicationData.Length > 1
-               ? ApplicationData.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ()
-               : false;
+        return _extDataLength;
+      }
+
+      set {
+        _extDataLength = value;
       }
     }
 
-    internal bool IsMasked {
-      get; private set;
+    internal bool IncludesReservedCloseStatusCode {
+      get {
+        return _length > 1 && _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
+      }
     }
 
     #endregion
 
     #region Public Properties
 
-    public byte [] ExtensionData {
-      get; private set;
+    public byte[] ApplicationData {
+      get {
+        return _extDataLength > 0
+               ? _data.SubArray (_extDataLength, _length - _extDataLength)
+               : _data;
+      }
     }
 
-    public byte [] ApplicationData {
-      get; private set;
+    public byte[] ExtensionData {
+      get {
+        return _extDataLength > 0
+               ? _data.SubArray (0, _extDataLength)
+               : new byte[0];
+      }
+    }
+
+    public bool IsMasked {
+      get {
+        return _masked;
+      }
     }
 
     public ulong Length {
       get {
-        return (ulong) (ExtensionData.LongLength + ApplicationData.LongLength);
+        return (ulong) _length;
       }
     }
 
     #endregion
 
-    #region Private Methods
-
-    private static void mask (byte [] src, byte [] key)
-    {
-      for (long i = 0; i < src.LongLength; i++)
-        src [i] = (byte) (src [i] ^ key [i % 4]);
-    }
-
-    #endregion
-
     #region Internal Methods
+
+    internal void Mask (byte[] key)
+    {
+      for (long i = 0; i < _length; i++)
+        _data[i] = (byte) (_data[i] ^ key[i % 4]);
+
+      _masked = !_masked;
+    }
 
     #endregion
 
@@ -135,39 +139,23 @@ namespace WebSocketSharp
 
     public IEnumerator<byte> GetEnumerator ()
     {
-      foreach (byte b in ExtensionData)
-        yield return b;
-
-      foreach (byte b in ApplicationData)
+      foreach (var b in _data)
         yield return b;
     }
 
-    public void Mask (byte [] maskingKey)
+    public byte[] ToByteArray ()
     {
-      if (ExtensionData.LongLength > 0)
-        mask (ExtensionData, maskingKey);
-
-      if (ApplicationData.LongLength > 0)
-        mask (ApplicationData, maskingKey);
-
-      IsMasked = !IsMasked;
-    }
-
-    public byte [] ToByteArray ()
-    {
-      return ExtensionData.LongLength > 0
-             ? this.ToArray ()
-             : ApplicationData;
+      return _data;
     }
 
     public override string ToString ()
     {
-      return BitConverter.ToString (ToByteArray ());
+      return BitConverter.ToString (_data);
     }
 
     #endregion
 
-    #region Explicitly Implemented Interface Members
+    #region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {

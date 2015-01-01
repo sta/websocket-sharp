@@ -1,10 +1,14 @@
 #region License
 /*
- * SslStream.cs
+ * ReadBufferState.cs
+ *
+ * This code is derived from System.Net.ChunkedInputStream.cs of Mono
+ * (http://www.mono-project.com).
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
+ * Copyright (c) 2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,55 +30,53 @@
  */
 #endregion
 
-using System;
-using System.Net.Security;
-using System.Net.Sockets;
+#region Authors
+/*
+ * Authors:
+ * - Gonzalo Paniagua Javier <gonzalo@novell.com>
+ */
+#endregion
 
-namespace WebSocketSharp.Net.Security
+using System;
+
+namespace WebSocketSharp.Net
 {
-  internal class SslStream : System.Net.Security.SslStream
+  internal class ReadBufferState
   {
     #region Public Constructors
 
-    public SslStream (NetworkStream innerStream)
-      : base (innerStream)
+    public ReadBufferState (
+      byte [] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
     {
-    }
-
-    public SslStream (NetworkStream innerStream, bool leaveInnerStreamOpen)
-      : base (innerStream, leaveInnerStreamOpen)
-    {
-    }
-
-    public SslStream (
-      NetworkStream innerStream,
-      bool leaveInnerStreamOpen,
-      RemoteCertificateValidationCallback userCertificateValidationCallback)
-      : base (innerStream, leaveInnerStreamOpen, userCertificateValidationCallback)
-    {
-    }
-
-    public SslStream (
-      NetworkStream innerStream,
-      bool leaveInnerStreamOpen,
-      RemoteCertificateValidationCallback userCertificateValidationCallback,
-      LocalCertificateSelectionCallback userCertificateSelectionCallback)
-      : base (
-        innerStream,
-        leaveInnerStreamOpen,
-        userCertificateValidationCallback,
-        userCertificateSelectionCallback)
-    {
+      Buffer = buffer;
+      Offset = offset;
+      Count = count;
+      InitialCount = count;
+      AsyncResult = asyncResult;
     }
 
     #endregion
 
     #region Public Properties
 
-    public bool DataAvailable {
-      get {
-        return ((NetworkStream) InnerStream).DataAvailable;
-      }
+    public HttpStreamAsyncResult AsyncResult {
+      get; set;
+    }
+
+    public byte [] Buffer {
+      get; set;
+    }
+
+    public int Count {
+      get; set;
+    }
+
+    public int InitialCount {
+      get; set;
+    }
+
+    public int Offset {
+      get; set;
     }
 
     #endregion

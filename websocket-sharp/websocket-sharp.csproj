@@ -69,11 +69,8 @@
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
-    <Compile Include="Server\WebSocketService.cs" />
-    <Compile Include="WsStream.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
-    <Compile Include="Net\ChunkedInputStream.cs" />
     <Compile Include="Net\Cookie.cs" />
     <Compile Include="Net\CookieCollection.cs" />
     <Compile Include="Net\CookieException.cs" />
@@ -88,15 +85,12 @@
     <Compile Include="Net\HttpListenerResponse.cs" />
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpUtility.cs" />
-    <Compile Include="Net\ListenerAsyncResult.cs" />
-    <Compile Include="Net\ListenerPrefix.cs" />
     <Compile Include="Net\RequestStream.cs" />
     <Compile Include="Net\ResponseStream.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
     <Compile Include="Server\HttpServer.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
-    <Compile Include="Net\Security\SslStream.cs" />
     <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="CloseStatusCode.cs" />
     <Compile Include="Fin.cs" />
@@ -104,7 +98,6 @@
     <Compile Include="Opcode.cs" />
     <Compile Include="PayloadData.cs" />
     <Compile Include="Rsv.cs" />
-    <Compile Include="WsFrame.cs" />
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
@@ -113,14 +106,9 @@
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
-    <Compile Include="AuthenticationChallenge.cs" />
-    <Compile Include="AuthenticationResponse.cs" />
     <Compile Include="LogData.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="HandshakeBase.cs" />
-    <Compile Include="HandshakeRequest.cs" />
-    <Compile Include="HandshakeResponse.cs" />
     <Compile Include="WebSocketState.cs" />
     <Compile Include="Server\IWebSocketSession.cs" />
     <Compile Include="Server\WebSocketSessionManager.cs" />
@@ -131,12 +119,31 @@
     <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
+    <Compile Include="Net\ReadBufferState.cs" />
+    <Compile Include="Net\Chunk.cs" />
+    <Compile Include="Net\InputChunkState.cs" />
+    <Compile Include="Net\ChunkedRequestStream.cs" />
+    <Compile Include="Net\QueryStringCollection.cs" />
+    <Compile Include="WebSocketFrame.cs" />
+    <Compile Include="Net\AuthenticationChallenge.cs" />
+    <Compile Include="Net\AuthenticationResponse.cs" />
+    <Compile Include="Net\AuthenticationBase.cs" />
+    <Compile Include="HttpBase.cs" />
+    <Compile Include="HttpRequest.cs" />
+    <Compile Include="HttpResponse.cs" />
+    <Compile Include="Server\WebSocketBehavior.cs" />
+    <Compile Include="Net\HttpListenerPrefix.cs" />
+    <Compile Include="Net\ClientSslConfiguration.cs" />
+    <Compile Include="Net\ServerSslConfiguration.cs" />
+    <Compile Include="Net\SslConfiguration.cs" />
+    <Compile Include="Net\HttpListenerAsyncResult.cs" />
+    <Compile Include="Net\HttpRequestHeader.cs" />
+    <Compile Include="Net\HttpResponseHeader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Server\" />
     <Folder Include="Net\" />
-    <Folder Include="Net\Security\" />
     <Folder Include="Net\WebSockets\" />
   </ItemGroup>
 </Project>

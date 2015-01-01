@@ -127,7 +127,7 @@ namespace WebSocketSharp.Net
         return null;
 
       var stream = new MemoryStream ();
-      _response.SendHeaders (closing, stream);
+      _response.SendHeaders (stream, closing);
 
       return stream;
     }

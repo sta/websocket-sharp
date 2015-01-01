@@ -1,10 +1,14 @@
 #region License
 /*
- * WebSocketState.cs
+ * QueryStringCollection.cs
+ *
+ * This code is derived from System.Net.HttpUtility.cs of Mono
+ * (http://www.mono-project.com).
  *
  * The MIT License
  *
- * Copyright (c) 2010-2014 sta.blockhead
+ * Copyright (c) 2005-2009 Novell, Inc. (http://www.novell.com)
+ * Copyright (c) 2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,39 +30,39 @@
  */
 #endregion
 
-using System;
+#region Authors
+/*
+ * Authors:
+ * - Patrik Torstensson <Patrik.Torstensson@labs2.com>
+ * - Wictor Wilén (decode/encode functions) <wictor@ibizkit.se>
+ * - Tim Coleman <tim@timcoleman.com>
+ * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
+ */
+#endregion
 
-namespace WebSocketSharp
+using System;
+using System.Collections.Specialized;
+using System.Text;
+
+namespace WebSocketSharp.Net
 {
-  /// <summary>
-  /// Contains the values of the state of the WebSocket connection.
-  /// </summary>
-  /// <remarks>
-  /// The values of the state are defined in
-  /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket API</see>.
-  /// </remarks>
-  public enum WebSocketState : ushort
+  internal sealed class QueryStringCollection : NameValueCollection
   {
-    /// <summary>
-    /// Equivalent to numeric value 0.
-    /// Indicates that the connection hasn't yet been established.
-    /// </summary>
-    Connecting = 0,
-    /// <summary>
-    /// Equivalent to numeric value 1.
-    /// Indicates that the connection is established and the communication is possible.
-    /// </summary>
-    Open = 1,
-    /// <summary>
-    /// Equivalent to numeric value 2.
-    /// Indicates that the connection is going through the closing handshake or
-    /// the <c>WebSocket.Close</c> method has been invoked.
-    /// </summary>
-    Closing = 2,
-    /// <summary>
-    /// Equivalent to numeric value 3.
-    /// Indicates that the connection has been closed or couldn't be opened.
-    /// </summary>
-    Closed = 3
+    public override string ToString ()
+    {
+      var cnt = Count;
+      if (cnt == 0)
+        return String.Empty;
+
+      var output = new StringBuilder ();
+      var keys = AllKeys;
+      foreach (var key in keys)
+        output.AppendFormat ("{0}={1}&", key, this [key]);
+
+      if (output.Length > 0)
+        output.Length--;
+
+      return output.ToString ();
+    }
   }
 }

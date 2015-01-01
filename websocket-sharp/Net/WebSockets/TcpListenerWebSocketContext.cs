@@ -26,12 +26,22 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Liryna <liryna.stark@gmail.com>
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Text;
 
 namespace WebSocketSharp.Net.WebSockets
 {
@@ -39,32 +49,55 @@ namespace WebSocketSharp.Net.WebSockets
   /// Provides the properties used to access the information in a WebSocket connection request
   /// received by the <see cref="TcpListener"/>.
   /// </summary>
-  /// <remarks>
-  /// </remarks>
-  public class TcpListenerWebSocketContext : WebSocketContext
+  internal class TcpListenerWebSocketContext : WebSocketContext
   {
     #region Private Fields
 
-    private TcpClient        _client;
-    private CookieCollection _cookies;
-    private HandshakeRequest _request;
-    private bool             _secure;
-    private WsStream         _stream;
-    private Uri              _uri;
-    private IPrincipal       _user;
-    private WebSocket        _websocket;
+    private CookieCollection    _cookies;
+    private NameValueCollection _queryString;
+    private HttpRequest         _request;
+    private bool                _secure;
+    private Stream              _stream;
+    private TcpClient           _tcpClient;
+    private Uri                 _uri;
+    private IPrincipal          _user;
+    private WebSocket           _websocket;
 
     #endregion
 
     #region Internal Constructors
 
     internal TcpListenerWebSocketContext (
-      TcpClient client, string protocol, bool secure, X509Certificate cert, Logger logger)
+      TcpClient tcpClient,
+      string protocol,
+      bool secure,
+      ServerSslConfiguration sslConfig,
+      Logger logger)
     {
-      _client = client;
+      _tcpClient = tcpClient;
       _secure = secure;
-      _stream = WsStream.CreateServerStream (client, secure, cert);
-      _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 90000);
+
+      var netStream = tcpClient.GetStream ();
+      if (secure) {
+        var sslStream = new SslStream (
+          netStream, false, sslConfig.ClientCertificateValidationCallback);
+
+        sslStream.AuthenticateAsServer (
+          sslConfig.ServerCertificate,
+          sslConfig.ClientCertificateRequired,
+          sslConfig.EnabledSslProtocols,
+          sslConfig.CheckCertificateRevocation);
+
+        _stream = sslStream;
+      }
+      else {
+        _stream = netStream;
+      }
+
+      _request = HttpRequest.Read (_stream, 90000);
+      _uri = HttpUtility.CreateRequestUrl (
+        _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure);
+
       _websocket = new WebSocket (this, protocol, logger);
     }
 
@@ -72,7 +105,13 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal WsStream Stream {
+    internal string HttpMethod {
+      get {
+        return _request.HttpMethod;
+      }
+    }
+
+    internal Stream Stream {
       get {
         return _stream;
       }
@@ -114,7 +153,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Host {
       get {
-        return _request.Headers ["Host"];
+        return _request.Headers["Host"];
       }
     }
 
@@ -126,7 +165,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsAuthenticated {
       get {
-        return _user != null && _user.Identity.IsAuthenticated;
+        return _user != null;
       }
     }
 
@@ -174,31 +213,21 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Origin {
       get {
-        return _request.Headers ["Origin"];
+        return _request.Headers["Origin"];
       }
     }
 
     /// <summary>
-    /// Gets the absolute path of the requested URI.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested URI.
-    /// </value>
-    public override string Path {
-      get {
-        return _request.RequestUri.GetAbsolutePath ();
-      }
-    }
-
-    /// <summary>
-    /// Gets the query string variables included in the request.
-    /// </summary>
-    /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public override NameValueCollection QueryString {
       get {
-        return _request.QueryString;
+        return _queryString ??
+               (_queryString = HttpUtility.InternalParseQueryString (
+                 _uri != null ? _uri.Query : null, Encoding.UTF8));
       }
     }
 
@@ -210,7 +239,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override Uri RequestUri {
       get {
-        return _uri ?? (_uri = createRequestUri ());
+        return _uri;
       }
     }
 
@@ -226,7 +255,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketKey {
       get {
-        return _request.Headers ["Sec-WebSocket-Key"];
+        return _request.Headers["Sec-WebSocket-Key"];
       }
     }
 
@@ -243,7 +272,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var protocols = _request.Headers ["Sec-WebSocket-Protocol"];
+        var protocols = _request.Headers["Sec-WebSocket-Protocol"];
         if (protocols != null)
           foreach (var protocol in protocols.Split (','))
             yield return protocol.Trim ();
@@ -261,7 +290,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string SecWebSocketVersion {
       get {
-        return _request.Headers ["Sec-WebSocket-Version"];
+        return _request.Headers["Sec-WebSocket-Version"];
       }
     }
 
@@ -273,7 +302,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
-        return (System.Net.IPEndPoint) _client.Client.LocalEndPoint;
+        return (System.Net.IPEndPoint) _tcpClient.Client.LocalEndPoint;
       }
     }
 
@@ -281,7 +310,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> that represents the client information.
+    /// A <see cref="IPrincipal"/> instance that represents the client information.
     /// </value>
     public override IPrincipal User {
       get {
@@ -297,7 +326,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override System.Net.IPEndPoint UserEndPoint {
       get {
-        return (System.Net.IPEndPoint) _client.Client.RemoteEndPoint;
+        return (System.Net.IPEndPoint) _tcpClient.Client.RemoteEndPoint;
       }
     }
 
@@ -316,75 +345,29 @@ namespace WebSocketSharp.Net.WebSockets
 
     #endregion
 
-    #region Private Methods
-
-    private Uri createRequestUri ()
-    {
-      var scheme = _secure ? "wss" : "ws";
-      var host = _request.Headers ["Host"];
-      var rawUri = _request.RequestUri;
-      var path = rawUri.IsAbsoluteUri
-                 ? rawUri.PathAndQuery
-                 : HttpUtility.UrlDecode (_request.RawUrl);
-
-      return String.Format ("{0}://{1}{2}", scheme, host, path).ToUri ();
-    }
-
-    #endregion
-
     #region Internal Methods
 
     internal void Close ()
     {
       _stream.Close ();
-      _client.Close ();
+      _tcpClient.Close ();
     }
 
     internal void Close (HttpStatusCode code)
     {
-      _websocket.Close (HandshakeResponse.CreateCloseResponse (code));
+      _websocket.Close (HttpResponse.CreateCloseResponse (code));
     }
 
-    internal void SendAuthChallenge (string challenge)
+    internal void SendAuthenticationChallenge (string challenge)
     {
-      var res = new HandshakeResponse (HttpStatusCode.Unauthorized);
-      res.Headers ["WWW-Authenticate"] = challenge;
-      _stream.WriteHandshake (res);
-      _request = _stream.ReadHandshake<HandshakeRequest> (HandshakeRequest.Parse, 15000);
+      var buff = HttpResponse.CreateUnauthorizedResponse (challenge).ToByteArray ();
+      _stream.Write (buff, 0, buff.Length);
+      _request = HttpRequest.Read (_stream, 15000);
     }
 
-    internal void SetUser (
-      AuthenticationSchemes scheme,
-      string realm,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
+    internal void SetUser (IPrincipal value)
     {
-      var authRes = _request.AuthResponse;
-      if (authRes == null)
-        return;
-
-      var id = authRes.ToIdentity ();
-      if (id == null)
-        return;
-
-      NetworkCredential cred = null;
-      try {
-        cred = credentialsFinder (id);
-      }
-      catch {
-      }
-
-      if (cred == null)
-        return;
-
-      var valid = scheme == AuthenticationSchemes.Basic
-                  ? ((HttpBasicIdentity) id).Password == cred.Password
-                  : scheme == AuthenticationSchemes.Digest
-                    ? ((HttpDigestIdentity) id).IsValid (
-                        cred.Password, realm, _request.HttpMethod, null)
-                    : false;
-
-      if (valid)
-        _user = new GenericPrincipal (id, cred.Roles);
+      _user = value;
     }
 
     #endregion

@@ -35,8 +35,9 @@ namespace Example1
               Console.WriteLine (msg);
 #endif
             }
-            else
+            else {
               Thread.Sleep (500);
+            }
           }
 
           _waitHandle.Set ();
@@ -45,19 +46,17 @@ namespace Example1
 
     public int Count {
       get {
-        lock (_sync) {
+        lock (_sync)
           return _queue.Count;
-        }
       }
     }
 
     private NotificationMessage dequeue ()
     {
-      lock (_sync) {
+      lock (_sync)
         return _queue.Count > 0
                ? _queue.Dequeue ()
                : null;
-      }
     }
 
     public void Close ()
@@ -69,10 +68,9 @@ namespace Example1
 
     public void Notify (NotificationMessage message)
     {
-      lock (_sync) {
+      lock (_sync)
         if (_enabled)
           _queue.Enqueue (message);
-      }
     }
 
     void IDisposable.Dispose ()

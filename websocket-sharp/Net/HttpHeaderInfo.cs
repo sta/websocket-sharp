@@ -34,14 +34,17 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private string         _name;
     private HttpHeaderType _type;
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public HttpHeaderInfo ()
+    internal HttpHeaderInfo (string name, HttpHeaderType type)
     {
+      _name = name;
+      _type = type;
     }
 
     #endregion
@@ -77,16 +80,14 @@ namespace WebSocketSharp.Net
     }
 
     public string Name {
-      get; set;
+      get {
+        return _name;
+      }
     }
 
     public HttpHeaderType Type {
       get {
         return _type;
-      }
-
-      set {
-        _type = value;
       }
     }
 
@@ -96,22 +97,16 @@ namespace WebSocketSharp.Net
 
     public bool IsMultiValue (bool response)
     {
-      return (_type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
-             ? response
-               ? IsMultiValueInResponse
-               : IsMultiValueInRequest
-             : response
-               ? IsResponse
-               : IsRequest;
+      return (_type & HttpHeaderType.MultiValue) == HttpHeaderType.MultiValue
+             ? (response ? IsResponse : IsRequest)
+             : (response ? IsMultiValueInResponse : IsMultiValueInRequest);
     }
 
     public bool IsRestricted (bool response)
     {
-      return (_type & HttpHeaderType.Restricted) != HttpHeaderType.Restricted
-             ? false
-             : response
-               ? IsResponse
-               : IsRequest;
+      return (_type & HttpHeaderType.Restricted) == HttpHeaderType.Restricted
+             ? (response ? IsResponse : IsRequest)
+             : false;
     }
 
     #endregion

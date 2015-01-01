@@ -1,10 +1,14 @@
 #region License
 /*
- * WebSocketState.cs
+ * Chunk.cs
+ *
+ * This code is derived from System.Net.ChunkStream.cs of Mono
+ * (http://www.mono-project.com).
  *
  * The MIT License
  *
- * Copyright (c) 2010-2014 sta.blockhead
+ * Copyright (c) 2003 Ximian, Inc (http://www.ximian.com)
+ * Copyright (c) 2014 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,39 +30,62 @@
  */
 #endregion
 
+#region Authors
+/*
+ * Authors:
+ * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
+ */
+#endregion
+
 using System;
 
-namespace WebSocketSharp
+namespace WebSocketSharp.Net
 {
-  /// <summary>
-  /// Contains the values of the state of the WebSocket connection.
-  /// </summary>
-  /// <remarks>
-  /// The values of the state are defined in
-  /// <see href="http://www.w3.org/TR/websockets/#dom-websocket-readystate">The WebSocket API</see>.
-  /// </remarks>
-  public enum WebSocketState : ushort
+  internal class Chunk
   {
-    /// <summary>
-    /// Equivalent to numeric value 0.
-    /// Indicates that the connection hasn't yet been established.
-    /// </summary>
-    Connecting = 0,
-    /// <summary>
-    /// Equivalent to numeric value 1.
-    /// Indicates that the connection is established and the communication is possible.
-    /// </summary>
-    Open = 1,
-    /// <summary>
-    /// Equivalent to numeric value 2.
-    /// Indicates that the connection is going through the closing handshake or
-    /// the <c>WebSocket.Close</c> method has been invoked.
-    /// </summary>
-    Closing = 2,
-    /// <summary>
-    /// Equivalent to numeric value 3.
-    /// Indicates that the connection has been closed or couldn't be opened.
-    /// </summary>
-    Closed = 3
+    #region Private Fields
+
+    private byte [] _data;
+    private int     _offset;
+
+    #endregion
+
+    #region Public Constructors
+
+    public Chunk (byte [] data)
+    {
+      _data = data;
+    }
+
+    #endregion
+
+    #region Public Properties
+
+    public int ReadLeft {
+      get {
+        return _data.Length - _offset;
+      }
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public int Read (byte [] buffer, int offset, int size)
+    {
+      var left = _data.Length - _offset;
+      if (left == 0)
+        return left;
+
+      if (size > left)
+        size = left;
+
+      Buffer.BlockCopy (_data, _offset, buffer, offset, size);
+      _offset += size;
+
+      return size;
+    }
+
+    #endregion
   }
 }

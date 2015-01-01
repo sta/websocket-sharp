@@ -1,6 +1,6 @@
 #region License
 /*
- * HandshakeResponse.cs
+ * HttpResponse.cs
  *
  * The MIT License
  *
@@ -28,12 +28,13 @@
 
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Text;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class HandshakeResponse : HandshakeBase
+  internal class HttpResponse : HttpBase
   {
     #region Private Fields
 
@@ -44,43 +45,53 @@ namespace WebSocketSharp
 
     #region Private Constructors
 
-    private HandshakeResponse ()
+    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
+      : base (version, headers)
     {
+      _code = code;
+      _reason = reason;
     }
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public HandshakeResponse (HttpStatusCode code)
+    internal HttpResponse (HttpStatusCode code)
+      : this (code, code.GetDescription ())
     {
-      _code = ((int) code).ToString ();
-      _reason = code.GetDescription ();
+    }
 
-      var headers = Headers;
-      headers ["Server"] = "websocket-sharp/1.0";
-      if (code == HttpStatusCode.SwitchingProtocols) {
-        headers ["Upgrade"] = "websocket";
-        headers ["Connection"] = "Upgrade";
-      }
+    internal HttpResponse (HttpStatusCode code, string reason)
+      : this (((int) code).ToString (), reason, HttpVersion.Version11, new NameValueCollection ())
+    {
+      Headers["Server"] = "websocket-sharp/1.0";
     }
 
     #endregion
 
     #region Public Properties
 
-    public AuthenticationChallenge AuthChallenge {
-      get {
-        var challenge = Headers ["WWW-Authenticate"];
-        return challenge != null && challenge.Length > 0
-               ? AuthenticationChallenge.Parse (challenge)
-               : null;
-      }
-    }
-
     public CookieCollection Cookies {
       get {
         return Headers.GetCookies (true);
+      }
+    }
+
+    public bool HasConnectionClose {
+      get {
+        return Headers.Contains ("Connection", "close");
+      }
+    }
+
+    public bool IsProxyAuthenticationRequired {
+      get {
+        return _code == "407";
+      }
+    }
+
+    public bool IsRedirect {
+      get {
+        return _code == "301" || _code == "302";
       }
     }
 
@@ -93,7 +104,7 @@ namespace WebSocketSharp
     public bool IsWebSocketResponse {
       get {
         var headers = Headers;
-        return ProtocolVersion >= HttpVersion.Version11 &&
+        return ProtocolVersion > HttpVersion.Version10 &&
                _code == "101" &&
                headers.Contains ("Upgrade", "websocket") &&
                headers.Contains ("Connection", "Upgrade");
@@ -104,51 +115,67 @@ namespace WebSocketSharp
       get {
         return _reason;
       }
-
-      private set {
-        _reason = value;
-      }
     }
 
     public string StatusCode {
       get {
         return _code;
       }
+    }
 
-      private set {
-        _code = value;
-      }
+    #endregion
+
+    #region Internal Methods
+
+    internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
+    {
+      var res = new HttpResponse (code);
+      res.Headers["Connection"] = "close";
+
+      return res;
+    }
+
+    internal static HttpResponse CreateUnauthorizedResponse (string challenge)
+    {
+      var res = new HttpResponse (HttpStatusCode.Unauthorized);
+      res.Headers["WWW-Authenticate"] = challenge;
+
+      return res;
+    }
+
+    internal static HttpResponse CreateWebSocketResponse ()
+    {
+      var res = new HttpResponse (HttpStatusCode.SwitchingProtocols);
+
+      var headers = res.Headers;
+      headers["Upgrade"] = "websocket";
+      headers["Connection"] = "Upgrade";
+
+      return res;
+    }
+
+    internal static HttpResponse Parse (string[] headerParts)
+    {
+      var statusLine = headerParts[0].Split (new[] { ' ' }, 3);
+      if (statusLine.Length != 3)
+        throw new ArgumentException ("Invalid status line: " + headerParts[0]);
+
+      var headers = new WebHeaderCollection ();
+      for (int i = 1; i < headerParts.Length; i++)
+        headers.InternalSet (headerParts[i], true);
+
+      return new HttpResponse (
+        statusLine[1], statusLine[2], new Version (statusLine[0].Substring (5)), headers);
+    }
+
+    internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
+    {
+      return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
     }
 
     #endregion
 
     #region Public Methods
-
-    public static HandshakeResponse CreateCloseResponse (HttpStatusCode code)
-    {
-      var res = new HandshakeResponse (code);
-      res.Headers ["Connection"] = "close";
-
-      return res;
-    }
-
-    public static HandshakeResponse Parse (string [] headerParts)
-    {
-      var statusLine = headerParts [0].Split (new char [] { ' ' }, 3);
-      if (statusLine.Length != 3)
-        throw new ArgumentException ("Invalid status line: " + headerParts [0]);
-
-      var headers = new WebHeaderCollection ();
-      for (int i = 1; i < headerParts.Length; i++)
-        headers.SetInternally (headerParts [i], true);
-
-      return new HandshakeResponse {
-        Headers = headers,
-        ProtocolVersion = new Version (statusLine [0].Substring (5)),
-        Reason = statusLine [2],
-        StatusCode = statusLine [1]
-      };
-    }
 
     public void SetCookies (CookieCollection cookies)
     {
@@ -162,21 +189,20 @@ namespace WebSocketSharp
 
     public override string ToString ()
     {
-      var buffer = new StringBuilder (64);
-      buffer.AppendFormat (
-        "HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
+      var output = new StringBuilder (64);
+      output.AppendFormat ("HTTP/{0} {1} {2}{3}", ProtocolVersion, _code, _reason, CrLf);
 
       var headers = Headers;
       foreach (var key in headers.AllKeys)
-        buffer.AppendFormat ("{0}: {1}{2}", key, headers [key], CrLf);
+        output.AppendFormat ("{0}: {1}{2}", key, headers[key], CrLf);
 
-      buffer.Append (CrLf);
+      output.Append (CrLf);
 
       var entity = EntityBody;
       if (entity.Length > 0)
-        buffer.Append (entity);
+        output.Append (entity);
 
-      return buffer.ToString ();
+      return output.ToString ();
     }
 
     #endregion

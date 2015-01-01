@@ -119,18 +119,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string Origin { get; }
 
     /// <summary>
-    /// Gets the absolute path of the requested URI.
+    /// Gets the query string included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path of the requested URI.
-    /// </value>
-    public abstract string Path { get; }
-
-    /// <summary>
-    /// Gets the query string variables included in the request.
-    /// </summary>
-    /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string variables.
+    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
     /// </value>
     public abstract NameValueCollection QueryString { get; }
 
@@ -190,7 +182,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the client information (identity, authentication, and security roles).
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> that represents the client information.
+    /// A <see cref="IPrincipal"/> instance that represents the client information.
     /// </value>
     public abstract IPrincipal User { get; }
 

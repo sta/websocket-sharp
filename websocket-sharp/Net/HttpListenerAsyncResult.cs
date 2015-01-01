@@ -1,6 +1,6 @@
 #region License
 /*
- * ListenerAsyncResult.cs
+ * HttpListenerAsyncResult.cs
  *
  * This code is derived from System.Net.ListenerAsyncResult.cs of Mono
  * (http://www.mono-project.com).
@@ -38,11 +38,12 @@
 #endregion
 
 using System;
+using System.Security.Principal;
 using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-  internal class ListenerAsyncResult : IAsyncResult
+  internal class HttpListenerAsyncResult : IAsyncResult
   {
     #region Private Fields
 
@@ -50,10 +51,10 @@ namespace WebSocketSharp.Net
     private bool                _completed;
     private HttpListenerContext _context;
     private Exception           _exception;
-    private ManualResetEvent    _waitHandle;
     private object              _state;
     private object              _sync;
     private bool                _syncCompleted;
+    private ManualResetEvent    _waitHandle;
 
     #endregion
 
@@ -66,7 +67,7 @@ namespace WebSocketSharp.Net
 
     #region Public Constructors
 
-    public ListenerAsyncResult (AsyncCallback callback, object state)
+    public HttpListenerAsyncResult (AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
@@ -107,14 +108,56 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static void invokeCallback (object state)
+    private static bool authenticate (
+      HttpListenerContext context,
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder)
     {
-      try {
-        var ares = (ListenerAsyncResult) state;
-        ares._callback (ares);
+      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest)) {
+        context.Response.Close (HttpStatusCode.Forbidden);
+        return false;
       }
-      catch {
+
+      var req = context.Request;
+      var user = HttpUtility.CreateUser (
+        req.Headers["Authorization"], scheme, realm, req.HttpMethod, credentialsFinder);
+
+      if (user != null && user.Identity.IsAuthenticated) {
+        context.User = user;
+        return true;
       }
+
+      if (scheme == AuthenticationSchemes.Basic)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
+
+      if (scheme == AuthenticationSchemes.Digest)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
+
+      return false;
+    }
+
+    private static void complete (HttpListenerAsyncResult asyncResult)
+    {
+      asyncResult._completed = true;
+
+      var waitHandle = asyncResult._waitHandle;
+      if (waitHandle != null)
+        waitHandle.Set ();
+
+      var callback = asyncResult._callback;
+      if (callback != null)
+        ThreadPool.UnsafeQueueUserWorkItem (
+          state => {
+            try {
+              callback (asyncResult);
+            }
+            catch {
+            }
+          },
+          null);
     }
 
     #endregion
@@ -127,14 +170,8 @@ namespace WebSocketSharp.Net
                    ? new HttpListenerException (500, "Listener closed.")
                    : exception;
 
-      lock (_sync) {
-        _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
-
-        if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (invokeCallback, this);
-      }
+      lock (_sync)
+        complete (this);
     }
 
     internal void Complete (HttpListenerContext context)
@@ -145,29 +182,9 @@ namespace WebSocketSharp.Net
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
       var listener = context.Listener;
-      var scheme = listener.SelectAuthenticationScheme (context);
-      if (scheme == AuthenticationSchemes.None) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        listener.BeginGetContext (this);
-
-        return;
-      }
-
-      var header = context.Request.Headers ["Authorization"];
-      if (scheme == AuthenticationSchemes.Basic &&
-          (header == null || !header.StartsWith ("basic", StringComparison.OrdinalIgnoreCase))) {
-        context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateBasicAuthChallenge (listener.Realm));
-
-        listener.BeginGetContext (this);
-        return;
-      }
-
-      if (scheme == AuthenticationSchemes.Digest &&
-          (header == null || !header.StartsWith ("digest", StringComparison.OrdinalIgnoreCase))) {
-        context.Response.CloseWithAuthChallenge (
-          HttpUtility.CreateDigestAuthChallenge (listener.Realm));
-
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm != AuthenticationSchemes.Anonymous &&
+          !authenticate (context, schm, listener.Realm, listener.UserCredentialsFinder)) {
         listener.BeginGetContext (this);
         return;
       }
@@ -175,14 +192,8 @@ namespace WebSocketSharp.Net
       _context = context;
       _syncCompleted = syncCompleted;
 
-      lock (_sync) {
-        _completed = true;
-        if (_waitHandle != null)
-          _waitHandle.Set ();
-
-        if (_callback != null)
-          ThreadPool.UnsafeQueueUserWorkItem (invokeCallback, this);
-      }
+      lock (_sync)
+        complete (this);
     }
 
     internal HttpListenerContext GetContext ()
