@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -233,7 +233,7 @@ namespace WebSocketSharp.Net
     private static void onAccept (object sender, EventArgs e)
     {
       var args = (SocketAsyncEventArgs) e;
-      var listener = (EndPointListener) args.UserToken;
+      var lsnr = (EndPointListener) args.UserToken;
 
       Socket sock = null;
       if (args.SocketError == SocketError.Success) {
@@ -243,7 +243,7 @@ namespace WebSocketSharp.Net
 
       var res = true;
       try {
-        res = listener._socket.AcceptAsync (args);
+        res = lsnr._socket.AcceptAsync (args);
       }
       catch {
         if (sock != null)
@@ -253,7 +253,7 @@ namespace WebSocketSharp.Net
       }
 
       if (sock != null)
-        processAccepted (sock, listener);
+        processAccepted (sock, lsnr);
 
       if (!res)
         onAccept (sender, args);
@@ -427,11 +427,11 @@ namespace WebSocketSharp.Net
     public bool BindContext (HttpListenerContext context)
     {
       HttpListenerPrefix pref;
-      var listener = searchListener (context.Request.Url, out pref);
-      if (listener == null)
+      var lsnr = searchListener (context.Request.Url, out pref);
+      if (lsnr == null)
         return false;
 
-      context.Listener = listener;
+      context.Listener = lsnr;
       context.Connection.Prefix = pref;
 
       return true;
