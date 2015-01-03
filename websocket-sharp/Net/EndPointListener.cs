@@ -373,7 +373,7 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
-    public void AddPrefix (HttpListenerPrefix prefix, HttpListener httpListener)
+    public void AddPrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
       List<HttpListenerPrefix> current, future;
       if (prefix.Host == "*") {
@@ -383,7 +383,7 @@ namespace WebSocketSharp.Net
                    ? new List<HttpListenerPrefix> (current)
                    : new List<HttpListenerPrefix> ();
 
-          prefix.Listener = httpListener;
+          prefix.Listener = listener;
           addSpecial (future, prefix);
         }
         while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
@@ -398,7 +398,7 @@ namespace WebSocketSharp.Net
                    ? new List<HttpListenerPrefix> (current)
                    : new List<HttpListenerPrefix> ();
 
-          prefix.Listener = httpListener;
+          prefix.Listener = listener;
           addSpecial (future, prefix);
         }
         while (Interlocked.CompareExchange (ref _all, future, current) != current);
@@ -411,7 +411,7 @@ namespace WebSocketSharp.Net
         prefs = _prefixes;
         if (prefs.ContainsKey (prefix)) {
           var other = prefs[prefix];
-          if (other != httpListener)
+          if (other != listener)
             throw new HttpListenerException (
               400, String.Format ("There's another listener for {0}.", prefix)); // TODO: Code?
 
@@ -419,7 +419,7 @@ namespace WebSocketSharp.Net
         }
 
         prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
-        prefs2[prefix] = httpListener;
+        prefs2[prefix] = listener;
       }
       while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
     }
@@ -451,7 +451,7 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public void RemovePrefix (HttpListenerPrefix prefix, HttpListener httpListener)
+    public void RemovePrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
       List<HttpListenerPrefix> current, future;
       if (prefix.Host == "*") {
