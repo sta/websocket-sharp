@@ -145,9 +145,6 @@ namespace WebSocketSharp.Net
 
     private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
-      if (prefixes == null)
-        return;
-
       var path = prefix.Path;
       foreach (var pref in prefixes)
         if (pref.Path == path)
@@ -281,9 +278,6 @@ namespace WebSocketSharp.Net
 
     private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
-      if (prefixes == null)
-        return false;
-
       var path = prefix.Path;
       var cnt = prefixes.Count;
       for (var i = 0; i < cnt; i++) {
