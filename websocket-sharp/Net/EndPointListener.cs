@@ -451,14 +451,16 @@ namespace WebSocketSharp.Net
       if (prefix.Host == "*") {
         do {
           current = _unhandled;
-          future = current != null
-                   ? new List<HttpListenerPrefix> (current)
-                   : new List<HttpListenerPrefix> ();
+          if (current == null)
+            break;
 
+          future = new List<HttpListenerPrefix> (current);
           if (!removeSpecial (future, prefix))
-            break; // Prefix not found.
+            break; // The prefix wasn't found.
         }
-        while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
+        while (
+          Interlocked.CompareExchange<List<HttpListenerPrefix>> (
+            ref _unhandled, future, current) != current);
 
         checkIfRemove ();
         return;
@@ -467,14 +469,16 @@ namespace WebSocketSharp.Net
       if (prefix.Host == "+") {
         do {
           current = _all;
-          future = current != null
-                   ? new List<HttpListenerPrefix> (current)
-                   : new List<HttpListenerPrefix> ();
+          if (current == null)
+            break;
 
+          future = new List<HttpListenerPrefix> (current);
           if (!removeSpecial (future, prefix))
-            break; // Prefix not found.
+            break; // The prefix wasn't found.
         }
-        while (Interlocked.CompareExchange (ref _all, future, current) != current);
+        while (
+          Interlocked.CompareExchange<List<HttpListenerPrefix>> (
+            ref _all, future, current) != current);
 
         checkIfRemove ();
         return;
@@ -489,7 +493,9 @@ namespace WebSocketSharp.Net
         prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
         prefs2.Remove (prefix);
       }
-      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
+      while (
+        Interlocked.CompareExchange<Dictionary<HttpListenerPrefix, HttpListener>> (
+          ref _prefixes, prefs2, prefs) != prefs);
 
       checkIfRemove ();
     }
