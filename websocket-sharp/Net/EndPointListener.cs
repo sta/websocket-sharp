@@ -458,9 +458,7 @@ namespace WebSocketSharp.Net
           if (!removeSpecial (future, prefix))
             break; // The prefix wasn't found.
         }
-        while (
-          Interlocked.CompareExchange<List<HttpListenerPrefix>> (
-            ref _unhandled, future, current) != current);
+        while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
 
         checkIfRemove ();
         return;
@@ -476,9 +474,7 @@ namespace WebSocketSharp.Net
           if (!removeSpecial (future, prefix))
             break; // The prefix wasn't found.
         }
-        while (
-          Interlocked.CompareExchange<List<HttpListenerPrefix>> (
-            ref _all, future, current) != current);
+        while (Interlocked.CompareExchange (ref _all, future, current) != current);
 
         checkIfRemove ();
         return;
@@ -493,9 +489,7 @@ namespace WebSocketSharp.Net
         prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
         prefs2.Remove (prefix);
       }
-      while (
-        Interlocked.CompareExchange<Dictionary<HttpListenerPrefix, HttpListener>> (
-          ref _prefixes, prefs2, prefs) != prefs);
+      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
 
       checkIfRemove ();
     }
