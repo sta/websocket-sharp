@@ -404,8 +404,7 @@ namespace WebSocketSharp.Net
       do {
         prefs = _prefixes;
         if (prefs.ContainsKey (prefix)) {
-          var other = prefs[prefix];
-          if (other != listener)
+          if (prefs[prefix] != listener)
             throw new HttpListenerException (
               400, String.Format ("There's another listener for {0}.", prefix)); // TODO: Code?
 
