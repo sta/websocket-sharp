@@ -238,9 +238,9 @@ namespace WebSocketSharp.Net
         args.AcceptSocket = null;
       }
 
-      var res = true;
+      var ret = true;
       try {
-        res = lsnr._socket.AcceptAsync (args);
+        ret = lsnr._socket.AcceptAsync (args);
       }
       catch {
         if (sock != null)
@@ -252,7 +252,7 @@ namespace WebSocketSharp.Net
       if (sock != null)
         processAccepted (sock, lsnr);
 
-      if (!res)
+      if (!ret)
         onAccept (sender, args);
     }
 
