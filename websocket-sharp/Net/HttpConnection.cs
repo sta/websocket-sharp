@@ -298,15 +298,15 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          var listener = conn._context.Listener;
-          if (conn._lastListener != listener) {
+          var lsnr = conn._context.Listener;
+          if (conn._lastListener != lsnr) {
             conn.removeConnection ();
-            listener.AddConnection (conn);
-            conn._lastListener = listener;
+            lsnr.AddConnection (conn);
+            conn._lastListener = lsnr;
           }
 
           conn._contextWasBound = true;
-          listener.RegisterContext (conn._context);
+          lsnr.RegisterContext (conn._context);
 
           return;
         }
@@ -513,8 +513,8 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return _outputStream;
 
-        var listener = _context.Listener;
-        var ignore = listener == null ? true : listener.IgnoreWriteExceptions;
+        var lsnr = _context.Listener;
+        var ignore = lsnr == null ? true : lsnr.IgnoreWriteExceptions;
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;
