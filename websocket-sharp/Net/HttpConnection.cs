@@ -514,7 +514,7 @@ namespace WebSocketSharp.Net
           return _outputStream;
 
         var lsnr = _context.Listener;
-        var ignore = lsnr == null ? true : lsnr.IgnoreWriteExceptions;
+        var ignore = lsnr != null ? lsnr.IgnoreWriteExceptions : true;
         _outputStream = new ResponseStream (_stream, _context.Response, ignore);
 
         return _outputStream;
