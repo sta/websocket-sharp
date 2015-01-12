@@ -2,7 +2,7 @@
 /*
  * HttpConnection.cs
  *
- * This code is derived from System.Net.HttpConnection.cs of Mono
+ * This code is derived from HttpConnection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
