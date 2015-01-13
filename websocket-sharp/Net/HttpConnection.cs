@@ -395,12 +395,10 @@ namespace WebSocketSharp.Net
 
     private void removeConnection ()
     {
-      if (_lastListener == null) {
+      if (_lastListener != null)
+        _lastListener.RemoveConnection (this);
+      else
         _listener.RemoveConnection (this);
-        return;
-      }
-
-      _lastListener.RemoveConnection (this);
     }
 
     private void unbind ()
