@@ -83,9 +83,9 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public HttpConnection (Socket socket, EndPointListener listener)
+    internal HttpConnection (Socket socket, EndPointListener listener)
     {
       _socket = socket;
       _listener = listener;
