@@ -253,7 +253,7 @@ namespace WebSocketSharp.Net
         processAccepted (sock, lsnr);
 
       if (!ret)
-        onAccept (sender, args);
+        onAccept (sender, e);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
