@@ -2,7 +2,7 @@
 /*
  * EndPointListener.cs
  *
- * This code is derived from System.Net.EndPointListener.cs of Mono
+ * This code is derived from EndPointListener.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
