@@ -678,6 +678,39 @@ namespace WebSocketSharp
       }
     }
 
+    private void close2 (CloseEventArgs e, bool send, bool wait)
+    {
+      lock (_forConn) {
+        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
+          _logger.Info ("Closing the connection has already been done.");
+          return;
+        }
+
+        send = send && _readyState == WebSocketState.Open;
+        wait = wait && send;
+
+        _readyState = WebSocketState.Closing;
+      }
+
+      _logger.Trace ("Start closing the connection.");
+
+      e.WasClean = closeHandshake (
+        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray () : null,
+        wait ? _waitTime : TimeSpan.Zero,
+        _client ? (Action) releaseClientResources : releaseServerResources);
+
+      _logger.Trace ("End closing the connection.");
+
+      _readyState = WebSocketState.Closed;
+      try {
+        OnClose.Emit (this, e);
+      }
+      catch (Exception ex) {
+        _logger.Fatal (ex.ToString ());
+        error ("An exception has occurred during an OnClose event.", ex);
+      }
+    }
+
     private void closeAsync (CloseEventArgs e, bool send, bool wait)
     {
       Action<CloseEventArgs, bool, bool> closer = close;
