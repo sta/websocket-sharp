@@ -656,36 +656,6 @@ namespace WebSocketSharp
           return;
         }
 
-        _readyState = WebSocketState.Closing;
-      }
-
-      _logger.Trace ("Start closing the connection.");
-
-      e.WasClean = closeHandshake (
-        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray () : null,
-        wait ? _waitTime : TimeSpan.Zero,
-        _client ? (Action) releaseClientResources : releaseServerResources);
-
-      _logger.Trace ("End closing the connection.");
-
-      _readyState = WebSocketState.Closed;
-      try {
-        OnClose.Emit (this, e);
-      }
-      catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred during an OnClose event.", ex);
-      }
-    }
-
-    private void close2 (CloseEventArgs e, bool send, bool wait)
-    {
-      lock (_forConn) {
-        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
-          _logger.Info ("Closing the connection has already been done.");
-          return;
-        }
-
         send = send && _readyState == WebSocketState.Open;
         wait = wait && send;
 
@@ -1707,8 +1677,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open;
-      close (new CloseEventArgs (), send, send);
+      close (new CloseEventArgs (), true, true);
     }
 
     /// <summary>
@@ -1735,7 +1704,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       close (new CloseEventArgs (code), send, send);
     }
 
@@ -1757,7 +1726,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       close (new CloseEventArgs (code), send, send);
     }
 
@@ -1791,7 +1760,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       close (e, send, send);
     }
 
@@ -1823,7 +1792,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       close (e, send, send);
     }
 
@@ -1843,8 +1812,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open;
-      closeAsync (new CloseEventArgs (), send, send);
+      closeAsync (new CloseEventArgs (), true, true);
     }
 
     /// <summary>
@@ -1875,7 +1843,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       closeAsync (new CloseEventArgs (code), send, send);
     }
 
@@ -1900,7 +1868,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       closeAsync (new CloseEventArgs (code), send, send);
     }
 
@@ -1938,7 +1906,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       closeAsync (e, send, send);
     }
 
@@ -1976,7 +1944,7 @@ namespace WebSocketSharp
         return;
       }
 
-      var send = _readyState == WebSocketState.Open && !code.IsReserved ();
+      var send = !code.IsReserved ();
       closeAsync (e, send, send);
     }
 
@@ -2412,8 +2380,7 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      var send = _readyState == WebSocketState.Open;
-      close (new CloseEventArgs (CloseStatusCode.Away), send, send);
+      close (new CloseEventArgs (CloseStatusCode.Away), true, true);
     }
 
     #endregion
