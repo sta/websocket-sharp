@@ -584,6 +584,11 @@ namespace WebSocketSharp
       return value.StartsWith ("permessage-");
     }
 
+    internal static bool IsNoStatusCode (this ushort code)
+    {
+      return code == (ushort) CloseStatusCode.NoStatusCode;
+    }
+
     internal static bool IsPortNumber (this int value)
     {
       return value > 0 && value < 65536;
