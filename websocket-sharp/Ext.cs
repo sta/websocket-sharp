@@ -589,6 +589,11 @@ namespace WebSocketSharp
       return code == (ushort) CloseStatusCode.NoStatusCode;
     }
 
+    internal static bool IsNoStatusCode (this CloseStatusCode code)
+    {
+      return code == CloseStatusCode.NoStatusCode;
+    }
+
     internal static bool IsPortNumber (this int value)
     {
       return value > 0 && value < 65536;
