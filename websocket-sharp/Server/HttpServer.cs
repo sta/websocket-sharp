@@ -749,20 +749,15 @@ namespace WebSocketSharp.Server
     /// <see cref="string"/> used to stop the WebSocket services.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for stop.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason for the stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for stop.
+    /// A <see cref="string"/> that represents the reason for the stop.
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      CloseEventArgs e = null;
       lock (_sync) {
-        var msg =
-          _state.CheckIfStart () ??
-          code.CheckIfValidCloseStatusCode () ??
-          (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
-
+        var msg = _state.CheckIfStart () ?? code.CheckIfValidCloseParameters (reason);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -771,8 +766,13 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      var send = !code.IsReserved ();
-      _services.Stop (e, send, send);
+      if (code.IsNoStatusCode ()) {
+        _services.Stop (new CloseEventArgs (), true, true);
+      }
+      else {
+        var send = !code.IsReserved ();
+        _services.Stop (new CloseEventArgs (code, reason), send, send);
+      }
 
       stopReceiving (5000);
 
@@ -785,19 +785,15 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
-    /// indicating the reasons for stop.
+    /// indicating the reason for the stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for stop.
+    /// A <see cref="string"/> that represents the reason for the stop.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
-      CloseEventArgs e = null;
       lock (_sync) {
-        var msg =
-          _state.CheckIfStart () ??
-          (e = new CloseEventArgs (code, reason)).RawData.CheckIfValidControlData ("reason");
-
+        var msg = _state.CheckIfStart () ?? code.CheckIfValidCloseParameters (reason);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -806,8 +802,13 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      var send = !code.IsReserved ();
-      _services.Stop (e, send, send);
+      if (code.IsNoStatusCode ()) {
+        _services.Stop (new CloseEventArgs (), true, true);
+      }
+      else {
+        var send = !code.IsReserved ();
+        _services.Stop (new CloseEventArgs (code, reason), send, send);
+      }
 
       stopReceiving (5000);
 
