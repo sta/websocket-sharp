@@ -635,16 +635,6 @@ namespace WebSocketSharp
              code == CloseStatusCode.TlsHandshakeFailure;
     }
 
-    internal static bool IsSendable (this ushort code)
-    {
-      return !code.IsReserved () || code.IsNoStatusCode ();
-    }
-
-    internal static bool IsSendable (this CloseStatusCode code)
-    {
-      return !code.IsReserved () || code.IsNoStatusCode ();
-    }
-
     internal static bool IsText (this string value)
     {
       var len = value.Length;
