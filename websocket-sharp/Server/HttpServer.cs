@@ -141,7 +141,7 @@ namespace WebSocketSharp.Server
       _port = port;
       _secure = secure;
       _listener = new HttpListener ();
-      _logger = new Logger ();
+      _logger = _listener.Log;
       _services = new WebSocketServiceManager (_logger);
       _state = ServerState.Ready;
       _sync = new object ();

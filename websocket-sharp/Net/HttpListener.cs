@@ -74,6 +74,7 @@ namespace WebSocketSharp.Net
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private bool                                                 _listening;
+    private Logger                                               _logger;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
     private bool                                                 _reuseAddress;
@@ -101,6 +102,8 @@ namespace WebSocketSharp.Net
       _ctxRegistry = new Dictionary<HttpListenerContext, HttpListenerContext> ();
       _ctxRegistrySync = ((ICollection) _ctxRegistry).SyncRoot;
 
+      _logger = new Logger ();
+
       _prefixes = new HttpListenerPrefixCollection (this);
 
       _waitQueue = new List<HttpListenerAsyncResult> ();
@@ -114,6 +117,12 @@ namespace WebSocketSharp.Net
     internal bool IsDisposed {
       get {
         return _disposed;
+      }
+    }
+
+    internal Logger Log {
+      get {
+        return _logger;
       }
     }
 
