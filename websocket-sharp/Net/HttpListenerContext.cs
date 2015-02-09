@@ -199,7 +199,7 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("Contains an invalid character.", "protocol");
       }
 
-      return new HttpListenerWebSocketContext (this, protocol, _listener.Log);
+      return new HttpListenerWebSocketContext (this, protocol);
     }
 
     #endregion
