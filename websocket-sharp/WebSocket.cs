@@ -131,13 +131,13 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal WebSocket (TcpListenerWebSocketContext context, string protocol, Logger logger)
+    internal WebSocket (TcpListenerWebSocketContext context, string protocol)
     {
       _context = context;
       _protocol = protocol;
-      _logger = logger;
 
       _closeContext = context.Close;
+      _logger = context.Log;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
