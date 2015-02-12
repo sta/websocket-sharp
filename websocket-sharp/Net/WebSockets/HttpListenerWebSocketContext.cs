@@ -52,12 +52,18 @@ namespace WebSocketSharp.Net.WebSockets
     internal HttpListenerWebSocketContext (HttpListenerContext context, string protocol)
     {
       _context = context;
-      _websocket = new WebSocket (this, protocol, context.Listener.Log);
+      _websocket = new WebSocket (this, protocol);
     }
 
     #endregion
 
     #region Internal Properties
+
+    internal Logger Log {
+      get {
+        return _context.Listener.Log;
+      }
+    }
 
     internal Stream Stream {
       get {
