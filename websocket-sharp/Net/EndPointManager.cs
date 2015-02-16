@@ -123,6 +123,53 @@ namespace WebSocketSharp.Net
       return epl;
     }
 
+    private static EndPointListener getEndPointListener (
+      string host, int port, HttpListener httpListener, bool secure)
+    {
+      IPAddress addr;
+      if (host == "*") {
+        addr = IPAddress.Any;
+      }
+      else if (!IPAddress.TryParse (host, out addr)) {
+        try {
+          var iphost = Dns.GetHostEntry (host);
+          addr = iphost != null
+                 ? iphost.AddressList[0]
+                 : IPAddress.Any;
+        }
+        catch {
+          addr = IPAddress.Any;
+        }
+      }
+
+      Dictionary<int, EndPointListener> eps = null;
+      if (_ipToEndpoints.ContainsKey (addr)) {
+        eps = _ipToEndpoints[addr];
+      }
+      else {
+        eps = new Dictionary<int, EndPointListener> ();
+        _ipToEndpoints[addr] = eps;
+      }
+
+      EndPointListener epl = null;
+      if (eps.ContainsKey (port)) {
+        epl = eps[port];
+      }
+      else {
+        epl = new EndPointListener (
+          addr,
+          port,
+          secure,
+          httpListener.CertificateFolderPath,
+          httpListener.SslConfiguration,
+          httpListener.ReuseAddress);
+
+        eps[port] = epl;
+      }
+
+      return epl;
+    }
+
     private static void removePrefix (string uriPrefix, HttpListener httpListener)
     {
       var pref = new HttpListenerPrefix (uriPrefix);
