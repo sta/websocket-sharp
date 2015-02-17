@@ -87,8 +87,8 @@ namespace WebSocketSharp.Net
       if (pref.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
-      // Always listens on all the interfaces, no matter the host name/ip used.
-      var epl = getEndPointListener (IPAddress.Any, pref.Port, pref.IsSecure, httpListener);
+      // listens on all the interfaces if host name cannot be parsed by IPAddress.
+      var epl = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
       epl.AddPrefix (pref, httpListener);
     }
 
@@ -179,7 +179,7 @@ namespace WebSocketSharp.Net
       if (pref.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
         return;
 
-      var epl = getEndPointListener (IPAddress.Any, pref.Port, pref.IsSecure, httpListener);
+      var epl = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
       epl.RemovePrefix (pref, httpListener);
     }
 
