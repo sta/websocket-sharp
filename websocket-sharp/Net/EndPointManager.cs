@@ -93,37 +93,6 @@ namespace WebSocketSharp.Net
     }
 
     private static EndPointListener getEndPointListener (
-      IPAddress address, int port, bool secure, HttpListener httpListener)
-    {
-      Dictionary<int, EndPointListener> eps = null;
-      if (_ipToEndpoints.ContainsKey (address)) {
-        eps = _ipToEndpoints[address];
-      }
-      else {
-        eps = new Dictionary<int, EndPointListener> ();
-        _ipToEndpoints[address] = eps;
-      }
-
-      EndPointListener epl = null;
-      if (eps.ContainsKey (port)) {
-        epl = eps[port];
-      }
-      else {
-        epl = new EndPointListener (
-          address,
-          port,
-          secure,
-          httpListener.CertificateFolderPath,
-          httpListener.SslConfiguration,
-          httpListener.ReuseAddress);
-
-        eps[port] = epl;
-      }
-
-      return epl;
-    }
-
-    private static EndPointListener getEndPointListener (
       string host, int port, HttpListener httpListener, bool secure)
     {
       IPAddress addr;
