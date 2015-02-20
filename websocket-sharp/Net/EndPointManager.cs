@@ -2,7 +2,7 @@
 /*
  * EndPointManager.cs
  *
- * This code is derived from System.Net.EndPointManager.cs of Mono
+ * This code is derived from EndPointManager.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
