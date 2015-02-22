@@ -88,26 +88,32 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
       // Listens on all the interfaces if host name cannot be parsed by IPAddress.
-      var epl = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
-      epl.AddPrefix (pref, httpListener);
+      var lsnr = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
+      lsnr.AddPrefix (pref, httpListener);
+    }
+
+    private static IPAddress convertToAddress (string hostName)
+    {
+      if (hostName == "*")
+        return IPAddress.Any;
+
+      IPAddress addr;
+      if (IPAddress.TryParse (hostName, out addr))
+        return addr;
+
+      try {
+        var host = Dns.GetHostEntry (hostName);
+        return host != null ? host.AddressList[0] : IPAddress.Any;
+      }
+      catch {
+        return IPAddress.Any;
+      }
     }
 
     private static EndPointListener getEndPointListener (
       string host, int port, HttpListener httpListener, bool secure)
     {
-      IPAddress addr;
-      if (host == "*") {
-        addr = IPAddress.Any;
-      }
-      else if (!IPAddress.TryParse (host, out addr)) {
-        try {
-          var iphost = Dns.GetHostEntry (host);
-          addr = iphost != null ? iphost.AddressList[0] : IPAddress.Any;
-        }
-        catch {
-          addr = IPAddress.Any;
-        }
-      }
+      var addr = convertToAddress (host);
 
       Dictionary<int, EndPointListener> eps = null;
       if (_ipToEndpoints.ContainsKey (addr)) {
@@ -118,12 +124,12 @@ namespace WebSocketSharp.Net
         _ipToEndpoints[addr] = eps;
       }
 
-      EndPointListener epl = null;
+      EndPointListener lsnr = null;
       if (eps.ContainsKey (port)) {
-        epl = eps[port];
+        lsnr = eps[port];
       }
       else {
-        epl = new EndPointListener (
+        lsnr = new EndPointListener (
           addr,
           port,
           secure,
@@ -131,10 +137,10 @@ namespace WebSocketSharp.Net
           httpListener.SslConfiguration,
           httpListener.ReuseAddress);
 
-        eps[port] = epl;
+        eps[port] = lsnr;
       }
 
-      return epl;
+      return lsnr;
     }
 
     private static void removePrefix (string uriPrefix, HttpListener httpListener)
@@ -146,8 +152,24 @@ namespace WebSocketSharp.Net
       if (pref.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
         return;
 
-      var epl = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
-      epl.RemovePrefix (pref, httpListener);
+      var lsnr = getEndPointListener (pref.Host, pref.Port, httpListener, pref.IsSecure);
+      lsnr.RemovePrefix (pref, httpListener);
+    }
+
+    #endregion
+
+    #region Internal Methods
+
+    internal static void RemoveEndPoint (IPEndPoint endpoint, EndPointListener endpointListener)
+    {
+      lock (((ICollection) _ipToEndpoints).SyncRoot) {
+        var eps = _ipToEndpoints[endpoint.Address];
+        eps.Remove (endpoint.Port);
+        if (eps.Count == 0)
+          _ipToEndpoints.Remove (endpoint.Address);
+
+        endpointListener.Close ();
+      }
     }
 
     #endregion
@@ -177,18 +199,6 @@ namespace WebSocketSharp.Net
     {
       lock (((ICollection) _ipToEndpoints).SyncRoot)
         addPrefix (uriPrefix, httpListener);
-    }
-
-    public static void RemoveEndPoint (EndPointListener epListener, IPEndPoint endpoint)
-    {
-      lock (((ICollection) _ipToEndpoints).SyncRoot) {
-        var eps = _ipToEndpoints[endpoint.Address];
-        eps.Remove (endpoint.Port);
-        if (eps.Count == 0)
-          _ipToEndpoints.Remove (endpoint.Address);
-
-        epListener.Close ();
-      }
     }
 
     public static void RemoveListener (HttpListener httpListener)
