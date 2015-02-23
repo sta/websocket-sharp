@@ -127,9 +127,21 @@ namespace WebSocketSharp.Net
 
     #region Public Properties
 
+    public IPAddress Address {
+      get {
+        return _endpoint.Address;
+      }
+    }
+
     public bool IsSecure {
       get {
         return _secure;
+      }
+    }
+
+    public int Port {
+      get {
+        return _endpoint.Port;
       }
     }
 
