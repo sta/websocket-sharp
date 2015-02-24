@@ -160,13 +160,14 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal static void RemoveEndPoint (IPEndPoint endpoint, EndPointListener endpointListener)
+    internal static void RemoveEndPoint (EndPointListener endpointListener)
     {
       lock (((ICollection) _ipToEndpoints).SyncRoot) {
-        var eps = _ipToEndpoints[endpoint.Address];
-        eps.Remove (endpoint.Port);
+        var addr = endpointListener.Address;
+        var eps = _ipToEndpoints[addr];
+        eps.Remove (endpointListener.Port);
         if (eps.Count == 0)
-          _ipToEndpoints.Remove (endpoint.Address);
+          _ipToEndpoints.Remove (addr);
 
         endpointListener.Close ();
       }

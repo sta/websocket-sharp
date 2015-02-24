@@ -176,7 +176,7 @@ namespace WebSocketSharp.Net
       if (_all != null && _all.Count > 0)
         return;
 
-      EndPointManager.RemoveEndPoint (_endpoint, this);
+      EndPointManager.RemoveEndPoint (this);
     }
 
     private static RSACryptoServiceProvider createRSAFromFile (string filename)
