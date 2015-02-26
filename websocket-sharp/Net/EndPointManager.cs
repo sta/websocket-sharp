@@ -94,7 +94,7 @@ namespace WebSocketSharp.Net
 
     private static IPAddress convertToAddress (string hostName)
     {
-      if (hostName == "*")
+      if (hostName == "*" || hostName == "+")
         return IPAddress.Any;
 
       IPAddress addr;
