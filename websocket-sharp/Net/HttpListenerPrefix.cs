@@ -2,7 +2,7 @@
 /*
  * HttpListenerPrefix.cs
  *
- * This code is derived from System.Net.ListenerPrefix.cs of Mono
+ * This code is derived from ListenerPrefix.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
