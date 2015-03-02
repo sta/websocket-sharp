@@ -131,7 +131,6 @@ namespace WebSocketSharp.Net
     {
       _listener.CheckDisposed ();
       HttpListenerPrefix.CheckPrefix (uriPrefix);
-
       if (_prefixes.Contains (uriPrefix))
         return;
 
@@ -149,7 +148,6 @@ namespace WebSocketSharp.Net
     public void Clear ()
     {
       _listener.CheckDisposed ();
-
       _prefixes.Clear ();
       if (_listener.IsListening)
         EndPointManager.RemoveListener (_listener);
@@ -253,11 +251,11 @@ namespace WebSocketSharp.Net
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
-      var res = _prefixes.Remove (uriPrefix);
-      if (res && _listener.IsListening)
+      var ret = _prefixes.Remove (uriPrefix);
+      if (ret && _listener.IsListening)
         EndPointManager.RemovePrefix (uriPrefix, _listener);
 
-      return res;
+      return ret;
     }
 
     #endregion
