@@ -126,8 +126,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public int ClientCertificateError {
       get {
-        // TODO: Always returns 0.
-        return 0;
+        return 0; // TODO: Always returns 0.
       }
     }
 
@@ -356,8 +355,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        // TODO: Should decode?
-        return _url.PathAndQuery;
+        return _url.PathAndQuery; // TODO: Should decode?
       }
     }
 
@@ -534,13 +532,13 @@ namespace WebSocketSharp.Net
     internal void FinishInitialization ()
     {
       var host = _headers["Host"];
-      var noHost = host == null || host.Length == 0;
-      if (_version > HttpVersion.Version10 && noHost) {
+      var nohost = host == null || host.Length == 0;
+      if (_version > HttpVersion.Version10 && nohost) {
         _context.ErrorMessage = "Invalid Host header";
         return;
       }
 
-      if (noHost)
+      if (nohost)
         host = UserHostAddress;
 
       _url = HttpUtility.CreateRequestUrl (_uri, host, IsWebSocketRequest, IsSecureConnection);
