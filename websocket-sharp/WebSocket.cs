@@ -554,6 +554,11 @@ namespace WebSocketSharp
     /// </summary>
     public event EventHandler OnOpen;
 
+
+     /// <summary>
+     /// Occurs when the <see cref="WebSocket"/> receives a message.
+    /// </summary>
+    public event EventHandler OnPingRecieved;
     #endregion
 
     #region Private Methods
@@ -1023,7 +1028,7 @@ namespace WebSocketSharp
     {
       if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
-
+      OnPingRecieved.Emit (this, EventArgs.Empty);
       return true;
     }
 

@@ -286,6 +286,10 @@ namespace WebSocketSharp.Server
       OnMessage (e);
     }
 
+    private void onPingMessageRecieved (object sender, EventArgs e) 
+    {
+        OnPingMessageRecieved();
+    }
     private void onOpen (object sender, EventArgs e)
     {
       _id = _sessions.Add (this);
@@ -326,7 +330,7 @@ namespace WebSocketSharp.Server
       _websocket.OnMessage += onMessage;
       _websocket.OnError += onError;
       _websocket.OnClose += onClose;
-
+      _websocket.OnPingRecieved += onPingMessageRecieved; 
       _websocket.ConnectAsServer ();
     }
 
@@ -386,6 +390,17 @@ namespace WebSocketSharp.Server
     protected virtual void OnMessage (MessageEventArgs e)
     {
     }
+
+        /// <summary>
+        /// Called when the <see cref="WebSocket"/> used in the current session receives a message.
+        /// </summary>
+        /// <param name="e">
+        /// A <see cref="MessageEventArgs"/> that represents the event data passed to
+        /// a <see cref="WebSocket.OnMessage"/> event.
+        /// </param>
+        protected virtual void OnPingMessageRecieved ()
+        {
+        }
 
     /// <summary>
     /// Called when the WebSocket connection used in the current session has been established.
