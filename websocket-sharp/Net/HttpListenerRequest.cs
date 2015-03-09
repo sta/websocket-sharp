@@ -618,9 +618,10 @@ namespace WebSocketSharp.Net
 
       _uri = parts[1];
 
-      if (parts[2].Length != 8 ||
-          !parts[2].StartsWith ("HTTP/") ||
-          !tryCreateVersion (parts[2].Substring (5), out _version) ||
+      var ver = parts[2];
+      if (ver.Length != 8 ||
+          !ver.StartsWith ("HTTP/") ||
+          !tryCreateVersion (ver.Substring (5), out _version) ||
           _version.Major < 1)
         _context.ErrorMessage = "Invalid request line (version)";
     }
