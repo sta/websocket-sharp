@@ -91,7 +91,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Properties
 
-    internal bool ConnectionClose {
+    internal bool CloseConnection {
       get {
         return _headers["Connection"] == "close";
       }
@@ -255,7 +255,7 @@ namespace WebSocketSharp.Net
          * headers manually."
          */
 
-        // TODO: Check if this is marked readonly after headers are sent.
+        // TODO: Check if this is marked readonly after the headers are sent.
 
         checkDisposedOrHeadersSent ();
         if (value == null)
@@ -417,8 +417,7 @@ namespace WebSocketSharp.Net
       set {
         checkDisposedOrHeadersSent ();
         if (value < 100 || value > 999)
-          throw new System.Net.ProtocolViolationException (
-            "StatusCode isn't between 100 and 999.");
+          throw new System.Net.ProtocolViolationException ("A value isn't between 100 and 999.");
 
         _statusCode = value;
         _statusDescription = value.GetStatusDescription ();
@@ -483,7 +482,7 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (GetType ().ToString ());
 
       if (_headersWereSent)
-        throw new InvalidOperationException ("Cannot be changed after headers are sent.");
+        throw new InvalidOperationException ("Cannot be changed after the headers are sent.");
     }
 
     private void close (bool force)
@@ -512,21 +511,20 @@ namespace WebSocketSharp.Net
     internal void SendHeaders (MemoryStream stream, bool closing)
     {
       if (_contentType != null) {
-        var contentType = _contentEncoding != null &&
-                          _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1
-                          ? String.Format (
-                              "{0}; charset={1}", _contentType, _contentEncoding.WebName)
-                          : _contentType;
+        var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
+                   _contentEncoding != null
+                   ? String.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
+                   : _contentType;
 
-        _headers.InternalSet ("Content-Type", contentType, true);
+        _headers.InternalSet ("Content-Type", type, true);
       }
 
       if (_headers["Server"] == null)
         _headers.InternalSet ("Server", "websocket-sharp/1.0", true);
 
-      var provider = CultureInfo.InvariantCulture;
+      var prov = CultureInfo.InvariantCulture;
       if (_headers["Date"] == null)
-        _headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", provider), true);
+        _headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
 
       if (!_chunked) {
         if (!_contentLengthWasSet && closing) {
@@ -535,11 +533,11 @@ namespace WebSocketSharp.Net
         }
 
         if (_contentLengthWasSet)
-          _headers.InternalSet ("Content-Length", _contentLength.ToString (provider), true);
+          _headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
       }
 
-      var reqVer = _context.Request.ProtocolVersion;
-      if (!_contentLengthWasSet && !_chunked && reqVer > HttpVersion.Version10)
+      var ver = _context.Request.ProtocolVersion;
+      if (!_contentLengthWasSet && !_chunked && ver > HttpVersion.Version10)
         _chunked = true;
 
       /*
@@ -552,7 +550,7 @@ namespace WebSocketSharp.Net
        * - HttpStatusCode.InternalServerError   500
        * - HttpStatusCode.ServiceUnavailable    503
        */
-      var connClose = _statusCode == 400 ||
+      var closeConn = _statusCode == 400 ||
                       _statusCode == 408 ||
                       _statusCode == 411 ||
                       _statusCode == 413 ||
@@ -560,13 +558,13 @@ namespace WebSocketSharp.Net
                       _statusCode == 500 ||
                       _statusCode == 503;
 
-      if (!connClose)
-        connClose = !_context.Request.KeepAlive;
+      if (!closeConn)
+        closeConn = !_context.Request.KeepAlive;
 
       // They sent both KeepAlive: true and Connection: close!?
-      if (!_keepAlive || connClose) {
+      if (!_keepAlive || closeConn) {
         _headers.InternalSet ("Connection", "close", true);
-        connClose = true;
+        closeConn = true;
       }
 
       if (_chunked)
@@ -575,17 +573,17 @@ namespace WebSocketSharp.Net
       var reuses = _context.Connection.Reuses;
       if (reuses >= 100) {
         _forceCloseChunked = true;
-        if (!connClose) {
+        if (!closeConn) {
           _headers.InternalSet ("Connection", "close", true);
-          connClose = true;
+          closeConn = true;
         }
       }
 
-      if (!connClose) {
+      if (!closeConn) {
         _headers.InternalSet (
           "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 
-        if (reqVer < HttpVersion.Version11)
+        if (ver < HttpVersion.Version11)
           _headers.InternalSet ("Connection", "keep-alive", true);
       }
 
@@ -876,7 +874,7 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Explicit Interface Implementation
+    #region Explicit Interface Implementations
 
     /// <summary>
     /// Releases all resources used by the <see cref="HttpListenerResponse"/>.
@@ -886,7 +884,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      close (true); // Same as Abort.
+      close (true); // Same as the Abort method.
     }
 
     #endregion
