@@ -2,7 +2,7 @@
 /*
  * HttpListenerResponse.cs
  *
- * This code is derived from System.Net.HttpListenerResponse.cs of Mono
+ * This code is derived from HttpListenerResponse.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
