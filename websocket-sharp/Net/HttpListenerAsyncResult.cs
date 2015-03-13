@@ -181,11 +181,11 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      var listener = context.Listener;
-      var schm = listener.SelectAuthenticationScheme (context);
+      var lsnr = context.Listener;
+      var schm = lsnr.SelectAuthenticationScheme (context);
       if (schm != AuthenticationSchemes.Anonymous &&
-          !authenticate (context, schm, listener.Realm, listener.UserCredentialsFinder)) {
-        listener.BeginGetContext (this);
+          !authenticate (context, schm, lsnr.Realm, lsnr.UserCredentialsFinder)) {
+        lsnr.BeginGetContext (this);
         return;
       }
 
