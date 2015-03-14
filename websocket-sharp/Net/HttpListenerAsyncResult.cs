@@ -2,7 +2,7 @@
 /*
  * HttpListenerAsyncResult.cs
  *
- * This code is derived from System.Net.ListenerAsyncResult.cs of Mono
+ * This code is derived from ListenerAsyncResult.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
