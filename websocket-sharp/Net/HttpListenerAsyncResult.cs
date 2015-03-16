@@ -108,31 +108,32 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool authenticate (
-      HttpListenerContext context,
-      AuthenticationSchemes scheme,
-      string realm,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
+    private static bool authenticate (HttpListenerContext context, HttpListener listener)
     {
-      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest)) {
+      var schm = listener.SelectAuthenticationScheme (context);
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
         context.Response.Close (HttpStatusCode.Forbidden);
         return false;
       }
 
       var req = context.Request;
+      var realm = listener.Realm;
       var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], scheme, realm, req.HttpMethod, credentialsFinder);
+        req.Headers["Authorization"], schm, realm, req.HttpMethod, listener.UserCredentialsFinder);
 
       if (user != null && user.Identity.IsAuthenticated) {
         context.User = user;
         return true;
       }
 
-      if (scheme == AuthenticationSchemes.Basic)
+      if (schm == AuthenticationSchemes.Basic)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
 
-      if (scheme == AuthenticationSchemes.Digest)
+      if (schm == AuthenticationSchemes.Digest)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
 
@@ -182,9 +183,7 @@ namespace WebSocketSharp.Net
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
       var lsnr = context.Listener;
-      var schm = lsnr.SelectAuthenticationScheme (context);
-      if (schm != AuthenticationSchemes.Anonymous &&
-          !authenticate (context, schm, lsnr.Realm, lsnr.UserCredentialsFinder)) {
+      if (!authenticate (context, lsnr)) {
         lsnr.BeginGetContext (this);
         return;
       }
