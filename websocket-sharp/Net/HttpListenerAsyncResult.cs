@@ -108,38 +108,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool authenticate (HttpListenerContext context, HttpListener listener)
-    {
-      var schm = listener.SelectAuthenticationScheme (context);
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
-      var req = context.Request;
-      var realm = listener.Realm;
-      var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], schm, realm, req.HttpMethod, listener.UserCredentialsFinder);
-
-      if (user != null && user.Identity.IsAuthenticated) {
-        context.User = user;
-        return true;
-      }
-
-      if (schm == AuthenticationSchemes.Basic)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-
-      if (schm == AuthenticationSchemes.Digest)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
-
-      return false;
-    }
-
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
       asyncResult._completed = true;
@@ -183,7 +151,7 @@ namespace WebSocketSharp.Net
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
       var lsnr = context.Listener;
-      if (!authenticate (context, lsnr)) {
+      if (!lsnr.Authenticate (context)) {
         lsnr.BeginGetContext (this);
         return;
       }

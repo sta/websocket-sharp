@@ -505,6 +505,38 @@ namespace WebSocketSharp.Net
         _connections[connection] = connection;
     }
 
+    internal bool Authenticate (HttpListenerContext context)
+    {
+      var schm = SelectAuthenticationScheme (context);
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
+        context.Response.Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var realm = Realm;
+      var req = context.Request;
+      var user = HttpUtility.CreateUser (
+        req.Headers["Authorization"], schm, realm, req.HttpMethod, UserCredentialsFinder);
+
+      if (user != null && user.Identity.IsAuthenticated) {
+        context.User = user;
+        return true;
+      }
+
+      if (schm == AuthenticationSchemes.Basic)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
+
+      if (schm == AuthenticationSchemes.Digest)
+        context.Response.CloseWithAuthChallenge (
+          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
+
+      return false;
+    }
+
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
       CheckDisposed ();
