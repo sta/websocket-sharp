@@ -819,11 +819,17 @@ namespace WebSocketSharp
       return CompressionMethod.None;
     }
 
-    internal static string ToExtensionString (this CompressionMethod method)
+    internal static string ToExtensionString (
+      this CompressionMethod method, params string[] parameters)
     {
-      return method != CompressionMethod.None
-             ? String.Format ("permessage-{0}", method.ToString ().ToLower ())
-             : String.Empty;
+      if (method == CompressionMethod.None)
+        return String.Empty;
+
+      var m = String.Format ("permessage-{0}", method.ToString ().ToLower ());
+      if (parameters == null || parameters.Length == 0)
+        return m;
+
+      return String.Format ("{0}; {1}", m, parameters.ToString ("; "));
     }
 
     internal static System.Net.IPAddress ToIPAddress (this string hostNameOrAddress)
