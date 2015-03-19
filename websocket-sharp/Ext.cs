@@ -604,6 +604,11 @@ namespace WebSocketSharp
       return value.StartsWith ("permessage-");
     }
 
+    internal static bool IsCompressionExtension (this string value, CompressionMethod method)
+    {
+      return value.StartsWith (method.ToExtensionString ());
+    }
+
     internal static bool IsNoStatusCode (this ushort code)
     {
       return code == (ushort) CloseStatusCode.NoStatusCode;
