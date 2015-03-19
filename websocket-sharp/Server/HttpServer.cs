@@ -40,6 +40,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Threading;
@@ -58,6 +59,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
+    private System.Net.IPAddress    _address;
     private HttpListener            _listener;
     private Logger                  _logger;
     private int                     _port;
@@ -80,7 +82,7 @@ namespace WebSocketSharp.Server
     /// An instance initialized by this constructor listens for the incoming requests on port 80.
     /// </remarks>
     public HttpServer ()
-      : this (80, false)
+      : this (System.Net.IPAddress.Any, 80, false)
     {
     }
 
@@ -104,8 +106,43 @@ namespace WebSocketSharp.Server
     /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     public HttpServer (int port)
-      : this (port, port == 443)
+      : this (System.Net.IPAddress.Any, port, port == 443)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with the specified
+    /// HTTP URL.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming connection requests
+    ///   on the port in <paramref name="url"/>.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on which
+    ///   to listen. It's determined by the scheme (http or https) in <paramref name="url"/>.
+    ///   (Port 80 if the scheme is http.)
+    ///   </para>
+    /// </remarks>
+    /// <param name="url">
+    /// A <see cref="string"/> that represents the HTTP URL of the server.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="url"/> is invalid.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    public HttpServer (string url)
+    {
+      if (url == null)
+        throw new ArgumentNullException ("url");
+
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
+
+      init (url);
     }
 
     /// <summary>
@@ -130,7 +167,86 @@ namespace WebSocketSharp.Server
     /// <paramref name="port"/> isn't between 1 and 65535.
     /// </exception>
     public HttpServer (int port, bool secure)
+      : this (System.Net.IPAddress.Any, port, secure)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with the specified
+    /// <paramref name="address"/> and <paramref name="port"/>.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming connection requests
+    ///   on <paramref name="port"/>.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
+    ///   </para>
+    /// </remarks>
+    /// <param name="address">
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="address"/> isn't a local IP address.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// </exception>
+    public HttpServer(System.Net.IPAddress address, int port)
+      : this (address, port, port == 443)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with the specified
+    /// <paramref name="address"/>, <paramref name="port"/>, and <paramref name="secure"/>.
+    /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming connection requests
+    /// on <paramref name="port"/>.
+    /// </remarks>
+    /// <param name="address">
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not.
+    /// (<c>true</c> indicates providing a secure connection.)
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="address"/> isn't a local IP address.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// </exception>
+    public HttpServer(System.Net.IPAddress address, int port, bool secure)
+    {
+      if (address == null)
+        throw new ArgumentNullException ("address");
+
+      if (!address.IsLocal ())
+        throw new ArgumentException ("Not a local IP address: " + address, "address");
+
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException ("port", "Not between 1 and 65535: " + port);
 
@@ -138,24 +254,31 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (
           String.Format ("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
-      _port = port;
-      _secure = secure;
-      _listener = new HttpListener ();
-      _logger = _listener.Log;
-      _services = new WebSocketServiceManager (_logger);
-      _state = ServerState.Ready;
-      _sync = new object ();
+      var host = address.ToString ();
+      if (address.AddressFamily == AddressFamily.InterNetworkV6)
+        host = "[" + host + "]";
 
-      var os = Environment.OSVersion;
-      _windows = os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX;
-
-      var pref = String.Format ("http{0}://*:{1}/", _secure ? "s" : "", _port);
-      _listener.Prefixes.Add (pref);
+      var url = String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", host, port);
+      init (url);
     }
 
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets the local IP address of the server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </value>
+    public System.Net.IPAddress Address
+    {
+      get
+      {
+        return _address;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
@@ -503,6 +626,38 @@ namespace WebSocketSharp.Server
              : null;
     }
 
+    private void init (string url)
+    {
+      Uri uri;
+      string msg;
+      if (!tryCreateUri (url, out uri, out msg))
+        throw new ArgumentException (msg, "url");
+
+      _address = uri.DnsSafeHost.ToIPAddress ();
+      if (_address == null || !_address.IsLocal ())
+        throw new ArgumentException("The host part isn't a local host name: " + url, "url");
+
+      _listener = new HttpListener ();
+      _logger = _listener.Log;
+      _port = uri.Port > 0 ? uri.Port : (uri.Scheme == "http" ? 80 : 443);
+      _secure = uri.Scheme == "https";
+      _services = new WebSocketServiceManager (_logger);
+      _state = ServerState.Ready;
+      _sync = new object ();
+
+      var os = Environment.OSVersion;
+      _windows = os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX;
+
+      var hostAny = _address.Equals (System.Net.IPAddress.Any) || _address.Equals (System.Net.IPAddress.IPv6Any);
+      var host = hostAny ? "*" : uri.Host;
+
+      var pref = String.Format ("{0}://{1}:{2}{3}", uri.Scheme, host, _port, uri.PathAndQuery);
+      _listener.Prefixes.Add (pref);
+
+      if (_address.Equals (System.Net.IPAddress.Loopback) || _address.Equals (System.Net.IPAddress.IPv6Loopback))
+        _listener.Prefixes.Add (String.Format ("{0}://localhost:{1}{2}", uri.Scheme, _port, uri.PathAndQuery));
+    }
+
     private void processRequest (HttpListenerContext context)
     {
       var method = context.Request.HttpMethod;
@@ -592,6 +747,28 @@ namespace WebSocketSharp.Server
     {
       _listener.Close ();
       _receiveThread.Join (millisecondsTimeout);
+    }
+
+    private static bool tryCreateUri (string uriString, out Uri result, out string message)
+    {
+      if (!uriString.TryCreateHttpUri (out result, out message))
+        return false;
+
+      if (!string.IsNullOrEmpty(result.Query)) {
+        result = null;
+        message = "Includes the query component: " + uriString;
+
+        return false;
+      }
+
+      if (!string.IsNullOrEmpty (Path.GetFileName (result.AbsolutePath))) {
+        result = null;
+        message = "Includes a file name: " + uriString;
+
+        return false;
+      }
+
+      return true;
     }
 
     #endregion

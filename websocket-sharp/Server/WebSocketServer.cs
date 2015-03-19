@@ -257,6 +257,9 @@ namespace WebSocketSharp.Server
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
     {
+      if (address == null)
+        throw new ArgumentNullException ("address");
+
       if (!address.IsLocal ())
         throw new ArgumentException ("Not a local IP address: " + address, "address");
 

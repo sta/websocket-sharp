@@ -286,14 +286,12 @@ namespace WebSocketSharp.Net
 
           if (conn._context.HasError) {
             conn.SendError ();
-            conn.Close (true);
 
             return;
           }
 
           if (!conn._listener.BindContext (conn._context)) {
             conn.SendError ("Invalid host", 400);
-            conn.Close (true);
 
             return;
           }
@@ -537,6 +535,7 @@ namespace WebSocketSharp.Net
           var res = _context.Response;
           res.StatusCode = status;
           res.ContentType = "text/html";
+          res.ContentEncoding = Encoding.UTF8;
 
           var desc = status.GetStatusDescription ();
           var msg = message != null && message.Length > 0
