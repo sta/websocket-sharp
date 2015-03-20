@@ -1082,6 +1082,32 @@ namespace WebSocketSharp
       }
     }
 
+    private void processSecWebSocketExtensionsHeader2 (string value)
+    {
+      var buff = new StringBuilder (32);
+
+      var comp = false;
+      foreach (var val in value.SplitHeaderValue (',')) {
+        var ext = val.Trim ();
+        if (!comp && ext.IsCompressionExtension (CompressionMethod.Deflate)) {
+          _compression = CompressionMethod.Deflate;
+          var c = ext.Contains ("server_no_context_takeover")
+                  ? _compression.ToExtensionString (
+                      "server_no_context_takeover", "client_no_context_takeover")
+                  : _compression.ToExtensionString ("client_no_context_takeover");
+
+          buff.AppendFormat ("{0}, ", c);
+          comp = true;
+        }
+      }
+
+      var len = buff.Length;
+      if (len > 2) {
+        buff.Length = len - 2;
+        _extensions = buff.ToString ();
+      }
+    }
+
     private bool processUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
     {
       _logger.Debug ("An unsupported frame:" + frame.PrintToString (false));
