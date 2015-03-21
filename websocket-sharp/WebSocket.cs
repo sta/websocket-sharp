@@ -804,6 +804,26 @@ namespace WebSocketSharp
              : null;
     }
 
+    private string createExtensions2 ()
+    {
+      var buff = new StringBuilder (80);
+
+      if (_compression != CompressionMethod.None) {
+        var c = _compression.ToExtensionString (
+          "server_no_context_takeover", "client_no_context_takeover");
+
+        buff.AppendFormat ("{0}, ", c);
+      }
+
+      var len = buff.Length;
+      if (len > 2) {
+        buff.Length = len - 2;
+        return buff.ToString ();
+      }
+
+      return null;
+    }
+
     // As server
     private HttpResponse createHandshakeCloseResponse (HttpStatusCode code)
     {
