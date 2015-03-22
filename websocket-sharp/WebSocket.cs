@@ -1104,17 +1104,15 @@ namespace WebSocketSharp
 
     private void processSecWebSocketExtensionsHeader2 (string value)
     {
-      var buff = new StringBuilder (32);
+      var buff = new StringBuilder (80);
 
       var comp = false;
-      foreach (var val in value.SplitHeaderValue (',')) {
-        var ext = val.Trim ();
+      foreach (var t in value.SplitHeaderValue (',')) {
+        var ext = t.Trim ();
         if (!comp && ext.IsCompressionExtension (CompressionMethod.Deflate)) {
           _compression = CompressionMethod.Deflate;
-          var c = ext.Contains ("server_no_context_takeover")
-                  ? _compression.ToExtensionString (
-                      "server_no_context_takeover", "client_no_context_takeover")
-                  : _compression.ToExtensionString ("client_no_context_takeover");
+          var c = _compression.ToExtensionString (
+            "client_no_context_takeover", "server_no_context_takeover");
 
           buff.AppendFormat ("{0}, ", c);
           comp = true;
