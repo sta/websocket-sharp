@@ -1521,6 +1521,50 @@ namespace WebSocketSharp
       return true;
     }
 
+    private bool validateSecWebSocketExtensionsHeader2 (string value)
+    {
+      var comp = _compression != CompressionMethod.None;
+      if (value == null || value.Length == 0) {
+        if (comp)
+          _compression = CompressionMethod.None;
+
+        return true;
+      }
+
+      if (!comp)
+        return false;
+
+      foreach (var e in value.SplitHeaderValue (',')) {
+        var ext = e.Trim ();
+        if (ext.IsCompressionExtension (_compression)) {
+          if (!ext.Contains ("server_no_context_takeover")) {
+            _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
+            return false;
+          }
+
+          if (!ext.Contains ("client_no_context_takeover"))
+            _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
+
+          var invalid = ext.SplitHeaderValue (';').Contains (
+            t => {
+              var token = t.Trim ();
+              return token != _compression.ToExtensionString () &&
+                     token != "server_no_context_takeover" &&
+                     token != "client_no_context_takeover";
+            });
+
+          if (invalid)
+            return false;
+        }
+        else {
+          return false;
+        }
+      }
+
+      _extensions = value;
+      return true;
+    }
+
     // As server
     private bool validateSecWebSocketKeyHeader (string value)
     {
