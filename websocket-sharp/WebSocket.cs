@@ -1107,8 +1107,8 @@ namespace WebSocketSharp
       var buff = new StringBuilder (80);
 
       var comp = false;
-      foreach (var t in value.SplitHeaderValue (',')) {
-        var ext = t.Trim ();
+      foreach (var e in value.SplitHeaderValue (',')) {
+        var ext = e.Trim ();
         if (!comp && ext.IsCompressionExtension (CompressionMethod.Deflate)) {
           _compression = CompressionMethod.Deflate;
           var c = _compression.ToExtensionString (
