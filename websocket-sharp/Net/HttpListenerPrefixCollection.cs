@@ -2,13 +2,13 @@
 /*
  * HttpListenerPrefixCollection.cs
  *
- * This code is derived from System.Net.HttpListenerPrefixCollection.cs of Mono
+ * This code is derived from HttpListenerPrefixCollection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,6 @@ namespace WebSocketSharp.Net
     {
       _listener.CheckDisposed ();
       HttpListenerPrefix.CheckPrefix (uriPrefix);
-
       if (_prefixes.Contains (uriPrefix))
         return;
 
@@ -149,7 +148,6 @@ namespace WebSocketSharp.Net
     public void Clear ()
     {
       _listener.CheckDisposed ();
-
       _prefixes.Clear ();
       if (_listener.IsListening)
         EndPointManager.RemoveListener (_listener);
@@ -253,11 +251,11 @@ namespace WebSocketSharp.Net
       if (uriPrefix == null)
         throw new ArgumentNullException ("uriPrefix");
 
-      var res = _prefixes.Remove (uriPrefix);
-      if (res && _listener.IsListening)
+      var ret = _prefixes.Remove (uriPrefix);
+      if (ret && _listener.IsListening)
         EndPointManager.RemovePrefix (uriPrefix, _listener);
 
-      return res;
+      return ret;
     }
 
     #endregion

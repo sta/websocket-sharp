@@ -47,20 +47,20 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    IPAddress[]  _addresses;
-    string       _host;
-    HttpListener _listener;
-    string       _original;
-    string       _path;
-    ushort       _port;
-    bool         _secure;
+    private IPAddress[]  _addresses;
+    private string       _host;
+    private HttpListener _listener;
+    private string       _original;
+    private string       _path;
+    private ushort       _port;
+    private bool         _secure;
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    // Must be called after calling HttpListenerPrefix.CheckPrefix.
-    public HttpListenerPrefix (string uriPrefix)
+    // Must be called after calling the CheckPrefix method.
+    internal HttpListenerPrefix (string uriPrefix)
     {
       _original = uriPrefix;
       parse (uriPrefix);
@@ -148,7 +148,7 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region public Methods
+    #region Public Methods
 
     public static void CheckPrefix (string uriPrefix)
     {
@@ -190,7 +190,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentException ("Ends without '/'.");
     }
 
-    // Equals and GetHashCode are required to detect duplicates in any collection.
+    // The Equals and GetHashCode methods are required to detect duplicates in any collection.
     public override bool Equals (Object obj)
     {
       var pref = obj as HttpListenerPrefix;

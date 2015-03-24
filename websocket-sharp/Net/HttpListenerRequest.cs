@@ -2,13 +2,13 @@
 /*
  * HttpListenerRequest.cs
  *
- * This code is derived from System.Net.HttpListenerRequest.cs of Mono
+ * This code is derived from HttpListenerRequest.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -126,8 +126,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public int ClientCertificateError {
       get {
-        // TODO: Always returns 0.
-        return 0;
+        return 0; // TODO: Always returns 0.
       }
     }
 
@@ -356,8 +355,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        // TODO: Should decode?
-        return _url.PathAndQuery;
+        return _url.PathAndQuery; // TODO: Should decode?
       }
     }
 
@@ -534,13 +532,13 @@ namespace WebSocketSharp.Net
     internal void FinishInitialization ()
     {
       var host = _headers["Host"];
-      var noHost = host == null || host.Length == 0;
-      if (_version > HttpVersion.Version10 && noHost) {
+      var nohost = host == null || host.Length == 0;
+      if (_version > HttpVersion.Version10 && nohost) {
         _context.ErrorMessage = "Invalid Host header";
         return;
       }
 
-      if (noHost)
+      if (nohost)
         host = UserHostAddress;
 
       _url = HttpUtility.CreateRequestUrl (_uri, host, IsWebSocketRequest, IsSecureConnection);
@@ -620,9 +618,10 @@ namespace WebSocketSharp.Net
 
       _uri = parts[1];
 
-      if (parts[2].Length != 8 ||
-          !parts[2].StartsWith ("HTTP/") ||
-          !tryCreateVersion (parts[2].Substring (5), out _version) ||
+      var ver = parts[2];
+      if (ver.Length != 8 ||
+          !ver.StartsWith ("HTTP/") ||
+          !tryCreateVersion (ver.Substring (5), out _version) ||
           _version.Major < 1)
         _context.ErrorMessage = "Invalid request line (version)";
     }
