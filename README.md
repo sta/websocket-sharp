@@ -403,7 +403,7 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
+websocket-sharp supports the **[Per-message Compression][compression]** extension. (But this doesn't support it with the [context take over].)
 
 If you would like to enable this extension as a WebSocket client, you should set such as the following.
 
@@ -413,9 +413,9 @@ ws.Compression = CompressionMethod.Deflate;
 
 And then your client will send the following header with the connection request to the server.
 
-    Sec-WebSocket-Extensions: permessage-deflate
+    Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
-If the server supports this extension, it will return the same header. And when your client receives it, this extension will be available.
+If the server accepts this extension, it will return the same header and value. And when your client receives it, this extension will be available.
 
 ### Secure Connection ###
 
@@ -656,11 +656,11 @@ websocket-sharp is provided under **[The MIT License]**.
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
+[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
+[context take over]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [draft75]: https://github.com/sta/websocket-sharp/tree/draft75
-[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [master]: https://github.com/sta/websocket-sharp/tree/master
 [rfc2617]: http://tools.ietf.org/html/rfc2617
