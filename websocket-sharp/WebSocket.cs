@@ -794,18 +794,6 @@ namespace WebSocketSharp
     // As client
     private string createExtensions ()
     {
-      var buff = new StringBuilder (32);
-
-      if (_compression != CompressionMethod.None)
-        buff.Append (_compression.ToExtensionString ());
-
-      return buff.Length > 0
-             ? buff.ToString ()
-             : null;
-    }
-
-    private string createExtensions2 ()
-    {
       var buff = new StringBuilder (80);
 
       if (_compression != CompressionMethod.None) {
@@ -1077,32 +1065,6 @@ namespace WebSocketSharp
 
     // As server
     private void processSecWebSocketExtensionsHeader (string value)
-    {
-      var buff = new StringBuilder (32);
-
-      var compress = false;
-      foreach (var extension in value.SplitHeaderValue (',')) {
-        var trimed = extension.Trim ();
-        var unprefixed = trimed.RemovePrefix ("x-webkit-");
-        if (!compress && unprefixed.IsCompressionExtension ()) {
-          var method = unprefixed.ToCompressionMethod ();
-          if (method != CompressionMethod.None) {
-            _compression = method;
-            compress = true;
-
-            buff.Append (trimed + ", ");
-          }
-        }
-      }
-
-      var len = buff.Length;
-      if (len > 0) {
-        buff.Length = len - 2;
-        _extensions = buff.ToString ();
-      }
-    }
-
-    private void processSecWebSocketExtensionsHeader2 (string value)
     {
       var buff = new StringBuilder (80);
 
@@ -1500,28 +1462,6 @@ namespace WebSocketSharp
 
     // As client
     private bool validateSecWebSocketExtensionsHeader (string value)
-    {
-      var compress = _compression != CompressionMethod.None;
-      if (value == null || value.Length == 0) {
-        if (compress)
-          _compression = CompressionMethod.None;
-
-        return true;
-      }
-
-      if (!compress)
-        return false;
-
-      var extensions = value.SplitHeaderValue (',');
-      if (extensions.Contains (
-            extension => extension.Trim () != _compression.ToExtensionString ()))
-        return false;
-
-      _extensions = value;
-      return true;
-    }
-
-    private bool validateSecWebSocketExtensionsHeader2 (string value)
     {
       var comp = _compression != CompressionMethod.None;
       if (value == null || value.Length == 0) {
