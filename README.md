@@ -415,7 +415,7 @@ And then your client will send the following header with the connection request 
 
     Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
-If the server accepts this extension, it will return the same header and value. And when your client receives it, this extension will be available.
+If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.
 
 ### Secure Connection ###
 
