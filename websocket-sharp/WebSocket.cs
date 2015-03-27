@@ -1485,12 +1485,13 @@ namespace WebSocketSharp
           if (!ext.Contains ("client_no_context_takeover"))
             _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
 
+          var method = _compression.ToExtensionString ();
           var invalid = ext.SplitHeaderValue (';').Contains (
             t => {
-              var token = t.Trim ();
-              return token != _compression.ToExtensionString () &&
-                     token != "server_no_context_takeover" &&
-                     token != "client_no_context_takeover";
+              t = t.Trim ();
+              return t != method &&
+                     t != "server_no_context_takeover" &&
+                     t != "client_no_context_takeover";
             });
 
           if (invalid)
