@@ -599,11 +599,6 @@ namespace WebSocketSharp
       return bytes;
     }
 
-    internal static bool IsCompressionExtension (this string value)
-    {
-      return value.StartsWith ("permessage-");
-    }
-
     internal static bool IsCompressionExtension (this string value, CompressionMethod method)
     {
       return value.StartsWith (method.ToExtensionString ());
