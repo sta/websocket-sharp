@@ -44,14 +44,9 @@ namespace WebSocketSharp.Net
 {
   internal class ChunkedRequestStream : RequestStream
   {
-    #region Private Const Fields
-
-    private const int _bufferSize = 8192;
-
-    #endregion
-
     #region Private Fields
 
+    private const int           _bufferSize = 8192;
     private HttpListenerContext _context;
     private ChunkStream         _decoder;
     private bool                _disposed;
@@ -62,7 +57,7 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     public ChunkedRequestStream (
-      HttpListenerContext context, Stream stream, byte [] buffer, int offset, int length)
+      HttpListenerContext context, Stream stream, byte[] buffer, int offset, int length)
       : base (stream, buffer, offset, length)
     {
       _context = context;
@@ -71,9 +66,9 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Properties
+    #region Internal Properties
 
-    public ChunkStream Decoder {
+    internal ChunkStream Decoder {
       get {
         return _decoder;
       }
@@ -89,17 +84,17 @@ namespace WebSocketSharp.Net
 
     private void onRead (IAsyncResult asyncResult)
     {
-      var readState = (ReadBufferState) asyncResult.AsyncState;
-      var ares = readState.AsyncResult;
+      var rstate = (ReadBufferState) asyncResult.AsyncState;
+      var ares = rstate.AsyncResult;
       try {
         var nread = base.EndRead (asyncResult);
         _decoder.Write (ares.Buffer, ares.Offset, nread);
-        nread = _decoder.Read (readState.Buffer, readState.Offset, readState.Count);
-        readState.Offset += nread;
-        readState.Count -= nread;
-        if (readState.Count == 0 || !_decoder.WantMore || nread == 0) {
+        nread = _decoder.Read (rstate.Buffer, rstate.Offset, rstate.Count);
+        rstate.Offset += nread;
+        rstate.Count -= nread;
+        if (rstate.Count == 0 || !_decoder.WantMore || nread == 0) {
           _noMoreData = !_decoder.WantMore && nread == 0;
-          ares.Count = readState.InitialCount - readState.Count;
+          ares.Count = rstate.InitialCount - rstate.Count;
           ares.Complete ();
 
           return;
@@ -107,7 +102,7 @@ namespace WebSocketSharp.Net
 
         ares.Offset = 0;
         ares.Count = Math.Min (_bufferSize, _decoder.ChunkLeft + 6);
-        base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, readState);
+        base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
         _context.Connection.SendError (ex.Message, 400);
@@ -120,7 +115,7 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     public override IAsyncResult BeginRead (
-      byte [] buffer, int offset, int count, AsyncCallback callback, object state)
+      byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
@@ -128,12 +123,16 @@ namespace WebSocketSharp.Net
       if (buffer == null)
         throw new ArgumentNullException ("buffer");
 
-      var len = buffer.Length;
-      if (offset < 0 || offset > len)
-        throw new ArgumentOutOfRangeException ("'offset' exceeds the size of buffer.");
+      if (offset < 0)
+        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
 
-      if (count < 0 || offset > len - count)
-        throw new ArgumentOutOfRangeException ("'offset' + 'count' exceeds the size of buffer.");
+      if (count < 0)
+        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+
+      var len = buffer.Length;
+      if (offset + count > len)
+        throw new ArgumentException (
+          "The sum of 'offset' and 'count' is greater than 'buffer' length.");
 
       var ares = new HttpStreamAsyncResult (callback, state);
       if (_noMoreData) {
@@ -160,13 +159,13 @@ namespace WebSocketSharp.Net
         return ares;
       }
 
-      ares.Buffer = new byte [_bufferSize];
+      ares.Buffer = new byte[_bufferSize];
       ares.Offset = 0;
       ares.Count = _bufferSize;
 
-      var readState = new ReadBufferState (buffer, offset, count, ares);
-      readState.InitialCount += nread;
-      base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, readState);
+      var rstate = new ReadBufferState (buffer, offset, count, ares);
+      rstate.InitialCount += nread;
+      base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
 
       return ares;
     }
@@ -190,7 +189,7 @@ namespace WebSocketSharp.Net
 
       var ares = asyncResult as HttpStreamAsyncResult;
       if (ares == null)
-        throw new ArgumentException ("Wrong IAsyncResult.", "asyncResult");
+        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
 
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
@@ -201,7 +200,7 @@ namespace WebSocketSharp.Net
       return ares.Count;
     }
 
-    public override int Read (byte [] buffer, int offset, int count)
+    public override int Read (byte[] buffer, int offset, int count)
     {
       var ares = BeginRead (buffer, offset, count, null, null);
       return EndRead (ares);
