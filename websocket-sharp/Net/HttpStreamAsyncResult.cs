@@ -2,7 +2,7 @@
 /*
  * HttpStreamAsyncResult.cs
  *
- * This code is derived from System.Net.HttpStreamAsyncResult.cs of Mono
+ * This code is derived from HttpStreamAsyncResult.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
