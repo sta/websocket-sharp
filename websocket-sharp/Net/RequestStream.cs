@@ -2,7 +2,7 @@
 /*
  * RequestStream.cs
  *
- * This code is derived from System.Net.RequestStream.cs of Mono
+ * This code is derived from RequestStream.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
