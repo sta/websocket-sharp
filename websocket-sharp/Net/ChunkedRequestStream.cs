@@ -54,11 +54,11 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
-    public ChunkedRequestStream (
-      HttpListenerContext context, Stream stream, byte[] buffer, int offset, int length)
-      : base (stream, buffer, offset, length)
+    internal ChunkedRequestStream (
+      Stream stream, byte[] buffer, int offset, int count, HttpListenerContext context)
+      : base (stream, buffer, offset, count)
     {
       _context = context;
       _decoder = new ChunkStream ((WebHeaderCollection) context.Request.Headers);

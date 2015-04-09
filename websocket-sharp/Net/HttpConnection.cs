@@ -489,7 +489,7 @@ namespace WebSocketSharp.Net
           _chunked = true;
           _context.Response.SendChunked = true;
           _inputStream = new ChunkedRequestStream (
-            _context, _stream, buff, _position, len - _position);
+            _stream, buff, _position, len - _position, _context);
         }
         else {
           _inputStream = new RequestStream (
