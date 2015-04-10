@@ -227,7 +227,7 @@ namespace WebSocketSharp.Net
       get {
         return _inputStream ??
                (_inputStream = HasEntityBody
-                               ? _context.Connection.GetRequestStream (_chunked, _contentLength)
+                               ? _context.Connection.GetRequestStream (_contentLength, _chunked)
                                : Stream.Null);
       }
     }
