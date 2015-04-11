@@ -46,7 +46,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private const int           _bufferSize = 8192;
+    private const int           _bufferLength = 8192;
     private HttpListenerContext _context;
     private ChunkStream         _decoder;
     private bool                _disposed;
@@ -101,7 +101,7 @@ namespace WebSocketSharp.Net
         }
 
         ares.Offset = 0;
-        ares.Count = Math.Min (_bufferSize, _decoder.ChunkLeft + 6);
+        ares.Count = Math.Min (_bufferLength, _decoder.ChunkLeft + 6);
         base.BeginRead (ares.Buffer, ares.Offset, ares.Count, onRead, rstate);
       }
       catch (Exception ex) {
@@ -159,9 +159,9 @@ namespace WebSocketSharp.Net
         return ares;
       }
 
-      ares.Buffer = new byte[_bufferSize];
+      ares.Buffer = new byte[_bufferLength];
       ares.Offset = 0;
-      ares.Count = _bufferSize;
+      ares.Count = _bufferLength;
 
       var rstate = new ReadBufferState (buffer, offset, count, ares);
       rstate.InitialCount += nread;
