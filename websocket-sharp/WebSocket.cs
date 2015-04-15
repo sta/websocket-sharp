@@ -86,6 +86,7 @@ namespace WebSocketSharp
     private const string            _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string>
                                     _handshakeRequestChecker;
+    private bool                    _ignoreExtensions;
     private volatile Logger         _logger;
     private Queue<MessageEventArgs> _messageEventQueue;
     private uint                    _nonceCount;
@@ -222,6 +223,17 @@ namespace WebSocketSharp
 
       set {
         _handshakeRequestChecker = value;
+      }
+    }
+
+    // As server
+    internal bool IgnoreExtensions {
+      get {
+        return _ignoreExtensions;
+      }
+
+      set {
+        _ignoreExtensions = value;
       }
     }
 
@@ -577,9 +589,11 @@ namespace WebSocketSharp
           !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol))
         _protocol = null;
 
-      var extensions = _context.Headers["Sec-WebSocket-Extensions"];
-      if (extensions != null && extensions.Length > 0)
-        processSecWebSocketExtensionsHeader (extensions);
+      if (!_ignoreExtensions) {
+        var extensions = _context.Headers["Sec-WebSocket-Extensions"];
+        if (extensions != null && extensions.Length > 0)
+          processSecWebSocketExtensionsHeader (extensions);
+      }
 
       return sendHttpResponse (createHandshakeResponse ());
     }

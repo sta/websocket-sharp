@@ -47,6 +47,7 @@ namespace WebSocketSharp.Server
     private WebSocketContext                               _context;
     private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
     private string                                         _id;
+    private bool                                           _ignoreExtensions;
     private Func<string, bool>                             _originValidator;
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
@@ -156,6 +157,24 @@ namespace WebSocketSharp.Server
     public string ID {
       get {
         return _id;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the WebSocket service ignores
+    /// the Sec-WebSocket-Extensions header included in a connection request.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the WebSocket service ignores the extensions; otherwise, <c>false</c>.
+    /// The default value is <c>false</c>.
+    /// </value>
+    public bool IgnoreExtensions {
+      get {
+        return _ignoreExtensions;
+      }
+
+      set {
+        _ignoreExtensions = value;
       }
     }
 
@@ -316,6 +335,7 @@ namespace WebSocketSharp.Server
 
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
