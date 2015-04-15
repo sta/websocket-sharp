@@ -170,7 +170,7 @@ namespace WebSocketSharp.Net
           throwProtocolViolation ("LF is expected.");
 
         if (!_sawCr && b == 10)
-          throwProtocolViolation ("CR hasn't been found.");
+          throwProtocolViolation ("LF is unexpected.");
 
         if (b == 32) // SP
           _gotIt = true;
@@ -232,7 +232,7 @@ namespace WebSocketSharp.Net
         }
 
         if ((_trailerState == 0 || _trailerState == 2) && b == 10)
-          throwProtocolViolation ("CR hasn't been found.");
+          throwProtocolViolation ("LF is unexpected.");
 
         if ((_trailerState == 1 || _trailerState == 3) && b != 10)
           throwProtocolViolation ("LF is expected.");
