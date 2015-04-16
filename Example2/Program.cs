@@ -61,6 +61,8 @@ namespace Example2
         "/Chat",
         () => new Chat ("Anon#") {
           Protocol = "chat",
+          // To ignore the Sec-WebSocket-Extensions header.
+          IgnoreExtensions = true,
           // To validate the Origin header.
           OriginValidator = val => {
             // Check the value of the Origin header, and return true if valid.
