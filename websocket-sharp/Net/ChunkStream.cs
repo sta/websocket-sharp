@@ -158,18 +158,19 @@ namespace WebSocketSharp.Net
       byte b = 0;
       while (offset < length) {
         b = buffer[offset++];
-        if (!_sawCr && b == 13) {
+        if (_sawCr) {
+          if (b == 10)
+            break;
+
+          throwProtocolViolation ("LF is expected.");
+        }
+
+        if (b == 13) {
           _sawCr = true;
           continue;
         }
 
-        if (_sawCr && b == 10)
-          break;
-
-        if (_sawCr && b != 10)
-          throwProtocolViolation ("LF is expected.");
-
-        if (!_sawCr && b == 10)
+        if (b == 10)
           throwProtocolViolation ("LF is unexpected.");
 
         if (b == 32) // SP
@@ -221,21 +222,22 @@ namespace WebSocketSharp.Net
         if (_saved.Length > 4196)
           throwProtocolViolation ("The trailer is too long.");
 
-        if ((_trailerState == 0 || _trailerState == 2) && b == 13) {
-          _trailerState++;
-          continue;
-        }
+        if (_trailerState == 1 || _trailerState == 3) {
+          if (b == 10) {
+            _trailerState++;
+            continue;
+          }
 
-        if ((_trailerState == 1 || _trailerState == 3) && b == 10) {
-          _trailerState++;
-          continue;
-        }
-
-        if ((_trailerState == 0 || _trailerState == 2) && b == 10)
-          throwProtocolViolation ("LF is unexpected.");
-
-        if ((_trailerState == 1 || _trailerState == 3) && b != 10)
           throwProtocolViolation ("LF is expected.");
+        }
+
+        if (b == 13) {
+          _trailerState++;
+          continue;
+        }
+
+        if (b == 10)
+          throwProtocolViolation ("LF is unexpected.");
 
         _trailerState = 0;
       }
@@ -245,6 +247,7 @@ namespace WebSocketSharp.Net
 
       _saved.Length -= 2;
       var reader = new StringReader (_saved.ToString ());
+
       string line;
       while ((line = reader.ReadLine ()) != null && line.Length > 0)
         _headers.Add (line);
@@ -289,8 +292,6 @@ namespace WebSocketSharp.Net
           return;
 
         _saved.Length = 0;
-        _sawCr = false;
-        _gotIt = false;
       }
 
       if (offset < length)
