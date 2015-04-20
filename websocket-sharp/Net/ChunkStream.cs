@@ -159,10 +159,10 @@ namespace WebSocketSharp.Net
       while (offset < length) {
         b = buffer[offset++];
         if (_sawCr) {
-          if (b == 10)
-            break;
+          if (b != 10)
+            throwProtocolViolation ("LF is expected.");
 
-          throwProtocolViolation ("LF is expected.");
+          break;
         }
 
         if (b == 13) {
@@ -223,12 +223,11 @@ namespace WebSocketSharp.Net
           throwProtocolViolation ("The trailer is too long.");
 
         if (_trailerState == 1 || _trailerState == 3) {
-          if (b == 10) {
-            _trailerState++;
-            continue;
-          }
+          if (b != 10)
+            throwProtocolViolation ("LF is expected.");
 
-          throwProtocolViolation ("LF is expected.");
+          _trailerState++;
+          continue;
         }
 
         if (b == 13) {
