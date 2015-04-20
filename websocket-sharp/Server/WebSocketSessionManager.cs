@@ -677,13 +677,13 @@ namespace WebSocketSharp.Server
     /// Sends a binary <paramref name="data"/> to the client on the session
     /// with the specified <paramref name="id"/>.
     /// </summary>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
-    public void SendTo (string id, byte[] data)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public void SendTo (byte[] data, string id)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
