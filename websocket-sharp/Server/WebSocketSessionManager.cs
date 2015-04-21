@@ -694,13 +694,13 @@ namespace WebSocketSharp.Server
     /// Sends a text <paramref name="data"/> to the client on the session
     /// with the specified <paramref name="id"/>.
     /// </summary>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
-    public void SendTo (string id, string data)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public void SendTo (string data, string id)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
