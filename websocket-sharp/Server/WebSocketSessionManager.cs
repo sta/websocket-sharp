@@ -661,13 +661,13 @@ namespace WebSocketSharp.Server
     /// <c>true</c> if the manager receives a Pong from the client in a time;
     /// otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
     /// </param>
-    public bool PingTo (string id, string message)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public bool PingTo (string message, string id)
     {
       IWebSocketSession session;
       return TryGetSession (id, out session) && session.Context.WebSocket.Ping (message);
