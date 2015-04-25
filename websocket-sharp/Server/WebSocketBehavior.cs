@@ -409,7 +409,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client on a session.
+    /// Sends binary <paramref name="data"/> to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -424,7 +424,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data to the client on a session.
+    /// Sends the specified <paramref name="file"/> as binary data to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -439,7 +439,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client on a session.
+    /// Sends text <paramref name="data"/> to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -454,7 +454,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously to the client on a session.
+    /// Sends binary <paramref name="data"/> asynchronously to the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -479,8 +479,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data asynchronously
-    /// to the client on a session.
+    /// Sends the specified <paramref name="file"/> as binary data asynchronously to
+    /// the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -505,7 +505,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously to the client on a session.
+    /// Sends text <paramref name="data"/> asynchronously to the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -530,8 +530,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to the client on a session.
+    /// Sends binary data from the specified <see cref="Stream"/> asynchronously to
+    /// the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
