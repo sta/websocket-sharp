@@ -86,7 +86,7 @@ namespace WebSocketSharp
     /// <summary>
     /// Equivalent to close status 1007.
     /// Indicates that an endpoint is terminating the connection because it has received
-    /// a message that contains a data that isn't consistent with the type of the message.
+    /// a message that contains data that isn't consistent with the type of the message.
     /// </summary>
     InconsistentData = 1007,
     /// <summary>
