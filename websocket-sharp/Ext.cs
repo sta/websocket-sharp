@@ -255,8 +255,8 @@ namespace WebSocketSharp
     {
       return !code.IsCloseStatusCode ()
              ? "An invalid close status code."
-             : code.IsNoStatusCode () && !reason.IsNullOrEmpty ()
-               ? "NoStatusCode cannot have a reason."
+             : code.IsNoStatus () && !reason.IsNullOrEmpty ()
+               ? "NoStatus cannot have a reason."
                : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
                  ? "A reason has greater than the allowable max size."
                  : null;
@@ -264,8 +264,8 @@ namespace WebSocketSharp
 
     internal static string CheckIfValidCloseParameters (this CloseStatusCode code, string reason)
     {
-      return code.IsNoStatusCode () && !reason.IsNullOrEmpty ()
-             ? "NoStatusCode cannot have a reason."
+      return code.IsNoStatus () && !reason.IsNullOrEmpty ()
+             ? "NoStatus cannot have a reason."
              : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
                ? "A reason has greater than the allowable max size."
                : null;
@@ -496,22 +496,22 @@ namespace WebSocketSharp
     {
       return code == CloseStatusCode.ProtocolError
              ? "A WebSocket protocol error has occurred."
-             : code == CloseStatusCode.IncorrectData
-               ? "An incorrect data has been received."
+             : code == CloseStatusCode.UnsupportedData
+               ? "Unsupported data has been received."
                : code == CloseStatusCode.Abnormal
                  ? "An exception has occurred."
-                 : code == CloseStatusCode.InconsistentData
-                   ? "An inconsistent data has been received."
+                 : code == CloseStatusCode.InvalidData
+                   ? "Invalid data has been received."
                    : code == CloseStatusCode.PolicyViolation
                      ? "A policy violation has occurred."
                      : code == CloseStatusCode.TooBig
-                       ? "A too big data has been received."
-                       : code == CloseStatusCode.IgnoreExtension
+                       ? "A too big message has been received."
+                       : code == CloseStatusCode.MandatoryExtension
                          ? "WebSocket client didn't receive expected extension(s)."
                          : code == CloseStatusCode.ServerError
                            ? "WebSocket server got an internal error."
                            : code == CloseStatusCode.TlsHandshakeFailure
-                             ? "An error has occurred while handshaking."
+                             ? "An error has occurred during a TLS handshake."
                              : String.Empty;
     }
 
@@ -604,14 +604,14 @@ namespace WebSocketSharp
       return value.StartsWith (method.ToExtensionString ());
     }
 
-    internal static bool IsNoStatusCode (this ushort code)
+    internal static bool IsNoStatus (this ushort code)
     {
-      return code == (ushort) CloseStatusCode.NoStatusCode;
+      return code == (ushort) CloseStatusCode.NoStatus;
     }
 
-    internal static bool IsNoStatusCode (this CloseStatusCode code)
+    internal static bool IsNoStatus (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.NoStatusCode;
+      return code == CloseStatusCode.NoStatus;
     }
 
     internal static bool IsPortNumber (this int value)
@@ -622,7 +622,7 @@ namespace WebSocketSharp
     internal static bool IsReserved (this ushort code)
     {
       return code == (ushort) CloseStatusCode.Undefined ||
-             code == (ushort) CloseStatusCode.NoStatusCode ||
+             code == (ushort) CloseStatusCode.NoStatus ||
              code == (ushort) CloseStatusCode.Abnormal ||
              code == (ushort) CloseStatusCode.TlsHandshakeFailure;
     }
@@ -630,7 +630,7 @@ namespace WebSocketSharp
     internal static bool IsReserved (this CloseStatusCode code)
     {
       return code == CloseStatusCode.Undefined ||
-             code == CloseStatusCode.NoStatusCode ||
+             code == CloseStatusCode.NoStatus ||
              code == CloseStatusCode.Abnormal ||
              code == CloseStatusCode.TlsHandshakeFailure;
     }

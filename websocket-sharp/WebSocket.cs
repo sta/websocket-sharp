@@ -773,8 +773,8 @@ namespace WebSocketSharp
         // ?
         return processUnsupportedFrame (
           frame,
-          CloseStatusCode.IncorrectData,
-          "Incorrect data has been received while receiving the fragmented data.");
+          CloseStatusCode.UnsupportedData,
+          "Unsupported data has been received while receiving the fragmented data.");
       }
 
       return true;
@@ -1075,7 +1075,7 @@ namespace WebSocketSharp
                    ? processPongFrame (frame)
                    : frame.IsClose
                      ? processCloseFrame (frame)
-                     : processUnsupportedFrame (frame, CloseStatusCode.IncorrectData, null);
+                     : processUnsupportedFrame (frame, CloseStatusCode.UnsupportedData, null);
     }
 
     // As server
@@ -1746,7 +1746,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1773,7 +1773,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1807,7 +1807,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1841,7 +1841,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1895,7 +1895,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -1925,7 +1925,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -1964,7 +1964,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -2004,7 +2004,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }

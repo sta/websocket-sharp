@@ -766,7 +766,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         _services.Stop (new CloseEventArgs (), true, true);
       }
       else {
@@ -802,7 +802,7 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      if (code.IsNoStatusCode ()) {
+      if (code.IsNoStatus ()) {
         _services.Stop (new CloseEventArgs (), true, true);
       }
       else {

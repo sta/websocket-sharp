@@ -65,9 +65,9 @@ namespace WebSocketSharp
     /// <summary>
     /// Equivalent to close status 1003.
     /// Indicates that an endpoint is terminating the connection because it has received
-    /// an unacceptable type message.
+    /// a type of data that it cannot accept.
     /// </summary>
-    IncorrectData = 1003,
+    UnsupportedData = 1003,
     /// <summary>
     /// Equivalent to close status 1004.
     /// Still undefined. A Reserved value.
@@ -77,7 +77,7 @@ namespace WebSocketSharp
     /// Equivalent to close status 1005.
     /// Indicates that no status code was actually present. A Reserved value.
     /// </summary>
-    NoStatusCode = 1005,
+    NoStatus = 1005,
     /// <summary>
     /// Equivalent to close status 1006.
     /// Indicates that the connection was closed abnormally. A Reserved value.
@@ -88,7 +88,7 @@ namespace WebSocketSharp
     /// Indicates that an endpoint is terminating the connection because it has received
     /// a message that contains data that isn't consistent with the type of the message.
     /// </summary>
-    InconsistentData = 1007,
+    InvalidData = 1007,
     /// <summary>
     /// Equivalent to close status 1008.
     /// Indicates that an endpoint is terminating the connection because it has received
@@ -107,7 +107,7 @@ namespace WebSocketSharp
     /// the server to negotiate one or more extension, but the server didn't return them
     /// in the handshake response.
     /// </summary>
-    IgnoreExtension = 1010,
+    MandatoryExtension = 1010,
     /// <summary>
     /// Equivalent to close status 1011.
     /// Indicates that the server is terminating the connection because it has encountered
