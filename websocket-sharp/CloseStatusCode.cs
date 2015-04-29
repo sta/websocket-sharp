@@ -36,13 +36,12 @@ namespace WebSocketSharp
   /// <remarks>
   ///   <para>
   ///   The values of the status code are defined in
-  ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4</see>
-  ///   of RFC 6455.
+  ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4</see> of RFC 6455.
   ///   </para>
   ///   <para>
-  ///   "Reserved value" must not be set as a status code in a close control frame
-  ///   by an endpoint. It's designated for use in applications expecting a status
-  ///   code to indicate that the connection was closed due to the system grounds.
+  ///   "Reserved value" must not be set as a status code in a close control frame by
+  ///   an endpoint. It's designated for use in applications expecting a status code to
+  ///   indicate that the connection was closed due to the system grounds.
   ///   </para>
   /// </remarks>
   public enum CloseStatusCode : ushort
