@@ -60,17 +60,14 @@ namespace WebSocketSharp
 
     internal CloseEventArgs ()
     {
+      _code = (ushort) CloseStatusCode.NoStatus;
       _payloadData = new PayloadData ();
       _rawData = _payloadData.ApplicationData;
-
-      _code = (ushort) CloseStatusCode.NoStatus;
-      _reason = String.Empty;
     }
 
     internal CloseEventArgs (ushort code)
     {
       _code = code;
-      _reason = String.Empty;
       _rawData = code.InternalToByteArray (ByteOrder.Big);
     }
 
@@ -97,7 +94,7 @@ namespace WebSocketSharp
     internal CloseEventArgs (ushort code, string reason)
     {
       _code = code;
-      _reason = reason ?? String.Empty;
+      _reason = reason;
       _rawData = code.Append (reason);
     }
 
@@ -146,7 +143,7 @@ namespace WebSocketSharp
     /// </value>
     public string Reason {
       get {
-        return _reason;
+        return _reason ?? String.Empty;
       }
     }
 
