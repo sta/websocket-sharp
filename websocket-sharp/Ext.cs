@@ -251,33 +251,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfValidCloseParameters (this ushort code, string reason)
-    {
-      return !code.IsCloseStatusCode ()
-             ? "An invalid close status code."
-             : code.IsNoStatus () && !reason.IsNullOrEmpty ()
-               ? "NoStatus cannot have a reason."
-               : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
-                 ? "A reason has greater than the allowable max size."
-                 : null;
-    }
-
-    internal static string CheckIfValidCloseParameters (this CloseStatusCode code, string reason)
-    {
-      return code.IsNoStatus () && !reason.IsNullOrEmpty ()
-             ? "NoStatus cannot have a reason."
-             : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
-               ? "A reason has greater than the allowable max size."
-               : null;
-    }
-
-    internal static string CheckIfValidCloseStatusCode (this ushort code)
-    {
-      return !code.IsCloseStatusCode ()
-             ? "An invalid close status code."
-             : null;
-    }
-
     internal static string CheckIfValidControlData (this byte[] data, string paramName)
     {
       return data.Length > 125
