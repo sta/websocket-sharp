@@ -102,14 +102,14 @@ namespace WebSocketSharp
     TooBig = 1009,
     /// <summary>
     /// Equivalent to close status 1010.
-    /// Indicates that the client is terminating the connection because it has expected
-    /// the server to negotiate one or more extension, but the server didn't return them
-    /// in the handshake response.
+    /// Indicates that a client is terminating the connection because it has expected
+    /// the server to negotiate one or more extension, but the server didn't return
+    /// them in the handshake response.
     /// </summary>
     MandatoryExtension = 1010,
     /// <summary>
     /// Equivalent to close status 1011.
-    /// Indicates that the server is terminating the connection because it has encountered
+    /// Indicates that a server is terminating the connection because it has encountered
     /// an unexpected condition that prevented it from fulfilling the request.
     /// </summary>
     ServerError = 1011,
