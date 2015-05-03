@@ -1777,7 +1777,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == (ushort) CloseStatusCode.NoStatus) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1806,7 +1806,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == CloseStatusCode.NoStatus) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1842,7 +1842,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == (ushort) CloseStatusCode.NoStatus) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1878,7 +1878,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == CloseStatusCode.NoStatus) {
         close (new CloseEventArgs (), true, true);
         return;
       }
@@ -1934,7 +1934,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == (ushort) CloseStatusCode.NoStatus) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -1966,7 +1966,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == CloseStatusCode.NoStatus) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -2007,7 +2007,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == (ushort) CloseStatusCode.NoStatus) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }
@@ -2049,7 +2049,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code.IsNoStatus ()) {
+      if (code == CloseStatusCode.NoStatus) {
         closeAsync (new CloseEventArgs (), true, true);
         return;
       }

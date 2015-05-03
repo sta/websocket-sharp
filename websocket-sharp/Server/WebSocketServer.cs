@@ -854,7 +854,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      if (code.IsNoStatus ()) {
+      if (code == (ushort) CloseStatusCode.NoStatus) {
         _services.Stop (new CloseEventArgs (), true, true);
       }
       else {
@@ -891,7 +891,7 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-      if (code.IsNoStatus ()) {
+      if (code == CloseStatusCode.NoStatus) {
         _services.Stop (new CloseEventArgs (), true, true);
       }
       else {

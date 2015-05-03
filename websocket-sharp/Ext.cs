@@ -577,15 +577,15 @@ namespace WebSocketSharp
       return value.StartsWith (method.ToExtensionString ());
     }
 
-    internal static bool IsNoStatus (this ushort code)
-    {
-      return code == (ushort) CloseStatusCode.NoStatus;
-    }
-
-    internal static bool IsNoStatus (this CloseStatusCode code)
-    {
-      return code == CloseStatusCode.NoStatus;
-    }
+//    internal static bool IsNoStatus (this ushort code)
+//    {
+//      return code == (ushort) CloseStatusCode.NoStatus;
+//    }
+//
+//    internal static bool IsNoStatus (this CloseStatusCode code)
+//    {
+//      return code == CloseStatusCode.NoStatus;
+//    }
 
     internal static bool IsPortNumber (this int value)
     {
