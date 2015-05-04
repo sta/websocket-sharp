@@ -1560,7 +1560,7 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static string CheckIfValidCloseParameters (ushort code, string reason, bool client)
+    internal static string CheckCloseParameters (ushort code, string reason, bool client)
     {
       return !code.IsCloseStatusCode ()
              ? "An invalid close status code."
@@ -1575,8 +1575,7 @@ namespace WebSocketSharp
                      : null;
     }
 
-    internal static string CheckIfValidCloseParameters (
-      CloseStatusCode code, string reason, bool client)
+    internal static string CheckCloseParameters (CloseStatusCode code, string reason, bool client)
     {
       return code == CloseStatusCode.NoStatus
              ? (!reason.IsNullOrEmpty () ? "NoStatus cannot have a reason." : null)
@@ -1767,9 +1766,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, null, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1796,9 +1793,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, null, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1832,9 +1827,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, reason, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1868,9 +1861,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, reason, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1924,9 +1915,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, null, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1956,9 +1945,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, null, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1997,9 +1984,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, reason, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2039,9 +2024,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ??
-                CheckIfValidCloseParameters (code, reason, _client);
-
+      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
