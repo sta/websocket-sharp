@@ -51,8 +51,9 @@ websocket-sharp is available on the **Unity Asset Store**.
 
 It works with **Unity Free**, but there are some limitations:
 
-- **[Security Sandbox of the Webplayer]** (server doesn't work in the webplayer)
+- **[Security Sandbox of the Webplayer]** (the server doesn't work in the webplayer)
 - **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
+- **Limited support for the System.IO.Compression** (the compression extension isn't available on Windows)
 - **.NET API 2.0 compatibility level for iOS/Android**
 
 Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
