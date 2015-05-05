@@ -571,10 +571,8 @@ namespace WebSocketSharp.Server
       if (message == null || message.Length == 0)
         return Broadping ();
 
-      byte[] data = null;
-      var msg = _state.CheckIfStart () ??
-                (data = Encoding.UTF8.GetBytes (message)).CheckIfValidControlData ("message");
-
+      byte[] data;
+      var msg = _state.CheckIfStart () ?? WebSocket.CheckPingParameter (message, out data);
       if (msg != null) {
         _logger.Error (msg);
         return null;

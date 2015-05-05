@@ -1588,6 +1588,12 @@ namespace WebSocketSharp
                    : null;
     }
 
+    internal static string CheckPingParameter (string message, out byte[] bytes)
+    {
+      bytes = Encoding.UTF8.GetBytes (message);
+      return bytes.Length > 125 ? "A message has greater than the allowable max size." : null;
+    }
+
     // As server
     internal void Close (HttpResponse response)
     {
@@ -2114,8 +2120,8 @@ namespace WebSocketSharp
       if (message == null || message.Length == 0)
         return Ping ();
 
-      var data = Encoding.UTF8.GetBytes (message);
-      var msg = data.CheckIfValidControlData ("message");
+      byte[] data;
+      var msg = CheckPingParameter (message, out data);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the ping.", null);

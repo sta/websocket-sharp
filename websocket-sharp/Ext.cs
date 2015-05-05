@@ -251,13 +251,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfValidControlData (this byte[] data, string paramName)
-    {
-      return data.Length > 125
-             ? String.Format ("'{0}' has greater than the allowable max size.", paramName)
-             : null;
-    }
-
     internal static string CheckIfValidProtocols (this string[] protocols)
     {
       return protocols.Contains (
