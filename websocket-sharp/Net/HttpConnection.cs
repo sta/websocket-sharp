@@ -372,19 +372,19 @@ namespace WebSocketSharp.Net
 
       var last = offset + count;
       read = 0;
-      for (var i = offset; i < last && _lineState != LineState.LF; i++) {
+      for (var i = offset; i < last && _lineState != LineState.Lf; i++) {
         read++;
         var b = buffer[i];
         if (b == 13)
-          _lineState = LineState.CR;
+          _lineState = LineState.Cr;
         else if (b == 10)
-          _lineState = LineState.LF;
+          _lineState = LineState.Lf;
         else
           _currentLine.Append ((char) b);
       }
 
       string ret = null;
-      if (_lineState == LineState.LF) {
+      if (_lineState == LineState.Lf) {
         _lineState = LineState.None;
         ret = _currentLine.ToString ();
         _currentLine.Length = 0;
