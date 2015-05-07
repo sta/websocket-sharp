@@ -64,7 +64,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private const string _tspecials = "()<>@,;:\\\"/[]?={} \t";
+    private static readonly byte[] _last = new byte[] { 0x00 };
+    private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
     #endregion
 
@@ -90,6 +91,7 @@ namespace WebSocketSharp
       using (var ds = new DeflateStream (output, CompressionMode.Compress, true)) {
         stream.CopyTo (ds);
         ds.Close (); // "BFINAL" set to 1.
+        output.Write (_last, 0, 1);
         output.Position = 0;
 
         return output;
