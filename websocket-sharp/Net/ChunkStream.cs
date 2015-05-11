@@ -177,7 +177,7 @@ namespace WebSocketSharp.Net
           _gotIt = true;
 
         if (!_gotIt)
-          _saved.Append (b);
+          _saved.Append ((char) b);
 
         if (_saved.Length > 20)
           throwProtocolViolation ("The chunk size is too long.");
@@ -218,7 +218,7 @@ namespace WebSocketSharp.Net
 
       while (offset < length && _trailerState < 4) {
         var b = buffer[offset++];
-        _saved.Append (b);
+        _saved.Append ((char) b);
         if (_saved.Length > 4196)
           throwProtocolViolation ("The trailer is too long.");
 
