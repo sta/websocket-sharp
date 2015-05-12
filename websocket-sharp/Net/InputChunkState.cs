@@ -2,7 +2,7 @@
 /*
  * InputChunkState.cs
  *
- * This code is derived from System.Net.ChunkStream.cs of Mono
+ * This code is derived from ChunkStream.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
