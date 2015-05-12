@@ -144,7 +144,7 @@ namespace WebSocketSharp.Net
 
         _sawCr = true;
         if (offset == length)
-          return InputChunkState.BodyFinished;
+          return InputChunkState.DataEnded;
       }
 
       if (buffer[offset++] != 10)
@@ -200,7 +200,7 @@ namespace WebSocketSharp.Net
         return InputChunkState.Trailer;
       }
 
-      return InputChunkState.Body;
+      return InputChunkState.Data;
     }
 
     private InputChunkState setHeaders (byte[] buffer, ref int offset, int length)
@@ -271,15 +271,15 @@ namespace WebSocketSharp.Net
         _gotIt = false;
       }
 
-      if (_state == InputChunkState.Body && offset < length) {
-        _state = writeBody (buffer, ref offset, length);
-        if (_state == InputChunkState.Body)
+      if (_state == InputChunkState.Data && offset < length) {
+        _state = writeData (buffer, ref offset, length);
+        if (_state == InputChunkState.Data)
           return;
       }
 
-      if (_state == InputChunkState.BodyFinished && offset < length) {
+      if (_state == InputChunkState.DataEnded && offset < length) {
         _state = seekCrLf (buffer, ref offset, length);
-        if (_state == InputChunkState.BodyFinished)
+        if (_state == InputChunkState.DataEnded)
           return;
 
         _sawCr = false;
@@ -297,24 +297,24 @@ namespace WebSocketSharp.Net
         write (buffer, ref offset, length);
     }
 
-    private InputChunkState writeBody (byte[] buffer, ref int offset, int length)
+    private InputChunkState writeData (byte[] buffer, ref int offset, int length)
     {
       if (_chunkSize == 0)
-        return InputChunkState.BodyFinished;
+        return InputChunkState.DataEnded;
 
       var cnt = length - offset;
       var left = _chunkSize - _chunkRead;
       if (cnt > left)
         cnt = left;
 
-      var body = new byte[cnt];
-      Buffer.BlockCopy (buffer, offset, body, 0, cnt);
-      _chunks.Add (new Chunk (body));
+      var data = new byte[cnt];
+      Buffer.BlockCopy (buffer, offset, data, 0, cnt);
+      _chunks.Add (new Chunk (data));
 
       offset += cnt;
       _chunkRead += cnt;
 
-      return _chunkRead == _chunkSize ? InputChunkState.BodyFinished : InputChunkState.Body;
+      return _chunkRead == _chunkSize ? InputChunkState.DataEnded : InputChunkState.Data;
     }
 
     #endregion
