@@ -100,7 +100,7 @@ namespace WebSocketSharp.Net
 
     public bool WantMore {
       get {
-        return _chunkRead != _chunkSize || _chunkSize != 0 || _state != InputChunkState.None;
+        return _state != InputChunkState.End;
       }
     }
 
@@ -108,10 +108,11 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private int readFromChunks (byte[] buffer, int offset, int count)
+    private int read (byte[] buffer, int offset, int count)
     {
-      var cnt = _chunks.Count;
       var nread = 0;
+
+      var cnt = _chunks.Count;
       for (var i = 0; i < cnt; i++) {
         var chunk = _chunks[i];
         if (chunk == null)
@@ -203,14 +204,14 @@ namespace WebSocketSharp.Net
       return InputChunkState.Data;
     }
 
-    private InputChunkState setHeaders (byte[] buffer, ref int offset, int length)
+    private InputChunkState setTrailer (byte[] buffer, ref int offset, int length)
     {
-      // 0\r\n\r\n
+      // Check if no trailer.
       if (_trailerState == 2 && buffer[offset] == 13 && _saved.Length == 0) {
         offset++;
         if (offset < length && buffer[offset] == 10) {
           offset++;
-          return InputChunkState.None;
+          return InputChunkState.End;
         }
 
         offset--;
@@ -251,7 +252,7 @@ namespace WebSocketSharp.Net
       while ((line = reader.ReadLine ()) != null && line.Length > 0)
         _headers.Add (line);
 
-      return InputChunkState.None;
+      return InputChunkState.End;
     }
 
     private static void throwProtocolViolation (string message)
@@ -261,6 +262,9 @@ namespace WebSocketSharp.Net
 
     private void write (byte[] buffer, ref int offset, int length)
     {
+      if (_state == InputChunkState.End)
+        throwProtocolViolation ("The chunks were ended.");
+
       if (_state == InputChunkState.None) {
         _state = setChunkSize (buffer, ref offset, length);
         if (_state == InputChunkState.None)
@@ -286,7 +290,7 @@ namespace WebSocketSharp.Net
       }
 
       if (_state == InputChunkState.Trailer && offset < length) {
-        _state = setHeaders (buffer, ref offset, length);
+        _state = setTrailer (buffer, ref offset, length);
         if (_state == InputChunkState.Trailer)
           return;
 
@@ -299,9 +303,6 @@ namespace WebSocketSharp.Net
 
     private InputChunkState writeData (byte[] buffer, ref int offset, int length)
     {
-      if (_chunkSize == 0)
-        return InputChunkState.DataEnded;
-
       var cnt = length - offset;
       var left = _chunkSize - _chunkRead;
       if (cnt > left)
@@ -319,18 +320,31 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Internal Methods
+
+    internal void ResetBuffer ()
+    {
+      _chunkRead = 0;
+      _chunkSize = -1;
+      _chunks.Clear ();
+    }
+
+    internal int WriteAndReadBack (byte[] buffer, int offset, int writeCount, int readCount)
+    {
+      Write (buffer, offset, writeCount);
+      return Read (buffer, offset, readCount);
+    }
+
+    #endregion
+
     #region Public Methods
 
     public int Read (byte[] buffer, int offset, int count)
     {
-      return readFromChunks (buffer, offset, count);
-    }
+      if (count <= 0)
+        return 0;
 
-    public void ResetBuffer ()
-    {
-      _chunkSize = -1;
-      _chunkRead = 0;
-      _chunks.Clear ();
+      return read (buffer, offset, count);
     }
 
     public void Write (byte[] buffer, int offset, int count)
@@ -339,12 +353,6 @@ namespace WebSocketSharp.Net
         return;
 
       write (buffer, ref offset, offset + count);
-    }
-
-    public void WriteAndReadBack (byte[] buffer, int offset, int count, ref int read)
-    {
-      Write (buffer, offset, read);
-      read = readFromChunks (buffer, offset, count);
     }
 
     #endregion
