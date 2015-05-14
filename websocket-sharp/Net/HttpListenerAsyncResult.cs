@@ -50,7 +50,9 @@ namespace WebSocketSharp.Net
     private AsyncCallback       _callback;
     private bool                _completed;
     private HttpListenerContext _context;
+    private bool                _endCalled;
     private Exception           _exception;
+    private bool                _inGet;
     private object              _state;
     private object              _sync;
     private bool                _syncCompleted;
@@ -58,20 +60,37 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Internal Fields
+    #region Internal Constructors
 
-    internal bool EndCalled;
-    internal bool InGet;
-
-    #endregion
-
-    #region Public Constructors
-
-    public HttpListenerAsyncResult (AsyncCallback callback, object state)
+    internal HttpListenerAsyncResult (AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
       _sync = new object ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal bool EndCalled {
+      get {
+        return _endCalled;
+      }
+
+      set {
+        _endCalled = value;
+      }
+    }
+
+    internal bool InGet {
+      get {
+        return _inGet;
+      }
+
+      set {
+        _inGet = value;
+      }
     }
 
     #endregion
@@ -135,7 +154,7 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = InGet && (exception is ObjectDisposedException)
+      _exception = _inGet && (exception is ObjectDisposedException)
                    ? new HttpListenerException (500, "Listener closed.")
                    : exception;
 
