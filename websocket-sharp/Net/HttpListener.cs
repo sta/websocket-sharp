@@ -315,9 +315,7 @@ namespace WebSocketSharp.Net
     public string Realm {
       get {
         CheckDisposed ();
-        return _realm != null && _realm.Length > 0
-               ? _realm
-               : (_realm = "SECRET AREA");
+        return _realm != null && _realm.Length > 0 ? _realm : (_realm = "SECRET AREA");
       }
 
       set {
@@ -331,8 +329,8 @@ namespace WebSocketSharp.Net
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used
-    /// to authenticate the server and optionally the client for secure connection.
+    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -380,9 +378,9 @@ namespace WebSocketSharp.Net
     /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
-    /// that references the method used to find the credentials. The default value is a function
-    /// that only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate that
+    /// references the method used to find the credentials. The default value is a function that
+    /// only returns <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -421,7 +419,7 @@ namespace WebSocketSharp.Net
         if (_connections.Count == 0)
           return;
 
-        // Need to copy this since closing will call RemoveConnection.
+        // Need to copy this since closing will call the RemoveConnection method.
         var keys = _connections.Keys;
         var conns = new HttpConnection[keys.Count];
         keys.CopyTo (conns, 0);
@@ -437,7 +435,7 @@ namespace WebSocketSharp.Net
         if (_ctxRegistry.Count == 0)
           return;
 
-        // Need to copy this since closing will call UnregisterContext.
+        // Need to copy this since closing will call the UnregisterContext method.
         var keys = _ctxRegistry.Keys;
         var ctxs = new HttpListenerContext[keys.Count];
         keys.CopyTo (ctxs, 0);
@@ -608,9 +606,9 @@ namespace WebSocketSharp.Net
         _ctxRegistry.Remove (context);
 
       lock (_ctxQueueSync) {
-        var i = _ctxQueue.IndexOf (context);
-        if (i >= 0)
-          _ctxQueue.RemoveAt (i);
+        var idx = _ctxQueue.IndexOf (context);
+        if (idx >= 0)
+          _ctxQueue.RemoveAt (idx);
       }
     }
 
@@ -641,8 +639,8 @@ namespace WebSocketSharp.Net
     /// An <see cref="IAsyncResult"/> that represents the status of the asynchronous operation.
     /// </returns>
     /// <param name="callback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method to invoke
-    /// when the asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that references the method to invoke when
+    /// the asynchronous operation completes.
     /// </param>
     /// <param name="state">
     /// An <see cref="object"/> that represents a user defined object to pass to
@@ -721,7 +719,7 @@ namespace WebSocketSharp.Net
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();
 
-      return ares.GetContext (); // This will throw on error.
+      return ares.GetContext (); // This may throw an exception.
     }
 
     /// <summary>
