@@ -321,20 +321,24 @@ namespace WebSocketSharp
         return (arg1, arg2, arg3, arg4) =>
           output.AppendFormat (lineFmt, ++lineCnt, arg1, arg2, arg3, arg4);
       };
+      var printLine = linePrinter ();
 
       output.AppendFormat (headerFmt, String.Empty);
 
-      var printLine = linePrinter ();
       var bytes = frame.ToByteArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
-        if (i < cnt)
+        if (i < cnt) {
           printLine (
-            Convert.ToString (bytes[j],     2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0'));
-        else if (rem > 0)
+
+          continue;
+        }
+
+        if (rem > 0)
           printLine (
             Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
             rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
@@ -434,9 +438,9 @@ Extended Payload Length: {7}
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
 
-      // Check if valid header
+      // Check if valid header.
       var err = isControl (opcode) && payloadLen > 125
-                ? "A control frame has a payload data which is greater than the allowable max size."
+                ? "A control frame has payload data which is greater than the allowable max size."
                 : isControl (opcode) && fin == Fin.More
                   ? "A control frame is fragmented."
                   : !isData (opcode) && rsv1 == Rsv.On
@@ -599,9 +603,7 @@ Extended Payload Length: {7}
 
     public string PrintToString (bool dumped)
     {
-      return dumped
-             ? dump (this)
-             : print (this);
+      return dumped ? dump (this) : print (this);
     }
 
     public byte[] ToByteArray ()
