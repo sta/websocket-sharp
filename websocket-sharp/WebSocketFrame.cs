@@ -440,7 +440,7 @@ Extended Payload Length: {7}
 
       // Check if valid header.
       var err = isControl (opcode) && payloadLen > 125
-                ? "A control frame has payload data which is greater than the allowable max size."
+                ? "A control frame has payload data which is greater than the allowable max length."
                 : isControl (opcode) && fin == Fin.More
                   ? "A control frame is fragmented."
                   : !isData (opcode) && rsv1 == Rsv.On
@@ -461,12 +461,7 @@ Extended Payload Length: {7}
 
       /* Extended Payload Length */
 
-      var size = payloadLen < 126
-                 ? 0
-                 : payloadLen == 126
-                   ? 2
-                   : 8;
-
+      var size = payloadLen < 126 ? 0 : (payloadLen == 126 ? 2 : 8);
       var extPayloadLen = size > 0 ? stream.ReadBytes (size) : new byte[0];
       if (size > 0 && extPayloadLen.Length != size)
         throw new WebSocketException (
@@ -619,17 +614,17 @@ Extended Payload Length: {7}
         buff.Write (((ushort) header).InternalToByteArray (ByteOrder.Big), 0, 2);
 
         if (_payloadLength > 125)
-          buff.Write (_extPayloadLength, 0, _extPayloadLength.Length);
+          buff.Write (_extPayloadLength, 0, _payloadLength == 126 ? 2 : 8);
 
         if (_mask == Mask.Mask)
-          buff.Write (_maskingKey, 0, _maskingKey.Length);
+          buff.Write (_maskingKey, 0, 4);
 
         if (_payloadLength > 0) {
-          var payload = _payloadData.ToByteArray ();
+          var bytes = _payloadData.ToByteArray ();
           if (_payloadLength < 127)
-            buff.Write (payload, 0, payload.Length);
+            buff.Write (bytes, 0, bytes.Length);
           else
-            buff.WriteBytes (payload);
+            buff.WriteBytes (bytes);
         }
 
         buff.Close ();
