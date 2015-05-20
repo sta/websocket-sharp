@@ -38,17 +38,16 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private static readonly byte[] _emptyBytes;
-    private byte[]                 _extPayloadLength;
-    private Fin                    _fin;
-    private Mask                   _mask;
-    private byte[]                 _maskingKey;
-    private Opcode                 _opcode;
-    private PayloadData            _payloadData;
-    private byte                   _payloadLength;
-    private Rsv                    _rsv1;
-    private Rsv                    _rsv2;
-    private Rsv                    _rsv3;
+    private byte[]      _extPayloadLength;
+    private Fin         _fin;
+    private Mask        _mask;
+    private byte[]      _maskingKey;
+    private Opcode      _opcode;
+    private PayloadData _payloadData;
+    private byte        _payloadLength;
+    private Rsv         _rsv1;
+    private Rsv         _rsv2;
+    private Rsv         _rsv3;
 
     #endregion
 
@@ -63,7 +62,6 @@ namespace WebSocketSharp
     static WebSocketFrame ()
     {
       EmptyUnmaskPingBytes = CreatePingFrame (false).ToByteArray ();
-      _emptyBytes = new byte[0];
     }
 
     #endregion
@@ -100,7 +98,7 @@ namespace WebSocketSharp
       var len = payloadData.Length;
       if (len < 126) {
         _payloadLength = (byte) len;
-        _extPayloadLength = _emptyBytes;
+        _extPayloadLength = Ext.EmptyByteArray;
       }
       else if (len < 0x010000) {
         _payloadLength = (byte) 126;
@@ -118,7 +116,7 @@ namespace WebSocketSharp
       }
       else {
         _mask = Mask.Unmask;
-        _maskingKey = _emptyBytes;
+        _maskingKey = Ext.EmptyByteArray;
       }
 
       _payloadData = payloadData;
@@ -464,7 +462,7 @@ Extended Payload Length: {7}
       /* Extended Payload Length */
 
       var size = payloadLen < 126 ? 0 : (payloadLen == 126 ? 2 : 8);
-      var extPayloadLen = size > 0 ? stream.ReadBytes (size) : _emptyBytes;
+      var extPayloadLen = size > 0 ? stream.ReadBytes (size) : Ext.EmptyByteArray;
       if (size > 0 && extPayloadLen.Length != size)
         throw new WebSocketException (
           "The 'Extended Payload Length' of a frame cannot be read from the data source.");
@@ -474,7 +472,7 @@ Extended Payload Length: {7}
       /* Masking Key */
 
       var masked = mask == Mask.Mask;
-      var maskingKey = masked ? stream.ReadBytes (4) : _emptyBytes;
+      var maskingKey = masked ? stream.ReadBytes (4) : Ext.EmptyByteArray;
       if (masked && maskingKey.Length != 4)
         throw new WebSocketException (
           "The 'Masking Key' of a frame cannot be read from the data source.");
@@ -506,7 +504,7 @@ Extended Payload Length: {7}
             "The 'Payload Data' of a frame cannot be read from the data source.");
       }
       else {
-        data = _emptyBytes;
+        data = Ext.EmptyByteArray;
       }
 
       frame._payloadData = new PayloadData (data, masked);
@@ -580,7 +578,7 @@ Extended Payload Length: {7}
 
       _mask = Mask.Unmask;
       _payloadData.Mask (_maskingKey);
-      _maskingKey = _emptyBytes;
+      _maskingKey = Ext.EmptyByteArray;
     }
 
     #endregion
