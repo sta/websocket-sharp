@@ -256,11 +256,13 @@ namespace WebSocketSharp.Net
           return;
 
         var nread = -1;
+        var len = 0L;
         try {
           conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
           nread = conn._stream.EndRead (asyncResult);
           conn._requestBuffer.Write (conn._buffer, 0, nread);
-          if (conn._requestBuffer.Length > 32768) {
+          len = conn._requestBuffer.Length;
+          if (len > 32768) {
             conn.SendError ("Bad request", 400);
             conn.Close (true);
 
@@ -280,7 +282,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (conn.processInput (conn._requestBuffer.GetBuffer ())) {
+        if (conn.processInput (conn._requestBuffer.GetBuffer (), (int) len)) {
           if (!conn._context.HasError)
             conn._context.Request.FinishInitialization ();
 
@@ -323,13 +325,12 @@ namespace WebSocketSharp.Net
 
     // true -> Done processing.
     // false -> Need more input.
-    private bool processInput (byte[] data)
+    private bool processInput (byte[] data, int length)
     {
-      var len = data.Length;
       var nread = 0;
       try {
         string line;
-        while ((line = readLineFrom (data, _position, len - _position, ref nread)) != null) {
+        while ((line = readLineFrom (data, _position, length - _position, ref nread)) != null) {
           _position += nread;
           if (line.Length == 0) {
             if (_inputState == InputState.RequestLine)
@@ -357,11 +358,6 @@ namespace WebSocketSharp.Net
       }
 
       _position += nread;
-      if (nread == len) {
-        _requestBuffer.SetLength (0);
-        _position = 0;
-      }
-
       return false;
     }
 
@@ -483,7 +479,7 @@ namespace WebSocketSharp.Net
           return _inputStream;
 
         var buff = _requestBuffer.GetBuffer ();
-        var len = buff.Length;
+        var len = (int) _requestBuffer.Length;
         disposeRequestBuffer ();
         if (chunked) {
           _chunked = true;
