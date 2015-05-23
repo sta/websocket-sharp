@@ -327,10 +327,13 @@ namespace WebSocketSharp.Net
     // false -> Need more input.
     private bool processInput (byte[] data, int length)
     {
+      if (_currentLine == null)
+        _currentLine = new StringBuilder ();
+
       var nread = 0;
       try {
         string line;
-        while ((line = readLineFrom (data, _position, length - _position, ref nread)) != null) {
+        while ((line = readLineFrom (data, _position, length, out nread)) != null) {
           _position += nread;
           if (line.Length == 0) {
             if (_inputState == InputState.RequestLine)
@@ -361,14 +364,10 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private string readLineFrom (byte[] buffer, int offset, int count, ref int read)
+    private string readLineFrom (byte[] buffer, int offset, int length, out int read)
     {
-      if (_currentLine == null)
-        _currentLine = new StringBuilder ();
-
-      var last = offset + count;
       read = 0;
-      for (var i = offset; i < last && _lineState != LineState.Lf; i++) {
+      for (var i = offset; i < length && _lineState != LineState.Lf; i++) {
         read++;
         var b = buffer[i];
         if (b == 13)
