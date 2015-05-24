@@ -328,7 +328,7 @@ namespace WebSocketSharp.Net
     private bool processInput (byte[] data, int length)
     {
       if (_currentLine == null)
-        _currentLine = new StringBuilder ();
+        _currentLine = new StringBuilder (64);
 
       var nread = 0;
       try {
@@ -378,14 +378,15 @@ namespace WebSocketSharp.Net
           _currentLine.Append ((char) b);
       }
 
-      string ret = null;
       if (_lineState == LineState.Lf) {
         _lineState = LineState.None;
-        ret = _currentLine.ToString ();
+        var line = _currentLine.ToString ();
         _currentLine.Length = 0;
+
+        return line;
       }
 
-      return ret;
+      return null;
     }
 
     private void removeConnection ()
