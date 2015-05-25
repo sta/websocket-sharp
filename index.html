@@ -1,44 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta charset="UTF-8">
     <title>websocket-sharp by sta</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/sta/websocket-sharp">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/sta/websocket-sharp/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/sta/websocket-sharp/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+    <section class="page-header">
+      <h1 class="project-name">websocket-sharp</h1>
+      <h2 class="project-tagline">A C# implementation of the WebSocket protocol client and server</h2>
+      <a href="https://github.com/sta/websocket-sharp" class="btn">View on GitHub</a>
+      <a href="https://github.com/sta/websocket-sharp/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/sta/websocket-sharp/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div class="wrapper">
-
-      <section>
-        <div id="title">
-          <h1>websocket-sharp</h1>
-          <p>A C# implementation of the WebSocket protocol client and server</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/sta">sta</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
-        <h2>
+    <section class="main-content">
+      <h2>
 <a id="welcome-to-websocket-sharp" class="anchor" href="#welcome-to-websocket-sharp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to websocket-sharp!</h2>
 
 <p><strong>websocket-sharp</strong> supports:</p>
@@ -101,9 +82,11 @@
 
 <ul>
 <li>
-<strong><a href="http://docs.unity3d.com/Manual/SecuritySandbox.html">Security Sandbox of the Webplayer</a></strong> (server doesn't work in the webplayer)</li>
+<strong><a href="http://docs.unity3d.com/Manual/SecuritySandbox.html">Security Sandbox of the Webplayer</a></strong> (the server doesn't work in the webplayer)</li>
 <li>
 <strong><a href="http://unity3d.com/unity/licenses">.NET Socket Support for iOS/Android</a></strong> (requires iOS/Android Pro)</li>
+<li>
+<strong>Limited support for the System.IO.Compression</strong> (the compression extension isn't available on Windows)</li>
 <li><strong>.NET API 2.0 compatibility level for iOS/Android</strong></li>
 </ul>
 
@@ -122,16 +105,16 @@
 
 <span class="pl-k">namespace</span> <span class="pl-en">Example</span>
 {
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Program</span>
+  <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Program</span>
   {
-    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-st">void</span> <span class="pl-en">Main</span> (<span class="pl-st">string[]</span> <span class="pl-vpf">args</span>)
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">Main</span> (<span class="pl-k">string[]</span> <span class="pl-smi">args</span>)
     {
-      <span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://dragonsnest.far/Laputa<span class="pl-pds">"</span></span>)) {
+      <span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://dragonsnest.far/Laputa<span class="pl-pds">"</span></span>)) {
         ws.OnMessage += (sender, e) =&gt;
-          Console.WriteLine (<span class="pl-s1"><span class="pl-pds">"</span>Laputa says: <span class="pl-pds">"</span></span> + e.Data);
+          Console.WriteLine (<span class="pl-s"><span class="pl-pds">"</span>Laputa says: <span class="pl-pds">"</span></span> + e.Data);
 
         ws.Connect ();
-        ws.Send (<span class="pl-s1"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>);
+        ws.Send (<span class="pl-s"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>);
         Console.ReadKey (<span class="pl-c1">true</span>);
       }
     }
@@ -152,7 +135,7 @@
 
 <p>Creating a new instance of the <code>WebSocket</code> class with the WebSocket URL to connect.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
@@ -245,15 +228,15 @@
 <h4>
 <a id="step-5" class="anchor" href="#step-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 5</h4>
 
-<p>Sending a data to the WebSocket server.</p>
+<p>Sending data to the WebSocket server.</p>
 
 <div class="highlight highlight-csharp"><pre>ws.Send (data);</pre></div>
 
 <p>The <code>WebSocket.Send</code> method is overloaded.</p>
 
-<p>You can use the <code>WebSocket.Send (string)</code>, <code>WebSocket.Send (byte[])</code>, or <code>WebSocket.Send (System.IO.FileInfo)</code> method to send a data.</p>
+<p>You can use the <code>WebSocket.Send (string)</code>, <code>WebSocket.Send (byte[])</code>, or <code>WebSocket.Send (System.IO.FileInfo)</code> method to send the data.</p>
 
-<p>If you would like to send a data asynchronously, you should use the <code>WebSocket.SendAsync</code> method.</p>
+<p>If you would like to send the data asynchronously, you should use the <code>WebSocket.SendAsync</code> method.</p>
 
 <div class="highlight highlight-csharp"><pre>ws.SendAsync (data, completed);</pre></div>
 
@@ -283,24 +266,24 @@
 
 <span class="pl-k">namespace</span> <span class="pl-en">Example</span>
 {
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Laputa</span> : <span class="pl-st">WebSocketBehavior</span>
+  <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Laputa</span> : <span class="pl-k">WebSocketBehavior</span>
   {
-    <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+    <span class="pl-k">protected</span> <span class="pl-k">override</span> <span class="pl-k">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-k">MessageEventArgs</span> <span class="pl-smi">e</span>)
     {
-      <span class="pl-k">var</span> msg = e.Data == <span class="pl-s1"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>
-                ? <span class="pl-s1"><span class="pl-pds">"</span>I've been balused already...<span class="pl-pds">"</span></span>
-                : <span class="pl-s1"><span class="pl-pds">"</span>I'm not available now.<span class="pl-pds">"</span></span>;
+      <span class="pl-k">var</span> msg = e.Data == <span class="pl-s"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>
+                ? <span class="pl-s"><span class="pl-pds">"</span>I've been balused already...<span class="pl-pds">"</span></span>
+                : <span class="pl-s"><span class="pl-pds">"</span>I'm not available now.<span class="pl-pds">"</span></span>;
 
       Send (msg);
     }
   }
 
-  <span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Program</span>
+  <span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Program</span>
   {
-    <span class="pl-s">public</span> <span class="pl-s">static</span> <span class="pl-st">void</span> <span class="pl-en">Main</span> (<span class="pl-st">string[]</span> <span class="pl-vpf">args</span>)
+    <span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">void</span> <span class="pl-en">Main</span> (<span class="pl-k">string[]</span> <span class="pl-smi">args</span>)
     {
-      <span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-s1"><span class="pl-pds">"</span>ws://dragonsnest.far<span class="pl-pds">"</span></span>);
-      wssv.AddWebSocketService&lt;Laputa&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Laputa<span class="pl-pds">"</span></span>);
+      <span class="pl-k">var</span> wssv = <span class="pl-k">new</span> WebSocketServer (<span class="pl-s"><span class="pl-pds">"</span>ws://dragonsnest.far<span class="pl-pds">"</span></span>);
+      wssv.AddWebSocketService&lt;Laputa&gt; (<span class="pl-s"><span class="pl-pds">"</span>/Laputa<span class="pl-pds">"</span></span>);
       wssv.Start ();
       Console.ReadKey (<span class="pl-c1">true</span>);
       wssv.Stop ();
@@ -328,9 +311,9 @@
 <span class="pl-k">using</span> WebSocketSharp;
 <span class="pl-k">using</span> WebSocketSharp.Server;
 
-<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Echo</span> : <span class="pl-st">WebSocketBehavior</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Echo</span> : <span class="pl-k">WebSocketBehavior</span>
 {
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+  <span class="pl-k">protected</span> <span class="pl-k">override</span> <span class="pl-k">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-k">MessageEventArgs</span> <span class="pl-smi">e</span>)
   {
     Send (e.Data);
   }
@@ -342,21 +325,21 @@
 <span class="pl-k">using</span> WebSocketSharp;
 <span class="pl-k">using</span> WebSocketSharp.Server;
 
-<span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Chat</span> : <span class="pl-st">WebSocketBehavior</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Chat</span> : <span class="pl-k">WebSocketBehavior</span>
 {
-  <span class="pl-s">private</span> <span class="pl-st">string</span> _suffix;
+  <span class="pl-k">private</span> <span class="pl-k">string</span> _suffix;
 
-  <span class="pl-s">public</span> <span class="pl-en">Chat</span> ()
+  <span class="pl-k">public</span> <span class="pl-en">Chat</span> ()
     : <span class="pl-c1">this</span> (null)
   {
   }
 
-  <span class="pl-s">public</span> <span class="pl-en">Chat</span> (<span class="pl-st">string</span> <span class="pl-vpf">suffix</span>)
+  <span class="pl-k">public</span> <span class="pl-en">Chat</span> (<span class="pl-k">string</span> <span class="pl-smi">suffix</span>)
   {
     _suffix = suffix ?? String.Empty;
   }
 
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-st">MessageEventArgs</span> <span class="pl-vpf">e</span>)
+  <span class="pl-k">protected</span> <span class="pl-k">override</span> <span class="pl-k">void</span> <span class="pl-en">OnMessage</span> (<span class="pl-k">MessageEventArgs</span> <span class="pl-smi">e</span>)
   {
     Sessions.Broadcast (e.Data + _suffix);
   }
@@ -364,25 +347,25 @@
 
 <p>You can define the behavior of any WebSocket service by creating the class that inherits the <code>WebSocketBehavior</code> class.</p>
 
-<p>If you override the <code>WebSocketBehavior.OnMessage (MessageEventArgs)</code> method, it's called when the <code>WebSocket</code> used in the current session in the service receives a message.</p>
+<p>If you override the <code>WebSocketBehavior.OnMessage (MessageEventArgs)</code> method, it's called when the <code>WebSocket</code> used in a session in the service receives a message.</p>
 
 <p>And if you override the <code>WebSocketBehavior.OnOpen ()</code>, <code>WebSocketBehavior.OnError (ErrorEventArgs)</code>, and <code>WebSocketBehavior.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code> events) occurs.</p>
 
-<p>The <code>WebSocketBehavior.Send</code> method sends a data to the client on the current session in the service.</p>
+<p>The <code>WebSocketBehavior.Send</code> method sends data to the client on a session in the service.</p>
 
 <p>If you would like to access the sessions in the service, you should use the <code>WebSocketBehavior.Sessions</code> property (returns a <code>WebSocketSharp.Server.WebSocketSessionManager</code>).</p>
 
-<p>The <code>WebSocketBehavior.Sessions.Broadcast</code> method broadcasts a data to every client in the service.</p>
+<p>The <code>WebSocketBehavior.Sessions.Broadcast</code> method sends data to every client in the service.</p>
 
 <h4>
 <a id="step-3-1" class="anchor" href="#step-3-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3</h4>
 
 <p>Creating a new instance of the <code>WebSocketServer</code> class.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-c1">4649</span>);
-wssv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
-wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
-wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-s">new</span> Chat (<span class="pl-s1"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-k">new</span> WebSocketServer (<span class="pl-c1">4649</span>);
+wssv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
+wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
+wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-k">new</span> Chat (<span class="pl-s"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
 
 <p>You can add any WebSocket service to your <code>WebSocketServer</code> with the specified behavior and path to the service, by using the <code>WebSocketServer.AddWebSocketService&lt;TBehaviorWithNew&gt; (string)</code> or <code>WebSocketServer.AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method.</p>
 
@@ -424,10 +407,10 @@ wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"
 
 <p>You can add any WebSocket service to your <code>HttpServer</code> with the specified behavior and path to the service, by using the <code>HttpServer.AddWebSocketService&lt;TBehaviorWithNew&gt; (string)</code> or <code>HttpServer.AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> httpsv = <span class="pl-s">new</span> HttpServer (<span class="pl-c1">4649</span>);
-httpsv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
-httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
-httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-s">new</span> Chat (<span class="pl-s1"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> httpsv = <span class="pl-k">new</span> HttpServer (<span class="pl-c1">4649</span>);
+httpsv.AddWebSocketService&lt;Echo&gt; (<span class="pl-s"><span class="pl-pds">"</span>/Echo<span class="pl-pds">"</span></span>);
+httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>);
+httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"</span>/ChatWithNyan<span class="pl-pds">"</span></span>, () =&gt; <span class="pl-k">new</span> Chat (<span class="pl-s"><span class="pl-pds">"</span> Nyan!<span class="pl-pds">"</span></span>));</pre></div>
 
 <p>For more information, would you see <strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a></strong>?</p>
 
@@ -437,7 +420,7 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 <h4>
 <a id="per-message-compression" class="anchor" href="#per-message-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Per-message Compression</h4>
 
-<p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Per-message Compression</a></strong> extension. (But it doesn't support with the <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1">extension parameters</a>.)</p>
+<p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19">Per-message Compression</a></strong> extension. (But this doesn't support it with the <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1">context take over</a>.)</p>
 
 <p>If you would like to enable this extension as a WebSocket client, you should set such as the following.</p>
 
@@ -445,10 +428,10 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 
 <p>And then your client will send the following header with the connection request to the server.</p>
 
-<pre><code>Sec-WebSocket-Extensions: permessage-deflate
+<pre><code>Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 </code></pre>
 
-<p>If the server supports this extension, it will return the same header. And when your client receives it, this extension will be available.</p>
+<p>If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.</p>
 
 <h3>
 <a id="secure-connection" class="anchor" href="#secure-connection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
@@ -457,7 +440,7 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 
 <p>As a <strong>WebSocket Client</strong>, you should create a new instance of the <code>WebSocket</code> class with the <strong>wss</strong> scheme WebSocket URL.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>wss://example.com<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>wss://example.com<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
@@ -475,9 +458,9 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s1"><span class="pl-pds"
 
 <p>As a <strong>WebSocket Server</strong>, you should create a new instance of the <code>WebSocketServer</code> or <code>HttpServer</code> class with some settings for secure connection, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-s">new</span> WebSocketServer (<span class="pl-c1">4649</span>, <span class="pl-c1">true</span>);
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> wssv = <span class="pl-k">new</span> WebSocketServer (<span class="pl-c1">5963</span>, <span class="pl-c1">true</span>);
 wssv.SslConfiguration.ServerCertificate =
-  <span class="pl-s">new</span> X509Certificate2 (<span class="pl-s1"><span class="pl-pds">"</span>/path/to/cert.pfx<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>password for cert.pfx<span class="pl-pds">"</span></span>);</pre></div>
+  <span class="pl-k">new</span> X509Certificate2 (<span class="pl-s"><span class="pl-pds">"</span>/path/to/cert.pfx<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password for cert.pfx<span class="pl-pds">"</span></span>);</pre></div>
 
 <h3>
 <a id="http-authentication" class="anchor" href="#http-authentication" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTTP Authentication</h3>
@@ -486,7 +469,7 @@ wssv.SslConfiguration.ServerCertificate =
 
 <p>As a <strong>WebSocket Client</strong>, you should set a pair of user name and password for the HTTP authentication, by using the <code>WebSocket.SetCredentials (string, string, bool)</code> method before connecting.</p>
 
-<div class="highlight highlight-csharp"><pre>ws.SetCredentials (<span class="pl-s1"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, preAuth);</pre></div>
+<div class="highlight highlight-csharp"><pre>ws.SetCredentials (<span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, preAuth);</pre></div>
 
 <p>If <code>preAuth</code> is <code>true</code>, the <code>WebSocket</code> sends the Basic authentication credentials with the first connection request to the server.</p>
 
@@ -495,13 +478,13 @@ wssv.SslConfiguration.ServerCertificate =
 <p>As a <strong>WebSocket Server</strong>, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.</p>
 
 <div class="highlight highlight-csharp"><pre>wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
-wssv.Realm = <span class="pl-s1"><span class="pl-pds">"</span>WebSocket Test<span class="pl-pds">"</span></span>;
+wssv.Realm = <span class="pl-s"><span class="pl-pds">"</span>WebSocket Test<span class="pl-pds">"</span></span>;
 wssv.UserCredentialsFinder = id =&gt; {
   <span class="pl-k">var</span> name = id.Name;
 
   <span class="pl-c">// Return user name, password, and roles.</span>
-  <span class="pl-k">return</span> name == <span class="pl-s1"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>
-         ? <span class="pl-s">new</span> NetworkCredential (name, <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>gunfighter<span class="pl-pds">"</span></span>)
+  <span class="pl-k">return</span> name == <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>
+         ? <span class="pl-k">new</span> NetworkCredential (name, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>gunfighter<span class="pl-pds">"</span></span>)
          : <span class="pl-c1">null</span>; <span class="pl-c">// If the user credentials aren't found.</span>
 };</pre></div>
 
@@ -514,28 +497,28 @@ wssv.UserCredentialsFinder = id =&gt; {
 
 <p>As a <strong>WebSocket Client</strong>, if you would like to send the <strong>Query String</strong> with the WebSocket connection request to the server, you should create a new instance of the <code>WebSocket</code> class with the WebSocket URL that includes the <a href="http://tools.ietf.org/html/rfc3986#section-3.4">Query</a> string parameters.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com/?name=nobita<span class="pl-pds">"</span></span>)) {
+<div class="highlight highlight-csharp"><pre><span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://example.com/?name=nobita<span class="pl-pds">"</span></span>)) {
   ...
 }</pre></div>
 
 <p>And if you would like to send the <strong>Origin header</strong> with the WebSocket connection request to the server, you should set the <code>WebSocket.Origin</code> property to an allowable value as the <a href="http://tools.ietf.org/html/rfc6454#section-7">Origin header</a> before connecting, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre>ws.Origin = <span class="pl-s1"><span class="pl-pds">"</span>http://example.com<span class="pl-pds">"</span></span>;</pre></div>
+<div class="highlight highlight-csharp"><pre>ws.Origin = <span class="pl-s"><span class="pl-pds">"</span>http://example.com<span class="pl-pds">"</span></span>;</pre></div>
 
 <p>And also if you would like to send the <strong>Cookies</strong> with the WebSocket connection request to the server, you should set any cookie by using the <code>WebSocket.SetCookie (WebSocketSharp.Net.Cookie)</code> method before connecting, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre>ws.SetCookie (<span class="pl-s">new</span> Cookie (<span class="pl-s1"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>));</pre></div>
+<div class="highlight highlight-csharp"><pre>ws.SetCookie (<span class="pl-k">new</span> Cookie (<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>));</pre></div>
 
 <p>As a <strong>WebSocket Server</strong>, if you would like to get the <strong>Query String</strong> included in each WebSocket connection request, you should access the <code>WebSocketBehavior.Context.QueryString</code> property, such as the following.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">Chat</span> : <span class="pl-st">WebSocketBehavior</span>
+<div class="highlight highlight-csharp"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Chat</span> : <span class="pl-k">WebSocketBehavior</span>
 {
-  <span class="pl-s">private</span> <span class="pl-st">string</span> _name;
+  <span class="pl-k">private</span> <span class="pl-k">string</span> _name;
   ...
 
-  <span class="pl-s">protected</span> <span class="pl-s">override</span> <span class="pl-st">void</span> <span class="pl-en">OnOpen</span> ()
+  <span class="pl-k">protected</span> <span class="pl-k">override</span> <span class="pl-k">void</span> <span class="pl-en">OnOpen</span> ()
   {
-    _name = Context.QueryString[<span class="pl-s1"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>];
+    _name = Context.QueryString[<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>];
   }
 
   ...
@@ -544,14 +527,14 @@ wssv.UserCredentialsFinder = id =&gt; {
 <p>And if you would like to validate the <strong>Origin header</strong>, <strong>Cookies</strong>, or both included in each WebSocket connection request, you should set each validation with your <code>WebSocketBehavior</code>, for example, by using the <code>AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method with initializing, such as the following.</p>
 
 <div class="highlight highlight-csharp"><pre>wssv.AddWebSocketService&lt;Chat&gt; (
-  <span class="pl-s1"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>,
-  () =&gt; <span class="pl-s">new</span> Chat () {
+  <span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>,
+  () =&gt; <span class="pl-k">new</span> Chat () {
     OriginValidator = val =&gt; {
       <span class="pl-c">// Check the value of the Origin header, and return true if valid.</span>
       Uri origin;
       <span class="pl-k">return</span> !val.IsNullOrEmpty () &amp;&amp;
              Uri.TryCreate (val, UriKind.Absolute, out origin) &amp;&amp;
-             origin.Host == <span class="pl-s1"><span class="pl-pds">"</span>example.com<span class="pl-pds">"</span></span>;
+             origin.Host == <span class="pl-s"><span class="pl-pds">"</span>example.com<span class="pl-pds">"</span></span>;
     },
     CookiesValidator = (req, res) =&gt; {
       <span class="pl-c">// Check the Cookies in 'req', and set the Cookies to send to the client with 'res'</span>
@@ -574,8 +557,8 @@ wssv.UserCredentialsFinder = id =&gt; {
 
 <p>If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the <code>WebSocket.SetProxy (string, string, string)</code> method before connecting.</p>
 
-<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> ws = <span class="pl-s">new</span> WebSocket (<span class="pl-s1"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>);
-ws.SetProxy (<span class="pl-s1"><span class="pl-pds">"</span>http://localhost:3128<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>);</pre></div>
+<div class="highlight highlight-csharp"><pre><span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>);
+ws.SetProxy (<span class="pl-s"><span class="pl-pds">"</span>http://localhost:3128<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>);</pre></div>
 
 <p>I tested this with the <a href="http://www.squid-cache.org">Squid</a>. And it's necessary to disable the following configuration option in <strong>squid.conf</strong> (e.g. <code>/etc/squid/squid.conf</code>).</p>
 
@@ -598,7 +581,7 @@ ws.SetProxy (<span class="pl-s1"><span class="pl-pds">"</span>http://localhost:3
 
 <p>And if you would like to output a log, you should use any of the output methods. The following outputs a log with <code>LogLevel.Debug</code>.</p>
 
-<div class="highlight highlight-csharp"><pre>ws.Log.Debug (<span class="pl-s1"><span class="pl-pds">"</span>This is a debug message.<span class="pl-pds">"</span></span>);</pre></div>
+<div class="highlight highlight-csharp"><pre>ws.Log.Debug (<span class="pl-s"><span class="pl-pds">"</span>This is a debug message.<span class="pl-pds">"</span></span>);</pre></div>
 
 <p>The <code>WebSocketServer</code> and <code>HttpServer</code> classes include the same logging function.</p>
 
@@ -639,7 +622,7 @@ ws.SetProxy (<span class="pl-s1"><span class="pl-pds">"</span>http://localhost:3
 <ul>
 <li><strong><a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a></strong></li>
 <li><strong><a href="http://www.w3.org/TR/websockets">The WebSocket API</a></strong></li>
-<li><strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09">Compression Extensions for WebSocket</a></strong></li>
+<li><strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19">Compression Extensions for WebSocket</a></strong></li>
 </ul>
 
 <p>Thanks for translating to japanese.</p>
@@ -653,11 +636,16 @@ ws.SetProxy (<span class="pl-s1"><span class="pl-pds">"</span>http://localhost:3
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
 <p>websocket-sharp is provided under <strong><a href="https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt">The MIT License</a></strong>.</p>
-      </section>
 
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-              <script type="text/javascript">
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/sta/websocket-sharp">websocket-sharp</a> is maintained by <a href="https://github.com/sta">sta</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -670,3 +658,4 @@ ws.SetProxy (<span class="pl-s1"><span class="pl-pds">"</span>http://localhost:3
 
   </body>
 </html>
+
