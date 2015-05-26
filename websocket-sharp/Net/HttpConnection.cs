@@ -256,22 +256,16 @@ namespace WebSocketSharp.Net
           return;
 
         var nread = -1;
-        var len = 0L;
+        var len = 0;
         try {
           conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
           nread = conn._stream.EndRead (asyncResult);
           conn._requestBuffer.Write (conn._buffer, 0, nread);
-          len = conn._requestBuffer.Length;
-          if (len > 32768) {
-            conn.SendError ("Bad request", 400);
-            conn.Close (true);
-
-            return;
-          }
+          len = (int) conn._requestBuffer.Length;
         }
-        catch {
+        catch (Exception ex) {
           if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
-            conn.SendError ();
+            conn.SendError (ex.Message, 400);
 
           conn.close ();
           return;
@@ -282,7 +276,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (conn.processInput (conn._requestBuffer.GetBuffer (), (int) len)) {
+        if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
           if (!conn._context.HasError)
             conn._context.Request.FinishInitialization ();
 
@@ -339,6 +333,9 @@ namespace WebSocketSharp.Net
             if (_inputState == InputState.RequestLine)
               continue;
 
+            if (_position > 32768)
+              _context.ErrorMessage = "Bad request";
+
             _currentLine = null;
             return true;
           }
@@ -361,6 +358,11 @@ namespace WebSocketSharp.Net
       }
 
       _position += nread;
+      if (_position >= 32768) {
+        _context.ErrorMessage = "Bad request";
+        return true;
+      }
+
       return false;
     }
 
