@@ -376,7 +376,7 @@ namespace WebSocketSharp
 
     internal static void CopyTo (this Stream source, Stream destination)
     {
-      var buffLen = 256;
+      var buffLen = 1024;
       var buff = new byte[buffLen];
       var nread = 0;
       while ((nread = source.Read (buff, 0, buffLen)) > 0)
@@ -1761,7 +1761,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Writes the specified <paramref name="content"/> data with the specified
+    /// Writes and sends the specified <paramref name="content"/> data with the specified
     /// <see cref="HttpListenerResponse"/>.
     /// </summary>
     /// <param name="response">
@@ -1772,20 +1772,37 @@ namespace WebSocketSharp
     /// An array of <see cref="byte"/> that represents the content data to send.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="response"/> is <see langword="null"/>.
+    ///   <para>
+    ///   <paramref name="response"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="content"/> is <see langword="null"/>.
+    ///   </para>
     /// </exception>
     public static void WriteContent (this HttpListenerResponse response, byte[] content)
     {
       if (response == null)
         throw new ArgumentNullException ("response");
 
-      var len = 0L;
-      if (content == null || (len = content.LongLength) == 0)
-        return;
+      if (content == null)
+        throw new ArgumentNullException ("content");
 
-      var output = response.OutputStream;
+      var len = content.LongLength;
+      if (len == 0) {
+        response.Close ();
+        return;
+      }
+
       response.ContentLength64 = len;
-      output.WriteBytes (content);
+      var output = response.OutputStream;
+      if (len <= Int32.MaxValue)
+        output.Write (content, 0, (int) len);
+      else
+        output.WriteBytes (content);
+
       output.Close ();
     }
 
