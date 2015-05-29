@@ -144,42 +144,41 @@ namespace WebSocketSharp
       }
     }
 
-    private static byte[] readBytes (this Stream stream, byte[] buffer, int offset, int length)
+    private static byte[] readBytes (this Stream stream, byte[] buffer, int offset, int count)
     {
-      var len = 0;
+      var cnt = 0;
       try {
-        len = stream.Read (buffer, offset, length);
-        if (len < 1)
+        cnt = stream.Read (buffer, offset, count);
+        if (cnt < 1)
           return buffer.SubArray (0, offset);
 
-        while (len < length) {
-          var nread = stream.Read (buffer, offset + len, length - len);
+        while (cnt < count) {
+          var nread = stream.Read (buffer, offset + cnt, count - cnt);
           if (nread < 1)
             break;
 
-          len += nread;
+          cnt += nread;
         }
       }
       catch {
       }
 
-      return len < length ? buffer.SubArray (0, offset + len) : buffer;
-    }
-
-    private static bool readBytes (
-      this Stream stream, byte[] buffer, int offset, int length, Stream destination)
-    {
-      var bytes = stream.readBytes (buffer, offset, length);
-      var len = bytes.Length;
-      destination.Write (bytes, 0, len);
-
-      return len == offset + length;
+      return cnt < count ? buffer.SubArray (0, offset + cnt) : buffer;
     }
 
     private static void times (this ulong n, Action action)
     {
       for (ulong i = 0; i < n; i++)
         action ();
+    }
+
+    private static bool writeTo (this Stream stream, Stream destination, int length, byte[] buffer)
+    {
+      var bytes = stream.readBytes (buffer, 0, length);
+      var len = bytes.Length;
+      destination.Write (bytes, 0, len);
+
+      return len == length;
     }
 
     #endregion
@@ -630,14 +629,14 @@ namespace WebSocketSharp
         var buff = new byte[bufferLength];
         var end = false;
         for (long i = 0; i < cnt; i++) {
-          if (!stream.readBytes (buff, 0, bufferLength, dest)) {
+          if (!stream.writeTo (dest, bufferLength, buff)) {
             end = true;
             break;
           }
         }
 
         if (!end && rem > 0)
-          stream.readBytes (new byte[rem], 0, rem, dest);
+          stream.writeTo (dest, rem, new byte[rem]);
 
         dest.Close ();
         return dest.ToArray ();
