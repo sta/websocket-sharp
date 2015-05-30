@@ -571,7 +571,7 @@ namespace WebSocketSharp.Net
       var expect = Headers["Expect"];
       if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
         var output = _context.Connection.GetResponseStream ();
-        output.WriteInternally (_100continue, 0, _100continue.Length);
+        output.InternalWrite (_100continue, 0, _100continue.Length);
       }
     }
 
