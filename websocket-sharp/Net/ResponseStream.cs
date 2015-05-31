@@ -111,6 +111,22 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private static void checkWriteParameters (byte[] buffer, int offset, int count)
+    {
+      if (buffer == null)
+        throw new ArgumentNullException ("buffer");
+
+      if (offset < 0)
+        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
+
+      if (count < 0)
+        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+
+      if (offset + count > buffer.Length)
+        throw new ArgumentException (
+          "The sum of 'offset' and 'count' is greater than 'buffer' length.");
+    }
+
     private static byte[] getChunkSizeBytes (int size, bool final)
     {
       return Encoding.ASCII.GetBytes (String.Format ("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
@@ -160,6 +176,10 @@ namespace WebSocketSharp.Net
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
+
+      checkWriteParameters (buffer, offset, count);
+      if (count == 0)
+        return null;
 
       var headers = getHeaders (false);
       var chunked = _response.SendChunked;
@@ -228,6 +248,9 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
+      if (asyncResult == null)
+        throw new ArgumentNullException ("asyncResult");
+
       Action<IAsyncResult> endWrite = ares => {
         _stream.EndWrite (ares);
         if (_response.SendChunked)
@@ -270,6 +293,10 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
+      checkWriteParameters (buffer, offset, count);
+      if (count == 0)
+        return;
+
       var headers = getHeaders (false);
       var chunked = _response.SendChunked;
       if (headers != null) {
@@ -293,9 +320,7 @@ namespace WebSocketSharp.Net
         InternalWrite (size, 0, size.Length);
       }
 
-      if (count > 0)
-        InternalWrite (buffer, offset, count);
-
+      InternalWrite (buffer, offset, count);
       if (chunked)
         InternalWrite (_crlf, 0, 2);
     }
