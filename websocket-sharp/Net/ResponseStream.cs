@@ -51,10 +51,12 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private MemoryStream           _buffer;
     private static readonly byte[] _crlf = new byte[] { 13, 10 };
     private bool                   _disposed;
-    private bool                   _ignoreErrors;
+    private bool                   _ignoreWriteExceptions;
     private HttpListenerResponse   _response;
+    private long                   _start;
     private Stream                 _stream;
     private bool                   _trailerSent;
 
@@ -62,11 +64,12 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal ResponseStream (Stream stream, HttpListenerResponse response, bool ignoreErrors)
+    internal ResponseStream (
+      Stream stream, HttpListenerResponse response, bool ignoreWriteExceptions)
     {
       _stream = stream;
       _response = response;
-      _ignoreErrors = ignoreErrors;
+      _ignoreWriteExceptions = ignoreWriteExceptions;
     }
 
     #endregion
@@ -87,7 +90,7 @@ namespace WebSocketSharp.Net
 
     public override bool CanWrite {
       get {
-        return true;
+        return !_disposed;
       }
     }
 
@@ -127,29 +130,61 @@ namespace WebSocketSharp.Net
           "The sum of 'offset' and 'count' is greater than 'buffer' length.");
     }
 
+    private MemoryStream getBuffer (bool closing)
+    {
+      if (_buffer != null)
+        return _buffer;
+
+      _buffer = new MemoryStream ();
+      _response.SendHeaders (_buffer, closing);
+      _start = _buffer.Position;
+      _buffer.Position = _buffer.Length;
+
+      return _buffer;
+    }
+
     private static byte[] getChunkSizeBytes (int size, bool final)
     {
       return Encoding.ASCII.GetBytes (String.Format ("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
-    }
-
-    private MemoryStream getHeaders (bool closing)
-    {
-      if (_response.HeadersSent)
-        return null;
-
-      var stream = new MemoryStream ();
-      _response.SendHeaders (stream, closing);
-
-      return stream;
     }
 
     #endregion
 
     #region Internal Methods
 
+    internal void Close (bool force)
+    {
+      if (_disposed)
+        return;
+
+      _disposed = true;
+      if (!force) {
+        var buff = getBuffer (true);
+        if (_response.SendChunked && !_trailerSent) {
+          var size = getChunkSizeBytes (0, true);
+          buff.Write (size, 0, size.Length);
+          _trailerSent = true;
+        }
+
+        InternalWrite (buff.GetBuffer (), (int) _start, (int) (buff.Position - _start));
+        _response.Close ();
+      }
+      else {
+        _response.Abort ();
+      }
+
+      if (_buffer != null) {
+        _buffer.Dispose ();
+        _buffer = null;
+      }
+
+      _response = null;
+      _stream = null;
+    }
+
     internal void InternalWrite (byte[] buffer, int offset, int count)
     {
-      if (_ignoreErrors) {
+      if (_ignoreWriteExceptions) {
         try {
           _stream.Write (buffer, offset, count);
         }
@@ -181,61 +216,23 @@ namespace WebSocketSharp.Net
       if (count == 0)
         return null;
 
-      var headers = getHeaders (false);
-      var chunked = _response.SendChunked;
-      if (headers != null) {
-        using (headers) {
-          var start = headers.Position;
-          headers.Position = headers.Length;
-          if (chunked) {
-            var size = getChunkSizeBytes (count, false);
-            headers.Write (size, 0, size.Length);
-          }
-
-          headers.Write (buffer, offset, count);
-          buffer = headers.GetBuffer ();
-          offset = (int) start;
-          count = (int) (headers.Position - start);
-        }
-      }
-      else if (chunked) {
+      var buff = getBuffer (false);
+      if (_response.SendChunked) {
         var size = getChunkSizeBytes (count, false);
-        InternalWrite (size, 0, size.Length);
+        buff.Write (size, 0, size.Length);
       }
 
-      return _stream.BeginWrite (buffer, offset, count, callback, state);
+      return buff.BeginWrite (buffer, offset, count, callback, state);
     }
 
     public override void Close ()
     {
-      if (_disposed)
-        return;
+      Close (false);
+    }
 
-      _disposed = true;
-
-      var headers = getHeaders (true);
-      var chunked = _response.SendChunked;
-      if (headers != null) {
-        using (headers) {
-          var start = headers.Position;
-          headers.Position = headers.Length;
-          if (chunked && !_trailerSent) {
-            var size = getChunkSizeBytes (0, true);
-            headers.Write (size, 0, size.Length);
-          }
-
-          InternalWrite (headers.GetBuffer (), (int) start, (int) (headers.Position - start));
-        }
-
-        _trailerSent = true;
-      }
-      else if (chunked && !_trailerSent) {
-        var size = getChunkSizeBytes (0, true);
-        InternalWrite (size, 0, size.Length);
-        _trailerSent = true;
-      }
-
-      _response.Close ();
+    protected override void Dispose (bool disposing)
+    {
+      Close (!disposing);
     }
 
     public override int EndRead (IAsyncResult asyncResult)
@@ -248,25 +245,16 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
+      if (_buffer == null)
+        throw new InvalidOperationException ("The BeginWrite method hasn't been done.");
+
       if (asyncResult == null)
         throw new ArgumentNullException ("asyncResult");
 
-      Action<IAsyncResult> endWrite = ares => {
-        _stream.EndWrite (ares);
-        if (_response.SendChunked)
-          _stream.Write (_crlf, 0, 2);
-      };
-
-      if (_ignoreErrors) {
-        try {
-          endWrite (asyncResult);
-        }
-        catch {
-        }
-      }
-      else {
-        endWrite (asyncResult);
-      }
+      var buff = getBuffer (false);
+      buff.EndWrite (asyncResult);
+      if (_response.SendChunked)
+        buff.Write (_crlf, 0, 2);
     }
 
     public override void Flush ()
@@ -297,32 +285,16 @@ namespace WebSocketSharp.Net
       if (count == 0)
         return;
 
-      var headers = getHeaders (false);
+      var buff = getBuffer (false);
       var chunked = _response.SendChunked;
-      if (headers != null) {
-        // After the possible preamble for the encoding.
-        using (headers) {
-          var start = headers.Position;
-          headers.Position = headers.Length;
-          if (chunked) {
-            var size = getChunkSizeBytes (count, false);
-            headers.Write (size, 0, size.Length);
-          }
-
-          headers.Write (buffer, offset, count);
-          buffer = headers.GetBuffer ();
-          offset = (int) start;
-          count = (int) (headers.Position - start);
-        }
-      }
-      else if (chunked) {
+      if (chunked) {
         var size = getChunkSizeBytes (count, false);
-        InternalWrite (size, 0, size.Length);
+        buff.Write (size, 0, size.Length);
       }
 
-      InternalWrite (buffer, offset, count);
+      buff.Write (buffer, offset, count);
       if (chunked)
-        InternalWrite (_crlf, 0, 2);
+        buff.Write (_crlf, 0, 2);
     }
 
     #endregion
