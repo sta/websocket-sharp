@@ -51,12 +51,11 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private MemoryStream           _buffer;
+    private MemoryStream           _body;
     private static readonly byte[] _crlf = new byte[] { 13, 10 };
     private bool                   _disposed;
     private bool                   _ignoreWriteExceptions;
     private HttpListenerResponse   _response;
-    private long                   _start;
     private Stream                 _stream;
     private bool                   _trailerSent;
 
@@ -70,6 +69,8 @@ namespace WebSocketSharp.Net
       _stream = stream;
       _response = response;
       _ignoreWriteExceptions = ignoreWriteExceptions;
+
+      _body = new MemoryStream ();
     }
 
     #endregion
@@ -114,33 +115,62 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static void checkWriteParameters (byte[] buffer, int offset, int count)
+    private void flush (bool closing)
     {
-      if (buffer == null)
-        throw new ArgumentNullException ("buffer");
+      if (!_response.HeadersSent) {
+        using (var headers = new MemoryStream ()) {
+          _response.SendHeaders (headers, closing);
+          var start = headers.Position;
+          InternalWrite (headers.GetBuffer (), (int) start, (int) (headers.Length - start));
+        }
+      }
 
-      if (offset < 0)
-        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
+      var len = _body.Length;
+      if (len == 0)
+        return;
 
-      if (count < 0)
-        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+      var chunked = _response.SendChunked;
+      using (_body) {
+        if (len > Int32.MaxValue) {
+          _body.Position = 0;
 
-      if (offset + count > buffer.Length)
-        throw new ArgumentException (
-          "The sum of 'offset' and 'count' is greater than 'buffer' length.");
-    }
+          var buffLen = 1024;
+          var buff = new byte[buffLen];
+          var nread = 0;
+          while ((nread = _body.Read (buff, 0, buffLen)) > 0) {
+            if (chunked) {
+              var size = getChunkSizeBytes (nread, false);
+              InternalWrite (size, 0, size.Length);
+              InternalWrite (buff, 0, nread);
+              InternalWrite (_crlf, 0, 2);
 
-    private MemoryStream getBuffer (bool closing)
-    {
-      if (_buffer != null)
-        return _buffer;
+              continue;
+            }
 
-      _buffer = new MemoryStream ();
-      _response.SendHeaders (_buffer, closing);
-      _start = _buffer.Position;
-      _buffer.Position = _buffer.Length;
+            InternalWrite (buff, 0, nread);
+          }
+        }
+        else {
+          if (chunked) {
+            var size = getChunkSizeBytes ((int) len, false);
+            InternalWrite (size, 0, size.Length);
+            InternalWrite (_body.GetBuffer (), 0, (int) len);
+            InternalWrite (_crlf, 0, 2);
+          }
+          else {
+            InternalWrite (_body.GetBuffer (), 0, (int) len);
+          }
+        }
+      }
 
-      return _buffer;
+      if (closing && chunked) {
+        var size = getChunkSizeBytes (0, true);
+        InternalWrite (size, 0, size.Length);
+      }
+
+      _body = null;
+      if (!closing)
+        _body = new MemoryStream ();
     }
 
     private static byte[] getChunkSizeBytes (int size, bool final)
@@ -159,23 +189,16 @@ namespace WebSocketSharp.Net
 
       _disposed = true;
       if (!force) {
-        var buff = getBuffer (true);
-        if (_response.SendChunked && !_trailerSent) {
-          var size = getChunkSizeBytes (0, true);
-          buff.Write (size, 0, size.Length);
-          _trailerSent = true;
-        }
-
-        InternalWrite (buff.GetBuffer (), (int) _start, (int) (buff.Position - _start));
+        flush (true);
         _response.Close ();
       }
       else {
         _response.Abort ();
       }
 
-      if (_buffer != null) {
-        _buffer.Dispose ();
-        _buffer = null;
+      if (_body != null) {
+        _body.Dispose ();
+        _body = null;
       }
 
       _response = null;
@@ -212,17 +235,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      checkWriteParameters (buffer, offset, count);
-      if (count == 0)
-        return null;
-
-      var buff = getBuffer (false);
-      if (_response.SendChunked) {
-        var size = getChunkSizeBytes (count, false);
-        buff.Write (size, 0, size.Length);
-      }
-
-      return buff.BeginWrite (buffer, offset, count, callback, state);
+      return _body.BeginWrite (buffer, offset, count, callback, state);
     }
 
     public override void Close ()
@@ -245,20 +258,13 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      if (_buffer == null)
-        throw new InvalidOperationException ("The BeginWrite method hasn't been done.");
-
-      if (asyncResult == null)
-        throw new ArgumentNullException ("asyncResult");
-
-      var buff = getBuffer (false);
-      buff.EndWrite (asyncResult);
-      if (_response.SendChunked)
-        buff.Write (_crlf, 0, 2);
+      _body.EndWrite (asyncResult);
     }
 
     public override void Flush ()
     {
+      if (_response.SendChunked)
+        flush (false);
     }
 
     public override int Read (byte[] buffer, int offset, int count)
@@ -281,20 +287,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      checkWriteParameters (buffer, offset, count);
-      if (count == 0)
-        return;
-
-      var buff = getBuffer (false);
-      var chunked = _response.SendChunked;
-      if (chunked) {
-        var size = getChunkSizeBytes (count, false);
-        buff.Write (size, 0, size.Length);
-      }
-
-      buff.Write (buffer, offset, count);
-      if (chunked)
-        buff.Write (_crlf, 0, 2);
+      _body.Write (buffer, offset, count);
     }
 
     #endregion
