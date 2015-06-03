@@ -133,7 +133,8 @@ namespace WebSocketSharp
       var headers = req.Headers;
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
-      headers["Host"] = uri.Port == 80 ? uri.DnsSafeHost : uri.Authority;
+	  bool isDefaultPort = (uri.Port == 80 && uri.Scheme == "ws") || (uri.Port == 443 && uri.Scheme == "wss");
+	  headers["Host"] = isDefaultPort ? uri.DnsSafeHost : uri.Authority;
 
       return req;
     }
