@@ -2,7 +2,7 @@
 /*
  * ResponseStream.cs
  *
- * This code is derived from System.Net.ResponseStream.cs of Mono
+ * This code is derived from ResponseStream.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
