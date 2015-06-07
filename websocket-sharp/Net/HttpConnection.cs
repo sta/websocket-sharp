@@ -422,7 +422,7 @@ namespace WebSocketSharp.Net
           return;
 
         if (!force) {
-          GetResponseStream ().Close ();
+          GetResponseStream ().Close (false);
 
           var req = _context.Request;
           var res = _context.Response;
@@ -439,6 +439,9 @@ namespace WebSocketSharp.Net
 
             return;
           }
+        }
+        else if (_outputStream != null) {
+          _outputStream.Close (true);
         }
 
         close ();
