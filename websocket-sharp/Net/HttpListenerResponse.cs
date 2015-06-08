@@ -58,14 +58,13 @@ namespace WebSocketSharp.Net
     private bool                _chunked;
     private Encoding            _contentEncoding;
     private long                _contentLength;
-    private bool                _contentLengthWasSet;
+    private bool                _contentLengthSet;
     private string              _contentType;
     private HttpListenerContext _context;
     private CookieCollection    _cookies;
     private bool                _disposed;
-    private bool                _forceCloseChunked;
     private WebHeaderCollection _headers;
-    private bool                _headersWereSent;
+    private bool                _headersSent;
     private bool                _keepAlive;
     private string              _location;
     private ResponseStream      _outputStream;
@@ -97,15 +96,13 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal bool ForceCloseChunked {
-      get {
-        return _forceCloseChunked;
-      }
-    }
-
     internal bool HeadersSent {
       get {
-        return _headersWereSent;
+        return _headersSent;
+      }
+
+      set {
+        _headersSent = value;
       }
     }
 
@@ -163,7 +160,7 @@ namespace WebSocketSharp.Net
         if (value < 0)
           throw new ArgumentOutOfRangeException ("Less than zero.", "value");
 
-        _contentLengthWasSet = true;
+        _contentLengthSet = true;
         _contentLength = value;
       }
     }
@@ -481,7 +478,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      if (_headersWereSent)
+      if (_headersSent)
         throw new InvalidOperationException ("Cannot be changed after the headers are sent.");
     }
 
@@ -508,7 +505,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void SendHeaders (MemoryStream stream, bool closing)
+    internal void WriteHeadersTo (MemoryStream destination, bool closing)
     {
       if (_contentType != null) {
         var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
@@ -527,18 +524,19 @@ namespace WebSocketSharp.Net
         _headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
 
       if (!_chunked) {
-        if (!_contentLengthWasSet && closing) {
-          _contentLengthWasSet = true;
+        if (!_contentLengthSet && closing) {
+          _contentLengthSet = true;
           _contentLength = 0;
         }
 
-        if (_contentLengthWasSet)
+        if (_contentLengthSet)
           _headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
+        else if (_context.Request.ProtocolVersion > HttpVersion.Version10)
+          _chunked = true;
       }
 
-      var ver = _context.Request.ProtocolVersion;
-      if (!_contentLengthWasSet && !_chunked && ver > HttpVersion.Version10)
-        _chunked = true;
+      if (_chunked)
+        _headers.InternalSet ("Transfer-Encoding", "chunked", true);
 
       /*
        * Apache forces closing the connection for these status codes:
@@ -556,34 +554,19 @@ namespace WebSocketSharp.Net
                       _statusCode == 413 ||
                       _statusCode == 414 ||
                       _statusCode == 500 ||
-                      _statusCode == 503;
-
-      if (!closeConn)
-        closeConn = !_context.Request.KeepAlive;
-
-      // They sent both KeepAlive: true and Connection: close!?
-      if (!_keepAlive || closeConn) {
-        _headers.InternalSet ("Connection", "close", true);
-        closeConn = true;
-      }
-
-      if (_chunked)
-        _headers.InternalSet ("Transfer-Encoding", "chunked", true);
+                      _statusCode == 503 ||
+                      !_context.Request.KeepAlive ||
+                      !_keepAlive;
 
       var reuses = _context.Connection.Reuses;
-      if (reuses >= 100) {
-        _forceCloseChunked = true;
-        if (!closeConn) {
-          _headers.InternalSet ("Connection", "close", true);
-          closeConn = true;
-        }
+      if (closeConn || reuses >= 100) {
+        _headers.InternalSet ("Connection", "close", true);
       }
-
-      if (!closeConn) {
+      else {
         _headers.InternalSet (
           "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 
-        if (ver < HttpVersion.Version11)
+        if (_context.Request.ProtocolVersion < HttpVersion.Version11)
           _headers.InternalSet ("Connection", "keep-alive", true);
       }
 
@@ -595,18 +578,13 @@ namespace WebSocketSharp.Net
           _headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
 
       var enc = _contentEncoding ?? Encoding.Default;
-      var writer = new StreamWriter (stream, enc, 256);
+      var writer = new StreamWriter (destination, enc, 256);
       writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
       writer.Write (_headers.ToStringMultiValue (true));
       writer.Flush ();
 
-      // Assumes that the stream was at position 0.
-      stream.Position = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
-
-      if (_outputStream == null)
-        _outputStream = _context.Connection.GetResponseStream ();
-
-      _headersWereSent = true;
+      // Assumes that the destination was at position 0.
+      destination.Position = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
     }
 
     #endregion
@@ -625,8 +603,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds an HTTP header with the specified <paramref name="name"/> and <paramref name="value"/>
-    /// to the headers for the response.
+    /// Adds an HTTP header with the specified <paramref name="name"/> and
+    /// <paramref name="value"/> to the headers for the response.
     /// </summary>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the header to add.

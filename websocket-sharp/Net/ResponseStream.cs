@@ -129,10 +129,12 @@ namespace WebSocketSharp.Net
     {
       if (!_response.HeadersSent) {
         using (var headers = new MemoryStream ()) {
-          _response.SendHeaders (headers, closing);
+          _response.WriteHeadersTo (headers, closing);
           var start = headers.Position;
           _write (headers.GetBuffer (), (int) start, (int) (headers.Length - start));
         }
+
+        _response.HeadersSent = true;
 
         _chunked = _response.SendChunked;
         _writeBody = _chunked ? _writeChunked : _write;

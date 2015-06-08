@@ -60,7 +60,6 @@ namespace WebSocketSharp.Net
 
     private byte[]              _buffer;
     private const int           _bufferLength = 8192;
-    private bool                _chunked;
     private HttpListenerContext _context;
     private bool                _contextWasBound;
     private StringBuilder       _currentLine;
@@ -234,7 +233,6 @@ namespace WebSocketSharp.Net
 
     private void init ()
     {
-      _chunked = false;
       _context = new HttpListenerContext (this);
       _inputState = InputState.RequestLine;
       _inputStream = null;
@@ -426,10 +424,7 @@ namespace WebSocketSharp.Net
 
           var req = _context.Request;
           var res = _context.Response;
-          if (req.KeepAlive &&
-              !res.CloseConnection &&
-              req.FlushInput () &&
-              (!_chunked || (_chunked && !res.ForceCloseChunked))) {
+          if (!res.CloseConnection && req.FlushInput ()) {
             // Don't close. Keep working.
             _reuses++;
             disposeRequestBuffer ();
@@ -487,7 +482,6 @@ namespace WebSocketSharp.Net
         var len = (int) _requestBuffer.Length;
         disposeRequestBuffer ();
         if (chunked) {
-          _chunked = true;
           _context.Response.SendChunked = true;
           _inputStream = new ChunkedRequestStream (
             _stream, buff, _position, len - _position, _context);
