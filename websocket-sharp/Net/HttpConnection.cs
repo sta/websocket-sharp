@@ -533,13 +533,19 @@ namespace WebSocketSharp.Net
           res.StatusCode = status;
           res.ContentType = "text/html";
 
-          var desc = status.GetStatusDescription ();
           var msg = message != null && message.Length > 0
-                    ? String.Format ("<h1>{0} ({1})</h1>", desc, message)
-                    : String.Format ("<h1>{0}</h1>", desc);
+                    ? String.Format ("{0} ({1})", res.StatusDescription, message)
+                    : res.StatusDescription;
 
-          var entity = res.ContentEncoding.GetBytes (msg);
-          res.Close (entity, false);
+          var enc = res.ContentEncoding;
+          if (enc == null) {
+            enc = Encoding.UTF8;
+            res.ContentEncoding = enc;
+          }
+
+          var entity = enc.GetBytes (String.Format ("<html><body><h1>{0}</h1></body></html>", msg));
+          res.ContentLength64 = entity.LongLength;
+          res.Close (entity, true);
         }
         catch {
           // Response was already closed.

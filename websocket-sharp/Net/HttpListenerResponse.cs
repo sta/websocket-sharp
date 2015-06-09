@@ -743,20 +743,16 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="responseEntity"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
-    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
     /// </exception>
     public void Close (byte[] responseEntity, bool willBlock)
     {
+      checkDisposed ();
       if (responseEntity == null)
         throw new ArgumentNullException ("responseEntity");
 
       var len = responseEntity.Length;
-      ContentLength64 = len;
-
       var output = OutputStream;
       if (willBlock) {
         output.Write (responseEntity, 0, len);
