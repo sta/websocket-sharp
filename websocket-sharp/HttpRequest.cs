@@ -134,7 +134,7 @@ namespace WebSocketSharp
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
       var port = uri.Port;
-      var scheme = uri.Scheme
+      var scheme = uri.Scheme;
       bool isDefaultPort = (port == 80 && scheme == "ws") || (port == 443 && scheme == "wss");
       // only include port in host header if it is non-default
       // https://tools.ietf.org/html/rfc6455#page-17
