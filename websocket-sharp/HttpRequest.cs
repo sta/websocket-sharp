@@ -133,8 +133,12 @@ namespace WebSocketSharp
       var headers = req.Headers;
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
-	  bool isDefaultPort = (uri.Port == 80 && uri.Scheme == "ws") || (uri.Port == 443 && uri.Scheme == "wss");
-	  headers["Host"] = isDefaultPort ? uri.DnsSafeHost : uri.Authority;
+      var port = uri.Port;
+      var scheme = uri.Scheme
+      bool isDefaultPort = (port == 80 && scheme == "ws") || (port == 443 && scheme == "wss");
+      // only include port in host header if it is non-default
+      // https://tools.ietf.org/html/rfc6455#page-17
+      headers["Host"] = isDefaultPort ? uri.DnsSafeHost : uri.Authority;
 
       return req;
     }
