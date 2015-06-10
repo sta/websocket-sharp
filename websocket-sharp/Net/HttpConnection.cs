@@ -332,7 +332,7 @@ namespace WebSocketSharp.Net
               continue;
 
             if (_position > 32768)
-              _context.ErrorMessage = "Bad request";
+              _context.ErrorMessage = "Maximum total headers length exceeded";
 
             _currentLine = null;
             return true;
@@ -357,7 +357,7 @@ namespace WebSocketSharp.Net
 
       _position += nread;
       if (_position >= 32768) {
-        _context.ErrorMessage = "Bad request";
+        _context.ErrorMessage = "Maximum total headers length exceeded";
         return true;
       }
 
@@ -421,10 +421,7 @@ namespace WebSocketSharp.Net
 
         if (!force) {
           GetResponseStream ().Close (false);
-
-          var req = _context.Request;
-          var res = _context.Response;
-          if (!res.CloseConnection && req.FlushInput ()) {
+          if (!_context.Response.CloseConnection && _context.Request.FlushInput ()) {
             // Don't close. Keep working.
             _reuses++;
             disposeRequestBuffer ();
