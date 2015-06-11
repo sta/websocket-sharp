@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
     private byte[]              _buffer;
     private const int           _bufferLength = 8192;
     private HttpListenerContext _context;
-    private bool                _contextWasBound;
+    private bool                _contextBound;
     private StringBuilder       _currentLine;
     private InputState          _inputState;
     private RequestStream       _inputStream;
@@ -299,7 +299,7 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
-          conn._contextWasBound = true;
+          conn._contextBound = true;
           lsnr.RegisterContext (conn._context);
 
           return;
@@ -399,11 +399,11 @@ namespace WebSocketSharp.Net
 
     private void unbind ()
     {
-      if (!_contextWasBound)
+      if (!_contextBound)
         return;
 
       _listener.UnbindContext (_context);
-      _contextWasBound = false;
+      _contextBound = false;
     }
 
     #endregion
@@ -530,9 +530,12 @@ namespace WebSocketSharp.Net
           res.StatusCode = status;
           res.ContentType = "text/html";
 
-          var msg = message != null && message.Length > 0
-                    ? String.Format ("{0} ({1})", res.StatusDescription, message)
-                    : res.StatusDescription;
+          var content = new StringBuilder (64);
+          content.AppendFormat ("<html><body><h1>{0} {1}", status, res.StatusDescription);
+          if (message != null && message.Length > 0)
+            content.AppendFormat (" ({0})</h1></body></html>", message);
+          else
+            content.Append ("</h1></body></html>");
 
           var enc = res.ContentEncoding;
           if (enc == null) {
@@ -540,7 +543,7 @@ namespace WebSocketSharp.Net
             res.ContentEncoding = enc;
           }
 
-          var entity = enc.GetBytes (String.Format ("<html><body><h1>{0}</h1></body></html>", msg));
+          var entity = enc.GetBytes (content.ToString ());
           res.ContentLength64 = entity.LongLength;
           res.Close (entity, true);
         }
