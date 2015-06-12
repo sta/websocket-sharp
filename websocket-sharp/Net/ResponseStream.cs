@@ -125,16 +125,11 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void flush (bool closing)
+    private bool flush (bool closing)
     {
       if (!_response.HeadersSent) {
-        using (var headers = new MemoryStream ()) {
-          _response.WriteHeadersTo (headers, closing);
-          var start = headers.Position;
-          _write (headers.GetBuffer (), (int) start, (int) (headers.Length - start));
-        }
-
-        _response.HeadersSent = true;
+        if (!flushHeaders (closing))
+          return false;
 
         _chunked = _response.SendChunked;
         _writeBody = _chunked ? _writeChunked : _write;
@@ -145,6 +140,8 @@ namespace WebSocketSharp.Net
         var last = getChunkSizeBytes (0, true);
         _write (last, 0, last.Length);
       }
+
+      return true;
     }
 
     private void flushBody (bool closing)
@@ -165,6 +162,25 @@ namespace WebSocketSharp.Net
       }
 
       _body = !closing ? new MemoryStream () : null;
+    }
+
+    private bool flushHeaders (bool closing)
+    {
+      using (var headers = new MemoryStream ()) {
+        _response.WriteHeadersTo (headers, closing);
+        var start = headers.Position;
+        var len = headers.Length - start;
+        if (len > 32768)
+          return false;
+
+        if (!_response.SendChunked && _response.ContentLength64 != _body.Length)
+          return false;
+
+        _write (headers.GetBuffer (), (int) start, (int) len);
+      }
+
+      _response.HeadersSent = true;
+      return true;
     }
 
     private static byte[] getChunkSizeBytes (int size, bool final)
@@ -208,17 +224,17 @@ namespace WebSocketSharp.Net
         return;
 
       _disposed = true;
-      if (!force) {
-        flush (true);
+      if (!force && flush (true)) {
         _response.Close ();
       }
       else {
-        _body.Dispose ();
-        _body = null;
         if (_chunked) {
           var last = getChunkSizeBytes (0, true);
           _write (last, 0, last.Length);
         }
+
+        _body.Dispose ();
+        _body = null;
 
         _response.Abort ();
       }
