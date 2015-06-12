@@ -871,6 +871,70 @@ namespace WebSocketSharp
       return true;
     }
 
+    /// <summary>
+    /// Tries to create a <see cref="Uri"/> for HTTP with the specified
+    /// <paramref name="uriString"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if a <see cref="Uri"/> is successfully created; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="uriString">
+    /// A <see cref="string"/> that represents the HTTP URL to try.
+    /// </param>
+    /// <param name="result">
+    /// When this method returns, a <see cref="Uri"/> that represents the HTTP URL
+    /// if <paramref name="uriString"/> is valid; otherwise, <see langword="null"/>.
+    /// </param>
+    /// <param name="message">
+    /// When this method returns, a <see cref="string"/> that represents the error message
+    /// if <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
+    /// </param>
+    internal static bool TryCreateHttpUri (
+      this string uriString, out Uri result, out string message)
+    {
+      result = null;
+
+      var uri = uriString.ToUri ();
+      if (!uri.IsAbsoluteUri) {
+        message = "Not an absolute URI: " + uriString;
+        return false;
+      }
+
+      var schm = uri.Scheme;
+      if (schm != "http" && schm != "https") {
+        message = "The scheme part isn't 'http' or 'https': " + uriString;
+        return false;
+      }
+
+      if (uri.Fragment.Length > 0) {
+        message = "Includes the fragment component: " + uriString;
+        return false;
+      }
+
+      var port = uri.Port;
+      if (port > 0) {
+        if (port > 65535) {
+          message = "The port part is greater than 65535: " + uriString;
+          return false;
+        }
+
+        if ((schm == "http" && port == 443) || (schm == "https" && port == 80)) {
+          message = "An invalid pair of scheme and port: " + uriString;
+          return false;
+        }
+      }
+      else {
+        uri = new Uri (
+          String.Format (
+            "{0}://{1}:{2}{3}", schm, uri.Host, schm == "http" ? 80 : 443, uri.PathAndQuery));
+      }
+
+      result = uri;
+      message = String.Empty;
+
+      return true;
+    }
+
     internal static string Unquote (this string value)
     {
       var start = value.IndexOf ('"');
