@@ -233,10 +233,7 @@ namespace WebSocketSharp.Net
     /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
-    /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// This object is closed.
+    /// The headers has already been sent.
     /// </exception>
     public WebHeaderCollection Headers {
       get {
@@ -254,7 +251,7 @@ namespace WebSocketSharp.Net
 
         // TODO: Check if this is marked readonly after the headers are sent.
 
-        checkDisposedOrHeadersSent ();
+        checkHeadersSent ();
         if (value == null)
           throw new ArgumentNullException ("value");
 
@@ -482,6 +479,12 @@ namespace WebSocketSharp.Net
         throw new InvalidOperationException ("Cannot be changed after the headers are sent.");
     }
 
+    private void checkHeadersSent ()
+    {
+      if (_headersSent)
+        throw new InvalidOperationException ("Cannot be changed after the headers are sent.");
+    }
+
     private void close (bool force)
     {
       _disposed = true;
@@ -505,23 +508,26 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void WriteHeadersTo (MemoryStream destination, bool closing)
+    internal WebHeaderCollection WriteHeadersTo (MemoryStream destination, bool closing)
     {
+      var headers = new WebHeaderCollection ();
+      headers.Add (_headers);
+
       if (_contentType != null) {
         var type = _contentType.IndexOf ("charset=", StringComparison.Ordinal) == -1 &&
                    _contentEncoding != null
                    ? String.Format ("{0}; charset={1}", _contentType, _contentEncoding.WebName)
                    : _contentType;
 
-        _headers.InternalSet ("Content-Type", type, true);
+        headers.InternalSet ("Content-Type", type, true);
       }
 
-      if (_headers["Server"] == null)
-        _headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+      if (headers["Server"] == null)
+        headers.InternalSet ("Server", "websocket-sharp/1.0", true);
 
       var prov = CultureInfo.InvariantCulture;
-      if (_headers["Date"] == null)
-        _headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
+      if (headers["Date"] == null)
+        headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
 
       if (!_chunked) {
         if (!_contentLengthSet && closing) {
@@ -530,13 +536,13 @@ namespace WebSocketSharp.Net
         }
 
         if (_contentLengthSet)
-          _headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
+          headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
         else if (_context.Request.ProtocolVersion > HttpVersion.Version10)
           _chunked = true;
       }
 
       if (_chunked)
-        _headers.InternalSet ("Transfer-Encoding", "chunked", true);
+        headers.InternalSet ("Transfer-Encoding", "chunked", true);
 
       /*
        * Apache forces closing the connection for these status codes:
@@ -548,43 +554,45 @@ namespace WebSocketSharp.Net
        * - HttpStatusCode.InternalServerError   500
        * - HttpStatusCode.ServiceUnavailable    503
        */
-      var closeConn = _statusCode == 400 ||
+      var closeConn = !_context.Request.KeepAlive ||
+                      !_keepAlive ||
+                      _statusCode == 400 ||
                       _statusCode == 408 ||
                       _statusCode == 411 ||
                       _statusCode == 413 ||
                       _statusCode == 414 ||
                       _statusCode == 500 ||
-                      _statusCode == 503 ||
-                      !_context.Request.KeepAlive ||
-                      !_keepAlive;
+                      _statusCode == 503;
 
       var reuses = _context.Connection.Reuses;
       if (closeConn || reuses >= 100) {
-        _headers.InternalSet ("Connection", "close", true);
+        headers.InternalSet ("Connection", "close", true);
       }
       else {
-        _headers.InternalSet (
+        headers.InternalSet (
           "Keep-Alive", String.Format ("timeout=15,max={0}", 100 - reuses), true);
 
         if (_context.Request.ProtocolVersion < HttpVersion.Version11)
-          _headers.InternalSet ("Connection", "keep-alive", true);
+          headers.InternalSet ("Connection", "keep-alive", true);
       }
 
       if (_location != null)
-        _headers.InternalSet ("Location", _location, true);
+        headers.InternalSet ("Location", _location, true);
 
       if (_cookies != null)
         foreach (Cookie cookie in _cookies)
-          _headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
+          headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
 
       var enc = _contentEncoding ?? Encoding.Default;
       var writer = new StreamWriter (destination, enc, 256);
       writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
-      writer.Write (_headers.ToStringMultiValue (true));
+      writer.Write (headers.ToStringMultiValue (true));
       writer.Flush ();
 
       // Assumes that the destination was at position 0.
       destination.Position = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
+
+      return headers;
     }
 
     #endregion

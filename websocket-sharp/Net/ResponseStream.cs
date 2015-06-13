@@ -128,8 +128,12 @@ namespace WebSocketSharp.Net
     private bool flush (bool closing)
     {
       if (!_response.HeadersSent) {
-        if (!flushHeaders (closing))
+        if (!flushHeaders (closing)) {
+          if (closing)
+            _response.Headers.InternalSet ("Connection", "close", true);
+
           return false;
+        }
 
         _chunked = _response.SendChunked;
         _writeBody = _chunked ? _writeChunked : _write;
@@ -166,20 +170,21 @@ namespace WebSocketSharp.Net
 
     private bool flushHeaders (bool closing)
     {
-      using (var headers = new MemoryStream ()) {
-        _response.WriteHeadersTo (headers, closing);
-        var start = headers.Position;
-        var len = headers.Length - start;
+      using (var buff = new MemoryStream ()) {
+        var headers = _response.WriteHeadersTo (buff, closing);
+        var start = buff.Position;
+        var len = buff.Length - start;
         if (len > 32768)
           return false;
 
         if (!_response.SendChunked && _response.ContentLength64 != _body.Length)
           return false;
 
-        _write (headers.GetBuffer (), (int) start, (int) len);
+        _write (buff.GetBuffer (), (int) start, (int) len);
+        _response.Headers = headers;
+        _response.HeadersSent = true;
       }
 
-      _response.HeadersSent = true;
       return true;
     }
 
