@@ -2,7 +2,7 @@
 /*
  * WebHeaderCollection.cs
  *
- * This code is derived from System.Net.WebHeaderCollection.cs of Mono
+ * This code is derived from WebHeaderCollection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
