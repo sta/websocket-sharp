@@ -130,7 +130,7 @@ namespace WebSocketSharp.Net
       if (!_response.HeadersSent) {
         if (!flushHeaders (closing)) {
           if (closing)
-            _response.Headers.InternalSet ("Connection", "close", true);
+            _response.CloseConnection = true;
 
           return false;
         }
@@ -181,7 +181,7 @@ namespace WebSocketSharp.Net
           return false;
 
         _write (buff.GetBuffer (), (int) start, (int) len);
-        _response.Headers = headers;
+        _response.CloseConnection = headers["Connection"] == "close";
         _response.HeadersSent = true;
       }
 
