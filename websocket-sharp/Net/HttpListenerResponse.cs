@@ -372,8 +372,8 @@ namespace WebSocketSharp.Net
     /// Gets or sets the HTTP status code returned to the client.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the status code for the response to the request.
-    /// The default value is <see cref="HttpStatusCode.OK"/>.
+    /// An <see cref="int"/> that represents the status code for the response to
+    /// the request. The default value is same as <see cref="HttpStatusCode.OK"/>.
     /// </value>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
@@ -382,7 +382,8 @@ namespace WebSocketSharp.Net
     /// This object is closed.
     /// </exception>
     /// <exception cref="System.Net.ProtocolViolationException">
-    /// The value specified for a set operation is invalid. Valid values are between 100 and 999.
+    /// The value specified for a set operation is invalid. Valid values are
+    /// between 100 and 999 inclusive.
     /// </exception>
     public int StatusCode {
       get {
@@ -392,7 +393,8 @@ namespace WebSocketSharp.Net
       set {
         checkDisposedOrHeadersSent ();
         if (value < 100 || value > 999)
-          throw new System.Net.ProtocolViolationException ("A value isn't between 100 and 999.");
+          throw new System.Net.ProtocolViolationException (
+            "A value isn't between 100 and 999 inclusive.");
 
         _statusCode = value;
         _statusDescription = value.GetStatusDescription ();
@@ -403,10 +405,13 @@ namespace WebSocketSharp.Net
     /// Gets or sets the description of the HTTP status code returned to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the description of the status code.
+    /// A <see cref="string"/> that represents the description of the status code. The default
+    /// value is the <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see>
+    /// description for the <see cref="HttpListenerResponse.StatusCode"/> property value,
+    /// or <see cref="String.Empty"/> if an RFC 2616 description doesn't exist.
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation contains invalid characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
@@ -421,12 +426,15 @@ namespace WebSocketSharp.Net
 
       set {
         checkDisposedOrHeadersSent ();
-        if (value == null)
-          throw new ArgumentNullException ("value");
+        if (value == null || value.Length == 0) {
+          _statusDescription = _statusCode.GetStatusDescription ();
+          return;
+        }
 
-        _statusDescription = value.Length > 0
-                             ? value
-                             : _statusCode.GetStatusDescription ();
+        if (!value.IsText () || value.IndexOfAny (new[] { '\r', '\n' }) > -1)
+          throw new ArgumentException ("Contains invalid characters.", "value");
+
+        _statusDescription = value;
       }
     }
 
