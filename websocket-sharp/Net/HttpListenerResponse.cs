@@ -785,8 +785,15 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentException">
     /// <paramref name="url"/> is empty.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The response has already been sent.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// This object is closed.
+    /// </exception>
     public void Redirect (string url)
     {
+      checkDisposedOrHeadersSent ();
       if (url == null)
         throw new ArgumentNullException ("url");
 
