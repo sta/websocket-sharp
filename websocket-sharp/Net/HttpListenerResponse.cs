@@ -326,7 +326,15 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the value of the Location response-header.
     /// </value>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is empty.
+    ///   <para>
+    ///   The value specified for a set operation is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation isn't an absolute URL.
+    ///   </para>
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
@@ -338,8 +346,17 @@ namespace WebSocketSharp.Net
 
       set {
         checkDisposed ();
-        if (value != null && value.Length == 0)
+        if (value == null) {
+          _location = null;
+          return;
+        }
+
+        if (value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
+
+        Uri uri = null;
+        if (!value.MaybeUri () || !Uri.TryCreate (value, UriKind.Absolute, out uri))
+          throw new ArgumentException ("Not an absolute URL.", "value");
 
         _location = value;
       }
@@ -776,6 +793,12 @@ namespace WebSocketSharp.Net
     /// Configures the response to redirect the client's request to
     /// the specified <paramref name="url"/>.
     /// </summary>
+    /// <remarks>
+    /// This method sets the <see cref="HttpListenerResponse.RedirectLocation"/> property to
+    /// <paramref name="url"/>, the <see cref="HttpListenerResponse.StatusCode"/> property to
+    /// <c>302</c>, and the <see cref="HttpListenerResponse.StatusDescription"/> property to
+    /// <c>"Found"</c>.
+    /// </remarks>
     /// <param name="url">
     /// A <see cref="string"/> that represents the URL to redirect the client's request to.
     /// </param>
@@ -783,7 +806,15 @@ namespace WebSocketSharp.Net
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is empty.
+    ///   <para>
+    ///   <paramref name="url"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> isn't an absolute URL.
+    ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
@@ -799,6 +830,10 @@ namespace WebSocketSharp.Net
 
       if (url.Length == 0)
         throw new ArgumentException ("An empty string.", "url");
+
+      Uri uri = null;
+      if (!url.MaybeUri () || !Uri.TryCreate (url, UriKind.Absolute, out uri))
+        throw new ArgumentException ("Not an absolute URL.", "url");
 
       _location = url;
       _statusCode = 302;
