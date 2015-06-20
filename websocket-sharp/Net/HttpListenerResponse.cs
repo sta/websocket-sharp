@@ -323,18 +323,11 @@ namespace WebSocketSharp.Net
     /// Gets or sets the URL to which the client is redirected to locate a requested resource.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Location response-header.
+    /// A <see cref="string"/> that represents the value of the Location response-header,
+    /// or <see langword="null"/> if no redirect location is specified.
     /// </value>
     /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The value specified for a set operation is empty.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The value specified for a set operation isn't an absolute URL.
-    ///   </para>
+    /// The value specified for a set operation isn't an absolute URL.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
@@ -350,9 +343,6 @@ namespace WebSocketSharp.Net
           _location = null;
           return;
         }
-
-        if (value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
 
         Uri uri = null;
         if (!value.MaybeUri () || !Uri.TryCreate (value, UriKind.Absolute, out uri))
@@ -806,15 +796,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="url"/> is empty.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="url"/> isn't an absolute URL.
-    ///   </para>
+    /// <paramref name="url"/> isn't an absolute URL.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
@@ -827,9 +809,6 @@ namespace WebSocketSharp.Net
       checkDisposedOrHeadersSent ();
       if (url == null)
         throw new ArgumentNullException ("url");
-
-      if (url.Length == 0)
-        throw new ArgumentException ("An empty string.", "url");
 
       Uri uri = null;
       if (!url.MaybeUri () || !Uri.TryCreate (url, UriKind.Absolute, out uri))
