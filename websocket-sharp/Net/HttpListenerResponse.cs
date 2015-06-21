@@ -121,9 +121,6 @@ namespace WebSocketSharp.Net
     /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
     /// or <see langword="null"/> if no encoding is specified.
     /// </value>
-    /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
-    /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
     /// </exception>
@@ -133,17 +130,16 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
+        checkDisposed ();
         _contentEncoding = value;
       }
     }
 
     /// <summary>
-    /// Gets or sets the size of the entity body data included in the response.
+    /// Gets or sets the number of bytes in the entity body data included in the response.
     /// </summary>
     /// <value>
     /// A <see cref="long"/> that represents the value of the Content-Length entity-header.
-    /// The value is a number of bytes in the entity body data.
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The value specified for a set operation is less than zero.
@@ -173,16 +169,12 @@ namespace WebSocketSharp.Net
     /// Gets or sets the media type of the entity body included in the response.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Content-Type entity-header.
+    /// A <see cref="string"/> that represents the media type of the entity body,
+    /// or <see langword="null"/> if no media type is specified. This value is
+    /// used for the value of the Content-Type entity-header.
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is empty.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The response has already been sent.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// This object is closed.
@@ -193,11 +185,8 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        checkDisposedOrHeadersSent ();
-        if (value == null)
-          throw new ArgumentNullException ("value");
-
-        if (value.Length == 0)
+        checkDisposed ();
+        if (value != null && value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
 
         _contentType = value;
