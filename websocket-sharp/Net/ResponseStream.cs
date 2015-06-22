@@ -171,7 +171,7 @@ namespace WebSocketSharp.Net
     private bool flushHeaders (bool closing)
     {
       using (var buff = new MemoryStream ()) {
-        var headers = _response.WriteHeadersTo (buff, closing);
+        var headers = _response.WriteHeadersTo (buff);
         var start = buff.Position;
         var len = buff.Length - start;
         if (len > 32768)

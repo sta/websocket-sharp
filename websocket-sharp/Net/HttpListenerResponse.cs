@@ -55,11 +55,9 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private bool                _chunked;
     private bool                _closeConnection;
     private Encoding            _contentEncoding;
     private long                _contentLength;
-    private bool                _contentLengthSet;
     private string              _contentType;
     private HttpListenerContext _context;
     private CookieCollection    _cookies;
@@ -69,6 +67,7 @@ namespace WebSocketSharp.Net
     private bool                _keepAlive;
     private string              _location;
     private ResponseStream      _outputStream;
+    private bool                _sendChunked;
     private int                 _statusCode;
     private string              _statusDescription;
     private Version             _version;
@@ -160,7 +159,6 @@ namespace WebSocketSharp.Net
         if (value < 0)
           throw new ArgumentOutOfRangeException ("Less than zero.", "value");
 
-        _contentLengthSet = true;
         _contentLength = value;
       }
     }
@@ -345,7 +343,8 @@ namespace WebSocketSharp.Net
     /// Gets or sets a value indicating whether the response uses the chunked transfer encoding.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the response uses the chunked transfer encoding; otherwise, <c>false</c>.
+    /// <c>true</c> if the response uses the chunked transfer encoding;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     /// <exception cref="InvalidOperationException">
     /// The response has already been sent.
@@ -355,12 +354,12 @@ namespace WebSocketSharp.Net
     /// </exception>
     public bool SendChunked {
       get {
-        return _chunked;
+        return _sendChunked;
       }
 
       set {
         checkDisposedOrHeadersSent ();
-        _chunked = value;
+        _sendChunked = value;
       }
     }
 
@@ -493,7 +492,7 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal WebHeaderCollection WriteHeadersTo (MemoryStream destination, bool closing)
+    internal WebHeaderCollection WriteHeadersTo (MemoryStream destination)
     {
       var headers = new WebHeaderCollection (HttpHeaderType.Response, true);
       if (_headers != null)
@@ -515,19 +514,9 @@ namespace WebSocketSharp.Net
       if (headers["Date"] == null)
         headers.InternalSet ("Date", DateTime.UtcNow.ToString ("r", prov), true);
 
-      if (!_chunked) {
-        if (!_contentLengthSet && closing) {
-          _contentLengthSet = true;
-          _contentLength = 0;
-        }
-
-        if (_contentLengthSet)
-          headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
-        else if (_context.Request.ProtocolVersion > HttpVersion.Version10)
-          _chunked = true;
-      }
-
-      if (_chunked)
+      if (!_sendChunked)
+        headers.InternalSet ("Content-Length", _contentLength.ToString (prov), true);
+      else
         headers.InternalSet ("Transfer-Encoding", "chunked", true);
 
       /*
@@ -761,7 +750,6 @@ namespace WebSocketSharp.Net
       }
 
       _contentLength = templateResponse._contentLength;
-      _contentLengthSet = templateResponse._contentLengthSet;
       _statusCode = templateResponse._statusCode;
       _statusDescription = templateResponse._statusDescription;
       _keepAlive = templateResponse._keepAlive;
