@@ -43,19 +43,15 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  // FIXME: Does this buffer the response until close?
-  // Update: We send a single packet for the first non-chunked write.
-  // What happens when we set Content-Length to X and write X-1 bytes then close?
-  // What happens if we don't set Content-Length at all?
   internal class ResponseStream : Stream
   {
     #region Private Fields
 
     private MemoryStream             _body;
-    private bool                     _chunked;
     private static readonly byte[]   _crlf = new byte[] { 13, 10 };
     private bool                     _disposed;
     private HttpListenerResponse     _response;
+    private bool                     _sendChunked;
     private Stream                   _stream;
     private Action<byte[], int, int> _write;
     private Action<byte[], int, int> _writeBody;
@@ -135,12 +131,12 @@ namespace WebSocketSharp.Net
           return false;
         }
 
-        _chunked = _response.SendChunked;
-        _writeBody = _chunked ? _writeChunked : _write;
+        _sendChunked = _response.SendChunked;
+        _writeBody = _sendChunked ? _writeChunked : _write;
       }
 
       flushBody (closing);
-      if (closing && _chunked) {
+      if (closing && _sendChunked) {
         var last = getChunkSizeBytes (0, true);
         _write (last, 0, last.Length);
       }
@@ -233,7 +229,7 @@ namespace WebSocketSharp.Net
         _response.Close ();
       }
       else {
-        if (_chunked) {
+        if (_sendChunked) {
           var last = getChunkSizeBytes (0, true);
           _write (last, 0, last.Length);
         }
@@ -297,7 +293,7 @@ namespace WebSocketSharp.Net
 
     public override void Flush ()
     {
-      if (!_disposed && (_chunked || _response.SendChunked))
+      if (!_disposed && (_sendChunked || _response.SendChunked))
         flush (false);
     }
 
