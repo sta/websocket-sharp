@@ -854,10 +854,6 @@ namespace WebSocketSharp
           return false;
         }
 
-        if ((schm == "ws" && port == 443) || (schm == "wss" && port == 80)) {
-          message = "An invalid pair of scheme and port: " + uriString;
-          return false;
-        }
       }
       else {
         uri = new Uri (
