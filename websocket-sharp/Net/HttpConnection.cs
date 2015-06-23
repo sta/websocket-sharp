@@ -262,8 +262,10 @@ namespace WebSocketSharp.Net
           len = (int) conn._requestBuffer.Length;
         }
         catch (Exception ex) {
-          if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
+          if (conn._requestBuffer != null && conn._requestBuffer.Length > 0) {
             conn.SendError (ex.Message, 400);
+            return;
+          }
 
           conn.close ();
           return;
@@ -280,15 +282,11 @@ namespace WebSocketSharp.Net
 
           if (conn._context.HasError) {
             conn.SendError ();
-            conn.Close (true);
-
             return;
           }
 
           if (!conn._listener.BindContext (conn._context)) {
             conn.SendError ("Invalid host", 400);
-            conn.Close (true);
-
             return;
           }
 
@@ -332,7 +330,7 @@ namespace WebSocketSharp.Net
               continue;
 
             if (_position > 32768)
-              _context.ErrorMessage = "Maximum total headers length exceeded";
+              _context.ErrorMessage = "Headers too long";
 
             _currentLine = null;
             return true;
@@ -357,7 +355,7 @@ namespace WebSocketSharp.Net
 
       _position += nread;
       if (_position >= 32768) {
-        _context.ErrorMessage = "Maximum total headers length exceeded";
+        _context.ErrorMessage = "Headers too long";
         return true;
       }
 
@@ -548,7 +546,7 @@ namespace WebSocketSharp.Net
           res.Close (entity, true);
         }
         catch {
-          // Response was already closed.
+          Close (true);
         }
       }
     }
