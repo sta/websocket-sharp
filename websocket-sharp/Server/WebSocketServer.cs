@@ -34,6 +34,7 @@
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  * - Jonas Hovgaard <j@jhovgaard.dk>
  * - Liryna <liryna.stark@gmail.com>
+ * - Rohan Singh <rohan-singh@hotmail.com>
  */
 #endregion
 
@@ -225,8 +226,8 @@ namespace WebSocketSharp.Server
     /// <paramref name="address"/>, <paramref name="port"/>, and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests
-    /// on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming connection requests on
+    /// <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
@@ -238,6 +239,9 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="address"/> isn't a local IP address.
@@ -249,19 +253,20 @@ namespace WebSocketSharp.Server
     ///   Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
     ///   </para>
     /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="address"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
     {
+      if (address == null)
+        throw new ArgumentNullException ("address");
+
       if (!address.IsLocal ())
         throw new ArgumentException ("Not a local IP address: " + address, "address");
 
       if (!port.IsPortNumber ())
-        throw new ArgumentOutOfRangeException ("port", "Not between 1 and 65535: " + port);
+        throw new ArgumentOutOfRangeException (
+          "port", "Not between 1 and 65535 inclusive: " + port);
 
       if ((port == 80 && secure) || (port == 443 && !secure))
         throw new ArgumentException (

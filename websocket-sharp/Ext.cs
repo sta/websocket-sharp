@@ -1193,13 +1193,10 @@ namespace WebSocketSharp
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> to test.
     /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="address"/> is <see langword="null"/>.
-    /// </exception>
     public static bool IsLocal (this System.Net.IPAddress address)
     {
       if (address == null)
-        throw new ArgumentNullException ("address");
+        return false;
 
       if (address.Equals (System.Net.IPAddress.Any) || System.Net.IPAddress.IsLoopback (address))
         return true;
