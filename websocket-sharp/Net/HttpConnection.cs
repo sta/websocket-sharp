@@ -41,6 +41,7 @@
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
+ * - Rohan Singh <rohan-singh@hotmail.com>
  */
 #endregion
 
@@ -535,14 +536,11 @@ namespace WebSocketSharp.Net
           else
             content.Append ("</h1></body></html>");
 
-          var enc = res.ContentEncoding;
-          if (enc == null) {
-            enc = Encoding.UTF8;
-            res.ContentEncoding = enc;
-          }
-
+          var enc = Encoding.UTF8;
           var entity = enc.GetBytes (content.ToString ());
+          res.ContentEncoding = enc;
           res.ContentLength64 = entity.LongLength;
+
           res.Close (entity, true);
         }
         catch {
