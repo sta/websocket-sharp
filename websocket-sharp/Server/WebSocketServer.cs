@@ -84,22 +84,22 @@ namespace WebSocketSharp.Server
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests
-    /// on port 80.
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on port 80.
     /// </remarks>
     public WebSocketServer ()
-      : this (System.Net.IPAddress.Any, 80, false)
     {
+      init (System.Net.IPAddress.Any, 80, false);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-    /// <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
+    /// the specified <paramref name="port"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming connection requests
-    ///   on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -109,36 +109,48 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
     public WebSocketServer (int port)
-      : this (System.Net.IPAddress.Any, port, port == 443)
     {
+      if (!port.IsPortNumber ())
+        throw new ArgumentOutOfRangeException (
+          "port", "Not between 1 and 65535 inclusive: " + port);
+
+      init (System.Net.IPAddress.Any, port, port == 443);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-    /// WebSocket URL.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
+    /// the specified WebSocket URL.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming connection requests
-    ///   on the port in <paramref name="url"/>.
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on the port in <paramref name="url"/>.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on which
-    ///   to listen. It's determined by the scheme (ws or wss) in <paramref name="url"/>.
+    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on
+    ///   which to listen. It's determined by the scheme (ws or wss) in <paramref name="url"/>.
     ///   (Port 80 if the scheme is ws.)
     ///   </para>
     /// </remarks>
     /// <param name="url">
     /// A <see cref="string"/> that represents the WebSocket URL of the server.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="url"/> is invalid.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="url"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is invalid.
+    ///   </para>
     /// </exception>
     public WebSocketServer (string url)
     {
@@ -148,27 +160,26 @@ namespace WebSocketSharp.Server
       if (url.Length == 0)
         throw new ArgumentException ("An empty string.", "url");
 
+      Uri uri;
       string msg;
-      if (!tryCreateUri (url, out _uri, out msg))
+      if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      _address = _uri.DnsSafeHost.ToIPAddress ();
-      if (_address == null || !_address.IsLocal ())
+      var addr = uri.DnsSafeHost.ToIPAddress ();
+      if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
 
-      _port = _uri.Port;
-      _secure = _uri.Scheme == "wss";
-
-      init ();
+      _uri = uri;
+      init (addr, uri.Port, uri.Scheme == "wss");
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-    /// <paramref name="port"/> and <paramref name="secure"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
+    /// the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests
-    /// on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
@@ -181,7 +192,7 @@ namespace WebSocketSharp.Server
     /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
     public WebSocketServer (int port, bool secure)
       : this (System.Net.IPAddress.Any, port, secure)
@@ -189,13 +200,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-    /// <paramref name="address"/> and <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
+    /// the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming connection requests
-    ///   on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -207,14 +218,14 @@ namespace WebSocketSharp.Server
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="address"/> isn't a local IP address.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="address"/> isn't a local IP address.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535.
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port)
       : this (address, port, port == 443)
@@ -222,12 +233,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-    /// <paramref name="address"/>, <paramref name="port"/>, and <paramref name="secure"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
+    /// the specified <paramref name="address"/>, <paramref name="port"/>, and
+    /// <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests on
-    /// <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
@@ -272,12 +284,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (
           String.Format ("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
-      _address = address;
-      _port = port;
-      _secure = secure;
-      _uri = "/".ToUri ();
-
-      init ();
+      init (address, port, secure);
     }
 
     #endregion
@@ -599,13 +606,16 @@ namespace WebSocketSharp.Server
              : null;
     }
 
-    private void init ()
+    private void init (System.Net.IPAddress address, int port, bool secure)
     {
+      _address = address;
+      _port = port;
+      _secure = secure;
+      _listener = new TcpListener (address, port);
+
       _authSchemes = AuthenticationSchemes.Anonymous;
-      _listener = new TcpListener (_address, _port);
       _logger = new Logger ();
       _services = new WebSocketServiceManager (_logger);
-      _state = ServerState.Ready;
       _sync = new object ();
     }
 
@@ -617,7 +627,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (_uri.IsAbsoluteUri) {
+      if (_uri != null && _uri.IsAbsoluteUri) {
         var actual = uri.DnsSafeHost;
         var expected = _uri.DnsSafeHost;
         if (Uri.CheckHostName (actual) == UriHostNameType.Dns &&
