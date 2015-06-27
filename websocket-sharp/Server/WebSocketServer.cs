@@ -62,7 +62,7 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
-    private Func<IIdentity, NetworkCredential> _credentialsFinder;
+    private Func<IIdentity, NetworkCredential> _credFinder;
     private TcpListener                        _listener;
     private Logger                             _logger;
     private int                                _port;
@@ -234,8 +234,8 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified <paramref name="address"/>, <paramref name="port"/>, and
-    /// <paramref name="secure"/>.
+    /// the specified <paramref name="address"/>, <paramref name="port"/>,
+    /// and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
     /// An instance initialized by this constructor listens for the incoming
@@ -352,8 +352,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server cleans up the inactive sessions
-    /// periodically.
+    /// Gets or sets a value indicating whether the server cleans up
+    /// the inactive sessions periodically.
     /// </summary>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive sessions every 60 seconds;
@@ -408,8 +408,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the name of the realm associated with the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the realm.
-    /// The default value is <c>"SECRET AREA"</c>.
+    /// A <see cref="string"/> that represents the name of the realm. The default value is
+    /// <c>"SECRET AREA"</c>.
     /// </value>
     public string Realm {
       get {
@@ -428,12 +428,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server is allowed to be bound to an address
-    /// that is already in use.
+    /// Gets or sets a value indicating whether the server is allowed to be bound to
+    /// an address that is already in use.
     /// </summary>
     /// <remarks>
-    /// If you would like to resolve to wait for socket in <c>TIME_WAIT</c> state, you should set
-    /// this property to <c>true</c>.
+    /// If you would like to resolve to wait for socket in <c>TIME_WAIT</c> state,
+    /// you should set this property to <c>true</c>.
     /// </remarks>
     /// <value>
     /// <c>true</c> if the server is allowed to be bound to an address that is already in use;
@@ -460,8 +460,8 @@ namespace WebSocketSharp.Server
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
-    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used
-    /// to authenticate the server and optionally the client for secure connection.
+    /// A <see cref="ServerSslConfiguration"/> that represents the configuration used to
+    /// authenticate the server and optionally the client for secure connection.
     /// </value>
     public ServerSslConfiguration SslConfiguration {
       get {
@@ -484,13 +484,13 @@ namespace WebSocketSharp.Server
     /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt; delegate that
-    /// references the method(s) used to find the credentials. The default value is a function
-    /// that only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate that
+    /// references the method(s) used to find the credentials. The default value is a function that
+    /// only returns <see langword="null"/>.
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
-        return _credentialsFinder ?? (_credentialsFinder = identity => null);
+        return _credFinder ?? (_credFinder = identity => null);
       }
 
       set {
@@ -500,7 +500,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _credentialsFinder = value;
+        _credFinder = value;
       }
     }
 
@@ -669,7 +669,7 @@ namespace WebSocketSharp.Server
             });
         }
         catch (SocketException ex) {
-          _logger.Warn ("Receiving has been stopped.\nreason: " + ex.Message);
+          _logger.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
           break;
         }
         catch (Exception ex) {
@@ -720,6 +720,46 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
+    /// Adds a WebSocket service with the specified behavior, <paramref name="path"/>,
+    /// and <paramref name="initializer"/>.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method converts <paramref name="path"/> to URL-decoded string,
+    ///   and removes <c>'/'</c> from tail end of <paramref name="path"/>.
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="initializer"/> returns an initialized specified typed
+    ///   <see cref="WebSocketBehavior"/> instance.
+    ///   </para>
+    /// </remarks>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents the absolute path to the service to add.
+    /// </param>
+    /// <param name="initializer">
+    /// A <c>Func&lt;T&gt;</c> delegate that references the method used to initialize
+    /// a new specified typed <see cref="WebSocketBehavior"/> instance (a new
+    /// <see cref="IWebSocketSession"/> instance).
+    /// </param>
+    /// <typeparam name="TBehavior">
+    /// The type of the behavior of the service to add. The TBehavior must inherit
+    /// the <see cref="WebSocketBehavior"/> class.
+    /// </typeparam>
+    public void AddWebSocketService<TBehavior> (string path, Func<TBehavior> initializer)
+      where TBehavior : WebSocketBehavior
+    {
+      var msg = path.CheckIfValidServicePath () ??
+                (initializer == null ? "'initializer' is null." : null);
+
+      if (msg != null) {
+        _logger.Error (msg);
+        return;
+      }
+
+      _services.Add<TBehavior> (path, initializer);
+    }
+
+    /// <summary>
     /// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
     /// </summary>
     /// <remarks>
@@ -738,46 +778,6 @@ namespace WebSocketSharp.Server
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
       AddWebSocketService<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
-    }
-
-    /// <summary>
-    /// Adds a WebSocket service with the specified behavior, <paramref name="path"/>,
-    /// and <paramref name="initializer"/>.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   This method converts <paramref name="path"/> to URL-decoded string,
-    ///   and removes <c>'/'</c> from tail end of <paramref name="path"/>.
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="initializer"/> returns an initialized specified typed
-    ///   <see cref="WebSocketBehavior"/> instance.
-    ///   </para>
-    /// </remarks>
-    /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service to add.
-    /// </param>
-    /// <param name="initializer">
-    /// A Func&lt;T&gt; delegate that references the method used to initialize a new specified
-    /// typed <see cref="WebSocketBehavior"/> instance (a new <see cref="IWebSocketSession"/>
-    /// instance).
-    /// </param>
-    /// <typeparam name="TBehavior">
-    /// The type of the behavior of the service to add. The TBehavior must inherit
-    /// the <see cref="WebSocketBehavior"/> class.
-    /// </typeparam>
-    public void AddWebSocketService<TBehavior> (string path, Func<TBehavior> initializer)
-      where TBehavior : WebSocketBehavior
-    {
-      var msg = path.CheckIfValidServicePath () ??
-                (initializer == null ? "'initializer' is null." : null);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        return;
-      }
-
-      _services.Add<TBehavior> (path, initializer);
     }
 
     /// <summary>
@@ -845,8 +845,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket connection requests with the specified <see cref="ushort"/>
-    /// and <see cref="string"/>.
+    /// Stops receiving the WebSocket connection requests with
+    /// the specified <see cref="ushort"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating the reason for the stop.
@@ -879,12 +879,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket connection requests with the specified
-    /// <see cref="CloseStatusCode"/> and <see cref="string"/>.
+    /// Stops receiving the WebSocket connection requests with
+    /// the specified <see cref="CloseStatusCode"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
-    /// indicating the reason for the stop.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
+    /// the reason for the stop.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for the stop.
