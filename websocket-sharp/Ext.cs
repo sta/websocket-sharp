@@ -808,22 +808,24 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Tries to create a <see cref="Uri"/> for WebSocket with the specified
-    /// <paramref name="uriString"/>.
+    /// Tries to create a <see cref="Uri"/> for WebSocket with
+    /// the specified <paramref name="uriString"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if a <see cref="Uri"/> is successfully created; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="uriString">
-    /// A <see cref="string"/> that represents the WebSocket URL to try.
+    /// A <see cref="string"/> that represents a WebSocket URL to try.
     /// </param>
     /// <param name="result">
-    /// When this method returns, a <see cref="Uri"/> that represents the WebSocket URL
-    /// if <paramref name="uriString"/> is valid; otherwise, <see langword="null"/>.
+    /// When this method returns, a <see cref="Uri"/> that represents
+    /// a WebSocket URL if <paramref name="uriString"/> is valid;
+    /// otherwise, <see langword="null"/>.
     /// </param>
     /// <param name="message">
-    /// When this method returns, a <see cref="string"/> that represents the error message
-    /// if <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
+    /// When this method returns, a <see cref="string"/> that represents
+    /// an error message if <paramref name="uriString"/> is invalid;
+    /// otherwise, <see cref="String.Empty"/>.
     /// </param>
     internal static bool TryCreateWebSocketUri (
       this string uriString, out Uri result, out string message)
@@ -831,7 +833,7 @@ namespace WebSocketSharp
       result = null;
 
       var uri = uriString.ToUri ();
-      if (!uri.IsAbsoluteUri) {
+      if (uri == null || !uri.IsAbsoluteUri) {
         message = "Not an absolute URI: " + uriString;
         return false;
       }
@@ -1719,11 +1721,11 @@ namespace WebSocketSharp
     /// </param>
     public static Uri ToUri (this string uriString)
     {
-      Uri res;
-      return Uri.TryCreate (
-               uriString, uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out res)
-             ? res
-             : null;
+      Uri ret;
+      Uri.TryCreate (
+        uriString, uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out ret);
+
+      return ret;
     }
 
     /// <summary>
