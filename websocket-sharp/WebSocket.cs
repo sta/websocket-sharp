@@ -162,6 +162,9 @@ namespace WebSocketSharp
     /// Each value of <paramref name="protocols"/> must be a token defined in
     /// <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
     ///   <paramref name="url"/> is invalid.
@@ -172,9 +175,6 @@ namespace WebSocketSharp
     ///   <para>
     ///   <paramref name="protocols"/> is invalid.
     ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     public WebSocket (string url, params string[] protocols)
     {
