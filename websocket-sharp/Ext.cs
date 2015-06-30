@@ -40,6 +40,7 @@
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
+ * - Nikola Kovacevic <nikolak@outlook.com>
  */
 #endregion
 
@@ -818,14 +819,12 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents a WebSocket URL to try.
     /// </param>
     /// <param name="result">
-    /// When this method returns, a <see cref="Uri"/> that represents
-    /// a WebSocket URL if <paramref name="uriString"/> is valid;
-    /// otherwise, <see langword="null"/>.
+    /// When this method returns, a <see cref="Uri"/> that represents a WebSocket URL,
+    /// or <see langword="null"/> if <paramref name="uriString"/> is invalid.
     /// </param>
     /// <param name="message">
-    /// When this method returns, a <see cref="string"/> that represents
-    /// an error message if <paramref name="uriString"/> is invalid;
-    /// otherwise, <see cref="String.Empty"/>.
+    /// When this method returns, a <see cref="string"/> that represents an error message,
+    /// or <see cref="String.Empty"/> if <paramref name="uriString"/> is valid.
     /// </param>
     internal static bool TryCreateWebSocketUri (
       this string uriString, out Uri result, out string message)
@@ -839,7 +838,7 @@ namespace WebSocketSharp
       }
 
       var schm = uri.Scheme;
-      if (schm != "ws" && schm != "wss") {
+      if (!(schm == "ws" || schm == "wss")) {
         message = "The scheme part isn't 'ws' or 'wss': " + uriString;
         return false;
       }
@@ -850,26 +849,22 @@ namespace WebSocketSharp
       }
 
       var port = uri.Port;
-      if (port > 0) {
-        if (port > 65535) {
-          message = "The port part is greater than 65535: " + uriString;
-          return false;
-        }
-
-        if ((schm == "ws" && port == 443) || (schm == "wss" && port == 80)) {
-          message = "An invalid pair of scheme and port: " + uriString;
-          return false;
-        }
-      }
-      else {
-        uri = new Uri (
-          String.Format (
-            "{0}://{1}:{2}{3}", schm, uri.Host, schm == "ws" ? 80 : 443, uri.PathAndQuery));
+      if (port > 65535) {
+        message = "The port part is greater than 65535: " + uriString;
+        return false;
       }
 
-      result = uri;
+      result = port > 0
+               ? uri
+               : new Uri (
+                   String.Format (
+                     "{0}://{1}:{2}{3}",
+                     schm,
+                     uri.Host,
+                     schm == "ws" ? 80 : 443,
+                     uri.PathAndQuery));
+
       message = String.Empty;
-
       return true;
     }
 

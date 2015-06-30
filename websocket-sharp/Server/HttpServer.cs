@@ -104,12 +104,8 @@ namespace WebSocketSharp.Server
     /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
     public HttpServer (int port)
+      : this (port, port == 443)
     {
-      if (!port.IsPortNumber ())
-        throw new ArgumentOutOfRangeException (
-          "port", "Not between 1 and 65535 inclusive: " + port);
-
-      init ("*", port, port == 443);
     }
 
     /// <summary>
@@ -127,9 +123,6 @@ namespace WebSocketSharp.Server
     /// A <see cref="bool"/> that indicates providing a secure connection or not.
     /// (<c>true</c> indicates providing a secure connection.)
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// Pair of <paramref name="port"/> and <paramref name="secure"/> is invalid.
-    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
@@ -138,10 +131,6 @@ namespace WebSocketSharp.Server
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
-
-      if ((port == 80 && secure) || (port == 443 && !secure))
-        throw new ArgumentException (
-          String.Format ("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
 
       init ("*", port, secure);
     }
