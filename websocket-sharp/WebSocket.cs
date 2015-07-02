@@ -509,9 +509,7 @@ namespace WebSocketSharp
     /// </value>
     public Uri Url {
       get {
-        return _client
-               ? _uri
-               : _context.RequestUri;
+        return _client ? _uri : _context.RequestUri;
       }
     }
 
@@ -897,9 +895,7 @@ namespace WebSocketSharp
     private MessageEventArgs dequeueFromMessageEventQueue ()
     {
       lock (_forMessageEventQueue)
-        return _messageEventQueue.Count > 0
-               ? _messageEventQueue.Dequeue ()
-               : null;
+        return _messageEventQueue.Count > 0 ? _messageEventQueue.Dequeue () : null;
     }
 
     // As client
@@ -1223,8 +1219,7 @@ namespace WebSocketSharp
       else
         buff = new byte[rem];
 
-      return stream.Read (buff, 0, rem) == rem &&
-             send (Fin.Final, Opcode.Cont, buff, compressed);
+      return stream.Read (buff, 0, rem) == rem && send (Fin.Final, Opcode.Cont, buff, compressed);
     }
 
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
@@ -1767,8 +1762,7 @@ namespace WebSocketSharp
     /// the allowable range of the close status code.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for
-    /// the close.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
     /// </param>
     public void Close (ushort code)
     {
@@ -1946,8 +1940,8 @@ namespace WebSocketSharp
     /// This method doesn't wait for the close to be complete.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents
-    /// the status code indicating the reason for the close.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
+    /// the reason for the close.
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
@@ -2022,8 +2016,8 @@ namespace WebSocketSharp
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents
-    /// the status code indicating the reason for the close.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
+    /// the reason for the close.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for the close.
@@ -2331,8 +2325,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets an HTTP <paramref name="cookie"/> to send with the WebSocket connection request to
-    /// the server.
+    /// Sets an HTTP <paramref name="cookie"/> to send with
+    /// the WebSocket connection request to the server.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that represents the cookie to send.
@@ -2361,12 +2355,12 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the user name used to authenticate.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
-    /// used to authenticate.
+    /// A <see cref="string"/> that represents the password for <paramref name="username"/> used
+    /// to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials
-    /// with the first connection request to the server; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials with
+    /// the first connection request to the server; otherwise, <c>false</c>.
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
@@ -2401,9 +2395,9 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets an HTTP Proxy server URL to connect through, and if necessary, a pair of
-    /// <paramref name="username"/> and <paramref name="password"/> for the proxy server
-    /// authentication (Basic/Digest).
+    /// Sets an HTTP Proxy server URL to connect through, and if necessary,
+    /// a pair of <paramref name="username"/> and <paramref name="password"/> for
+    /// the proxy server authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
     /// A <see cref="string"/> that represents the proxy server URL to connect through.
@@ -2412,8 +2406,8 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the user name used to authenticate.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
-    /// used to authenticate.
+    /// A <see cref="string"/> that represents the password for <paramref name="username"/> used
+    /// to authenticate.
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
