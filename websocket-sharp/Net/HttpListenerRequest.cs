@@ -62,14 +62,14 @@ namespace WebSocketSharp.Net
     private bool                   _chunked;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
-    private bool                   _contentLengthWasSet;
+    private bool                   _contentLengthSet;
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
     private Guid                   _identifier;
     private Stream                 _inputStream;
     private bool                   _keepAlive;
-    private bool                   _keepAliveWasSet;
+    private bool                   _keepAliveSet;
     private string                 _method;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
@@ -78,7 +78,7 @@ namespace WebSocketSharp.Net
     private string[]               _userLanguages;
     private Version                _version;
     private bool                   _websocketRequest;
-    private bool                   _websocketRequestWasSet;
+    private bool                   _websocketRequestSet;
 
     #endregion
 
@@ -276,13 +276,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        if (!_websocketRequestWasSet) {
+        if (!_websocketRequestSet) {
           _websocketRequest = _method == "GET" &&
                               _version > HttpVersion.Version10 &&
                               _headers.Contains ("Upgrade", "websocket") &&
                               _headers.Contains ("Connection", "Upgrade");
 
-          _websocketRequestWasSet = true;
+          _websocketRequestSet = true;
         }
 
         return _websocketRequest;
@@ -297,13 +297,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool KeepAlive {
       get {
-        if (!_keepAliveWasSet) {
+        if (!_keepAliveSet) {
           string keepAlive;
           _keepAlive = _version > HttpVersion.Version10 ||
                        _headers.Contains ("Connection", "keep-alive") ||
                        ((keepAlive = _headers["Keep-Alive"]) != null && keepAlive != "closed");
 
-          _keepAliveWasSet = true;
+          _keepAliveSet = true;
         }
 
         return _keepAlive;
@@ -505,7 +505,7 @@ namespace WebSocketSharp.Net
         long len;
         if (Int64.TryParse (val, out len) && len >= 0) {
           _contentLength = len;
-          _contentLengthWasSet = true;
+          _contentLengthSet = true;
         }
         else {
           _context.ErrorMessage = "Invalid Content-Length header";
@@ -558,7 +558,7 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (!_chunked && !_contentLengthWasSet) {
+      if (!_chunked && !_contentLengthSet) {
         var method = _method.ToLower ();
         if (method == "post" || method == "put") {
           _context.ErrorMessage = String.Empty;
