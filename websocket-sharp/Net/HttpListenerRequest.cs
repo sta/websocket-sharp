@@ -109,8 +109,9 @@ namespace WebSocketSharp.Net
     /// Gets the media types which are acceptable for the response.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the media type names in the Accept
-    /// request-header, or <see langword="null"/> if the request didn't include an Accept header.
+    /// An array of <see cref="string"/> that contains the media type names in
+    /// the Accept request-header, or <see langword="null"/> if the request didn't include
+    /// the Accept header.
     /// </value>
     public string[] AcceptTypes {
       get {
@@ -135,8 +136,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
-    /// or <see cref="Encoding.Default"/> if the request didn't include the information
-    /// about the encoding.
+    /// or <see cref="Encoding.Default"/> if the request didn't include the information about
+    /// the encoding.
     /// </value>
     public Encoding ContentEncoding {
       get {
@@ -145,11 +146,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the size of the entity body data included in the request.
+    /// Gets the number of bytes in the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length entity-header. The
-    /// value is a number of bytes in the entity body data. <c>-1</c> if the size isn't known.
+    /// A <see cref="long"/> that represents the value of the Content-Length entity-header,
+    /// or <c>-1</c> if the value isn't known.
     /// </value>
     public long ContentLength64 {
       get {
