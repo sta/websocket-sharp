@@ -635,27 +635,27 @@ namespace WebSocketSharp.Net
     /// Begins getting the client's X.509 v.3 certificate asynchronously.
     /// </summary>
     /// <remarks>
-    /// This asynchronous operation must be completed by calling the
-    /// <see cref="EndGetClientCertificate"/> method. Typically, that method is invoked by the
-    /// <paramref name="requestCallback"/> delegate.
+    /// This asynchronous operation must be completed by calling
+    /// the <see cref="EndGetClientCertificate"/> method. Typically,
+    /// that method is invoked by the <paramref name="requestCallback"/> delegate.
     /// </remarks>
     /// <returns>
     /// An <see cref="IAsyncResult"/> that contains the status of the asynchronous operation.
     /// </returns>
     /// <param name="requestCallback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method(s) called when the
-    /// asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that references the method(s) called when
+    /// the asynchronous operation completes.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that contains a user defined object to pass to the
-    /// <paramref name="requestCallback"/> delegate.
+    /// An <see cref="object"/> that contains a user defined object to pass to
+    /// the <paramref name="requestCallback"/> delegate.
     /// </param>
     /// <exception cref="NotImplementedException">
     /// This method isn't implemented.
     /// </exception>
     public IAsyncResult BeginGetClientCertificate (AsyncCallback requestCallback, object state)
     {
-      // TODO: Not Implemented.
+      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
@@ -663,22 +663,22 @@ namespace WebSocketSharp.Net
     /// Ends an asynchronous operation to get the client's X.509 v.3 certificate.
     /// </summary>
     /// <remarks>
-    /// This method completes an asynchronous operation started by calling the
-    /// <see cref="BeginGetClientCertificate"/> method.
+    /// This method completes an asynchronous operation started by calling
+    /// the <see cref="BeginGetClientCertificate"/> method.
     /// </remarks>
     /// <returns>
     /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
     /// </returns>
     /// <param name="asyncResult">
-    /// An <see cref="IAsyncResult"/> obtained by calling the
-    /// <see cref="BeginGetClientCertificate"/> method.
+    /// An <see cref="IAsyncResult"/> obtained by calling
+    /// the <see cref="BeginGetClientCertificate"/> method.
     /// </param>
     /// <exception cref="NotImplementedException">
     /// This method isn't implemented.
     /// </exception>
     public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
     {
-      // TODO: Not Implemented.
+      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
@@ -693,24 +693,24 @@ namespace WebSocketSharp.Net
     /// </exception>
     public X509Certificate2 GetClientCertificate ()
     {
-      // TODO: Not Implemented.
+      // TODO: Not implemented.
       throw new NotImplementedException ();
     }
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerRequest"/>.
+    /// Returns a <see cref="string"/> that represents
+    /// the current <see cref="HttpListenerRequest"/>.
     /// </summary>
     /// <returns>
     /// A <see cref="string"/> that represents the current <see cref="HttpListenerRequest"/>.
     /// </returns>
     public override string ToString ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
-      output.Append (_headers.ToString ());
+      var buff = new StringBuilder (64);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
+      buff.Append (_headers.ToString ());
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
     #endregion
