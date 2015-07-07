@@ -311,6 +311,8 @@ namespace WebSocketSharp.Net
         return null;
 
       var host = uri.Host;
+      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
+
       var port = uri.Port;
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
       var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
@@ -323,7 +325,9 @@ namespace WebSocketSharp.Net
           if (ppath.Length < bestLen)
             continue;
 
-          if (pref.Host != host || pref.Port != port)
+          var phost = pref.Host;
+          var pdns = Uri.CheckHostName (phost) == UriHostNameType.Dns;
+          if ((dns && pdns && phost != host) || pref.Port != port)
             continue;
 
           if (path.StartsWith (ppath) || pathSlash.StartsWith (ppath)) {

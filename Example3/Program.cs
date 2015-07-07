@@ -18,7 +18,8 @@ namespace Example3
        * with the 'secure' parameter set to true.
        */
       var httpsv = new HttpServer (4649);
-      //httpsv = new HttpServer (4649, true);
+      //var httpsv = new HttpServer (5963, true);
+      //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649, false);
 #if DEBUG
       // To change the logging level.
       httpsv.Log.Level = LogLevel.Trace;

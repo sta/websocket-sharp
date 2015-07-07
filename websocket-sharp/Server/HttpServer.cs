@@ -40,6 +40,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Threading;
@@ -133,6 +134,49 @@ namespace WebSocketSharp.Server
           "port", "Not between 1 and 65535 inclusive: " + port);
 
       init ("*", port, secure);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with
+    /// the specified <paramref name="address"/>, <paramref name="port"/>,
+    /// and <paramref name="secure"/>.
+    /// </summary>
+    /// <remarks>
+    /// An instance initialized by this constructor listens for the incoming
+    /// connection requests on <paramref name="port"/>.
+    /// </remarks>
+    /// <param name="address">
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// </param>
+    /// <param name="secure">
+    /// A <see cref="bool"/> that indicates providing a secure connection or not.
+    /// (<c>true</c> indicates providing a secure connection.)
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="address"/> isn't a local IP address.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
+    /// </exception>
+    public HttpServer (System.Net.IPAddress address, int port, bool secure)
+    {
+      if (address == null)
+        throw new ArgumentNullException ("address");
+
+      if (!address.IsLocal ())
+        throw new ArgumentException ("Not a local IP address: " + address, "address");
+
+      if (!port.IsPortNumber ())
+        throw new ArgumentOutOfRangeException (
+          "port", "Not between 1 and 65535 inclusive: " + port);
+
+      init (address.ToString (), port, secure);
     }
 
     #endregion
