@@ -138,6 +138,39 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class with
+    /// the specified <paramref name="address"/> and <paramref name="port"/>.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming
+    ///   connection requests on <paramref name="port"/>.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
+    ///   </para>
+    /// </remarks>
+    /// <param name="address">
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </param>
+    /// <param name="port">
+    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="address"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="address"/> isn't a local IP address.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
+    /// </exception>
+    public HttpServer (System.Net.IPAddress address, int port)
+      : this (address, port, port == 443)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with
     /// the specified <paramref name="address"/>, <paramref name="port"/>,
     /// and <paramref name="secure"/>.
     /// </summary>
