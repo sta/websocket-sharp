@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ namespace WebSocketSharp
       var len = payloadData.Length;
       if (len < 126) {
         _payloadLength = (byte) len;
-        _extPayloadLength = new byte[0];
+        _extPayloadLength = Ext.EmptyByteArray;
       }
       else if (len < 0x010000) {
         _payloadLength = (byte) 126;
@@ -116,7 +116,7 @@ namespace WebSocketSharp
       }
       else {
         _mask = Mask.Unmask;
-        _maskingKey = new byte[0];
+        _maskingKey = Ext.EmptyByteArray;
       }
 
       _payloadData = payloadData;
@@ -321,20 +321,24 @@ namespace WebSocketSharp
         return (arg1, arg2, arg3, arg4) =>
           output.AppendFormat (lineFmt, ++lineCnt, arg1, arg2, arg3, arg4);
       };
+      var printLine = linePrinter ();
 
       output.AppendFormat (headerFmt, String.Empty);
 
-      var printLine = linePrinter ();
       var bytes = frame.ToByteArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
-        if (i < cnt)
+        if (i < cnt) {
           printLine (
-            Convert.ToString (bytes[j],     2).PadLeft (8, '0'),
+            Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 2], 2).PadLeft (8, '0'),
             Convert.ToString (bytes[j + 3], 2).PadLeft (8, '0'));
-        else if (rem > 0)
+
+          continue;
+        }
+
+        if (rem > 0)
           printLine (
             Convert.ToString (bytes[j], 2).PadLeft (8, '0'),
             rem >= 2 ? Convert.ToString (bytes[j + 1], 2).PadLeft (8, '0') : String.Empty,
@@ -434,9 +438,9 @@ Extended Payload Length: {7}
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
 
-      // Check if valid header
+      // Check if valid header.
       var err = isControl (opcode) && payloadLen > 125
-                ? "A control frame has a payload data which is greater than the allowable max size."
+                ? "A control frame has payload data which is greater than the allowable max length."
                 : isControl (opcode) && fin == Fin.More
                   ? "A control frame is fragmented."
                   : !isData (opcode) && rsv1 == Rsv.On
@@ -457,13 +461,8 @@ Extended Payload Length: {7}
 
       /* Extended Payload Length */
 
-      var size = payloadLen < 126
-                 ? 0
-                 : payloadLen == 126
-                   ? 2
-                   : 8;
-
-      var extPayloadLen = size > 0 ? stream.ReadBytes (size) : new byte[0];
+      var size = payloadLen < 126 ? 0 : (payloadLen == 126 ? 2 : 8);
+      var extPayloadLen = size > 0 ? stream.ReadBytes (size) : Ext.EmptyByteArray;
       if (size > 0 && extPayloadLen.Length != size)
         throw new WebSocketException (
           "The 'Extended Payload Length' of a frame cannot be read from the data source.");
@@ -473,7 +472,7 @@ Extended Payload Length: {7}
       /* Masking Key */
 
       var masked = mask == Mask.Mask;
-      var maskingKey = masked ? stream.ReadBytes (4) : new byte[0];
+      var maskingKey = masked ? stream.ReadBytes (4) : Ext.EmptyByteArray;
       if (masked && maskingKey.Length != 4)
         throw new WebSocketException (
           "The 'Masking Key' of a frame cannot be read from the data source.");
@@ -505,7 +504,7 @@ Extended Payload Length: {7}
             "The 'Payload Data' of a frame cannot be read from the data source.");
       }
       else {
-        data = new byte[0];
+        data = Ext.EmptyByteArray;
       }
 
       frame._payloadData = new PayloadData (data, masked);
@@ -579,7 +578,7 @@ Extended Payload Length: {7}
 
       _mask = Mask.Unmask;
       _payloadData.Mask (_maskingKey);
-      _maskingKey = new byte[0];
+      _maskingKey = Ext.EmptyByteArray;
     }
 
     #endregion
@@ -599,9 +598,7 @@ Extended Payload Length: {7}
 
     public string PrintToString (bool dumped)
     {
-      return dumped
-             ? dump (this)
-             : print (this);
+      return dumped ? dump (this) : print (this);
     }
 
     public byte[] ToByteArray ()
@@ -617,17 +614,17 @@ Extended Payload Length: {7}
         buff.Write (((ushort) header).InternalToByteArray (ByteOrder.Big), 0, 2);
 
         if (_payloadLength > 125)
-          buff.Write (_extPayloadLength, 0, _extPayloadLength.Length);
+          buff.Write (_extPayloadLength, 0, _payloadLength == 126 ? 2 : 8);
 
         if (_mask == Mask.Mask)
-          buff.Write (_maskingKey, 0, _maskingKey.Length);
+          buff.Write (_maskingKey, 0, 4);
 
         if (_payloadLength > 0) {
-          var payload = _payloadData.ToByteArray ();
+          var bytes = _payloadData.ToByteArray ();
           if (_payloadLength < 127)
-            buff.Write (payload, 0, payload.Length);
+            buff.Write (bytes, 0, bytes.Length);
           else
-            buff.WriteBytes (payload);
+            buff.WriteBytes (bytes);
         }
 
         buff.Close ();

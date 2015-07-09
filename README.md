@@ -51,8 +51,9 @@ websocket-sharp is available on the **Unity Asset Store**.
 
 It works with **Unity Free**, but there are some limitations:
 
-- **[Security Sandbox of the Webplayer]** (server doesn't work in the webplayer)
+- **[Security Sandbox of the Webplayer]** (the server doesn't work in the webplayer)
 - **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
+- **Limited support for the System.IO.Compression** (the compression extension isn't available on Windows)
 - **.NET API 2.0 compatibility level for iOS/Android**
 
 Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
@@ -200,7 +201,7 @@ If you would like to connect to the server asynchronously, you should use the `W
 
 #### Step 5 ####
 
-Sending a data to the WebSocket server.
+Sending data to the WebSocket server.
 
 ```csharp
 ws.Send (data);
@@ -208,9 +209,9 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send the data.
 
-If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
+If you would like to send the data asynchronously, you should use the `WebSocket.SendAsync` method.
 
 ```csharp
 ws.SendAsync (data, completed);
@@ -329,15 +330,15 @@ public class Chat : WebSocketBehavior
 
 You can define the behavior of any WebSocket service by creating the class that inherits the `WebSocketBehavior` class.
 
-If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in the current session in the service receives a message.
+If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in a session in the service receives a message.
 
 And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnError (ErrorEventArgs)`, and `WebSocketBehavior.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
-The `WebSocketBehavior.Send` method sends a data to the client on the current session in the service.
+The `WebSocketBehavior.Send` method sends data to the client on a session in the service.
 
 If you would like to access the sessions in the service, you should use the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
-The `WebSocketBehavior.Sessions.Broadcast` method broadcasts a data to every client in the service.
+The `WebSocketBehavior.Sessions.Broadcast` method sends data to every client in the service.
 
 #### Step 3 ####
 
@@ -403,7 +404,7 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
+websocket-sharp supports the **[Per-message Compression][compression]** extension. (But this doesn't support it with the [context take over].)
 
 If you would like to enable this extension as a WebSocket client, you should set such as the following.
 
@@ -413,9 +414,9 @@ ws.Compression = CompressionMethod.Deflate;
 
 And then your client will send the following header with the connection request to the server.
 
-    Sec-WebSocket-Extensions: permessage-deflate
+    Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
-If the server supports this extension, it will return the same header. And when your client receives it, this extension will be available.
+If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.
 
 ### Secure Connection ###
 
@@ -446,7 +447,7 @@ If you set this property to nothing, the validation does nothing with the server
 As a **WebSocket Server**, you should create a new instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, such as the following.
 
 ```csharp
-var wssv = new WebSocketServer (4649, true);
+var wssv = new WebSocketServer (5963, true);
 wssv.SslConfiguration.ServerCertificate =
   new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
 ```
@@ -656,11 +657,11 @@ websocket-sharp is provided under **[The MIT License]**.
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
+[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
+[context take over]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [draft75]: https://github.com/sta/websocket-sharp/tree/draft75
-[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [master]: https://github.com/sta/websocket-sharp/tree/master
 [rfc2617]: http://tools.ietf.org/html/rfc2617

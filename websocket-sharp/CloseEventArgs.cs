@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,17 +60,14 @@ namespace WebSocketSharp
 
     internal CloseEventArgs ()
     {
+      _code = (ushort) CloseStatusCode.NoStatus;
       _payloadData = new PayloadData ();
       _rawData = _payloadData.ApplicationData;
-
-      _code = (ushort) CloseStatusCode.NoStatusCode;
-      _reason = String.Empty;
     }
 
     internal CloseEventArgs (ushort code)
     {
       _code = code;
-      _reason = String.Empty;
       _rawData = code.InternalToByteArray (ByteOrder.Big);
     }
 
@@ -87,7 +84,7 @@ namespace WebSocketSharp
       var len = _rawData.Length;
       _code = len > 1
               ? _rawData.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
-              : (ushort) CloseStatusCode.NoStatusCode;
+              : (ushort) CloseStatusCode.NoStatus;
 
       _reason = len > 2
                 ? Encoding.UTF8.GetString (_rawData.SubArray (2, len - 2))
@@ -97,7 +94,7 @@ namespace WebSocketSharp
     internal CloseEventArgs (ushort code, string reason)
     {
       _code = code;
-      _reason = reason ?? String.Empty;
+      _reason = reason;
       _rawData = code.Append (reason);
     }
 
@@ -146,7 +143,7 @@ namespace WebSocketSharp
     /// </value>
     public string Reason {
       get {
-        return _reason;
+        return _reason ?? String.Empty;
       }
     }
 

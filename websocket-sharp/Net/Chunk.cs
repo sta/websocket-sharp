@@ -2,13 +2,13 @@
 /*
  * Chunk.cs
  *
- * This code is derived from System.Net.ChunkStream.cs of Mono
+ * This code is derived from ChunkStream.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2003 Ximian, Inc (http://www.ximian.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,14 +45,14 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private byte [] _data;
-    private int     _offset;
+    private byte[] _data;
+    private int    _offset;
 
     #endregion
 
     #region Public Constructors
 
-    public Chunk (byte [] data)
+    public Chunk (byte[] data)
     {
       _data = data;
     }
@@ -71,19 +71,19 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
-    public int Read (byte [] buffer, int offset, int size)
+    public int Read (byte[] buffer, int offset, int count)
     {
       var left = _data.Length - _offset;
       if (left == 0)
         return left;
 
-      if (size > left)
-        size = left;
+      if (count > left)
+        count = left;
 
-      Buffer.BlockCopy (_data, _offset, buffer, offset, size);
-      _offset += size;
+      Buffer.BlockCopy (_data, _offset, buffer, offset, count);
+      _offset += count;
 
-      return size;
+      return count;
     }
 
     #endregion

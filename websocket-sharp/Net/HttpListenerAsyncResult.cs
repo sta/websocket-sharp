@@ -2,13 +2,13 @@
 /*
  * HttpListenerAsyncResult.cs
  *
- * This code is derived from System.Net.ListenerAsyncResult.cs of Mono
+ * This code is derived from ListenerAsyncResult.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Ximian, Inc. (http://www.ximian.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,9 @@ namespace WebSocketSharp.Net
     private AsyncCallback       _callback;
     private bool                _completed;
     private HttpListenerContext _context;
+    private bool                _endCalled;
     private Exception           _exception;
+    private bool                _inGet;
     private object              _state;
     private object              _sync;
     private bool                _syncCompleted;
@@ -58,20 +60,37 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Internal Fields
+    #region Internal Constructors
 
-    internal bool EndCalled;
-    internal bool InGet;
-
-    #endregion
-
-    #region Public Constructors
-
-    public HttpListenerAsyncResult (AsyncCallback callback, object state)
+    internal HttpListenerAsyncResult (AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
       _sync = new object ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal bool EndCalled {
+      get {
+        return _endCalled;
+      }
+
+      set {
+        _endCalled = value;
+      }
+    }
+
+    internal bool InGet {
+      get {
+        return _inGet;
+      }
+
+      set {
+        _inGet = value;
+      }
     }
 
     #endregion
@@ -108,37 +127,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool authenticate (
-      HttpListenerContext context,
-      AuthenticationSchemes scheme,
-      string realm,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
-    {
-      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest)) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
-      var req = context.Request;
-      var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], scheme, realm, req.HttpMethod, credentialsFinder);
-
-      if (user != null && user.Identity.IsAuthenticated) {
-        context.User = user;
-        return true;
-      }
-
-      if (scheme == AuthenticationSchemes.Basic)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-
-      if (scheme == AuthenticationSchemes.Digest)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
-
-      return false;
-    }
-
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
       asyncResult._completed = true;
@@ -166,7 +154,7 @@ namespace WebSocketSharp.Net
 
     internal void Complete (Exception exception)
     {
-      _exception = InGet && (exception is ObjectDisposedException)
+      _exception = _inGet && (exception is ObjectDisposedException)
                    ? new HttpListenerException (500, "Listener closed.")
                    : exception;
 
@@ -181,11 +169,9 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      var listener = context.Listener;
-      var schm = listener.SelectAuthenticationScheme (context);
-      if (schm != AuthenticationSchemes.Anonymous &&
-          !authenticate (context, schm, listener.Realm, listener.UserCredentialsFinder)) {
-        listener.BeginGetContext (this);
+      var lsnr = context.Listener;
+      if (!lsnr.Authenticate (context)) {
+        lsnr.BeginGetContext (this);
         return;
       }
 

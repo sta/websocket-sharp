@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ namespace WebSocketSharp
 
     internal PayloadData ()
     {
-      _data = new byte[0];
+      _data = Ext.EmptyByteArray;
     }
 
     internal PayloadData (byte[] data)
@@ -105,7 +105,7 @@ namespace WebSocketSharp
       get {
         return _extDataLength > 0
                ? _data.SubArray (0, _extDataLength)
-               : new byte[0];
+               : Ext.EmptyByteArray;
       }
     }
 

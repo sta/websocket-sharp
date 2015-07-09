@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,10 +47,11 @@ namespace WebSocketSharp.Server
     private WebSocketContext                               _context;
     private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
     private string                                         _id;
+    private bool                                           _ignoreExtensions;
     private Func<string, bool>                             _originValidator;
     private string                                         _protocol;
     private WebSocketSessionManager                        _sessions;
-    private DateTime                                       _start;
+    private DateTime                                       _startTime;
     private WebSocket                                      _websocket;
 
     #endregion
@@ -62,7 +63,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     protected WebSocketBehavior ()
     {
-      _start = DateTime.MaxValue;
+      _startTime = DateTime.MaxValue;
     }
 
     #endregion
@@ -78,9 +79,7 @@ namespace WebSocketSharp.Server
     /// </value>
     protected Logger Log {
       get {
-        return _websocket != null
-               ? _websocket.Log
-               : null;
+        return _websocket != null ? _websocket.Log : null;
       }
     }
     
@@ -102,10 +101,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the information in the current connection request to the WebSocket service.
+    /// Gets the information in a connection request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the current connection request,
+    /// A <see cref="WebSocketContext"/> that provides the access to the connection request,
     /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public WebSocketContext Context {
@@ -115,12 +114,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the HTTP cookies included in a connection
-    /// request to the WebSocket service.
+    /// Gets or sets the delegate called to validate the HTTP cookies included in
+    /// a connection request to the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// The delegate is called when the <see cref="WebSocket"/> used in the current session
-    /// validates the connection request.
+    /// The delegate is called when the <see cref="WebSocket"/> used in the session validates
+    /// the connection request.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -147,10 +146,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the unique ID of the current session.
+    /// Gets the unique ID of a session.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the unique ID of the current session,
+    /// A <see cref="string"/> that represents the unique ID of the session,
     /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public string ID {
@@ -160,12 +159,30 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the Origin header included in a connection
-    /// request to the WebSocket service.
+    /// Gets or sets a value indicating whether the WebSocket service ignores
+    /// the Sec-WebSocket-Extensions header included in a connection request.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the WebSocket service ignores the extensions; otherwise, <c>false</c>.
+    /// The default value is <c>false</c>.
+    /// </value>
+    public bool IgnoreExtensions {
+      get {
+        return _ignoreExtensions;
+      }
+
+      set {
+        _ignoreExtensions = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the delegate called to validate the Origin header included in
+    /// a connection request to the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// The delegate is called when the <see cref="WebSocket"/> used in the current session
-    /// validates the connection request.
+    /// The delegate is called when the <see cref="WebSocket"/> used in the session validates
+    /// the connection request.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -191,7 +208,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the WebSocket subprotocol used in the current session.
+    /// Gets or sets the WebSocket subprotocol used in the WebSocket service.
     /// </summary>
     /// <remarks>
     /// Set operation of this property is available before the WebSocket connection has been
@@ -209,9 +226,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public string Protocol {
       get {
-        return _websocket != null
-               ? _websocket.Protocol
-               : _protocol ?? String.Empty;
+        return _websocket != null ? _websocket.Protocol : (_protocol ?? String.Empty);
       }
 
       set {
@@ -226,30 +241,28 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the time that the current session has started.
+    /// Gets the time that a session has started.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time that the current session has started,
+    /// A <see cref="DateTime"/> that represents the time that the session has started,
     /// or <see cref="DateTime.MaxValue"/> if the WebSocket connection isn't established.
     /// </value>
     public DateTime StartTime {
       get {
-        return _start;
+        return _startTime;
       }
     }
 
     /// <summary>
-    /// Gets the state of the <see cref="WebSocket"/> used in the current session.
+    /// Gets the state of the <see cref="WebSocket"/> used in a session.
     /// </summary>
     /// <value>
     /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
-    /// the <see cref="WebSocket"/> used in the current session.
+    /// the <see cref="WebSocket"/> used in the session.
     /// </value>
     public WebSocketState State {
       get {
-        return _websocket != null
-               ? _websocket.ReadyState
-               : WebSocketState.Connecting;
+        return _websocket != null ? _websocket.ReadyState : WebSocketState.Connecting;
       }
     }
 
@@ -298,7 +311,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      _start = DateTime.Now;
+      _startTime = DateTime.Now;
       OnOpen ();
     }
 
@@ -320,6 +333,7 @@ namespace WebSocketSharp.Server
 
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;
 
       var waitTime = sessions.WaitTime;
@@ -359,7 +373,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the WebSocket connection used in the current session has been closed.
+    /// Called when the WebSocket connection used in a session has been closed.
     /// </summary>
     /// <param name="e">
     /// A <see cref="CloseEventArgs"/> that represents the event data passed to
@@ -370,7 +384,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the <see cref="WebSocket"/> used in the current session gets an error.
+    /// Called when the <see cref="WebSocket"/> used in a session gets an error.
     /// </summary>
     /// <param name="e">
     /// A <see cref="ErrorEventArgs"/> that represents the event data passed to
@@ -381,7 +395,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the <see cref="WebSocket"/> used in the current session receives a message.
+    /// Called when the <see cref="WebSocket"/> used in a session receives a message.
     /// </summary>
     /// <param name="e">
     /// A <see cref="MessageEventArgs"/> that represents the event data passed to
@@ -403,14 +417,14 @@ namespace WebSocketSharp.Server
         }
 
     /// <summary>
-    /// Called when the WebSocket connection used in the current session has been established.
+    /// Called when the WebSocket connection used in a session has been established.
     /// </summary>
     protected virtual void OnOpen ()
     {
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client on the current session.
+    /// Sends binary <paramref name="data"/> to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -425,8 +439,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data to the client
-    /// on the current session.
+    /// Sends the specified <paramref name="file"/> as binary data to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -441,7 +454,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client on the current session.
+    /// Sends text <paramref name="data"/> to the client on a session.
     /// </summary>
     /// <remarks>
     /// This method is available after the WebSocket connection has been established.
@@ -456,7 +469,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously to the client on the current session.
+    /// Sends binary <paramref name="data"/> asynchronously to the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -481,8 +494,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as a binary data asynchronously
-    /// to the client on the current session.
+    /// Sends the specified <paramref name="file"/> as binary data asynchronously to
+    /// the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -507,7 +520,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously to the client on the current session.
+    /// Sends text <paramref name="data"/> asynchronously to the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -532,8 +545,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to the client on the current session.
+    /// Sends binary data from the specified <see cref="Stream"/> asynchronously to
+    /// the client on a session.
     /// </summary>
     /// <remarks>
     ///   <para>

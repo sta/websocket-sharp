@@ -62,14 +62,14 @@ namespace WebSocketSharp.Net
     private bool                   _chunked;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
-    private bool                   _contentLengthWasSet;
+    private bool                   _contentLengthSet;
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
     private Guid                   _identifier;
     private Stream                 _inputStream;
     private bool                   _keepAlive;
-    private bool                   _keepAliveWasSet;
+    private bool                   _keepAliveSet;
     private string                 _method;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
@@ -78,7 +78,7 @@ namespace WebSocketSharp.Net
     private string[]               _userLanguages;
     private Version                _version;
     private bool                   _websocketRequest;
-    private bool                   _websocketRequestWasSet;
+    private bool                   _websocketRequestSet;
 
     #endregion
 
@@ -109,8 +109,9 @@ namespace WebSocketSharp.Net
     /// Gets the media types which are acceptable for the response.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the media type names in the Accept
-    /// request-header, or <see langword="null"/> if the request didn't include an Accept header.
+    /// An array of <see cref="string"/> that contains the media type names in
+    /// the Accept request-header, or <see langword="null"/> if the request didn't include
+    /// the Accept header.
     /// </value>
     public string[] AcceptTypes {
       get {
@@ -135,8 +136,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
-    /// or <see cref="Encoding.Default"/> if the request didn't include the information
-    /// about the encoding.
+    /// or <see cref="Encoding.Default"/> if the request didn't include the information about
+    /// the encoding.
     /// </value>
     public Encoding ContentEncoding {
       get {
@@ -145,11 +146,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the size of the entity body data included in the request.
+    /// Gets the number of bytes in the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="long"/> that represents the value of the Content-Length entity-header. The
-    /// value is a number of bytes in the entity body data. <c>-1</c> if the size isn't known.
+    /// A <see cref="long"/> that represents the value of the Content-Length entity-header,
+    /// or <c>-1</c> if the value isn't known.
     /// </value>
     public long ContentLength64 {
       get {
@@ -227,7 +228,7 @@ namespace WebSocketSharp.Net
       get {
         return _inputStream ??
                (_inputStream = HasEntityBody
-                               ? _context.Connection.GetRequestStream (_chunked, _contentLength)
+                               ? _context.Connection.GetRequestStream (_contentLength, _chunked)
                                : Stream.Null);
       }
     }
@@ -276,13 +277,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        if (!_websocketRequestWasSet) {
+        if (!_websocketRequestSet) {
           _websocketRequest = _method == "GET" &&
                               _version > HttpVersion.Version10 &&
                               _headers.Contains ("Upgrade", "websocket") &&
                               _headers.Contains ("Connection", "Upgrade");
 
-          _websocketRequestWasSet = true;
+          _websocketRequestSet = true;
         }
 
         return _websocketRequest;
@@ -297,13 +298,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool KeepAlive {
       get {
-        if (!_keepAliveWasSet) {
+        if (!_keepAliveSet) {
           string keepAlive;
           _keepAlive = _version > HttpVersion.Version10 ||
                        _headers.Contains ("Connection", "keep-alive") ||
                        ((keepAlive = _headers["Keep-Alive"]) != null && keepAlive != "closed");
 
-          _keepAliveWasSet = true;
+          _keepAliveSet = true;
         }
 
         return _keepAlive;
@@ -505,7 +506,7 @@ namespace WebSocketSharp.Net
         long len;
         if (Int64.TryParse (val, out len) && len >= 0) {
           _contentLength = len;
-          _contentLengthWasSet = true;
+          _contentLengthSet = true;
         }
         else {
           _context.ErrorMessage = "Invalid Content-Length header";
@@ -558,7 +559,7 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (!_chunked && !_contentLengthWasSet) {
+      if (!_chunked && !_contentLengthSet) {
         var method = _method.ToLower ();
         if (method == "post" || method == "put") {
           _context.ErrorMessage = String.Empty;
@@ -571,7 +572,7 @@ namespace WebSocketSharp.Net
       var expect = Headers["Expect"];
       if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
         var output = _context.Connection.GetResponseStream ();
-        output.WriteInternally (_100continue, 0, _100continue.Length);
+        output.InternalWrite (_100continue, 0, _100continue.Length);
       }
     }
 

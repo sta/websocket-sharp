@@ -2,13 +2,13 @@
 /*
  * ReadBufferState.cs
  *
- * This code is derived from System.Net.ChunkedInputStream.cs of Mono
+ * This code is derived from ChunkedInputStream.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,16 +43,26 @@ namespace WebSocketSharp.Net
 {
   internal class ReadBufferState
   {
+    #region Private Fields
+
+    private HttpStreamAsyncResult _asyncResult;
+    private byte[]                _buffer;
+    private int                   _count;
+    private int                   _initialCount;
+    private int                   _offset;
+
+    #endregion
+
     #region Public Constructors
 
     public ReadBufferState (
-      byte [] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
+      byte[] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
     {
-      Buffer = buffer;
-      Offset = offset;
-      Count = count;
-      InitialCount = count;
-      AsyncResult = asyncResult;
+      _buffer = buffer;
+      _offset = offset;
+      _count = count;
+      _initialCount = count;
+      _asyncResult = asyncResult;
     }
 
     #endregion
@@ -60,23 +70,53 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     public HttpStreamAsyncResult AsyncResult {
-      get; set;
+      get {
+        return _asyncResult;
+      }
+
+      set {
+        _asyncResult = value;
+      }
     }
 
-    public byte [] Buffer {
-      get; set;
+    public byte[] Buffer {
+      get {
+        return _buffer;
+      }
+
+      set {
+        _buffer = value;
+      }
     }
 
     public int Count {
-      get; set;
+      get {
+        return _count;
+      }
+
+      set {
+        _count = value;
+      }
     }
 
     public int InitialCount {
-      get; set;
+      get {
+        return _initialCount;
+      }
+
+      set {
+        _initialCount = value;
+      }
     }
 
     public int Offset {
-      get; set;
+      get {
+        return _offset;
+      }
+
+      set {
+        _offset = value;
+      }
     }
 
     #endregion
