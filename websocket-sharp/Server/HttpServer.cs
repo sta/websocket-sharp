@@ -33,6 +33,7 @@
  * Contributors:
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  * - Liryna <liryna.stark@gmail.com>
+ * - Rohan Singh <rohan-singh@hotmail.com>
  */
 #endregion
 
@@ -91,8 +92,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming
-    ///   requests on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming requests on
+    ///   <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -114,8 +115,8 @@ namespace WebSocketSharp.Server
     /// the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// requests on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming requests on
+    /// <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
@@ -142,8 +143,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming
-    ///   connection requests on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming requests on
+    ///   <paramref name="address"/> and <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -175,8 +176,8 @@ namespace WebSocketSharp.Server
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// connection requests on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming requests on
+    /// <paramref name="address"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
