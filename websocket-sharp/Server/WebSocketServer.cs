@@ -63,6 +63,8 @@ namespace WebSocketSharp.Server
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
     private Func<IIdentity, NetworkCredential> _credFinder;
+    private bool                               _dnsStyle;
+    private string                             _hostname;
     private TcpListener                        _listener;
     private Logger                             _logger;
     private int                                _port;
@@ -74,7 +76,6 @@ namespace WebSocketSharp.Server
     private ServerSslConfiguration             _sslConfig;
     private volatile ServerState               _state;
     private object                             _sync;
-    private Uri                                _uri;
 
     #endregion
 
@@ -84,12 +85,12 @@ namespace WebSocketSharp.Server
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// connection requests on port 80.
+    /// An instance initialized by this constructor listens for the incoming connection requests on
+    /// port 80.
     /// </remarks>
     public WebSocketServer ()
     {
-      init (System.Net.IPAddress.Any, 80, false);
+      init (null, System.Net.IPAddress.Any, 80, false);
     }
 
     /// <summary>
@@ -98,8 +99,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming
-    ///   connection requests on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming connection requests
+    ///   on <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -122,8 +123,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming
-    ///   connection requests on the port in <paramref name="url"/>.
+    ///   An instance initialized by this constructor listens for the incoming connection requests
+    ///   on the host name and port in <paramref name="url"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on
@@ -161,12 +162,12 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var addr = uri.DnsSafeHost.ToIPAddress ();
+      var host = uri.DnsSafeHost;
+      var addr = host.ToIPAddress ();
       if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
 
-      _uri = uri;
-      init (addr, uri.Port, uri.Scheme == "wss");
+      init (host, addr, uri.Port, uri.Scheme == "wss");
     }
 
     /// <summary>
@@ -174,8 +175,8 @@ namespace WebSocketSharp.Server
     /// the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// connection requests on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming connection requests on
+    /// <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
@@ -193,7 +194,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init (System.Net.IPAddress.Any, port, secure);
+      init (null, System.Net.IPAddress.Any, port, secure);
     }
 
     /// <summary>
@@ -202,8 +203,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming
-    ///   connection requests on <paramref name="port"/>.
+    ///   An instance initialized by this constructor listens for the incoming connection requests
+    ///   on <paramref name="address"/> and <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
@@ -235,8 +236,8 @@ namespace WebSocketSharp.Server
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming
-    /// connection requests on <paramref name="port"/>.
+    /// An instance initialized by this constructor listens for the incoming connection requests on
+    /// <paramref name="address"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
@@ -269,7 +270,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init (address, port, secure);
+      init (null, address, port, secure);
     }
 
     #endregion
@@ -591,14 +592,16 @@ namespace WebSocketSharp.Server
              : null;
     }
 
-    private void init (System.Net.IPAddress address, int port, bool secure)
+    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
+      _hostname = hostname ?? address.ToString ();
       _address = address;
       _port = port;
       _secure = secure;
-      _listener = new TcpListener (address, port);
 
       _authSchemes = AuthenticationSchemes.Anonymous;
+      _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
+      _listener = new TcpListener (address, port);
       _logger = new Logger ();
       _services = new WebSocketServiceManager (_logger);
       _sync = new object ();
@@ -607,17 +610,14 @@ namespace WebSocketSharp.Server
     private void processRequest (TcpListenerWebSocketContext context)
     {
       var uri = context.RequestUri;
-      if (uri == null) {
+      if (uri == null || uri.Port != _port) {
         context.Close (HttpStatusCode.BadRequest);
         return;
       }
 
-      if (_uri != null && _uri.IsAbsoluteUri) {
-        var actual = uri.DnsSafeHost;
-        var expected = _uri.DnsSafeHost;
-        if (Uri.CheckHostName (actual) == UriHostNameType.Dns &&
-            Uri.CheckHostName (expected) == UriHostNameType.Dns &&
-            actual != expected) {
+      if (_dnsStyle) {
+        var hostname = uri.DnsSafeHost;
+        if (Uri.CheckHostName (hostname) == UriHostNameType.Dns && hostname != _hostname) {
           context.Close (HttpStatusCode.NotFound);
           return;
         }
