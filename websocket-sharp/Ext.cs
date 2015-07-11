@@ -776,11 +776,10 @@ namespace WebSocketSharp
       return String.Format ("{0}; {1}", m, parameters.ToString ("; "));
     }
 
-    internal static System.Net.IPAddress ToIPAddress (this string hostNameOrAddress)
+    internal static System.Net.IPAddress ToIPAddress (this string hostnameOrAddress)
     {
       try {
-        var addrs = System.Net.Dns.GetHostAddresses (hostNameOrAddress);
-        return addrs[0];
+        return System.Net.Dns.GetHostAddresses (hostnameOrAddress)[0];
       }
       catch {
         return null;
