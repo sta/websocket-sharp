@@ -60,6 +60,8 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
+    private System.Net.IPAddress    _address;
+    private string                  _hostname;
     private HttpListener            _listener;
     private Logger                  _logger;
     private int                     _port;
@@ -83,7 +85,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public HttpServer ()
     {
-      init ("*", 80, false);
+      init ("*", System.Net.IPAddress.Any, 80, false);
     }
 
     /// <summary>
@@ -134,7 +136,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init ("*", port, secure);
+      init ("*", System.Net.IPAddress.Any, port, secure);
     }
 
     /// <summary>
@@ -210,12 +212,24 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init (address.ToString (), port, secure);
+      init (null, address, port, secure);
     }
 
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets the local IP address of the server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// </value>
+    public System.Net.IPAddress Address {
+      get {
+        return _address;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
@@ -559,14 +573,16 @@ namespace WebSocketSharp.Server
       return !(usr || port) ? "The secure connection requires a server certificate." : null;
     }
 
-    private void init (string hostname, int port, bool secure)
+    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
+      _hostname = hostname ?? address.ToString ();
+      _address = address;
       _port = port;
       _secure = secure;
 
       _listener = new HttpListener ();
       _listener.Prefixes.Add (
-        String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", hostname, port));
+        String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
 
       _logger = _listener.Log;
       _services = new WebSocketServiceManager (_logger);
