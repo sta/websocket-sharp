@@ -7,7 +7,7 @@
  */
 
 var url = "ws://localhost:4649/Echo";
-//var url = "wss://localhost:4649/Echo";
+//var url = "wss://localhost:5963/Echo";
 var output;
 
 function init () {
