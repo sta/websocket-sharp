@@ -114,6 +114,59 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class with
+    /// the specified HTTP URL.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   An instance initialized by this constructor listens for the incoming requests on
+    ///   the host name and port in <paramref name="url"/>.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on
+    ///   which to listen. It's determined by the scheme (http or https) in <paramref name="url"/>.
+    ///   (Port 80 if the scheme is http.)
+    ///   </para>
+    /// </remarks>
+    /// <param name="url">
+    /// A <see cref="string"/> that represents the HTTP URL of the server.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="url"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is invalid.
+    ///   </para>
+    /// </exception>
+    public HttpServer (string url)
+    {
+      if (url == null)
+        throw new ArgumentNullException ("url");
+
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
+
+      Uri uri;
+      string msg;
+      if (!tryCreateUri (url, out uri, out msg))
+        throw new ArgumentException (msg, "url");
+
+      var host = uri.DnsSafeHost;
+      var addr = host.ToIPAddress ();
+      if (!addr.IsLocal ())
+        throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
+
+      init (host, addr, uri.Port, uri.Scheme == "https");
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpServer"/> class with
     /// the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
@@ -681,6 +734,43 @@ namespace WebSocketSharp.Server
     {
       _listener.Close ();
       _receiveThread.Join (millisecondsTimeout);
+    }
+
+    private static bool tryCreateUri (string uriString, out Uri result, out string message)
+    {
+      result = null;
+
+      var uri = uriString.ToUri ();
+      if (uri == null || !uri.IsAbsoluteUri) {
+        message = "Not an absolute URI: " + uriString;
+        return false;
+      }
+
+      var schm = uri.Scheme;
+      if (!(schm == "http" || schm == "https")) {
+        message = "The scheme part isn't 'http' or 'https': " + uriString;
+        return false;
+      }
+
+      if (uri.PathAndQuery != "/") {
+        message = "Includes the path or query component: " + uriString;
+        return false;
+      }
+
+      if (uri.Fragment.Length > 0) {
+        message = "Includes the fragment component: " + uriString;
+        return false;
+      }
+
+      if (uri.Port < 1) {
+        message = "The port part is less than 1: " + uriString;
+        return false;
+      }
+
+      result = uri;
+      message = String.Empty;
+
+      return true;
     }
 
     #endregion
