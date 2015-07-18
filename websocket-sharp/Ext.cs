@@ -831,7 +831,12 @@ namespace WebSocketSharp
       result = null;
 
       var uri = uriString.ToUri ();
-      if (uri == null || !uri.IsAbsoluteUri) {
+      if (uri == null) {
+        message = "An invalid URI string: " + uriString;
+        return false;
+      }
+
+      if (!uri.IsAbsoluteUri) {
         message = "Not an absolute URI: " + uriString;
         return false;
       }
@@ -848,12 +853,12 @@ namespace WebSocketSharp
       }
 
       var port = uri.Port;
-      if (port > 65535) {
-        message = "The port part is greater than 65535: " + uriString;
+      if (port == 0) {
+        message = "The port part is zero: " + uriString;
         return false;
       }
 
-      result = port > 0
+      result = port != -1
                ? uri
                : new Uri (
                    String.Format (
