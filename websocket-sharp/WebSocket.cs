@@ -565,6 +565,11 @@ namespace WebSocketSharp
     /// </summary>
     public event EventHandler OnOpen;
 
+
+     /// <summary>
+     /// Occurs when the <see cref="WebSocket"/> receives a message.
+    /// </summary>
+    public event EventHandler OnPingRecieved;
     #endregion
 
     #region Private Methods
@@ -778,6 +783,58 @@ namespace WebSocketSharp
       return true;
     }
 
+    private bool beginConnect (long timeout) {
+        lock (_forConn) {
+            var msg = _readyState.CheckIfConnectable ();
+            if (msg != null) {
+                _logger.Error (msg);
+                error ("An error has occurred in connecting.", null);
+                
+                return false;
+            }
+            try {
+                  _readyState = WebSocketState.Connecting;
+                    _tcpClient = new TcpClient();
+                    Uri uri ;
+                    if(_proxyUri != null) {
+                        uri = _proxyUri;
+                    } else {
+                        uri = _uri;
+                    }
+                    bool connectResult = true;
+                    IAsyncResult result = _tcpClient.BeginConnect(uri.DnsSafeHost, uri.Port, null, null);
+                    WaitHandle wh = result.AsyncWaitHandle;
+                    try 
+                    {  
+                        if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds((double)timeout), false))  
+                        {  
+                            error("Timed out connecting", null); 
+                            connectResult = false;
+                            _tcpClient.Close();
+                        } else {
+                            _tcpClient.EndConnect(result);
+                        }  
+                    }  
+                    finally 
+                    {  
+                        wh.Close();  
+                        Console.Write("Returning from connect");
+                        
+                    }
+                    if(connectResult) {
+                        if (_client ? doHandshake () : acceptHandshake ()) {
+                            _readyState = WebSocketState.Open;
+                            return true;
+                        }
+                    }
+                    return connectResult  ;
+            } catch (Exception ex) {
+                processException (ex, "An exception has occurred while connecting.");
+                return false;
+            }
+
+        }
+    }
     private bool connect ()
     {
       lock (_forConn) {
@@ -1042,7 +1099,7 @@ namespace WebSocketSharp
     {
       if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
-
+      OnPingRecieved.Emit (this, EventArgs.Empty);
       return true;
     }
 
@@ -1387,14 +1444,18 @@ namespace WebSocketSharp
     // As client
     private void setClientStream ()
     {
-      if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = _tcpClient.GetStream ();
-        sendProxyConnectRequest ();
-      }
-      else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = _tcpClient.GetStream ();
+      if(_tcpClient == null || ! _tcpClient.Connected) {
+          if (_proxyUri != null) {
+            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _stream = _tcpClient.GetStream ();
+            sendProxyConnectRequest ();
+          }
+          else {
+            _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+            _stream = _tcpClient.GetStream ();
+          }
+      } else {
+          _stream = _tcpClient.GetStream ();
       }
 
       if (_secure) {
@@ -2064,6 +2125,7 @@ namespace WebSocketSharp
     /// <remarks>
     /// This method doesn't wait for the connect to be complete.
     /// </remarks>
+ 
     public void ConnectAsync ()
     {
       var msg = checkIfCanConnect ();
@@ -2082,6 +2144,44 @@ namespace WebSocketSharp
         },
         null);
     }
+
+        public void Connect (long timeout)
+        {
+            var msg = checkIfCanConnect ();
+            if (msg != null) {
+                _logger.Error (msg);
+                error ("An error has occurred in connecting.", null);
+                
+                return;
+            }
+
+            if(beginConnect(timeout)) {
+                open ();
+            }
+           /* Func<bool> connector = connect;
+            IAsyncResult result =  connector.BeginInvoke (
+                ar => {
+                if (connector.EndInvoke (ar))
+                    open ();
+            },
+            null);
+            WaitHandle wh = result.AsyncWaitHandle;
+            try 
+            {  
+                if (!result.AsyncWaitHandle.WaitOne(TimeSpan.FromMilliseconds((double)timeout), false))  
+                {  
+                    error("Timed out connecting", null);    
+                }   
+            }  
+            finally 
+            {  
+                wh.Close();  
+                Console.Write("Returning from connect");
+                
+            }
+            return  ;*/
+        }
+        
 
     /// <summary>
     /// Sends a Ping using the WebSocket connection.
