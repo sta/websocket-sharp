@@ -49,6 +49,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private string _data;
+    private bool   _dataSet;
     private Opcode _opcode;
     private byte[] _rawData;
 
@@ -60,7 +61,6 @@ namespace WebSocketSharp
     {
       _opcode = frame.Opcode;
       _rawData = frame.PayloadData.ApplicationData;
-      _data = convertToString (_opcode, _rawData);
     }
 
     internal MessageEventArgs (Opcode opcode, byte[] rawData)
@@ -70,7 +70,6 @@ namespace WebSocketSharp
 
       _opcode = opcode;
       _rawData = rawData;
-      _data = convertToString (opcode, rawData);
     }
 
     #endregion
@@ -80,19 +79,17 @@ namespace WebSocketSharp
     /// <summary>
     /// Gets the message data as a <see cref="string"/>.
     /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   If the message data is empty, this property returns <see cref="String.Empty"/>.
-    ///   </para>
-    ///   <para>
-    ///   Or if the message is a binary message, this property returns <c>"Binary"</c>.
-    ///   </para>
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the message data.
+    /// A <see cref="string"/> that represents the message data,
+    /// or <see langword="null"/> if the message data cannot be decoded to a string.
     /// </value>
     public string Data {
       get {
+        if (!_dataSet) {
+          _data = convertToString (_rawData, _opcode);
+          _dataSet = true;
+        }
+
         return _data;
       }
     }
@@ -125,13 +122,17 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static string convertToString (Opcode opcode, byte[] rawData)
+    private static string convertToString (byte[] rawData, Opcode opcode)
     {
-      return rawData.LongLength == 0
-             ? String.Empty
-             : opcode == Opcode.Text
-               ? Encoding.UTF8.GetString (rawData)
-               : opcode.ToString ();
+      if (opcode == Opcode.Binary)
+        return BitConverter.ToString (rawData);
+
+      try {
+        return Encoding.UTF8.GetString (rawData);
+      }
+      catch {
+        return null;
+      }
     }
 
     #endregion
