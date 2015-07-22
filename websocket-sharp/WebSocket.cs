@@ -79,14 +79,17 @@ namespace WebSocketSharp
     private bool                    _enableRedirection;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
+    private Opcode                  _fopcode;
     private object                  _forConn;
     private object                  _forEvent;
     private object                  _forMessageEventQueue;
     private object                  _forSend;
+    private MemoryStream            _fragmentsBuffer;
     private const string            _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
     private Func<WebSocketContext, string>
                                     _handshakeRequestChecker;
     private bool                    _ignoreExtensions;
+    private bool                    _inContinuation;
     private volatile Logger         _logger;
     private Queue<MessageEventArgs> _messageEventQueue;
     private uint                    _nonceCount;
@@ -656,9 +659,11 @@ namespace WebSocketSharp
              ? "A frame from the server is masked."
              : !_client && !masked
                ? "A frame from a client isn't masked."
-               : frame.IsCompressed && _compression == CompressionMethod.None
-                 ? "A compressed frame is without the available decompression method."
-                 : null;
+               : _inContinuation && frame.IsData
+                 ? "A data frame has been received while receiving the fragmented data."
+                 : frame.IsCompressed && _compression == CompressionMethod.None
+                   ? "A compressed frame is without the available decompression method."
+                   : null;
     }
 
     private void close (CloseEventArgs e, bool send, bool wait)
@@ -707,6 +712,11 @@ namespace WebSocketSharp
                      (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeout));
 
       release ();
+      if (_fragmentsBuffer != null) {
+        _fragmentsBuffer.Dispose ();
+        _fragmentsBuffer = null;
+      }
+
       if (_receivePong != null) {
         _receivePong.Close ();
         _receivePong = null;
@@ -1015,6 +1025,34 @@ namespace WebSocketSharp
     {
       // Must process first fragment.
       return frame.IsContinuation || processFragments (frame);
+    }
+
+    private bool processFragmentedFrame2 (WebSocketFrame frame)
+    {
+      if (!_inContinuation) {
+        if (frame.IsContinuation)
+          return true;
+
+        _fopcode = frame.Opcode;
+        _fragmentsBuffer = new MemoryStream ();
+        _inContinuation = true;
+      }
+
+      _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData);
+      if (frame.IsFinal) {
+        using (_fragmentsBuffer) {
+          var data = _compression != CompressionMethod.None
+                     ? _fragmentsBuffer.DecompressToArray (_compression)
+                     : _fragmentsBuffer.ToArray ();
+
+          enqueueToMessageEventQueue (new MessageEventArgs (_fopcode, data));
+        }
+
+        _fragmentsBuffer = null;
+        _inContinuation = false;
+      }
+
+      return true;
     }
 
     private bool processFragments (WebSocketFrame first)
@@ -1441,7 +1479,7 @@ namespace WebSocketSharp
           if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
 
-            if (!frame.IsData)
+            if (frame.IsControl || !frame.IsFinal)
               return;
 
             lock (_forEvent) {
