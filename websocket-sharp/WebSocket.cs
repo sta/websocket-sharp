@@ -734,60 +734,6 @@ namespace WebSocketSharp
       return ret;
     }
 
-    private bool concatenateFragmentsInto (Stream destination)
-    {
-      while (true) {
-        var frame = WebSocketFrame.Read (_stream, false);
-        var msg = checkIfValidReceivedFrame (frame);
-        if (msg != null)
-          return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
-
-        frame.Unmask ();
-        if (frame.IsFinal) {
-          /* FINAL */
-
-          // CONT
-          if (frame.IsContinuation) {
-            destination.WriteBytes (frame.PayloadData.ApplicationData);
-            break;
-          }
-
-          // PING
-          if (frame.IsPing) {
-            processPingFrame (frame);
-            continue;
-          }
-
-          // PONG
-          if (frame.IsPong) {
-            processPongFrame (frame);
-            continue;
-          }
-
-          // CLOSE
-          if (frame.IsClose)
-            return processCloseFrame (frame);
-        }
-        else {
-          /* MORE */
-
-          // CONT
-          if (frame.IsContinuation) {
-            destination.WriteBytes (frame.PayloadData.ApplicationData);
-            continue;
-          }
-        }
-
-        // ?
-        return processUnsupportedFrame (
-          frame,
-          CloseStatusCode.UnsupportedData,
-          "Unsupported data has been received while receiving the fragmented data.");
-      }
-
-      return true;
-    }
-
     private bool connect ()
     {
       lock (_forConn) {
@@ -1023,13 +969,8 @@ namespace WebSocketSharp
 
     private bool processFragmentedFrame (WebSocketFrame frame)
     {
-      // Must process first fragment.
-      return frame.IsContinuation || processFragments (frame);
-    }
-
-    private bool processFragmentedFrame2 (WebSocketFrame frame)
-    {
       if (!_inContinuation) {
+        // Must process first fragment.
         if (frame.IsContinuation)
           return true;
 
@@ -1053,27 +994,6 @@ namespace WebSocketSharp
       }
 
       return true;
-    }
-
-    private bool processFragments (WebSocketFrame first)
-    {
-      using (var buff = new MemoryStream ()) {
-        buff.WriteBytes (first.PayloadData.ApplicationData);
-        if (!concatenateFragmentsInto (buff))
-          return false;
-
-        byte[] data;
-        if (_compression != CompressionMethod.None) {
-          data = buff.DecompressToArray (_compression);
-        }
-        else {
-          buff.Close ();
-          data = buff.ToArray ();
-        }
-
-        enqueueToMessageEventQueue (new MessageEventArgs (first.Opcode, data));
-        return true;
-      }
     }
 
     private bool processPingFrame (WebSocketFrame frame)
