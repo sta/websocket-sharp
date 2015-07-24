@@ -252,9 +252,18 @@ namespace WebSocketSharp.Net
         args.AcceptSocket = null;
       }
 
-      var ret = true;
       try {
-        ret = lsnr._socket.AcceptAsync (args);
+        while (!lsnr._socket.AcceptAsync (args)) {
+          if (sock != null) {
+            processAccepted (sock, lsnr);
+            sock = null;
+          }
+
+          if (args.SocketError == SocketError.Success) {
+            sock = args.AcceptSocket;
+            args.AcceptSocket = null;
+          }
+        }
       }
       catch {
         if (sock != null)
@@ -265,9 +274,6 @@ namespace WebSocketSharp.Net
 
       if (sock != null)
         processAccepted (sock, lsnr);
-
-      if (!ret)
-        onAccept (sender, e);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
