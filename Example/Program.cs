@@ -35,7 +35,7 @@ namespace Example
           nf.Notify (
             new NotificationMessage {
               Summary = "WebSocket Message",
-              Body = e.Data,
+              Body = e.Type != Opcode.Ping ? e.Data : "Received a Ping.",
               Icon = "notification-message-im"
             });
 
@@ -61,6 +61,9 @@ namespace Example
 
         // To change the wait time for the response to the Ping or Close.
         ws.WaitTime = TimeSpan.FromSeconds (10);
+
+        // To emit a WebSocket.OnMessage event when receives a Ping.
+        ws.EmitOnPing = true;
 #endif
         // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;

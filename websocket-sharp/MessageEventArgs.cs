@@ -37,11 +37,12 @@ namespace WebSocketSharp
   /// <remarks>
   ///   <para>
   ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  ///   a text or binary message.
+  ///   a text or binary message, or a Ping if the <see cref="WebSocket.EmitOnPing"/> property is
+  ///   set to <c>true</c>.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the message data, you should access
-  ///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.RawData"/> property.
+  ///   If you would like to get the message data, you should access the <see cref="Data"/> or
+  ///   <see cref="RawData"/> property.
   ///   </para>
   /// </remarks>
   public class MessageEventArgs : EventArgs
@@ -113,7 +114,7 @@ namespace WebSocketSharp
     /// Gets the type of the message.
     /// </summary>
     /// <value>
-    /// <see cref="Opcode.Text"/> or <see cref="Opcode.Binary"/>.
+    /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>, or <see cref="Opcode.Ping"/>.
     /// </value>
     public Opcode Type {
       get {

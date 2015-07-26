@@ -76,6 +76,7 @@ namespace WebSocketSharp
     private WebSocketContext        _context;
     private CookieCollection        _cookies;
     private NetworkCredential       _credentials;
+    private bool                    _emitOnPing;
     private bool                    _enableRedirection;
     private string                  _extensions;
     private AutoResetEvent          _exitReceiving;
@@ -305,6 +306,24 @@ namespace WebSocketSharp
     public NetworkCredential Credentials {
       get {
         return _credentials;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> emits
+    /// a <see cref="OnMessage"/> event when receives a Ping.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the <see cref="WebSocket"/> emits a <see cref="OnMessage"/> event
+    /// when receives a Ping; otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool EmitOnPing {
+      get {
+        return _emitOnPing;
+      }
+
+      set {
+        _emitOnPing = value;
       }
     }
 
@@ -1001,6 +1020,9 @@ namespace WebSocketSharp
       if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
         _logger.Trace ("Returned a Pong.");
 
+      if (_emitOnPing)
+        enqueueToMessageEventQueue (new MessageEventArgs (frame));
+
       return true;
     }
 
@@ -1399,7 +1421,7 @@ namespace WebSocketSharp
           if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
             receive ();
 
-            if (frame.IsControl || !frame.IsFinal)
+            if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
               return;
 
             lock (_forEvent) {
