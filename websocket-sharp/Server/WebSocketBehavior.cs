@@ -46,6 +46,7 @@ namespace WebSocketSharp.Server
 
     private WebSocketContext                               _context;
     private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
+    private bool                                           _emitOnPing;
     private string                                         _id;
     private bool                                           _ignoreExtensions;
     private Func<string, bool>                             _originValidator;
@@ -142,6 +143,29 @@ namespace WebSocketSharp.Server
 
       set {
         _cookiesValidator = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> used in a session emits
+    /// a <see cref="WebSocket.OnMessage"/> event when receives a Ping.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the <see cref="WebSocket"/> emits a <see cref="WebSocket.OnMessage"/> event
+    /// when receives a Ping; otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool EmitOnPing {
+      get {
+        return _websocket != null ? _websocket.EmitOnPing : _emitOnPing;
+      }
+
+      set {
+        if (_websocket != null) {
+          _websocket.EmitOnPing = value;
+          return;
+        }
+
+        _emitOnPing = value;
       }
     }
 
@@ -329,6 +353,7 @@ namespace WebSocketSharp.Server
 
       _websocket = context.WebSocket;
       _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.EmitOnPing = _emitOnPing;
       _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;
 

@@ -63,6 +63,8 @@ namespace Example2
         "/Chat",
         () => new Chat ("Anon#") {
           Protocol = "chat",
+          // To emit a WebSocket.OnMessage event when receives a Ping.
+          EmitOnPing = true,
           // To ignore the Sec-WebSocket-Extensions header.
           IgnoreExtensions = true,
           // To validate the Origin header.
