@@ -35,7 +35,7 @@ namespace WebSocketSharp.Server
 {
   /// <summary>
   /// Exposes the methods and properties used to define the behavior of a WebSocket service
-  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketBehavior class is an abstract class.
@@ -75,8 +75,8 @@ namespace WebSocketSharp.Server
     /// Gets the logging functions.
     /// </summary>
     /// <value>
-    /// A <see cref="Logger"/> that provides the logging functions, or <see langword="null"/>
-    /// if the WebSocket connection isn't established.
+    /// A <see cref="Logger"/> that provides the logging functions,
+    /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     protected Logger Log {
       get {
@@ -119,7 +119,7 @@ namespace WebSocketSharp.Server
     /// a connection request to the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// The delegate is called when the <see cref="WebSocket"/> used in the session validates
+    /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
     /// the connection request.
     /// </remarks>
     /// <value>
@@ -187,8 +187,8 @@ namespace WebSocketSharp.Server
     /// the Sec-WebSocket-Extensions header included in a connection request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service ignores the extensions; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    /// <c>true</c> if the WebSocket service ignores the extensions;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool IgnoreExtensions {
       get {
@@ -205,7 +205,7 @@ namespace WebSocketSharp.Server
     /// a connection request to the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// The delegate is called when the <see cref="WebSocket"/> used in the session validates
+    /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
     /// the connection request.
     /// </remarks>
     /// <value>
@@ -235,8 +235,8 @@ namespace WebSocketSharp.Server
     /// Gets or sets the WebSocket subprotocol used in the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// Set operation of this property is available before the WebSocket connection has been
-    /// established.
+    /// Set operation of this property is available before the WebSocket connection has
+    /// been established.
     /// </remarks>
     /// <value>
     ///   <para>
@@ -282,7 +282,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
-    /// the <see cref="WebSocket"/> used in the session.
+    /// the <see cref="WebSocket"/>.
     /// </value>
     public WebSocketState State {
       get {
