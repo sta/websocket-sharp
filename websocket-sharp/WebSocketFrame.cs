@@ -36,6 +36,10 @@ namespace WebSocketSharp
 {
   internal class WebSocketFrame : IEnumerable<byte>
   {
+
+
+    private static Random _random;
+
     #region Private Fields
 
     private byte[]      _extPayloadLength;
@@ -62,6 +66,7 @@ namespace WebSocketSharp
     static WebSocketFrame ()
     {
       EmptyUnmaskPingBytes = CreatePingFrame (false).ToByteArray ();
+      _random = new Random();
     }
 
     #endregion
@@ -277,9 +282,8 @@ namespace WebSocketSharp
     private static byte[] createMaskingKey ()
     {
       var key = new byte[4];
-      var rand = new Random ();
-      rand.NextBytes (key);
-
+      lock(_random)
+        _random.NextBytes (key);
       return key;
     }
 
