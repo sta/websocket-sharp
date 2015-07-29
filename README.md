@@ -159,6 +159,22 @@ if (e.Type == Opcode.Binary) {
 }
 ```
 
+And if you would like to notify that a **Ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`, such as the following.
+
+```csharp
+ws.EmitOnPing = true;
+ws.OnMessage += (sender, e) => {
+  if (e.Type == Opcode.Ping) {
+    // Do something to notify that a Ping has been received.
+    ...
+
+    return;
+  }
+
+  ...
+};
+```
+
 ##### WebSocket.OnError Event #####
 
 A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
