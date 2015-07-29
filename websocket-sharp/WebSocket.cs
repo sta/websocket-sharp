@@ -109,6 +109,10 @@ namespace WebSocketSharp
     private Uri                     _uri;
     private const string            _version = "13";
     private TimeSpan                _waitTime;
+    private bool                    _ProxySocketConnectionSuccessful = false;
+    private ManualResetEvent        _ProxyTimeoutObject = new ManualResetEvent(false);
+    private Exception               _ProxySocketException;
+    private int                     _ProxySocketTimeoutMSec = 3000;
 
     #endregion
 
@@ -1367,8 +1371,23 @@ namespace WebSocketSharp
                 var socket = (Socket)socketProperty.GetValue(networkStream, null);
                 socket.Disconnect(true);
                 _tcpClient = new TcpClient { Client = socket };
-                _tcpClient.BeginConnect(_uri.DnsSafeHost, _uri.Port, new AsyncCallback(OnSocketConnected), _tcpClient);
-                Thread.Sleep(2000);
+                _tcpClient.BeginConnect(_uri.DnsSafeHost, _uri.Port, new AsyncCallback(OnProxySocketConnected), _tcpClient);
+                if (_ProxyTimeoutObject.WaitOne(_ProxySocketTimeoutMSec, false))
+                {
+                    if (_ProxySocketConnectionSuccessful)
+                    {
+                        _stream = _tcpClient.GetStream();
+                    }
+                    else
+                    {
+                        throw _ProxySocketException;
+                    }
+                }
+                else
+                {
+                    _tcpClient.Close();
+                    throw new TimeoutException("Socket Timeout Exception");
+                }
             }
             catch (System.Net.WebException exception)
             {
@@ -1437,13 +1456,29 @@ namespace WebSocketSharp
       }
     }
 
-    private void OnSocketConnected(IAsyncResult result)
+    private void OnProxySocketConnected(IAsyncResult result)
     {
-        if (!result.IsCompleted)
-            throw new WebSocketException("The Socket asynchronous connection has not complete.");    
+        try
+        {
+            _ProxySocketConnectionSuccessful = false;
+            TcpClient tcpclient = result.AsyncState as TcpClient;
 
-        _stream = _tcpClient.GetStream();
-        
+            if (tcpclient.Client != null)
+            {
+                tcpclient.EndConnect(result);
+                _ProxySocketConnectionSuccessful = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            _ProxySocketConnectionSuccessful = false;
+            _ProxySocketException = ex;
+             throw new WebSocketException("The Socket asynchronous connection has not complete."); 
+        }
+        finally
+        {
+            _ProxyTimeoutObject.Set();
+        }       
     }
 
     private void startReceiving ()
