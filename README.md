@@ -434,6 +434,23 @@ And then your client will send the following header with the connection request 
 
 If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.
 
+#### Ignoring Sec-WebSocket-Extensions header ####
+
+As a WebSocket server, if you would like to ignore the extensions requested from a client, you should set the `WebSocketBehavior.IgnoreExtensions` property to `true` in your `WebSocketBehavior` constructor or initializing it, such as the following.
+
+```csharp
+wssv.AddWebSocketService<Chat> (
+  "/Chat",
+  () => new Chat () {
+    // To ignore the Sec-WebSocket-Extensions header.
+    IgnoreExtensions = true
+  });
+```
+
+If it's set to `true`, the server doesn't return the Sec-WebSocket-Extensions header in the connection response.
+
+I think that it's useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
+
 ### Secure Connection ###
 
 websocket-sharp supports the **Secure Connection** with **SSL/TLS**.
