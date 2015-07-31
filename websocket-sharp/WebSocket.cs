@@ -105,6 +105,11 @@ namespace WebSocketSharp
     private ClientSslConfiguration  _sslConfig;
     private Stream                  _stream;
     private TcpClient               _tcpClient;
+    private bool                    _tcpNoDelay;
+    private int                     _tcpReceiveBufferSize = 8192;
+    private int                     _tcpReceiveTimeout;
+    private int                     _tcpSendBufferSize = 8192;
+    private int                     _tcpSendTimeout;
     private Uri                     _uri;
     private const string            _version = "13";
     private TimeSpan                _waitTime;
@@ -500,6 +505,85 @@ namespace WebSocketSharp
           }
 
           _sslConfig = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get or set the <see cref="TcpClient.NoDelay"/> option of the underlaying tcp connection
+    /// </summary>
+    public bool TcpNoDelay
+    {
+      get { return _tcpNoDelay; }
+      set {
+        _tcpNoDelay = value;
+        if (_tcpClient != null)
+        {
+          _tcpClient.NoDelay = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get or set the <see cref="TcpClient.ReceiveBufferSize"/> option of the underlaying tcp connection
+    /// </summary>
+    public int TcpReceiveBufferSize
+    {
+      get { return _tcpReceiveBufferSize; }
+      set
+      {
+        _tcpReceiveBufferSize = value;
+        if (_tcpClient != null)
+        {
+          _tcpClient.ReceiveBufferSize = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get or set the <see cref="TcpClient.ReceiveTimeout"/> option of the underlaying tcp connection
+    /// </summary>
+    public int TcpReceiveTimeout
+    {
+      get { return _tcpReceiveTimeout; }
+      set
+      {
+        _tcpReceiveTimeout = value;
+        if (_tcpClient != null)
+        {
+          _tcpClient.ReceiveTimeout = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get or set the <see cref="TcpClient.SendBufferSize"/> option of the underlaying tcp connection
+    /// </summary>
+    public int TcpSendBufferSize
+    {
+      get { return _tcpSendBufferSize; }
+      set
+      {
+        _tcpSendBufferSize = value;
+        if (_tcpClient != null)
+        {
+          _tcpClient.SendBufferSize = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Get or set the <see cref="TcpClient.SendTimeout"/> option of the underlaying tcp connection
+    /// </summary>
+    public int TcpSendTimeout
+    {
+      get { return _tcpSendTimeout; }
+      set
+      {
+        _tcpSendTimeout = value;
+        if (_tcpClient != null)
+        {
+          _tcpClient.SendTimeout = value;
         }
       }
     }
@@ -1324,8 +1408,15 @@ namespace WebSocketSharp
         if (_proxyCredentials != null) {
           if (res.HasConnectionClose) {
             releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
+            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port)
+              {
+                NoDelay = _tcpNoDelay,
+                ReceiveBufferSize = _tcpReceiveBufferSize,
+                ReceiveTimeout = _tcpReceiveTimeout,
+                SendBufferSize = _tcpSendBufferSize,
+                SendTimeout = _tcpSendTimeout
+              };
+              _stream = _tcpClient.GetStream ();
           }
 
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
@@ -1346,12 +1437,26 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port)
+        {
+          NoDelay = _tcpNoDelay,
+          ReceiveBufferSize = _tcpReceiveBufferSize,
+          ReceiveTimeout = _tcpReceiveTimeout,
+          SendBufferSize = _tcpSendBufferSize,
+          SendTimeout = _tcpSendTimeout
+        };
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _tcpClient = new TcpClient(_uri.DnsSafeHost, _uri.Port)
+        {
+          NoDelay = _tcpNoDelay,
+          ReceiveBufferSize = _tcpReceiveBufferSize,
+          ReceiveTimeout = _tcpReceiveTimeout,
+          SendBufferSize = _tcpSendBufferSize,
+          SendTimeout = _tcpSendTimeout
+        };
         _stream = _tcpClient.GetStream ();
       }
 
