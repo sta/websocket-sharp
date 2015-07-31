@@ -51,12 +51,13 @@ websocket-sharp is available on the **Unity Asset Store**.
 
 It works with **Unity Free**, but there are some limitations:
 
-- **[Security Sandbox of the Webplayer]** (the server doesn't work in the webplayer)
-- **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
-- **Limited support for the System.IO.Compression** (the compression extension isn't available on Windows)
+- **[Security Sandbox of the Webplayer]** (The server isn't available in Web Player)
+- **[WebGL Networking]** (Not available in WebGL)
+- **.NET Socket Support for iOS/Android** (It requires iOS/Android Pro if your Unity is earlier than Unity 5)
 - **.NET API 2.0 compatibility level for iOS/Android**
+- **Weak Support for the System.IO.Compression** (The compression extension isn't available on Windows)
 
-Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
+**.NET API 2.0 compatibility level for iOS/Android** may require to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
 
 And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
@@ -686,7 +687,7 @@ websocket-sharp is provided under **[The MIT License]**.
 [Squid]: http://www.squid-cache.org
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
-[Unity Licenses Comparison]: http://unity3d.com/unity/licenses
+[WebGL Networking]: http://docs.unity3d.com/Manual/webgl-networking.html
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
