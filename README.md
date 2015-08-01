@@ -53,9 +53,9 @@ It works with **Unity Free**, but there are some limitations:
 
 - **[Security Sandbox of the Webplayer]** (The server isn't available in Web Player)
 - **[WebGL Networking]** (Not available in WebGL)
+- **Weak Support for the System.IO.Compression** (The compression extension isn't available on Windows)
 - **.NET Socket Support for iOS/Android** (It requires iOS/Android Pro if your Unity is earlier than Unity 5)
 - **.NET API 2.0 compatibility level for iOS/Android**
-- **Weak Support for the System.IO.Compression** (The compression extension isn't available on Windows)
 
 **.NET API 2.0 compatibility level for iOS/Android** may require to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
 
@@ -450,7 +450,7 @@ wssv.AddWebSocketService<Chat> (
 
 If it's set to `true`, the server doesn't return the Sec-WebSocket-Extensions header in the connection response.
 
-I think that it's useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
+I think that this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
 
 ### Secure Connection ###
 
