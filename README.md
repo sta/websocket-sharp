@@ -421,21 +421,21 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the **[Per-message Compression][compression]** extension. (But this doesn't support it with the [context take over].)
+websocket-sharp supports the **[Per-message Compression][compression]** extension (but doesn't support this extension with the [context take over]).
 
-If you would like to enable this extension as a WebSocket client, you should set such as the following.
+As a WebSocket client, if you would like to enable this extension, you should set such as the following.
 
 ```csharp
 ws.Compression = CompressionMethod.Deflate;
 ```
 
-And then your client will send the following header with the connection request to the server.
+And then your client will send the following header in the connection request to the server.
 
     Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
 If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.
 
-#### Ignoring Sec-WebSocket-Extensions header ####
+#### Ignoring the extensions ####
 
 As a WebSocket server, if you would like to ignore the extensions requested from a client, you should set the `WebSocketBehavior.IgnoreExtensions` property to `true` in your `WebSocketBehavior` constructor or initializing it, such as the following.
 
@@ -443,14 +443,14 @@ As a WebSocket server, if you would like to ignore the extensions requested from
 wssv.AddWebSocketService<Chat> (
   "/Chat",
   () => new Chat () {
-    // To ignore the Sec-WebSocket-Extensions header.
+    // To ignore the extensions requested from a client.
     IgnoreExtensions = true
   });
 ```
 
-If it's set to `true`, the server doesn't return the Sec-WebSocket-Extensions header in the connection response.
+If it's set to `true`, the server doesn't return the **Sec-WebSocket-Extensions header** in the connection response.
 
-I think that this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
+I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
 
 ### Secure Connection ###
 
