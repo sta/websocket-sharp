@@ -82,15 +82,17 @@
 
 <ul>
 <li>
-<strong><a href="http://docs.unity3d.com/Manual/SecuritySandbox.html">Security Sandbox of the Webplayer</a></strong> (the server doesn't work in the webplayer)</li>
+<strong><a href="http://docs.unity3d.com/Manual/SecuritySandbox.html">Security Sandbox of the Webplayer</a></strong> (The server isn't available in Web Player)</li>
 <li>
-<strong><a href="http://unity3d.com/unity/licenses">.NET Socket Support for iOS/Android</a></strong> (requires iOS/Android Pro)</li>
+<strong><a href="http://docs.unity3d.com/Manual/webgl-networking.html">WebGL Networking</a></strong> (Not available in WebGL)</li>
 <li>
-<strong>Limited support for the System.IO.Compression</strong> (the compression extension isn't available on Windows)</li>
+<strong>Weak Support for the System.IO.Compression</strong> (The compression extension isn't available on Windows)</li>
+<li>
+<strong>.NET Socket Support for iOS/Android</strong> (It requires iOS/Android Pro if your Unity is earlier than Unity 5)</li>
 <li><strong>.NET API 2.0 compatibility level for iOS/Android</strong></li>
 </ul>
 
-<p>Using <strong>.NET API 2.0 compatibility level for iOS/Android</strong> requires to fix lack of some features for later than .NET 2.0, such as the <code>System.Func&lt;...&gt;</code> delegates (so i've fixed it in the asset package).</p>
+<p><strong>.NET API 2.0 compatibility level for iOS/Android</strong> may require to fix lack of some features for later than .NET 2.0, such as the <code>System.Func&lt;...&gt;</code> delegates (so i've fixed it in the asset package).</p>
 
 <p>And it's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, <strong>Thank you!</strong></p>
 
@@ -187,6 +189,20 @@
 
   <span class="pl-k">return</span>;
 }</pre></div>
+
+<p>And if you would like to notify that a <strong>Ping</strong> has been received, via this event, you should set the <code>WebSocket.EmitOnPing</code> property to <code>true</code>, such as the following.</p>
+
+<div class="highlight highlight-csharp"><pre>ws.EmitOnPing = <span class="pl-c1">true</span>;
+ws.OnMessage += (sender, e) =&gt; {
+  <span class="pl-k">if</span> (e.Type == Opcode.Ping) {
+    <span class="pl-c">// Do something to notify that a Ping has been received.</span>
+    ...
+
+    <span class="pl-k">return</span>;
+  }
+
+  ...
+};</pre></div>
 
 <h5>
 <a id="websocketonerror-event" class="anchor" href="#websocketonerror-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnError Event</h5>
@@ -420,18 +436,34 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">
 <h4>
 <a id="per-message-compression" class="anchor" href="#per-message-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Per-message Compression</h4>
 
-<p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19">Per-message Compression</a></strong> extension. (But this doesn't support it with the <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1">context take over</a>.)</p>
+<p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19">Per-message Compression</a></strong> extension (but doesn't support this extension with the <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1">context take over</a>).</p>
 
-<p>If you would like to enable this extension as a WebSocket client, you should set such as the following.</p>
+<p>As a WebSocket client, if you would like to enable this extension, you should set such as the following.</p>
 
 <div class="highlight highlight-csharp"><pre>ws.Compression = CompressionMethod.Deflate;</pre></div>
 
-<p>And then your client will send the following header with the connection request to the server.</p>
+<p>And then your client will send the following header in the connection request to the server.</p>
 
 <pre><code>Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 </code></pre>
 
 <p>If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.</p>
+
+<h4>
+<a id="ignoring-the-extensions" class="anchor" href="#ignoring-the-extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ignoring the extensions</h4>
+
+<p>As a WebSocket server, if you would like to ignore the extensions requested from a client, you should set the <code>WebSocketBehavior.IgnoreExtensions</code> property to <code>true</code> in your <code>WebSocketBehavior</code> constructor or initializing it, such as the following.</p>
+
+<div class="highlight highlight-csharp"><pre>wssv.AddWebSocketService&lt;Chat&gt; (
+  <span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>,
+  () =&gt; <span class="pl-k">new</span> Chat () {
+    <span class="pl-c">// To ignore the extensions requested from a client.</span>
+    IgnoreExtensions = <span class="pl-c1">true</span>
+  });</pre></div>
+
+<p>If it's set to <code>true</code>, the server doesn't return the <strong>Sec-WebSocket-Extensions header</strong> in the connection response.</p>
+
+<p>I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.</p>
 
 <h3>
 <a id="secure-connection" class="anchor" href="#secure-connection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
