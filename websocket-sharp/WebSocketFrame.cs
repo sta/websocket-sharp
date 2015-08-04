@@ -277,8 +277,7 @@ namespace WebSocketSharp
     private static byte[] createMaskingKey ()
     {
       var key = new byte[4];
-      var rand = new Random ();
-      rand.NextBytes (key);
+      WebSocket.RandomNumber.GetBytes (key);
 
       return key;
     }

@@ -115,6 +115,7 @@ namespace WebSocketSharp
     #region Internal Fields
 
     internal const int FragmentLength = 1016; // Max value is Int32.MaxValue - 14.
+    internal static readonly RandomNumberGenerator RandomNumber = new RNGCryptoServiceProvider ();
 
     #endregion
 
@@ -1627,8 +1628,7 @@ namespace WebSocketSharp
     internal static string CreateBase64Key ()
     {
       var src = new byte[16];
-      var rand = new Random ();
-      rand.NextBytes (src);
+      RandomNumber.GetBytes (src);
 
       return Convert.ToBase64String (src);
     }
