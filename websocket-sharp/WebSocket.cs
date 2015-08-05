@@ -601,7 +601,7 @@ namespace WebSocketSharp
       var msg = checkIfValidHandshakeRequest (_context);
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred while connecting.", null);
+        error ("An error has occurred while accepting.", null);
         Close (HttpStatusCode.BadRequest);
 
         return false;
@@ -760,7 +760,7 @@ namespace WebSocketSharp
         var msg = _readyState.CheckIfConnectable ();
         if (msg != null) {
           _logger.Error (msg);
-          error ("An error has occurred in connecting.", null);
+          error ("An error has occurred in handshaking.", null);
 
           return false;
         }
@@ -773,7 +773,7 @@ namespace WebSocketSharp
           }
         }
         catch (Exception ex) {
-          processException (ex, "An exception has occurred while connecting.");
+          processException (ex, "An exception has occurred while handshaking.");
         }
 
         return false;
@@ -1536,6 +1536,20 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
+    // As server
+    internal void Accept ()
+    {
+      try {
+        if (acceptHandshake ()) {
+          _readyState = WebSocketState.Open;
+          open ();
+        }
+      }
+      catch (Exception ex) {
+        processException (ex, "An exception has occurred while accepting.");
+      }
+    }
+
     internal static string CheckCloseParameters (ushort code, string reason, bool client)
     {
       return !code.IsCloseStatusCode ()
@@ -1607,20 +1621,6 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
-      }
-    }
-
-    // As server
-    internal void ConnectAsServer ()
-    {
-      try {
-        if (acceptHandshake ()) {
-          _readyState = WebSocketState.Open;
-          open ();
-        }
-      }
-      catch (Exception ex) {
-        processException (ex, "An exception has occurred while connecting.");
       }
     }
 
@@ -2029,7 +2029,7 @@ namespace WebSocketSharp
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in connecting.", null);
+        error ("An error has occurred in handshaking.", null);
 
         return;
       }
@@ -2049,7 +2049,7 @@ namespace WebSocketSharp
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in connecting.", null);
+        error ("An error has occurred in handshaking.", null);
 
         return;
       }
