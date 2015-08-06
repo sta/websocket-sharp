@@ -201,6 +201,13 @@ namespace WebSocketSharp
       }
     }
 
+    internal static string CheckIfCanAccept (this WebSocketState state)
+    {
+      return state != WebSocketState.Connecting
+             ? "This operation has already been done."
+             : null;
+    }
+
     internal static string CheckIfCanRead (this Stream stream)
     {
       return stream == null

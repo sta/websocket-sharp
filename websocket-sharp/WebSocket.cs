@@ -593,6 +593,32 @@ namespace WebSocketSharp
     #region Private Methods
 
     // As server
+    private bool accept ()
+    {
+      lock (_forConn) {
+        var msg = _readyState.CheckIfCanAccept ();
+        if (msg != null) {
+          _logger.Error (msg);
+          error ("An error has occurred in accepting.", null);
+
+          return false;
+        }
+
+        try {
+          if (acceptHandshake ()) {
+            _readyState = WebSocketState.Open;
+            return true;
+          }
+        }
+        catch (Exception ex) {
+          processException (ex, "An exception has occurred while accepting.");
+        }
+
+        return false;
+      }
+    }
+
+    // As server
     private bool acceptHandshake ()
     {
       _logger.Debug (
