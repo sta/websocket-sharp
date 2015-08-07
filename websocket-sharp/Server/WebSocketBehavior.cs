@@ -366,7 +366,7 @@ namespace WebSocketSharp.Server
       _websocket.OnError += onError;
       _websocket.OnClose += onClose;
 
-      _websocket.Accept ();
+      _websocket.InternalAccept ();
     }
 
     #endregion

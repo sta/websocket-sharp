@@ -655,6 +655,13 @@ namespace WebSocketSharp
                : null;
     }
 
+    private string checkIfCanAccept ()
+    {
+      return _client
+             ? "This operation isn't available as a client."
+             : _readyState.CheckIfCanAccept ();
+    }
+
     private string checkIfCanConnect ()
     {
       return !_client && _readyState == WebSocketState.Closed
@@ -1562,20 +1569,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    // As server
-    internal void Accept ()
-    {
-      try {
-        if (acceptHandshake ()) {
-          _readyState = WebSocketState.Open;
-          open ();
-        }
-      }
-      catch (Exception ex) {
-        processException (ex, "An exception has occurred while accepting.");
-      }
-    }
-
     internal static string CheckCloseParameters (ushort code, string reason, bool client)
     {
       return !code.IsCloseStatusCode ()
@@ -1669,6 +1662,20 @@ namespace WebSocketSharp
       return Convert.ToBase64String (src);
     }
 
+    // As server
+    internal void InternalAccept ()
+    {
+      try {
+        if (acceptHandshake ()) {
+          _readyState = WebSocketState.Open;
+          open ();
+        }
+      }
+      catch (Exception ex) {
+        processException (ex, "An exception has occurred while accepting.");
+      }
+    }
+
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       try {
@@ -1742,6 +1749,56 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Methods
+
+    /// <summary>
+    /// Accepts the WebSocket connection request.
+    /// </summary>
+    /// <remarks>
+    /// This method isn't available as a client.
+    /// </remarks>
+    public void Accept ()
+    {
+      var msg = checkIfCanAccept ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in accepting.", null);
+
+        return;
+      }
+
+      if (accept ())
+        open ();
+    }
+
+    /// <summary>
+    /// Accepts the WebSocket connection request asynchronously.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method doesn't wait for the accept to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method isn't available as a client.
+    ///   </para>
+    /// </remarks>
+    public void AcceptAsync ()
+    {
+      var msg = checkIfCanAccept ();
+      if (msg != null) {
+        _logger.Error (msg);
+        error ("An error has occurred in accepting.", null);
+
+        return;
+      }
+
+      Func<bool> acceptor = accept;
+      acceptor.BeginInvoke (
+        ar => {
+          if (acceptor.EndInvoke (ar))
+            open ();
+        },
+        null);
+    }
 
     /// <summary>
     /// Closes the WebSocket connection, and releases all associated resources.
