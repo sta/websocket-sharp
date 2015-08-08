@@ -208,6 +208,13 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfCanConnect (this WebSocketState state)
+    {
+      return state == WebSocketState.Open || state == WebSocketState.Closing
+             ? "This operation has already been done."
+             : null;
+    }
+
     internal static string CheckIfCanRead (this Stream stream)
     {
       return stream == null

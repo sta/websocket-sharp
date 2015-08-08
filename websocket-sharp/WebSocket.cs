@@ -664,9 +664,9 @@ namespace WebSocketSharp
 
     private string checkIfCanConnect ()
     {
-      return !_client && _readyState == WebSocketState.Closed
-             ? "Connect isn't available to reconnect as a server."
-             : _readyState.CheckIfConnectable ();
+      return !_client
+             ? "This operation isn't available in the server."
+             : _readyState.CheckIfCanConnect ();
     }
 
     // As server
@@ -787,26 +787,27 @@ namespace WebSocketSharp
       return ret;
     }
 
+    // As client
     private bool connect ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfConnectable ();
+        var msg = _readyState.CheckIfCanConnect ();
         if (msg != null) {
           _logger.Error (msg);
-          error ("An error has occurred in handshaking.", null);
+          error ("An error has occurred in connecting.", null);
 
           return false;
         }
 
         try {
           _readyState = WebSocketState.Connecting;
-          if (_client ? doHandshake () : acceptHandshake ()) {
+          if (doHandshake ()) {
             _readyState = WebSocketState.Open;
             return true;
           }
         }
         catch (Exception ex) {
-          processException (ex, "An exception has occurred while handshaking.");
+          processException (ex, "An exception has occurred while connecting.");
         }
 
         return false;
@@ -2107,12 +2108,15 @@ namespace WebSocketSharp
     /// <summary>
     /// Establishes a WebSocket connection.
     /// </summary>
+    /// <remarks>
+    /// This method isn't available in the server.
+    /// </remarks>
     public void Connect ()
     {
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in handshaking.", null);
+        error ("An error has occurred in connecting.", null);
 
         return;
       }
@@ -2125,14 +2129,19 @@ namespace WebSocketSharp
     /// Establishes a WebSocket connection asynchronously.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the connect to be complete.
+    ///   <para>
+    ///   This method doesn't wait for the connect to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method isn't available in the server.
+    ///   </para>
     /// </remarks>
     public void ConnectAsync ()
     {
       var msg = checkIfCanConnect ();
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in handshaking.", null);
+        error ("An error has occurred in connecting.", null);
 
         return;
       }
