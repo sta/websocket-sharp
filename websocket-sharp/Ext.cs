@@ -233,13 +233,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfConnectable (this WebSocketState state)
-    {
-      return state == WebSocketState.Open || state == WebSocketState.Closing
-             ? "A WebSocket connection has already been established."
-             : null;
-    }
-
     internal static string CheckIfOpen (this WebSocketState state)
     {
       return state == WebSocketState.Connecting

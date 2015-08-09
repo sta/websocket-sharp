@@ -646,19 +646,19 @@ namespace WebSocketSharp
       return sendHttpResponse (createHandshakeResponse ());
     }
 
-    private string checkIfAvailable (bool asServer, bool asConnected)
+    private string checkIfAvailable (bool server, bool connected)
     {
-      return !_client && !asServer
-             ? "This operation isn't available as a server."
-             : !asConnected
-               ? _readyState.CheckIfConnectable ()
+      return !server && !_client
+             ? "This operation isn't available in the server."
+             : !connected && IsConnected
+               ? "This operation isn't available after the connection has been established."
                : null;
     }
 
     private string checkIfCanAccept ()
     {
       return _client
-             ? "This operation isn't available as a client."
+             ? "This operation isn't available in the client."
              : _readyState.CheckIfCanAccept ();
     }
 
@@ -1755,7 +1755,7 @@ namespace WebSocketSharp
     /// Accepts the WebSocket connection request.
     /// </summary>
     /// <remarks>
-    /// This method isn't available as a client.
+    /// This method isn't available in the client.
     /// </remarks>
     public void Accept ()
     {
@@ -1779,7 +1779,7 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the accept to be complete.
     ///   </para>
     ///   <para>
-    ///   This method isn't available as a client.
+    ///   This method isn't available in the client.
     ///   </para>
     /// </remarks>
     public void AcceptAsync ()
