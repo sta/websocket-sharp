@@ -1806,7 +1806,7 @@ namespace WebSocketSharp
     /// </summary>
     public void Close ()
     {
-      var msg = _readyState.CheckIfClosable ();
+      var msg = _readyState.CheckIfCanClose ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1830,7 +1830,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1857,7 +1857,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1891,7 +1891,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1925,7 +1925,7 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1950,7 +1950,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void CloseAsync ()
     {
-      var msg = _readyState.CheckIfClosable ();
+      var msg = _readyState.CheckIfCanClose ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1979,7 +1979,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2009,7 +2009,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2048,7 +2048,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2088,7 +2088,7 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfClosable () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);

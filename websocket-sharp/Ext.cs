@@ -208,6 +208,13 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfCanClose (this WebSocketState state)
+    {
+      return state == WebSocketState.Closing || state == WebSocketState.Closed
+             ? String.Format ("This operation isn't available ({0}).", state)
+             : null;
+    }
+
     internal static string CheckIfCanConnect (this WebSocketState state)
     {
       return state == WebSocketState.Open || state == WebSocketState.Closing
@@ -221,15 +228,6 @@ namespace WebSocketSharp
              ? "'stream' is null."
              : !stream.CanRead
                ? "'stream' cannot be read."
-               : null;
-    }
-
-    internal static string CheckIfClosable (this WebSocketState state)
-    {
-      return state == WebSocketState.Closing
-             ? "While closing the WebSocket connection."
-             : state == WebSocketState.Closed
-               ? "The WebSocket connection has already been closed."
                : null;
     }
 
