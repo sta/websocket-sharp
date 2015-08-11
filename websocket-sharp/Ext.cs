@@ -231,15 +231,11 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfOpen (this WebSocketState state)
+    internal static string CheckIfCanSend (this WebSocketState state)
     {
-      return state == WebSocketState.Connecting
-             ? "A WebSocket connection isn't established."
-             : state == WebSocketState.Closing
-               ? "While closing the WebSocket connection."
-               : state == WebSocketState.Closed
-                 ? "The WebSocket connection has already been closed."
-                 : null;
+      return state != WebSocketState.Open
+             ? String.Format ("This operation isn't available ({0}).", state)
+             : null;
     }
 
     internal static string CheckIfStart (this ServerState state)

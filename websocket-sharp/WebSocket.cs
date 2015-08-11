@@ -2206,7 +2206,7 @@ namespace WebSocketSharp
     /// </param>
     public void Send (byte[] data)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2225,7 +2225,7 @@ namespace WebSocketSharp
     /// </param>
     public void Send (FileInfo file)
     {
-      var msg = _readyState.CheckIfOpen () ?? file.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? file.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2244,7 +2244,7 @@ namespace WebSocketSharp
     /// </param>
     public void Send (string data)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2271,7 +2271,7 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2299,7 +2299,7 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ?? file.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? file.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2326,7 +2326,7 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2357,7 +2357,7 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfOpen () ??
+      var msg = _readyState.CheckIfCanSend () ??
                 stream.CheckIfCanRead () ??
                 (length < 1 ? "'length' is less than 1." : null);
 
