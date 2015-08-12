@@ -892,7 +892,7 @@ namespace WebSocketSharp.Server
     public void Start ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfStartable () ?? checkIfCertificateExists ();
+        var msg = _state.CheckIfCanStart () ?? checkIfCertificateExists ();
         if (msg != null) {
           _logger.Error (msg);
           return;

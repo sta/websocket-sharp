@@ -238,6 +238,13 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfCanStart (this ServerState state)
+    {
+      return state == ServerState.Start || state == ServerState.ShuttingDown
+             ? "This operation has already been done."
+             : null;
+    }
+
     internal static string CheckIfStart (this ServerState state)
     {
       return state == ServerState.Ready
