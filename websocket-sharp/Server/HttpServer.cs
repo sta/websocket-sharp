@@ -911,7 +911,7 @@ namespace WebSocketSharp.Server
     public void Stop ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfStart ();
+        var msg = _state.CheckIfCanStop ();
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -939,7 +939,7 @@ namespace WebSocketSharp.Server
     public void Stop (ushort code, string reason)
     {
       lock (_sync) {
-        var msg = _state.CheckIfStart () ?? WebSocket.CheckCloseParameters (code, reason, false);
+        var msg = _state.CheckIfCanStop () ?? WebSocket.CheckCloseParameters (code, reason, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -975,7 +975,7 @@ namespace WebSocketSharp.Server
     public void Stop (CloseStatusCode code, string reason)
     {
       lock (_sync) {
-        var msg = _state.CheckIfStart () ?? WebSocket.CheckCloseParameters (code, reason, false);
+        var msg = _state.CheckIfCanStop () ?? WebSocket.CheckCloseParameters (code, reason, false);
         if (msg != null) {
           _logger.Error (msg);
           return;

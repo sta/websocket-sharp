@@ -245,6 +245,13 @@ namespace WebSocketSharp
              : null;
     }
 
+    internal static string CheckIfCanStop (this ServerState state)
+    {
+      return state != ServerState.Start
+             ? String.Format ("This operation isn't available ({0}).", state)
+             : null;
+    }
+
     internal static string CheckIfStart (this ServerState state)
     {
       return state == ServerState.Ready
