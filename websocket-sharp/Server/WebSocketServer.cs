@@ -303,7 +303,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -351,7 +351,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -403,7 +403,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -431,7 +431,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -455,7 +455,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -480,7 +480,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable ();
+        var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -503,7 +503,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
+        var msg = _state.CheckIfAvailable (true, false, false) ?? value.CheckIfValidWaitTime ();
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -795,7 +795,7 @@ namespace WebSocketSharp.Server
     public void Start ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfCanStart () ?? checkIfCertificateExists ();
+        var msg = _state.CheckIfAvailable (true, false, false) ?? checkIfCertificateExists ();
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -814,7 +814,7 @@ namespace WebSocketSharp.Server
     public void Stop ()
     {
       lock (_sync) {
-        var msg = _state.CheckIfCanStop ();
+        var msg = _state.CheckIfAvailable (false, true, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -842,7 +842,9 @@ namespace WebSocketSharp.Server
     public void Stop (ushort code, string reason)
     {
       lock (_sync) {
-        var msg = _state.CheckIfCanStop () ?? WebSocket.CheckCloseParameters (code, reason, false);
+        var msg = _state.CheckIfAvailable (false, true, false) ??
+                  WebSocket.CheckCloseParameters (code, reason, false);
+
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -877,7 +879,9 @@ namespace WebSocketSharp.Server
     public void Stop (CloseStatusCode code, string reason)
     {
       lock (_sync) {
-        var msg = _state.CheckIfCanStop () ?? WebSocket.CheckCloseParameters (code, reason, false);
+        var msg = _state.CheckIfAvailable (false, true, false) ??
+                  WebSocket.CheckCloseParameters (code, reason, false);
+
         if (msg != null) {
           _logger.Error (msg);
           return;

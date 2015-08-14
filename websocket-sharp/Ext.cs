@@ -201,6 +201,16 @@ namespace WebSocketSharp
       }
     }
 
+    internal static string CheckIfAvailable (
+      this ServerState state, bool ready, bool start, bool shutting)
+    {
+      return (!ready && (state == ServerState.Ready || state == ServerState.Stop)) ||
+             (!start && state == ServerState.Start) ||
+             (!shutting && state == ServerState.ShuttingDown)
+             ? "This operation isn't available in: " + state
+             : null;
+    }
+
     internal static string CheckIfCanAccept (this WebSocketState state)
     {
       return state != WebSocketState.Connecting
@@ -236,40 +246,6 @@ namespace WebSocketSharp
       return state != WebSocketState.Open
              ? String.Format ("This operation isn't available ({0}).", state)
              : null;
-    }
-
-    internal static string CheckIfCanStart (this ServerState state)
-    {
-      return state == ServerState.Start || state == ServerState.ShuttingDown
-             ? "This operation has already been done."
-             : null;
-    }
-
-    internal static string CheckIfCanStop (this ServerState state)
-    {
-      return state != ServerState.Start
-             ? String.Format ("This operation isn't available ({0}).", state)
-             : null;
-    }
-
-    internal static string CheckIfStart (this ServerState state)
-    {
-      return state == ServerState.Ready
-             ? "The server hasn't yet started."
-             : state == ServerState.ShuttingDown
-               ? "The server is shutting down."
-               : state == ServerState.Stop
-                 ? "The server has already stopped."
-                 : null;
-    }
-
-    internal static string CheckIfStartable (this ServerState state)
-    {
-      return state == ServerState.Start
-             ? "The server has already started."
-             : state == ServerState.ShuttingDown
-               ? "The server is shutting down."
-               : null;
     }
 
     internal static string CheckIfValidProtocols (this string[] protocols)

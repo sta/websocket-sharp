@@ -385,7 +385,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte[] data)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -405,7 +405,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -434,7 +434,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (byte[] data, Action completed)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -462,7 +462,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (string data, Action completed)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -494,7 +494,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
-      var msg = _state.CheckIfStart () ??
+      var msg = _state.CheckIfAvailable (false, true, false) ??
                 stream.CheckIfCanRead () ??
                 (length < 1 ? "'length' is less than 1." : null);
 
@@ -538,7 +538,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
-      var msg = _state.CheckIfStart ();
+      var msg = _state.CheckIfAvailable (false, true, false);
       if (msg != null) {
         _logger.Error (msg);
         return null;
@@ -567,7 +567,9 @@ namespace WebSocketSharp.Server
         return Broadping ();
 
       byte[] data = null;
-      var msg = _state.CheckIfStart () ?? WebSocket.CheckPingParameter (message, out data);
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckPingParameter (message, out data);
+
       if (msg != null) {
         _logger.Error (msg);
         return null;
@@ -592,7 +594,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
-      var msg = _state.CheckIfStart () ?? path.CheckIfValidServicePath ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? path.CheckIfValidServicePath ();
       if (msg != null) {
         _logger.Error (msg);
         host = null;

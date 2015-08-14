@@ -187,7 +187,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _sessions.State.CheckIfStartable ();
+        var msg = _sessions.State.CheckIfAvailable (true, false, false);
         if (msg != null) {
           _logger.Error (msg);
           return;
@@ -221,7 +221,9 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _sessions.State.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
+        var msg = _sessions.State.CheckIfAvailable (true, false, false) ??
+                  value.CheckIfValidWaitTime ();
+
         if (msg != null) {
           _logger.Error (msg);
           return;
