@@ -596,7 +596,7 @@ namespace WebSocketSharp
     private bool accept ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfCanAccept ();
+        var msg = _readyState.CheckIfAvailable (true, false, false, false);
         if (msg != null) {
           _logger.Error (msg);
           error ("An error has occurred in accepting.", null);
@@ -659,14 +659,14 @@ namespace WebSocketSharp
     {
       return _client
              ? "This operation isn't available in the client."
-             : _readyState.CheckIfCanAccept ();
+             : _readyState.CheckIfAvailable (true, false, false, false);
     }
 
     private string checkIfCanConnect ()
     {
       return !_client
              ? "This operation isn't available in the server."
-             : _readyState.CheckIfCanConnect ();
+             : _readyState.CheckIfAvailable (true, false, false, true);
     }
 
     // As server
@@ -791,7 +791,7 @@ namespace WebSocketSharp
     private bool connect ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfCanConnect ();
+        var msg = _readyState.CheckIfAvailable (true, false, false, true);
         if (msg != null) {
           _logger.Error (msg);
           error ("An error has occurred in connecting.", null);
@@ -1806,7 +1806,7 @@ namespace WebSocketSharp
     /// </summary>
     public void Close ()
     {
-      var msg = _readyState.CheckIfCanClose ();
+      var msg = _readyState.CheckIfAvailable (true, true, false, false);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1830,7 +1830,9 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, null, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1857,7 +1859,9 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, null, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1891,7 +1895,9 @@ namespace WebSocketSharp
     /// </param>
     public void Close (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, reason, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1925,7 +1931,9 @@ namespace WebSocketSharp
     /// </param>
     public void Close (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, reason, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1950,7 +1958,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void CloseAsync ()
     {
-      var msg = _readyState.CheckIfCanClose ();
+      var msg = _readyState.CheckIfAvailable (true, true, false, false);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -1979,7 +1987,9 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, null, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2009,7 +2019,9 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, null, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, null, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2048,7 +2060,9 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, reason, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2088,7 +2102,9 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
-      var msg = _readyState.CheckIfCanClose () ?? CheckCloseParameters (code, reason, _client);
+      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
+                CheckCloseParameters (code, reason, _client);
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2206,7 +2222,9 @@ namespace WebSocketSharp
     /// </param>
     public void Send (byte[] data)
     {
-      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                data.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2225,7 +2243,9 @@ namespace WebSocketSharp
     /// </param>
     public void Send (FileInfo file)
     {
-      var msg = _readyState.CheckIfCanSend () ?? file.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                file.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2244,7 +2264,9 @@ namespace WebSocketSharp
     /// </param>
     public void Send (string data)
     {
-      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                data.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2271,7 +2293,9 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                data.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2299,7 +2323,9 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfCanSend () ?? file.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                file.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2326,7 +2352,9 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfCanSend () ?? data.CheckIfValidSendData ();
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
+                data.CheckIfValidSendData ();
+
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in sending the data.", null);
@@ -2357,7 +2385,7 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfCanSend () ??
+      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
                 stream.CheckIfCanRead () ??
                 (length < 1 ? "'length' is less than 1." : null);
 

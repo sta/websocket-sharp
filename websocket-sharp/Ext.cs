@@ -211,24 +211,14 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfCanAccept (this WebSocketState state)
+    internal static string CheckIfAvailable (
+      this WebSocketState state, bool connecting, bool open, bool closing, bool closed)
     {
-      return state != WebSocketState.Connecting
-             ? "This operation has already been done."
-             : null;
-    }
-
-    internal static string CheckIfCanClose (this WebSocketState state)
-    {
-      return state == WebSocketState.Closing || state == WebSocketState.Closed
-             ? String.Format ("This operation isn't available ({0}).", state)
-             : null;
-    }
-
-    internal static string CheckIfCanConnect (this WebSocketState state)
-    {
-      return state == WebSocketState.Open || state == WebSocketState.Closing
-             ? "This operation has already been done."
+      return (!connecting && state == WebSocketState.Connecting) ||
+             (!open && state == WebSocketState.Open) ||
+             (!closing && state == WebSocketState.Closing) ||
+             (!closed && state == WebSocketState.Closed)
+             ? "This operation isn't available in: " + state
              : null;
     }
 
@@ -239,13 +229,6 @@ namespace WebSocketSharp
              : !stream.CanRead
                ? "'stream' cannot be read."
                : null;
-    }
-
-    internal static string CheckIfCanSend (this WebSocketState state)
-    {
-      return state != WebSocketState.Open
-             ? String.Format ("This operation isn't available ({0}).", state)
-             : null;
     }
 
     internal static string CheckIfValidProtocols (this string[] protocols)
