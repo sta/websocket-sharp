@@ -651,7 +651,7 @@ namespace WebSocketSharp
       return !server && !_client
              ? "This operation isn't available in the server."
              : !connected && IsConnected
-               ? "This operation isn't available after the connection has been established."
+               ? "This operation isn't available in: " + _readyState
                : null;
     }
 
@@ -722,8 +722,13 @@ namespace WebSocketSharp
     private void close (CloseEventArgs e, bool send, bool wait)
     {
       lock (_forConn) {
-        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
-          _logger.Info ("Closing the connection has already been done.");
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Info ("The closing is already in progress.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closed) {
+          _logger.Info ("The connection has been closed.");
           return;
         }
 
@@ -1152,7 +1157,7 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("Closing the connection has been done.");
+          _logger.Error ("The sending has been interrupted.");
           return false;
         }
 
@@ -1174,7 +1179,7 @@ namespace WebSocketSharp
 
           sent = send (opcode, stream, compressed);
           if (!sent)
-            error ("Sending the data has been interrupted.", null);
+            error ("The sending has been interrupted.", null);
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -1241,7 +1246,7 @@ namespace WebSocketSharp
     {
       lock (_forConn) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("Closing the connection has been done.");
+          _logger.Error ("The sending has been interrupted.");
           return false;
         }
 
@@ -1625,8 +1630,13 @@ namespace WebSocketSharp
     internal void Close (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
     {
       lock (_forConn) {
-        if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed) {
-          _logger.Info ("Closing the connection has already been done.");
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Info ("The closing is already in progress.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closed) {
+          _logger.Info ("The connection has been closed.");
           return;
         }
 
@@ -1698,7 +1708,7 @@ namespace WebSocketSharp
       lock (_forSend) {
         lock (_forConn) {
           if (_readyState != WebSocketState.Open) {
-            _logger.Error ("Closing the connection has been done.");
+            _logger.Error ("The sending has been interrupted.");
             return;
           }
 
