@@ -114,7 +114,23 @@ namespace WebSocketSharp
 
     #region Internal Fields
 
-    internal const int FragmentLength = 1016; // Max value is Int32.MaxValue - 14.
+    /// <summary>
+    /// Represents the length to determine whether the data should be fragmented in sending.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   The data will be fragmented if that length is greater than this.
+    ///   </para>
+    ///   <para>
+    ///   If you would like to change this value, you must set this to a value between 1 and
+    ///   <c>Int32.MaxValue - 14</c> inclusive.
+    ///   </para>
+    /// </remarks>
+    internal const int FragmentLength = 1016;
+
+    /// <summary>
+    /// Represents the random number generator to use internally.
+    /// </summary>
     internal static readonly RandomNumberGenerator RandomNumber = new RNGCryptoServiceProvider ();
 
     #endregion
