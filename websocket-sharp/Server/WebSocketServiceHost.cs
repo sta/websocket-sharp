@@ -41,7 +41,7 @@ namespace WebSocketSharp.Server
 {
   /// <summary>
   /// Exposes the methods and properties used to access the information in a WebSocket service
-  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketServiceHost class is an abstract class.
@@ -131,7 +131,6 @@ namespace WebSocketSharp.Server
     internal void Stop (ushort code, string reason)
     {
       var e = new CloseEventArgs (code, reason);
-
       var send = !code.IsReserved ();
       var bytes =
         send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
