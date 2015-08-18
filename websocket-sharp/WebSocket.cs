@@ -115,7 +115,7 @@ namespace WebSocketSharp
     #region Internal Fields
 
     /// <summary>
-    /// Represents the length to determine whether the data should be fragmented in sending.
+    /// Represents the length used to determine whether the data should be fragmented in sending.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -129,7 +129,7 @@ namespace WebSocketSharp
     internal const int FragmentLength = 1016;
 
     /// <summary>
-    /// Represents the random number generator to use internally.
+    /// Represents the random number generator used internally.
     /// </summary>
     internal static readonly RandomNumberGenerator RandomNumber = new RNGCryptoServiceProvider ();
 
