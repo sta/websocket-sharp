@@ -52,6 +52,7 @@ namespace WebSocketSharp
     private string _data;
     private bool   _dataSet;
     private Opcode _opcode;
+    private PayloadData _payloadData;
     private byte[] _rawData;
 
     #endregion
@@ -61,6 +62,7 @@ namespace WebSocketSharp
     internal MessageEventArgs (WebSocketFrame frame)
     {
       _opcode = frame.Opcode;
+      _payloadData = frame.PayloadData;
       _rawData = frame.PayloadData.ApplicationData;
     }
 
@@ -108,6 +110,14 @@ namespace WebSocketSharp
       get {
         return _rawData;
       }
+    }
+
+    internal PayloadData PayloadData
+    {
+        get
+        {
+            return _payloadData ?? (_payloadData = new PayloadData(_rawData));
+        }
     }
 
     /// <summary>
