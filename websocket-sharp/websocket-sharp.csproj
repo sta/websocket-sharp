@@ -139,6 +139,7 @@
     <Compile Include="Net\HttpListenerAsyncResult.cs" />
     <Compile Include="Net\HttpRequestHeader.cs" />
     <Compile Include="Net\HttpResponseHeader.cs" />
+    <Compile Include="Server\WebSocketServiceHost`1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
