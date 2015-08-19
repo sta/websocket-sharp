@@ -618,37 +618,52 @@ namespace WebSocketSharp
       }
     }
 
-    internal static void ReadBytesAsync (
+    internal static void ReadBytesAsync(
       this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
     {
       var buff = new byte[length];
-      stream.BeginRead (
-        buff,
-        0,
-        length,
-        ar => {
-          try {
-            byte[] bytes = null;
-            try {
-              var len = stream.EndRead (ar);
-              bytes = len < 1
-                      ? EmptyByteArray
-                      : len < length
-                        ? stream.readBytes (buff, len, length - len)
-                        : buff;
-            }
-            catch {
-              bytes = EmptyByteArray;
-            }
+      ReadBytesAsync(stream, buff, 0, completed, error);
+    }
 
-            if (completed != null)
-              completed (bytes);
+    internal static void ReadBytesAsync(
+      this Stream stream, byte[] buff, int currentOffset, Action<byte[]> completed, Action<Exception> error)
+    {
+      AsyncCallback readHandler = (ar) =>
+      {
+        try
+        {
+          var readLength = stream.EndRead(ar);
+          if (readLength == 0)
+          {
+            // EOF/disconnect before reading full length
+            completed(EmptyByteArray);
+            return;
           }
-          catch (Exception ex) {
-            if (error != null)
-              error (ex);
+
+          currentOffset += readLength;
+          if (currentOffset == buff.Length)
+          {
+            // we read everything we needed to read
+            completed(buff);
           }
-        },
+          else
+          {
+            // need to read more
+            ReadBytesAsync(stream, buff, currentOffset, completed, error);
+          }
+        }
+        catch (Exception ex)
+        {
+          if (error != null)
+            error(ex);
+        }
+      };
+
+      stream.BeginRead(
+        buff,
+        currentOffset,
+        buff.Length - currentOffset,
+        readHandler,
         null);
     }
 

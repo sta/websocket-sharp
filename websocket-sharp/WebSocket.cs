@@ -1001,8 +1001,7 @@ namespace WebSocketSharp
 
     private bool processCloseFrame (WebSocketFrame frame)
     {
-      var payload = frame.PayloadData;
-      close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false);
+      enqueueToMessageEventQueue(new MessageEventArgs(frame));
 
       return false;
     }
@@ -1461,43 +1460,80 @@ namespace WebSocketSharp
       }
     }
 
-    private void startReceiving ()
+    private void startReceiving()
     {
       if (_messageEventQueue.Count > 0)
-        _messageEventQueue.Clear ();
+        _messageEventQueue.Clear();
 
-      _exitReceiving = new AutoResetEvent (false);
-      _receivePong = new AutoResetEvent (false);
+      _exitReceiving = new AutoResetEvent(false);
+      _receivePong = new AutoResetEvent(false);
 
       Action receive = null;
-      receive = () => WebSocketFrame.ReadAsync (
-        _stream,
-        false,
-        frame => {
-          if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
-            receive ();
 
-            if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
-              return;
+      Action<WebSocketFrame> messageHandler = (frame) =>
+      {
+        if (processReceivedFrame(frame) && _readyState != WebSocketState.Closed)
+        {
+          receive();
 
-            lock (_forEvent) {
-              try {
-                var e = dequeueFromMessageEventQueue ();
-                if (e != null && _readyState == WebSocketState.Open)
-                  OnMessage.Emit (this, e);
-              }
-              catch (Exception ex) {
-                processException (ex, "An exception has occurred during an OnMessage event.");
-              }
+          if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
+            return;
+
+          handleOneMessage();
+        }
+        else
+        {
+          while (_messageEventQueue.Count > 0)
+          {
+            handleOneMessage();
+          }
+
+          if (_exitReceiving != null)
+          {
+            _exitReceiving.Set();
+          }
+        }
+      };
+
+      Action<Exception> errorHandler = (ex) =>
+      {
+        processException(ex, "An exception has occurred while receiving a message.");
+      };
+
+      receive = () => WebSocketFrame.Read(
+      _stream,
+      false,
+      messageHandler,
+      errorHandler);
+
+      receive();
+    }
+
+    private void handleOneMessage()
+    {
+      lock (_forEvent)
+      {
+        try
+        {
+          MessageEventArgs e = dequeueFromMessageEventQueue();
+          if (e != null && _readyState == WebSocketState.Open)
+          {
+            if (e.Type == Opcode.Close)
+            {
+              var payload = e.PayloadData;
+              close(new CloseEventArgs(payload), !payload.IncludesReservedCloseStatusCode, false);
+            }
+            else
+            {
+              OnMessage.Emit(this, e);
             }
           }
-          else if (_exitReceiving != null) {
-            _exitReceiving.Set ();
-          }
-        },
-        ex => processException (ex, "An exception has occurred while receiving a message."));
-
-      receive ();
+        }
+        catch (Exception ex)
+        {
+          processException(ex, "An exception has occurred during an OnMessage event.");
+        }
+      }
     }
 
     // As client
