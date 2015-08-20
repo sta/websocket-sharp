@@ -1625,6 +1625,21 @@ namespace WebSocketSharp
       return bytes.Length > 125 ? "A message has greater than the allowable max size." : null;
     }
 
+    internal static string CheckSendParameter (byte[] data)
+    {
+      return data == null ? "'data' is null." : null;
+    }
+
+    internal static string CheckSendParameter (FileInfo file)
+    {
+      return file == null ? "'file' is null." : null;
+    }
+
+    internal static string CheckSendParameter (string data)
+    {
+      return data == null ? "'data' is null." : null;
+    }
+
     // As server
     internal void Close (HttpResponse response)
     {
@@ -2249,7 +2264,7 @@ namespace WebSocketSharp
     public void Send (byte[] data)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                data.CheckIfValidSendData ();
+                CheckSendParameter (data);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2270,7 +2285,7 @@ namespace WebSocketSharp
     public void Send (FileInfo file)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                file.CheckIfValidSendData ();
+                CheckSendParameter (file);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2291,7 +2306,7 @@ namespace WebSocketSharp
     public void Send (string data)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                data.CheckIfValidSendData ();
+                CheckSendParameter (data);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2320,7 +2335,7 @@ namespace WebSocketSharp
     public void SendAsync (byte[] data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                data.CheckIfValidSendData ();
+                CheckSendParameter (data);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2350,7 +2365,7 @@ namespace WebSocketSharp
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                file.CheckIfValidSendData ();
+                CheckSendParameter (file);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -2379,7 +2394,7 @@ namespace WebSocketSharp
     public void SendAsync (string data, Action<bool> completed)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                data.CheckIfValidSendData ();
+                CheckSendParameter (data);
 
       if (msg != null) {
         _logger.Error (msg);

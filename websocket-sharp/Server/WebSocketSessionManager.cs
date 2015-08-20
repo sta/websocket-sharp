@@ -393,7 +393,9 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte[] data)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -413,7 +415,9 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -442,7 +446,9 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (byte[] data, Action completed)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -470,7 +476,9 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (string data, Action completed)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;

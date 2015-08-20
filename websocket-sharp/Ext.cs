@@ -241,21 +241,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfValidSendData (this byte[] data)
-    {
-      return data == null ? "'data' is null." : null;
-    }
-
-    internal static string CheckIfValidSendData (this FileInfo file)
-    {
-      return file == null ? "'file' is null." : null;
-    }
-
-    internal static string CheckIfValidSendData (this string data)
-    {
-      return data == null ? "'data' is null." : null;
-    }
-
     internal static string CheckIfValidServicePath (this string path)
     {
       return path == null || path.Length == 0
