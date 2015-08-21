@@ -1640,6 +1640,17 @@ namespace WebSocketSharp
       return data == null ? "'data' is null." : null;
     }
 
+    internal static string CheckSendParameters (Stream stream, int length)
+    {
+      return stream == null
+             ? "'stream' is null."
+             : !stream.CanRead
+               ? "'stream' cannot be read."
+               : length < 1
+                 ? "'length' is less than 1."
+                 : null;
+    }
+
     // As server
     internal void Close (HttpResponse response)
     {
@@ -2427,8 +2438,7 @@ namespace WebSocketSharp
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
       var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' is less than 1." : null);
+                CheckSendParameters (stream, length);
 
       if (msg != null) {
         _logger.Error (msg);

@@ -503,8 +503,7 @@ namespace WebSocketSharp.Server
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
       var msg = _state.CheckIfAvailable (false, true, false) ??
-                stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' is less than 1." : null);
+                WebSocket.CheckSendParameters (stream, length);
 
       if (msg != null) {
         _logger.Error (msg);

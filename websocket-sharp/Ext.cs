@@ -222,15 +222,6 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string CheckIfCanRead (this Stream stream)
-    {
-      return stream == null
-             ? "'stream' is null."
-             : !stream.CanRead
-               ? "'stream' cannot be read."
-               : null;
-    }
-
     internal static string CheckIfValidProtocols (this string[] protocols)
     {
       return protocols.Contains (
