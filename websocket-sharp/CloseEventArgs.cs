@@ -87,7 +87,7 @@ namespace WebSocketSharp
               : (ushort) CloseStatusCode.NoStatus;
 
       _reason = len > 2
-                ? Encoding.UTF8.GetString (_rawData.SubArray (2, len - 2))
+                ? _rawData.SubArray (2, len - 2).UTF8Decode ()
                 : String.Empty;
     }
 

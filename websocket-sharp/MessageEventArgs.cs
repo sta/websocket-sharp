@@ -88,7 +88,7 @@ namespace WebSocketSharp
       get {
         if (!_dataSet) {
           _data = _opcode != Opcode.Binary
-                  ? convertToString (_rawData)
+                  ? _rawData.UTF8Decode ()
                   : BitConverter.ToString (_rawData);
 
           _dataSet = true;
@@ -119,20 +119,6 @@ namespace WebSocketSharp
     public Opcode Type {
       get {
         return _opcode;
-      }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private static string convertToString (byte[] rawData)
-    {
-      try {
-        return Encoding.UTF8.GetString (rawData);
-      }
-      catch {
-        return null;
       }
     }
 
