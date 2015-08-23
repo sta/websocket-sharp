@@ -1601,7 +1601,7 @@ namespace WebSocketSharp
                  ? "MandatoryExtension cannot be used by the server."
                  : code == (ushort) CloseStatusCode.ServerError && client
                    ? "ServerError cannot be used by the client."
-                   : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
+                   : !reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123
                      ? "A reason has greater than the allowable max size."
                      : null;
     }
@@ -1614,14 +1614,14 @@ namespace WebSocketSharp
                ? "MandatoryExtension cannot be used by the server."
                : code == CloseStatusCode.ServerError && client
                  ? "ServerError cannot be used by the client."
-                 : !reason.IsNullOrEmpty () && Encoding.UTF8.GetBytes (reason).Length > 123
+                 : !reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123
                    ? "A reason has greater than the allowable max size."
                    : null;
     }
 
     internal static string CheckPingParameter (string message, out byte[] bytes)
     {
-      bytes = Encoding.UTF8.GetBytes (message);
+      bytes = message.UTF8Encode ();
       return bytes.Length > 125 ? "A message has greater than the allowable max size." : null;
     }
 
@@ -1710,7 +1710,7 @@ namespace WebSocketSharp
       var buff = new StringBuilder (base64Key, 64);
       buff.Append (_guid);
       SHA1 sha1 = new SHA1CryptoServiceProvider ();
-      var src = sha1.ComputeHash (Encoding.UTF8.GetBytes (buff.ToString ()));
+      var src = sha1.ComputeHash (buff.ToString ().UTF8Encode ());
 
       return Convert.ToBase64String (src);
     }
@@ -2326,7 +2326,7 @@ namespace WebSocketSharp
         return;
       }
 
-      send (Opcode.Text, new MemoryStream (Encoding.UTF8.GetBytes (data)));
+      send (Opcode.Text, new MemoryStream (data.UTF8Encode ()));
     }
 
     /// <summary>
@@ -2414,7 +2414,7 @@ namespace WebSocketSharp
         return;
       }
 
-      sendAsync (Opcode.Text, new MemoryStream (Encoding.UTF8.GetBytes (data)), completed);
+      sendAsync (Opcode.Text, new MemoryStream (data.UTF8Encode ()), completed);
     }
 
     /// <summary>

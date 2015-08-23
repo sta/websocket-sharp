@@ -415,7 +415,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var bytes = Encoding.UTF8.GetBytes (data);
+      var bytes = data.UTF8Encode ();
       if (bytes.LongLength <= WebSocket.FragmentLength)
         broadcast (Opcode.Text, bytes, null);
       else
@@ -476,7 +476,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      var bytes = Encoding.UTF8.GetBytes (data);
+      var bytes = data.UTF8Encode ();
       if (bytes.LongLength <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Text, bytes, completed);
       else
