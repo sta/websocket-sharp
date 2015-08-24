@@ -54,7 +54,7 @@ namespace WebSocketSharp
 
     internal PayloadData ()
     {
-      _data = Ext.EmptyByteArray;
+      _data = WebSocket.EmptyBytes;
     }
 
     internal PayloadData (byte[] data)
@@ -105,7 +105,7 @@ namespace WebSocketSharp
       get {
         return _extDataLength > 0
                ? _data.SubArray (0, _extDataLength)
-               : Ext.EmptyByteArray;
+               : WebSocket.EmptyBytes;
       }
     }
 

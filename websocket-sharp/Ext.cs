@@ -70,12 +70,6 @@ namespace WebSocketSharp
 
     #endregion
 
-    #region Internal Fields
-
-    internal static readonly byte[] EmptyByteArray = new byte[0];
-
-    #endregion
-
     #region Private Methods
 
     private static byte[] compress (this byte[] data)
@@ -608,13 +602,13 @@ namespace WebSocketSharp
             try {
               var len = stream.EndRead (ar);
               bytes = len < 1
-                      ? EmptyByteArray
+                      ? WebSocket.EmptyBytes
                       : len < length
                         ? stream.readBytes (buff, len, length - len)
                         : buff;
             }
             catch {
-              bytes = EmptyByteArray;
+              bytes = WebSocket.EmptyBytes;
             }
 
             if (completed != null)
@@ -1601,7 +1595,7 @@ namespace WebSocketSharp
                                     ? BitConverter.GetBytes ((UInt32)(object) value)
                                     : type == typeof (UInt64)
                                       ? BitConverter.GetBytes ((UInt64)(object) value)
-                                      : EmptyByteArray;
+                                      : WebSocket.EmptyBytes;
 
       if (bytes.Length > 1 && !order.IsHostOrder ())
         Array.Reverse (bytes);

@@ -115,6 +115,11 @@ namespace WebSocketSharp
     #region Internal Fields
 
     /// <summary>
+    /// Represents the empty array of <see cref="byte"/> used internally.
+    /// </summary>
+    internal static readonly byte[] EmptyBytes = new byte[0];
+
+    /// <summary>
     /// Represents the length used to determine whether the data should be fragmented in sending.
     /// </summary>
     /// <remarks>
@@ -1219,7 +1224,7 @@ namespace WebSocketSharp
       /* Not fragmented */
 
       if (len == 0)
-        return send (Fin.Final, opcode, new byte[0], compressed);
+        return send (Fin.Final, opcode, EmptyBytes, compressed);
 
       var quo = len / FragmentLength;
       var rem = (int) (len % FragmentLength);
