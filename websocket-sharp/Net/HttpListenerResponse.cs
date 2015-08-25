@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Nicholas Devenish
+ */
+#endregion
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -565,7 +572,7 @@ namespace WebSocketSharp.Net
       writer.Flush ();
 
       // Assumes that the destination was at position 0.
-      destination.Position = enc.CodePage == 65001 ? 3 : enc.GetPreamble ().Length;
+      destination.Position = enc.GetPreamble ().Length;
 
       return headers;
     }
