@@ -794,6 +794,7 @@ namespace WebSocketSharp
       if (_fragmentsBuffer != null) {
         _fragmentsBuffer.Dispose ();
         _fragmentsBuffer = null;
+        _inContinuation = false;
       }
 
       if (_receivePong != null) {
