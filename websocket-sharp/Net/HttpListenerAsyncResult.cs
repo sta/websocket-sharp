@@ -137,7 +137,7 @@ namespace WebSocketSharp.Net
 
       var callback = asyncResult._callback;
       if (callback != null)
-        ThreadPool.UnsafeQueueUserWorkItem (
+        ThreadPool.QueueUserWorkItem (
           state => {
             try {
               callback (asyncResult);
