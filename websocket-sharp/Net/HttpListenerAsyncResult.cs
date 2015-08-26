@@ -37,6 +37,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - Nicholas Devenish
+ */
+#endregion
+
 using System;
 using System.Security.Principal;
 using System.Threading;
@@ -137,7 +144,7 @@ namespace WebSocketSharp.Net
 
       var callback = asyncResult._callback;
       if (callback != null)
-        ThreadPool.UnsafeQueueUserWorkItem (
+        ThreadPool.QueueUserWorkItem (
           state => {
             try {
               callback (asyncResult);
