@@ -41,6 +41,7 @@
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
+ * - Nicholas Devenish
  */
 #endregion
 
@@ -115,12 +116,7 @@ namespace WebSocketSharp.Net
       _endpoint = new IPEndPoint (address, port);
       _socket.Bind (_endpoint);
       _socket.Listen (500);
-
-      var args = new SocketAsyncEventArgs ();
-      args.UserToken = this;
-      args.Completed += onAccept;
-      if (!_socket.AcceptAsync (args))
-        onAccept (this, args);
+      _socket.BeginAccept (onAccept, this);
     }
 
     #endregion
@@ -241,29 +237,14 @@ namespace WebSocketSharp.Net
       return bestMatch;
     }
 
-    private static void onAccept (object sender, EventArgs e)
+    private static void onAccept (IAsyncResult ar)
     {
-      var args = (SocketAsyncEventArgs) e;
-      var lsnr = (EndPointListener) args.UserToken;
+      var lsnr = (EndPointListener) ar.AsyncState;
 
       Socket sock = null;
-      if (args.SocketError == SocketError.Success) {
-        sock = args.AcceptSocket;
-        args.AcceptSocket = null;
-      }
-
       try {
-        while (!lsnr._socket.AcceptAsync (args)) {
-          if (sock != null) {
-            processAccepted (sock, lsnr);
-            sock = null;
-          }
-
-          if (args.SocketError == SocketError.Success) {
-            sock = args.AcceptSocket;
-            args.AcceptSocket = null;
-          }
-        }
+        sock = lsnr._socket.EndAccept (ar);
+        lsnr._socket.BeginAccept (onAccept, lsnr);
       }
       catch {
         if (sock != null)
@@ -272,8 +253,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (sock != null)
-        processAccepted (sock, lsnr);
+      processAccepted (sock, lsnr);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
