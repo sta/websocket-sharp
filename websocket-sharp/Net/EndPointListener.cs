@@ -89,10 +89,10 @@ namespace WebSocketSharp.Net
     internal EndPointListener (
       IPAddress address,
       int port,
+      bool reuseAddress,
       bool secure,
       string certificateFolderPath,
-      ServerSslConfiguration sslConfig,
-      bool reuseAddress)
+      ServerSslConfiguration sslConfig)
     {
       if (secure) {
         var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
@@ -105,7 +105,6 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
-
       _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
 

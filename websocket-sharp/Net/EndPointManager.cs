@@ -132,10 +132,10 @@ namespace WebSocketSharp.Net
         lsnr = new EndPointListener (
           addr,
           port,
+          listener.ReuseAddress,
           secure,
           listener.CertificateFolderPath,
-          listener.SslConfiguration,
-          listener.ReuseAddress);
+          listener.SslConfiguration);
 
         eps[port] = lsnr;
       }
