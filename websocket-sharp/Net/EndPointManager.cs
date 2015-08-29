@@ -55,7 +55,8 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private static Dictionary<IPAddress, Dictionary<int, EndPointListener>> _addressToEndpoints;
+    private static readonly Dictionary<IPAddress, Dictionary<int, EndPointListener>>
+      _addressToEndpoints;
 
     #endregion
 
@@ -81,18 +82,19 @@ namespace WebSocketSharp.Net
     private static void addPrefix (string uriPrefix, HttpListener listener)
     {
       var pref = new HttpListenerPrefix (uriPrefix);
-      if (pref.Path.IndexOf ('%') != -1)
+
+      var path = pref.Path;
+      if (path.IndexOf ('%') != -1)
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
-      if (pref.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
+      if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
 
       // Listens on all the interfaces if host name cannot be parsed by IPAddress.
-      var lsnr = getEndPointListener (pref.Host, pref.Port, listener, pref.IsSecure);
-      lsnr.AddPrefix (pref, listener);
+      getEndPointListener (pref, listener).AddPrefix (pref, listener);
     }
 
-    private static IPAddress convertToAddress (string hostname)
+    private static IPAddress convertToIPAddress (string hostname)
     {
       if (hostname == "*" || hostname == "+")
         return IPAddress.Any;
@@ -111,9 +113,9 @@ namespace WebSocketSharp.Net
     }
 
     private static EndPointListener getEndPointListener (
-      string host, int port, HttpListener listener, bool secure)
+      HttpListenerPrefix prefix, HttpListener listener)
     {
-      var addr = convertToAddress (host);
+      var addr = convertToIPAddress (prefix.Host);
 
       Dictionary<int, EndPointListener> eps = null;
       if (_addressToEndpoints.ContainsKey (addr)) {
@@ -124,6 +126,8 @@ namespace WebSocketSharp.Net
         _addressToEndpoints[addr] = eps;
       }
 
+      var port = prefix.Port;
+
       EndPointListener lsnr = null;
       if (eps.ContainsKey (port)) {
         lsnr = eps[port];
@@ -133,7 +137,7 @@ namespace WebSocketSharp.Net
           addr,
           port,
           listener.ReuseAddress,
-          secure,
+          prefix.IsSecure,
           listener.CertificateFolderPath,
           listener.SslConfiguration);
 
@@ -146,14 +150,15 @@ namespace WebSocketSharp.Net
     private static void removePrefix (string uriPrefix, HttpListener listener)
     {
       var pref = new HttpListenerPrefix (uriPrefix);
-      if (pref.Path.IndexOf ('%') != -1)
+
+      var path = pref.Path;
+      if (path.IndexOf ('%') != -1)
         return;
 
-      if (pref.Path.IndexOf ("//", StringComparison.Ordinal) != -1)
+      if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         return;
 
-      var lsnr = getEndPointListener (pref.Host, pref.Port, listener, pref.IsSecure);
-      lsnr.RemovePrefix (pref, listener);
+      getEndPointListener (pref, listener).RemovePrefix (pref, listener);
     }
 
     #endregion
