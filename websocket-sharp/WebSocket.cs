@@ -676,6 +676,16 @@ namespace WebSocketSharp
                : null;
     }
 
+    private string checkIfAvailable (
+      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
+    {
+      return !client && _client
+             ? "This operation isn't available in the client."
+             : !server && !_client
+               ? "This operation isn't available in the server."
+               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
+    }
+
     private string checkIfCanAccept ()
     {
       return _client
