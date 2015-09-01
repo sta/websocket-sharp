@@ -693,13 +693,6 @@ namespace WebSocketSharp
              : _readyState.CheckIfAvailable (true, false, false, false);
     }
 
-    private string checkIfCanConnect ()
-    {
-      return !_client
-             ? "This operation isn't available in the server."
-             : _readyState.CheckIfAvailable (true, false, false, true);
-    }
-
     // As server
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
@@ -2197,7 +2190,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void Connect ()
     {
-      var msg = checkIfCanConnect ();
+      var msg = checkIfAvailable (true, false, true, false, false, true);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
@@ -2222,7 +2215,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void ConnectAsync ()
     {
-      var msg = checkIfCanConnect ();
+      var msg = checkIfAvailable (true, false, true, false, false, true);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
