@@ -686,13 +686,6 @@ namespace WebSocketSharp
                : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
-    private string checkIfCanAccept ()
-    {
-      return _client
-             ? "This operation isn't available in the client."
-             : _readyState.CheckIfAvailable (true, false, false, false);
-    }
-
     // As server
     private string checkIfValidHandshakeRequest (WebSocketContext context)
     {
@@ -1820,7 +1813,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void Accept ()
     {
-      var msg = checkIfCanAccept ();
+      var msg = checkIfAvailable (false, true, true, false, false, false);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in accepting.", null);
@@ -1845,7 +1838,7 @@ namespace WebSocketSharp
     /// </remarks>
     public void AcceptAsync ()
     {
-      var msg = checkIfCanAccept ();
+      var msg = checkIfAvailable (false, true, true, false, false, false);
       if (msg != null) {
         _logger.Error (msg);
         error ("An error has occurred in accepting.", null);
