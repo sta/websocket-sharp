@@ -236,13 +236,13 @@ namespace WebSocketSharp.Net
       return bestMatch;
     }
 
-    private static void onAccept (IAsyncResult ar)
+    private static void onAccept (IAsyncResult asyncResult)
     {
-      var lsnr = (EndPointListener) ar.AsyncState;
+      var lsnr = (EndPointListener) asyncResult.AsyncState;
 
       Socket sock = null;
       try {
-        sock = lsnr._socket.EndAccept (ar);
+        sock = lsnr._socket.EndAccept (asyncResult);
         lsnr._socket.BeginAccept (onAccept, lsnr);
       }
       catch {
