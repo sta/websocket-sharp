@@ -289,7 +289,7 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
+          var msg = checkIfAvailable (true, false, true, false, false, true);
           if (msg != null) {
             _logger.Error (msg);
             error ("An error has occurred in setting the compression.", null);
@@ -364,7 +364,7 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
+          var msg = checkIfAvailable (true, false, true, false, false, true);
           if (msg != null) {
             _logger.Error (msg);
             error ("An error has occurred in setting the enable redirection.", null);
@@ -460,7 +460,7 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
+          var msg = checkIfAvailable (true, false, true, false, false, true);
           if (msg == null) {
             if (value.IsNullOrEmpty ()) {
               _origin = value;
@@ -532,7 +532,7 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (false, false);
+          var msg = checkIfAvailable (true, false, true, false, false, true);
           if (msg != null) {
             _logger.Error (msg);
             error ("An error has occurred in setting the ssl configuration.", null);
@@ -572,7 +572,9 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false) ?? value.CheckIfValidWaitTime ();
+          var msg = checkIfAvailable (true, true, true, false, false, true) ??
+                    value.CheckIfValidWaitTime ();
+
           if (msg != null) {
             _logger.Error (msg);
             error ("An error has occurred in setting the wait time.", null);
@@ -665,15 +667,6 @@ namespace WebSocketSharp
       }
 
       return sendHttpResponse (createHandshakeResponse ());
-    }
-
-    private string checkIfAvailable (bool server, bool connected)
-    {
-      return !server && !_client
-             ? "This operation isn't available in the server."
-             : !connected && IsConnected
-               ? "This operation isn't available in: " + _readyState
-               : null;
     }
 
     private string checkIfAvailable (
@@ -2487,7 +2480,9 @@ namespace WebSocketSharp
     public void SetCookie (Cookie cookie)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (false, false) ?? (cookie == null ? "'cookie' is null." : null);
+        var msg = checkIfAvailable (true, false, true, false, false, true) ??
+                  (cookie == null ? "'cookie' is null." : null);
+
         if (msg != null) {
           _logger.Error (msg);
           error ("An error has occurred in setting the cookie.", null);
@@ -2518,7 +2513,7 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (false, false);
+        var msg = checkIfAvailable (true, false, true, false, false, true);
         if (msg == null) {
           if (username.IsNullOrEmpty ()) {
             _credentials = null;
@@ -2565,7 +2560,7 @@ namespace WebSocketSharp
     public void SetProxy (string url, string username, string password)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (false, false);
+        var msg = checkIfAvailable (true, false, true, false, false, true);
         if (msg == null) {
           if (url.IsNullOrEmpty ()) {
             _proxyUri = null;
