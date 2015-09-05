@@ -278,9 +278,8 @@ namespace WebSocketSharp
     /// the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CompressionMethod"/> enum values, indicates
-    /// the compression method used to compress the message. The default value is
-    /// <see cref="CompressionMethod.None"/>.
+    /// One of the <see cref="CompressionMethod"/> enum values, indicates the compression method
+    /// used to compress the message. The default value is <see cref="CompressionMethod.None"/>.
     /// </value>
     public CompressionMethod Compression {
       get {
@@ -350,12 +349,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects to
-    /// the new URL located in the handshake response.
+    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects
+    /// the connection request to the new URL located in the connection response.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocket"/> redirects to the new URL;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> redirects the connection request to
+    /// the new URL; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool EnableRedirection {
       get {
@@ -469,7 +468,7 @@ namespace WebSocketSharp
 
             Uri origin;
             if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-              msg = "The syntax of the origin must be '<scheme>://<host>[:<port>]'.";
+              msg = "The syntax of an origin must be '<scheme>://<host>[:<port>]'.";
           }
 
           if (msg != null) {
@@ -505,8 +504,8 @@ namespace WebSocketSharp
     /// Gets the state of the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
-    /// the WebSocket connection. The default value is <see cref="WebSocketState.Connecting"/>.
+    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the connection.
+    /// The default value is <see cref="WebSocketState.Connecting"/>.
     /// </value>
     public WebSocketState ReadyState {
       get {
@@ -521,7 +520,7 @@ namespace WebSocketSharp
     /// <value>
     /// A <see cref="ClientSslConfiguration"/> that represents the configuration used
     /// to authenticate the server and optionally the client for secure connection,
-    /// or <see langword="null"/> if the <see cref="WebSocket"/> is used as server.
+    /// or <see langword="null"/> if the <see cref="WebSocket"/> is used in a server.
     /// </value>
     public ClientSslConfiguration SslConfiguration {
       get {
@@ -546,10 +545,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the WebSocket URL to connect.
+    /// Gets the WebSocket URL used to connect, or accepted.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the WebSocket URL to connect.
+    /// A <see cref="Uri"/> that represents the URL used to connect, or accepted.
     /// </value>
     public Uri Url {
       get {
@@ -561,9 +560,8 @@ namespace WebSocketSharp
     /// Gets or sets the wait time for the response to the Ping or Close.
     /// </summary>
     /// <value>
-    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
-    /// the same as 5 seconds, or 1 second if the <see cref="WebSocket"/> is used by
-    /// a server.
+    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is the same as
+    /// 5 seconds, or 1 second if the <see cref="WebSocket"/> is used in a server.
     /// </value>
     public TimeSpan WaitTime {
       get {
@@ -673,9 +671,9 @@ namespace WebSocketSharp
       bool client, bool server, bool connecting, bool open, bool closing, bool closed)
     {
       return !client && _client
-             ? "This operation isn't available in the client."
+             ? "This operation isn't available in: client"
              : !server && !_client
-               ? "This operation isn't available in the server."
+               ? "This operation isn't available in: server"
                : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
@@ -725,7 +723,7 @@ namespace WebSocketSharp
                : _inContinuation && frame.IsData
                  ? "A data frame has been received while receiving the fragmented data."
                  : frame.IsCompressed && _compression == CompressionMethod.None
-                   ? "A compressed frame is without the available decompression method."
+                   ? "A compressed frame is without an available decompression method."
                    : null;
     }
 
@@ -1593,9 +1591,9 @@ namespace WebSocketSharp
              : code == (ushort) CloseStatusCode.NoStatus
                ? (!reason.IsNullOrEmpty () ? "NoStatus cannot have a reason." : null)
                : code == (ushort) CloseStatusCode.MandatoryExtension && !client
-                 ? "MandatoryExtension cannot be used by the server."
+                 ? "MandatoryExtension cannot be used by a server."
                  : code == (ushort) CloseStatusCode.ServerError && client
-                   ? "ServerError cannot be used by the client."
+                   ? "ServerError cannot be used by a client."
                    : !reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123
                      ? "A reason has greater than the allowable max size."
                      : null;
@@ -1606,9 +1604,9 @@ namespace WebSocketSharp
       return code == CloseStatusCode.NoStatus
              ? (!reason.IsNullOrEmpty () ? "NoStatus cannot have a reason." : null)
              : code == CloseStatusCode.MandatoryExtension && !client
-               ? "MandatoryExtension cannot be used by the server."
+               ? "MandatoryExtension cannot be used by a server."
                : code == CloseStatusCode.ServerError && client
-                 ? "ServerError cannot be used by the client."
+                 ? "ServerError cannot be used by a client."
                  : !reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123
                    ? "A reason has greater than the allowable max size."
                    : null;
@@ -1802,7 +1800,7 @@ namespace WebSocketSharp
     /// Accepts the WebSocket connection request.
     /// </summary>
     /// <remarks>
-    /// This method isn't available in the client.
+    /// This method isn't available in a client.
     /// </remarks>
     public void Accept ()
     {
@@ -1826,7 +1824,7 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the accept to be complete.
     ///   </para>
     ///   <para>
-    ///   This method isn't available in the client.
+    ///   This method isn't available in a client.
     ///   </para>
     /// </remarks>
     public void AcceptAsync ()
@@ -2172,7 +2170,7 @@ namespace WebSocketSharp
     /// Establishes a WebSocket connection.
     /// </summary>
     /// <remarks>
-    /// This method isn't available in the server.
+    /// This method isn't available in a server.
     /// </remarks>
     public void Connect ()
     {
@@ -2196,7 +2194,7 @@ namespace WebSocketSharp
     ///   This method doesn't wait for the connect to be complete.
     ///   </para>
     ///   <para>
-    ///   This method isn't available in the server.
+    ///   This method isn't available in a server.
     ///   </para>
     /// </remarks>
     public void ConnectAsync ()
@@ -2503,12 +2501,12 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the user name used to authenticate.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/> used
-    /// to authenticate.
+    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
+    /// used to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials with
-    /// the first connection request to the server; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials
+    /// with the first connection request to the server; otherwise, <c>false</c>.
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
@@ -2543,7 +2541,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets an HTTP Proxy server URL to connect through, and if necessary,
+    /// Sets an HTTP proxy server URL to connect through, and if necessary,
     /// a pair of <paramref name="username"/> and <paramref name="password"/> for
     /// the proxy server authentication (Basic/Digest).
     /// </summary>
@@ -2554,8 +2552,8 @@ namespace WebSocketSharp
     /// A <see cref="string"/> that represents the user name used to authenticate.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/> used
-    /// to authenticate.
+    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
+    /// used to authenticate.
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
@@ -2574,7 +2572,7 @@ namespace WebSocketSharp
           if (!Uri.TryCreate (url, UriKind.Absolute, out uri) ||
               uri.Scheme != "http" ||
               uri.Segments.Length > 1) {
-            msg = "The syntax of the proxy url must be 'http://<host>[:<port>]'.";
+            msg = "The syntax of a proxy url must be 'http://<host>[:<port>]'.";
           }
           else {
             _proxyUri = uri;
