@@ -201,7 +201,7 @@ namespace WebSocketSharp
       return (!ready && (state == ServerState.Ready || state == ServerState.Stop)) ||
              (!start && state == ServerState.Start) ||
              (!shutting && state == ServerState.ShuttingDown)
-             ? "This operation isn't available in: " + state
+             ? "This operation isn't available in: " + state.ToString ().ToLower ()
              : null;
     }
 
@@ -212,7 +212,7 @@ namespace WebSocketSharp
              (!open && state == WebSocketState.Open) ||
              (!closing && state == WebSocketState.Closing) ||
              (!closed && state == WebSocketState.Closed)
-             ? "This operation isn't available in: " + state
+             ? "This operation isn't available in: " + state.ToString ().ToLower ()
              : null;
     }
 
