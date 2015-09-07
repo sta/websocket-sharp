@@ -41,6 +41,7 @@
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
  * - Nikola Kovacevic <nikolak@outlook.com>
+ * - Chris Swiedler
  */
 #endregion
 
@@ -159,6 +160,40 @@ namespace WebSocketSharp
       }
 
       return cnt < count ? buffer.SubArray (0, offset + cnt) : buffer;
+    }
+
+    private static void readBytesAsync (
+      this Stream stream,
+      byte[] buffer,
+      int offset,
+      int count,
+      Action<byte[]> completed,
+      Action<Exception> error)
+    {
+      AsyncCallback callback = ar => {
+        try {
+          var nread = stream.EndRead (ar);
+          if (nread < 1) {
+            // EOF/Disconnect before reading specified number of bytes.
+            completed (buffer.SubArray (0, offset));
+            return;
+          }
+
+          if (nread < count) {
+            // Need to read more.
+            stream.readBytesAsync (buffer, offset + nread, count - nread, completed, error);
+            return;
+          }
+
+          completed (buffer);
+        }
+        catch (Exception ex) {
+          if (error != null)
+            error (ex);
+        }
+      };
+
+      stream.BeginRead (buffer, offset, count, callback, null);
     }
 
     private static void times (this ulong n, Action action)
