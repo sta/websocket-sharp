@@ -175,7 +175,9 @@ namespace WebSocketSharp
           var nread = stream.EndRead (ar);
           if (nread < 1) {
             // EOF/Disconnect before reading specified number of bytes.
-            completed (buffer.SubArray (0, offset));
+            if (completed != null)
+              completed (buffer.SubArray (0, offset));
+
             return;
           }
 
