@@ -185,7 +185,8 @@ namespace WebSocketSharp
             return;
           }
 
-          completed (buffer);
+          if (completed != null)
+            completed (buffer);
         }
         catch (Exception ex) {
           if (error != null)
