@@ -660,6 +660,12 @@ namespace WebSocketSharp
         null);
     }
 
+    internal static void ReadBytesAsync2 (
+      this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
+    {
+      stream.readBytesAsync (new byte[length], 0, length, completed, error);
+    }
+
     internal static string RemovePrefix (this string value, params string[] prefixes)
     {
       var idx = 0;
