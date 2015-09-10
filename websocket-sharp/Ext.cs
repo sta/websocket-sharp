@@ -666,6 +666,54 @@ namespace WebSocketSharp
       stream.readBytesAsync (new byte[length], 0, length, completed, error);
     }
 
+    internal static void ReadBytesAsync2 (
+      this Stream stream,
+      long length,
+      int bufferLength,
+      Action<byte[]> completed,
+      Action<Exception> error)
+    {
+      var dest = new MemoryStream ();
+      var buff = new byte[bufferLength];
+
+      Action<long> read = null;
+      read = len => {
+        if (len < bufferLength) {
+          bufferLength = (int) len;
+          buff = new byte[bufferLength];
+        }
+
+        stream.readBytesAsync (
+          buff,
+          0,
+          bufferLength,
+          bytes => {
+            var nread = bytes.Length;
+            if (nread > 0)
+              dest.Write (bytes, 0, nread);
+
+            if (nread == 0 || (len -= nread) == 0) {
+              if (completed != null) {
+                dest.Close ();
+                completed (dest.ToArray ());
+              }
+
+              dest.Dispose ();
+              return;
+            }
+
+            read (len);
+          },
+          ex => {
+            dest.Dispose ();
+            if (error != null)
+              error (ex);
+          });
+      };
+
+      read (length);
+    }
+
     internal static string RemovePrefix (this string value, params string[] prefixes)
     {
       var idx = 0;
