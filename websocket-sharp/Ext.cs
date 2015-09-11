@@ -170,25 +170,21 @@ namespace WebSocketSharp
       Action<byte[]> completed,
       Action<Exception> error)
     {
-      AsyncCallback callback = ar => {
+      AsyncCallback callback = null;
+      callback = ar => {
         try {
           var nread = stream.EndRead (ar);
-          if (nread < 1) {
-            // EOF/Disconnect before reading specified number of bytes.
+          if (nread <= 0 || nread == count) {
             if (completed != null)
-              completed (buffer.SubArray (0, offset));
+              completed (buffer.SubArray (0, nread > 0 ? offset + nread : offset));
 
             return;
           }
 
-          if (nread < count) {
-            // Need to read more.
-            stream.readBytesAsync (buffer, offset + nread, count - nread, completed, error);
-            return;
-          }
+          offset += nread;
+          count -= nread;
 
-          if (completed != null)
-            completed (buffer);
+          stream.BeginRead (buffer, offset, count, callback, null);
         }
         catch (Exception ex) {
           if (error != null)
@@ -196,7 +192,13 @@ namespace WebSocketSharp
         }
       };
 
-      stream.BeginRead (buffer, offset, count, callback, null);
+      try {
+        stream.BeginRead (buffer, offset, count, callback, null);
+      }
+      catch (Exception ex) {
+        if (error != null)
+          error (ex);
+      }
     }
 
     private static void times (this ulong n, Action action)
