@@ -680,10 +680,8 @@ namespace WebSocketSharp
 
       Action<long> read = null;
       read = len => {
-        if (len < bufferLength) {
+        if (len < bufferLength)
           bufferLength = (int) len;
-          buff = new byte[bufferLength];
-        }
 
         stream.readBytesAsync (
           buff,
@@ -694,7 +692,7 @@ namespace WebSocketSharp
             if (nread > 0)
               dest.Write (bytes, 0, nread);
 
-            if (nread == 0 || (len -= nread) == 0) {
+            if (nread == 0 || nread == len) {
               if (completed != null) {
                 dest.Close ();
                 completed (dest.ToArray ());
@@ -704,7 +702,7 @@ namespace WebSocketSharp
               return;
             }
 
-            read (len);
+            read (len - nread);
           },
           ex => {
             dest.Dispose ();
