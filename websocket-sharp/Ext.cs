@@ -174,9 +174,9 @@ namespace WebSocketSharp
       callback = ar => {
         try {
           var nread = stream.EndRead (ar);
-          if (nread <= 0 || nread == count) {
+          if (nread == 0 || nread == count) {
             if (completed != null)
-              completed (buffer.SubArray (0, nread > 0 ? offset + nread : offset));
+              completed (buffer.SubArray (0, offset + nread));
 
             return;
           }
