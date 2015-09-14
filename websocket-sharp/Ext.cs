@@ -142,24 +142,22 @@ namespace WebSocketSharp
 
     private static byte[] readBytes (this Stream stream, byte[] buffer, int offset, int count)
     {
-      var cnt = 0;
+      var nread = 0;
       try {
-        cnt = stream.Read (buffer, offset, count);
-        if (cnt < 1)
-          return buffer.SubArray (0, offset);
-
-        while (cnt < count) {
-          var nread = stream.Read (buffer, offset + cnt, count - cnt);
-          if (nread < 1)
+        while (true) {
+          nread = stream.Read (buffer, offset, count);
+          if (nread == 0 || nread == count)
             break;
 
-          cnt += nread;
+          offset += nread;
+          count -= nread;
         }
       }
       catch {
+        nread = 0;
       }
 
-      return cnt < count ? buffer.SubArray (0, offset + cnt) : buffer;
+      return buffer.SubArray (0, offset + nread);
     }
 
     private static void readBytesAsync (
