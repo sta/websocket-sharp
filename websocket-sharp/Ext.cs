@@ -205,15 +205,6 @@ namespace WebSocketSharp
         action ();
     }
 
-    private static bool writeTo (this Stream stream, Stream destination, int length, byte[] buffer)
-    {
-      var bytes = stream.readBytes (buffer, 0, length);
-      var len = bytes.Length;
-      destination.Write (bytes, 0, len);
-
-      return len == length;
-    }
-
     #endregion
 
     #region Internal Methods
@@ -606,20 +597,23 @@ namespace WebSocketSharp
     internal static byte[] ReadBytes (this Stream stream, long length, int bufferLength)
     {
       using (var dest = new MemoryStream ()) {
-        var cnt = length / bufferLength;
-        var rem = (int) (length % bufferLength);
+        try {
+          var buff = new byte[bufferLength];
+          var nread = 0;
+          while (length > 0) {
+            if (length < bufferLength)
+              bufferLength = (int) length;
 
-        var buff = new byte[bufferLength];
-        var end = false;
-        for (long i = 0; i < cnt; i++) {
-          if (!stream.writeTo (dest, bufferLength, buff)) {
-            end = true;
-            break;
+            nread = stream.Read (buff, 0, bufferLength);
+            if (nread == 0)
+              break;
+
+            dest.Write (buff, 0, nread);
+            length -= nread;
           }
         }
-
-        if (!end && rem > 0)
-          stream.writeTo (dest, rem, new byte[rem]);
+        catch {
+        }
 
         dest.Close ();
         return dest.ToArray ();
