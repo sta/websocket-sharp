@@ -619,7 +619,38 @@ namespace WebSocketSharp
     internal static void ReadBytesAsync (
       this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
     {
-      stream.readBytesAsync (new byte[length], 0, length, completed, error);
+      var buff = new byte[length];
+      var offset = 0;
+
+      AsyncCallback callback = null;
+      callback = ar => {
+        try {
+          var nread = stream.EndRead (ar);
+          if (nread == 0 || nread == length) {
+            if (completed != null)
+              completed (buff.SubArray (0, offset + nread));
+
+            return;
+          }
+
+          offset += nread;
+          length -= nread;
+
+          stream.BeginRead (buff, offset, length, callback, null);
+        }
+        catch (Exception ex) {
+          if (error != null)
+            error (ex);
+        }
+      };
+
+      try {
+        stream.BeginRead (buff, offset, length, callback, null);
+      }
+      catch (Exception ex) {
+        if (error != null)
+          error (ex);
+      }
     }
 
     internal static void ReadBytesAsync (
