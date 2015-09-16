@@ -140,26 +140,6 @@ namespace WebSocketSharp
       }
     }
 
-    private static byte[] readBytes (this Stream stream, byte[] buffer, int offset, int count)
-    {
-      var nread = 0;
-      try {
-        while (true) {
-          nread = stream.Read (buffer, offset, count);
-          if (nread == 0 || nread == count)
-            break;
-
-          offset += nread;
-          count -= nread;
-        }
-      }
-      catch {
-        nread = 0;
-      }
-
-      return buffer.SubArray (0, offset + nread);
-    }
-
     private static void readBytesAsync (
       this Stream stream,
       byte[] buffer,
@@ -591,7 +571,23 @@ namespace WebSocketSharp
 
     internal static byte[] ReadBytes (this Stream stream, int length)
     {
-      return stream.readBytes (new byte[length], 0, length);
+      var buff = new byte[length];
+      var offset = 0;
+      try {
+        var nread = 0;
+        while (length > 0) {
+          nread = stream.Read (buff, offset, length);
+          if (nread == 0)
+            break;
+
+          offset += nread;
+          length -= nread;
+        }
+      }
+      catch {
+      }
+
+      return buff.SubArray (0, offset);
     }
 
     internal static byte[] ReadBytes (this Stream stream, long length, int bufferLength)
