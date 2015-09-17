@@ -140,45 +140,6 @@ namespace WebSocketSharp
       }
     }
 
-    private static void readBytesAsync (
-      this Stream stream,
-      byte[] buffer,
-      int offset,
-      int count,
-      Action<byte[]> completed,
-      Action<Exception> error)
-    {
-      AsyncCallback callback = null;
-      callback = ar => {
-        try {
-          var nread = stream.EndRead (ar);
-          if (nread == 0 || nread == count) {
-            if (completed != null)
-              completed (buffer.SubArray (0, offset + nread));
-
-            return;
-          }
-
-          offset += nread;
-          count -= nread;
-
-          stream.BeginRead (buffer, offset, count, callback, null);
-        }
-        catch (Exception ex) {
-          if (error != null)
-            error (ex);
-        }
-      };
-
-      try {
-        stream.BeginRead (buffer, offset, count, callback, null);
-      }
-      catch (Exception ex) {
-        if (error != null)
-          error (ex);
-      }
-    }
-
     private static void times (this ulong n, Action action)
     {
       for (ulong i = 0; i < n; i++)
@@ -668,35 +629,45 @@ namespace WebSocketSharp
         if (len < bufferLength)
           bufferLength = (int) len;
 
-        stream.readBytesAsync (
+        stream.BeginRead (
           buff,
           0,
           bufferLength,
-          bytes => {
-            var nread = bytes.Length;
-            if (nread > 0)
-              dest.Write (bytes, 0, nread);
+          ar => {
+            try {
+              var nread = stream.EndRead (ar);
+              if (nread > 0)
+                dest.Write (buff, 0, nread);
 
-            if (nread == 0 || nread == len) {
-              if (completed != null) {
-                dest.Close ();
-                completed (dest.ToArray ());
+              if (nread == 0 || nread == len) {
+                if (completed != null) {
+                  dest.Close ();
+                  completed (dest.ToArray ());
+                }
+
+                dest.Dispose ();
+                return;
               }
 
-              dest.Dispose ();
-              return;
+              read (len - nread);
             }
-
-            read (len - nread);
+            catch (Exception ex) {
+              dest.Dispose ();
+              if (error != null)
+                error (ex);
+            }
           },
-          ex => {
-            dest.Dispose ();
-            if (error != null)
-              error (ex);
-          });
+          null);
       };
 
-      read (length);
+      try {
+        read (length);
+      }
+      catch (Exception ex) {
+        dest.Dispose ();
+        if (error != null)
+          error (ex);
+      }
     }
 
     internal static string RemovePrefix (this string value, params string[] prefixes)
