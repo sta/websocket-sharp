@@ -571,6 +571,23 @@ Extended Payload Length: {7}
       return frame;
     }
 
+    private static WebSocketFrame readExtendedPayloadLength (Stream stream, WebSocketFrame frame)
+    {
+      var len = frame._payloadLength < 126 ? 0 : (frame._payloadLength == 126 ? 2 : 8);
+      if (len == 0) {
+        frame._extPayloadLength = WebSocket.EmptyBytes;
+        return frame;
+      }
+
+      var bytes = stream.ReadBytes (len);
+      if (bytes.Length != len)
+        throw new WebSocketException (
+          "The 'Extended Payload Length' of a frame cannot be read from the data source.");
+
+      frame._extPayloadLength = bytes;
+      return frame;
+    }
+
     private static void readExtendedPayloadLengthAsync (
       Stream stream,
       int length,
@@ -598,10 +615,32 @@ Extended Payload Length: {7}
         error);
     }
 
+    private static WebSocketFrame readHeader (Stream stream)
+    {
+      return processHeader (stream.ReadBytes (2));
+    }
+
     private static void readHeaderAsync (
       Stream stream, Action<WebSocketFrame> completed, Action<Exception> error)
     {
       stream.ReadBytesAsync (2, header => completed (processHeader (header)), error);
+    }
+
+    private static WebSocketFrame readMaskingKey (Stream stream, WebSocketFrame frame)
+    {
+      var len = frame.IsMasked ? 4 : 0;
+      if (len == 0) {
+        frame._maskingKey = WebSocket.EmptyBytes;
+        return frame;
+      }
+
+      var bytes = stream.ReadBytes (len);
+      if (bytes.Length != len)
+        throw new WebSocketException (
+          "The 'Masking Key' of a frame cannot be read from the data source.");
+
+      frame._maskingKey = bytes;
+      return frame;
     }
 
     private static void readMaskingKeyAsync (
@@ -629,6 +668,37 @@ Extended Payload Length: {7}
           completed (frame);
         },
         error);
+    }
+
+    private static WebSocketFrame readPayloadData (Stream stream, WebSocketFrame frame)
+    {
+      ulong len = frame._payloadLength < 126
+                  ? frame._payloadLength
+                  : frame._payloadLength == 126
+                    ? frame._extPayloadLength.ToUInt16 (ByteOrder.Big)
+                    : frame._extPayloadLength.ToUInt64 (ByteOrder.Big);
+
+      if (len == 0) {
+        frame._payloadData = new PayloadData (WebSocket.EmptyBytes, frame.IsMasked);
+        return frame;
+      }
+
+      // Check if allowable length.
+      if (len > PayloadData.MaxLength)
+        throw new WebSocketException (
+          CloseStatusCode.TooBig,
+          "The length of 'Payload Data' of a frame is greater than the allowable max length.");
+
+      var bytes = frame._payloadLength < 127
+                  ? stream.ReadBytes ((int) len)
+                  : stream.ReadBytes ((long) len, 1024);
+
+      if (bytes.LongLength != (long) len)
+        throw new WebSocketException (
+          "The 'Payload Data' of a frame cannot be read from the data source.");
+
+      frame._payloadData = new PayloadData (bytes, frame.IsMasked);
+      return frame;
     }
 
     private static void readPayloadDataAsync (
@@ -709,12 +779,15 @@ Extended Payload Length: {7}
 
     internal static WebSocketFrame Read (Stream stream, bool unmask)
     {
-      var header = stream.ReadBytes (2);
-      if (header.Length != 2)
-        throw new WebSocketException (
-          "The header part of a frame cannot be read from the data source.");
+      var frame = readHeader (stream);
+      readExtendedPayloadLength (stream, frame);
+      readMaskingKey (stream, frame);
+      readPayloadData (stream, frame);
 
-      return read (header, stream, unmask);
+      if (unmask && frame.IsMasked)
+        frame.Unmask ();
+
+      return frame;
     }
 
     internal static void ReadAsync (
