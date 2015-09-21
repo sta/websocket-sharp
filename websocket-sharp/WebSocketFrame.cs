@@ -476,101 +476,6 @@ Extended Payload Length: {7}
       return frame;
     }
 
-    private static WebSocketFrame read (byte[] header, Stream stream, bool unmask)
-    {
-      /* Header */
-
-      // FIN
-      var fin = (header[0] & 0x80) == 0x80 ? Fin.Final : Fin.More;
-      // RSV1
-      var rsv1 = (header[0] & 0x40) == 0x40 ? Rsv.On : Rsv.Off;
-      // RSV2
-      var rsv2 = (header[0] & 0x20) == 0x20 ? Rsv.On : Rsv.Off;
-      // RSV3
-      var rsv3 = (header[0] & 0x10) == 0x10 ? Rsv.On : Rsv.Off;
-      // Opcode
-      var opcode = (Opcode) (header[0] & 0x0f);
-      // MASK
-      var mask = (header[1] & 0x80) == 0x80 ? Mask.Mask : Mask.Unmask;
-      // Payload Length
-      var payloadLen = (byte) (header[1] & 0x7f);
-
-      // Check if valid header.
-      var err = isControl (opcode) && payloadLen > 125
-                ? "A control frame has payload data which is greater than the allowable max length."
-                : isControl (opcode) && fin == Fin.More
-                  ? "A control frame is fragmented."
-                  : !isData (opcode) && rsv1 == Rsv.On
-                    ? "A non data frame is compressed."
-                    : null;
-
-      if (err != null)
-        throw new WebSocketException (CloseStatusCode.ProtocolError, err);
-
-      var frame = new WebSocketFrame ();
-      frame._fin = fin;
-      frame._rsv1 = rsv1;
-      frame._rsv2 = rsv2;
-      frame._rsv3 = rsv3;
-      frame._opcode = opcode;
-      frame._mask = mask;
-      frame._payloadLength = payloadLen;
-
-      /* Extended Payload Length */
-
-      var size = payloadLen < 126 ? 0 : (payloadLen == 126 ? 2 : 8);
-      var extPayloadLen = size > 0 ? stream.ReadBytes (size) : WebSocket.EmptyBytes;
-      if (size > 0 && extPayloadLen.Length != size)
-        throw new WebSocketException (
-          "The 'Extended Payload Length' of a frame cannot be read from the data source.");
-
-      frame._extPayloadLength = extPayloadLen;
-
-      /* Masking Key */
-
-      var masked = mask == Mask.Mask;
-      var maskingKey = masked ? stream.ReadBytes (4) : WebSocket.EmptyBytes;
-      if (masked && maskingKey.Length != 4)
-        throw new WebSocketException (
-          "The 'Masking Key' of a frame cannot be read from the data source.");
-
-      frame._maskingKey = maskingKey;
-
-      /* Payload Data */
-
-      ulong len = payloadLen < 126
-                  ? payloadLen
-                  : payloadLen == 126
-                    ? extPayloadLen.ToUInt16 (ByteOrder.Big)
-                    : extPayloadLen.ToUInt64 (ByteOrder.Big);
-
-      byte[] data = null;
-      if (len > 0) {
-        // Check if allowable max length.
-        if (payloadLen > 126 && len > PayloadData.MaxLength)
-          throw new WebSocketException (
-            CloseStatusCode.TooBig,
-            "The length of 'Payload Data' of a frame is greater than the allowable max length.");
-
-        data = payloadLen > 126
-               ? stream.ReadBytes ((long) len, 1024)
-               : stream.ReadBytes ((int) len);
-
-        if (data.LongLength != (long) len)
-          throw new WebSocketException (
-            "The 'Payload Data' of a frame cannot be read from the data source.");
-      }
-      else {
-        data = WebSocket.EmptyBytes;
-      }
-
-      frame._payloadData = new PayloadData (data, masked);
-      if (unmask && masked)
-        frame.Unmask ();
-
-      return frame;
-    }
-
     private static WebSocketFrame readExtendedPayloadLength (Stream stream, WebSocketFrame frame)
     {
       var len = frame._payloadLength < 126 ? 0 : (frame._payloadLength == 126 ? 2 : 8);
@@ -799,16 +704,17 @@ Extended Payload Length: {7}
     internal static void ReadAsync (
       Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
     {
-      stream.ReadBytesAsync (
-        2,
-        header => {
-          if (header.Length != 2)
-            throw new WebSocketException (
-              "The header part of a frame cannot be read from the data source.");
+      readHeaderAsync (
+        stream,
+        frame => {
+          readExtendedPayloadLength (stream, frame);
+          readMaskingKey (stream, frame);
+          readPayloadData (stream, frame);
 
-          var frame = read (header, stream, unmask);
-          if (completed != null)
-            completed (frame);
+          if (unmask && frame.IsMasked)
+            frame.Unmask ();
+
+          completed (frame);
         },
         error);
     }
