@@ -694,7 +694,7 @@ Extended Payload Length: {7}
       readMaskingKey (stream, frame);
       readPayloadData (stream, frame);
 
-      if (unmask && frame.IsMasked)
+      if (unmask)
         frame.Unmask ();
 
       return frame;
@@ -716,7 +716,7 @@ Extended Payload Length: {7}
           readMaskingKey (stream, frame);
           readPayloadData (stream, frame);
 
-          if (unmask && frame.IsMasked)
+          if (unmask)
             frame.Unmask ();
 
           completed (frame);
@@ -742,7 +742,7 @@ Extended Payload Length: {7}
                     stream,
                     frame2,
                     frame3 => {
-                      if (unmask && frame3.IsMasked)
+                      if (unmask)
                         frame3.Unmask ();
 
                       completed (frame3);
