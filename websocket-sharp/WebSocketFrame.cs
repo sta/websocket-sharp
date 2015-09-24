@@ -711,24 +711,6 @@ Extended Payload Length: {7}
     {
       readHeaderAsync (
         stream,
-        frame => {
-          readExtendedPayloadLength (stream, frame);
-          readMaskingKey (stream, frame);
-          readPayloadData (stream, frame);
-
-          if (unmask)
-            frame.Unmask ();
-
-          completed (frame);
-        },
-        error);
-    }
-
-    internal static void ReadAsync2 (
-      Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
-    {
-      readHeaderAsync (
-        stream,
         frame =>
           readExtendedPayloadLengthAsync (
             stream,
