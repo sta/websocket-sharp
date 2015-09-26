@@ -145,6 +145,16 @@ namespace WebSocketSharp
       }
     }
 
+    public ulong FullPayloadLength {
+      get {
+        return _payloadLength < 126
+               ? _payloadLength
+               : _payloadLength == 126
+                 ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
+                 : _extPayloadLength.ToUInt64 (ByteOrder.Big);
+      }
+    }
+
     public bool IsBinary {
       get {
         return _opcode == Opcode.Binary;
@@ -577,12 +587,7 @@ Extended Payload Length: {7}
 
     private static WebSocketFrame readPayloadData (Stream stream, WebSocketFrame frame)
     {
-      ulong len = frame._payloadLength < 126
-                  ? frame._payloadLength
-                  : frame._payloadLength == 126
-                    ? frame._extPayloadLength.ToUInt16 (ByteOrder.Big)
-                    : frame._extPayloadLength.ToUInt64 (ByteOrder.Big);
-
+      var len = frame.FullPayloadLength;
       if (len == 0) {
         frame._payloadData = new PayloadData (WebSocket.EmptyBytes, frame.IsMasked);
         return frame;
@@ -612,12 +617,7 @@ Extended Payload Length: {7}
       Action<WebSocketFrame> completed,
       Action<Exception> error)
     {
-      ulong len = frame._payloadLength < 126
-                  ? frame._payloadLength
-                  : frame._payloadLength == 126
-                    ? frame._extPayloadLength.ToUInt16 (ByteOrder.Big)
-                    : frame._extPayloadLength.ToUInt64 (ByteOrder.Big);
-
+      var len = frame.FullPayloadLength;
       if (len == 0) {
         frame._payloadData = new PayloadData (WebSocket.EmptyBytes, frame.IsMasked);
         completed (frame);
