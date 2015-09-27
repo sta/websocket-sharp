@@ -139,6 +139,12 @@ namespace WebSocketSharp
       }
     }
 
+    public int ExtendedPayloadLengthCount {
+      get {
+        return _payloadLength < 126 ? 0 : (_payloadLength == 126 ? 2 : 8);
+      }
+    }
+
     public Fin Fin {
       get {
         return _fin;
@@ -488,7 +494,7 @@ Extended Payload Length: {7}
 
     private static WebSocketFrame readExtendedPayloadLength (Stream stream, WebSocketFrame frame)
     {
-      var len = frame._payloadLength < 126 ? 0 : (frame._payloadLength == 126 ? 2 : 8);
+      var len = frame.ExtendedPayloadLengthCount;
       if (len == 0) {
         frame._extPayloadLength = WebSocket.EmptyBytes;
         return frame;
@@ -509,7 +515,7 @@ Extended Payload Length: {7}
       Action<WebSocketFrame> completed,
       Action<Exception> error)
     {
-      var len = frame._payloadLength < 126 ? 0 : (frame._payloadLength == 126 ? 2 : 8);
+      var len = frame.ExtendedPayloadLengthCount;
       if (len == 0) {
         frame._extPayloadLength = WebSocket.EmptyBytes;
         completed (frame);
