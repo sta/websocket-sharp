@@ -46,7 +46,20 @@ namespace WebSocketSharp
 
     #region Public Fields
 
-    public const ulong MaxLength = Int64.MaxValue;
+    /// <summary>
+    /// Represents the allowable max length.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   A <see cref="WebSocketException"/> will occur if the payload data length is
+    ///   greater than this.
+    ///   </para>
+    ///   <para>
+    ///   If you would like to change this value, you must set this to a value greater than
+    ///   <c>WebSocket.FragmentLength</c>, and equal to or less than <c>Int64.MaxValue</c>.
+    ///   </para>
+    /// </remarks>
+    public static readonly ulong MaxLength = Int64.MaxValue;
 
     #endregion
 
