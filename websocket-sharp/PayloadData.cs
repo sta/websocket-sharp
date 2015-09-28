@@ -55,8 +55,8 @@ namespace WebSocketSharp
     ///   greater than this.
     ///   </para>
     ///   <para>
-    ///   If you would like to change this value, you must set this to a value greater than
-    ///   <c>WebSocket.FragmentLength</c>, and equal to or less than <c>Int64.MaxValue</c>.
+    ///   If you would like to change this value, you must set this to a value between
+    ///   <c>WebSocket.FragmentLength</c> and <c>Int64.MaxValue</c> inclusive.
     ///   </para>
     /// </remarks>
     public static readonly ulong MaxLength = Int64.MaxValue;
