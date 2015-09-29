@@ -775,7 +775,7 @@ Extended Payload Length: {7}
           buff.Write (_maskingKey, 0, 4);
 
         if (_payloadLength > 0) {
-          var bytes = _payloadData.ToByteArray ();
+          var bytes = _payloadData.ToArray ();
           if (_payloadLength < 127)
             buff.Write (bytes, 0, bytes.Length);
           else

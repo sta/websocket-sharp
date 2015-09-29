@@ -156,7 +156,7 @@ namespace WebSocketSharp
         yield return b;
     }
 
-    public byte[] ToByteArray ()
+    public byte[] ToArray ()
     {
       return _data;
     }
