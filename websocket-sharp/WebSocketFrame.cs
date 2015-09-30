@@ -595,7 +595,7 @@ Extended Payload Length: {7}
     {
       var len = frame.FullPayloadLength;
       if (len == 0) {
-        frame._payloadData = new PayloadData (WebSocket.EmptyBytes, frame.IsMasked);
+        frame._payloadData = new PayloadData ();
         return frame;
       }
 
@@ -613,7 +613,7 @@ Extended Payload Length: {7}
         throw new WebSocketException (
           "The 'Payload Data' of a frame cannot be read from the data source.");
 
-      frame._payloadData = new PayloadData (bytes, frame.IsMasked);
+      frame._payloadData = new PayloadData (bytes);
       return frame;
     }
 
@@ -625,7 +625,7 @@ Extended Payload Length: {7}
     {
       var len = frame.FullPayloadLength;
       if (len == 0) {
-        frame._payloadData = new PayloadData (WebSocket.EmptyBytes, frame.IsMasked);
+        frame._payloadData = new PayloadData ();
         completed (frame);
 
         return;
@@ -642,7 +642,7 @@ Extended Payload Length: {7}
           throw new WebSocketException (
             "The 'Payload Data' of a frame cannot be read from the data source.");
 
-        frame._payloadData = new PayloadData (bytes, frame.IsMasked);
+        frame._payloadData = new PayloadData (bytes);
         completed (frame);
       };
 
