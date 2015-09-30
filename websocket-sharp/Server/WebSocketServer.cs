@@ -35,6 +35,7 @@
  * - Jonas Hovgaard <j@jhovgaard.dk>
  * - Liryna <liryna.stark@gmail.com>
  * - Rohan Singh <rohan-singh@hotmail.com>
+ * - Sergey Pomazanov <alberist@gmail.com>
  */
 #endregion
 
@@ -610,7 +611,7 @@ namespace WebSocketSharp.Server
     private void processRequest (TcpListenerWebSocketContext context)
     {
       var uri = context.RequestUri;
-      if (uri == null || uri.Port != _port) {
+      if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
         return;
       }
