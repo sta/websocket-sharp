@@ -46,6 +46,11 @@ namespace WebSocketSharp
     #region Public Fields
 
     /// <summary>
+    /// Represents the empty payload data.
+    /// </summary>
+    public static readonly PayloadData Empty = new PayloadData ();
+
+    /// <summary>
     /// Represents the allowable max length.
     /// </summary>
     /// <remarks>
