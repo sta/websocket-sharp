@@ -605,15 +605,16 @@ Extended Payload Length: {7}
           CloseStatusCode.TooBig,
           "The length of 'Payload Data' of a frame is greater than the allowable max length.");
 
+      var llen = (long) len;
       var bytes = frame._payloadLength < 127
                   ? stream.ReadBytes ((int) len)
-                  : stream.ReadBytes ((long) len, 1024);
+                  : stream.ReadBytes (llen, 1024);
 
-      if (bytes.LongLength != (long) len)
+      if (bytes.LongLength != llen)
         throw new WebSocketException (
           "The 'Payload Data' of a frame cannot be read from the data source.");
 
-      frame._payloadData = new PayloadData (bytes);
+      frame._payloadData = new PayloadData (bytes, llen);
       return frame;
     }
 
@@ -637,12 +638,13 @@ Extended Payload Length: {7}
           CloseStatusCode.TooBig,
           "The length of 'Payload Data' of a frame is greater than the allowable max length.");
 
+      var llen = (long) len;
       Action<byte[]> compl = bytes => {
-        if (bytes.LongLength != (long) len)
+        if (bytes.LongLength != llen)
           throw new WebSocketException (
             "The 'Payload Data' of a frame cannot be read from the data source.");
 
-        frame._payloadData = new PayloadData (bytes);
+        frame._payloadData = new PayloadData (bytes, llen);
         completed (frame);
       };
 
@@ -651,7 +653,7 @@ Extended Payload Length: {7}
         return;
       }
 
-      stream.ReadBytesAsync ((long) len, 1024, compl, error);
+      stream.ReadBytesAsync (llen, 1024, compl, error);
     }
 
     #endregion
