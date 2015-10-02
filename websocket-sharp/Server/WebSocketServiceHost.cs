@@ -131,9 +131,7 @@ namespace WebSocketSharp.Server
     {
       var e = new CloseEventArgs (code, reason);
       var send = !code.IsReserved ();
-      var bytes =
-        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
-
+      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray () : null;
       var timeout = send ? WaitTime : TimeSpan.Zero;
       Sessions.Stop (e, bytes, timeout);
     }

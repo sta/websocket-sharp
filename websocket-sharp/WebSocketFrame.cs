@@ -68,7 +68,7 @@ namespace WebSocketSharp
 
     static WebSocketFrame ()
     {
-      EmptyUnmaskPingBytes = CreatePingFrame (false).ToByteArray ();
+      EmptyUnmaskPingBytes = CreatePingFrame (false).ToArray ();
     }
 
     #endregion
@@ -347,7 +347,7 @@ namespace WebSocketSharp
 
       output.AppendFormat (headerFmt, String.Empty);
 
-      var bytes = frame.ToByteArray ();
+      var bytes = frame.ToArray ();
       for (long i = 0; i <= cnt; i++) {
         var j = i * 4;
         if (i < cnt) {
@@ -742,7 +742,7 @@ Extended Payload Length: {7}
 
     public IEnumerator<byte> GetEnumerator ()
     {
-      foreach (var b in ToByteArray ())
+      foreach (var b in ToArray ())
         yield return b;
     }
 
@@ -756,7 +756,7 @@ Extended Payload Length: {7}
       return dumped ? dump (this) : print (this);
     }
 
-    public byte[] ToByteArray ()
+    public byte[] ToArray ()
     {
       using (var buff = new MemoryStream ()) {
         var header = (int) _fin;
@@ -789,7 +789,7 @@ Extended Payload Length: {7}
 
     public override string ToString ()
     {
-      return BitConverter.ToString (ToByteArray ());
+      return BitConverter.ToString (ToArray ());
     }
 
     #endregion

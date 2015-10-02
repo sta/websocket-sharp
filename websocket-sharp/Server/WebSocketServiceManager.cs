@@ -361,7 +361,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         _state = ServerState.ShuttingDown;
         var bytes = send
-                    ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray ()
+                    ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray ()
                     : null;
 
         var timeout = wait ? _waitTime : TimeSpan.Zero;
@@ -582,7 +582,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (WebSocketFrame.CreatePingFrame (data, false).ToByteArray (), _waitTime);
+      return broadping (WebSocketFrame.CreatePingFrame (data, false).ToArray (), _waitTime);
     }
 
     /// <summary>

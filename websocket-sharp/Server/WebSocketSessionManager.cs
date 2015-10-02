@@ -587,7 +587,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToByteArray (), _waitTime);
+      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToArray (), _waitTime);
     }
 
     /// <summary>

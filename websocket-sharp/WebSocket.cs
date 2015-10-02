@@ -749,7 +749,7 @@ namespace WebSocketSharp
       _logger.Trace ("Begin closing the connection.");
 
       e.WasClean = closeHandshake (
-        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToByteArray () : null,
+        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToArray () : null,
         wait ? _waitTime : TimeSpan.Zero,
         _client ? (Action) releaseClientResources : releaseServerResources);
 
@@ -1066,7 +1066,7 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToByteArray ()))
+      if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToArray ()))
         _logger.Trace ("Returned a Pong.");
 
       if (_emitOnPing)
@@ -1259,8 +1259,7 @@ namespace WebSocketSharp
           return false;
         }
 
-        return sendBytes (
-          new WebSocketFrame (fin, opcode, data, compressed, _client).ToByteArray ());
+        return sendBytes (new WebSocketFrame (fin, opcode, data, compressed, _client).ToArray ());
       }
     }
 
@@ -1756,7 +1755,7 @@ namespace WebSocketSharp
                 data.Compress (_compression),
                 _compression != CompressionMethod.None,
                 false)
-                .ToByteArray ();
+                .ToArray ();
 
               cache.Add (_compression, cached);
             }
@@ -2226,7 +2225,7 @@ namespace WebSocketSharp
     public bool Ping ()
     {
       var bytes = _client
-                  ? WebSocketFrame.CreatePingFrame (true).ToByteArray ()
+                  ? WebSocketFrame.CreatePingFrame (true).ToArray ()
                   : WebSocketFrame.EmptyUnmaskPingBytes;
 
       return Ping (bytes, _waitTime);
@@ -2256,7 +2255,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      return Ping (WebSocketFrame.CreatePingFrame (data, _client).ToByteArray (), _waitTime);
+      return Ping (WebSocketFrame.CreatePingFrame (data, _client).ToArray (), _waitTime);
     }
 
     /// <summary>
