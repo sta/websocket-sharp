@@ -675,12 +675,12 @@ Extended Payload Length: {7}
       return new WebSocketFrame (Fin.Final, Opcode.Ping, new PayloadData (data), false, mask);
     }
 
-    internal static WebSocketFrame Read (Stream stream)
+    internal static WebSocketFrame ReadFrame (Stream stream)
     {
-      return Read (stream, true);
+      return ReadFrame (stream, true);
     }
 
-    internal static WebSocketFrame Read (Stream stream, bool unmask)
+    internal static WebSocketFrame ReadFrame (Stream stream, bool unmask)
     {
       var frame = readHeader (stream);
       readExtendedPayloadLength (stream, frame);
