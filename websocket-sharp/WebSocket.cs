@@ -1462,7 +1462,7 @@ namespace WebSocketSharp
       _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
-      receive = () => WebSocketFrame.ReadAsync (
+      receive = () => WebSocketFrame.ReadFrameAsync (
         _stream,
         false,
         frame => {
