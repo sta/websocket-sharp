@@ -689,12 +689,6 @@ Extended Payload Length: {7}
     }
 
     internal static void ReadFrameAsync (
-      Stream stream, Action<WebSocketFrame> completed, Action<Exception> error)
-    {
-      ReadFrameAsync (stream, true, completed, error);
-    }
-
-    internal static void ReadFrameAsync (
       Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
     {
       readHeaderAsync (
