@@ -131,17 +131,21 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    internal int ExtendedPayloadLengthCount {
+      get {
+        return _payloadLength < 126 ? 0 : (_payloadLength == 126 ? 2 : 8);
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     public byte[] ExtendedPayloadLength {
       get {
         return _extPayloadLength;
-      }
-    }
-
-    public int ExtendedPayloadLengthCount {
-      get {
-        return _payloadLength < 126 ? 0 : (_payloadLength == 126 ? 2 : 8);
       }
     }
 
