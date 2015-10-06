@@ -219,12 +219,6 @@ namespace WebSocketSharp
       }
     }
 
-    public bool IsPerMessageCompressed {
-      get {
-        return (_opcode == Opcode.Binary || _opcode == Opcode.Text) && _rsv1 == Rsv.On;
-      }
-    }
-
     public bool IsPing {
       get {
         return _opcode == Opcode.Ping;
