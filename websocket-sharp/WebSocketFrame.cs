@@ -139,6 +139,16 @@ namespace WebSocketSharp
       }
     }
 
+    internal ulong FullPayloadLength {
+      get {
+        return _payloadLength < 126
+               ? _payloadLength
+               : _payloadLength == 126
+                 ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
+                 : _extPayloadLength.ToUInt64 (ByteOrder.Big);
+      }
+    }
+
     #endregion
 
     #region Public Properties
@@ -152,16 +162,6 @@ namespace WebSocketSharp
     public Fin Fin {
       get {
         return _fin;
-      }
-    }
-
-    public ulong FullPayloadLength {
-      get {
-        return _payloadLength < 126
-               ? _payloadLength
-               : _payloadLength == 126
-                 ? _extPayloadLength.ToUInt16 (ByteOrder.Big)
-                 : _extPayloadLength.ToUInt64 (ByteOrder.Big);
       }
     }
 
