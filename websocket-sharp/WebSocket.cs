@@ -2226,7 +2226,7 @@ namespace WebSocketSharp
     {
       var bytes = _client
                   ? WebSocketFrame.CreatePingFrame (true).ToArray ()
-                  : WebSocketFrame.EmptyUnmaskPingBytes;
+                  : WebSocketFrame.EmptyPingBytes;
 
       return Ping (bytes, _waitTime);
     }

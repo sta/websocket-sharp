@@ -99,7 +99,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
+        foreach (var res in Broadping (WebSocketFrame.EmptyPingBytes, _waitTime))
           if (res.Value)
             yield return res.Key;
       }
@@ -144,7 +144,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
+        foreach (var res in Broadping (WebSocketFrame.EmptyPingBytes, _waitTime))
           if (!res.Value)
             yield return res.Key;
       }
@@ -558,7 +558,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
+      return Broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
     }
 
     /// <summary>

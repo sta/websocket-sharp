@@ -551,7 +551,7 @@ namespace WebSocketSharp.Server
         return null;
       }
 
-      return broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
+      return broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
     }
 
     /// <summary>
