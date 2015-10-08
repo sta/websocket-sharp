@@ -389,35 +389,23 @@ namespace WebSocketSharp
 
     private static string print (WebSocketFrame frame)
     {
-      /* Opcode */
-
-      var opcode = frame._opcode.ToString ();
-
-      /* Payload Length */
-
+      // Payload Length
       var payloadLen = frame._payloadLength;
 
-      /* Extended Payload Length */
+      // Extended Payload Length
+      var extPayloadLen = payloadLen > 125 ? frame.FullPayloadLength.ToString () : String.Empty;
 
-      var extPayloadLen = payloadLen < 126
-                          ? String.Empty
-                          : payloadLen == 126
-                            ? frame._extPayloadLength.ToUInt16 (ByteOrder.Big).ToString ()
-                            : frame._extPayloadLength.ToUInt64 (ByteOrder.Big).ToString ();
+      // Masking Key
+      var maskingKey = BitConverter.ToString (frame._maskingKey);
 
-      /* Masking Key */
-
-      var masked = frame.IsMasked;
-      var maskingKey = masked ? BitConverter.ToString (frame._maskingKey) : String.Empty;
-
-      /* Payload Data */
-
+      // Payload Data
       var payload = payloadLen == 0
                     ? String.Empty
                     : payloadLen > 125
-                      ? String.Format ("A {0} frame.", opcode.ToLower ())
-                      : !masked && !frame.IsFragmented && !frame.IsCompressed && frame.IsText
-                        ? Encoding.UTF8.GetString (frame._payloadData.ApplicationData)
+                      ? "---"
+                      : frame.IsText &&
+                        !(frame.IsMasked || frame.IsFragmented || frame.IsCompressed)
+                        ? frame._payloadData.ApplicationData.UTF8Decode ()
                         : frame._payloadData.ToString ();
 
       var fmt = @"
@@ -438,7 +426,7 @@ Extended Payload Length: {7}
         frame._rsv1,
         frame._rsv2,
         frame._rsv3,
-        opcode,
+        frame._opcode,
         frame._mask,
         payloadLen,
         extPayloadLen,
