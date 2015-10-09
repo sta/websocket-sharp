@@ -47,7 +47,7 @@ namespace WebSocketSharp
     /// <summary>
     /// Represents the empty payload data.
     /// </summary>
-    public static readonly PayloadData Empty = new PayloadData ();
+    public static readonly PayloadData Empty;
 
     /// <summary>
     /// Represents the allowable max length.
@@ -62,7 +62,17 @@ namespace WebSocketSharp
     ///   <c>WebSocket.FragmentLength</c> and <c>Int64.MaxValue</c> inclusive.
     ///   </para>
     /// </remarks>
-    public static readonly ulong MaxLength = Int64.MaxValue;
+    public static readonly ulong MaxLength;
+
+    #endregion
+
+    #region Static Constructor
+
+    static PayloadData ()
+    {
+      Empty = new PayloadData ();
+      MaxLength = Int64.MaxValue;
+    }
 
     #endregion
 
