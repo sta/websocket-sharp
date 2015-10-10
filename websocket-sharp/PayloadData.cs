@@ -55,10 +55,10 @@ namespace WebSocketSharp
     /// <remarks>
     ///   <para>
     ///   A <see cref="WebSocketException"/> will occur if the payload data length is
-    ///   greater than this.
+    ///   greater than the value of this field.
     ///   </para>
     ///   <para>
-    ///   If you would like to change this value, you must set this to a value between
+    ///   If you would like to change the value, you must set it to a value between
     ///   <c>WebSocket.FragmentLength</c> and <c>Int64.MaxValue</c> inclusive.
     ///   </para>
     /// </remarks>
