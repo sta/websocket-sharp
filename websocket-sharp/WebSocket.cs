@@ -117,7 +117,7 @@ namespace WebSocketSharp
     /// <summary>
     /// Represents the empty array of <see cref="byte"/> used internally.
     /// </summary>
-    internal static readonly byte[] EmptyBytes = new byte[0];
+    internal static readonly byte[] EmptyBytes;
 
     /// <summary>
     /// Represents the length used to determine whether the data should be fragmented in sending.
@@ -131,12 +131,23 @@ namespace WebSocketSharp
     ///   and <c>Int32.MaxValue - 14</c> inclusive.
     ///   </para>
     /// </remarks>
-    internal static readonly int FragmentLength = 1016;
+    internal static readonly int FragmentLength;
 
     /// <summary>
     /// Represents the random number generator used internally.
     /// </summary>
-    internal static readonly RandomNumberGenerator RandomNumber = new RNGCryptoServiceProvider ();
+    internal static readonly RandomNumberGenerator RandomNumber;
+
+    #endregion
+
+    #region Static Constructor
+
+    static WebSocket ()
+    {
+      EmptyBytes = new byte[0];
+      FragmentLength = 1016;
+      RandomNumber = new RNGCryptoServiceProvider ();
+    }
 
     #endregion
 
