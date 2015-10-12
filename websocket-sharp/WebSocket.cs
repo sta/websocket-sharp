@@ -124,11 +124,11 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The data will be fragmented if that length is greater than this.
+    ///   The data will be fragmented if that length is greater than the value of this field.
     ///   </para>
     ///   <para>
-    ///   If you would like to change this value, you must set this to a value between <c>125</c>
-    ///   and <c>Int32.MaxValue - 14</c> inclusive.
+    ///   If you would like to change the value, you must set it to a value between <c>125</c> and
+    ///   <c>Int32.MaxValue - 14</c> inclusive.
     ///   </para>
     /// </remarks>
     internal static readonly int FragmentLength;
