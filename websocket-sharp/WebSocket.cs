@@ -1473,11 +1473,20 @@ namespace WebSocketSharp
       _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
-      receive = () => WebSocketFrame.ReadFrameAsync (
-        _stream,
-        false,
-        frame => {
-          if (processReceivedFrame (frame) && _readyState != WebSocketState.Closed) {
+      receive = () =>
+        WebSocketFrame.ReadFrameAsync (
+          _stream,
+          false,
+          frame => {
+            if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
+              var exit = _exitReceiving;
+              if (exit != null)
+                exit.Set ();
+
+              return;
+            }
+
+            // Receive next asap because a Ping or Close needs a response to it.
             receive ();
 
             if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
@@ -1493,12 +1502,8 @@ namespace WebSocketSharp
                 processException (ex, "An exception has occurred during an OnMessage event.");
               }
             }
-          }
-          else if (_exitReceiving != null) {
-            _exitReceiving.Set ();
-          }
-        },
-        ex => processException (ex, "An exception has occurred while receiving a message."));
+          },
+          ex => processException (ex, "An exception has occurred while receiving a message."));
 
       receive ();
     }
