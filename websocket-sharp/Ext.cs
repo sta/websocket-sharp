@@ -901,6 +901,11 @@ namespace WebSocketSharp
         input.CopyTo (stream);
     }
 
+    internal static void WriteBytes (this Stream stream, byte[] bytes, int length)
+    {
+      stream.Write (bytes, 0, length);
+    }
+
     #endregion
 
     #region Public Methods
