@@ -905,6 +905,37 @@ namespace WebSocketSharp
       stream.Write (bytes, 0, length);
     }
 
+    internal static void WriteBytesAsync (
+      this Stream stream, byte[] bytes, int bufferLength, Action completed, Action<Exception> error)
+    {
+      var input = new MemoryStream (bytes);
+      var buff = new byte[bufferLength];
+
+      AsyncCallback callback = null;
+      callback = ar => {
+        try {
+          var nread = input.EndRead (ar);
+          if (nread <= 0) {
+            if (completed != null)
+              completed ();
+
+            input.Dispose ();
+            return;
+          }
+
+          stream.Write (buff, 0, nread);
+          input.BeginRead (buff, 0, bufferLength, callback, null);
+        }
+        catch (Exception ex) {
+          input.Dispose ();
+          if (error != null)
+            error (ex);
+        }
+      };
+
+      input.BeginRead (buff, 0, bufferLength, callback, null);
+    }
+
     #endregion
 
     #region Public Methods
