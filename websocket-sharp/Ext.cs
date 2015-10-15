@@ -91,7 +91,7 @@ namespace WebSocketSharp
 
       stream.Position = 0;
       using (var ds = new DeflateStream (output, CompressionMode.Compress, true)) {
-        stream.CopyTo (ds);
+        stream.CopyTo (ds, 1024);
         ds.Close (); // BFINAL set to 1.
         output.Write (_last, 0, 1);
         output.Position = 0;
@@ -125,7 +125,7 @@ namespace WebSocketSharp
 
       stream.Position = 0;
       using (var ds = new DeflateStream (stream, CompressionMode.Decompress, true)) {
-        ds.CopyTo (output);
+        ds.CopyTo (output, 1024);
         output.Position = 0;
 
         return output;
@@ -288,12 +288,11 @@ namespace WebSocketSharp
       return dest;
     }
 
-    internal static void CopyTo (this Stream source, Stream destination)
+    internal static void CopyTo (this Stream source, Stream destination, int bufferLength)
     {
-      var buffLen = 1024;
-      var buff = new byte[buffLen];
+      var buff = new byte[bufferLength];
       var nread = 0;
-      while ((nread = source.Read (buff, 0, buffLen)) > 0)
+      while ((nread = source.Read (buff, 0, bufferLength)) > 0)
         destination.Write (buff, 0, nread);
     }
 
@@ -739,7 +738,7 @@ namespace WebSocketSharp
     {
       using (var output = new MemoryStream ()) {
         stream.Position = 0;
-        stream.CopyTo (output);
+        stream.CopyTo (output, 1024);
         output.Close ();
 
         return output.ToArray ();
@@ -898,7 +897,7 @@ namespace WebSocketSharp
     internal static void WriteBytes (this Stream stream, byte[] bytes)
     {
       using (var input = new MemoryStream (bytes))
-        input.CopyTo (stream);
+        input.CopyTo (stream, 1024);
     }
 
     internal static void WriteBytes (this Stream stream, byte[] bytes, int length)
