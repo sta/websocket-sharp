@@ -1058,7 +1058,7 @@ namespace WebSocketSharp
         _inContinuation = true;
       }
 
-      _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData);
+      _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData, 1024);
       if (frame.IsFinal) {
         using (_fragmentsBuffer) {
           var data = _compression != CompressionMethod.None

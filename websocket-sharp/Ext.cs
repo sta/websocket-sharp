@@ -894,15 +894,10 @@ namespace WebSocketSharp
       return Encoding.UTF8.GetBytes (s);
     }
 
-    internal static void WriteBytes (this Stream stream, byte[] bytes)
+    internal static void WriteBytes (this Stream stream, byte[] bytes, int bufferLength)
     {
       using (var input = new MemoryStream (bytes))
-        input.CopyTo (stream, 1024);
-    }
-
-    internal static void WriteBytes (this Stream stream, byte[] bytes, int length)
-    {
-      stream.Write (bytes, 0, length);
+        input.CopyTo (stream, bufferLength);
     }
 
     internal static void WriteBytesAsync (
@@ -1840,7 +1835,7 @@ namespace WebSocketSharp
       if (len <= Int32.MaxValue)
         output.Write (content, 0, (int) len);
       else
-        output.WriteBytes (content);
+        output.WriteBytes (content, 1024);
 
       output.Close ();
     }

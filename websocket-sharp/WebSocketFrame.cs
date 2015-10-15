@@ -763,7 +763,7 @@ Extended Payload Length: {7}
           if (_payloadLength < 127)
             buff.Write (bytes, 0, bytes.Length);
           else
-            buff.WriteBytes (bytes);
+            buff.WriteBytes (bytes, 1024);
         }
 
         buff.Close ();
