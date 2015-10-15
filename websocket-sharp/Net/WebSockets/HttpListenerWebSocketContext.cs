@@ -30,6 +30,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -144,6 +146,18 @@ namespace WebSocketSharp.Net.WebSockets
     public override bool IsSecureConnection {
       get {
         return _context.Connection.IsSecure;
+      }
+    }
+
+    /// <summary>
+    /// Gets client certificate provided during connection or null if certificate is not used.
+    /// </summary>
+    /// <value>
+    /// A <see cref="X509Certificate"/> representing used client certificate or null if certificate is not present.
+    /// </value>
+    public override X509Certificate ClientCertificate {
+      get {
+        return _context.Request.GetClientCertificate();
       }
     }
 
