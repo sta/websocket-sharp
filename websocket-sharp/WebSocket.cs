@@ -738,7 +738,7 @@ namespace WebSocketSharp
                    : null;
     }
 
-    private void close (CloseEventArgs e, bool send, bool wait)
+    private void close (CloseEventArgs e, bool send, bool receive, bool received)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing) {
@@ -752,17 +752,15 @@ namespace WebSocketSharp
         }
 
         send = send && _readyState == WebSocketState.Open;
-        wait = wait && send;
+        receive = receive && send;
 
         _readyState = WebSocketState.Closing;
       }
 
       _logger.Trace ("Begin closing the connection.");
 
-      e.WasClean = closeHandshake (
-        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToArray () : null,
-        wait ? _waitTime : TimeSpan.Zero,
-        _client ? (Action) releaseClientResources : releaseServerResources);
+      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToArray () : null;
+      e.WasClean = closeHandshake (bytes, receive, received);
 
       _logger.Trace ("End closing the connection.");
 
@@ -776,19 +774,23 @@ namespace WebSocketSharp
       }
     }
 
-    private void closeAsync (CloseEventArgs e, bool send, bool wait)
+    private void closeAsync (CloseEventArgs e, bool send, bool receive, bool received)
     {
-      Action<CloseEventArgs, bool, bool> closer = close;
-      closer.BeginInvoke (e, send, wait, ar => closer.EndInvoke (ar), null);
+      Action<CloseEventArgs, bool, bool, bool> closer = close;
+      closer.BeginInvoke (e, send, receive, received, ar => closer.EndInvoke (ar), null);
     }
 
-    private bool closeHandshake (byte[] frameAsBytes, TimeSpan timeout, Action release)
+    private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-      var received = timeout == TimeSpan.Zero ||
-                     (sent && _exitReceiving != null && _exitReceiving.WaitOne (timeout));
+      received = received ||
+                 (receive && sent && _exitReceiving != null && _exitReceiving.WaitOne (_waitTime));
 
-      release ();
+      if (_client)
+        releaseClientResources ();
+      else
+        releaseServerResources ();
+
       if (_fragmentsBuffer != null) {
         _fragmentsBuffer.Dispose ();
         _fragmentsBuffer = null;
@@ -944,7 +946,7 @@ namespace WebSocketSharp
 
         msg = "An error has occurred while connecting.";
         error (msg, null);
-        close (new CloseEventArgs (CloseStatusCode.Abnormal, msg), false, false);
+        close (new CloseEventArgs (CloseStatusCode.Abnormal, msg), false, false, false);
 
         return false;
       }
@@ -1006,7 +1008,7 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false);
+      close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false, true);
 
       return false;
     }
@@ -1043,7 +1045,8 @@ namespace WebSocketSharp
         return;
       }
 
-      close (new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false);
+      close (
+        new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false, false);
     }
 
     private bool processFragmentedFrame (WebSocketFrame frame)
@@ -1677,7 +1680,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    internal void Close (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
+    internal void Close (CloseEventArgs e, byte[] frameAsBytes, bool receive)
     {
       lock (_forConn) {
         if (_readyState == WebSocketState.Closing) {
@@ -1693,7 +1696,7 @@ namespace WebSocketSharp
         _readyState = WebSocketState.Closing;
       }
 
-      e.WasClean = closeHandshake (frameAsBytes, timeout, releaseServerResources);
+      e.WasClean = closeHandshake (frameAsBytes, receive, false);
 
       _readyState = WebSocketState.Closed;
       try {
@@ -1874,7 +1877,7 @@ namespace WebSocketSharp
         return;
       }
 
-      close (new CloseEventArgs (), true, true);
+      close (new CloseEventArgs (), true, true, false);
     }
 
     /// <summary>
@@ -1901,12 +1904,12 @@ namespace WebSocketSharp
       }
 
       if (code == (ushort) CloseStatusCode.NoStatus) {
-        close (new CloseEventArgs (), true, true);
+        close (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new CloseEventArgs (code), send, send);
+      close (new CloseEventArgs (code), send, send, false);
     }
 
     /// <summary>
@@ -1930,12 +1933,12 @@ namespace WebSocketSharp
       }
 
       if (code == CloseStatusCode.NoStatus) {
-        close (new CloseEventArgs (), true, true);
+        close (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new CloseEventArgs (code), send, send);
+      close (new CloseEventArgs (code), send, send, false);
     }
 
     /// <summary>
@@ -1966,12 +1969,12 @@ namespace WebSocketSharp
       }
 
       if (code == (ushort) CloseStatusCode.NoStatus) {
-        close (new CloseEventArgs (), true, true);
+        close (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new CloseEventArgs (code, reason), send, send);
+      close (new CloseEventArgs (code, reason), send, send, false);
     }
 
     /// <summary>
@@ -2002,12 +2005,12 @@ namespace WebSocketSharp
       }
 
       if (code == CloseStatusCode.NoStatus) {
-        close (new CloseEventArgs (), true, true);
+        close (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new CloseEventArgs (code, reason), send, send);
+      close (new CloseEventArgs (code, reason), send, send, false);
     }
 
     /// <summary>
@@ -2026,7 +2029,7 @@ namespace WebSocketSharp
         return;
       }
 
-      closeAsync (new CloseEventArgs (), true, true);
+      closeAsync (new CloseEventArgs (), true, true, false);
     }
 
     /// <summary>
@@ -2058,12 +2061,12 @@ namespace WebSocketSharp
       }
 
       if (code == (ushort) CloseStatusCode.NoStatus) {
-        closeAsync (new CloseEventArgs (), true, true);
+        closeAsync (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code), send, send);
+      closeAsync (new CloseEventArgs (code), send, send, false);
     }
 
     /// <summary>
@@ -2090,12 +2093,12 @@ namespace WebSocketSharp
       }
 
       if (code == CloseStatusCode.NoStatus) {
-        closeAsync (new CloseEventArgs (), true, true);
+        closeAsync (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code), send, send);
+      closeAsync (new CloseEventArgs (code), send, send, false);
     }
 
     /// <summary>
@@ -2131,12 +2134,12 @@ namespace WebSocketSharp
       }
 
       if (code == (ushort) CloseStatusCode.NoStatus) {
-        closeAsync (new CloseEventArgs (), true, true);
+        closeAsync (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code, reason), send, send);
+      closeAsync (new CloseEventArgs (code, reason), send, send, false);
     }
 
     /// <summary>
@@ -2173,12 +2176,12 @@ namespace WebSocketSharp
       }
 
       if (code == CloseStatusCode.NoStatus) {
-        closeAsync (new CloseEventArgs (), true, true);
+        closeAsync (new CloseEventArgs (), true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code, reason), send, send);
+      closeAsync (new CloseEventArgs (code, reason), send, send, false);
     }
 
     /// <summary>
@@ -2631,7 +2634,7 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      close (new CloseEventArgs (CloseStatusCode.Away), true, true);
+      close (new CloseEventArgs (CloseStatusCode.Away), true, true, false);
     }
 
     #endregion
