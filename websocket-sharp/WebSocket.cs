@@ -791,21 +791,7 @@ namespace WebSocketSharp
       else
         releaseServerResources ();
 
-      if (_fragmentsBuffer != null) {
-        _fragmentsBuffer.Dispose ();
-        _fragmentsBuffer = null;
-        _inContinuation = false;
-      }
-
-      if (_receivePong != null) {
-        _receivePong.Close ();
-        _receivePong = null;
-      }
-
-      if (_exitReceiving != null) {
-        _exitReceiving.Close ();
-        _exitReceiving = null;
-      }
+      releaseCommonResources ();
 
       var ret = sent && received;
       _logger.Debug (
@@ -1161,6 +1147,25 @@ namespace WebSocketSharp
       if (_tcpClient != null) {
         _tcpClient.Close ();
         _tcpClient = null;
+      }
+    }
+
+    private void releaseCommonResources ()
+    {
+      if (_fragmentsBuffer != null) {
+        _fragmentsBuffer.Dispose ();
+        _fragmentsBuffer = null;
+        _inContinuation = false;
+      }
+
+      if (_receivePong != null) {
+        _receivePong.Close ();
+        _receivePong = null;
+      }
+
+      if (_exitReceiving != null) {
+        _exitReceiving.Close ();
+        _exitReceiving = null;
       }
     }
 
