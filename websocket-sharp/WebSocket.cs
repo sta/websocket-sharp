@@ -761,6 +761,7 @@ namespace WebSocketSharp
 
       var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToArray () : null;
       e.WasClean = closeHandshake (bytes, receive, received);
+      releaseResources ();
 
       _logger.Trace ("End closing the connection.");
 
@@ -785,13 +786,6 @@ namespace WebSocketSharp
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
       received = received ||
                  (receive && sent && _exitReceiving != null && _exitReceiving.WaitOne (_waitTime));
-
-      if (_client)
-        releaseClientResources ();
-      else
-        releaseServerResources ();
-
-      releaseCommonResources ();
 
       var ret = sent && received;
       _logger.Debug (
@@ -1167,6 +1161,16 @@ namespace WebSocketSharp
         _exitReceiving.Close ();
         _exitReceiving = null;
       }
+    }
+
+    private void releaseResources ()
+    {
+      if (_client)
+        releaseClientResources ();
+      else
+        releaseServerResources ();
+
+      releaseCommonResources ();
     }
 
     // As server
@@ -1702,6 +1706,8 @@ namespace WebSocketSharp
       }
 
       e.WasClean = closeHandshake (frameAsBytes, receive, false);
+      releaseServerResources ();
+      releaseCommonResources ();
 
       _readyState = WebSocketState.Closed;
       try {
