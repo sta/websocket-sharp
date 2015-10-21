@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,9 +30,22 @@ using System;
 
 namespace WebSocketSharp
 {
+  /// <summary>
+  /// Contains the values that indicate whether the payload data of a WebSocket frame is masked.
+  /// </summary>
+  /// <remarks>
+  /// The values of this enumeration are defined in
+  /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">Section 5.2</see> of RFC 6455.
+  /// </remarks>
   internal enum Mask : byte
   {
+    /// <summary>
+    /// Equivalent to numeric value 0. Indicates not masked.
+    /// </summary>
     Unmask = 0x0,
+    /// <summary>
+    /// Equivalent to numeric value 1. Indicates masked.
+    /// </summary>
     Mask = 0x1
   }
 }
