@@ -42,10 +42,10 @@ namespace WebSocketSharp
     /// <summary>
     /// Equivalent to numeric value 0. Indicates not masked.
     /// </summary>
-    Unmask = 0x0,
+    None = 0x0,
     /// <summary>
     /// Equivalent to numeric value 1. Indicates masked.
     /// </summary>
-    Mask = 0x1
+    Masked = 0x1
   }
 }
