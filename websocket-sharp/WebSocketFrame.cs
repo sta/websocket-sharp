@@ -64,7 +64,7 @@ namespace WebSocketSharp
     /// Represents the Ping frame without the payload data as an array of <see cref="byte"/>.
     /// </summary>
     /// <remarks>
-    /// The value of this field is created from an unmasked Ping frame, so it can only be used to
+    /// The value of this field is created from a non masked frame, so it can only be used to
     /// send a Ping from a server.
     /// </remarks>
     internal static readonly byte[] EmptyPingBytes;
