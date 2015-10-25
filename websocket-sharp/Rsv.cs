@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values used in the RSVs (RSV1, RSV2, and RSV3) of a WebSocket frame.
+  /// Contains the values used in each RSV (RSV1, RSV2, and RSV3) of a WebSocket frame.
   /// </summary>
   /// <remarks>
   /// The values of this enumeration are defined in
