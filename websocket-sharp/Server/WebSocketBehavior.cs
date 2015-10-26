@@ -78,7 +78,7 @@ namespace WebSocketSharp.Server
     /// A <see cref="Logger"/> that provides the logging functions,
     /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
-    protected Logger Log {
+    protected IWebSocketLogger Log {
       get {
         return _websocket != null ? _websocket.Log : null;
       }
