@@ -603,22 +603,54 @@ namespace WebSocketSharp
     /// <summary>
     /// Occurs when the WebSocket connection has been closed.
     /// </summary>
-    public event EventHandler<CloseEventArgs> OnClose;
+    event EventHandler<CloseEventArgs> onClose;
+    public event EventHandler<CloseEventArgs> OnClose {
+		add {
+			onClose = (EventHandler<CloseEventArgs>)Delegate.Combine(onClose, value);
+		}
+		remove {
+			onClose = (EventHandler<CloseEventArgs>)Delegate.Remove(onClose, value);
+		}
+	}
 
     /// <summary>
     /// Occurs when the <see cref="WebSocket"/> gets an error.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> OnError;
+    event EventHandler<ErrorEventArgs> onError;
+    public event EventHandler<ErrorEventArgs> OnError {
+		add {
+			onError = (EventHandler<ErrorEventArgs>)Delegate.Combine(onError, value);
+		}
+		remove {
+			onError = (EventHandler<ErrorEventArgs>)Delegate.Remove(onError, value);
+		}
+	}
 
     /// <summary>
     /// Occurs when the <see cref="WebSocket"/> receives a message.
     /// </summary>
-    public event EventHandler<MessageEventArgs> OnMessage;
+    event EventHandler<MessageEventArgs> onMessage;
+    public event EventHandler<MessageEventArgs> OnMessage {
+		add {
+			onMessage = (EventHandler<MessageEventArgs>)Delegate.Combine(onMessage, value);
+		}
+		remove {
+			onMessage = (EventHandler<MessageEventArgs>)Delegate.Remove(onMessage, value);
+		}
+	}
 
     /// <summary>
     /// Occurs when the WebSocket connection has been established.
     /// </summary>
-    public event EventHandler OnOpen;
+    event EventHandler onOpen;
+    public event EventHandler OnOpen {
+		add {
+			onOpen = (EventHandler)Delegate.Combine(onOpen, value);
+		}
+		remove {
+			onOpen = (EventHandler)Delegate.Remove(onOpen, value);
+		}
+	}
 
     #endregion
 
@@ -767,7 +799,7 @@ namespace WebSocketSharp
 
       _readyState = WebSocketState.Closed;
       try {
-        OnClose.Emit (this, e);
+        onClose.Emit (this, e);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -947,7 +979,7 @@ namespace WebSocketSharp
     private void error (string message, Exception exception)
     {
       try {
-        OnError.Emit (this, new ErrorEventArgs (message, exception));
+        onError.Emit (this, new ErrorEventArgs (message, exception));
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
@@ -973,7 +1005,7 @@ namespace WebSocketSharp
 
         lock (_forEvent) {
           try {
-            OnOpen.Emit (this, EventArgs.Empty);
+            onOpen.Emit (this, EventArgs.Empty);
           }
           catch (Exception ex) {
             processException (ex, "An exception has occurred during an OnOpen event.");
@@ -1508,7 +1540,7 @@ namespace WebSocketSharp
               try {
                 var e = dequeueFromMessageEventQueue ();
                 if (e != null && _readyState == WebSocketState.Open)
-                  OnMessage.Emit (this, e);
+                  onMessage.Emit (this, e);
               }
               catch (Exception ex) {
                 processException (ex, "An exception has occurred during an OnMessage event.");
@@ -1711,7 +1743,7 @@ namespace WebSocketSharp
 
       _readyState = WebSocketState.Closed;
       try {
-        OnClose.Emit (this, e);
+        onClose.Emit (this, e);
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
