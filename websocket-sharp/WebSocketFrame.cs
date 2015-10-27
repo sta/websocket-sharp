@@ -124,12 +124,12 @@ namespace WebSocketSharp
       }
 
       if (mask) {
-        _mask = Mask.Masked;
+        _mask = Mask.On;
         _maskingKey = createMaskingKey ();
         payloadData.Mask (_maskingKey);
       }
       else {
-        _mask = Mask.None;
+        _mask = Mask.Off;
         _maskingKey = WebSocket.EmptyBytes;
       }
 
@@ -222,7 +222,7 @@ namespace WebSocketSharp
 
     public bool IsMasked {
       get {
-        return _mask == Mask.Masked;
+        return _mask == Mask.On;
       }
     }
 
@@ -456,7 +456,7 @@ Extended Payload Length: {7}
       var opcode = (Opcode) (header[0] & 0x0f);
 
       // MASK
-      var mask = (header[1] & 0x80) == 0x80 ? Mask.Masked : Mask.None;
+      var mask = (header[1] & 0x80) == 0x80 ? Mask.On : Mask.Off;
 
       // Payload Length
       var payloadLen = (byte) (header[1] & 0x7f);
@@ -712,10 +712,10 @@ Extended Payload Length: {7}
 
     internal void Unmask ()
     {
-      if (_mask == Mask.None)
+      if (_mask == Mask.Off)
         return;
 
-      _mask = Mask.None;
+      _mask = Mask.Off;
       _payloadData.Mask (_maskingKey);
       _maskingKey = WebSocket.EmptyBytes;
     }
@@ -755,7 +755,7 @@ Extended Payload Length: {7}
         if (_payloadLength > 125)
           buff.Write (_extPayloadLength, 0, _payloadLength == 126 ? 2 : 8);
 
-        if (_mask == Mask.Masked)
+        if (_mask == Mask.On)
           buff.Write (_maskingKey, 0, 4);
 
         if (_payloadLength > 0) {
