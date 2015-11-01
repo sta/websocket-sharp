@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,16 +31,16 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values that indicate whether the byte order is a Little-endian or Big-endian.
+  /// Specifies the byte order.
   /// </summary>
-  public enum ByteOrder : byte
+  public enum ByteOrder
   {
     /// <summary>
-    /// Indicates a Little-endian.
+    /// Specifies Little-endian.
     /// </summary>
     Little,
     /// <summary>
-    /// Indicates a Big-endian.
+    /// Specifies Big-endian.
     /// </summary>
     Big
   }
