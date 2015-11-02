@@ -1615,7 +1615,7 @@ namespace WebSocketSharp
     /// An array of <see cref="byte"/> to convert.
     /// </param>
     /// <param name="sourceOrder">
-    /// One of the <see cref="ByteOrder"/> enum values, indicates the byte order of
+    /// One of the <see cref="ByteOrder"/> enum values, specifies the byte order of
     /// <paramref name="source"/>.
     /// </param>
     /// <typeparam name="T">
@@ -1669,7 +1669,7 @@ namespace WebSocketSharp
     /// A T to convert.
     /// </param>
     /// <param name="order">
-    /// One of the <see cref="ByteOrder"/> enum values, indicates the byte order of the return.
+    /// One of the <see cref="ByteOrder"/> enum values, specifies the byte order of the return.
     /// </param>
     /// <typeparam name="T">
     /// The type of <paramref name="value"/>. The T must be a value type.
@@ -1718,7 +1718,7 @@ namespace WebSocketSharp
     /// An array of <see cref="byte"/> to convert.
     /// </param>
     /// <param name="sourceOrder">
-    /// One of the <see cref="ByteOrder"/> enum values, indicates the byte order of
+    /// One of the <see cref="ByteOrder"/> enum values, specifies the byte order of
     /// <paramref name="source"/>.
     /// </param>
     /// <exception cref="ArgumentNullException">
