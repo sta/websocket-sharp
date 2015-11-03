@@ -1438,12 +1438,28 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        //_tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+		_tcpClient = new TcpClient();
+		var result = _tcpClient.BeginConnect(_proxyUri.DnsSafeHost, _proxyUri.Port, null, null);
+		var success = result.AsyncWaitHandle.WaitOne(WaitTime);
+		if (!success)
+		{
+			throw new TimeoutException("Failed to connect due to timeout after " + WaitTime.TotalSeconds + " seconds.");
+		}
+		_tcpClient.EndConnect(result);
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        //_tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+		_tcpClient = new TcpClient();
+		var result = _tcpClient.BeginConnect(_uri.DnsSafeHost, _uri.Port, null, null);
+		var success = result.AsyncWaitHandle.WaitOne(WaitTime);
+		if (!success)
+		{
+			throw new TimeoutException("Failed to connect due to timeout after " + WaitTime.TotalSeconds + " seconds.");
+		}
+		_tcpClient.EndConnect(result);
         _stream = _tcpClient.GetStream ();
       }
 
