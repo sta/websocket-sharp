@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013-2014 sta.blockhead
+ * Copyright (c) 2013-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -140,7 +140,7 @@ namespace WebSocketSharp
     /// A log with lower than the value of this property cannot be outputted.
     /// </remarks>
     /// <value>
-    /// One of the <see cref="LogLevel"/> enum values, indicates the current logging level.
+    /// One of the <see cref="LogLevel"/> enum values, specifies the current logging level.
     /// </value>
     public LogLevel Level {
       get {
