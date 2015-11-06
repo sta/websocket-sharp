@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013-2014 sta.blockhead
+ * Copyright (c) 2013-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -125,24 +125,23 @@ namespace WebSocketSharp
       var type = method.DeclaringType;
 #if DEBUG
       var lineNum = _caller.GetFileLineNumber ();
-      var headerAndCaller = String.Format (
-        "{0}{1}.{2}:{3}|", header, type.Name, method.Name, lineNum);
+      var headerAndCaller =
+        String.Format ("{0}{1}.{2}:{3}|", header, type.Name, method.Name, lineNum);
 #else
       var headerAndCaller = String.Format ("{0}{1}.{2}|", header, type.Name, method.Name);
 #endif
-
       var msgs = _message.Replace ("\r\n", "\n").TrimEnd ('\n').Split ('\n');
       if (msgs.Length <= 1)
         return String.Format ("{0}{1}", headerAndCaller, _message);
 
-      var output = new StringBuilder (String.Format ("{0}{1}\n", headerAndCaller, msgs[0]), 64);
+      var buff = new StringBuilder (String.Format ("{0}{1}\n", headerAndCaller, msgs[0]), 64);
 
       var fmt = String.Format ("{{0,{0}}}{{1}}\n", header.Length);
       for (var i = 1; i < msgs.Length; i++)
-        output.AppendFormat (fmt, "", msgs[i]);
+        buff.AppendFormat (fmt, "", msgs[i]);
 
-      output.Length--;
-      return output.ToString ();
+      buff.Length--;
+      return buff.ToString ();
     }
 
     #endregion
