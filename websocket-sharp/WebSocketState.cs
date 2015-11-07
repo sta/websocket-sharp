@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the state of a WebSocket connection.
+  /// Indicates the state of a WebSocket connection.
   /// </summary>
   /// <remarks>
   /// The values of this enumeration are defined in
@@ -55,7 +55,7 @@ namespace WebSocketSharp
     Closing = 2,
     /// <summary>
     /// Equivalent to numeric value 3. Indicates that the connection has been closed or
-    /// couldn't be opened.
+    /// couldn't be established.
     /// </summary>
     Closed = 3
   }
