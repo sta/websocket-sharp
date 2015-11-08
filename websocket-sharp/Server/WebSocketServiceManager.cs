@@ -203,7 +203,7 @@ namespace WebSocketSharp.Server
 
 			if (data.LongLength <= WebSocket.FragmentLength)
 			{
-				broadcast(Opcode.Binary, data);
+				InnerBroadcast(Opcode.Binary, data);
 			}
 			else
 			{
@@ -228,7 +228,7 @@ namespace WebSocketSharp.Server
 			var rawData = Encoding.UTF8.GetBytes(data);
 			if (rawData.LongLength <= WebSocket.FragmentLength)
 			{
-				broadcast(Opcode.Text, rawData);
+				InnerBroadcast(Opcode.Text, rawData);
 			}
 			else
 			{
@@ -482,19 +482,20 @@ namespace WebSocketSharp.Server
 
 		#region Private Methods
 
-		private void broadcast(Opcode opcode, byte[] data)
+		private bool InnerBroadcast(Opcode opcode, byte[] data)
 		{
-			foreach (var host in Hosts.TakeWhile(host => _state == ServerState.Start))
-			{
-				host.Sessions.Broadcast(opcode, data);
-			}
+		    var results =
+		        Hosts
+                .TakeWhile(host => _state == ServerState.Start)
+                .Select(host => host.Sessions.InnerBroadcast(opcode, data));
+		    return results.All(x => x);
 		}
 
 		private void broadcast(Opcode opcode, Stream stream)
 		{
 			foreach (var host in Hosts.TakeWhile(host => _state == ServerState.Start))
 			{
-				host.Sessions.Broadcast(opcode, stream);
+				host.Sessions.InnerBroadcast(opcode, stream);
 			}
 		}
 
@@ -560,7 +561,7 @@ namespace WebSocketSharp.Server
 
 		private Dictionary<string, Dictionary<string, bool>> broadping(byte[] frameAsBytes, TimeSpan timeout)
 		{
-			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.Broadping(frameAsBytes, timeout));
+			return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.InnerBroadping(frameAsBytes, timeout));
 		}
 
 		#endregion

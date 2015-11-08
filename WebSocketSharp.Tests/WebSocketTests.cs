@@ -17,110 +17,116 @@
 
 namespace WebSocketSharp.Tests
 {
-	using System;
-	using System.Threading;
-	using System.Threading.Tasks;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
-	public class WebSocketTests
-	{
-		public class GivenAWebSocket
-		{
-			private WebSocket _sut;
+    public class WebSocketTests
+    {
+        public class GivenAWebSocket
+        {
+            private WebSocket _sut;
 
-			[SetUp]
-			public void Setup()
-			{
-				_sut = new WebSocket("ws://echo.websocket.org");
-				_sut.OnError += PrintError;
-			}
+            [SetUp]
+            public void Setup()
+            {
+                _sut = new WebSocket("ws://echo.websocket.org");
+                _sut.OnError += PrintError;
+            }
 
-			[TearDown]
-			public void Teardown()
-			{
-				_sut.OnError -= PrintError;
-				if (_sut.ReadyState != WebSocketState.Closed)
-				{
-					_sut.Dispose();
-				}
-			}
+            [TearDown]
+            public void Teardown()
+            {
+                _sut.OnError -= PrintError;
+                if (_sut.ReadyState != WebSocketState.Closed)
+                {
+                    _sut.Dispose();
+                }
+            }
 
-			[Test]
-			public async Task WhenClosingAsyncThenCloses()
-			{
-				await _sut.CloseAsync();
+            [Test]
+            public async Task WhenClosingAsyncThenCloses()
+            {
+                await _sut.CloseAsync();
 
-				Assert.AreEqual(WebSocketState.Closed, _sut.ReadyState);
-			}
+                Assert.AreEqual(WebSocketState.Closed, _sut.ReadyState);
+            }
 
-			[Test]
-			public void WhenConnectingToAddressThenConnects()
-			{
-				_sut.Connect();
+            [Test]
+            public void WhenConnectingToAddressThenConnects()
+            {
+                var connected = _sut.Connect();
 
-				Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
-			}
+                Assert.IsTrue(connected);
+            }
 
-			[Test]
-			public void WhenSendingMessageThenReceivesEcho()
-			{
-				var waitHandle = new ManualResetEventSlim(false);
-				const string Message = "Test Ping";
-				var echoReceived = false;
-				EventHandler<MessageEventArgs> onMessage = (s, e) =>
-					{
-						echoReceived = e.Text.ReadToEnd() == Message;
-						waitHandle.Set();
-					};
-				_sut.OnMessage += onMessage;
+            [Test]
+            public void WhenSendingMessageThenReceivesEcho()
+            {
+                var waitHandle = new ManualResetEventSlim(false);
+                const string Message = "Test Ping";
+                var echoReceived = false;
+                EventHandler<MessageEventArgs> onMessage = (s, e) =>
+                    {
+                        echoReceived = e.Text.ReadToEnd() == Message;
+                        waitHandle.Set();
+                    };
+                _sut.OnMessage += onMessage;
 
-				_sut.Connect();
-				_sut.Send(Message);
+                var connected = _sut.Connect();
+                Console.WriteLine("Connected: " + connected);
 
-				var result = waitHandle.Wait(2000);
+                var sent = _sut.Send(Message);
+                Console.WriteLine("Sent: " + sent);
 
-				_sut.OnMessage -= onMessage;
+                var result = waitHandle.Wait(2000);
 
-				Assert.True(result && echoReceived);
-			}
+                _sut.OnMessage -= onMessage;
 
-			[Test]
-			public async Task WhenSendingMessageAsyncThenReceivesEcho()
-			{
-				var waitHandle = new ManualResetEventSlim(false);
-				const string Message = "Test Ping";
-				var echoReceived = false;
-				EventHandler<MessageEventArgs> onMessage = (s, e) =>
-					{
-						var readToEnd = e.Text.ReadToEnd();
-						echoReceived = readToEnd == Message;
-						waitHandle.Set();
-					};
-				_sut.OnMessage += onMessage;
+                Assert.True(result && echoReceived);
+            }
 
-				_sut.Connect();
-				await _sut.SendAsync(Message);
+            [Test]
+            public async Task WhenSendingMessageAsyncThenReceivesEcho()
+            {
+                var waitHandle = new ManualResetEventSlim(false);
+                const string Message = "Test Ping";
+                var echoReceived = false;
+                EventHandler<MessageEventArgs> onMessage = (s, e) =>
+                    {
+                        var readToEnd = e.Text.ReadToEnd();
+                        echoReceived = readToEnd == Message;
+                        waitHandle.Set();
+                    };
+                _sut.OnMessage += onMessage;
 
-				var result = waitHandle.Wait(2000);
+                var connected = _sut.Connect();
+                Console.WriteLine("Connected: " + connected);
 
-				_sut.OnMessage -= onMessage;
+                var sent = await _sut.SendAsync(Message);
+                Console.WriteLine("Sent: " + sent);
 
-				Assert.True(result && echoReceived);
-			}
+                var result = waitHandle.Wait(2000);
 
-			[Test]
-			public async Task WhenConnectingAsyncToAddressThenConnects()
-			{
-				await _sut.ConnectAsync();
+                _sut.OnMessage -= onMessage;
 
-				Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
-			}
+                Assert.True(result && echoReceived);
+            }
 
-			private void PrintError(object sender, ErrorEventArgs e)
-			{
-				Console.WriteLine(e.Message);
-			}
-		}
-	}
+            [Test]
+            public async Task WhenConnectingAsyncToAddressThenConnects()
+            {
+                await _sut.ConnectAsync();
+
+                Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
+            }
+
+            private void PrintError(object sender, ErrorEventArgs e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -79,6 +79,7 @@
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="StreamReadInfo.cs" />
+    <Compile Include="SubStream.cs" />
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />

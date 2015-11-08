@@ -55,7 +55,8 @@ namespace WebSocketSharp.Tests
 				var buffer = new byte[2000];
 				var bytesRead = msg.RawData.Read(buffer, 0, 2000);
 
-				CollectionAssert.AreEqual(Enumerable.Repeat((byte)1, 1000).Concat(Enumerable.Repeat((byte)2, 1000)), buffer);
+			    var expected = Enumerable.Repeat((byte)1, 1000).Concat(Enumerable.Repeat((byte)2, 1000)).ToArray();
+			    CollectionAssert.AreEqual(expected, buffer);
 			}
 
 			[Test]

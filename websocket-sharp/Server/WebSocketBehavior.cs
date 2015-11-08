@@ -250,7 +250,7 @@ namespace WebSocketSharp.Server
 		{
 			if (_websocket != null)
 			{
-				context.WebSocket.Close(HttpStatusCode.ServiceUnavailable);
+				context.WebSocket.InnerClose(HttpStatusCode.ServiceUnavailable);
 
 				return;
 			}

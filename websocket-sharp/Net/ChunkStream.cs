@@ -52,11 +52,11 @@ namespace WebSocketSharp.Net
 
 		private int _chunkRead;
 		private int _chunkSize;
-		private List<Chunk> _chunks;
+		private readonly List<Chunk> _chunks;
 		private bool _gotit;
-		private WebHeaderCollection _headers;
-		private StringBuilder _saved;
-		private bool _sawCR;
+		private readonly WebHeaderCollection _headers;
+		private readonly StringBuilder _saved;
+		private bool _sawCr;
 		private InputChunkState _state;
 		private int _trailerState;
 
@@ -116,12 +116,12 @@ namespace WebSocketSharp.Net
 
 		private InputChunkState readCRLF(byte[] buffer, ref int offset, int size)
 		{
-			if (!_sawCR)
+			if (!_sawCr)
 			{
 				if ((char)buffer[offset++] != '\r')
 					throwProtocolViolation("Expecting \\r.");
 
-				_sawCR = true;
+				_sawCr = true;
 				if (offset == size)
 					return InputChunkState.BodyFinished;
 			}
@@ -232,14 +232,14 @@ namespace WebSocketSharp.Net
 				c = (char)buffer[offset++];
 				if (c == '\r')
 				{
-					if (_sawCR)
+					if (_sawCr)
 						throwProtocolViolation("2 CR found.");
 
-					_sawCR = true;
+					_sawCr = true;
 					continue;
 				}
 
-				if (_sawCR && c == '\n')
+				if (_sawCr && c == '\n')
 					break;
 
 				if (c == ' ')
@@ -252,7 +252,7 @@ namespace WebSocketSharp.Net
 					throwProtocolViolation("Chunk size too long.");
 			}
 
-			if (!_sawCR || c != '\n')
+			if (!_sawCr || c != '\n')
 			{
 				if (offset < size)
 					throwProtocolViolation("Missing \\n.");
@@ -306,7 +306,7 @@ namespace WebSocketSharp.Net
 					return;
 
 				_saved.Length = 0;
-				_sawCR = false;
+				_sawCr = false;
 				_gotit = false;
 			}
 
@@ -323,7 +323,7 @@ namespace WebSocketSharp.Net
 				if (_state == InputChunkState.BodyFinished)
 					return;
 
-				_sawCR = false;
+				_sawCr = false;
 			}
 
 			if (_state == InputChunkState.Trailer && offset < size)
@@ -333,7 +333,7 @@ namespace WebSocketSharp.Net
 					return;
 
 				_saved.Length = 0;
-				_sawCR = false;
+				_sawCr = false;
 				_gotit = false;
 			}
 

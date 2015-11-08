@@ -17,128 +17,129 @@
 
 namespace WebSocketSharp
 {
-	using System;
-	using System.Diagnostics;
-	using System.IO;
+    using System;
+    using System.Diagnostics;
+    using System.IO;
 
-	internal class WebSocketDataStream : Stream
-	{
-		private readonly Func<StreamReadInfo> _readInfoFunc;
-		private readonly Action _consumedAction;
-		private readonly Stream _innerStream;
-		private StreamReadInfo _readInfo;
+    internal class WebSocketDataStream : Stream
+    {
+        private readonly Func<StreamReadInfo> _readInfoFunc;
+        private readonly Action _consumedAction;
+        private readonly Stream _innerStream;
+        private StreamReadInfo _readInfo;
 
-		public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<StreamReadInfo> readInfoFunc, Action consumedAction)
-		{
-			_innerStream = innerStream;
-			_readInfo = initialReadInfo;
-			_readInfoFunc = readInfoFunc;
-			_consumedAction = consumedAction;
-		}
+        public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<StreamReadInfo> readInfoFunc, Action consumedAction)
+        {
+            _innerStream = innerStream;
+            _readInfo = initialReadInfo;
+            _readInfoFunc = readInfoFunc;
+            _consumedAction = consumedAction;
+        }
 
-		public override void Flush()
-		{
-		}
+        public override void Flush()
+        {
+        }
 
-		public override long Seek(long offset, SeekOrigin origin)
-		{
-			throw new NotSupportedException();
-		}
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
 
-		public override void SetLength(long value)
-		{
-			throw new NotSupportedException();
-		}
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
 
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			var position = offset;
-			var bytesRead = 0;
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            var position = offset;
+            var bytesRead = 0;
 
-			while (bytesRead < count && _readInfo.PayloadLength > 0)
-			{
-				var toread = Math.Min((ulong)(count - bytesRead), _readInfo.PayloadLength);
-				toread = Math.Min(toread, int.MaxValue);
+            while (bytesRead < count && _readInfo.PayloadLength > 0)
+            {
+                var toread = Math.Min((ulong)(count - bytesRead), _readInfo.PayloadLength);
+                toread = Math.Min(toread, int.MaxValue);
 
-				bytesRead += _innerStream.Read(buffer, offset, (int)toread);
+                var read = _innerStream.Read(buffer, position, (int)toread);
+                bytesRead += read;
 
-				_readInfo.PayloadLength -= (ulong)bytesRead;
+                _readInfo.PayloadLength -= Convert.ToUInt64(Convert.ToUInt32(read));
 
-				if (_readInfo.MaskingKey.Length > 0)
-				{
-					var max = position + (int)toread;
-					if (max > buffer.Length)
-					{
-					}
+                if (_readInfo.MaskingKey.Length > 0)
+                {
+                    var max = position + (int)toread;
+                    //if (max > buffer.Length)
+                    //{
+                    //}
 
-					for (var pos = position; pos < max; pos++)
-					{
-						buffer[pos] = (byte)(buffer[pos] ^ _readInfo.MaskingKey[pos % 4]);
-					}
-				}
+                    for (var pos = position; pos < max; pos++)
+                    {
+                        buffer[pos] = (byte)(buffer[pos] ^ _readInfo.MaskingKey[pos % 4]);
+                    }
+                }
 
-				position += (int)toread;
-				Position += bytesRead;
-				if (_readInfo.PayloadLength == 0)
-				{
-					if (!_readInfo.IsFinal)
-					{
-						try
-						{
-							_readInfo = _readInfoFunc();
-						}
-						catch
-						{
-							Debug.WriteLine("Failed at position {0}", Position);
-						}
-					}
-					else
-					{
-						_consumedAction();
-					}
-				}
-			}
+                position += read;
+                Position = position;
+                if (_readInfo.PayloadLength == 0)
+                {
+                    if (!_readInfo.IsFinal)
+                    {
+                        try
+                        {
+                            _readInfo = _readInfoFunc();
+                        }
+                        catch
+                        {
+                            Debug.WriteLine("Failed at position {0}", Position);
+                        }
+                    }
+                    else
+                    {
+                        _consumedAction();
+                    }
+                }
+            }
 
-			return bytesRead;
-		}
+            return bytesRead;
+        }
 
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			throw new NotSupportedException();
-		}
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
 
-		public override bool CanRead
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public override bool CanRead
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public override bool CanSeek
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public override bool CanWrite
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public override bool CanWrite
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public override long Length
-		{
-			get
-			{
-				throw new NotSupportedException();
-			}
-		}
+        public override long Length
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+        }
 
-		public override long Position { get; set; }
-	}
+        public override long Position { get; set; }
+    }
 }
