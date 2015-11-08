@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values that indicate whether a WebSocket frame is the final frame of a message.
+  /// Indicates whether a WebSocket frame is the final frame of a message.
   /// </summary>
   /// <remarks>
   /// The values of this enumeration are defined in
