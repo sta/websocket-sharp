@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values that indicate whether the payload data of a WebSocket frame is masked.
+  /// Indicates whether the payload data of a WebSocket frame is masked.
   /// </summary>
   /// <remarks>
   /// The values of this enumeration are defined in
