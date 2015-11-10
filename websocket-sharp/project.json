@@ -1,0 +1,19 @@
+﻿{
+  "version": "2.0.0-*",
+  "title": "WebSocket#",
+  "description": "WebSocket# provides the WebSocket protocol client and server.\r\n\r\nIt supports:\r\n- WebSocket Client and Server\r\n- RFC 6455\r\n- Per-message Compression extension\r\n- Secure Connection\r\n- HTTP Authentication\r\n- Query String, Origin header and Cookies\r\n- Infinite streaming\r\n- .NET 4.5 or later",
+  "authors": [ "Jacob Reimers" ],
+  "owners": [ "Jacob Reimers" ],
+  "tags": [ "websocket" ],
+  "requireLicenseAcceptance": false,
+  "projectUrl": "https://github.com/jjrdk/websocket-sharp",
+  "licenseUrl": "",
+  "summary": "This is a clone of websocket-sharp which is updated to use .NET 4.5 in order to make use of task based asynchronicity.",
+
+  "dependencies": {
+  },
+
+  "frameworks": {
+    "net45": { }
+  }
+}
