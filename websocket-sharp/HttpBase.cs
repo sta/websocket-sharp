@@ -181,8 +181,10 @@ namespace WebSocketSharp
 			{
 				http = parser(readHeaders(stream, _headersMaxLength));
 				var contentLen = http.Headers["Content-Length"];
-				if (contentLen != null && contentLen.Length > 0)
-					http.EntityBodyData = readEntityBody(stream, contentLen);
+			    if (!string.IsNullOrEmpty(contentLen))
+			    {
+			        http.EntityBodyData = readEntityBody(stream, contentLen);
+			    }
 			}
 			catch (Exception ex)
 			{

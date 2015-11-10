@@ -36,153 +36,135 @@
 
 namespace WebSocketSharp.Net
 {
-	using System.Net.Security;
-	using System.Security.Authentication;
-	using System.Security.Cryptography.X509Certificates;
+    using System.Net.Security;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
 
-	/// <summary>
-	/// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
-	/// </summary>
-  public class ServerSslConfiguration : SslConfiguration
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-		/// the specified <paramref name="serverCertificate"/>.
-		/// </summary>
-		/// <param name="serverCertificate">
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </param>
-		public ServerSslConfiguration(X509Certificate2 serverCertificate)
-			: this(serverCertificate, false, SslProtocols.Default, false)
-		{
-		}
+    /// <summary>
+    /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
+    /// </summary>
+    public class ServerSslConfiguration : SslConfiguration
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+        /// the specified <paramref name="serverCertificate"/>.
+        /// </summary>
+        /// <param name="serverCertificate">
+        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+        /// the server.
+        /// </param>
+        public ServerSslConfiguration(X509Certificate2 serverCertificate)
+            : this(serverCertificate, false, SslProtocols.Default, false)
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-		/// the specified <paramref name="serverCertificate"/> and
-		/// <paramref name="clientCertificateRequired"/>.
-		/// </summary>
-		/// <param name="serverCertificate">
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </param>
-		/// <param name="clientCertificateRequired">
-		/// <c>true</c> if the client must supply a certificate for authentication;
-		/// otherwise, <c>false</c>.
-		/// </param>
-		public ServerSslConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired)
-			: this(serverCertificate, clientCertificateRequired, SslProtocols.Default, false)
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+        /// the specified <paramref name="serverCertificate"/> and
+        /// <paramref name="clientCertificateRequired"/>.
+        /// </summary>
+        /// <param name="serverCertificate">
+        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+        /// the server.
+        /// </param>
+        /// <param name="clientCertificateRequired">
+        /// <c>true</c> if the client must supply a certificate for authentication;
+        /// otherwise, <c>false</c>.
+        /// </param>
+        public ServerSslConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired)
+            : this(serverCertificate, clientCertificateRequired, SslProtocols.Default, false)
+        {
+        }
 
-		/// <summary>
-	/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-		/// the specified <paramref name="serverCertificate"/>,
-		/// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
-		/// </summary>
-		/// <param name="serverCertificate">
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </param>
-		/// <param name="clientCertificateRequired">
-		/// <c>true</c> if the client must supply a certificate for authentication;
-		/// otherwise, <c>false</c>.
-		/// </param>
-		/// <param name="enabledSslProtocols">
-		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-		/// authentication.
-		/// </param>
-		public ServerSslConfiguration(
-			X509Certificate2 serverCertificate,
-			bool clientCertificateRequired,
-			SslProtocols enabledSslProtocols)
-			: this(serverCertificate, clientCertificateRequired, enabledSslProtocols, false)
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+        /// the specified <paramref name="serverCertificate"/>,
+        /// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
+        /// </summary>
+        /// <param name="serverCertificate">
+        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+        /// the server.
+        /// </param>
+        /// <param name="clientCertificateRequired">
+        /// <c>true</c> if the client must supply a certificate for authentication;
+        /// otherwise, <c>false</c>.
+        /// </param>
+        /// <param name="enabledSslProtocols">
+        /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+        /// authentication.
+        /// </param>
+        public ServerSslConfiguration(
+            X509Certificate2 serverCertificate,
+            bool clientCertificateRequired,
+            SslProtocols enabledSslProtocols)
+            : this(serverCertificate, clientCertificateRequired, enabledSslProtocols, false)
+        {
+        }
 
-		/// <summary>
-	/// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-		/// the specified <paramref name="serverCertificate"/>,
-		/// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
-		/// and <paramref name="checkCertificateRevocation"/>.
-		/// </summary>
-		/// <param name="serverCertificate">
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </param>
-		/// <param name="clientCertificateRequired">
-		/// <c>true</c> if the client must supply a certificate for authentication;
-		/// otherwise, <c>false</c>.
-		/// </param>
-		/// <param name="enabledSslProtocols">
-		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-		/// authentication.
-		/// </param>
-		/// <param name="checkCertificateRevocation">
-		/// <c>true</c> if the certificate revocation list is checked during authentication;
-		/// otherwise, <c>false</c>.
-		/// </param>
-		public ServerSslConfiguration(
-			X509Certificate2 serverCertificate,
-			bool clientCertificateRequired,
-			SslProtocols enabledSslProtocols,
-			bool checkCertificateRevocation)
-	  : base (enabledSslProtocols, checkCertificateRevocation)
-		{
-			ServerCertificate = serverCertificate;
-			ClientCertificateRequired = clientCertificateRequired;
-			EnabledSslProtocols = enabledSslProtocols;
-			CheckCertificateRevocation = checkCertificateRevocation;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
+        /// the specified <paramref name="serverCertificate"/>,
+        /// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
+        /// and <paramref name="checkCertificateRevocation"/>.
+        /// </summary>
+        /// <param name="serverCertificate">
+        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+        /// the server.
+        /// </param>
+        /// <param name="clientCertificateRequired">
+        /// <c>true</c> if the client must supply a certificate for authentication;
+        /// otherwise, <c>false</c>.
+        /// </param>
+        /// <param name="enabledSslProtocols">
+        /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
+        /// authentication.
+        /// </param>
+        /// <param name="checkCertificateRevocation">
+        /// <c>true</c> if the certificate revocation list is checked during authentication;
+        /// otherwise, <c>false</c>.
+        /// </param>
+        public ServerSslConfiguration(
+            X509Certificate2 serverCertificate,
+            bool clientCertificateRequired,
+            SslProtocols enabledSslProtocols,
+            bool checkCertificateRevocation)
+      : base(enabledSslProtocols, checkCertificateRevocation)
+        {
+            ServerCertificate = serverCertificate;
+            ClientCertificateRequired = clientCertificateRequired;
+            EnabledSslProtocols = enabledSslProtocols;
+            CheckCertificateRevocation = checkCertificateRevocation;
+        }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the certificate revocation list is checked
-		/// during authentication.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
-		/// </value>
-		public bool CheckCertificateRevocation { get; private set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether the client must supply a certificate for
+        /// authentication.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the client must supply a certificate; otherwise, <c>false</c>.
+        /// </value>
+        public bool ClientCertificateRequired { get; private set; }
 
-		/// <summary>
-		/// Gets or sets a value indicating whether the client must supply a certificate for
-		/// authentication.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the client must supply a certificate; otherwise, <c>false</c>.
-		/// </value>
-		public bool ClientCertificateRequired { get; private set; }
+        /// <summary>
+        /// Gets or sets the callback used to validate the certificate supplied by the client.
+        /// </summary>
+        /// <remarks>
+        /// If this callback returns <c>true</c>, the client certificate will be valid.
+        /// </remarks>
+        /// <value>
+        /// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
+        /// used to validate the client certificate. The default value is a function that only returns
+        /// <c>true</c>.
+        /// </value>
+        public RemoteCertificateValidationCallback ClientCertificateValidationCallback { get; private set; }
 
-		/// <summary>
-		/// Gets or sets the callback used to validate the certificate supplied by the client.
-		/// </summary>
-		/// <remarks>
-		/// If this callback returns <c>true</c>, the client certificate will be valid.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="RemoteCertificateValidationCallback"/> delegate that references the method
-		/// used to validate the client certificate. The default value is a function that only returns
-		/// <c>true</c>.
-		/// </value>
-		public RemoteCertificateValidationCallback ClientCertificateValidationCallback { get; private set; }
-
-		/// <summary>
-	/// Gets or sets the certificate used to authenticate the server for secure connection.
-		/// </summary>
-		/// <value>
-		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-		/// authentication.
-		/// </value>
-		public SslProtocols EnabledSslProtocols { get; private set; }
-
-		/// <summary>
-		/// Gets or sets the certificate used to authenticate the server on the secure connection.
-		/// </summary>
-		/// <value>
-		/// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-		/// the server.
-		/// </value>
-		public X509Certificate2 ServerCertificate { get; private set; }
-	}
+        /// <summary>
+        /// Gets or sets the certificate used to authenticate the server on the secure connection.
+        /// </summary>
+        /// <value>
+        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
+        /// the server.
+        /// </value>
+        public X509Certificate2 ServerCertificate { get; private set; }
+    }
 }

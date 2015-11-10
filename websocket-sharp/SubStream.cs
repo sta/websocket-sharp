@@ -53,7 +53,6 @@ namespace WebSocketSharp
                     break;
                 case SeekOrigin.End:
                     throw new NotSupportedException(nameof(origin));
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(origin), origin, null);
             }
@@ -98,7 +97,10 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports reading; otherwise, false.
         /// </returns>
-        public override bool CanRead => true;
+        public override bool CanRead
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
@@ -106,7 +108,10 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports seeking; otherwise, false.
         /// </returns>
-        public override bool CanSeek => true;
+        public override bool CanSeek
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether the current stream supports writing.
@@ -114,7 +119,7 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports writing; otherwise, false.
         /// </returns>
-        public override bool CanWrite => false;
+        public override bool CanWrite { get { return false; } }
 
         /// <summary>
         /// When overridden in a derived class, gets the length in bytes of the stream.
@@ -123,7 +128,10 @@ namespace WebSocketSharp
         /// A long value representing the length of the stream in bytes.
         /// </returns>
         /// <exception cref="T:System.NotSupportedException">A class derived from Stream does not support seeking. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
-        public override long Length => _length;
+        public override long Length
+        {
+            get { return _length; }
+        }
 
         /// <summary>
         /// When overridden in a derived class, gets or sets the position within the current stream.

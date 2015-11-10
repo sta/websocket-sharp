@@ -53,10 +53,8 @@ namespace WebSocketSharp.Net
 
 		private LocalCertificateSelectionCallback _certSelectionCallback;
 		private RemoteCertificateValidationCallback _certValidationCallback;
-		private bool _checkCertRevocation;
-		private SslProtocols _enabledProtocols;
 
-		#endregion
+	    #endregion
 
 		#region Protected Constructors
 
@@ -75,8 +73,8 @@ namespace WebSocketSharp.Net
 		/// </param>
 		protected SslConfiguration(SslProtocols enabledSslProtocols, bool checkCertificateRevocation)
 		{
-			_enabledProtocols = enabledSslProtocols;
-			_checkCertRevocation = checkCertificateRevocation;
+			EnabledSslProtocols = enabledSslProtocols;
+			CheckCertificateRevocation = checkCertificateRevocation;
 		}
 
 		#endregion
@@ -145,39 +143,17 @@ namespace WebSocketSharp.Net
 		/// <value>
 		/// <c>true</c> if the certificate revocation list is checked; otherwise, <c>false</c>.
 		/// </value>
-		public bool CheckCertificateRevocation
-		{
-			get
-			{
-				return _checkCertRevocation;
-			}
+		public bool CheckCertificateRevocation { get; protected set; }
 
-			set
-			{
-				_checkCertRevocation = value;
-			}
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Gets or sets the SSL protocols used for authentication.
 		/// </summary>
 		/// <value>
 		/// The <see cref="SslProtocols"/> enum value that represents the protocols used for
 		/// authentication.
 		/// </value>
-		public SslProtocols EnabledSslProtocols
-		{
-			get
-			{
-				return _enabledProtocols;
-			}
+		public SslProtocols EnabledSslProtocols { get; protected set; }
 
-			set
-			{
-				_enabledProtocols = value;
-			}
-		}
-
-		#endregion
+	    #endregion
 	}
 }

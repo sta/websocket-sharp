@@ -1235,7 +1235,7 @@ namespace WebSocketSharp
             {
                 stream.Position = 0;
                 stream.CopyTo(output);
-                output.Close();
+                output.Flush();
 
                 return output.ToArray();
             }
