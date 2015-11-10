@@ -24,13 +24,16 @@ namespace WebSocketSharp
 	{
 		private readonly ManualResetEventSlim _waitHandle;
 
-		protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle)
+	    private readonly int _fragmentLength;
+
+	    protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle, int fragmentLength)
 		{
 			_waitHandle = waitHandle;
-			Opcode = opcode;
+	        _fragmentLength = fragmentLength;
+	        Opcode = opcode;
 		}
 
-		public Opcode Opcode { get; set; }
+		public Opcode Opcode { get; private set; }
 
 		public abstract Stream RawData { get; }
 
@@ -38,7 +41,7 @@ namespace WebSocketSharp
 
 		internal void Consume()
 		{
-			int length = WebSocket.FragmentLength;
+			var length = _fragmentLength;
 			if (RawData != null)
 			{
 				var buffer = new byte[length];

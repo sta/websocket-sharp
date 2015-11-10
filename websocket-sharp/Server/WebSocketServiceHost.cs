@@ -169,11 +169,11 @@ namespace WebSocketSharp.Server
 
 		#region Internal Constructors
 
-		internal WebSocketServiceHost(string path, Func<TBehavior> initializer)
+		internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
 		{
 			_path = path;
 			_initializer = initializer;
-			_sessions = new WebSocketSessionManager();
+			_sessions = new WebSocketSessionManager(fragmentSize);
 		}
 
 		#endregion

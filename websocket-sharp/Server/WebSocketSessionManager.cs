@@ -44,23 +44,20 @@ namespace WebSocketSharp.Server
     /// </summary>
     public class WebSocketSessionManager
     {
-        #region Private Fields
-
+        private readonly int _fragmentSize;
+        
         private volatile bool _clean;
-        private object _forSweep;
-        private Dictionary<string, IWebSocketSession> _sessions;
+        private readonly object _forSweep;
+        private readonly Dictionary<string, IWebSocketSession> _sessions;
         private volatile ServerState _state;
         private volatile bool _sweeping;
         private System.Timers.Timer _sweepTimer;
-        private object _sync;
+        private readonly object _sync;
         private TimeSpan _waitTime;
-
-        #endregion
-
-        #region Internal Constructors
-
-        internal WebSocketSessionManager()
+        
+        internal WebSocketSessionManager(int fragmentSize)
         {
+            _fragmentSize = fragmentSize;
             _clean = true;
             _forSweep = new object();
             _sessions = new Dictionary<string, IWebSocketSession>();
@@ -70,11 +67,7 @@ namespace WebSocketSharp.Server
 
             setSweepTimer(60000);
         }
-
-        #endregion
-
-        #region Internal Properties
-
+        
         internal ServerState State
         {
             get
@@ -82,11 +75,7 @@ namespace WebSocketSharp.Server
                 return _state;
             }
         }
-
-        #endregion
-
-        #region Public Properties
-
+        
         /// <summary>
         /// Gets the IDs for the active sessions in the Websocket service.
         /// </summary>
@@ -248,11 +237,7 @@ namespace WebSocketSharp.Server
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
-
+        
         private static string createID()
         {
             return Guid.NewGuid().ToString("N");
@@ -268,21 +253,21 @@ namespace WebSocketSharp.Server
         {
             bool res;
             lock (_sync)
+            {
                 res = _sessions.TryGetValue(id, out session);
+            }
 
             return res;
         }
-
-        #endregion
-
-        #region Internal Methods
-
+        
         internal string Add(IWebSocketSession session)
         {
             lock (_sync)
             {
                 if (_state != ServerState.Start)
+                {
                     return null;
+                }
 
                 var id = createID();
                 _sessions.Add(id, session);
@@ -303,7 +288,8 @@ namespace WebSocketSharp.Server
         {
             var results =
                 Sessions.TakeWhile(session => _state == ServerState.Start)
-                    .Select(session => session.Context.WebSocket.InnerSend(final, opcode, data));
+                    .Select(session => session.Context.WebSocket.InnerSend(final, opcode, data))
+                    .ToArray();
             return results.All(x => x);
         }
 
@@ -314,10 +300,10 @@ namespace WebSocketSharp.Server
             bool isFinal;
             do
             {
-                var buffer = new byte[WebSocket.FragmentLength];
-                var bytesRead = stream.Read(buffer, 0, WebSocket.FragmentLength);
-                isFinal = bytesRead != WebSocket.FragmentLength;
-                var result = InnerBroadcast(isFinal ? Fin.Final : Fin.More, sentCode, buffer);
+                var buffer = new byte[_fragmentSize];
+                var bytesRead = stream.Read(buffer, 0, _fragmentSize);
+                isFinal = bytesRead != _fragmentSize;
+                var result = InnerBroadcast(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer);
                 allBroadcasts.Add(result);
                 sentCode = Opcode.Cont;
             }
@@ -363,10 +349,6 @@ namespace WebSocketSharp.Server
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         /// Broadcasts a binary <paramref name="data"/> to every client in the WebSocket service.
         /// </summary>
@@ -381,7 +363,7 @@ namespace WebSocketSharp.Server
                 return;
             }
 
-            if (data.LongLength <= WebSocket.FragmentLength)
+            if (data.LongLength <= _fragmentSize)
             {
                 InnerBroadcast(Opcode.Binary, data);
             }
@@ -423,7 +405,7 @@ namespace WebSocketSharp.Server
             }
 
             var rawData = Encoding.UTF8.GetBytes(data);
-            if (rawData.LongLength <= WebSocket.FragmentLength)
+            if (rawData.LongLength <= _fragmentSize)
             {
                 InnerBroadcast(Opcode.Text, rawData);
             }
@@ -445,28 +427,7 @@ namespace WebSocketSharp.Server
         /// </param>
         public Task BroadcastAsync(byte[] data)
         {
-            return BroadcastAsync(Opcode.Binary, data);
-        }
-
-        /// <summary>
-        /// Broadcasts a binary <paramref name="data"/> asynchronously to every client
-        /// in the WebSocket service.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to broadcast.
-        /// </param>
-        internal async Task BroadcastAsync(Opcode opcode, byte[] data)
-        {
-            var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
-            if (msg != null)
-            {
-                return;
-            }
-
-            await BroadcastAsync(opcode, new MemoryStream(data)).ConfigureAwait(false);
+            return Task.Run(() => Broadcast(data));
         }
 
         /// <summary>
@@ -479,23 +440,9 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to broadcast.
         /// </param>
-        public async Task BroadcastAsync(string data)
+        public Task BroadcastAsync(string data)
         {
-            var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
-            if (msg != null)
-            {
-                return;
-            }
-
-            var rawData = Encoding.UTF8.GetBytes(data);
-            if (rawData.LongLength <= WebSocket.FragmentLength)
-            {
-                await BroadcastAsync(Opcode.Text, rawData).ConfigureAwait(false);
-            }
-            else
-            {
-                await BroadcastAsync(Opcode.Text, new MemoryStream(rawData)).ConfigureAwait(false);
-            }
+            return Task.Run(() => Broadcast(data));
         }
 
         /// <summary>
@@ -510,46 +457,7 @@ namespace WebSocketSharp.Server
         /// </param>
         public Task BroadcastAsync(Stream stream)
         {
-            return BroadcastAsync(Opcode.Binary, stream);
-        }
-
-        /// <summary>
-        /// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously
-        /// to every client in the WebSocket service.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to broadcast.
-        /// </param>
-        internal async Task BroadcastAsync(Opcode opcode, Stream stream)
-        {
-            var msg = _state.CheckIfStart() ?? stream.CheckIfCanRead();
-
-            if (msg != null)
-            {
-                return;
-            }
-
-            var sentCode = opcode;
-            var isFinal = false;
-            while (!isFinal)
-            {
-                var buffer = new byte[WebSocket.FragmentLength];
-                var bytesRead = await stream.ReadAsync(buffer, 0, WebSocket.FragmentLength).ConfigureAwait(false);
-                isFinal = bytesRead != WebSocket.FragmentLength;
-                await BroadcastAsync(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);
-                sentCode = Opcode.Cont;
-            }
-        }
-
-        internal async Task BroadcastAsync(Fin final, Opcode opcode, byte[] data)
-        {
-            var tasks = Sessions.TakeWhile(session => _state == ServerState.Start)
-                    .Select(session => Task.Run(() => session.Context.WebSocket.InnerSend(final, opcode, data)));
-
-            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+            return Task.Run(() => Broadcast(stream));
         }
 
         /// <summary>
@@ -848,7 +756,5 @@ namespace WebSocketSharp.Server
 
             return tryGetSession(id, out session);
         }
-
-        #endregion
     }
 }

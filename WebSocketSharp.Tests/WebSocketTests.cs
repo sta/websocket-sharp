@@ -33,7 +33,7 @@ namespace WebSocketSharp.Tests
             public void Setup()
             {
                 _sut = new WebSocket("ws://echo.websocket.org");
-                _sut.OnError += PrintError;
+                _sut.OnError = PrintError;
             }
 
             [TearDown]
@@ -68,10 +68,11 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 const string Message = "Test Ping";
                 var echoReceived = false;
-                EventHandler<MessageEventArgs> onMessage = (s, e) =>
+                Func<MessageEventArgs, Task> onMessage = e =>
                     {
                         echoReceived = e.Text.ReadToEnd() == Message;
                         waitHandle.Set();
+                        return Task.FromResult(true);
                     };
                 _sut.OnMessage += onMessage;
 
@@ -94,11 +95,12 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 const string Message = "Test Ping";
                 var echoReceived = false;
-                EventHandler<MessageEventArgs> onMessage = (s, e) =>
+                Func<MessageEventArgs, Task> onMessage = e =>
                     {
                         var readToEnd = e.Text.ReadToEnd();
                         echoReceived = readToEnd == Message;
                         waitHandle.Set();
+                        return Task.FromResult(true);
                     };
                 _sut.OnMessage += onMessage;
 
@@ -109,8 +111,6 @@ namespace WebSocketSharp.Tests
                 Console.WriteLine("Sent: " + sent);
 
                 var result = waitHandle.Wait(2000);
-
-                _sut.OnMessage -= onMessage;
 
                 Assert.True(result && echoReceived);
             }
@@ -123,9 +123,10 @@ namespace WebSocketSharp.Tests
                 Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
             }
 
-            private void PrintError(object sender, ErrorEventArgs e)
+            private Task PrintError(ErrorEventArgs e)
             {
                 Console.WriteLine(e.Message);
+                return Task.FromResult(true);
             }
         }
     }

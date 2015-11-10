@@ -66,9 +66,9 @@ namespace WebSocketSharp
     /// </remarks>
     public class WebSocket : IDisposable
     {
-        internal const int FragmentLength = 102392; // Max value is int.MaxValue - 14.
+        internal readonly int FragmentLength; // Max value is int.MaxValue - 14.
 
-		private const string GuidId = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+        private const string GuidId = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
         private const string SocketVersion = "13";
 
         private readonly Uri _uri;
@@ -108,12 +108,13 @@ namespace WebSocketSharp
         /// the specified WebSocket URL and subprotocols.
         /// </summary>
         /// <param name="url">
-        /// A <see cref="string"/> that represents the WebSocket URL to connect.
+        ///     A <see cref="string"/> that represents the WebSocket URL to connect.
         /// </param>
+        /// <param name="fragmentSize">Set the size of message packages. Smaller size equals less memory overhead when sending streams.</param>
         /// <param name="protocols">
-        /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
-        /// Each value of <paramref name="protocols"/> must be a token defined in
-        /// <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
+        ///     An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
+        ///     Each value of <paramref name="protocols"/> must be a token defined in
+        ///     <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
         /// </param>
         /// <exception cref="ArgumentException">
         ///   <para>
@@ -129,8 +130,8 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, params string[] protocols)
-            : this(url, null, protocols)
+        public WebSocket(string url, int fragmentSize = 102392, params string[] protocols)
+            : this(url, null, fragmentSize, protocols)
         {
         }
 
@@ -142,6 +143,7 @@ namespace WebSocketSharp
         /// A <see cref="string"/> that represents the WebSocket URL to connect.
         /// </param>
         /// <param name="sslAuthConfiguration">A <see cref="ClientSslAuthConfiguration"/> for securing the connection.</param>
+        /// <param name="fragmentSize"></param>
         /// <param name="protocols">
         /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
         /// Each value of <paramref name="protocols"/> must be a token defined in
@@ -161,7 +163,7 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, params string[] protocols)
+        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, int fragmentSize = 102392, params string[] protocols)
         {
             if (url == null)
             {
@@ -171,7 +173,7 @@ namespace WebSocketSharp
             string msg;
             if (!url.TryCreateWebSocketUri(out _uri, out msg))
             {
-                throw new ArgumentException(msg, "url");
+                throw new ArgumentException(msg, nameof(url));
             }
 
             if (protocols != null && protocols.Length > 0)
@@ -179,12 +181,13 @@ namespace WebSocketSharp
                 msg = protocols.CheckIfValidProtocols();
                 if (msg != null)
                 {
-                    throw new ArgumentException(msg, "protocols");
+                    throw new ArgumentException(msg, nameof(protocols));
                 }
 
                 _protocols = protocols;
             }
 
+            FragmentLength = fragmentSize;
             _sslConfig = sslAuthConfiguration;
             _base64Key = CreateBase64Key();
             _client = true;
@@ -195,8 +198,9 @@ namespace WebSocketSharp
         }
 
         // As server
-        internal WebSocket(HttpListenerWebSocketContext context, string protocol)
+        internal WebSocket(HttpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {
+            FragmentLength = fragmentSize;
             _context = context;
             _protocol = protocol;
 
@@ -209,8 +213,9 @@ namespace WebSocketSharp
         }
 
         // As server
-        internal WebSocket(TcpListenerWebSocketContext context, string protocol)
+        internal WebSocket(TcpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {
+            FragmentLength = fragmentSize;
             _context = context;
             _protocol = protocol;
 
@@ -225,22 +230,22 @@ namespace WebSocketSharp
         /// <summary>
         /// Occurs when the WebSocket connection has been closed.
         /// </summary>
-        public event EventHandler<CloseEventArgs> OnClose;
+        public Func<CloseEventArgs, Task> OnClose { get; set; }
 
         /// <summary>
         /// Occurs when the <see cref="WebSocket"/> gets an error.
         /// </summary>
-        public event EventHandler<ErrorEventArgs> OnError;
+        public Func<ErrorEventArgs, Task> OnError { get; set; }
 
         /// <summary>
         /// Occurs when the <see cref="WebSocket"/> receives a message.
         /// </summary>
-        public event EventHandler<MessageEventArgs> OnMessage;
+        public Func<MessageEventArgs, Task> OnMessage { get; set; }
 
         /// <summary>
         /// Occurs when the WebSocket connection has been established.
         /// </summary>
-        public event EventHandler OnOpen;
+        public Func<Task> OnOpen { get; set; }
 
         /// <summary>
         /// Gets the HTTP cookies included in the WebSocket connection request and response.
@@ -1089,7 +1094,7 @@ namespace WebSocketSharp
 
             _readyState = WebSocketState.Closed;
 
-            OnClose.Emit(this, e);
+            OnClose?.Invoke(e);
         }
 
         // As server
@@ -1154,7 +1159,7 @@ namespace WebSocketSharp
 
             return SendHttpResponse(InnerCreateHandshakeResponse());
         }
-        
+
         // As server
         private void InnerClose(CloseStatusCode code, string reason, bool wait)
         {
@@ -1182,7 +1187,7 @@ namespace WebSocketSharp
             _readyState = WebSocketState.Closed;
             try
             {
-                OnClose.Emit(this, e);
+                OnClose?.Invoke(e);
             }
             catch (Exception ex)
             {
@@ -1260,14 +1265,14 @@ namespace WebSocketSharp
             _readyState = WebSocketState.Closed;
             try
             {
-                OnClose.Emit(this, e);
+                OnClose?.Invoke(e);
             }
             catch (Exception ex)
             {
                 Error("An exception has occurred during an OnClose event.", ex);
             }
         }
-        
+
         private bool CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
         {
             lock (_forSend)
@@ -1447,7 +1452,7 @@ namespace WebSocketSharp
 
         private void Error(string message, Exception exception)
         {
-            OnError.Emit(this, new ErrorEventArgs(message, exception));
+            OnError?.Invoke(new ErrorEventArgs(message, exception));
         }
 
         private void InnerInit()
@@ -1470,7 +1475,7 @@ namespace WebSocketSharp
                 {
                     try
                     {
-                        OnOpen.Emit(this, EventArgs.Empty);
+                        OnOpen?.Invoke();
                     }
                     catch (Exception ex)
                     {
@@ -1722,7 +1727,7 @@ namespace WebSocketSharp
 
             return true;
         }
-        
+
         private bool InnerSend(Fin fin, Opcode opcode, byte[] data, bool compressed)
         {
             lock (_forConn)
@@ -1735,7 +1740,7 @@ namespace WebSocketSharp
                 return SendBytes(new WebSocketFrame(fin, opcode, data, compressed, _client).ToByteArray());
             }
         }
-        
+
         private bool SendBytes(byte[] bytes)
         {
             try
@@ -1749,7 +1754,7 @@ namespace WebSocketSharp
                 return false;
             }
         }
-        
+
         // As client
         private HttpResponse SendHandshakeRequest()
         {
@@ -1869,9 +1874,9 @@ namespace WebSocketSharp
         private Task StartReceiving()
         {
             return Task.Run(
-                () =>
+                async () =>
                 {
-                    var reader = new WebSocketStreamReader(_stream);
+                    var reader = new WebSocketStreamReader(_stream, FragmentLength);
                     foreach (var message in reader.Read())
                     {
                         switch (message.Opcode)
@@ -1880,11 +1885,11 @@ namespace WebSocketSharp
                                 break;
                             case Opcode.Text:
                             case Opcode.Binary:
-                                if (!OnMessage.Emit(this, new MessageEventArgs(message)))
+                                if (OnMessage != null)
                                 {
-                                    message.Consume();
+                                    await OnMessage.Invoke(new MessageEventArgs(message));
                                 }
-
+                                message.Consume();
                                 break;
                             case Opcode.Close:
                                 ProcessCloseFrame(message);

@@ -17,285 +17,290 @@
 
 namespace WebSocketSharp.Tests
 {
-	using System;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Security.Cryptography.X509Certificates;
-	using System.Threading;
-	using System.Threading.Tasks;
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
-	using WebSocketSharp.Net;
-	using WebSocketSharp.Server;
+    using WebSocketSharp.Net;
+    using WebSocketSharp.Server;
 
-	public sealed class SecureWebSocketServerTests
-	{
-		public class GivenASecureWebSocketServer
-		{
-			private WebSocketServer _sut;
+    public sealed class SecureWebSocketServerTests
+    {
+        public class GivenASecureWebSocketServer
+        {
+            private WebSocketServer _sut;
 
-			[SetUp]
-			public void Setup()
-			{
-				var cert = GetRandomCertificate();
-				_sut = new WebSocketServer(443, new ServerSslConfiguration(cert));
-				_sut.AddWebSocketService<TestEchoService>("/echo");
-				_sut.AddWebSocketService<TestRadioService>("/radio");
-				_sut.Start();
-			}
+            [SetUp]
+            public void Setup()
+            {
+                var cert = GetRandomCertificate();
+                _sut = new WebSocketServer(port: 443, certificate: new ServerSslConfiguration(cert));
+                _sut.AddWebSocketService<TestEchoService>("/echo");
+                _sut.AddWebSocketService<TestRadioService>("/radio");
+                _sut.Start();
+            }
 
-			[TearDown]
-			public void Teardown()
-			{
-				_sut.Stop();
-			}
+            [TearDown]
+            public void Teardown()
+            {
+                _sut.Stop();
+            }
 
-			[Test]
-			public void CanGetDefinedPort()
-			{
-				Assert.AreEqual(443, _sut.Port);
-			}
+            [Test]
+            public void CanGetDefinedPort()
+            {
+                Assert.AreEqual(443, _sut.Port);
+            }
 
-			[Test]
-			public void ClientCanConnectToServer()
-			{
-				var client = new WebSocket("wss://localhost:443/echo");
+            [Test]
+            public void ClientCanConnectToServer()
+            {
+                var client = new WebSocket("wss://localhost:443/echo");
 
-				client.Connect();
+                client.Connect();
 
-				Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+                Assert.AreEqual(WebSocketState.Open, client.ReadyState);
 
-				client.Close();
-			}
+                client.Close();
+            }
 
-			[Test]
-			public async Task ClientCanConnectAsyncToServer()
-			{
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					await client.ConnectAsync();
+            [Test]
+            public async Task ClientCanConnectAsyncToServer()
+            {
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    await client.ConnectAsync();
 
-					Assert.AreEqual(WebSocketState.Open, client.ReadyState);
+                    Assert.AreEqual(WebSocketState.Open, client.ReadyState);
 
-					await client.CloseAsync();
-				}
-			}
+                    await client.CloseAsync();
+                }
+            }
 
-			[Test]
-			public void WhenClientSendsTextMessageThenResponds()
-			{
-				const string Message = "Message";
-				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
-						{
-							if (e.Text.ReadToEnd() == Message)
-							{
-								waitHandle.Set();
-							}
-						};
-					client.OnMessage += onMessage;
+            [Test]
+            public void WhenClientSendsTextMessageThenResponds()
+            {
+                const string Message = "Message";
+                var waitHandle = new ManualResetEventSlim(false);
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    Func<MessageEventArgs, Task> onMessage = e =>
+                        {
+                            if (e.Text.ReadToEnd() == Message)
+                            {
+                                waitHandle.Set();
+                            }
+                            return Task.FromResult(true);
+                        };
+                    client.OnMessage = onMessage;
 
-					client.Connect();
-					client.Send(Message);
+                    client.Connect();
+                    client.Send(Message);
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
 
-					Assert.True(result);
+                    Assert.True(result);
 
-					client.OnMessage -= onMessage;
-					client.Close();
-				}
-			}
+                    client.OnMessage -= onMessage;
+                    client.Close();
+                }
+            }
 
-			[Test]
-			public async Task WhenClientSendsAsyncTextMessageThenResponds()
-			{
-				const string Message = "Message";
-				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
-						{
-							if (e.Text.ReadToEnd() == Message)
-							{
-								waitHandle.Set();
-							}
-						};
-					client.OnMessage += onMessage;
+            [Test]
+            public async Task WhenClientSendsAsyncTextMessageThenResponds()
+            {
+                const string Message = "Message";
+                var waitHandle = new ManualResetEventSlim(false);
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    Func<MessageEventArgs, Task> onMessage = e =>
+                        {
+                            if (e.Text.ReadToEnd() == Message)
+                            {
+                                waitHandle.Set();
+                            }
+                            return Task.FromResult(true);
+                        };
+                    client.OnMessage = onMessage;
 
-					client.Connect();
-					await client.SendAsync(Message);
+                    client.Connect();
+                    await client.SendAsync(Message);
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
+                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
 
-					Assert.True(result);
+                    Assert.True(result);
 
-					client.OnMessage -= onMessage;
-					client.Close();
-				}
-			}
+                    client.OnMessage -= onMessage;
+                    client.Close();
+                }
+            }
 
-			[Test]
-			public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
-			{
-				int count = 0;
-				const string Message = "Message";
-				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
-						{
-							if (e.Text.ReadToEnd() == Message)
-							{
-								if (Interlocked.Increment(ref count) == multiplicity)
-								{
-									waitHandle.Set();
-								}
-							}
-						};
-					client.OnMessage += onMessage;
+            [Test]
+            public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
+            {
+                int count = 0;
+                const string Message = "Message";
+                var waitHandle = new ManualResetEventSlim(false);
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    Func<MessageEventArgs, Task> onMessage = e =>
+                        {
+                            if (e.Text.ReadToEnd() == Message)
+                            {
+                                if (Interlocked.Increment(ref count) == multiplicity)
+                                {
+                                    waitHandle.Set();
+                                }
+                            }
+                            return Task.FromResult(true);
+                        };
+                    client.OnMessage = onMessage;
 
-					client.Connect();
-					for (int i = 0; i < multiplicity; i++)
-					{
-						await client.SendAsync(Message);
-					}
+                    client.Connect();
+                    for (int i = 0; i < multiplicity; i++)
+                    {
+                        await client.SendAsync(Message);
+                    }
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
-					Assert.True(result);
+                    Assert.True(result);
 
-					client.OnMessage -= onMessage;
-					client.Close();
-				}
-			}
+                    client.OnMessage -= onMessage;
+                    client.Close();
+                }
+            }
 
-			[Test]
-			public void WhenClientSendsMultipleTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
-			{
-				int count = 0;
-				const string Message = "Message";
-				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
-						{
-							if (e.Text.ReadToEnd() == Message)
-							{
-								if (Interlocked.Increment(ref count) == multiplicity)
-								{
-									waitHandle.Set();
-								}
-							}
-						};
-					client.OnMessage += onMessage;
+            [Test]
+            public void WhenClientSendsMultipleTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
+            {
+                int count = 0;
+                const string Message = "Message";
+                var waitHandle = new ManualResetEventSlim(false);
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    Func<MessageEventArgs, Task> onMessage = e =>
+                        {
+                            if (e.Text.ReadToEnd() == Message)
+                            {
+                                if (Interlocked.Increment(ref count) == multiplicity)
+                                {
+                                    waitHandle.Set();
+                                }
+                            }
+                            return Task.FromResult(true);
+                        };
+                    client.OnMessage = onMessage;
 
-					client.Connect();
-					for (int i = 0; i < multiplicity; i++)
-					{
-						client.Send(Message);
-					}
+                    client.Connect();
+                    for (int i = 0; i < multiplicity; i++)
+                    {
+                        client.Send(Message);
+                    }
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
+                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
-					Assert.True(result);
+                    Assert.True(result);
 
-					client.OnMessage -= onMessage;
-					client.Close();
-				}
-			}
+                    client.OnMessage -= onMessage;
+                    client.Close();
+                }
+            }
 
-			[Test]
-			public async Task WhenStreamVeryLargeStreamToServerThenResponds()
-			{
-				var responseLength = 0;
-				const int Length = 1000000;
+            [Test]
+            public async Task WhenStreamVeryLargeStreamToServerThenResponds()
+            {
+                var responseLength = 0;
+                const int Length = 1000000;
 
-				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
-				var waitHandle = new ManualResetEventSlim(false);
-				using (var client = new WebSocket("wss://localhost:443/echo"))
-				{
-					EventHandler<MessageEventArgs> onMessage = (s, e) =>
-					{
-						while (e.Data.ReadByte() == 123)
-						{
-							responseLength++;
-						}
+                var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+                var waitHandle = new ManualResetEventSlim(false);
+                using (var client = new WebSocket("wss://localhost:443/echo"))
+                {
+                    Func<MessageEventArgs, Task> onMessage = e =>
+                    {
+                        while (e.Data.ReadByte() == 123)
+                        {
+                            responseLength++;
+                        }
 
-						waitHandle.Set();
-					};
+                        waitHandle.Set();
+                        return Task.FromResult(true);
+                    };
 
-					client.OnMessage += onMessage;
+                    client.OnMessage = onMessage;
 
-					client.Connect();
-					await client.SendAsync(stream);
+                    client.Connect();
+                    await client.SendAsync(stream);
 
-					var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
+                    var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
 
-					Assert.AreEqual(Length, responseLength);
+                    Assert.AreEqual(Length, responseLength);
 
-					client.OnMessage -= onMessage;
-				}
-			}
+                    client.OnMessage -= onMessage;
+                }
+            }
 
-			[Test]
-			public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
-			{
-				var responseLength = 0;
-				const int Length = 1000000;
+            [Test]
+            public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts()
+            {
+                var responseLength = 0;
+                const int Length = 1000000;
 
-				var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
-				var waitHandle = new ManualResetEventSlim(false);
+                var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
+                var waitHandle = new ManualResetEventSlim(false);
 
-				var sender = new WebSocket("wss://localhost:443/radio");
-				var client = new WebSocket("wss://localhost:443/radio");
+                var sender = new WebSocket("wss://localhost:443/radio");
+                var client = new WebSocket("wss://localhost:443/radio");
 
-				EventHandler<MessageEventArgs> onMessage = (s, e) =>
-				{
-					while (e.Data.ReadByte() == 123)
-					{
-						responseLength++;
-					}
+                Func<MessageEventArgs, Task> onMessage = e =>
+                {
+                    while (e.Data.ReadByte() == 123)
+                    {
+                        responseLength++;
+                    }
 
-					waitHandle.Set();
-				};
+                    waitHandle.Set();
+                    return Task.FromResult(true);
+                };
 
-				client.OnMessage += onMessage;
+                client.OnMessage = onMessage;
 
-				sender.Connect();
-				client.Connect();
-				await sender.SendAsync(stream);
+                sender.Connect();
+                client.Connect();
+                await sender.SendAsync(stream);
 
-				var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
+                var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 30000);
 
-				Assert.AreEqual(Length, responseLength);
+                Assert.AreEqual(Length, responseLength);
 
-				await client.CloseAsync();
-				await sender.CloseAsync();
+                await client.CloseAsync();
+                await sender.CloseAsync();
 
-				client.OnMessage -= onMessage;
-				sender.Dispose();
-				client.Dispose();
-			}
+                sender.Dispose();
+                client.Dispose();
+            }
 
-			private static X509Certificate2 GetRandomCertificate()
-			{
-				var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-				st.Open(OpenFlags.ReadOnly);
-				try
-				{
-					var certCollection = st.Certificates;
+            private static X509Certificate2 GetRandomCertificate()
+            {
+                var st = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+                st.Open(OpenFlags.ReadOnly);
+                try
+                {
+                    var certCollection = st.Certificates;
 
-					return certCollection.Count == 0 ? null : certCollection[0];
-				}
-				finally
-				{
-					st.Close();
-				}
-			}
-		}
-	}
+                    return certCollection.Count == 0 ? null : certCollection[0];
+                }
+                finally
+                {
+                    st.Close();
+                }
+            }
+        }
+    }
 }

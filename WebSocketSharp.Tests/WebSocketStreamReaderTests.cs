@@ -17,137 +17,137 @@
 
 namespace WebSocketSharp.Tests
 {
-	using System;
-	using System.IO;
-	using System.Linq;
-	using System.Threading.Tasks;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
 
-	using NUnit.Framework;
+    using NUnit.Framework;
 
-	public class WebSocketStreamReaderTests
-	{
-		private WebSocketStreamReaderTests()
-		{
-		}
+    public class WebSocketStreamReaderTests
+    {
+        private WebSocketStreamReaderTests()
+        {
+        }
 
-		[TestFixture]
-		public class GivenAWebSocketStreamReader
-		{
-			private WebSocketStreamReader _sut;
+        [TestFixture]
+        public class GivenAWebSocketStreamReader
+        {
+            private WebSocketStreamReader _sut;
 
-			[SetUp]
-			public void Setup()
-			{
-				var data1 = Enumerable.Repeat((byte)1, 1000).ToArray();
-				var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
-				var data2 = Enumerable.Repeat((byte)2, 1000).ToArray();
-				var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
-				var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
-				var stream = new MemoryStream(frame1.ToByteArray().Concat(frame2.ToByteArray()).Concat(frame3.ToByteArray()).ToArray());
-				_sut = new WebSocketStreamReader(stream);
-			}
+            [SetUp]
+            public void Setup()
+            {
+                var data1 = Enumerable.Repeat((byte)1, 1000).ToArray();
+                var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
+                var data2 = Enumerable.Repeat((byte)2, 1000).ToArray();
+                var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
+                var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+                var stream = new MemoryStream(frame1.ToByteArray().Concat(frame2.ToByteArray()).Concat(frame3.ToByteArray()).ToArray());
+                _sut = new WebSocketStreamReader(stream, 100000);
+            }
 
-			[Test]
-			public void WhenReadingMessageThenGetsAllFrames()
-			{
-				var msg = _sut.Read().First();
+            [Test]
+            public void WhenReadingMessageThenGetsAllFrames()
+            {
+                var msg = _sut.Read().First();
 
-				var buffer = new byte[2000];
-				var bytesRead = msg.RawData.Read(buffer, 0, 2000);
+                var buffer = new byte[2000];
+                var bytesRead = msg.RawData.Read(buffer, 0, 2000);
 
-			    var expected = Enumerable.Repeat((byte)1, 1000).Concat(Enumerable.Repeat((byte)2, 1000)).ToArray();
-			    CollectionAssert.AreEqual(expected, buffer);
-			}
+                var expected = Enumerable.Repeat((byte)1, 1000).Concat(Enumerable.Repeat((byte)2, 1000)).ToArray();
+                CollectionAssert.AreEqual(expected, buffer);
+            }
 
-			[Test]
-			public void WhenMessageDataIsNotConsumedThenDoesNotGetSecondMessage()
-			{
-				var task = Task.Factory.StartNew(() => _sut.Read().ElementAt(1));
-				var hasResult = task.Wait(TimeSpan.FromSeconds(2));
+            [Test]
+            public void WhenMessageDataIsNotConsumedThenDoesNotGetSecondMessage()
+            {
+                var task = Task.Factory.StartNew(() => _sut.Read().ElementAt(1));
+                var hasResult = task.Wait(TimeSpan.FromSeconds(2));
 
-				Assert.False(hasResult);
-			}
+                Assert.False(hasResult);
+            }
 
-			[Test]
-			public void WhenMessageDataIsConsumedThenGetsSecondMessage()
-			{
-				var count = 0;
-				var messages = _sut.Read();
-				foreach (var message in messages)
-				{
-					message.Consume();
-					count++;
-				}
+            [Test]
+            public void WhenMessageDataIsConsumedThenGetsSecondMessage()
+            {
+                var count = 0;
+                var messages = _sut.Read();
+                foreach (var message in messages)
+                {
+                    message.Consume();
+                    count++;
+                }
 
-				Assert.AreEqual(2, count);
-			}
+                Assert.AreEqual(2, count);
+            }
 
-			[Test]
-			public async Task WhenSecondReadCalledSecondTimeThenReturnsEmpty()
-			{
-				var first = await Task.Factory.StartNew(() => _sut.Read().First());
-				var second = await Task.Factory.StartNew(() => _sut.Read().FirstOrDefault());
+            [Test]
+            public async Task WhenSecondReadCalledSecondTimeThenReturnsEmpty()
+            {
+                var first = await Task.Factory.StartNew(() => _sut.Read().First());
+                var second = await Task.Factory.StartNew(() => _sut.Read().FirstOrDefault());
 
-				Assert.IsNull(second);
-			}
+                Assert.IsNull(second);
+            }
 
-			[Test]
-			public void WhenReadingStreamWithPingsThenReadsAllData()
-			{
-				var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
-				var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
-				var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
-				var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
-				var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
-				var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1, false, true);
-				var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+            [Test]
+            public void WhenReadingStreamWithPingsThenReadsAllData()
+            {
+                var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
+                var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
+                var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
+                var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
+                var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+                var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1, false, true);
+                var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
 
-				var stream = new MemoryStream(
-					frame1.ToByteArray()
-					.Concat(frame2.ToByteArray())
-					.Concat(frame3.ToByteArray())
-					.Concat(frame4.ToByteArray())
-					.Concat(frame5.ToByteArray())
-					.ToArray());
-				_sut = new WebSocketStreamReader(stream);
+                var stream = new MemoryStream(
+                    frame1.ToByteArray()
+                    .Concat(frame2.ToByteArray())
+                    .Concat(frame3.ToByteArray())
+                    .Concat(frame4.ToByteArray())
+                    .Concat(frame5.ToByteArray())
+                    .ToArray());
+                _sut = new WebSocketStreamReader(stream, 100000);
 
-				var messages = _sut.Read().Select(x =>
-				{
-					x.Consume();
-					return x;
-				}).Count();
+                var messages = _sut.Read().Select(x =>
+                {
+                    x.Consume();
+                    return x;
+                }).Count();
 
-				Assert.AreEqual(4, messages);
-			}
+                Assert.AreEqual(4, messages);
+            }
 
-			[Test]
-			public void WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
-			{
-				var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
-				var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
-				var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
-				var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
-				var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
-				var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
-				var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+            [Test]
+            public void WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
+            {
+                var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
+                var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
+                var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+                var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
 
-				var stream = new MemoryStream(
-					frame1.ToByteArray()
-					.Concat(frame2.ToByteArray())
-					.Concat(frame3.ToByteArray())
-					.Concat(frame4.ToByteArray())
-					.Concat(frame5.ToByteArray())
-					.ToArray());
-				_sut = new WebSocketStreamReader(stream);
+                var stream = new MemoryStream(
+                    frame1.ToByteArray()
+                    .Concat(frame2.ToByteArray())
+                    .Concat(frame3.ToByteArray())
+                    .Concat(frame4.ToByteArray())
+                    .Concat(frame5.ToByteArray())
+                    .ToArray());
+                _sut = new WebSocketStreamReader(stream, 100000);
 
-				var messages = _sut.Read().Select(x =>
-				{
-					x.Consume();
-					return x;
-				}).Count();
+                var messages = _sut.Read().Select(x =>
+                {
+                    x.Consume();
+                    return x;
+                }).Count();
 
-				Assert.AreEqual(4, messages);
-			}
-		}
-	}
+                Assert.AreEqual(4, messages);
+            }
+        }
+    }
 }
