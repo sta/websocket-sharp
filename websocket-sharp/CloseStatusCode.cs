@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the values of the status code for the WebSocket connection close.
+  /// Indicates the status code for the WebSocket connection close.
   /// </summary>
   /// <remarks>
   ///   <para>
@@ -47,7 +47,7 @@ namespace WebSocketSharp
   public enum CloseStatusCode : ushort
   {
     /// <summary>
-    /// Equivalent to close status 1000. Indicates a normal close.
+    /// Equivalent to close status 1000. Indicates normal close.
     /// </summary>
     Normal = 1000,
     /// <summary>
