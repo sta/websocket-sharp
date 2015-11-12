@@ -27,12 +27,11 @@
 #endregion
 
 using System;
-using System.Text;
 
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
+  /// Represents the event data for the <see cref="WebSocket.OnMessage"/> event.
   /// </summary>
   /// <remarks>
   ///   <para>
@@ -81,8 +80,8 @@ namespace WebSocketSharp
     /// Gets the message data as a <see cref="string"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the message data,
-    /// or <see langword="null"/> if the message data cannot be decoded to a string.
+    /// A <see cref="string"/> that represents the message data or
+    /// <see langword="null"/> if the message data cannot be decoded to a string.
     /// </value>
     public string Data {
       get {
