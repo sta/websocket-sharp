@@ -98,6 +98,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets a value indicating whether the message type is text.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the message type is text; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsText {
+      get {
+        return _opcode == Opcode.Text;
+      }
+    }
+
+    /// <summary>
     /// Gets the message data as an array of <see cref="byte"/>.
     /// </summary>
     /// <value>
