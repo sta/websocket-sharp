@@ -98,6 +98,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets a value indicating whether the message type is binary.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the message type is binary; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsBinary {
+      get {
+        return _opcode == Opcode.Binary;
+      }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the message type is text.
     /// </summary>
     /// <value>
