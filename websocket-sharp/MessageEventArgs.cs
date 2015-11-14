@@ -36,7 +36,7 @@ namespace WebSocketSharp
   /// <remarks>
   ///   <para>
   ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  ///   a text or binary message, or a Ping if the <see cref="WebSocket.EmitOnPing"/> property is
+  ///   a text or binary message, or a ping if the <see cref="WebSocket.EmitOnPing"/> property is
   ///   set to <c>true</c>.
   ///   </para>
   ///   <para>
@@ -110,6 +110,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Gets a value indicating whether the message type is ping.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the message type is ping; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsPing {
+      get {
+        return _opcode == Opcode.Ping;
+      }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the message type is text.
     /// </summary>
     /// <value>
@@ -134,11 +146,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the type of the message.
+    /// Gets the message type.
     /// </summary>
     /// <value>
     /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>, or <see cref="Opcode.Ping"/>.
     /// </value>
+    [Obsolete ("This property will be removed. Use any of the Is properties instead.")]
     public Opcode Type {
       get {
         return _opcode;
