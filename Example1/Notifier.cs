@@ -54,9 +54,7 @@ namespace Example1
     private NotificationMessage dequeue ()
     {
       lock (_sync)
-        return _queue.Count > 0
-               ? _queue.Dequeue ()
-               : null;
+        return _queue.Count > 0 ? _queue.Dequeue () : null;
     }
 
     public void Close ()

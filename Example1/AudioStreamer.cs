@@ -39,7 +39,7 @@ namespace Example1
         _websocket.Send (createTextMessage ("connection", String.Empty));
 
       _websocket.OnMessage += (sender, e) => {
-        if (e.Type == Opcode.Text) {
+        if (e.IsText) {
           _notifier.Notify (convertTextMessage (e.Data));
         }
         else {
