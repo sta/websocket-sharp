@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Contains the event data associated with a <see cref="WebSocket.OnError"/> event.
+  /// Represents the event data for the <see cref="WebSocket.OnError"/> event.
   /// </summary>
   /// <remarks>
   ///   <para>
@@ -50,8 +50,8 @@ namespace WebSocketSharp
   ///   the <see cref="ErrorEventArgs.Message"/> property.
   ///   </para>
   ///   <para>
-  ///   And if the error is due to an exception, you can get the <see cref="System.Exception"/>
-  ///   instance by accessing the <see cref="ErrorEventArgs.Exception"/> property.
+  ///   And if the error is due to an exception, you can get the exception by accessing
+  ///   the <see cref="ErrorEventArgs.Exception"/> property.
   ///   </para>
   /// </remarks>
   public class ErrorEventArgs : EventArgs
@@ -81,7 +81,7 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets the <see cref="System.Exception"/> instance that caused the error.
+    /// Gets the exception that caused the error.
     /// </summary>
     /// <value>
     /// An <see cref="System.Exception"/> instance that represents the cause of the error,
