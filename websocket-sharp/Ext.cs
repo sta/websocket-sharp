@@ -152,17 +152,14 @@ namespace WebSocketSharp
 
     internal static byte[] Append (this ushort code, string reason)
     {
-      using (var buff = new MemoryStream ()) {
-        var bytes = code.InternalToByteArray (ByteOrder.Big);
-        buff.Write (bytes, 0, 2);
-        if (reason != null && reason.Length > 0) {
-          bytes = Encoding.UTF8.GetBytes (reason);
-          buff.Write (bytes, 0, bytes.Length);
-        }
-
-        buff.Close ();
-        return buff.ToArray ();
+      var ret = code.InternalToByteArray (ByteOrder.Big);
+      if (reason != null && reason.Length > 0) {
+        var buff = new List<byte> (ret);
+        buff.AddRange (Encoding.UTF8.GetBytes (reason));
+        ret = buff.ToArray ();
       }
+
+      return ret;
     }
 
     internal static string CheckIfAvailable (
