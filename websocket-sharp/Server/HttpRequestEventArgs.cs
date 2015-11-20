@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,20 +32,19 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Contains the event data associated with an HTTP request event that
-  /// the <see cref="HttpServer"/> emits.
+  /// Represents the event data for the HTTP request event that the <see cref="HttpServer"/> emits.
   /// </summary>
   /// <remarks>
   ///   <para>
   ///   An HTTP request event occurs when the <see cref="HttpServer"/> receives an HTTP request.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the request data, you should access
-  ///   the <see cref="HttpRequestEventArgs.Request"/> property.
+  ///   If you would like to get the request data sent from a client,
+  ///   you should access the <see cref="Request"/> property.
   ///   </para>
   ///   <para>
-  ///   And if you would like to get the data used to return a response, you should access
-  ///   the <see cref="HttpRequestEventArgs.Response"/> property.
+  ///   And if you would like to get the response data used to return a response,
+  ///   you should access the <see cref="Response"/> property.
   ///   </para>
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
@@ -70,11 +69,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the <see cref="HttpListenerRequest"/> that represents the HTTP request sent from
-    /// a client.
+    /// Gets the HTTP request data sent from a client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerRequest"/> that represents the request.
+    /// A <see cref="HttpListenerRequest"/> that represents the request data.
     /// </value>
     public HttpListenerRequest Request {
       get {
@@ -83,10 +81,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the <see cref="HttpListenerResponse"/> used to return an HTTP response to the client.
+    /// Gets the HTTP response data used to return a response to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerResponse"/> used to return a response.
+    /// A <see cref="HttpListenerResponse"/> that represents the response data.
     /// </value>
     public HttpListenerResponse Response {
       get {
