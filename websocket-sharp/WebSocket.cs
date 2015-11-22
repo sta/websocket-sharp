@@ -342,11 +342,11 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="WebSocket"/> emits
-    /// a <see cref="OnMessage"/> event when receives a Ping.
+    /// a <see cref="OnMessage"/> event when receives a ping.
     /// </summary>
     /// <value>
     /// <c>true</c> if the <see cref="WebSocket"/> emits a <see cref="OnMessage"/> event
-    /// when receives a Ping; otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// when receives a ping; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool EmitOnPing {
       get {
@@ -1060,7 +1060,7 @@ namespace WebSocketSharp
     private bool processPingFrame (WebSocketFrame frame)
     {
       if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToArray ()))
-        _logger.Trace ("Returned a Pong.");
+        _logger.Trace ("Returned a pong.");
 
       if (_emitOnPing)
         enqueueToMessageEventQueue (new MessageEventArgs (frame));
@@ -1071,7 +1071,7 @@ namespace WebSocketSharp
     private bool processPongFrame (WebSocketFrame frame)
     {
       _receivePong.Set ();
-      _logger.Trace ("Received a Pong.");
+      _logger.Trace ("Received a pong.");
 
       return true;
     }
@@ -1497,7 +1497,7 @@ namespace WebSocketSharp
               return;
             }
 
-            // Receive next asap because a Ping or Close needs a response to it.
+            // Receive next asap because the Ping or Close needs a response to it.
             receive ();
 
             if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
@@ -2245,10 +2245,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a Ping using the WebSocket connection.
+    /// Sends a ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong to this Ping in a time;
+    /// <c>true</c> if the <see cref="WebSocket"/> receives a pong to this ping in a time;
     /// otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
@@ -2261,10 +2261,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> using the WebSocket connection.
+    /// Sends a ping with the specified <paramref name="message"/> using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong to this Ping in a time;
+    /// <c>true</c> if the <see cref="WebSocket"/> receives a pong to this ping in a time;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
@@ -2279,7 +2279,7 @@ namespace WebSocketSharp
       var msg = CheckPingParameter (message, out data);
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the ping.", null);
+        error ("An error has occurred in sending a ping.", null);
 
         return false;
       }
