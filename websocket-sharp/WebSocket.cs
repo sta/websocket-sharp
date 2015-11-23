@@ -1214,7 +1214,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending the data.", ex);
+          error ("An exception has occurred while sending data.", ex);
         }
         finally {
           if (compressed)
@@ -2300,7 +2300,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2321,7 +2321,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2342,7 +2342,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2371,7 +2371,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2401,7 +2401,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2430,7 +2430,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2463,7 +2463,7 @@ namespace WebSocketSharp
 
       if (msg != null) {
         _logger.Error (msg);
-        error ("An error has occurred in sending the data.", null);
+        error ("An error has occurred in sending data.", null);
 
         return;
       }
@@ -2474,7 +2474,7 @@ namespace WebSocketSharp
           var len = data.Length;
           if (len == 0) {
             _logger.Error ("The data cannot be read from 'stream'.");
-            error ("An error has occurred in sending the data.", null);
+            error ("An error has occurred in sending data.", null);
 
             return;
           }
@@ -2492,7 +2492,7 @@ namespace WebSocketSharp
         },
         ex => {
           _logger.Fatal (ex.ToString ());
-          error ("An exception has occurred while sending the data.", ex);
+          error ("An exception has occurred while sending data.", ex);
         });
     }
 
@@ -2511,7 +2511,7 @@ namespace WebSocketSharp
 
         if (msg != null) {
           _logger.Error (msg);
-          error ("An error has occurred in setting the cookie.", null);
+          error ("An error has occurred in setting a cookie.", null);
 
           return;
         }
