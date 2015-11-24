@@ -138,11 +138,11 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-`e.Type` property returns either `WebSocketSharp.Opcode.Text` or `WebSocketSharp.Opcode.Binary` that represents the type of the message. So by checking it, you can determine which item you should use.
+`e.Type` property returns either `WebSocketSharp.Opcode.Text` or `WebSocketSharp.Opcode.Binary` that represents the message type. So by checking it, you can determine which item you should use.
 
-If it returns `Opcode.Text`, you should use `e.Data` property that returns a `string` (represents the **Text** message).
+If it returns `Opcode.Text`, you should use `e.Data` property that returns a `string` (represents a **text** message).
 
-Or if it returns `Opcode.Binary`, you should use `e.RawData` property that returns a `byte[]` (represents the **Binary** message).
+Or if it returns `Opcode.Binary`, you should use `e.RawData` property that returns a `byte[]` (represents a **binary** message).
 
 ```csharp
 if (e.Type == Opcode.Text) {
@@ -160,13 +160,13 @@ if (e.Type == Opcode.Binary) {
 }
 ```
 
-And if you would like to notify that a **Ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`, such as the following.
+And if you would like to notify that a **ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`, such as the following.
 
 ```csharp
 ws.EmitOnPing = true;
 ws.OnMessage += (sender, e) => {
   if (e.Type == Opcode.Ping) {
-    // Do something to notify that a Ping has been received.
+    // Do something to notify that a ping has been received.
     ...
 
     return;
@@ -543,7 +543,7 @@ And also if you would like to send the **Cookies** with the WebSocket connection
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in a WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -560,7 +560,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the **Origin header**, **Cookies**, or both included in a WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
