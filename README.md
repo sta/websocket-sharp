@@ -138,21 +138,21 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-`e.Type` property returns either `WebSocketSharp.Opcode.Text` or `WebSocketSharp.Opcode.Binary` that represents the message type. So by checking it, you can determine which item you should use.
+If you would like to get the message data, you should access `e.Data` or `e.RawData` property. And you can determine which property you should access by checking `e.IsText` or `e.IsBinary` property.
 
-If it returns `Opcode.Text`, you should use `e.Data` property that returns a `string` (represents a **text** message).
+If `e.IsText` is `true`, you should access `e.Data` that returns a `string` (represents a **text** message).
 
-Or if it returns `Opcode.Binary`, you should use `e.RawData` property that returns a `byte[]` (represents a **binary** message).
+Or if `e.IsBinary` is `true`, you should access `e.RawData` that returns a `byte[]` (represents a **binary** message).
 
 ```csharp
-if (e.Type == Opcode.Text) {
+if (e.IsText) {
   // Do something with e.Data.
   ...
 
   return;
 }
 
-if (e.Type == Opcode.Binary) {
+if (e.IsBinary) {
   // Do something with e.RawData.
   ...
 
@@ -165,14 +165,12 @@ And if you would like to notify that a **ping** has been received, via this even
 ```csharp
 ws.EmitOnPing = true;
 ws.OnMessage += (sender, e) => {
-  if (e.Type == Opcode.Ping) {
+  if (e.IsPing) {
     // Do something to notify that a ping has been received.
     ...
 
     return;
   }
-
-  ...
 };
 ```
 
