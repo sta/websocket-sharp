@@ -351,7 +351,7 @@ And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnErro
 
 The `WebSocketBehavior.Send` method sends data to the client on a session in the service.
 
-If you would like to access the sessions in the service, you should use the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+If you would like to get the sessions in the service, you should access the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
 The `WebSocketBehavior.Sessions.Broadcast` method sends data to every client in the service.
 
