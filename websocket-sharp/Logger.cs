@@ -32,6 +32,16 @@ using System.IO;
 
 namespace WebSocketSharp
 {
+  public interface IWebSocketLogger
+  {
+      void Debug (string message);
+      void Error (string message);
+      void Fatal (string message);
+      void Info (string message);
+      void Trace (string message);
+      void Warn (string message);
+  }
+
   /// <summary>
   /// Provides a set of methods and properties for logging.
   /// </summary>
@@ -50,7 +60,7 @@ namespace WebSocketSharp
   ///   delegate.
   ///   </para>
   /// </remarks>
-  public class Logger
+  public class Logger : IWebSocketLogger
   {
     #region Private Fields
 
