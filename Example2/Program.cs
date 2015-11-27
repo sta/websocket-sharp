@@ -11,11 +11,11 @@ namespace Example2
   {
     public static void Main (string[] args)
     {
-      /* Create a new instance of the WebSocketServer class.
-       *
-       * If you would like to provide the secure connection, you should create the instance with
-       * the 'secure' parameter set to true, or the wss scheme WebSocket URL.
-       */
+      // Create a new instance of the WebSocketServer class.
+      //
+      // If you would like to provide the secure connection, you should create the instance with
+      // the 'secure' parameter set to true, or the wss scheme WebSocket URL.
+
       var wssv = new WebSocketServer (4649);
       //var wssv = new WebSocketServer (5963, true);
       //var wssv = new WebSocketServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
@@ -62,8 +62,9 @@ namespace Example2
       wssv.AddWebSocketService<Chat> (
         "/Chat",
         () => new Chat ("Anon#") {
+          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
           Protocol = "chat",
-          // To emit a WebSocket.OnMessage event when receives a Ping.
+          // To emit a WebSocket.OnMessage event when receives a ping.
           EmitOnPing = true,
           // To ignore the Sec-WebSocket-Extensions header.
           IgnoreExtensions = true,
