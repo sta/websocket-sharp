@@ -18,39 +18,39 @@ function init () {
 function doWebSocket () {
   websocket = new WebSocket (url);
 
-  websocket.onopen = function (evt) {
-    onOpen (evt)
+  websocket.onopen = function (e) {
+    onOpen (e);
   };
 
-  websocket.onclose = function (evt) {
-    onClose (evt)
+  websocket.onmessage = function (e) {
+    onMessage (e);
   };
 
-  websocket.onmessage = function (evt) {
-    onMessage (evt)
+  websocket.onerror = function (e) {
+    onError (e);
   };
 
-  websocket.onerror = function (evt) {
-    onError (evt)
+  websocket.onclose = function (e) {
+    onClose (e);
   };
 }
 
-function onOpen (evt) {
+function onOpen (event) {
   writeToScreen ("CONNECTED");
   send ("WebSocket rocks");
 }
 
-function onClose (evt) {
-  writeToScreen ("DISCONNECTED");
-}
-
-function onMessage (evt) {
-  writeToScreen ('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+function onMessage (event) {
+  writeToScreen ('<span style="color: blue;">RESPONSE: ' + event.data + '</span>');
   websocket.close ();
 }
 
-function onError (evt) {
-  writeToScreen('<span style="color: red;">ERROR: ' + evt.data + '</span>');
+function onError (event) {
+  writeToScreen ('<span style="color: red;">ERROR: ' + event.data + '</span>');
+}
+
+function onClose (event) {
+  writeToScreen ("DISCONNECTED");
 }
 
 function send (message) {

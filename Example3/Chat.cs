@@ -24,9 +24,7 @@ namespace Example3
     private string getName ()
     {
       var name = Context.QueryString["name"];
-      return !name.IsNullOrEmpty ()
-             ? name
-             : (_prefix + getNumber ());
+      return !name.IsNullOrEmpty () ? name : _prefix + getNumber ();
     }
 
     private static int getNumber ()

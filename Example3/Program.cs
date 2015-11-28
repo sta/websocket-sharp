@@ -12,11 +12,11 @@ namespace Example3
   {
     public static void Main (string[] args)
     {
-      /* Create a new instance of the HttpServer class.
-       *
-       * If you would like to provide the secure connection, you should create the instance with
-       * the 'secure' parameter set to true, or the https scheme HTTP URL.
-       */
+      // Create a new instance of the HttpServer class.
+      //
+      // If you would like to provide the secure connection, you should create the instance with
+      // the 'secure' parameter set to true, or the https scheme HTTP URL.
+
       var httpsv = new HttpServer (4649);
       //var httpsv = new HttpServer (5963, true);
       //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
@@ -49,10 +49,10 @@ namespace Example3
       };
        */
 
-      // To set the document root path.
+      // Set the document root path.
       httpsv.RootPath = ConfigurationManager.AppSettings["RootPath"];
 
-      // To set the HTTP GET method event.
+      // Set the HTTP GET request event.
       httpsv.OnGet += (sender, e) => {
         var req = e.Request;
         var res = e.Response;
@@ -69,6 +69,11 @@ namespace Example3
 
         if (path.EndsWith (".html")) {
           res.ContentType = "text/html";
+          res.ContentEncoding = Encoding.UTF8;
+        }
+
+        if (path.EndsWith (".js")) {
+          res.ContentType = "application/javascript";
           res.ContentEncoding = Encoding.UTF8;
         }
 
@@ -89,8 +94,9 @@ namespace Example3
       httpsv.AddWebSocketService<Chat> (
         "/Chat",
         () => new Chat ("Anon#") {
+          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
           Protocol = "chat",
-          // To emit a WebSocket.OnMessage event when receives a Ping.
+          // To emit a WebSocket.OnMessage event when receives a ping.
           EmitOnPing = true,
           // To ignore the Sec-WebSocket-Extensions header.
           IgnoreExtensions = true,
