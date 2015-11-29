@@ -71,8 +71,7 @@ namespace Example3
           res.ContentType = "text/html";
           res.ContentEncoding = Encoding.UTF8;
         }
-
-        if (path.EndsWith (".js")) {
+        else if (path.EndsWith (".js")) {
           res.ContentType = "application/javascript";
           res.ContentEncoding = Encoding.UTF8;
         }
