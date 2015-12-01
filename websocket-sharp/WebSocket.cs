@@ -109,6 +109,10 @@ namespace WebSocketSharp
     private Uri                     _uri;
     private const string            _version = "13";
     private TimeSpan                _waitTime;
+    private bool                    _ProxySocketConnectionSuccessful = false;
+    private ManualResetEvent        _ProxyTimeoutObject = new ManualResetEvent(false);
+    private Exception               _ProxySocketException;
+    private int                     _ProxySocketTimeoutMSec = 3000;
 
     #endregion
 
@@ -1411,9 +1415,56 @@ namespace WebSocketSharp
 
         var authChal = AuthenticationChallenge.Parse (chal);
         if (authChal == null)
-          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
+		{
 
-        if (_proxyCredentials != null) {
+            try
+            {
+                var request = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(_proxyUri);
+                System.Net.WebRequest.DefaultWebProxy.Credentials = System.Net.CredentialCache.DefaultNetworkCredentials;
+                request.Method = "CONNECT";
+
+                var response = request.GetResponse();
+                var responseStream = response.GetResponseStream();
+
+                const System.Reflection.BindingFlags Flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+                var rsType = responseStream.GetType();
+                var connectionProperty = rsType.GetProperty("Connection", Flags);
+
+                var connection = connectionProperty.GetValue(responseStream, null);
+                var connectionType = connection.GetType();
+                var networkStreamProperty = connectionType.GetProperty("NetworkStream", Flags);
+
+                var networkStream = networkStreamProperty.GetValue(connection, null);
+                var nsType = networkStream.GetType();
+                var socketProperty = nsType.GetProperty("Socket", Flags);
+                var socket = (Socket)socketProperty.GetValue(networkStream, null);
+                socket.Disconnect(true);
+                _tcpClient = new TcpClient { Client = socket };
+                _tcpClient.BeginConnect(_uri.DnsSafeHost, _uri.Port, new AsyncCallback(OnProxySocketConnected), _tcpClient);
+                if (_ProxyTimeoutObject.WaitOne(_ProxySocketTimeoutMSec, false))
+                {
+                    if (_ProxySocketConnectionSuccessful)
+                    {
+                        _stream = _tcpClient.GetStream();
+                    }
+                    else
+                    {
+                        throw _ProxySocketException;
+                    }
+                }
+                else
+                {
+                    _tcpClient.Close();
+                    throw new TimeoutException("Socket Timeout Exception");
+                }
+            }
+            catch (System.Net.WebException exception)
+            {
+                _logger.Error(exception.ToString());
+            }         
+        }
+        else if(_proxyCredentials != null){
           if (res.HasConnectionClose) {
             releaseClientResources ();
             _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
@@ -1423,15 +1474,15 @@ namespace WebSocketSharp
           var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
           req.Headers["Proxy-Authorization"] = authRes.ToString ();
           res = sendHttpRequest (req, 15000);
+        
+          if (res.IsProxyAuthenticationRequired)
+            throw new WebSocketException ("A proxy authentication is required.");
+
+          if (res.StatusCode[0] != '2')
+              throw new WebSocketException(
+                "The proxy has failed a connection to the requested host and port.");
         }
-
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("A proxy authentication is required.");
       }
-
-      if (res.StatusCode[0] != '2')
-        throw new WebSocketException (
-          "The proxy has failed a connection to the requested host and port.");
     }
 
     // As client
@@ -1473,6 +1524,31 @@ namespace WebSocketSharp
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
         }
       }
+    }
+
+    private void OnProxySocketConnected(IAsyncResult result)
+    {
+        try
+        {
+            _ProxySocketConnectionSuccessful = false;
+            TcpClient tcpclient = result.AsyncState as TcpClient;
+
+            if (tcpclient.Client != null)
+            {
+                tcpclient.EndConnect(result);
+                _ProxySocketConnectionSuccessful = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            _ProxySocketConnectionSuccessful = false;
+            _ProxySocketException = ex;
+             throw new WebSocketException("The Socket asynchronous connection has not complete."); 
+        }
+        finally
+        {
+            _ProxyTimeoutObject.Set();
+        }       
     }
 
     private void startReceiving ()
