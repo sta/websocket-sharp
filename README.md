@@ -138,7 +138,9 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-If you would like to get the message data, you should access `e.Data` or `e.RawData` property. And you can determine which property you should access by checking `e.IsText` or `e.IsBinary` property.
+If you would like to get the message data, you should access `e.Data` or `e.RawData` property.
+
+And you can determine which property you should access by checking `e.IsText` or `e.IsBinary` property.
 
 If `e.IsText` is `true`, you should access `e.Data` that returns a `string` (represents a **text** message).
 
@@ -648,7 +650,7 @@ And Example1 uses **[Json.NET]**.
 
 **[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
 
-Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
+Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser while Example3 is running?
 
 ## Supported WebSocket Specifications ##
 
