@@ -91,7 +91,10 @@ namespace WebSocketSharp
                                     _handshakeRequestChecker;
     private bool                    _ignoreExtensions;
     private bool                    _inContinuation;
+    private volatile bool           _inMessage;
     private volatile Logger         _logger;
+    private Action<MessageEventArgs>
+                                    _message;
     private Queue<MessageEventArgs> _messageEventQueue;
     private uint                    _nonceCount;
     private string                  _origin;
@@ -161,6 +164,7 @@ namespace WebSocketSharp
 
       _closeContext = context.Close;
       _logger = context.Log;
+      _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
@@ -176,6 +180,7 @@ namespace WebSocketSharp
 
       _closeContext = context.Close;
       _logger = context.Log;
+      _message = messages;
       _secure = context.IsSecureConnection;
       _stream = context.Stream;
       _waitTime = TimeSpan.FromSeconds (1);
@@ -236,6 +241,7 @@ namespace WebSocketSharp
       _base64Key = CreateBase64Key ();
       _client = true;
       _logger = new Logger ();
+      _message = messagec;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
 
@@ -260,6 +266,13 @@ namespace WebSocketSharp
 
       set {
         _handshakeRequestChecker = value;
+      }
+    }
+
+    internal bool HasMessage {
+      get {
+        lock (_forMessageEventQueue)
+          return _messageEventQueue.Count > 0;
       }
     }
 
@@ -965,6 +978,63 @@ namespace WebSocketSharp
       _readyState = WebSocketState.Connecting;
     }
 
+    private void message ()
+    {
+      MessageEventArgs e = null;
+      lock (_forMessageEventQueue) {
+        if (_inMessage || _messageEventQueue.Count == 0 || _readyState != WebSocketState.Open)
+          return;
+
+        _inMessage = true;
+        e = _messageEventQueue.Dequeue ();
+      }
+
+      _message (e);
+    }
+
+    private void messagec (MessageEventArgs e)
+    {
+      do {
+        try {
+          OnMessage.Emit (this, e);
+        }
+        catch (Exception ex) {
+          processException (ex, "An exception has occurred during an OnMessage event.");
+        }
+
+        lock (_forMessageEventQueue) {
+          if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+            _inMessage = false;
+            break;
+          }
+
+          e = _messageEventQueue.Dequeue ();
+        }
+      }
+      while (true);
+    }
+
+    private void messages (MessageEventArgs e)
+    {
+      try {
+        OnMessage.Emit (this, e);
+      }
+      catch (Exception ex) {
+        processException (ex, "An exception has occurred during an OnMessage event.");
+      }
+
+      lock (_forMessageEventQueue) {
+        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+          _inMessage = false;
+          return;
+        }
+
+        e = _messageEventQueue.Dequeue ();
+      }
+
+      ThreadPool.QueueUserWorkItem (state => messages (e));
+    }
+
     private void open ()
     {
       try {
@@ -1500,19 +1570,10 @@ namespace WebSocketSharp
             // Receive next asap because the Ping or Close needs a response to it.
             receive ();
 
-            if ((frame.IsControl && !(frame.IsPing && _emitOnPing)) || !frame.IsFinal)
+            if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
               return;
 
-            lock (_forEvent) {
-              try {
-                var e = dequeueFromMessageEventQueue ();
-                if (e != null && _readyState == WebSocketState.Open)
-                  OnMessage.Emit (this, e);
-              }
-              catch (Exception ex) {
-                processException (ex, "An exception has occurred during an OnMessage event.");
-              }
-            }
+            message ();
           },
           ex => processException (ex, "An exception has occurred while receiving a message."));
 
