@@ -82,7 +82,6 @@ namespace WebSocketSharp
     private AutoResetEvent          _exitReceiving;
     private Opcode                  _fopcode;
     private object                  _forConn;
-    private object                  _forEvent;
     private object                  _forMessageEventQueue;
     private object                  _forSend;
     private MemoryStream            _fragmentsBuffer;
@@ -971,7 +970,6 @@ namespace WebSocketSharp
       _compression = CompressionMethod.None;
       _cookies = new CookieCollection ();
       _forConn = new object ();
-      _forEvent = new object ();
       _forSend = new object ();
       _messageEventQueue = new Queue<MessageEventArgs> ();
       _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
@@ -1037,21 +1035,31 @@ namespace WebSocketSharp
 
     private void open ()
     {
+      _inMessage = true;
       try {
         startReceiving ();
-
-        lock (_forEvent) {
-          try {
-            OnOpen.Emit (this, EventArgs.Empty);
-          }
-          catch (Exception ex) {
-            processException (ex, "An exception has occurred during an OnOpen event.");
-          }
+        try {
+          OnOpen.Emit (this, EventArgs.Empty);
+        }
+        catch (Exception ex) {
+          processException (ex, "An exception has occurred during an OnOpen event.");
         }
       }
       catch (Exception ex) {
         processException (ex, "An exception has occurred while opening.");
       }
+
+      MessageEventArgs e = null;
+      lock (_forMessageEventQueue) {
+        if (_messageEventQueue.Count == 0 || _readyState != WebSocketState.Open) {
+          _inMessage = false;
+          return;
+        }
+
+        e = _messageEventQueue.Dequeue ();
+      }
+
+      _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
     }
 
     private bool processCloseFrame (WebSocketFrame frame)
