@@ -68,49 +68,47 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private AuthenticationChallenge _authChallenge;
-    private string                  _base64Key;
-    private bool                    _client;
-    private Action                  _closeContext;
-    private CompressionMethod       _compression;
-    private WebSocketContext        _context;
-    private CookieCollection        _cookies;
-    private NetworkCredential       _credentials;
-    private bool                    _emitOnPing;
-    private bool                    _enableRedirection;
-    private string                  _extensions;
-    private AutoResetEvent          _exitReceiving;
-    private Opcode                  _fopcode;
-    private object                  _forConn;
-    private object                  _forMessageEventQueue;
-    private object                  _forSend;
-    private MemoryStream            _fragmentsBuffer;
-    private const string            _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
-    private Func<WebSocketContext, string>
-                                    _handshakeRequestChecker;
-    private bool                    _ignoreExtensions;
-    private bool                    _inContinuation;
-    private volatile bool           _inMessage;
-    private volatile Logger         _logger;
-    private Action<MessageEventArgs>
-                                    _message;
-    private Queue<MessageEventArgs> _messageEventQueue;
-    private uint                    _nonceCount;
-    private string                  _origin;
-    private bool                    _preAuth;
-    private string                  _protocol;
-    private string[]                _protocols;
-    private NetworkCredential       _proxyCredentials;
-    private Uri                     _proxyUri;
-    private volatile WebSocketState _readyState;
-    private AutoResetEvent          _receivePong;
-    private bool                    _secure;
-    private ClientSslConfiguration  _sslConfig;
-    private Stream                  _stream;
-    private TcpClient               _tcpClient;
-    private Uri                     _uri;
-    private const string            _version = "13";
-    private TimeSpan                _waitTime;
+    private AuthenticationChallenge        _authChallenge;
+    private string                         _base64Key;
+    private bool                           _client;
+    private Action                         _closeContext;
+    private CompressionMethod              _compression;
+    private WebSocketContext               _context;
+    private CookieCollection               _cookies;
+    private NetworkCredential              _credentials;
+    private bool                           _emitOnPing;
+    private bool                           _enableRedirection;
+    private AutoResetEvent                 _exitReceiving;
+    private string                         _extensions;
+    private Opcode                         _fopcode;
+    private object                         _forConn;
+    private object                         _forMessageEventQueue;
+    private object                         _forSend;
+    private MemoryStream                   _fragmentsBuffer;
+    private const string                   _guid = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+    private Func<WebSocketContext, string> _handshakeRequestChecker;
+    private bool                           _ignoreExtensions;
+    private bool                           _inContinuation;
+    private volatile bool                  _inMessage;
+    private volatile Logger                _logger;
+    private Action<MessageEventArgs>       _message;
+    private Queue<MessageEventArgs>        _messageEventQueue;
+    private uint                           _nonceCount;
+    private string                         _origin;
+    private bool                           _preAuth;
+    private string                         _protocol;
+    private string[]                       _protocols;
+    private NetworkCredential              _proxyCredentials;
+    private Uri                            _proxyUri;
+    private volatile WebSocketState        _readyState;
+    private AutoResetEvent                 _receivePong;
+    private bool                           _secure;
+    private ClientSslConfiguration         _sslConfig;
+    private Stream                         _stream;
+    private TcpClient                      _tcpClient;
+    private Uri                            _uri;
+    private const string                   _version = "13";
+    private TimeSpan                       _waitTime;
 
     #endregion
 
