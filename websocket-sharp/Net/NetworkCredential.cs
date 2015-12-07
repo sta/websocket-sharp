@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     /// <paramref name="username"/> is empty.
     /// </exception>
     public NetworkCredential (string username, string password)
-      : this (username, password, null, new string[0])
+      : this (username, password, null, null)
     {
     }
 
@@ -151,11 +151,11 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// An array of <see cref="string"/> that contains the role names to which
-    /// the user associated with the credentials belongs.
+    /// the user associated with the credentials belongs if any.
     /// </value>
     public string[] Roles {
       get {
-        return _roles;
+        return _roles ?? (_roles = new string[0]);
       }
 
       internal set {
