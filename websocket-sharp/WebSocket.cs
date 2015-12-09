@@ -744,7 +744,11 @@ namespace WebSocketSharp
                  ? "A data frame has been received while receiving the fragmented data."
                  : frame.IsCompressed && _compression == CompressionMethod.None
                    ? "A compressed frame is without an available decompression method."
-                   : null;
+                   : frame.Rsv2 == Rsv.On
+                     ? "The RSV2 of a frame is non-zero without any negotiation for it."
+                     : frame.Rsv3 == Rsv.On
+                       ? "The RSV3 of a frame is non-zero without any negotiation for it."
+                       : null;
     }
 
     private void close (CloseEventArgs e, bool send, bool receive, bool received)
