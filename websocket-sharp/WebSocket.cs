@@ -741,9 +741,9 @@ namespace WebSocketSharp
              : !_client && !masked
                ? "A frame from a client isn't masked."
                : _inContinuation && frame.IsData
-                 ? "A data frame has been received while receiving the fragmented data."
+                 ? "A data frame has been received while receiving continuation frames."
                  : frame.IsCompressed && _compression == CompressionMethod.None
-                   ? "A compressed frame is without an available decompression method."
+                   ? "A compressed frame has been received without any agreement for it."
                    : frame.Rsv2 == Rsv.On
                      ? "The RSV2 of a frame is non-zero without any negotiation for it."
                      : frame.Rsv3 == Rsv.On
