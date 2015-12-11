@@ -80,6 +80,7 @@ namespace WebSocketSharp
     private bool                           _enableRedirection;
     private AutoResetEvent                 _exitReceiving;
     private string                         _extensions;
+    private bool                           _fcompressed;
     private Opcode                         _fopcode;
     private object                         _forConn;
     private object                         _forMessageEventQueue;
@@ -1116,6 +1117,7 @@ namespace WebSocketSharp
           return true;
 
         _fopcode = frame.Opcode;
+        _fcompressed = frame.IsCompressed;
         _fragmentsBuffer = new MemoryStream ();
         _inContinuation = true;
       }
@@ -1123,7 +1125,7 @@ namespace WebSocketSharp
       _fragmentsBuffer.WriteBytes (frame.PayloadData.ApplicationData, 1024);
       if (frame.IsFinal) {
         using (_fragmentsBuffer) {
-          var data = _compression != CompressionMethod.None
+          var data = _fcompressed
                      ? _fragmentsBuffer.DecompressToArray (_compression)
                      : _fragmentsBuffer.ToArray ();
 
