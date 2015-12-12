@@ -1109,7 +1109,7 @@ namespace WebSocketSharp
         new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false, false);
     }
 
-    private bool processFragmentedFrame (WebSocketFrame frame)
+    private bool processFragmentFrame (WebSocketFrame frame)
     {
       if (!_inContinuation) {
         // Must process first fragment.
@@ -1165,8 +1165,8 @@ namespace WebSocketSharp
         return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
-      return frame.IsFragmented
-             ? processFragmentedFrame (frame)
+      return frame.IsFragment
+             ? processFragmentFrame (frame)
              : frame.IsData
                ? processDataFrame (frame)
                : frame.IsPing

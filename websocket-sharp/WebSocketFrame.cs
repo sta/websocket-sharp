@@ -214,7 +214,7 @@ namespace WebSocketSharp
       }
     }
 
-    public bool IsFragmented {
+    public bool IsFragment {
       get {
         return _fin == Fin.More || _opcode == Opcode.Cont;
       }
@@ -403,8 +403,7 @@ namespace WebSocketSharp
                     ? String.Empty
                     : payloadLen > 125
                       ? "---"
-                      : frame.IsText &&
-                        !(frame.IsMasked || frame.IsFragmented || frame.IsCompressed)
+                      : frame.IsText && !(frame.IsFragment || frame.IsMasked || frame.IsCompressed)
                         ? frame._payloadData.ApplicationData.UTF8Decode ()
                         : frame._payloadData.ToString ();
 
