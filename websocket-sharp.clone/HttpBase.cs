@@ -38,37 +38,19 @@ namespace WebSocketSharp
 {
 	internal abstract class HttpBase
 	{
-		#region Private Fields
-
 	    private const int _headersMaxLength = 8192;
 
-	    #endregion
+	    internal byte[] EntityBodyData;
 
-		#region Internal Fields
+	    protected const string CrLf = "\r\n";
 
-		internal byte[] EntityBodyData;
-
-		#endregion
-
-		#region Protected Fields
-
-		protected const string CrLf = "\r\n";
-
-		#endregion
-
-		#region Protected Constructors
-
-		protected HttpBase(Version version, NameValueCollection headers)
+	    protected HttpBase(Version version, NameValueCollection headers)
 		{
 			ProtocolVersion = version;
 			Headers = headers;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public string EntityBody
+	    public string EntityBody
 		{
 			get
 			{
@@ -89,11 +71,7 @@ namespace WebSocketSharp
 
 	    public Version ProtocolVersion { get; }
 
-	    #endregion
-
-		#region Private Methods
-
-		private static byte[] ReadEntityBody(Stream stream, string length)
+	    private static byte[] ReadEntityBody(Stream stream, string length)
 		{
 			long len;
 			if (!Int64.TryParse(length, out len))
@@ -143,11 +121,7 @@ namespace WebSocketSharp
 				   .Split(new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
-		#endregion
-
-		#region Protected Methods
-
-		protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
+	    protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
 		  where T : HttpBase
 		{
 			var timeout = false;
@@ -194,15 +168,9 @@ namespace WebSocketSharp
 			return http;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public byte[] ToByteArray()
+	    public byte[] ToByteArray()
 		{
 			return Encoding.UTF8.GetBytes(ToString());
 		}
-
-		#endregion
 	}
 }
