@@ -609,22 +609,6 @@ Extended Payload Length: {7}
 			return new WebSocketFrame(Fin.Final, Opcode.Pong, new PayloadData(data), false, mask);
 		}
 
-		internal static WebSocketFrame Read(Stream stream)
-		{
-			return Read(stream, true);
-		}
-
-		internal static WebSocketFrame Read(Stream stream, bool unmask)
-		{
-			var header = stream.ReadBytes(2);
-			if (header.Length != 2)
-			{
-				throw new WebSocketException("The header part of a frame cannot be read from the data source.");
-			}
-
-			return read(header, stream, unmask);
-		}
-
 		internal static Task<WebSocketFrame> ReadAsync(Stream stream)
 		{
 			return ReadAsync(stream, true);
