@@ -377,14 +377,31 @@ namespace WebSocketSharp
       return output.ToString ();
     }
 
+    private static bool isControl (byte opcode)
+    {
+      return opcode == (byte) Opcode.Close ||
+             opcode == (byte) Opcode.Ping ||
+             opcode == (byte) Opcode.Pong;
+    }
+
     private static bool isControl (Opcode opcode)
     {
       return opcode == Opcode.Close || opcode == Opcode.Ping || opcode == Opcode.Pong;
     }
 
+    private static bool isData (byte opcode)
+    {
+      return opcode == (byte) Opcode.Text || opcode == (byte) Opcode.Binary;
+    }
+
     private static bool isData (Opcode opcode)
     {
       return opcode == Opcode.Text || opcode == Opcode.Binary;
+    }
+
+    private static bool isSupported (byte opcode)
+    {
+      return Enum.IsDefined (typeof (Opcode), opcode);
     }
 
     private static string print (WebSocketFrame frame)
@@ -452,7 +469,7 @@ Extended Payload Length: {7}
       var rsv3 = (header[0] & 0x10) == 0x10 ? Rsv.On : Rsv.Off;
 
       // Opcode
-      var opcode = (Opcode) (header[0] & 0x0f);
+      var opcode = (byte) (header[0] & 0x0f);
 
       // MASK
       var mask = (header[1] & 0x80) == 0x80 ? Mask.On : Mask.Off;
@@ -461,13 +478,15 @@ Extended Payload Length: {7}
       var payloadLen = (byte) (header[1] & 0x7f);
 
       // Check if valid header.
-      var err = isControl (opcode) && payloadLen > 125
-                ? "A control frame has payload data which is greater than the allowable max length."
+      var err = !isSupported (opcode)
+                ? "An unsupported opcode."
                 : isControl (opcode) && fin == Fin.More
                   ? "A control frame is fragmented."
-                  : !isData (opcode) && rsv1 == Rsv.On
-                    ? "A non data frame is compressed."
-                    : null;
+                  : isControl (opcode) && payloadLen > 125
+                    ? "A control frame has a long payload length than the allowable max length."
+                    : !isData (opcode) && rsv1 == Rsv.On
+                      ? "A non data frame is compressed."
+                      : null;
 
       if (err != null)
         throw new WebSocketException (CloseStatusCode.ProtocolError, err);
@@ -477,7 +496,7 @@ Extended Payload Length: {7}
       frame._rsv1 = rsv1;
       frame._rsv2 = rsv2;
       frame._rsv3 = rsv3;
-      frame._opcode = opcode;
+      frame._opcode = (Opcode) opcode;
       frame._mask = mask;
       frame._payloadLength = payloadLen;
 
