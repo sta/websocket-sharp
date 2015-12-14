@@ -483,7 +483,7 @@ Extended Payload Length: {7}
                 : isControl (opcode) && fin == Fin.More
                   ? "A control frame is fragmented."
                   : isControl (opcode) && payloadLen > 125
-                    ? "A control frame has a long payload length than the allowable max length."
+                    ? "A control frame has a long payload length."
                     : !isData (opcode) && rsv1 == Rsv.On
                       ? "A non data frame is compressed."
                       : null;
