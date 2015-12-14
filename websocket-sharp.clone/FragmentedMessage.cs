@@ -24,29 +24,16 @@ namespace WebSocketSharp
 	internal class FragmentedMessage : WebSocketMessage
 	{
 		private readonly Stream _stream;
-		private readonly StreamReader _reader;
 
-		public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<StreamReadInfo> payloadFunc, ManualResetEventSlim waitHandle, int fragmentLength)
+	    public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<StreamReadInfo> payloadFunc, ManualResetEventSlim waitHandle, int fragmentLength)
 			: base(opcode, waitHandle, fragmentLength)
 		{
 			_stream = new WebSocketDataStream(stream, initialRead, payloadFunc, Consume);
-			_reader = new StreamReader(_stream, true);
+			Text = new StreamReader(_stream, true);
 		}
 
-		public override Stream RawData
-		{
-			get
-			{
-				return _stream;
-			}
-		}
+		public override Stream RawData => _stream;
 
-		public override StreamReader Text
-		{
-			get
-			{
-				return _reader;
-			}
-		}
+	    public override StreamReader Text { get; }
 	}
 }

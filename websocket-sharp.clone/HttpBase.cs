@@ -38,39 +38,19 @@ namespace WebSocketSharp
 {
 	internal abstract class HttpBase
 	{
-		#region Private Fields
+	    private const int _headersMaxLength = 8192;
 
-		private NameValueCollection _headers;
-		private const int _headersMaxLength = 8192;
-		private Version _version;
+	    internal byte[] EntityBodyData;
 
-		#endregion
+	    protected const string CrLf = "\r\n";
 
-		#region Internal Fields
-
-		internal byte[] EntityBodyData;
-
-		#endregion
-
-		#region Protected Fields
-
-		protected const string CrLf = "\r\n";
-
-		#endregion
-
-		#region Protected Constructors
-
-		protected HttpBase(Version version, NameValueCollection headers)
+	    protected HttpBase(Version version, NameValueCollection headers)
 		{
-			_version = version;
-			_headers = headers;
+			ProtocolVersion = version;
+			Headers = headers;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public string EntityBody
+	    public string EntityBody
 		{
 			get
 			{
@@ -79,42 +59,26 @@ namespace WebSocketSharp
 
 				Encoding enc = null;
 
-				var contentType = _headers["Content-Type"];
-				if (contentType != null && contentType.Length > 0)
+				var contentType = Headers["Content-Type"];
+				if (!string.IsNullOrEmpty(contentType))
 					enc = HttpUtility.GetEncoding(contentType);
 
 				return (enc ?? Encoding.UTF8).GetString(EntityBodyData);
 			}
 		}
 
-		public NameValueCollection Headers
-		{
-			get
-			{
-				return _headers;
-			}
-		}
+		public NameValueCollection Headers { get; }
 
-		public Version ProtocolVersion
-		{
-			get
-			{
-				return _version;
-			}
-		}
+	    public Version ProtocolVersion { get; }
 
-		#endregion
-
-		#region Private Methods
-
-		private static byte[] readEntityBody(Stream stream, string length)
+	    private static byte[] ReadEntityBody(Stream stream, string length)
 		{
 			long len;
 			if (!Int64.TryParse(length, out len))
-				throw new ArgumentException("Cannot be parsed.", "length");
+				throw new ArgumentException("Cannot be parsed.", nameof(length));
 
 			if (len < 0)
-				throw new ArgumentOutOfRangeException("length", "Less than zero.");
+				throw new ArgumentOutOfRangeException(nameof(length), "Less than zero.");
 
 			return len > 1024
 				   ? stream.ReadBytes(len, 1024)
@@ -123,7 +87,7 @@ namespace WebSocketSharp
 					 : null;
 		}
 
-		private static string[] readHeaders(Stream stream, int maxLength)
+		private static string[] ReadHeaders(Stream stream, int maxLength)
 		{
 			var buff = new List<byte>();
 			var cnt = 0;
@@ -157,11 +121,7 @@ namespace WebSocketSharp
 				   .Split(new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
 		}
 
-		#endregion
-
-		#region Protected Methods
-
-		protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
+	    protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
 		  where T : HttpBase
 		{
 			var timeout = false;
@@ -179,11 +139,11 @@ namespace WebSocketSharp
 			Exception exception = null;
 			try
 			{
-				http = parser(readHeaders(stream, _headersMaxLength));
+				http = parser(ReadHeaders(stream, _headersMaxLength));
 				var contentLen = http.Headers["Content-Length"];
 			    if (!string.IsNullOrEmpty(contentLen))
 			    {
-			        http.EntityBodyData = readEntityBody(stream, contentLen);
+			        http.EntityBodyData = ReadEntityBody(stream, contentLen);
 			    }
 			}
 			catch (Exception ex)
@@ -208,15 +168,9 @@ namespace WebSocketSharp
 			return http;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public byte[] ToByteArray()
+	    public byte[] ToByteArray()
 		{
 			return Encoding.UTF8.GetBytes(ToString());
 		}
-
-		#endregion
 	}
 }

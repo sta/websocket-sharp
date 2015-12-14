@@ -52,8 +52,6 @@ namespace WebSocketSharp
     using System.IO.Compression;
     using System.Linq;
     using System.Net.Sockets;
-    using System.Reflection.Emit;
-    using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using WebSocketSharp.Net;
     using WebSocketSharp.Net.WebSockets;
@@ -83,11 +81,7 @@ namespace WebSocketSharp
         /// </param>
         public static bool Contains(this string value, params char[] chars)
         {
-            return chars == null || chars.Length == 0
-                   ? true
-                   : value == null || value.Length == 0
-                     ? false
-                     : value.IndexOfAny(chars) > -1;
+            return chars == null || chars.Length == 0 || (!string.IsNullOrEmpty(value) && value.IndexOfAny(chars) > -1);
         }
 
         /// <summary>
@@ -106,9 +100,7 @@ namespace WebSocketSharp
         /// </param>
         public static bool Contains(this NameValueCollection collection, string name)
         {
-            return collection != null && collection.Count > 0
-                   ? collection[name] != null
-                   : false;
+            return collection != null && collection.Count > 0 && collection[name] != null;
         }
 
         /// <summary>
@@ -158,8 +150,7 @@ namespace WebSocketSharp
         /// </param>
         public static void Emit(this EventHandler eventHandler, object sender, EventArgs e)
         {
-            if (eventHandler != null)
-                eventHandler(sender, e);
+            eventHandler?.Invoke(sender, e);
         }
 
         /// <summary>
@@ -377,7 +368,7 @@ namespace WebSocketSharp
         public static bool IsLocal(this System.Net.IPAddress address)
         {
             if (address == null)
-                throw new ArgumentNullException("address");
+                throw new ArgumentNullException(nameof(address));
 
             if (address.Equals(System.Net.IPAddress.Any) || System.Net.IPAddress.IsLoopback(address))
                 return true;
@@ -403,7 +394,7 @@ namespace WebSocketSharp
         /// </param>
         public static bool IsNullOrEmpty(this string value)
         {
-            return value == null || value.Length == 0;
+            return string.IsNullOrEmpty(value);
         }
 
         /// <summary>
@@ -452,7 +443,7 @@ namespace WebSocketSharp
         /// </param>
         public static bool MaybeUri(this string value)
         {
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
                 return false;
 
             var i = value.IndexOf(':');
@@ -580,7 +571,7 @@ namespace WebSocketSharp
         public static byte[] ToHostOrder(this byte[] source, ByteOrder sourceOrder)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             return source.Length > 1 && !sourceOrder.IsHostOrder()
                    ? source.Reverse()
@@ -611,19 +602,19 @@ namespace WebSocketSharp
         public static string ToString<T>(this T[] array, string separator)
         {
             if (array == null)
-                throw new ArgumentNullException("array");
+                throw new ArgumentNullException(nameof(array));
 
             var len = array.Length;
             if (len == 0)
-                return String.Empty;
+                return string.Empty;
 
             if (separator == null)
-                separator = String.Empty;
+                separator = string.Empty;
 
             var buff = new StringBuilder(64);
             (len - 1).Times(i => buff.AppendFormat("{0}{1}", array[i].ToString(), separator));
 
-            buff.Append(array[len - 1].ToString());
+            buff.Append(array[len - 1]);
             return buff.ToString();
         }
 
@@ -658,7 +649,7 @@ namespace WebSocketSharp
         /// </param>
         public static string UrlDecode(this string value)
         {
-            return value != null && value.Length > 0
+            return !string.IsNullOrEmpty(value)
                    ? HttpUtility.UrlDecode(value)
                    : value;
         }
@@ -675,7 +666,7 @@ namespace WebSocketSharp
         /// </param>
         public static string UrlEncode(this string value)
         {
-            return value != null && value.Length > 0
+            return !string.IsNullOrEmpty(value)
                    ? HttpUtility.UrlEncode(value)
                    : value;
         }
@@ -686,7 +677,7 @@ namespace WebSocketSharp
             {
                 var bytes = code.InternalToByteArray(ByteOrder.Big);
                 buff.Write(bytes, 0, 2);
-                if (reason != null && reason.Length > 0)
+                if (!string.IsNullOrEmpty(reason))
                 {
                     bytes = Encoding.UTF8.GetBytes(reason);
                     buff.Write(bytes, 0, bytes.Length);
@@ -763,8 +754,8 @@ namespace WebSocketSharp
         internal static string CheckIfValidControlData(this byte[] data, string paramName)
         {
             return data.Length > 125
-                   ? string.Format("'{0}' is greater than the allowable max size.", paramName)
-                   : null;
+                   ? $"'{paramName}' is greater than the allowable max size."
+                       : null;
         }
 
         internal static string CheckIfValidProtocols(this string[] protocols)
@@ -840,14 +831,14 @@ namespace WebSocketSharp
         internal static byte[] Compress(this byte[] data, CompressionMethod method, Opcode opcode)
         {
             return method == CompressionMethod.Deflate && opcode.IsData()
-                   ? data.compress()
+                   ? data.Compress()
                    : data;
         }
 
         internal static Stream Compress(this Stream stream, CompressionMethod method)
         {
             return method == CompressionMethod.Deflate
-                   ? stream.compress()
+                   ? stream.Compress()
                    : stream;
         }
 
@@ -922,7 +913,7 @@ namespace WebSocketSharp
         internal static bool EqualsWith(this int value, char c, Action<int> action)
         {
             if (value < 0 || value > 255)
-                throw new ArgumentOutOfRangeException("value");
+                throw new ArgumentOutOfRangeException(nameof(value));
 
             action(value);
             return value == c - 0;
@@ -973,7 +964,7 @@ namespace WebSocketSharp
                                  ? "WebSocket server got an internal error."
                                  : code == CloseStatusCode.TlsHandshakeFailure
                                    ? "An error has occurred while handshaking."
-                                   : String.Empty;
+                                   : string.Empty;
         }
 
         /// <summary>
@@ -1106,12 +1097,12 @@ namespace WebSocketSharp
 
         internal static string Quote(this string value)
         {
-            return String.Format("\"{0}\"", value.Replace("\"", "\\\""));
+            return $"\"{value.Replace("\"", "\\\"")}\"";
         }
 
         internal static byte[] ReadBytes(this Stream stream, int length)
         {
-            return stream.readBytes(new byte[length], 0, length);
+            return stream.ReadBytes(new byte[length], 0, length);
         }
 
         internal static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
@@ -1125,7 +1116,7 @@ namespace WebSocketSharp
                 var end = false;
                 for (long i = 0; i < cnt; i++)
                 {
-                    if (!stream.readBytes(buff, 0, bufferLength, res))
+                    if (!stream.ReadBytes(buff, 0, bufferLength, res))
                     {
                         end = true;
                         break;
@@ -1134,7 +1125,7 @@ namespace WebSocketSharp
 
                 if (!end && rem > 0)
                 {
-                    stream.readBytes(new byte[rem], 0, rem, res);
+                    stream.ReadBytes(new byte[rem], 0, rem, res);
                 }
 
                 res.Close();
@@ -1148,12 +1139,11 @@ namespace WebSocketSharp
 
             var len = await stream.ReadAsync(buff, 0, length).ConfigureAwait(false);
 
-            byte[] bytes = null;
-            bytes = len < 1
-                                  ? new byte[0]
-                                  : len < length
-                      ? stream.readBytes(buff, len, length - len)
-                                    : buff;
+            var bytes = len < 1
+                               ? new byte[0]
+                               : len < length
+                                     ? stream.ReadBytes(buff, len, length - len)
+                                     : buff;
 
             return bytes;
         }
@@ -1213,9 +1203,6 @@ namespace WebSocketSharp
                         continue;
                     }
                 }
-                else
-                {
-                }
 
                 buff.Append(c);
             }
@@ -1254,8 +1241,8 @@ namespace WebSocketSharp
         internal static string ToExtensionString(this CompressionMethod method)
         {
             return method != CompressionMethod.None
-                   ? String.Format("permessage-{0}", method.ToString().ToLower())
-                   : String.Empty;
+                   ? $"permessage-{method.ToString().ToLower()}"
+                       : string.Empty;
         }
 
         internal static System.Net.IPAddress ToIPAddress(this string hostNameOrAddress)
@@ -1354,9 +1341,7 @@ namespace WebSocketSharp
             }
             else
             {
-                uri = new Uri(
-                  String.Format(
-                    "{0}://{1}:{2}{3}", schm, uri.Host, schm == "ws" ? 80 : 443, uri.PathAndQuery));
+                uri = new Uri($"{schm}://{uri.Host}:{(schm == "ws" ? 80 : 443)}{uri.PathAndQuery}");
             }
 
             result = uri;
@@ -1377,7 +1362,7 @@ namespace WebSocketSharp
             return len < 0
                    ? value
                    : len == 0
-                     ? String.Empty
+                     ? string.Empty
                      : value.Substring(start + 1, len).Replace("\\\"", "\"");
         }
 
@@ -1387,7 +1372,7 @@ namespace WebSocketSharp
                 input.CopyTo(stream);
         }
 
-        private static byte[] compress(this byte[] data)
+        private static byte[] Compress(this byte[] data)
         {
             if (data.LongLength == 0)
             {
@@ -1397,16 +1382,16 @@ namespace WebSocketSharp
 
             using (var input = new MemoryStream(data))
             {
-                return input.compressToArray();
+                return input.CompressToArray();
             }
         }
 
-        private static Stream compress(this Stream stream)
+        private static Stream Compress(this Stream stream)
         {
             return new DeflateStream(stream, CompressionLevel.Optimal, true);
         }
 
-        private static MemoryStream compressToMemory(this Stream stream)
+        private static MemoryStream CompressToMemory(this Stream stream)
         {
             var output = new MemoryStream();
             if (stream.Length == 0)
@@ -1423,16 +1408,16 @@ namespace WebSocketSharp
             }
         }
 
-        private static byte[] compressToArray(this Stream stream)
+        private static byte[] CompressToArray(this Stream stream)
         {
-            using (var output = stream.compressToMemory())
+            using (var output = stream.CompressToMemory())
             {
                 output.Close();
                 return output.ToArray();
             }
         }
 
-        private static byte[] readBytes(this Stream stream, byte[] buffer, int offset, int length)
+        private static byte[] ReadBytes(this Stream stream, byte[] buffer, int offset, int length)
         {
             var len = 0;
             try
@@ -1459,9 +1444,9 @@ namespace WebSocketSharp
                    : buffer;
         }
 
-        private static bool readBytes(this Stream stream, byte[] buffer, int offset, int length, Stream destination)
+        private static bool ReadBytes(this Stream stream, byte[] buffer, int offset, int length, Stream destination)
         {
-            var bytes = stream.readBytes(buffer, offset, length);
+            var bytes = stream.ReadBytes(buffer, offset, length);
             var len = bytes.Length;
             destination.Write(bytes, 0, len);
 

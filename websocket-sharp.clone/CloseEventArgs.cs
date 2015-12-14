@@ -46,8 +46,8 @@ namespace WebSocketSharp
 	public class CloseEventArgs : EventArgs
 	{
 		private readonly byte[] _rawData;
-		private bool _clean;
-		private PayloadData _payloadData;
+
+	    private PayloadData _payloadData;
 
 		internal CloseEventArgs()
 		{
@@ -81,39 +81,16 @@ namespace WebSocketSharp
 		{
 		}
 
-		internal PayloadData PayloadData
-		{
-			get
-			{
-				return _payloadData ?? (_payloadData = new PayloadData(_rawData));
-			}
-		}
+		internal PayloadData PayloadData => _payloadData ?? (_payloadData = new PayloadData(_rawData));
 
-		internal byte[] RawData
-		{
-			get
-			{
-				return _rawData;
-			}
-		}
+	    internal byte[] RawData => _rawData;
 
-		/// <summary>
+	    /// <summary>
 		/// Gets a value indicating whether the WebSocket connection has been closed cleanly.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the WebSocket connection has been closed cleanly; otherwise, <c>false</c>.
 		/// </value>
-		public bool WasClean
-		{
-			get
-			{
-				return _clean;
-			}
-
-			internal set
-			{
-				_clean = value;
-			}
-		}
+		public bool WasClean { get; internal set; }
 	}
 }

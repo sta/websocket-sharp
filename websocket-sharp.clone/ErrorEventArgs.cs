@@ -56,13 +56,10 @@ namespace WebSocketSharp
 	/// </remarks>
 	public class ErrorEventArgs : EventArgs
 	{
-		private readonly Exception _exception;
-		private readonly string _message;
-
-		internal ErrorEventArgs(string message, Exception exception)
+	    internal ErrorEventArgs(string message, Exception exception)
 		{
-			_message = message;
-			_exception = exception;
+			Message = message;
+			Exception = exception;
 		}
 
 		/// <summary>
@@ -72,26 +69,14 @@ namespace WebSocketSharp
 		/// An <see cref="System.Exception"/> instance that represents the cause of the error,
 		/// or <see langword="null"/> if the error isn't due to an exception.
 		/// </value>
-		public Exception Exception
-		{
-			get
-			{
-				return _exception;
-			}
-		}
+		public Exception Exception { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the error message.
 		/// </summary>
 		/// <value>
 		/// A <see cref="string"/> that represents the error message.
 		/// </value>
-		public string Message
-		{
-			get
-			{
-				return _message;
-			}
-		}
+		public string Message { get; }
 	}
 }
