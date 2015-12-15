@@ -377,31 +377,14 @@ namespace WebSocketSharp
       return output.ToString ();
     }
 
-    private static bool isControl (byte opcode)
-    {
-      return opcode == (byte) Opcode.Close ||
-             opcode == (byte) Opcode.Ping ||
-             opcode == (byte) Opcode.Pong;
-    }
-
     private static bool isControl (Opcode opcode)
     {
       return opcode == Opcode.Close || opcode == Opcode.Ping || opcode == Opcode.Pong;
     }
 
-    private static bool isData (byte opcode)
-    {
-      return opcode == (byte) Opcode.Text || opcode == (byte) Opcode.Binary;
-    }
-
     private static bool isData (Opcode opcode)
     {
       return opcode == Opcode.Text || opcode == Opcode.Binary;
-    }
-
-    private static bool isSupported (byte opcode)
-    {
-      return Enum.IsDefined (typeof (Opcode), opcode);
     }
 
     private static string print (WebSocketFrame frame)
@@ -478,13 +461,13 @@ Extended Payload Length: {7}
       var payloadLen = (byte) (header[1] & 0x7f);
 
       // Check if valid header.
-      var err = !isSupported (opcode)
+      var err = !opcode.IsSupported ()
                 ? "An unsupported opcode."
-                : isControl (opcode) && fin == Fin.More
+                : opcode.IsControl () && fin == Fin.More
                   ? "A control frame is fragmented."
-                  : isControl (opcode) && payloadLen > 125
+                  : opcode.IsControl () && payloadLen > 125
                     ? "A control frame has a long payload length."
-                    : !isData (opcode) && rsv1 == Rsv.On
+                    : !opcode.IsData () && rsv1 == Rsv.On
                       ? "A non data frame is compressed."
                       : null;
 

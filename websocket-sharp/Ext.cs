@@ -508,6 +508,16 @@ namespace WebSocketSharp
       return value.StartsWith (method.ToExtensionString ());
     }
 
+    internal static bool IsControl (this byte opcode)
+    {
+      return opcode > 0x7 && opcode < 0x10;
+    }
+
+    internal static bool IsData (this byte opcode)
+    {
+      return opcode == 0x1 || opcode == 0x2;
+    }
+
     internal static bool IsPortNumber (this int value)
     {
       return value > 0 && value < 65536;
@@ -527,6 +537,11 @@ namespace WebSocketSharp
              code == CloseStatusCode.NoStatus ||
              code == CloseStatusCode.Abnormal ||
              code == CloseStatusCode.TlsHandshakeFailure;
+    }
+
+    internal static bool IsSupported (this byte opcode)
+    {
+      return Enum.IsDefined (typeof (Opcode), opcode);
     }
 
     internal static bool IsText (this string value)
