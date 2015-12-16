@@ -463,12 +463,12 @@ Extended Payload Length: {7}
       // Check if valid header.
       var err = !opcode.IsSupported ()
                 ? "An unsupported opcode."
-                : opcode.IsControl () && fin == Fin.More
-                  ? "A control frame is fragmented."
-                  : opcode.IsControl () && payloadLen > 125
-                    ? "A control frame has a long payload length."
-                    : !opcode.IsData () && rsv1 == Rsv.On
-                      ? "A non data frame is compressed."
+                : !opcode.IsData () && rsv1 == Rsv.On
+                  ? "A non data frame is compressed."
+                  : opcode.IsControl () && fin == Fin.More
+                    ? "A control frame is fragmented."
+                    : opcode.IsControl () && payloadLen > 125
+                      ? "A control frame has a long payload length."
                       : null;
 
       if (err != null)
