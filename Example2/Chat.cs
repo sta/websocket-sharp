@@ -24,9 +24,7 @@ namespace Example2
     private string getName ()
     {
       var name = Context.QueryString["name"];
-      return !name.IsNullOrEmpty ()
-             ? name
-             : (_prefix + getNumber ());
+      return !name.IsNullOrEmpty () ? name : _prefix + getNumber ();
     }
 
     private static int getNumber ()
@@ -34,9 +32,9 @@ namespace Example2
       return Interlocked.Increment (ref _number);
     }
 
-    protected override void OnOpen ()
+    protected override void OnClose (CloseEventArgs e)
     {
-      _name = getName ();
+      Sessions.Broadcast (String.Format ("{0} got logged off...", _name));
     }
 
     protected override void OnMessage (MessageEventArgs e)
@@ -44,9 +42,9 @@ namespace Example2
       Sessions.Broadcast (String.Format ("{0}: {1}", _name, e.Data));
     }
 
-    protected override void OnClose (CloseEventArgs e)
+    protected override void OnOpen ()
     {
-      Sessions.Broadcast (String.Format ("{0} got logged off...", _name));
+      _name = getName ();
     }
   }
 }

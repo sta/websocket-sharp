@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,13 @@
  */
 #endregion
 
+#region Contributors
+/*
+ * Contributors:
+ * - David Burhans
+ */
+#endregion
+
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -41,7 +48,7 @@ namespace WebSocketSharp
     private string _method;
     private string _uri;
     private bool   _websocketRequest;
-    private bool   _websocketRequestWasSet;
+    private bool   _websocketRequestSet;
 
     #endregion
 
@@ -91,14 +98,14 @@ namespace WebSocketSharp
 
     public bool IsWebSocketRequest {
       get {
-        if (!_websocketRequestWasSet) {
+        if (!_websocketRequestSet) {
           var headers = Headers;
           _websocketRequest = _method == "GET" &&
                               ProtocolVersion > HttpVersion.Version10 &&
                               headers.Contains ("Upgrade", "websocket") &&
                               headers.Contains ("Connection", "Upgrade");
 
-          _websocketRequestWasSet = true;
+          _websocketRequestSet = true;
         }
 
         return _websocketRequest;
@@ -129,11 +136,18 @@ namespace WebSocketSharp
     internal static HttpRequest CreateWebSocketRequest (Uri uri)
     {
       var req = new HttpRequest ("GET", uri.PathAndQuery);
-
       var headers = req.Headers;
+
+      // Only includes a port number in the Host header value if it's non-default.
+      // See: https://tools.ietf.org/html/rfc6455#page-17
+      var port = uri.Port;
+      var schm = uri.Scheme;
+      headers["Host"] = (port == 80 && schm == "ws") || (port == 443 && schm == "wss")
+                        ? uri.DnsSafeHost
+                        : uri.Authority;
+
       headers["Upgrade"] = "websocket";
       headers["Connection"] = "Upgrade";
-      headers["Host"] = uri.Port == 80 ? uri.DnsSafeHost : uri.Authority;
 
       return req;
     }

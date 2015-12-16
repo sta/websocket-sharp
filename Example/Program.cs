@@ -9,15 +9,15 @@ namespace Example
   {
     public static void Main (string[] args)
     {
-      /* Create a new instance of the WebSocket class.
-       *
-       * The WebSocket class inherits the System.IDisposable interface, so you can use the using
-       * statement. And the WebSocket connection will be closed with close status 1001 (going away)
-       * when the control leaves the using block.
-       *
-       * If you would like to connect to the server with the secure connection, you should create
-       * the instance with the wss scheme WebSocket URL.
-       */
+      // Create a new instance of the WebSocket class.
+      //
+      // The WebSocket class inherits the System.IDisposable interface, so you can
+      // use the using statement. And the WebSocket connection will be closed with
+      // close status 1001 (going away) when the control leaves the using block.
+      //
+      // If you would like to connect to the server with the secure connection,
+      // you should create the instance with the wss scheme WebSocket URL.
+
       using (var nf = new Notifier ())
       using (var ws = new WebSocket ("ws://echo.websocket.org"))
       //using (var ws = new WebSocket ("wss://echo.websocket.org"))
@@ -28,14 +28,15 @@ namespace Example
       //using (var ws = new WebSocket ("ws://localhost:4649/Chat?name=nobita"))
       //using (var ws = new WebSocket ("wss://localhost:4649/Chat"))
       {
-        // To set the WebSocket events.
+        // Set the WebSocket events.
+
         ws.OnOpen += (sender, e) => ws.Send ("Hi, there!");
 
         ws.OnMessage += (sender, e) =>
           nf.Notify (
             new NotificationMessage {
               Summary = "WebSocket Message",
-              Body = e.Data,
+              Body = !e.IsPing ? e.Data : "Received a ping.",
               Icon = "notification-message-im"
             });
 
@@ -61,6 +62,9 @@ namespace Example
 
         // To change the wait time for the response to the Ping or Close.
         ws.WaitTime = TimeSpan.FromSeconds (10);
+
+        // To emit a WebSocket.OnMessage event when receives a ping.
+        ws.EmitOnPing = true;
 #endif
         // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
@@ -78,7 +82,7 @@ namespace Example
           };
          */
 
-        // To set the credentials for the HTTP Authentication (Basic/Digest).
+        // To send the credentials for the HTTP Authentication (Basic/Digest).
         //ws.SetCredentials ("nobita", "password", false);
 
         // To send the Origin header.

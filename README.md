@@ -51,11 +51,13 @@ websocket-sharp is available on the **Unity Asset Store**.
 
 It works with **Unity Free**, but there are some limitations:
 
-- **[Security Sandbox of the Webplayer]** (server doesn't work in the webplayer)
-- **[.NET Socket Support for iOS/Android][Unity Licenses Comparison]** (requires iOS/Android Pro)
+- **[Security Sandbox of the Webplayer]** (The server isn't available in Web Player)
+- **[WebGL Networking]** (Not available in WebGL)
+- **Weak Support for the System.IO.Compression** (The compression extension isn't available on Windows)
+- **.NET Socket Support for iOS/Android** (It requires iOS/Android Pro if your Unity is earlier than Unity 5)
 - **.NET API 2.0 compatibility level for iOS/Android**
 
-Using **.NET API 2.0 compatibility level for iOS/Android** requires to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
+**.NET API 2.0 compatibility level for iOS/Android** may require to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
 
 And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
@@ -136,26 +138,42 @@ ws.OnMessage += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
 
-`e.Type` property returns either `WebSocketSharp.Opcode.Text` or `WebSocketSharp.Opcode.Binary` that represents the type of the message. So by checking it, you can determine which item you should use.
+If you would like to get the message data, you should access `e.Data` or `e.RawData` property.
 
-If it returns `Opcode.Text`, you should use `e.Data` property that returns a `string` (represents the **Text** message).
+And you can determine which property you should access by checking `e.IsText` or `e.IsBinary` property.
 
-Or if it returns `Opcode.Binary`, you should use `e.RawData` property that returns a `byte[]` (represents the **Binary** message).
+If `e.IsText` is `true`, you should access `e.Data` that returns a `string` (represents a **text** message).
+
+Or if `e.IsBinary` is `true`, you should access `e.RawData` that returns a `byte[]` (represents a **binary** message).
 
 ```csharp
-if (e.Type == Opcode.Text) {
+if (e.IsText) {
   // Do something with e.Data.
   ...
 
   return;
 }
 
-if (e.Type == Opcode.Binary) {
+if (e.IsBinary) {
   // Do something with e.RawData.
   ...
 
   return;
 }
+```
+
+And if you would like to notify that a **ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`, such as the following.
+
+```csharp
+ws.EmitOnPing = true;
+ws.OnMessage += (sender, e) => {
+  if (e.IsPing) {
+    // Do something to notify that a ping has been received.
+    ...
+
+    return;
+  }
+};
 ```
 
 ##### WebSocket.OnError Event #####
@@ -200,7 +218,7 @@ If you would like to connect to the server asynchronously, you should use the `W
 
 #### Step 5 ####
 
-Sending a data to the WebSocket server.
+Sending data to the WebSocket server.
 
 ```csharp
 ws.Send (data);
@@ -208,9 +226,9 @@ ws.Send (data);
 
 The `WebSocket.Send` method is overloaded.
 
-You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send a data.
+You can use the `WebSocket.Send (string)`, `WebSocket.Send (byte[])`, or `WebSocket.Send (System.IO.FileInfo)` method to send the data.
 
-If you would like to send a data asynchronously, you should use the `WebSocket.SendAsync` method.
+If you would like to send the data asynchronously, you should use the `WebSocket.SendAsync` method.
 
 ```csharp
 ws.SendAsync (data, completed);
@@ -329,15 +347,15 @@ public class Chat : WebSocketBehavior
 
 You can define the behavior of any WebSocket service by creating the class that inherits the `WebSocketBehavior` class.
 
-If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in the current session in the service receives a message.
+If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in a session in the service receives a message.
 
 And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnError (ErrorEventArgs)`, and `WebSocketBehavior.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
 
-The `WebSocketBehavior.Send` method sends a data to the client on the current session in the service.
+The `WebSocketBehavior.Send` method sends data to the client on a session in the service.
 
-If you would like to access the sessions in the service, you should use the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
+If you would like to get the sessions in the service, you should access the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
-The `WebSocketBehavior.Sessions.Broadcast` method broadcasts a data to every client in the service.
+The `WebSocketBehavior.Sessions.Broadcast` method sends data to every client in the service.
 
 #### Step 3 ####
 
@@ -403,19 +421,36 @@ For more information, would you see **[Example3]**?
 
 #### Per-message Compression ####
 
-websocket-sharp supports the **[Per-message Compression][compression]** extension. (But it doesn't support with the [extension parameters].)
+websocket-sharp supports the **[Per-message Compression][compression]** extension (but doesn't support this extension with the [context take over]).
 
-If you would like to enable this extension as a WebSocket client, you should set such as the following.
+As a WebSocket client, if you would like to enable this extension, you should set such as the following.
 
 ```csharp
 ws.Compression = CompressionMethod.Deflate;
 ```
 
-And then your client will send the following header with the connection request to the server.
+And then your client will send the following header in the connection request to the server.
 
-    Sec-WebSocket-Extensions: permessage-deflate
+    Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
-If the server supports this extension, it will return the same header. And when your client receives it, this extension will be available.
+If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.
+
+#### Ignoring the extensions ####
+
+As a WebSocket server, if you would like to ignore the extensions requested from a client, you should set the `WebSocketBehavior.IgnoreExtensions` property to `true` in your `WebSocketBehavior` constructor or initializing it, such as the following.
+
+```csharp
+wssv.AddWebSocketService<Chat> (
+  "/Chat",
+  () => new Chat () {
+    // To ignore the extensions requested from a client.
+    IgnoreExtensions = true
+  });
+```
+
+If it's set to `true`, the server doesn't return the **Sec-WebSocket-Extensions header** in the connection response.
+
+I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
 
 ### Secure Connection ###
 
@@ -446,7 +481,7 @@ If you set this property to nothing, the validation does nothing with the server
 As a **WebSocket Server**, you should create a new instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, such as the following.
 
 ```csharp
-var wssv = new WebSocketServer (4649, true);
+var wssv = new WebSocketServer (5963, true);
 wssv.SslConfiguration.ServerCertificate =
   new X509Certificate2 ("/path/to/cert.pfx", "password for cert.pfx");
 ```
@@ -508,7 +543,7 @@ And also if you would like to send the **Cookies** with the WebSocket connection
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in each WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in a WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -525,7 +560,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin header**, **Cookies**, or both included in each WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the **Origin header**, **Cookies**, or both included in a WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
@@ -615,7 +650,7 @@ And Example1 uses **[Json.NET]**.
 
 **[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
 
-Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
+Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser while Example3 is running?
 
 ## Supported WebSocket Specifications ##
 
@@ -652,15 +687,15 @@ websocket-sharp is provided under **[The MIT License]**.
 [Squid]: http://www.squid-cache.org
 [The MIT License]: https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt
 [Unity]: http://unity3d.com
-[Unity Licenses Comparison]: http://unity3d.com/unity/licenses
+[WebGL Networking]: http://docs.unity3d.com/Manual/webgl-networking.html
 [WebSocket-Sharp for Unity]: http://u3d.as/content/sta-blockhead/websocket-sharp-for-unity
 [api]: http://www.w3.org/TR/websockets
 [api_ja]: http://www.hcn.zaq.ne.jp/___/WEB/WebSocket-ja.html
-[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09
+[compression]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
+[context take over]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1
 [draft-hixie-thewebsocketprotocol-75]: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol-75
 [draft-ietf-hybi-thewebsocketprotocol-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00
 [draft75]: https://github.com/sta/websocket-sharp/tree/draft75
-[extension parameters]: http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-09#section-8.1
 [hybi-00]: https://github.com/sta/websocket-sharp/tree/hybi-00
 [master]: https://github.com/sta/websocket-sharp/tree/master
 [rfc2617]: http://tools.ietf.org/html/rfc2617

@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
+        foreach (var res in Broadping (WebSocketFrame.EmptyPingBytes, _waitTime))
           if (res.Value)
             yield return res.Key;
       }
@@ -144,7 +144,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
+        foreach (var res in Broadping (WebSocketFrame.EmptyPingBytes, _waitTime))
           if (!res.Value)
             yield return res.Key;
       }
@@ -170,8 +170,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the manager cleans up the inactive sessions
-    /// in the WebSocket service periodically.
+    /// Gets a value indicating whether the manager cleans up the inactive sessions in
+    /// the WebSocket service periodically.
     /// </summary>
     /// <value>
     /// <c>true</c> if the manager cleans up the inactive sessions every 60 seconds;
@@ -292,14 +292,14 @@ namespace WebSocketSharp.Server
 
     private bool tryGetSession (string id, out IWebSocketSession session)
     {
-      bool res;
+      bool ret;
       lock (_sync)
-        res = _sessions.TryGetValue (id, out session);
+        ret = _sessions.TryGetValue (id, out session);
 
-      if (!res)
-        _logger.Error ("A session with the specified ID isn't found.\nID: " + id);
+      if (!ret)
+        _logger.Error ("A session with the specified ID isn't found:\n  ID: " + id);
 
-      return res;
+      return ret;
     }
 
     #endregion
@@ -343,15 +343,15 @@ namespace WebSocketSharp.Server
 
     internal Dictionary<string, bool> Broadping (byte[] frameAsBytes, TimeSpan timeout)
     {
-      var res = new Dictionary<string, bool> ();
+      var ret = new Dictionary<string, bool> ();
       foreach (var session in Sessions) {
         if (_state != ServerState.Start)
           break;
 
-        res.Add (session.ID, session.Context.WebSocket.Ping (frameAsBytes, timeout));
+        ret.Add (session.ID, session.Context.WebSocket.Ping (frameAsBytes, timeout));
       }
 
-      return res;
+      return ret;
     }
 
     internal bool Remove (string id)
@@ -368,14 +368,14 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
+    internal void Stop (CloseEventArgs e, byte[] frameAsBytes, bool receive)
     {
       lock (_sync) {
         _state = ServerState.ShuttingDown;
 
         _sweepTimer.Enabled = false;
         foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (e, frameAsBytes, timeout);
+          session.Context.WebSocket.Close (e, frameAsBytes, receive);
 
         _state = ServerState.Stop;
       }
@@ -386,14 +386,16 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> to every client in the WebSocket service.
+    /// Sends binary <paramref name="data"/> to every client in the WebSocket service.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to broadcast.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     public void Broadcast (byte[] data)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -406,43 +408,47 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a text <paramref name="data"/> to every client in the WebSocket service.
+    /// Sends text <paramref name="data"/> to every client in the WebSocket service.
     /// </summary>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to broadcast.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     public void Broadcast (string data)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
       }
 
-      var rawData = Encoding.UTF8.GetBytes (data);
-      if (rawData.LongLength <= WebSocket.FragmentLength)
-        broadcast (Opcode.Text, rawData, null);
+      var bytes = data.UTF8Encode ();
+      if (bytes.LongLength <= WebSocket.FragmentLength)
+        broadcast (Opcode.Text, bytes, null);
       else
-        broadcast (Opcode.Text, new MemoryStream (rawData), null);
+        broadcast (Opcode.Text, new MemoryStream (bytes), null);
     }
 
     /// <summary>
-    /// Broadcasts a binary <paramref name="data"/> asynchronously to every client
-    /// in the WebSocket service.
+    /// Sends binary <paramref name="data"/> asynchronously to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to broadcast.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
     /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// the send is complete.
     /// </param>
     public void BroadcastAsync (byte[] data, Action completed)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
@@ -455,56 +461,57 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Broadcasts a text <paramref name="data"/> asynchronously to every client
-    /// in the WebSocket service.
+    /// Sends text <paramref name="data"/> asynchronously to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// A <see cref="string"/> that represents the text data to broadcast.
+    /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
     /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// the send is complete.
     /// </param>
     public void BroadcastAsync (string data, Action completed)
     {
-      var msg = _state.CheckIfStart () ?? data.CheckIfValidSendData ();
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameter (data);
+
       if (msg != null) {
         _logger.Error (msg);
         return;
       }
 
-      var rawData = Encoding.UTF8.GetBytes (data);
-      if (rawData.LongLength <= WebSocket.FragmentLength)
-        broadcastAsync (Opcode.Text, rawData, completed);
+      var bytes = data.UTF8Encode ();
+      if (bytes.LongLength <= WebSocket.FragmentLength)
+        broadcastAsync (Opcode.Text, bytes, completed);
       else
-        broadcastAsync (Opcode.Text, new MemoryStream (rawData), completed);
+        broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);
     }
 
     /// <summary>
-    /// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to every client in the WebSocket service.
+    /// Sends binary data from the specified <see cref="Stream"/> asynchronously to
+    /// every client in the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the broadcast to be complete.
+    /// This method doesn't wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which contains the binary data to broadcast.
+    /// A <see cref="Stream"/> from which contains the binary data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that represents the number of bytes to broadcast.
+    /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
     /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the broadcast is complete.
+    /// the send is complete.
     /// </param>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
-      var msg = _state.CheckIfStart () ??
-                stream.CheckIfCanRead () ??
-                (length < 1 ? "'length' is less than 1." : null);
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckSendParameters (stream, length);
 
       if (msg != null) {
         _logger.Error (msg);
@@ -523,7 +530,7 @@ namespace WebSocketSharp.Server
           if (len < length)
             _logger.Warn (
               String.Format (
-                "The data with 'length' cannot be read from 'stream'.\nexpected: {0} actual: {1}",
+                "The data with 'length' cannot be read from 'stream':\n  expected: {0}\n  actual: {1}",
                 length,
                 len));
 
@@ -545,18 +552,18 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, bool> Broadping ()
     {
-      var msg = _state.CheckIfStart ();
+      var msg = _state.CheckIfAvailable (false, true, false);
       if (msg != null) {
         _logger.Error (msg);
         return null;
       }
 
-      return Broadping (WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
+      return Broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to every client
-    /// in the WebSocket service.
+    /// Sends a Ping with the specified <paramref name="message"/> to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <returns>
     /// A <c>Dictionary&lt;string, bool&gt;</c> that contains a collection of pairs of
@@ -572,15 +579,15 @@ namespace WebSocketSharp.Server
         return Broadping ();
 
       byte[] data = null;
-      var msg = _state.CheckIfStart () ??
-                (data = Encoding.UTF8.GetBytes (message)).CheckIfValidControlData ("message");
+      var msg = _state.CheckIfAvailable (false, true, false) ??
+                WebSocket.CheckPingParameter (message, out data);
 
       if (msg != null) {
         _logger.Error (msg);
         return null;
       }
 
-      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToByteArray (), _waitTime);
+      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToArray (), _waitTime);
     }
 
     /// <summary>
@@ -654,36 +661,36 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client
-    /// on the session with the specified <paramref name="id"/>.
+    /// Sends a Ping with the specified <paramref name="message"/> to the client on
+    /// the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <returns>
     /// <c>true</c> if the manager receives a Pong from the client in a time;
     /// otherwise, <c>false</c>.
     /// </returns>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
     /// </param>
-    public bool PingTo (string id, string message)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public bool PingTo (string message, string id)
     {
       IWebSocketSession session;
       return TryGetSession (id, out session) && session.Context.WebSocket.Ping (message);
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> to the client on the session
-    /// with the specified <paramref name="id"/>.
+    /// Sends binary <paramref name="data"/> to the client on the session with
+    /// the specified <paramref name="id"/>.
     /// </summary>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
-    public void SendTo (string id, byte[] data)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public void SendTo (byte[] data, string id)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
@@ -691,16 +698,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> to the client on the session
-    /// with the specified <paramref name="id"/>.
+    /// Sends text <paramref name="data"/> to the client on the session with
+    /// the specified <paramref name="id"/>.
     /// </summary>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
-    public void SendTo (string id, string data)
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
+    public void SendTo (string data, string id)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
@@ -708,24 +715,24 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary <paramref name="data"/> asynchronously to the client on the session
-    /// with the specified <paramref name="id"/>.
+    /// Sends binary <paramref name="data"/> asynchronously to the client on
+    /// the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
     /// <param name="completed">
     /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    public void SendToAsync (string id, byte[] data, Action<bool> completed)
+    public void SendToAsync (byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
@@ -733,24 +740,24 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a text <paramref name="data"/> asynchronously to the client on the session
-    /// with the specified <paramref name="id"/>.
+    /// Sends text <paramref name="data"/> asynchronously to the client on
+    /// the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
     /// <param name="completed">
     /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    public void SendToAsync (string id, string data, Action<bool> completed)
+    public void SendToAsync (string data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
@@ -758,27 +765,27 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-    /// to the client on the session with the specified <paramref name="id"/>.
+    /// Sends binary data from the specified <see cref="Stream"/> asynchronously to
+    /// the client on the session with the specified <paramref name="id"/>.
     /// </summary>
     /// <remarks>
     /// This method doesn't wait for the send to be complete.
     /// </remarks>
-    /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
-    /// </param>
     /// <param name="stream">
     /// A <see cref="Stream"/> from which contains the binary data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// </param>
     /// <param name="completed">
     /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    public void SendToAsync (string id, Stream stream, int length, Action<bool> completed)
+    public void SendToAsync (Stream stream, int length, string id, Action<bool> completed)
     {
       IWebSocketSession session;
       if (TryGetSession (id, out session))
@@ -833,7 +840,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
-      var msg = _state.CheckIfStart () ?? id.CheckIfValidSessionID ();
+      var msg = _state.CheckIfAvailable (false, true, false) ?? id.CheckIfValidSessionID ();
       if (msg != null) {
         _logger.Error (msg);
         session = null;

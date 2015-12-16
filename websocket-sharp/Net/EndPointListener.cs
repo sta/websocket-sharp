@@ -41,6 +41,7 @@
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
+ * - Nicholas Devenish
  */
 #endregion
 
@@ -88,10 +89,10 @@ namespace WebSocketSharp.Net
     internal EndPointListener (
       IPAddress address,
       int port,
+      bool reuseAddress,
       bool secure,
       string certificateFolderPath,
-      ServerSslConfiguration sslConfig,
-      bool reuseAddress)
+      ServerSslConfiguration sslConfig)
     {
       if (secure) {
         var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
@@ -104,7 +105,6 @@ namespace WebSocketSharp.Net
       }
 
       _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
-
       _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
       _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
 
@@ -115,12 +115,7 @@ namespace WebSocketSharp.Net
       _endpoint = new IPEndPoint (address, port);
       _socket.Bind (_endpoint);
       _socket.Listen (500);
-
-      var args = new SocketAsyncEventArgs ();
-      args.UserToken = this;
-      args.Completed += onAccept;
-      if (!_socket.AcceptAsync (args))
-        onAccept (this, args);
+      _socket.BeginAccept (onAccept, this);
     }
 
     #endregion
@@ -241,20 +236,14 @@ namespace WebSocketSharp.Net
       return bestMatch;
     }
 
-    private static void onAccept (object sender, EventArgs e)
+    private static void onAccept (IAsyncResult asyncResult)
     {
-      var args = (SocketAsyncEventArgs) e;
-      var lsnr = (EndPointListener) args.UserToken;
+      var lsnr = (EndPointListener) asyncResult.AsyncState;
 
       Socket sock = null;
-      if (args.SocketError == SocketError.Success) {
-        sock = args.AcceptSocket;
-        args.AcceptSocket = null;
-      }
-
-      var ret = true;
       try {
-        ret = lsnr._socket.AcceptAsync (args);
+        sock = lsnr._socket.EndAccept (asyncResult);
+        lsnr._socket.BeginAccept (onAccept, lsnr);
       }
       catch {
         if (sock != null)
@@ -263,11 +252,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (sock != null)
-        processAccepted (sock, lsnr);
-
-      if (!ret)
-        onAccept (sender, e);
+      processAccepted (sock, lsnr);
     }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
@@ -311,6 +296,7 @@ namespace WebSocketSharp.Net
         return null;
 
       var host = uri.Host;
+      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
       var port = uri.Port;
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
       var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
@@ -323,8 +309,14 @@ namespace WebSocketSharp.Net
           if (ppath.Length < bestLen)
             continue;
 
-          if (pref.Host != host || pref.Port != port)
+          if (pref.Port != port)
             continue;
+
+          if (dns) {
+            var phost = pref.Host;
+            if (Uri.CheckHostName (phost) == UriHostNameType.Dns && phost != host)
+              continue;
+          }
 
           if (path.StartsWith (ppath) || pathSlash.StartsWith (ppath)) {
             bestLen = ppath.Length;

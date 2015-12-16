@@ -2,13 +2,13 @@
 /*
  * HttpStreamAsyncResult.cs
  *
- * This code is derived from System.Net.HttpStreamAsyncResult.cs of Mono
+ * This code is derived from HttpStreamAsyncResult.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -46,31 +46,82 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private byte[]           _buffer;
     private AsyncCallback    _callback;
     private bool             _completed;
+    private int              _count;
+    private Exception        _exception;
+    private int              _offset;
     private object           _state;
     private object           _sync;
+    private int              _syncRead;
     private ManualResetEvent _waitHandle;
 
     #endregion
 
-    #region Internal Fields
+    #region Internal Constructors
 
-    internal byte []   Buffer;
-    internal int       Count;
-    internal Exception Error;
-    internal int       Offset;
-    internal int       SyncRead;
-
-    #endregion
-
-    #region Public Constructors
-
-    public HttpStreamAsyncResult (AsyncCallback callback, object state)
+    internal HttpStreamAsyncResult (AsyncCallback callback, object state)
     {
       _callback = callback;
       _state = state;
       _sync = new object ();
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal byte[] Buffer {
+      get {
+        return _buffer;
+      }
+
+      set {
+        _buffer = value;
+      }
+    }
+
+    internal int Count {
+      get {
+        return _count;
+      }
+
+      set {
+        _count = value;
+      }
+    }
+
+    internal Exception Exception {
+      get {
+        return _exception;
+      }
+    }
+
+    internal bool HasException {
+      get {
+        return _exception != null;
+      }
+    }
+
+    internal int Offset {
+      get {
+        return _offset;
+      }
+
+      set {
+        _offset = value;
+      }
+    }
+
+    internal int SyncRead {
+      get {
+        return _syncRead;
+      }
+
+      set {
+        _syncRead = value;
+      }
     }
 
     #endregion
@@ -92,7 +143,7 @@ namespace WebSocketSharp.Net
 
     public bool CompletedSynchronously {
       get {
-        return SyncRead == Count;
+        return _syncRead == _count;
       }
     }
 
@@ -105,9 +156,9 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Methods
+    #region Internal Methods
 
-    public void Complete ()
+    internal void Complete ()
     {
       lock (_sync) {
         if (_completed)
@@ -122,9 +173,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    public void Complete (Exception exception)
+    internal void Complete (Exception exception)
     {
-      Error = exception;
+      _exception = exception;
       Complete ();
     }
 

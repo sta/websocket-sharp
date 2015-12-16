@@ -2,14 +2,14 @@
 /*
  * WebHeaderCollection.cs
  *
- * This code is derived from System.Net.WebHeaderCollection.cs of Mono
+ * This code is derived from WebHeaderCollection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2003 Ximian, Inc. (http://www.ximian.com)
  * Copyright (c) 2007 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private static readonly Dictionary<string, HttpHeaderInfo> _headers;
-    private bool                                               _internallyCreated;
+    private bool                                               _internallyUsed;
     private HttpHeaderType                                     _state;
 
     #endregion
@@ -451,10 +451,10 @@ namespace WebSocketSharp.Net
 
     #region Internal Constructors
 
-    internal WebHeaderCollection (bool internallyCreated)
+    internal WebHeaderCollection (HttpHeaderType state, bool internallyUsed)
     {
-      _internallyCreated = internallyCreated;
-      _state = HttpHeaderType.Unspecified;
+      _state = state;
+      _internallyUsed = internallyUsed;
     }
 
     #endregion
@@ -484,7 +484,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("serializationInfo");
 
       try {
-        _internallyCreated = serializationInfo.GetBoolean ("InternallyCreated");
+        _internallyUsed = serializationInfo.GetBoolean ("InternallyUsed");
         _state = (HttpHeaderType) serializationInfo.GetInt32 ("State");
 
         var cnt = serializationInfo.GetInt32 ("Count");
@@ -508,7 +508,16 @@ namespace WebSocketSharp.Net
     /// </summary>
     public WebHeaderCollection ()
     {
-      _state = HttpHeaderType.Unspecified;
+    }
+
+    #endregion
+
+    #region Internal Properties
+
+    internal HttpHeaderType State {
+      get {
+        return _state;
+      }
     }
 
     #endregion
@@ -546,8 +555,8 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the value of the request <paramref name="header"/>.
     /// </value>
     /// <param name="header">
-    /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-    /// to get or set.
+    /// One of the <see cref="HttpRequestHeader"/> enum values, represents
+    /// the request header to get or set.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -564,8 +573,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the request <paramref name="header"/>.
     /// </exception>
     public string this[HttpRequestHeader header] {
       get {
@@ -584,8 +593,8 @@ namespace WebSocketSharp.Net
     /// A <see cref="string"/> that represents the value of the response <paramref name="header"/>.
     /// </value>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-    /// to get or set.
+    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
+    /// the response header to get or set.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
@@ -602,8 +611,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the response <paramref name="header"/>.
     /// </exception>
     public string this[HttpResponseHeader header] {
       get {
@@ -619,8 +628,8 @@ namespace WebSocketSharp.Net
     /// Gets a collection of header names in the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="NameObjectCollectionBase.KeysCollection"/> that contains all header names
-    /// in the collection.
+    /// A <see cref="NameObjectCollectionBase.KeysCollection"/> that contains
+    /// all header names in the collection.
     /// </value>
     public override NameObjectCollectionBase.KeysCollection Keys {
       get {
@@ -653,11 +662,11 @@ namespace WebSocketSharp.Net
 
     private static int checkColonSeparated (string header)
     {
-      var i = header.IndexOf (':');
-      if (i == -1)
+      var idx = header.IndexOf (':');
+      if (idx == -1)
         throw new ArgumentException ("No colon could be found.", "header");
 
-      return i;
+      return idx;
     }
 
     private static HttpHeaderType checkHeaderType (string name)
@@ -686,7 +695,7 @@ namespace WebSocketSharp.Net
 
     private void checkRestricted (string name)
     {
-      if (!_internallyCreated && isRestricted (name, true))
+      if (!_internallyUsed && isRestricted (name, true))
         throw new ArgumentException ("This header must be modified with the appropiate property.");
     }
 
@@ -722,9 +731,7 @@ namespace WebSocketSharp.Net
     private static string convert (string key)
     {
       HttpHeaderInfo info;
-      return _headers.TryGetValue (key, out info)
-             ? info.Name
-             : String.Empty;
+      return _headers.TryGetValue (key, out info) ? info.Name : String.Empty;
     }
 
     private void doWithCheckingState (
@@ -854,8 +861,8 @@ namespace WebSocketSharp.Net
     #region Protected Methods
 
     /// <summary>
-    /// Adds a header to the collection without checking whether the header is on the restricted
-    /// header list.
+    /// Adds a header to the collection without checking if the header is on
+    /// the restricted header list.
     /// </summary>
     /// <param name="headerName">
     /// A <see cref="string"/> that represents the name of the header to add.
@@ -922,7 +929,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public void Add (string header)
     {
-      if (header.IsNullOrEmpty ())
+      if (header == null || header.Length == 0)
         throw new ArgumentNullException ("header");
 
       var pos = checkColonSeparated (header);
@@ -930,12 +937,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds the specified request <paramref name="header"/> with the specified
-    /// <paramref name="value"/> to the collection.
+    /// Adds the specified request <paramref name="header"/> with
+    /// the specified <paramref name="value"/> to the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-    /// to add.
+    /// One of the <see cref="HttpRequestHeader"/> enum values, represents
+    /// the request header to add.
     /// </param>
     /// <param name="value">
     /// A <see cref="string"/> that represents the value of the header to add.
@@ -955,8 +962,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the request <paramref name="header"/>.
     /// </exception>
     public void Add (HttpRequestHeader header, string value)
     {
@@ -964,12 +971,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds the specified response <paramref name="header"/> with the specified
-    /// <paramref name="value"/> to the collection.
+    /// Adds the specified response <paramref name="header"/> with
+    /// the specified <paramref name="value"/> to the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-    /// to add.
+    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
+    /// the response header to add.
     /// </param>
     /// <param name="value">
     /// A <see cref="string"/> that represents the value of the header to add.
@@ -989,8 +996,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the response <paramref name="header"/>.
     /// </exception>
     public void Add (HttpResponseHeader header, string value)
     {
@@ -998,8 +1005,8 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds a header with the specified <paramref name="name"/> and <paramref name="value"/>
-    /// to the collection.
+    /// Adds a header with the specified <paramref name="name"/> and
+    /// <paramref name="value"/> to the collection.
     /// </summary>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the header to add.
@@ -1025,8 +1032,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the header
-    /// <paramref name="name"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the header <paramref name="name"/>.
     /// </exception>
     public override void Add (string name, string value)
     {
@@ -1063,8 +1070,8 @@ namespace WebSocketSharp.Net
     /// Get the value of the header with the specified <paramref name="name"/> in the collection.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the value of the header if found; otherwise,
-    /// <see langword="null"/>.
+    /// A <see cref="string"/> that receives the value of the header if found;
+    /// otherwise, <see langword="null"/>.
     /// </returns>
     /// <param name="name">
     /// A <see cref="string"/> that represents the name of the header to find.
@@ -1103,12 +1110,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an array of header values stored in the specified <paramref name="index"/> position
-    /// of the collection.
+    /// Gets an array of header values stored in the specified <paramref name="index"/> position of
+    /// the collection.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values if found; otherwise,
-    /// <see langword="null"/>.
+    /// An array of <see cref="string"/> that receives the header values if found;
+    /// otherwise, <see langword="null"/>.
     /// </returns>
     /// <param name="index">
     /// An <see cref="int"/> that represents the zero-based index of the header to find.
@@ -1119,17 +1126,15 @@ namespace WebSocketSharp.Net
     public override string[] GetValues (int index)
     {
       var vals = base.GetValues (index);
-      return vals != null && vals.Length > 0
-             ? vals
-             : null;
+      return vals != null && vals.Length > 0 ? vals : null;
     }
 
     /// <summary>
     /// Gets an array of header values stored in the specified <paramref name="header"/>.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="string"/> that receives the header values if found; otherwise,
-    /// <see langword="null"/>.
+    /// An array of <see cref="string"/> that receives the header values if found;
+    /// otherwise, <see langword="null"/>.
     /// </returns>
     /// <param name="header">
     /// A <see cref="string"/> that represents the name of the header to find.
@@ -1137,9 +1142,7 @@ namespace WebSocketSharp.Net
     public override string[] GetValues (string header)
     {
       var vals = base.GetValues (header);
-      return vals != null && vals.Length > 0
-             ? vals
-             : null;
+      return vals != null && vals.Length > 0 ? vals : null;
     }
 
     /// <summary>
@@ -1163,7 +1166,7 @@ namespace WebSocketSharp.Net
       if (serializationInfo == null)
         throw new ArgumentNullException ("serializationInfo");
 
-      serializationInfo.AddValue ("InternallyCreated", _internallyCreated);
+      serializationInfo.AddValue ("InternallyUsed", _internallyUsed);
       serializationInfo.AddValue ("State", (int) _state);
 
       var cnt = Count;
@@ -1233,15 +1236,15 @@ namespace WebSocketSharp.Net
     /// Removes the specified request <paramref name="header"/> from the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-    /// to remove.
+    /// One of the <see cref="HttpRequestHeader"/> enum values, represents
+    /// the request header to remove.
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="header"/> is a restricted header.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the request <paramref name="header"/>.
     /// </exception>
     public void Remove (HttpRequestHeader header)
     {
@@ -1252,15 +1255,15 @@ namespace WebSocketSharp.Net
     /// Removes the specified response <paramref name="header"/> from the collection.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-    /// to remove.
+    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
+    /// the response header to remove.
     /// </param>
     /// <exception cref="ArgumentException">
     /// <paramref name="header"/> is a restricted header.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the response <paramref name="header"/>.
     /// </exception>
     public void Remove (HttpResponseHeader header)
     {
@@ -1288,8 +1291,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the header
-    /// <paramref name="name"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the header <paramref name="name"/>.
     /// </exception>
     public override void Remove (string name)
     {
@@ -1300,8 +1303,8 @@ namespace WebSocketSharp.Net
     /// Sets the specified request <paramref name="header"/> to the specified value.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-    /// to set.
+    /// One of the <see cref="HttpRequestHeader"/> enum values, represents
+    /// the request header to set.
     /// </param>
     /// <param name="value">
     /// A <see cref="string"/> that represents the value of the request header to set.
@@ -1321,8 +1324,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the request <paramref name="header"/>.
     /// </exception>
     public void Set (HttpRequestHeader header, string value)
     {
@@ -1333,8 +1336,8 @@ namespace WebSocketSharp.Net
     /// Sets the specified response <paramref name="header"/> to the specified value.
     /// </summary>
     /// <param name="header">
-    /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-    /// to set.
+    /// One of the <see cref="HttpResponseHeader"/> enum values, represents
+    /// the response header to set.
     /// </param>
     /// <param name="value">
     /// A <see cref="string"/> that represents the value of the response header to set.
@@ -1354,8 +1357,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-    /// <paramref name="header"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the response <paramref name="header"/>.
     /// </exception>
     public void Set (HttpResponseHeader header, string value)
     {
@@ -1389,8 +1392,8 @@ namespace WebSocketSharp.Net
     /// The length of <paramref name="value"/> is greater than 65,535 characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the header
-    /// <paramref name="name"/>.
+    /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
+    /// the header <paramref name="name"/>.
     /// </exception>
     public override void Set (string name, string value)
     {

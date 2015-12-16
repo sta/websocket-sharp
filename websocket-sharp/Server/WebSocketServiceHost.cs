@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,14 +34,13 @@
 #endregion
 
 using System;
-using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
   /// Exposes the methods and properties used to access the information in a WebSocket service
-  /// provided by the <see cref="HttpServer"/> or <see cref="WebSocketServer"/>.
+  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
   /// The WebSocketServiceHost class is an abstract class.
@@ -131,13 +130,9 @@ namespace WebSocketSharp.Server
     internal void Stop (ushort code, string reason)
     {
       var e = new CloseEventArgs (code, reason);
-
       var send = !code.IsReserved ();
-      var bytes =
-        send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToByteArray () : null;
-
-      var timeout = send ? WaitTime : TimeSpan.Zero;
-      Sessions.Stop (e, bytes, timeout);
+      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray () : null;
+      Sessions.Stop (e, bytes, send);
     }
 
     #endregion
@@ -151,94 +146,6 @@ namespace WebSocketSharp.Server
     /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
     /// </returns>
     protected abstract WebSocketBehavior CreateSession ();
-
-    #endregion
-  }
-
-  internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
-    where TBehavior : WebSocketBehavior
-  {
-    #region Private Fields
-
-    private Func<TBehavior>         _initializer;
-    private Logger                  _logger;
-    private string                  _path;
-    private WebSocketSessionManager _sessions;
-
-    #endregion
-
-    #region Internal Constructors
-
-    internal WebSocketServiceHost (string path, Func<TBehavior> initializer, Logger logger)
-    {
-      _path = path;
-      _initializer = initializer;
-      _logger = logger;
-      _sessions = new WebSocketSessionManager (logger);
-    }
-
-    #endregion
-
-    #region Public Properties
-
-    public override bool KeepClean {
-      get {
-        return _sessions.KeepClean;
-      }
-
-      set {
-        var msg = _sessions.State.CheckIfStartable ();
-        if (msg != null) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _sessions.KeepClean = value;
-      }
-    }
-
-    public override string Path {
-      get {
-        return _path;
-      }
-    }
-
-    public override WebSocketSessionManager Sessions {
-      get {
-        return _sessions;
-      }
-    }
-
-    public override Type Type {
-      get {
-        return typeof (TBehavior);
-      }
-    }
-
-    public override TimeSpan WaitTime {
-      get {
-        return _sessions.WaitTime;
-      }
-
-      set {
-        var msg = _sessions.State.CheckIfStartable () ?? value.CheckIfValidWaitTime ();
-        if (msg != null) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _sessions.WaitTime = value;
-      }
-    }
-
-    #endregion
-
-    #region Protected Methods
-
-    protected override WebSocketBehavior CreateSession ()
-    {
-      return _initializer ();
-    }
 
     #endregion
   }

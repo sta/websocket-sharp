@@ -2,13 +2,13 @@
 /*
  * InputState.cs
  *
- * This code is derived from System.Net.HttpConnection.cs of Mono
+ * This code is derived from HttpConnection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2015 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
