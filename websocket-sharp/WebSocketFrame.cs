@@ -104,7 +104,7 @@ namespace WebSocketSharp
       Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
     {
       _fin = fin;
-      _rsv1 = isData (opcode) && compressed ? Rsv.On : Rsv.Off;
+      _rsv1 = opcode.IsData () && compressed ? Rsv.On : Rsv.Off;
       _rsv2 = Rsv.Off;
       _rsv3 = Rsv.Off;
       _opcode = opcode;
@@ -375,16 +375,6 @@ namespace WebSocketSharp
 
       output.AppendFormat (footerFmt, String.Empty);
       return output.ToString ();
-    }
-
-    private static bool isControl (Opcode opcode)
-    {
-      return opcode == Opcode.Close || opcode == Opcode.Ping || opcode == Opcode.Pong;
-    }
-
-    private static bool isData (Opcode opcode)
-    {
-      return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
     private static string print (WebSocketFrame frame)

@@ -513,9 +513,19 @@ namespace WebSocketSharp
       return opcode > 0x7 && opcode < 0x10;
     }
 
+    internal static bool IsControl (this Opcode opcode)
+    {
+      return opcode >= Opcode.Close;
+    }
+
     internal static bool IsData (this byte opcode)
     {
       return opcode == 0x1 || opcode == 0x2;
+    }
+
+    internal static bool IsData (this Opcode opcode)
+    {
+      return opcode == Opcode.Text || opcode == Opcode.Binary;
     }
 
     internal static bool IsPortNumber (this int value)
