@@ -198,13 +198,13 @@ namespace WebSocketSharp
 
     public bool IsControl {
       get {
-        return _opcode == Opcode.Close || _opcode == Opcode.Ping || _opcode == Opcode.Pong;
+        return _opcode >= Opcode.Close;
       }
     }
 
     public bool IsData {
       get {
-        return _opcode == Opcode.Binary || _opcode == Opcode.Text;
+        return _opcode == Opcode.Text || _opcode == Opcode.Binary;
       }
     }
 
