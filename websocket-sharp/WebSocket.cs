@@ -1045,7 +1045,8 @@ namespace WebSocketSharp
           OnOpen.Emit (this, EventArgs.Empty);
         }
         catch (Exception ex) {
-          processException (ex, "An exception has occurred during an OnOpen event.");
+          _logger.Error (ex.ToString ());
+          error ("An exception has occurred during the OnOpen event.", ex);
         }
       }
       catch (Exception ex) {
