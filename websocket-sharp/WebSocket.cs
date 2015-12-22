@@ -1000,7 +1000,8 @@ namespace WebSocketSharp
           OnMessage.Emit (this, e);
         }
         catch (Exception ex) {
-          processException (ex, "An exception has occurred during an OnMessage event.");
+          _logger.Error (ex.ToString ());
+          error ("An exception has occurred during an OnMessage event.", ex);
         }
 
         lock (_forMessageEventQueue) {
@@ -1021,7 +1022,8 @@ namespace WebSocketSharp
         OnMessage.Emit (this, e);
       }
       catch (Exception ex) {
-        processException (ex, "An exception has occurred during an OnMessage event.");
+        _logger.Error (ex.ToString ());
+        error ("An exception has occurred during an OnMessage event.", ex);
       }
 
       lock (_forMessageEventQueue) {
