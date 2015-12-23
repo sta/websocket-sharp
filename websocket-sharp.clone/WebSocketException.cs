@@ -35,13 +35,7 @@ namespace WebSocketSharp
   /// </summary>
   public class WebSocketException : Exception
   {
-    #region Private Fields
-
     private CloseStatusCode _code;
-
-    #endregion
-
-    #region Internal Constructors
 
     internal WebSocketException ()
       : this (CloseStatusCode.Abnormal, null, null)
@@ -84,23 +78,13 @@ namespace WebSocketSharp
       _code = code;
     }
 
-    #endregion
-
-    #region Public Properties
-
-    /// <summary>
+      /// <summary>
     /// Gets the status code indicating the cause of the exception.
     /// </summary>
     /// <value>
     /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
     /// indicating the cause of the exception.
     /// </value>
-    public CloseStatusCode Code {
-      get {
-        return _code;
-      }
-    }
-
-    #endregion
+    public CloseStatusCode Code => _code;
   }
 }
