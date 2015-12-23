@@ -47,32 +47,17 @@ namespace WebSocketSharp.Server
 	/// </remarks>
 	public abstract class WebSocketServiceHost
 	{
-		#region Protected Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class.
 		/// </summary>
+	    // ReSharper disable once EmptyConstructor
 		protected WebSocketServiceHost()
 		{
 		}
 
-		#endregion
+	    internal ServerState State => Sessions.State;
 
-		#region Internal Properties
-
-		internal ServerState State
-		{
-			get
-			{
-				return Sessions.State;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets or sets a value indicating whether the WebSocket service cleans up
 		/// the inactive sessions periodically.
 		/// </summary>
@@ -115,11 +100,7 @@ namespace WebSocketSharp.Server
 		/// </value>
 		public abstract TimeSpan WaitTime { get; set; }
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void Start()
+	    internal void Start()
 		{
 			Sessions.Start();
 		}
@@ -141,46 +122,30 @@ namespace WebSocketSharp.Server
 			Sessions.Stop(e, bytes, timeout);
 		}
 
-		#endregion
-
-		#region Protected Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Creates a new session in the WebSocket service.
 		/// </summary>
 		/// <returns>
 		/// A <see cref="WebSocketBehavior"/> instance that represents a new session.
 		/// </returns>
 		protected abstract WebSocketBehavior CreateSession();
-
-		#endregion
 	}
 
 	internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
 	  where TBehavior : WebSocketBehavior
 	{
-		#region Private Fields
+	    private readonly Func<TBehavior> _initializer;
 
-		private Func<TBehavior> _initializer;
-		private string _path;
-		private WebSocketSessionManager _sessions;
+	    private readonly WebSocketSessionManager _sessions;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
+	    internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
 		{
-			_path = path;
+			Path = path;
 			_initializer = initializer;
 			_sessions = new WebSocketSessionManager(fragmentSize);
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public override bool KeepClean
+	    public override bool KeepClean
 		{
 			get
 			{
@@ -199,31 +164,13 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		public override string Path
-		{
-			get
-			{
-				return _path;
-			}
-		}
+		public override string Path { get; }
 
-		public override WebSocketSessionManager Sessions
-		{
-			get
-			{
-				return _sessions;
-			}
-		}
+	    public override WebSocketSessionManager Sessions => _sessions;
 
-		public override Type Type
-		{
-			get
-			{
-				return typeof(TBehavior);
-			}
-		}
+	    public override Type Type { get; } = typeof(TBehavior);
 
-		public override TimeSpan WaitTime
+	    public override TimeSpan WaitTime
 		{
 			get
 			{
@@ -242,15 +189,9 @@ namespace WebSocketSharp.Server
 			}
 		}
 
-		#endregion
-
-		#region Protected Methods
-
-		protected override WebSocketBehavior CreateSession()
+	    protected override WebSocketBehavior CreateSession()
 		{
 			return _initializer();
 		}
-
-		#endregion
 	}
 }
