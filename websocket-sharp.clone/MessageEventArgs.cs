@@ -55,28 +55,10 @@ namespace WebSocketSharp
 			_message = message;
 		}
 
-		public Opcode Opcode
-		{
-			get
-			{
-				return _message.Opcode;
-			}
-		}
+		public Opcode Opcode => _message.Opcode;
 
-		public StreamReader Text
-		{
-			get
-			{
-				return _message.Text;
-			}
-		}
+	    public StreamReader Text => _message.Text;
 
-		public Stream Data
-		{
-			get
-			{
-				return _message.RawData;
-			}
-		}
+	    public Stream Data => _message.RawData;
 	}
 }
