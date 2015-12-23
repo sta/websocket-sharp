@@ -81,9 +81,6 @@ namespace WebSocketSharp
                 case Opcode.Cont:
                     throw new WebSocketException(CloseStatusCode.InconsistentData, "Did not expect continuation frame.");
                 default:
-                case Opcode.Close:
-                case Opcode.Text:
-                case Opcode.Binary:
                     return new FragmentedMessage(header.Opcode, _innerStream, readInfo, GetStreamReadInfo, waitHandle, _fragmentLength);
             }
         }
@@ -130,7 +127,7 @@ namespace WebSocketSharp
         {
             var header = new byte[2];
 
-            var headerLength = 0;
+            int headerLength;
             try
             {
                 headerLength = _innerStream.Read(header, 0, 2);
