@@ -35,24 +35,14 @@ namespace WebSocketSharp
 {
 	internal class PayloadData : IEnumerable<byte>
 	{
-		#region Private Fields
+	    private readonly byte[] _data;
 
-		private byte[] _data;
-		private long _extDataLength;
-		private long _length;
+	    private readonly long _length;
 		private bool _masked;
 
-		#endregion
+	    public const ulong MaxLength = long.MaxValue;
 
-		#region Public Fields
-
-		public const ulong MaxLength = Int64.MaxValue;
-
-		#endregion
-
-		#region Internal Constructors
-
-		internal PayloadData()
+	    internal PayloadData()
 		{
 			_data = new byte[0];
 		}
@@ -69,24 +59,9 @@ namespace WebSocketSharp
 			_length = data.LongLength;
 		}
 
-		#endregion
+	    internal long ExtensionDataLength { get; set; }
 
-		#region Internal Properties
-
-		internal long ExtensionDataLength
-		{
-			get
-			{
-				return _extDataLength;
-			}
-
-			set
-			{
-				_extDataLength = value;
-			}
-		}
-
-		internal bool IncludesReservedCloseStatusCode
+	    internal bool IncludesReservedCloseStatusCode
 		{
 			get
 			{
@@ -94,16 +69,12 @@ namespace WebSocketSharp
 			}
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public byte[] ApplicationData
+	    public byte[] ApplicationData
 		{
 			get
 			{
-				return _extDataLength > 0
-					   ? _data.SubArray(_extDataLength, _length - _extDataLength)
+				return ExtensionDataLength > 0
+					   ? _data.SubArray(ExtensionDataLength, _length - ExtensionDataLength)
 					   : _data;
 			}
 		}
@@ -112,33 +83,17 @@ namespace WebSocketSharp
 		{
 			get
 			{
-				return _extDataLength > 0
-					   ? _data.SubArray(0, _extDataLength)
+				return ExtensionDataLength > 0
+					   ? _data.SubArray(0, ExtensionDataLength)
 					   : new byte[0];
 			}
 		}
 
-		public bool IsMasked
-		{
-			get
-			{
-				return _masked;
-			}
-		}
+		public bool IsMasked => _masked;
 
-		public ulong Length
-		{
-			get
-			{
-				return (ulong)_length;
-			}
-		}
+	    public ulong Length => (ulong)_length;
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void Mask(byte[] key)
+	    internal void Mask(byte[] key)
 		{
 			for (long i = 0; i < _length; i++)
 			{
@@ -148,11 +103,7 @@ namespace WebSocketSharp
 			_masked = !_masked;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public IEnumerator<byte> GetEnumerator()
+	    public IEnumerator<byte> GetEnumerator()
 		{
 			foreach (var b in _data)
 				yield return b;
@@ -168,15 +119,9 @@ namespace WebSocketSharp
 			return BitConverter.ToString(_data);
 		}
 
-		#endregion
-
-		#region Explicit Interface Implementations
-
-		IEnumerator IEnumerable.GetEnumerator()
+	    IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
-
-		#endregion
 	}
 }
