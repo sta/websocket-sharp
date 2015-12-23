@@ -964,7 +964,7 @@ namespace WebSocketSharp
         OnError.Emit (this, new ErrorEventArgs (message, exception));
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _logger.Error (ex.ToString ());
       }
     }
 
