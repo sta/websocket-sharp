@@ -44,48 +44,28 @@ namespace WebSocketSharp.Net
 {
 	internal class ListenerAsyncResult : IAsyncResult
 	{
-		#region Private Fields
-
-		private AsyncCallback _callback;
+	    private readonly AsyncCallback _callback;
 		private bool _completed;
 		private HttpListenerContext _context;
 		private Exception _exception;
-		private object _state;
-		private object _sync;
-		private bool _syncCompleted;
-		private ManualResetEvent _waitHandle;
 
-		#endregion
+	    private readonly object _sync;
 
-		#region Internal Fields
+	    private ManualResetEvent _waitHandle;
 
-		internal bool EndCalled;
+	    internal bool EndCalled;
 		internal bool InGet;
 
-		#endregion
-
-		#region Public Constructors
-
-		public ListenerAsyncResult(AsyncCallback callback, object state)
+	    public ListenerAsyncResult(AsyncCallback callback, object state)
 		{
 			_callback = callback;
-			_state = state;
+			AsyncState = state;
 			_sync = new object();
 		}
 
-		#endregion
+	    public object AsyncState { get; }
 
-		#region Public Properties
-
-		public object AsyncState
-		{
-			get
-			{
-				return _state;
-			}
-		}
-
-		public WaitHandle AsyncWaitHandle
+	    public WaitHandle AsyncWaitHandle
 		{
 			get
 			{
@@ -94,15 +74,9 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		public bool CompletedSynchronously
-		{
-			get
-			{
-				return _syncCompleted;
-			}
-		}
+		public bool CompletedSynchronously { get; private set; }
 
-		public bool IsCompleted
+	    public bool IsCompleted
 		{
 			get
 			{
@@ -111,19 +85,14 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		private static void complete(ListenerAsyncResult asyncResult)
+	    private static void complete(ListenerAsyncResult asyncResult)
 		{
 			asyncResult._completed = true;
 
 			var waitHandle = asyncResult._waitHandle;
-			if (waitHandle != null)
-				waitHandle.Set();
+	        waitHandle?.Set();
 
-			var callback = asyncResult._callback;
+	        var callback = asyncResult._callback;
 			if (callback != null)
 				ThreadPool.UnsafeQueueUserWorkItem(
 				  state =>
@@ -139,11 +108,7 @@ namespace WebSocketSharp.Net
 				  null);
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void Complete(Exception exception)
+	    internal void Complete(Exception exception)
 		{
 			_exception = InGet && (exception is ObjectDisposedException)
 						 ? new HttpListenerException(500, "Listener closed.")
@@ -192,7 +157,7 @@ namespace WebSocketSharp.Net
 			}
 
 			_context = context;
-			_syncCompleted = syncCompleted;
+			CompletedSynchronously = syncCompleted;
 
 			lock (_sync)
 				complete(this);
@@ -205,7 +170,5 @@ namespace WebSocketSharp.Net
 
 			return _context;
 		}
-
-		#endregion
 	}
 }
