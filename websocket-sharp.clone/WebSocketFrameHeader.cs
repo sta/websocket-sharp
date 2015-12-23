@@ -41,19 +41,19 @@ namespace WebSocketSharp
 			PayloadLength = (byte)(header[1] & 0x7f);
 		}
 
-		public Fin Fin { get; private set; }
+		public Fin Fin { get; }
 
-		public Rsv Rsv1 { get; private set; }
+		public Rsv Rsv1 { get; }
 
 		public Rsv Rsv2 { get; private set; }
 
 		public Rsv Rsv3 { get; private set; }
 
-		public Opcode Opcode { get; private set; }
+		public Opcode Opcode { get; }
 
 		public Mask Mask { get; private set; }
 
-		public byte PayloadLength { get; private set; }
+		public byte PayloadLength { get; }
 
 		public static string Validate(WebSocketFrameHeader header)
 		{
