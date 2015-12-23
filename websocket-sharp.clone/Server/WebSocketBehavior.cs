@@ -48,11 +48,9 @@ namespace WebSocketSharp.Server
     {
         private WebSocketContext _context;
         private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
-        private string _id;
-        private Func<string, bool> _originValidator;
+
         private string _protocol;
-        private WebSocketSessionManager _sessions;
-        private DateTime _start;
+
         private WebSocket _websocket;
 
         /// <summary>
@@ -60,7 +58,7 @@ namespace WebSocketSharp.Server
         /// </summary>
         protected WebSocketBehavior()
         {
-            _start = DateTime.MaxValue;
+            StartTime = DateTime.MaxValue;
         }
 
         /// <summary>
@@ -70,13 +68,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="WebSocketContext"/> that provides the access to the current connection request,
         /// or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        public WebSocketContext Context
-        {
-            get
-            {
-                return _context;
-            }
-        }
+        public WebSocketContext Context => _context;
 
         /// <summary>
         /// Gets or sets the delegate called to validate the HTTP cookies included in a connection
@@ -120,13 +112,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="string"/> that represents the unique ID of the current session,
         /// or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        public string ID
-        {
-            get
-            {
-                return _id;
-            }
-        }
+        public string ID { get; private set; }
 
         /// <summary>
         /// Gets or sets the delegate called to validate the Origin header included in a connection
@@ -149,18 +135,7 @@ namespace WebSocketSharp.Server
         ///   The default value is <see langword="null"/>, and it does nothing to validate.
         ///   </para>
         /// </value>
-        public Func<string, bool> OriginValidator
-        {
-            get
-            {
-                return _originValidator;
-            }
-
-            set
-            {
-                _originValidator = value;
-            }
-        }
+        public Func<string, bool> OriginValidator { get; set; }
 
         /// <summary>
         /// Gets or sets the WebSocket subprotocol used in the current session.
@@ -207,13 +182,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="DateTime"/> that represents the time that the current session has started,
         /// or <see cref="DateTime.MaxValue"/> if the WebSocket connection isn't established.
         /// </value>
-        public DateTime StartTime
-        {
-            get
-            {
-                return _start;
-            }
-        }
+        public DateTime StartTime { get; private set; }
 
         /// <summary>
         /// Gets the state of the <see cref="WebSocket"/> used in the current session.
@@ -222,15 +191,7 @@ namespace WebSocketSharp.Server
         /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
         /// the <see cref="WebSocket"/> used in the current session.
         /// </value>
-        public WebSocketState State
-        {
-            get
-            {
-                return _websocket != null
-                       ? _websocket.ReadyState
-                       : WebSocketState.Connecting;
-            }
-        }
+        public WebSocketState State => _websocket?.ReadyState ?? WebSocketState.Connecting;
 
         /// <summary>
         /// Gets the access to the sessions in the WebSocket service.
@@ -238,13 +199,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        protected WebSocketSessionManager Sessions
-        {
-            get
-            {
-                return _sessions;
-            }
-        }
+        protected WebSocketSessionManager Sessions { get; private set; }
 
         internal void Start(WebSocketContext context, WebSocketSessionManager sessions)
         {
@@ -256,7 +211,7 @@ namespace WebSocketSharp.Server
             }
 
             _context = context;
-            _sessions = sessions;
+            Sessions = sessions;
 
             _websocket = context.WebSocket;
             _websocket.CustomHandshakeRequestChecker = CheckIfValidConnectionRequest;
@@ -289,7 +244,7 @@ namespace WebSocketSharp.Server
         /// </param>
         protected void Error(string message, Exception exception)
         {
-            if (message != null && message.Length > 0)
+            if (!string.IsNullOrEmpty(message))
                 OnError(new ErrorEventArgs(message, exception));
         }
 
@@ -348,10 +303,7 @@ namespace WebSocketSharp.Server
         /// </param>
         protected void Send(byte[] data)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(data);
-            }
+            _websocket?.Send(data);
         }
 
         /// <summary>
@@ -366,10 +318,7 @@ namespace WebSocketSharp.Server
         /// </param>
         protected void Send(Stream stream)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(stream);
-            }
+            _websocket?.Send(stream);
         }
 
         /// <summary>
@@ -383,10 +332,7 @@ namespace WebSocketSharp.Server
         /// </param>
         protected void Send(string data)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(data);
-            }
+            _websocket?.Send(data);
         }
 
         /// <summary>
@@ -493,7 +439,7 @@ namespace WebSocketSharp.Server
 
         private string CheckIfValidConnectionRequest(WebSocketContext context)
         {
-            return _originValidator != null && !_originValidator(context.Origin)
+            return OriginValidator != null && !OriginValidator(context.Origin)
                    ? "Invalid Origin header."
                    : _cookiesValidator != null &&
                      !_cookiesValidator(context.CookieCollection, context.WebSocket.CookieCollection)
@@ -503,25 +449,25 @@ namespace WebSocketSharp.Server
 
         private Task InnerOnClose(CloseEventArgs e)
         {
-            if (_id == null)
+            if (ID == null)
             {
                 return Task.FromResult(false);
             }
 
-            _sessions.Remove(_id);
+            Sessions.Remove(ID);
             return OnClose(e);
         }
 
         private Task InnerOnOpen()
         {
-            _id = _sessions.Add(this);
-            if (_id == null)
+            ID = Sessions.Add(this);
+            if (ID == null)
             {
                 _websocket.Close(CloseStatusCode.Away);
                 return Task.FromResult(false);
             }
 
-            _start = DateTime.Now;
+            StartTime = DateTime.Now;
             return OnOpen();
         }
     }
