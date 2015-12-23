@@ -167,7 +167,7 @@ namespace WebSocketSharp
         {
             if (url == null)
             {
-                throw new ArgumentNullException("url");
+                throw new ArgumentNullException(nameof(url));
             }
 
             string msg;
@@ -287,13 +287,7 @@ namespace WebSocketSharp
         /// A <see cref="string"/> that represents the extensions if any.
         /// The default value is <see cref="String.Empty"/>.
         /// </value>
-        public string Extensions
-        {
-            get
-            {
-                return _extensions ?? String.Empty;
-            }
-        }
+        public string Extensions => _extensions ?? string.Empty;
 
         /// <summary>
         /// Gets a value indicating whether the WebSocket connection is alive.
@@ -301,13 +295,7 @@ namespace WebSocketSharp
         /// <value>
         /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
         /// </value>
-        public bool IsAlive
-        {
-            get
-            {
-                return Ping();
-            }
-        }
+        public bool IsAlive => Ping();
 
         /// <summary>
         /// Gets a value indicating whether the WebSocket connection is secure.
@@ -315,13 +303,7 @@ namespace WebSocketSharp
         /// <value>
         /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
         /// </value>
-        public bool IsSecure
-        {
-            get
-            {
-                return _secure;
-            }
-        }
+        public bool IsSecure => _secure;
 
         /// <summary>
         /// Gets or sets the value of the HTTP Origin header to send with the WebSocket connection
@@ -405,13 +387,7 @@ namespace WebSocketSharp
         /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the WebSocket
         /// connection. The default value is <see cref="WebSocketState.Connecting"/>.
         /// </value>
-        public WebSocketState ReadyState
-        {
-            get
-            {
-                return _readyState;
-            }
-        }
+        public WebSocketState ReadyState => _readyState;
 
         ///// <summary>
         ///// Gets or sets the SSL configuration used to authenticate the server and optionally the client
@@ -451,15 +427,9 @@ namespace WebSocketSharp
         /// <value>
         /// A <see cref="Uri"/> that represents the WebSocket URL to connect.
         /// </value>
-        public Uri Url
-        {
-            get
-            {
-                return _client
-                       ? _uri
-                       : _context.RequestUri;
-            }
-        }
+        public Uri Url => _client
+                              ? _uri
+                              : _context.RequestUri;
 
         /// <summary>
         /// Gets or sets the wait time for the response to the Ping or Close.
@@ -493,13 +463,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal CookieCollection CookieCollection
-        {
-            get
-            {
-                return _cookies;
-            }
-        }
+        internal CookieCollection CookieCollection => _cookies;
 
         // As server
         internal Func<WebSocketContext, string> CustomHandshakeRequestChecker
@@ -515,13 +479,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal bool IsConnected
-        {
-            get
-            {
-                return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
-            }
-        }
+        internal bool IsConnected => _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
 
         /// <summary>
         /// Closes the WebSocket connection, and releases all associated resources.
@@ -708,7 +666,7 @@ namespace WebSocketSharp
         /// </param>
         public bool Ping(string message)
         {
-            if (message == null || message.Length == 0)
+            if (string.IsNullOrEmpty(message))
                 return Ping();
 
             var data = Encoding.UTF8.GetBytes(message);
@@ -1016,7 +974,8 @@ namespace WebSocketSharp
                 }
 
                 _proxyCredentials = new NetworkCredential(
-                  username, password, String.Format("{0}:{1}", _uri.DnsSafeHost, _uri.Port));
+                  username, password,
+                  $"{_uri.DnsSafeHost}:{_uri.Port}");
             }
         }
 
@@ -1499,9 +1458,10 @@ namespace WebSocketSharp
         {
             var code = CloseStatusCode.Abnormal;
             var reason = message;
-            if (exception is WebSocketException)
+            var socketException = exception as WebSocketException;
+            if (socketException != null)
             {
-                var wsex = (WebSocketException)exception;
+                var wsex = socketException;
                 code = wsex.Code;
                 reason = wsex.Message;
             }
@@ -1844,7 +1804,7 @@ namespace WebSocketSharp
 
             if (_secure)
             {
-                var certSelectionCallback = _sslConfig != null ? _sslConfig.CertificateSelection : null;
+                var certSelectionCallback = _sslConfig?.CertificateSelection;
                 var certificateValidationCallback = _sslConfig != null && _sslConfig.CertificateValidationCallback != null
                                                         ? _sslConfig.CertificateValidationCallback
                                                         : ((sender, certificate, chain, sslPolicyErrors) => true);
@@ -1917,7 +1877,7 @@ namespace WebSocketSharp
         private bool ValidateSecWebSocketExtensionsHeader(string value)
         {
             var compress = _compression != CompressionMethod.None;
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
             {
                 if (compress)
                 {
@@ -1945,7 +1905,7 @@ namespace WebSocketSharp
         // As server
         private bool ValidateSecWebSocketKeyHeader(string value)
         {
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
                 return false;
 
             _base64Key = value;
