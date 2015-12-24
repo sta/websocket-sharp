@@ -784,8 +784,8 @@ namespace WebSocketSharp
         OnClose.Emit (this, e);
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        error ("An exception has occurred during an OnClose event.", ex);
+        _logger.Error (ex.ToString ());
+        error ("An exception has occurred during the OnClose event.", ex);
       }
     }
 
