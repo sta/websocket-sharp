@@ -1097,10 +1097,7 @@ namespace WebSocketSharp
         reason = wsex.Message;
       }
 
-      if (code == CloseStatusCode.Abnormal || code == CloseStatusCode.TlsHandshakeFailure)
-        _logger.Fatal (exception.ToString ());
-      else
-        _logger.Error (reason);
+      _logger.Fatal (exception.ToString ());
 
       error (message ?? code.GetMessage (), exception);
       if (!_client && _readyState == WebSocketState.Connecting) {
