@@ -68,14 +68,8 @@ namespace WebSocketSharp.Server
             setSweepTimer(60000);
         }
         
-        internal ServerState State
-        {
-            get
-            {
-                return _state;
-            }
-        }
-        
+        internal ServerState State => _state;
+
         /// <summary>
         /// Gets the IDs for the active sessions in the Websocket service.
         /// </summary>

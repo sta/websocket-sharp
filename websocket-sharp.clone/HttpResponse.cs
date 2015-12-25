@@ -36,27 +36,17 @@ namespace WebSocketSharp
 {
   internal class HttpResponse : HttpBase
   {
-    #region Private Fields
+    private readonly string _code;
+    private readonly string _reason;
 
-    private string _code;
-    private string _reason;
-
-    #endregion
-
-    #region Private Constructors
-
-    private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
+      private HttpResponse (string code, string reason, Version version, NameValueCollection headers)
       : base (version, headers)
     {
       _code = code;
       _reason = reason;
     }
 
-    #endregion
-
-    #region Internal Constructors
-
-    internal HttpResponse (HttpStatusCode code)
+      internal HttpResponse (HttpStatusCode code)
       : this (code, code.GetDescription ())
     {
     }
@@ -67,38 +57,22 @@ namespace WebSocketSharp
       Headers["Server"] = "websocket-sharp/1.0";
     }
 
-    #endregion
-
-    #region Public Properties
-
-    public AuthenticationChallenge AuthenticationChallenge {
+      public AuthenticationChallenge AuthenticationChallenge {
       get {
         var chal = Headers["WWW-Authenticate"];
-        return chal != null && chal.Length > 0
+        return !string.IsNullOrEmpty(chal)
                ? AuthenticationChallenge.Parse (chal)
                : null;
       }
     }
 
-    public CookieCollection Cookies {
-      get {
-        return Headers.GetCookies (true);
-      }
-    }
+    public CookieCollection Cookies => Headers.GetCookies (true);
 
-    public bool IsProxyAuthenticationRequired {
-      get {
-        return _code == "407";
-      }
-    }
+      public bool IsProxyAuthenticationRequired => _code == "407";
 
-    public bool IsUnauthorized {
-      get {
-        return _code == "401";
-      }
-    }
+      public bool IsUnauthorized => _code == "401";
 
-    public bool IsWebSocketResponse {
+      public bool IsWebSocketResponse {
       get {
         var headers = Headers;
         return ProtocolVersion > HttpVersion.Version10 &&
@@ -111,27 +85,15 @@ namespace WebSocketSharp
     public AuthenticationChallenge ProxyAuthenticationChallenge {
       get {
         var chal = Headers["Proxy-Authenticate"];
-        return chal != null && chal.Length > 0
+        return !string.IsNullOrEmpty(chal)
                ? AuthenticationChallenge.Parse (chal)
                : null;
       }
     }
 
-    public string Reason {
-      get {
-        return _reason;
-      }
-    }
+    public string Reason => _reason;
 
-    public string StatusCode {
-      get {
-        return _code;
-      }
-    }
-
-    #endregion
-
-    #region Internal Methods
+    public string StatusCode => _code;
 
     internal static HttpResponse CreateCloseResponse (HttpStatusCode code)
     {
@@ -176,12 +138,8 @@ namespace WebSocketSharp
 
     internal static HttpResponse Read (Stream stream, int millisecondsTimeout)
     {
-      return Read<HttpResponse> (stream, Parse, millisecondsTimeout);
+      return Read (stream, Parse, millisecondsTimeout);
     }
-
-    #endregion
-
-    #region Public Methods
 
     public void SetCookies (CookieCollection cookies)
     {
@@ -210,7 +168,5 @@ namespace WebSocketSharp
 
       return output.ToString ();
     }
-
-    #endregion
   }
 }

@@ -50,9 +50,7 @@ namespace WebSocketSharp.Net
 	[Serializable]
 	internal class HttpListenerException : Win32Exception
 	{
-		#region Protected Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="HttpListenerException"/> class from
 		/// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
 		/// </summary>
@@ -68,11 +66,7 @@ namespace WebSocketSharp.Net
 		{
 		}
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="HttpListenerException"/> class.
 		/// </summary>
 		public HttpListenerException()
@@ -106,24 +100,12 @@ namespace WebSocketSharp.Net
 		{
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the error code that identifies the error that occurred.
 		/// </summary>
 		/// <value>
 		/// An <see cref="int"/> that identifies the error.
 		/// </value>
-		public override int ErrorCode
-		{
-			get
-			{
-				return NativeErrorCode;
-			}
-		}
-
-		#endregion
+		public override int ErrorCode => NativeErrorCode;
 	}
 }

@@ -49,60 +49,28 @@ namespace WebSocketSharp.Net
 	// what if we don't set content-length at all?
 	internal class ResponseStream : Stream
 	{
-		#region Private Static Fields
+	    private static byte[] _crlf = new byte[] { 13, 10 };
 
-		private static byte[] _crlf = new byte[] { 13, 10 };
-
-		#endregion
-
-		#region Private Fields
-
-		private bool _disposed;
+	    private bool _disposed;
 		private bool _ignoreErrors;
 		private HttpListenerResponse _response;
 		private Stream _stream;
 		private bool _trailerSent;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignoreErrors)
+	    internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignoreErrors)
 		{
 			_stream = stream;
 			_response = response;
 			_ignoreErrors = ignoreErrors;
 		}
 
-		#endregion
+	    public override bool CanRead { get; } = false;
 
-		#region Public Properties
+	    public override bool CanSeek { get; } = false;
 
-		public override bool CanRead
-		{
-			get
-			{
-				return false;
-			}
-		}
+	    public override bool CanWrite { get; } = true;
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override bool CanWrite
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		public override long Length
+	    public override long Length
 		{
 			get
 			{
@@ -123,13 +91,9 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		private static byte[] getChunkSizeBytes(int size, bool final)
+	    private static byte[] getChunkSizeBytes(int size, bool final)
 		{
-			return Encoding.ASCII.GetBytes(string.Format("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
+			return Encoding.ASCII.GetBytes($"{size:x}\r\n{(final ? "\r\n" : "")}");
 		}
 
 		private MemoryStream getHeaders(bool closing)
@@ -143,11 +107,7 @@ namespace WebSocketSharp.Net
 			return stream;
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void WriteInternally(byte[] buffer, int offset, int count)
+	    internal void WriteInternally(byte[] buffer, int offset, int count)
 		{
 			if (_ignoreErrors)
 			{
@@ -165,11 +125,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public override IAsyncResult BeginRead(
+	    public override IAsyncResult BeginRead(
 		  byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			throw new NotSupportedException();
@@ -183,7 +139,7 @@ namespace WebSocketSharp.Net
 
 			var headers = getHeaders(false);
 			var chunked = _response.SendChunked;
-			byte[] bytes = null;
+			byte[] bytes;
 			if (headers != null)
 			{
 				using (headers)
@@ -220,7 +176,7 @@ namespace WebSocketSharp.Net
 
 			var headers = getHeaders(true);
 			var chunked = _response.SendChunked;
-			byte[] bytes = null;
+			byte[] bytes;
 			if (headers != null)
 			{
 				using (headers)
@@ -307,7 +263,7 @@ namespace WebSocketSharp.Net
 
 			var headers = getHeaders(false);
 			var chunked = _response.SendChunked;
-			byte[] bytes = null;
+			byte[] bytes;
 			if (headers != null)
 			{
 				// After the possible preamble for the encoding.
@@ -340,7 +296,5 @@ namespace WebSocketSharp.Net
 			if (chunked)
 				WriteInternally(_crlf, 0, 2);
 		}
-
-		#endregion
 	}
 }

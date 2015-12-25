@@ -66,20 +66,19 @@ namespace WebSocketSharp.Server
     {
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private readonly IPAddress _address;
-        private readonly int _port;
+
         private readonly Uri _uri;
         private readonly ServerSslConfiguration _sslConfig;
 
         private readonly int _fragmentSize;
 
-        private readonly bool _secure;
         private Task _receiveTask;
         private AuthenticationSchemes _authSchemes;
         private Func<IIdentity, NetworkCredential> _credentialsFinder;
         private TcpListener _listener;
         private string _realm;
         private bool _reuseAddress;
-        private WebSocketServiceManager _services;
+
         private volatile ServerState _state;
         private object _sync;
         
@@ -112,19 +111,19 @@ namespace WebSocketSharp.Server
         {
             if (url == null)
             {
-                throw new ArgumentNullException("url");
+                throw new ArgumentNullException(nameof(url));
             }
 
             string msg;
             if (!TryCreateUri(url, out _uri, out msg))
             {
-                throw new ArgumentException(msg, "url");
+                throw new ArgumentException(msg, nameof(url));
             }
 
             _address = _uri.DnsSafeHost.ToIPAddress();
             if (_address == null || !_address.IsLocal())
             {
-                throw new ArgumentException("The host part isn't a local host name: " + url, "url");
+                throw new ArgumentException("The host part isn't a local host name: " + url, nameof(url));
             }
 
             if (_uri.Scheme == "wss" && certificate2 == null)
@@ -132,8 +131,8 @@ namespace WebSocketSharp.Server
                 throw new ArgumentException("Certificate missing for secure connection.");
             }
 
-            _port = _uri.Port;
-            _secure = _uri.Scheme == "wss";
+            Port = _uri.Port;
+            IsSecure = _uri.Scheme == "wss";
 
             Init(authenticationSchemes);
         }
@@ -184,21 +183,21 @@ namespace WebSocketSharp.Server
 
             if (!port.IsPortNumber())
             {
-                throw new ArgumentOutOfRangeException("port", "Not between 1 and 65535: " + port);
+                throw new ArgumentOutOfRangeException(nameof(port), "Not between 1 and 65535: " + port);
             }
 
             var secure = certificate != null;
 
             if ((port == 80 && secure) || (port == 443 && !secure))
             {
-                throw new ArgumentException(string.Format("An invalid pair of 'port' and 'secure': {0}, {1}", port, secure));
+                throw new ArgumentException($"An invalid pair of 'port' and 'secure': {port}, {secure}");
             }
 
             _address = address;
-            _port = port;
+            Port = port;
             _sslConfig = certificate;
             _fragmentSize = fragmentSize;
-            _secure = secure;
+            IsSecure = secure;
             _uri = "/".ToUri();
 
             Init(authenticationSchemes);
@@ -210,13 +209,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// <c>true</c> if the server has started; otherwise, <c>false</c>.
         /// </value>
-        public bool IsListening
-        {
-            get
-            {
-                return _state == ServerState.Start;
-            }
-        }
+        public bool IsListening => _state == ServerState.Start;
 
         /// <summary>
         /// Gets a value indicating whether the server provides a secure connection.
@@ -224,13 +217,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// <c>true</c> if the server provides a secure connection; otherwise, <c>false</c>.
         /// </value>
-        public bool IsSecure
-        {
-            get
-            {
-                return _secure;
-            }
-        }
+        public bool IsSecure { get; }
 
         /// <summary>
         /// Gets the port on which to listen for incoming connection requests.
@@ -238,13 +225,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// An <see cref="int"/> that represents the port number on which to listen.
         /// </value>
-        public int Port
-        {
-            get
-            {
-                return _port;
-            }
-        }
+        public int Port { get; }
 
         /// <summary>
         /// Gets or sets the name of the realm associated with the server.
@@ -342,7 +323,7 @@ namespace WebSocketSharp.Server
         {
             get
             {
-                return _services.WaitTime;
+                return WebSocketServices.WaitTime;
             }
 
             set
@@ -353,7 +334,7 @@ namespace WebSocketSharp.Server
                     return;
                 }
 
-                _services.WaitTime = value;
+                WebSocketServices.WaitTime = value;
             }
         }
 
@@ -363,13 +344,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// A <see cref="WebSocketServiceManager"/> that manages the WebSocket services.
         /// </value>
-        public WebSocketServiceManager WebSocketServices
-        {
-            get
-            {
-                return _services;
-            }
-        }
+        public WebSocketServiceManager WebSocketServices { get; private set; }
 
         /// <summary>
         /// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
@@ -389,7 +364,7 @@ namespace WebSocketSharp.Server
         public void AddWebSocketService<TBehaviorWithNew>(string path)
           where TBehaviorWithNew : WebSocketBehavior, new()
         {
-            AddWebSocketService<TBehaviorWithNew>(path, () => new TBehaviorWithNew());
+            AddWebSocketService(path, () => new TBehaviorWithNew());
         }
 
         /// <summary>
@@ -429,7 +404,7 @@ namespace WebSocketSharp.Server
                 return;
             }
 
-            _services.Add<TBehavior>(path, initializer);
+            WebSocketServices.Add(path, initializer);
         }
 
         /// <summary>
@@ -453,7 +428,7 @@ namespace WebSocketSharp.Server
                 return false;
             }
 
-            return _services.Remove(path);
+            return WebSocketServices.Remove(path);
         }
 
         /// <summary>
@@ -469,7 +444,7 @@ namespace WebSocketSharp.Server
                     return;
                 }
 
-                _services.Start();
+                WebSocketServices.Start();
                 _receiveTask = StartReceiving(_tokenSource.Token);
 
                 _state = ServerState.Start;
@@ -493,7 +468,7 @@ namespace WebSocketSharp.Server
             }
 
             StopReceiving();
-            _services.Stop(new CloseEventArgs(), true, true);
+            WebSocketServices.Stop(new CloseEventArgs(), true, true);
 
             _state = ServerState.Stop;
         }
@@ -529,7 +504,7 @@ namespace WebSocketSharp.Server
             StopReceiving();
 
             var send = !code.IsReserved();
-            _services.Stop(e, send, send);
+            WebSocketServices.Stop(e, send, send);
 
             _state = ServerState.Stop;
         }
@@ -554,7 +529,7 @@ namespace WebSocketSharp.Server
 
         private string CheckIfCertificateExists()
         {
-            return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
+            return IsSecure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
                    ? "The secure connection requires a server certificate."
                    : null;
         }
@@ -584,7 +559,7 @@ namespace WebSocketSharp.Server
             }
 
             _listener.Stop();
-            _services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false);
+            WebSocketServices.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false);
 
             _state = ServerState.Stop;
         }
@@ -640,8 +615,8 @@ namespace WebSocketSharp.Server
         private void Init(AuthenticationSchemes authenticationSchemes)
         {
             _authSchemes = authenticationSchemes;
-            _listener = new TcpListener(_address, (int)_port);
-            _services = new WebSocketServiceManager(_fragmentSize);
+            _listener = new TcpListener(_address, (int)Port);
+            WebSocketServices = new WebSocketServiceManager(_fragmentSize);
             _state = ServerState.Ready;
             _sync = new object();
         }
@@ -669,7 +644,7 @@ namespace WebSocketSharp.Server
             }
 
             WebSocketServiceHost host;
-            if (!_services.InternalTryGetServiceHost(uri.AbsolutePath, out host))
+            if (!WebSocketServices.InternalTryGetServiceHost(uri.AbsolutePath, out host))
             {
                 context.Close(HttpStatusCode.NotImplemented);
                 return;
@@ -688,7 +663,7 @@ namespace WebSocketSharp.Server
 
                     try
                     {
-                        var ctx = client.GetWebSocketContext(null, _secure, _sslConfig);
+                        var ctx = client.GetWebSocketContext(null, IsSecure, _sslConfig);
                         if (_authSchemes != AuthenticationSchemes.Anonymous && !AuthenticateRequest(_authSchemes, ctx))
                         {
                             return;

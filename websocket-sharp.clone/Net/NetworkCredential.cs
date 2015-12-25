@@ -35,18 +35,10 @@ namespace WebSocketSharp.Net
 	/// </summary>
 	public class NetworkCredential
 	{
-		#region Private Fields
-
-		private string _domain;
+	    private string _domain;
 		private string _password;
-		private string[] _roles;
-		private string _username;
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="NetworkCredential"/> class
 		/// with the specified user name and password.
 		/// </summary>
@@ -92,20 +84,16 @@ namespace WebSocketSharp.Net
 		public NetworkCredential(
 		  string username, string password, string domain, params string[] roles)
 		{
-			if (username == null || username.Length == 0)
-				throw new ArgumentException("Must not be null or empty.", "username");
+			if (string.IsNullOrEmpty(username))
+				throw new ArgumentException("Must not be null or empty.", nameof(username));
 
-			_username = username;
+			UserName = username;
 			_password = password;
 			_domain = domain;
-			_roles = roles;
+			Roles = roles;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the name of the user domain associated with the credentials.
 		/// </summary>
 		/// <value>
@@ -153,39 +141,15 @@ namespace WebSocketSharp.Net
 		/// An array of <see cref="string"/> that contains the role names to which
 		/// the user associated with the credentials belongs.
 		/// </value>
-		public string[] Roles
-		{
-			get
-			{
-				return _roles;
-			}
+		public string[] Roles { get; internal set; }
 
-			internal set
-			{
-				_roles = value;
-			}
-		}
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the user name associated with the credentials.
 		/// </summary>
 		/// <value>
 		/// A <see cref="string"/> that represents the user name associated with the
 		/// credentials.
 		/// </value>
-		public string UserName
-		{
-			get
-			{
-				return _username;
-			}
-
-			internal set
-			{
-				_username = value;
-			}
-		}
-
-		#endregion
+		public string UserName { get; internal set; }
 	}
 }

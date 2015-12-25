@@ -44,20 +44,14 @@ namespace WebSocketSharp.Net
 {
 	internal class RequestStream : Stream
 	{
-		#region Private Fields
-
-		private byte[] _buffer;
+	    private byte[] _buffer;
 		private bool _disposed;
 		private int _length;
 		private int _offset;
 		private long _remainingBody;
 		private Stream _stream;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal RequestStream(Stream stream, byte[] buffer, int offset, int length)
+	    internal RequestStream(Stream stream, byte[] buffer, int offset, int length)
 			: this(stream, buffer, offset, length, -1)
 		{
 		}
@@ -72,35 +66,13 @@ namespace WebSocketSharp.Net
 			_remainingBody = contentlength;
 		}
 
-		#endregion
+	    public override bool CanRead { get; } = true;
 
-		#region Public Properties
+	    public override bool CanSeek { get; } = false;
 
-		public override bool CanRead
-		{
-			get
-			{
-				return true;
-			}
-		}
+	    public override bool CanWrite { get; } = false;
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override bool CanWrite
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override long Length
+	    public override long Length
 		{
 			get
 			{
@@ -121,23 +93,19 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		// Returns 0 if we can keep reading from the base stream,
+	    // Returns 0 if we can keep reading from the base stream,
 		// > 0 if we read something from the buffer.
 		// -1 if we had a content length set and we finished reading that many bytes.
 		private int fillFromBuffer(byte[] buffer, int offset, int count)
 		{
 			if (buffer == null)
-				throw new ArgumentNullException("buffer");
+				throw new ArgumentNullException(nameof(buffer));
 
 			if (offset < 0)
-				throw new ArgumentOutOfRangeException("offset", "Less than zero.");
+				throw new ArgumentOutOfRangeException(nameof(offset), "Less than zero.");
 
 			if (count < 0)
-				throw new ArgumentOutOfRangeException("count", "Less than zero.");
+				throw new ArgumentOutOfRangeException(nameof(count), "Less than zero.");
 
 			var len = buffer.Length;
 			if (offset > len)
@@ -172,11 +140,7 @@ namespace WebSocketSharp.Net
 			return size;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public override IAsyncResult BeginRead(
+	    public override IAsyncResult BeginRead(
 		  byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			if (_disposed)
@@ -185,12 +149,14 @@ namespace WebSocketSharp.Net
 			var nread = fillFromBuffer(buffer, offset, count);
 			if (nread > 0 || nread == -1)
 			{
-				var ares = new HttpStreamAsyncResult(callback, state);
-				ares.Buffer = buffer;
-				ares.Offset = offset;
-				ares.Count = count;
-				ares.SyncRead = nread > 0 ? nread : 0;
-				ares.Complete();
+			    var ares = new HttpStreamAsyncResult(callback, state)
+			                   {
+			                       Buffer = buffer,
+			                       Offset = offset,
+			                       Count = count,
+			                       SyncRead = nread > 0 ? nread : 0
+			                   };
+			    ares.Complete();
 
 				return ares;
 			}
@@ -219,11 +185,12 @@ namespace WebSocketSharp.Net
 				throw new ObjectDisposedException(GetType().ToString());
 
 			if (asyncResult == null)
-				throw new ArgumentNullException("asyncResult");
+				throw new ArgumentNullException(nameof(asyncResult));
 
-			if (asyncResult is HttpStreamAsyncResult)
+		    var result = asyncResult as HttpStreamAsyncResult;
+		    if (result != null)
 			{
-				var ares = (HttpStreamAsyncResult)asyncResult;
+				var ares = result;
 				if (!ares.IsCompleted)
 					ares.AsyncWaitHandle.WaitOne();
 
@@ -282,7 +249,5 @@ namespace WebSocketSharp.Net
 		{
 			throw new NotSupportedException();
 		}
-
-		#endregion
 	}
 }
