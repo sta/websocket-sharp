@@ -1089,24 +1089,21 @@ namespace WebSocketSharp
 
     private void processException (Exception exception, string message)
     {
-      var code = CloseStatusCode.Abnormal;
-      var reason = message;
-      if (exception is WebSocketException) {
-        var wsex = (WebSocketException) exception;
-        code = wsex.Code;
-        reason = wsex.Message;
-      }
-
       _logger.Fatal (exception.ToString ());
-
-      error (message ?? code.GetMessage (), exception);
       if (!_client && _readyState == WebSocketState.Connecting) {
         Close (HttpStatusCode.BadRequest);
         return;
       }
 
+      var code = exception is WebSocketException
+                 ? ((WebSocketException) exception).Code
+                 : CloseStatusCode.Abnormal;
+
       close (
-        new CloseEventArgs (code, reason ?? code.GetMessage ()), !code.IsReserved (), false, false);
+        new CloseEventArgs (code, message ?? code.GetMessage ()),
+        !code.IsReserved (),
+        false,
+        false);
     }
 
     private bool processFragmentFrame (WebSocketFrame frame)
