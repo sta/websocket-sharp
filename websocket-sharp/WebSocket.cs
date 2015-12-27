@@ -47,6 +47,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -110,6 +111,7 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+    private IPEndPoint                     _localIpEndPoint;
 
     #endregion
 
@@ -1519,13 +1521,21 @@ namespace WebSocketSharp
     // As client
     private void setClientStream ()
     {
+      if (_localIpEndPoint == null)
+      {
+        _tcpClient = new TcpClient ();
+      }
+      else
+      {
+        _tcpClient = new TcpClient (_localIpEndPoint);
+      }
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _tcpClient.Connect (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _tcpClient.Connect (_uri.DnsSafeHost, _uri.Port);
         _stream = _tcpClient.GetStream ();
       }
 
