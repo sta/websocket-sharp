@@ -55,6 +55,11 @@ using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
+using AuthenticationSchemes = WebSocketSharp.Net.AuthenticationSchemes;
+using Cookie = WebSocketSharp.Net.Cookie;
+using CookieCollection = WebSocketSharp.Net.CookieCollection;
+using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
+using NetworkCredential = WebSocketSharp.Net.NetworkCredential;
 
 namespace WebSocketSharp
 {
