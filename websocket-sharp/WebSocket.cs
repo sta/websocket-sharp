@@ -1041,18 +1041,13 @@ namespace WebSocketSharp
     private void open ()
     {
       _inMessage = true;
+      startReceiving ();
       try {
-        startReceiving ();
-        try {
-          OnOpen.Emit (this, EventArgs.Empty);
-        }
-        catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-          error ("An exception has occurred during the OnOpen event.", ex);
-        }
+        OnOpen.Emit (this, EventArgs.Empty);
       }
       catch (Exception ex) {
-        processException (ex, "An exception has occurred while opening.");
+        _logger.Error (ex.ToString ());
+        error ("An exception has occurred during the OnOpen event.", ex);
       }
 
       MessageEventArgs e = null;
