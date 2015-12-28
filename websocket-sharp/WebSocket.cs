@@ -253,6 +253,11 @@ namespace WebSocketSharp
       init ();
     }
 
+    public WebSocket(string url, IPEndPoint localIpEndPoint, params string[] protocols) : this(url, protocols)
+    {
+      _localIpEndPoint = localIpEndPoint;
+    }
+
     #endregion
 
     #region Internal Properties
