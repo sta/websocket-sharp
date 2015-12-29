@@ -1287,7 +1287,7 @@ namespace WebSocketSharp
             error ("The sending has been interrupted.", null);
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
+          _logger.Error (ex.ToString ());
           error ("An exception has occurred while sending data.", ex);
         }
         finally {
