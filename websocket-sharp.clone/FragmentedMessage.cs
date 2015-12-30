@@ -20,12 +20,13 @@ namespace WebSocketSharp
 	using System;
 	using System.IO;
 	using System.Threading;
+	using System.Threading.Tasks;
 
-	internal class FragmentedMessage : WebSocketMessage
+    internal class FragmentedMessage : WebSocketMessage
 	{
 		private readonly Stream _stream;
 
-	    public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<StreamReadInfo> payloadFunc, ManualResetEventSlim waitHandle, int fragmentLength)
+	    public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<Task<StreamReadInfo>> payloadFunc, ManualResetEventSlim waitHandle, int fragmentLength)
 			: base(opcode, waitHandle, fragmentLength)
 		{
 			_stream = new WebSocketDataStream(stream, initialRead, payloadFunc, Consume);

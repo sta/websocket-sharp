@@ -68,7 +68,7 @@ namespace WebSocketSharp
 
 			if (!string.IsNullOrWhiteSpace(err))
 			{
-				Debug.WriteLine(err);
+				Trace.TraceError(err);
 			}
 
 			return err;

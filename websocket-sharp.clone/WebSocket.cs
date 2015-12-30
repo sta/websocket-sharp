@@ -77,6 +77,8 @@ namespace WebSocketSharp
         private readonly string[] _protocols;
         private readonly ClientSslConfiguration _sslConfig;
 
+        private readonly CancellationToken _cancellationToken;
+
         private bool _istransmitting;
         private AuthenticationChallenge _authChallenge;
         private string _base64Key;
@@ -102,6 +104,8 @@ namespace WebSocketSharp
         private Stream _stream;
         private TcpClient _tcpClient;
         private TimeSpan _waitTime;
+
+        private CancellationTokenRegistration _registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocket"/> class with
@@ -130,8 +134,8 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, int fragmentSize = 102392, params string[] protocols)
-            : this(url, null, fragmentSize, protocols)
+        public WebSocket(string url, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, params string[] protocols)
+            : this(url, null, cancellationToken, fragmentSize, protocols)
         {
         }
 
@@ -143,6 +147,7 @@ namespace WebSocketSharp
         /// A <see cref="string"/> that represents the WebSocket URL to connect.
         /// </param>
         /// <param name="sslAuthConfiguration">A <see cref="ClientSslAuthConfiguration"/> for securing the connection.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel websocket operations.</param>
         /// <param name="fragmentSize"></param>
         /// <param name="protocols">
         /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
@@ -163,11 +168,11 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, int fragmentSize = 102392, params string[] protocols)
+        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, params string[] protocols)
         {
             if (url == null)
             {
-                throw new ArgumentNullException("url");
+                throw new ArgumentNullException(nameof(url));
             }
 
             string msg;
@@ -189,6 +194,8 @@ namespace WebSocketSharp
 
             FragmentLength = fragmentSize;
             _sslConfig = sslAuthConfiguration;
+            _cancellationToken = cancellationToken;
+            _registration = _cancellationToken.Register(Close);
             _base64Key = CreateBase64Key();
             _client = true;
             _secure = _uri.Scheme == "wss";
@@ -1028,6 +1035,7 @@ namespace WebSocketSharp
         /// </remarks>
         public void Dispose()
         {
+            _registration.Dispose();
             var send = _readyState == WebSocketState.Open;
             InnerClose(new CloseEventArgs(CloseStatusCode.Away), send, send);
         }
@@ -1469,7 +1477,7 @@ namespace WebSocketSharp
         {
             try
             {
-                StartReceiving();
+                StartReceiving(_cancellationToken);
 
                 lock (_forEvent)
                 {
@@ -1844,7 +1852,7 @@ namespace WebSocketSharp
 
             if (_secure)
             {
-                var certSelectionCallback = _sslConfig != null ? _sslConfig.CertificateSelection : null;
+                var certSelectionCallback = _sslConfig?.CertificateSelection;
                 var certificateValidationCallback = _sslConfig != null && _sslConfig.CertificateValidationCallback != null
                                                         ? _sslConfig.CertificateValidationCallback
                                                         : ((sender, certificate, chain, sslPolicyErrors) => true);
@@ -1871,41 +1879,38 @@ namespace WebSocketSharp
             }
         }
 
-        private Task StartReceiving()
+        private async Task StartReceiving(CancellationToken cancellationToken)
         {
-            return Task.Run(
-                async () =>
+            var reader = new WebSocketStreamReader(_stream, FragmentLength);
+            WebSocketMessage message;
+            while ((message = await reader.Read(cancellationToken).ConfigureAwait(false)) != null)
+            {
+                switch (message.Opcode)
                 {
-                    var reader = new WebSocketStreamReader(_stream, FragmentLength);
-                    foreach (var message in reader.Read())
-                    {
-                        switch (message.Opcode)
+                    case Opcode.Cont:
+                        break;
+                    case Opcode.Text:
+                    case Opcode.Binary:
+                        if (OnMessage != null)
                         {
-                            case Opcode.Cont:
-                                break;
-                            case Opcode.Text:
-                            case Opcode.Binary:
-                                if (OnMessage != null)
-                                {
-                                    await OnMessage.Invoke(new MessageEventArgs(message));
-                                }
-                                message.Consume();
-                                break;
-                            case Opcode.Close:
-                                ProcessCloseFrame(message);
-                                break;
-                            case Opcode.Ping:
-                                ProcessPingFrame(message);
-                                break;
-                            case Opcode.Pong:
-                                ProcessPongFrame();
-                                break;
-                            default:
-                                ProcessUnsupportedFrame(CloseStatusCode.IncorrectData, "An incorrect data has been received.");
-                                break;
+                            await OnMessage.Invoke(new MessageEventArgs(message)).ConfigureAwait(false);
                         }
-                    }
-                });
+                        message.Consume();
+                        break;
+                    case Opcode.Close:
+                        ProcessCloseFrame(message);
+                        break;
+                    case Opcode.Ping:
+                        ProcessPingFrame(message);
+                        break;
+                    case Opcode.Pong:
+                        ProcessPongFrame();
+                        break;
+                    default:
+                        ProcessUnsupportedFrame(CloseStatusCode.IncorrectData, "An incorrect data has been received.");
+                        break;
+                }
+            }
         }
 
         private bool ValidateSecWebSocketAcceptHeader(string value)

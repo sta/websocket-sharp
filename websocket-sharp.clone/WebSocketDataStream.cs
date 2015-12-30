@@ -20,15 +20,16 @@ namespace WebSocketSharp
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Threading.Tasks;
 
     internal class WebSocketDataStream : Stream
     {
-        private readonly Func<StreamReadInfo> _readInfoFunc;
+        private readonly Func<Task<StreamReadInfo>> _readInfoFunc;
         private readonly Action _consumedAction;
         private readonly Stream _innerStream;
         private StreamReadInfo _readInfo;
 
-        public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<StreamReadInfo> readInfoFunc, Action consumedAction)
+        public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<Task<StreamReadInfo>> readInfoFunc, Action consumedAction)
         {
             _innerStream = innerStream;
             _readInfo = initialReadInfo;
@@ -86,7 +87,7 @@ namespace WebSocketSharp
                     {
                         try
                         {
-                            _readInfo = _readInfoFunc();
+                            _readInfo = _readInfoFunc().Result;
                         }
                         catch
                         {

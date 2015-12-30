@@ -20,6 +20,7 @@ namespace WebSocketSharp.Tests
     using System;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using NUnit.Framework;
@@ -42,15 +43,15 @@ namespace WebSocketSharp.Tests
                 var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
                 var data2 = Enumerable.Repeat((byte)2, 1000).ToArray();
                 var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
-                var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
+                var frame3 = new WebSocketFrame(Fin.Final, Opcode.Close, new byte[0], false, true);
                 var stream = new MemoryStream(frame1.ToByteArray().Concat(frame2.ToByteArray()).Concat(frame3.ToByteArray()).ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
             }
 
             [Test]
-            public void WhenReadingMessageThenGetsAllFrames()
+            public async Task WhenReadingMessageThenGetsAllFrames()
             {
-                var msg = _sut.Read().First();
+                var msg = await _sut.Read(CancellationToken.None).ConfigureAwait(false);
 
                 var buffer = new byte[2000];
                 var bytesRead = msg.RawData.Read(buffer, 0, 2000);
@@ -60,20 +61,22 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            public void WhenMessageDataIsNotConsumedThenDoesNotGetSecondMessage()
+            public async Task WhenMessageDataIsNotConsumedThenDoesNotGetSecondMessage()
             {
-                var task = Task.Factory.StartNew(() => _sut.Read().ElementAt(1));
-                var hasResult = task.Wait(TimeSpan.FromSeconds(2));
+                using (var source = new CancellationTokenSource(TimeSpan.FromSeconds(1)))
+                {
+                    var read = await _sut.Read(CancellationToken.None).ConfigureAwait(false);
 
-                Assert.False(hasResult);
+                    Assert.Throws<OperationCanceledException>(async () => await _sut.Read(source.Token).ConfigureAwait(false));
+                }
             }
 
             [Test]
-            public void WhenMessageDataIsConsumedThenGetsSecondMessage()
+            public async Task WhenMessageDataIsConsumedThenGetsSecondMessage()
             {
                 var count = 0;
-                var messages = _sut.Read();
-                foreach (var message in messages)
+                WebSocketMessage message = null;
+                while ((message = await _sut.Read(default(CancellationToken)).ConfigureAwait(false)) != null)
                 {
                     message.Consume();
                     count++;
@@ -83,16 +86,21 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            public async Task WhenSecondReadCalledSecondTimeThenReturnsEmpty()
+            public async Task WhenReadCalledAfterCloseFrameThenReturnsNull()
             {
-                var first = await Task.Factory.StartNew(() => _sut.Read().First());
-                var second = await Task.Factory.StartNew(() => _sut.Read().FirstOrDefault());
+                WebSocketMessage message;
+                while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
+                {
+                    message.Consume();
+                }
 
-                Assert.IsNull(second);
+                var second = await _sut.Read(default(CancellationToken)).ConfigureAwait(false);
+
+                Assert.Null(second);
             }
 
             [Test]
-            public void WhenReadingStreamWithPingsThenReadsAllData()
+            public async Task WhenReadingStreamWithPingsThenReadsAllData()
             {
                 var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
                 var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1, false, true);
@@ -111,17 +119,19 @@ namespace WebSocketSharp.Tests
                     .ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
 
-                var messages = _sut.Read().Select(x =>
+                int messages = 0;
+                WebSocketMessage message;
+                while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
                 {
-                    x.Consume();
-                    return x;
-                }).Count();
+                    message.Consume();
+                    messages += 1;
+                }
 
                 Assert.AreEqual(4, messages);
             }
 
             [Test]
-            public void WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
+            public async Task WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
             {
                 var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
                 var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
@@ -140,11 +150,14 @@ namespace WebSocketSharp.Tests
                     .ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
 
-                var messages = _sut.Read().Select(x =>
+                int messages = 0;
+                WebSocketMessage message;
+                while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
                 {
-                    x.Consume();
-                    return x;
-                }).Count();
+                    message.Consume();
+                    messages += 1;
+                }
+
 
                 Assert.AreEqual(4, messages);
             }

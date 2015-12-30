@@ -16,3 +16,4 @@ UpgradeLog*.*
 TestResult.xml
 *.Cache
 *.db
+project.lock.json
