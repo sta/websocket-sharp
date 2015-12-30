@@ -1372,7 +1372,7 @@ namespace WebSocketSharp
               completed (sent);
           }
           catch (Exception ex) {
-            _logger.Fatal (ex.ToString ());
+            _logger.Error (ex.ToString ());
             error ("An exception has occurred during a send callback.", ex);
           }
         },
