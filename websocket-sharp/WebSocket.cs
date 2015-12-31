@@ -1386,7 +1386,7 @@ namespace WebSocketSharp
         return true;
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _logger.Error (ex.ToString ());
         return false;
       }
     }
