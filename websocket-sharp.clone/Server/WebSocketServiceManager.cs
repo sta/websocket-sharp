@@ -184,7 +184,7 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="byte"/> that represents the binary data to broadcast.
         /// </param>
-        public Task Broadcast(byte[] data)
+        public Task<bool> Broadcast(byte[] data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
@@ -203,23 +203,18 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to broadcast.
         /// </param>
-        public void Broadcast(string data)
+        public Task<bool> Broadcast(string data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                return;
+                return Task.FromResult(false); ;
             }
 
             var rawData = Encoding.UTF8.GetBytes(data);
-            if (rawData.LongLength <= _fragmentSize)
-            {
-                InnerBroadcast(Opcode.Text, rawData);
-            }
-            else
-            {
-                InnerBroadcast(Opcode.Text, new MemoryStream(rawData));
-            }
+            return rawData.LongLength <= _fragmentSize
+                ? InnerBroadcast(Opcode.Text, rawData)
+                : InnerBroadcast(Opcode.Text, new MemoryStream(rawData));
         }
 
         /// <summary>
@@ -228,63 +223,10 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to broadcast.
         /// </param>
-        public void Broadcast(Stream data)
+        public Task<bool> Broadcast(Stream data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
-            if (msg != null)
-            {
-                return;
-            }
-
-            InnerBroadcast(Opcode.Binary, data);
-        }
-
-        /// <summary>
-        /// Broadcasts a binary <paramref name="data"/> asynchronously to every client
-        /// in the WebSocket services.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to broadcast.
-        /// </param>
-        public Task BroadcastAsync(byte[] data)
-        {
-            return Task.Run(() => Broadcast(data));
-        }
-
-        /// <summary>
-        /// Broadcasts a text <paramref name="data"/> asynchronously to every client
-        /// in the WebSocket services.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to broadcast.
-        /// </param>
-        public Task BroadcastAsync(string data)
-        {
-            return Task.Run(() => Broadcast(data));
-        }
-
-        /// <summary>
-        /// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously
-        /// to every client in the WebSocket services.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to broadcast.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that represents the number of bytes to broadcast.
-        /// </param>
-        public Task BroadcastAsync(Stream stream)
-        {
-            return Task.Run(() => Broadcast(stream));
+            return msg != null ? Task.FromResult(false) : InnerBroadcast(Opcode.Binary, data);
         }
 
         /// <summary>
@@ -301,7 +243,7 @@ namespace WebSocketSharp.Server
             var msg = _state.CheckIfStart();
             if (msg != null)
             {
-                return null;
+                return Task.FromResult<IDictionary<string, IDictionary<string, bool>>>(new Dictionary<string, IDictionary<string, bool>>());
             }
 
             return Broadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
@@ -332,12 +274,9 @@ namespace WebSocketSharp.Server
             var msg = _state.CheckIfStart() ??
                       (data = Encoding.UTF8.GetBytes(message)).CheckIfValidControlData("message");
 
-            if (msg != null)
-            {
-                return null;
-            }
-
-            return Broadping(WebSocketFrame.CreatePingFrame(data, false).ToByteArray(), _waitTime);
+            return msg != null 
+                ? Task.FromResult<IDictionary<string, IDictionary<string, bool>>>(new Dictionary<string, IDictionary<string, bool>>()) 
+                : Broadping(WebSocketFrame.CreatePingFrame(data, false).ToByteArray(), _waitTime);
         }
 
         /// <summary>
@@ -354,7 +293,7 @@ namespace WebSocketSharp.Server
         /// the access to the information in the service, or <see langword="null"/> if it's not found.
         /// This parameter is passed uninitialized.
         /// </param>
-        public bool TryGetServiceHost(string path, out WebSocketServiceHost host)
+        private bool TryGetServiceHost(string path, out WebSocketServiceHost host)
         {
             var msg = _state.CheckIfStart() ?? path.CheckIfValidServicePath();
             if (msg != null)

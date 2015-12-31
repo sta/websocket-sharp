@@ -752,73 +752,7 @@ namespace WebSocketSharp
 
             return InnerSend(Opcode.Text, new MemoryStream(Encoding.UTF8.GetBytes(data)));
         }
-
-        /// <summary>
-        /// Sends a binary <paramref name="data"/> asynchronously using the WebSocket connection.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        /// <param name="completed">
-        /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-        /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-        /// if the send is complete successfully.
-        /// </param>
-        public Task<bool> SendAsync(byte[] data)
-        {
-            return Task.Run(() => Send(data));
-        }
-
-        /// <summary>
-        /// Sends the specified <paramref name="stream"/> as a binary data asynchronously
-        /// using the WebSocket connection.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="FileInfo"/> that represents the file to send.
-        /// </param>
-        public Task<bool> SendAsync(Stream stream)
-        {
-            return Task.Run(() => Send(stream));
-        }
-
-        /// <summary>
-        /// Sends a text <paramref name="data"/> asynchronously using the WebSocket connection.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        public Task<bool> SendAsync(string data)
-        {
-            return Task.Run(() => Send(data));
-        }
-
-        /// <summary>
-        /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-        /// using the WebSocket connection.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to send.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that represents the number of bytes to send.
-        /// </param>
-        public Task<bool> SendAsync(Stream stream, long length)
-        {
-            return Task.Run(() => Send(stream, length));
-        }
-
+        
         /// <summary>
         /// Sets an HTTP <paramref name="cookie"/> to send with the WebSocket connection request
         /// to the server.

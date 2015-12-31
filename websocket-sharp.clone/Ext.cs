@@ -1424,7 +1424,9 @@ namespace WebSocketSharp
             {
                 len = stream.Read(buffer, offset, length);
                 if (len < 1)
+                {
                     return buffer.SubArray(0, offset);
+                }
 
                 while (len < length)
                 {

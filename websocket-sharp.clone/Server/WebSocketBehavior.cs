@@ -340,12 +340,9 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="byte"/> that represents the binary data to send.
         /// </param>
-        protected void Send(byte[] data)
+        protected Task<bool> Send(byte[] data)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(data);
-            }
+            return _websocket != null ? _websocket.Send(data) : Task.FromResult(false);
         }
 
         /// <summary>
@@ -358,12 +355,9 @@ namespace WebSocketSharp.Server
         /// <param name="stream">
         /// A <see cref="FileInfo"/> that represents the file to send.
         /// </param>
-        protected void Send(Stream stream)
+        protected Task<bool> Send(Stream stream)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(stream);
-            }
+            return _websocket != null ? _websocket.Send(stream) : Task.FromResult(false);
         }
 
         /// <summary>
@@ -375,114 +369,9 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to send.
         /// </param>
-        protected void Send(string data)
+        protected Task<bool> Send(string data)
         {
-            if (_websocket != null)
-            {
-                _websocket.Send(data);
-            }
-        }
-
-        /// <summary>
-        /// Sends a binary <paramref name="data"/> asynchronously to the client on the current session.
-        /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method is available after the WebSocket connection has been established.
-        ///   </para>
-        ///   <para>
-        ///   This method doesn't wait for the send to be complete.
-        ///   </para>
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        protected async Task SendAsync(byte[] data)
-        {
-            if (_websocket != null)
-            {
-                await _websocket.Send(data).ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Sends the specified <paramref name="stream"/> as a binary data asynchronously
-        /// to the client on the current session.
-        /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method is available after the WebSocket connection has been established.
-        ///   </para>
-        ///   <para>
-        ///   This method doesn't wait for the send to be complete.
-        ///   </para>
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="FileInfo"/> that represents the file to send.
-        /// </param>
-        protected async Task SendAsync(Stream stream)
-        {
-            if (_websocket != null)
-            {
-                await _websocket.Send(stream).ConfigureAwait(false);
-            }
-        }
-
-        /// <summary>
-        /// Sends a text <paramref name="data"/> asynchronously to the client on the current session.
-        /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method is available after the WebSocket connection has been established.
-        ///   </para>
-        ///   <para>
-        ///   This method doesn't wait for the send to be complete.
-        ///   </para>
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        /// <param name="completed">
-        /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-        /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-        /// if the send is complete successfully.
-        /// </param>
-        protected Task<bool> SendAsync(string data)
-        {
-            if (_websocket != null)
-            {
-                return _websocket.Send(data);
-            }
-
-            return Task.FromResult(false);
-        }
-
-        /// <summary>
-        /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-        /// to the client on the current session.
-        /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method is available after the WebSocket connection has been established.
-        ///   </para>
-        ///   <para>
-        ///   This method doesn't wait for the send to be complete.
-        ///   </para>
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to send.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that represents the number of bytes to send.
-        /// </param>
-        protected Task<bool> SendAsync(Stream stream, int length)
-        {
-            if (_websocket != null)
-            {
-                return _websocket.Send(stream, length);
-            }
-
-            return Task.FromResult(false);
+            return _websocket != null ? _websocket.Send(data) : Task.FromResult(false);
         }
 
         private string CheckIfValidConnectionRequest(WebSocketContext context)

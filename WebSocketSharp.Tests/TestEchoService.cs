@@ -17,28 +17,31 @@
 
 namespace WebSocketSharp.Tests
 {
-	using System;
-	using System.Threading.Tasks;
+    using System;
+    using System.Threading.Tasks;
 
-	using WebSocketSharp.Server;
+    using WebSocketSharp.Server;
 
-	public class TestEchoService : WebSocketBehavior
-	{
-		protected override Task OnMessage(MessageEventArgs e)
-		{
-			switch (e.Opcode)
-			{
-				case Opcode.Text:
-					return SendAsync(e.Text.ReadToEnd());
-				case Opcode.Binary:
-					return SendAsync(e.Data);
-				case Opcode.Cont:
-				case Opcode.Close:
-				case Opcode.Ping:
-				case Opcode.Pong:
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
-	}
+    public class TestEchoService : WebSocketBehavior
+    {
+        protected override async Task OnMessage(MessageEventArgs e)
+        {
+            switch (e.Opcode)
+            {
+                case Opcode.Text:
+                    var text = await e.Text.ReadToEndAsync().ConfigureAwait(false);
+                    await Send(text).ConfigureAwait(false);
+                    return;
+                case Opcode.Binary:
+                    await Send(e.Data).ConfigureAwait(false);
+                    return;
+                case Opcode.Cont:
+                case Opcode.Close:
+                case Opcode.Ping:
+                case Opcode.Pong:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
 }
