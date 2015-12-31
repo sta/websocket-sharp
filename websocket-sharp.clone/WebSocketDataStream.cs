@@ -20,6 +20,7 @@ namespace WebSocketSharp
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class WebSocketDataStream : Stream
@@ -28,6 +29,8 @@ namespace WebSocketSharp
         private readonly Action _consumedAction;
         private readonly Stream _innerStream;
         private StreamReadInfo _readInfo;
+
+        private long _position;
 
         public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<Task<StreamReadInfo>> readInfoFunc, Action consumedAction)
         {
@@ -53,6 +56,12 @@ namespace WebSocketSharp
 
         public override int Read(byte[] buffer, int offset, int count)
         {
+            var task = ReadAsync(buffer, offset, count, CancellationToken.None);
+            return task.Result;
+        }
+
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
             var position = offset;
             var bytesRead = 0;
 
@@ -61,7 +70,7 @@ namespace WebSocketSharp
                 var toread = Math.Min((ulong)(count - bytesRead), _readInfo.PayloadLength);
                 toread = Math.Min(toread, int.MaxValue);
 
-                var read = _innerStream.Read(buffer, position, (int)toread);
+                var read = await _innerStream.ReadAsync(buffer, position, (int)toread, cancellationToken).ConfigureAwait(false);
                 bytesRead += read;
 
                 _readInfo.PayloadLength -= Convert.ToUInt64(Convert.ToUInt32(read));
@@ -69,9 +78,6 @@ namespace WebSocketSharp
                 if (_readInfo.MaskingKey.Length > 0)
                 {
                     var max = position + (int)toread;
-                    //if (max > buffer.Length)
-                    //{
-                    //}
 
                     for (var pos = position; pos < max; pos++)
                     {
@@ -80,7 +86,7 @@ namespace WebSocketSharp
                 }
 
                 position += read;
-                Position = position;
+                _position = position;
                 if (_readInfo.PayloadLength == 0)
                 {
                     if (!_readInfo.IsFinal)
@@ -104,34 +110,23 @@ namespace WebSocketSharp
             return bytesRead;
         }
 
+        public override int ReadByte()
+        {
+            var buffer = new byte[1];
+            var bytesRead = Read(buffer, 0, 1);
+            return bytesRead == 0 ? -1 : buffer[0];
+        }
+
         public override void Write(byte[] buffer, int offset, int count)
         {
             throw new NotSupportedException();
         }
 
-        public override bool CanRead
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public override bool CanRead => true;
 
-        public override bool CanSeek
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanSeek => false;
 
-        public override bool CanWrite
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanWrite => false;
 
         public override long Length
         {
@@ -141,6 +136,16 @@ namespace WebSocketSharp
             }
         }
 
-        public override long Position { get; set; }
+        public override long Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                throw new NotSupportedException();
+            }
+        }
     }
 }

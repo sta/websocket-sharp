@@ -184,22 +184,17 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="byte"/> that represents the binary data to broadcast.
         /// </param>
-        public void Broadcast(byte[] data)
+        public Task Broadcast(byte[] data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                return;
+                return Task.FromResult(false);
             }
 
-            if (data.LongLength <= _fragmentSize)
-            {
-                InnerBroadcast(Opcode.Binary, data);
-            }
-            else
-            {
-                InnerBroadcast(Opcode.Binary, new MemoryStream(data));
-            }
+            return data.LongLength <= _fragmentSize
+                ? InnerBroadcast(Opcode.Binary, data)
+                : InnerBroadcast(Opcode.Binary, new MemoryStream(data));
         }
 
         /// <summary>
@@ -301,7 +296,7 @@ namespace WebSocketSharp.Server
         /// and a value indicating whether the manager received a Pong from each client in a time,
         /// or <see langword="null"/> if this method isn't available.
         /// </returns>
-        public Dictionary<string, Dictionary<string, bool>> Broadping()
+        public Task<IDictionary<string, IDictionary<string, bool>>> Broadping()
         {
             var msg = _state.CheckIfStart();
             if (msg != null)
@@ -326,7 +321,7 @@ namespace WebSocketSharp.Server
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public Dictionary<string, Dictionary<string, bool>> Broadping(string message)
+        public Task<IDictionary<string, IDictionary<string, bool>>> Broadping(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -460,26 +455,36 @@ namespace WebSocketSharp.Server
             }
         }
 
-        private bool InnerBroadcast(Opcode opcode, byte[] data)
+        private async Task<bool> InnerBroadcast(Opcode opcode, byte[] data)
         {
             var results =
                 Hosts
                 .TakeWhile(host => _state == ServerState.Start)
-                .Select(host => host.Sessions.InnerBroadcast(opcode, data));
-            return results.All(x => x);
+                .Select(host => host.Sessions.InnerBroadcast(opcode, data))
+                .ToArray();
+            await Task.WhenAll(results).ConfigureAwait(false);
+            return results.All(x => x.Result);
         }
 
-        private void InnerBroadcast(Opcode opcode, Stream stream)
+        private async Task<bool> InnerBroadcast(Opcode opcode, Stream stream)
         {
-            foreach (var host in Hosts.TakeWhile(host => _state == ServerState.Start))
-            {
-                host.Sessions.InnerBroadcast(opcode, stream);
-            }
+            var tasks =
+                Hosts.TakeWhile(host => _state == ServerState.Start)
+                    .Select(host => host.Sessions.InnerBroadcast(opcode, stream))
+                    .ToArray();
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            return tasks.All(x => x.Result);
         }
 
-        private Dictionary<string, Dictionary<string, bool>> Broadping(byte[] frameAsBytes, TimeSpan timeout)
+        private async Task<IDictionary<string, IDictionary<string, bool>>> Broadping(byte[] frameAsBytes, TimeSpan timeout)
         {
-            return this.Hosts.TakeWhile(host => _state == ServerState.Start).ToDictionary(host => host.Path, host => host.Sessions.InnerBroadping(frameAsBytes, timeout));
+            var tasks = Hosts.TakeWhile(host => _state == ServerState.Start)
+                .ToDictionary(host => host.Path, host => host.Sessions.InnerBroadping(frameAsBytes, timeout));
+            await Task.WhenAll(tasks.Values).ConfigureAwait(false);
+
+            return tasks.ToDictionary(x => x.Key, x => x.Value.Result);
         }
     }
 }

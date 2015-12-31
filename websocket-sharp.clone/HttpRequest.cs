@@ -34,7 +34,9 @@ using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-  internal class HttpRequest : HttpBase
+    using System.Threading.Tasks;
+
+    internal class HttpRequest : HttpBase
   {
     #region Private Fields
 
@@ -138,12 +140,12 @@ namespace WebSocketSharp
       return req;
     }
 
-    internal HttpResponse GetResponse (Stream stream, int millisecondsTimeout)
+    internal async Task<HttpResponse> GetResponse (Stream stream, int millisecondsTimeout)
     {
       var buff = ToByteArray ();
-      stream.Write (buff, 0, buff.Length);
+    await  stream.WriteAsync (buff, 0, buff.Length).ConfigureAwait(false);
 
-      return Read<HttpResponse> (stream, HttpResponse.Parse, millisecondsTimeout);
+      return Read(stream, HttpResponse.Parse, millisecondsTimeout);
     }
 
     internal static HttpRequest Parse (string[] headerParts)

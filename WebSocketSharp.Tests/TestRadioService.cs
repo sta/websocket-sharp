@@ -24,19 +24,22 @@ namespace WebSocketSharp.Tests
 
     public class TestRadioService : WebSocketBehavior
     {
-        protected override Task OnMessage(MessageEventArgs e)
+        protected override async Task OnMessage(MessageEventArgs e)
         {
             switch (e.Opcode)
             {
                 case Opcode.Text:
-                    return Sessions.BroadcastAsync(e.Text.ReadToEnd());
+                    var text = await e.Text.ReadToEndAsync().ConfigureAwait(false);
+                    await Sessions.Broadcast(text).ConfigureAwait(false);
+                    return;
                 case Opcode.Binary:
-                    return Sessions.BroadcastAsync(e.Data);
+                    await Sessions.Broadcast(e.Data).ConfigureAwait(false);
+                    return;
                 case Opcode.Cont:
                 case Opcode.Close:
                 case Opcode.Ping:
                 case Opcode.Pong:
-                    return Task.FromResult(false);
+                    return;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

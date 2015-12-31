@@ -39,7 +39,6 @@ namespace WebSocketSharp.Tests
             [TearDown]
             public void Teardown()
             {
-                _sut.OnError -= PrintError;
                 if (_sut.ReadyState != WebSocketState.Closed)
                 {
                     _sut.Dispose();
@@ -47,21 +46,13 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            public async Task WhenClosingAsyncThenCloses()
+            public async Task WhenClosingThenCloses()
             {
-                await _sut.CloseAsync();
+                await _sut.Close().ConfigureAwait(false);
 
                 Assert.AreEqual(WebSocketState.Closed, _sut.ReadyState);
             }
-
-            [Test]
-            public void WhenConnectingToAddressThenConnects()
-            {
-                var connected = _sut.Connect();
-
-                Assert.IsTrue(connected);
-            }
-
+            
             [Test]
             public void WhenSendingMessageThenReceivesEcho()
             {
@@ -83,9 +74,7 @@ namespace WebSocketSharp.Tests
                 Console.WriteLine("Sent: " + sent);
 
                 var result = waitHandle.Wait(2000);
-
-                _sut.OnMessage -= onMessage;
-
+                
                 Assert.True(result && echoReceived);
             }
 
@@ -107,7 +96,7 @@ namespace WebSocketSharp.Tests
                 var connected = _sut.Connect();
                 Console.WriteLine("Connected: " + connected);
 
-                var sent = await _sut.SendAsync(Message);
+                var sent = await _sut.Send(Message);
                 Console.WriteLine("Sent: " + sent);
 
                 var result = waitHandle.Wait(2000);
@@ -116,9 +105,9 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            public async Task WhenConnectingAsyncToAddressThenConnects()
+            public async Task WhenConnectingToAddressThenConnects()
             {
-                await _sut.ConnectAsync();
+                await _sut.Connect().ConfigureAwait(false);
 
                 Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
             }

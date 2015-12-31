@@ -36,6 +36,7 @@ using System.Timers;
 
 namespace WebSocketSharp.Server
 {
+    using System.Collections.Concurrent;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -45,29 +46,26 @@ namespace WebSocketSharp.Server
     public class WebSocketSessionManager
     {
         private readonly int _fragmentSize;
-        
         private volatile bool _clean;
         private readonly object _forSweep;
-        private readonly Dictionary<string, IWebSocketSession> _sessions;
+        private readonly ConcurrentDictionary<string, IWebSocketSession> _sessions;
         private volatile ServerState _state;
         private volatile bool _sweeping;
         private System.Timers.Timer _sweepTimer;
-        private readonly object _sync;
         private TimeSpan _waitTime;
-        
+
         internal WebSocketSessionManager(int fragmentSize)
         {
             _fragmentSize = fragmentSize;
             _clean = true;
             _forSweep = new object();
-            _sessions = new Dictionary<string, IWebSocketSession>();
+            _sessions = new ConcurrentDictionary<string, IWebSocketSession>();
             _state = ServerState.Ready;
-            _sync = ((ICollection)_sessions).SyncRoot;
             _waitTime = TimeSpan.FromSeconds(1);
 
-            setSweepTimer(60000);
+            SetSweepTimer(60000);
         }
-        
+
         internal ServerState State
         {
             get
@@ -75,7 +73,7 @@ namespace WebSocketSharp.Server
                 return _state;
             }
         }
-        
+
         /// <summary>
         /// Gets the IDs for the active sessions in the Websocket service.
         /// </summary>
@@ -83,14 +81,10 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which
         /// supports the iteration over the collection of the IDs for the active sessions.
         /// </value>
-        public IEnumerable<string> ActiveIDs
+        public async Task<IEnumerable<string>> ActiveIDs()
         {
-            get
-            {
-                foreach (var res in InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
-                    if (res.Value)
-                        yield return res.Key;
-            }
+            var results = await InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime).ConfigureAwait(false);
+            return results.Where(x => x.Value).Select(x => x.Key).ToArray();
         }
 
         /// <summary>
@@ -99,14 +93,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// An <see cref="int"/> that represents the number of the sessions.
         /// </value>
-        public int Count
-        {
-            get
-            {
-                lock (_sync)
-                    return _sessions.Count;
-            }
-        }
+        public int Count => _sessions.Count;
 
         /// <summary>
         /// Gets the IDs for the sessions in the Websocket service.
@@ -119,11 +106,7 @@ namespace WebSocketSharp.Server
         {
             get
             {
-                if (_state == ServerState.ShuttingDown)
-                    return new string[0];
-
-                lock (_sync)
-                    return _sessions.Keys.ToList();
+                return _state == ServerState.ShuttingDown ? new string[0] : _sessions.Keys.AsEnumerable();
             }
         }
 
@@ -134,14 +117,11 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which
         /// supports the iteration over the collection of the IDs for the inactive sessions.
         /// </value>
-        public IEnumerable<string> InactiveIDs
+        public async Task<IEnumerable<string>> InactiveIDs()
         {
-            get
-            {
-                foreach (var res in InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime))
-                    if (!res.Value)
-                        yield return res.Key;
-            }
+            var results = await InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime).ConfigureAwait(false);
+            return results.Where(x => !x.Value).Select(x => x.Key).ToArray();
+
         }
 
         /// <summary>
@@ -202,11 +182,9 @@ namespace WebSocketSharp.Server
         {
             get
             {
-                if (_state == ServerState.ShuttingDown)
-                    return new IWebSocketSession[0];
-
-                lock (_sync)
-                    return _sessions.Values.ToList();
+                return _state == ServerState.ShuttingDown
+                           ? (IEnumerable<IWebSocketSession>)new IWebSocketSession[0]
+                           : _sessions.Values.ToList();
             }
         }
 
@@ -237,63 +215,50 @@ namespace WebSocketSharp.Server
                 }
             }
         }
-        
-        private static string createID()
+
+        private static string CreateId()
         {
             return Guid.NewGuid().ToString("N");
         }
 
-        private void setSweepTimer(double interval)
+        private void SetSweepTimer(double interval)
         {
             _sweepTimer = new System.Timers.Timer(interval);
-            _sweepTimer.Elapsed += (sender, e) => Sweep();
+            _sweepTimer.Elapsed += async (sender, e) => await Sweep().ConfigureAwait(false);
         }
 
-        private bool tryGetSession(string id, out IWebSocketSession session)
-        {
-            bool res;
-            lock (_sync)
-            {
-                res = _sessions.TryGetValue(id, out session);
-            }
-
-            return res;
-        }
-        
         internal string Add(IWebSocketSession session)
         {
-            lock (_sync)
+            if (_state != ServerState.Start)
             {
-                if (_state != ServerState.Start)
-                {
-                    return null;
-                }
-
-                var id = createID();
-                _sessions.Add(id, session);
-
-                return id;
+                return null;
             }
+
+            var id = CreateId();
+            return _sessions.TryAdd(id, session) ? id : null;
         }
 
-        internal bool InnerBroadcast(Opcode opcode, byte[] data)
+        internal async Task<bool> InnerBroadcast(Opcode opcode, byte[] data)
         {
             var results =
                 Sessions.TakeWhile(session => _state == ServerState.Start)
-                    .Select(session => session.Context.WebSocket.InnerSend(opcode, data));
-            return results.All(x => x);
+                    .Select(session => session.Context.WebSocket.InnerSend(opcode, data))
+                    .ToArray();
+            await Task.WhenAll(results).ConfigureAwait(false);
+            return results.All(x => x.Result);
         }
 
-        internal bool InnerBroadcast(Fin final, Opcode opcode, byte[] data)
+        private async Task<bool> InnerBroadcast(Fin final, Opcode opcode, byte[] data)
         {
             var results =
                 Sessions.TakeWhile(session => _state == ServerState.Start)
                     .Select(session => session.Context.WebSocket.InnerSend(final, opcode, data))
                     .ToArray();
-            return results.All(x => x);
+            await Task.WhenAll(results).ConfigureAwait(false);
+            return results.All(x => x.Result);
         }
 
-        internal bool InnerBroadcast(Opcode opcode, Stream stream)
+        internal async Task<bool> InnerBroadcast(Opcode opcode, Stream stream)
         {
             var allBroadcasts = new List<bool>();
             var sentCode = opcode;
@@ -303,7 +268,7 @@ namespace WebSocketSharp.Server
                 var buffer = new byte[_fragmentSize];
                 var bytesRead = stream.Read(buffer, 0, _fragmentSize);
                 isFinal = bytesRead != _fragmentSize;
-                var result = InnerBroadcast(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer);
+                var result = await InnerBroadcast(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);
                 allBroadcasts.Add(result);
                 sentCode = Opcode.Cont;
             }
@@ -311,42 +276,39 @@ namespace WebSocketSharp.Server
             return allBroadcasts.All(x => x);
         }
 
-        internal Dictionary<string, bool> InnerBroadping(byte[] frameAsBytes, TimeSpan timeout)
+        internal async Task<IDictionary<string, bool>> InnerBroadping(byte[] frameAsBytes, TimeSpan timeout)
         {
-            return Sessions.TakeWhile(session => _state == ServerState.Start).ToDictionary(session => session.ID, session => session.Context.WebSocket.InnerPing(frameAsBytes, timeout));
+            var tasks = Sessions.TakeWhile(session => _state == ServerState.Start)
+                .ToDictionary(session => session.ID, session => session.Context.WebSocket.InnerPing(frameAsBytes, timeout));
+            await Task.WhenAll(tasks.Values).ConfigureAwait(false);
+
+            return tasks.ToDictionary(x => x.Key, x => x.Value.Result);
         }
 
         internal bool Remove(string id)
         {
-            lock (_sync)
-            {
-                return _sessions.Remove(id);
-            }
+            IWebSocketSession session;
+            return _sessions.TryRemove(id, out session);
         }
 
         internal void Start()
         {
-            lock (_sync)
-            {
-                _sweepTimer.Enabled = _clean;
-                _state = ServerState.Start;
-            }
+            _sweepTimer.Enabled = _clean;
+            _state = ServerState.Start;
         }
 
-        internal void Stop(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
+        internal async Task Stop(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
         {
-            lock (_sync)
-            {
-                _state = ServerState.ShuttingDown;
+            _state = ServerState.ShuttingDown;
 
-                _sweepTimer.Enabled = false;
-                foreach (var session in _sessions.Values.ToList())
-                {
-                    session.Context.WebSocket.InnerClose(e, frameAsBytes, timeout);
-                }
+            _sweepTimer.Enabled = false;
+            var closeTasks =
+                _sessions.Values.Select(session => session.Context.WebSocket.InnerClose(e, frameAsBytes, timeout))
+                    .ToArray();
 
-                _state = ServerState.Stop;
-            }
+            await Task.WhenAll(closeTasks).ConfigureAwait(false);
+
+            _state = ServerState.Stop;
         }
 
         /// <summary>
@@ -355,22 +317,17 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="byte"/> that represents the binary data to broadcast.
         /// </param>
-        public void Broadcast(byte[] data)
+        public Task<bool> Broadcast(byte[] data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                return;
+                return Task.FromResult(false);
             }
 
-            if (data.LongLength <= _fragmentSize)
-            {
-                InnerBroadcast(Opcode.Binary, data);
-            }
-            else
-            {
-                InnerBroadcast(Opcode.Binary, new MemoryStream(data));
-            }
+            return data.LongLength <= _fragmentSize
+                ? InnerBroadcast(Opcode.Binary, data)
+                : InnerBroadcast(Opcode.Binary, new MemoryStream(data));
         }
 
         /// <summary>
@@ -379,15 +336,10 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="Stream"/> that represents the binary data to broadcast.
         /// </param>
-        public void Broadcast(Stream data)
+        public Task<bool> Broadcast(Stream data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
-            if (msg != null)
-            {
-                return;
-            }
-
-            InnerBroadcast(Opcode.Binary, data);
+            return msg != null ? Task.FromResult(false) : InnerBroadcast(Opcode.Binary, data);
         }
 
         /// <summary>
@@ -396,68 +348,18 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to broadcast.
         /// </param>
-        public void Broadcast(string data)
+        public Task<bool> Broadcast(string data)
         {
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                return;
+                return Task.FromResult(false);
             }
 
             var rawData = Encoding.UTF8.GetBytes(data);
-            if (rawData.LongLength <= _fragmentSize)
-            {
-                InnerBroadcast(Opcode.Text, rawData);
-            }
-            else
-            {
-                InnerBroadcast(Opcode.Text, new MemoryStream(rawData));
-            }
-        }
-
-        /// <summary>
-        /// Broadcasts a binary <paramref name="data"/> asynchronously to every client
-        /// in the WebSocket service.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to broadcast.
-        /// </param>
-        public Task BroadcastAsync(byte[] data)
-        {
-            return Task.Run(() => Broadcast(data));
-        }
-
-        /// <summary>
-        /// Broadcasts a text <paramref name="data"/> asynchronously to every client
-        /// in the WebSocket service.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to broadcast.
-        /// </param>
-        public Task BroadcastAsync(string data)
-        {
-            return Task.Run(() => Broadcast(data));
-        }
-
-        /// <summary>
-        /// Broadcasts a binary data from the specified <see cref="Stream"/> asynchronously
-        /// to every client in the WebSocket service.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the broadcast to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to broadcast.
-        /// </param>
-        public Task BroadcastAsync(Stream stream)
-        {
-            return Task.Run(() => Broadcast(stream));
+            return rawData.LongLength <= _fragmentSize
+                ? InnerBroadcast(Opcode.Text, rawData)
+                : InnerBroadcast(Opcode.Text, new MemoryStream(rawData));
         }
 
         /// <summary>
@@ -468,15 +370,12 @@ namespace WebSocketSharp.Server
         /// a session ID and a value indicating whether the manager received a Pong from
         /// each client in a time.
         /// </returns>
-        public Dictionary<string, bool> Broadping()
+        public Task<IDictionary<string, bool>> Broadping()
         {
             var msg = _state.CheckIfStart();
-            if (msg != null)
-            {
-                return null;
-            }
-
-            return InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
+            return msg != null
+                ? Task.FromResult<IDictionary<string, bool>>(new Dictionary<string, bool>())
+                : InnerBroadping(WebSocketFrame.EmptyUnmaskPingBytes, _waitTime);
         }
 
         /// <summary>
@@ -491,10 +390,12 @@ namespace WebSocketSharp.Server
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public Dictionary<string, bool> Broadping(string message)
+        public Task<IDictionary<string, bool>> Broadping(string message)
         {
-            if (message == null || message.Length == 0)
+            if (string.IsNullOrEmpty(message))
+            {
                 return Broadping();
+            }
 
             byte[] data = null;
             var msg = _state.CheckIfStart() ??
@@ -514,13 +415,10 @@ namespace WebSocketSharp.Server
         /// <param name="id">
         /// A <see cref="string"/> that represents the ID of the session to close.
         /// </param>
-        public void CloseSession(string id)
+        public Task CloseSession(string id)
         {
             IWebSocketSession session;
-            if (TryGetSession(id, out session))
-            {
-                session.Context.WebSocket.Close();
-            }
+            return TryGetSession(id, out session) ? session.Context.WebSocket.Close() : Task.FromResult(false);
         }
 
         /// <summary>
@@ -537,13 +435,14 @@ namespace WebSocketSharp.Server
         /// <param name="reason">
         /// A <see cref="string"/> that represents the reason for the close.
         /// </param>
-        public void CloseSession(string id, CloseStatusCode code, string reason)
+        public Task CloseSession(string id, CloseStatusCode code, string reason)
         {
             IWebSocketSession session;
             if (TryGetSession(id, out session))
             {
-                session.Context.WebSocket.Close(code, reason);
+                return session.Context.WebSocket.Close(code, reason);
             }
+            return Task.FromResult(false);
         }
 
         /// <summary>
@@ -556,10 +455,12 @@ namespace WebSocketSharp.Server
         /// <param name="id">
         /// A <see cref="string"/> that represents the ID of the session to find.
         /// </param>
-        public bool PingTo(string id)
+        public Task<bool> PingTo(string id)
         {
             IWebSocketSession session;
-            return TryGetSession(id, out session) && session.Context.WebSocket.Ping();
+            return TryGetSession(id, out session)
+                ? session.Context.WebSocket.Ping()
+                : Task.FromResult(false);
         }
 
         /// <summary>
@@ -576,10 +477,12 @@ namespace WebSocketSharp.Server
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public bool PingTo(string id, string message)
+        public Task<bool> PingTo(string id, string message)
         {
             IWebSocketSession session;
-            return TryGetSession(id, out session) && session.Context.WebSocket.Ping(message);
+            return TryGetSession(id, out session)
+                ? session.Context.WebSocket.Ping(message)
+                : Task.FromResult(false);
         }
 
         /// <summary>
@@ -592,13 +495,10 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// An array of <see cref="byte"/> that represents the binary data to send.
         /// </param>
-        public void SendTo(string id, byte[] data)
+        public Task<bool> SendTo(string id, byte[] data)
         {
             IWebSocketSession session;
-            if (TryGetSession(id, out session))
-            {
-                session.Context.WebSocket.Send(data);
-            }
+            return TryGetSession(id, out session) ? session.Context.WebSocket.Send(data) : Task.FromResult(false);
         }
 
         /// <summary>
@@ -611,89 +511,16 @@ namespace WebSocketSharp.Server
         /// <param name="data">
         /// A <see cref="string"/> that represents the text data to send.
         /// </param>
-        public void SendTo(string id, string data)
+        public Task<bool> SendTo(string id, string data)
         {
             IWebSocketSession session;
-            if (TryGetSession(id, out session))
-            {
-                session.Context.WebSocket.Send(data);
-            }
-        }
-
-        /// <summary>
-        /// Sends a binary <paramref name="data"/> asynchronously to the client on the session
-        /// with the specified <paramref name="id"/>.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="id">
-        /// A <see cref="string"/> that represents the ID of the session to find.
-        /// </param>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        public Task<bool> SendToAsync(string id, byte[] data)
-        {
-            IWebSocketSession session;
-            if (TryGetSession(id, out session))
-            {
-                return session.Context.WebSocket.SendAsync(data);
-            }
-
-            return Task.FromResult(false);
-        }
-
-        /// <summary>
-        /// Sends a text <paramref name="data"/> asynchronously to the client on the session
-        /// with the specified <paramref name="id"/>.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="id">
-        /// A <see cref="string"/> that represents the ID of the session to find.
-        /// </param>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        public Task<bool> SendToAsync(string id, string data)
-        {
-            IWebSocketSession session;
-            if (TryGetSession(id, out session))
-            {
-                return session.Context.WebSocket.SendAsync(data);
-            }
-
-            return Task.FromResult(false);
-        }
-
-        /// <summary>
-        /// Sends a binary data from the specified <see cref="Stream"/> asynchronously
-        /// to the client on the session with the specified <paramref name="id"/>.
-        /// </summary>
-        /// <remarks>
-        /// This method doesn't wait for the send to be complete.
-        /// </remarks>
-        /// <param name="id">
-        /// A <see cref="string"/> that represents the ID of the session to find.
-        /// </param>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> from which contains the binary data to send.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that represents the number of bytes to send.
-        /// </param>
-        public Task<bool> SendToAsync(string id, Stream stream, int length)
-        {
-            IWebSocketSession session;
-            return this.TryGetSession(id, out session) ? session.Context.WebSocket.SendAsync(stream, length) : Task.FromResult(false);
+            return TryGetSession(id, out session) ? session.Context.WebSocket.Send(data) : Task.FromResult(false);
         }
 
         /// <summary>
         /// Cleans up the inactive sessions in the WebSocket service.
         /// </summary>
-        public void Sweep()
+        private async Task Sweep()
         {
             if (_state != ServerState.Start || _sweeping || Count == 0)
             {
@@ -702,31 +529,37 @@ namespace WebSocketSharp.Server
 
             lock (_forSweep)
             {
-                _sweeping = true;
-                foreach (var id in this.InactiveIDs.TakeWhile(id => _state == ServerState.Start))
+                while (_sweeping)
                 {
-                    lock (_sync)
+                    Monitor.Wait(_forSweep);
+                }
+                _sweeping = true;
+            }
+            var inactive = await InactiveIDs().ConfigureAwait(false);
+            foreach (var id in inactive.TakeWhile(id => _state == ServerState.Start))
+            {
+                IWebSocketSession session;
+                if (_sessions.TryGetValue(id, out session))
+                {
+                    var state = session.State;
+                    switch (state)
                     {
-                        IWebSocketSession session;
-                        if (_sessions.TryGetValue(id, out session))
-                        {
-                            var state = session.State;
-                            switch (state)
-                            {
-                                case WebSocketState.Open:
-                                    session.Context.WebSocket.Close(CloseStatusCode.ProtocolError);
-                                    break;
-                                case WebSocketState.Closing:
-                                    continue;
-                                default:
-                                    _sessions.Remove(id);
-                                    break;
-                            }
-                        }
+                        case WebSocketState.Open:
+                            await session.Context.WebSocket.Close(CloseStatusCode.ProtocolError).ConfigureAwait(false);
+                            break;
+                        case WebSocketState.Closing:
+                            continue;
+                        default:
+                            Remove(id);
+                            break;
                     }
                 }
+            }
 
+            lock (_forSweep)
+            {
                 _sweeping = false;
+                Monitor.Pulse(_forSweep);
             }
         }
 
@@ -744,7 +577,7 @@ namespace WebSocketSharp.Server
         /// provides the access to the information in the session, or <see langword="null"/>
         /// if it's not found. This parameter is passed uninitialized.
         /// </param>
-        public bool TryGetSession(string id, out IWebSocketSession session)
+        private bool TryGetSession(string id, out IWebSocketSession session)
         {
             var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionID();
             if (msg != null)
@@ -754,7 +587,9 @@ namespace WebSocketSharp.Server
                 return false;
             }
 
-            return tryGetSession(id, out session);
+            var res = _sessions.TryGetValue(id, out session);
+
+            return res;
         }
     }
 }

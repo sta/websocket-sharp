@@ -238,15 +238,9 @@ namespace WebSocketSharp.Server
         /// <value>
         /// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions, or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        protected WebSocketSessionManager Sessions
-        {
-            get
-            {
-                return _sessions;
-            }
-        }
+        protected WebSocketSessionManager Sessions => _sessions;
 
-        internal void Start(WebSocketContext context, WebSocketSessionManager sessions)
+        internal async Task Start(WebSocketContext context, WebSocketSessionManager sessions)
         {
             if (_websocket != null)
             {
@@ -270,7 +264,7 @@ namespace WebSocketSharp.Server
             _websocket.OnError = OnError;
             _websocket.OnClose = InnerOnClose;
 
-            _websocket.ConnectAsServer();
+            await _websocket.ConnectAsServer().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -407,7 +401,7 @@ namespace WebSocketSharp.Server
         {
             if (_websocket != null)
             {
-                await _websocket.SendAsync(data).ConfigureAwait(false);
+                await _websocket.Send(data).ConfigureAwait(false);
             }
         }
 
@@ -430,7 +424,7 @@ namespace WebSocketSharp.Server
         {
             if (_websocket != null)
             {
-                await _websocket.SendAsync(stream).ConfigureAwait(false);
+                await _websocket.Send(stream).ConfigureAwait(false);
             }
         }
 
@@ -457,7 +451,7 @@ namespace WebSocketSharp.Server
         {
             if (_websocket != null)
             {
-                return _websocket.SendAsync(data);
+                return _websocket.Send(data);
             }
 
             return Task.FromResult(false);
@@ -485,7 +479,7 @@ namespace WebSocketSharp.Server
         {
             if (_websocket != null)
             {
-                return _websocket.SendAsync(stream, length);
+                return _websocket.Send(stream, length);
             }
 
             return Task.FromResult(false);

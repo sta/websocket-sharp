@@ -71,6 +71,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MonitorLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FragmentedMessage.cs" />
