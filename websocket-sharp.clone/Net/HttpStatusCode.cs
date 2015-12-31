@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpStatusCode.cs
  *
@@ -34,7 +33,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
@@ -45,7 +43,7 @@ namespace WebSocketSharp.Net
 	/// The HttpStatusCode enumeration contains the values of the HTTP status codes defined in
 	/// <see href="http://tools.ietf.org/html/rfc2616#section-10">RFC 2616</see> for HTTP 1.1.
 	/// </remarks>
-	public enum HttpStatusCode
+	internal enum HttpStatusCode
 	{
 		/// <summary>
 		/// Equivalent to status code 100.
@@ -399,6 +397,6 @@ namespace WebSocketSharp.Net
 		/// Equivalent to status code 505.
 		/// Indicates that the server doesn't support the HTTP version used in the client's request.
 		/// </summary>
-		HttpVersionNotSupported = 505,
+		HttpVersionNotSupported = 505
 	}
 }

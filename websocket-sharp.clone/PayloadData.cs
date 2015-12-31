@@ -1,4 +1,3 @@
-#region License
 /*
  * PayloadData.cs
  *
@@ -24,159 +23,74 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace WebSocketSharp
 {
-	internal class PayloadData : IEnumerable<byte>
-	{
-		#region Private Fields
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
 
-		private byte[] _data;
-		private long _extDataLength;
-		private long _length;
-		private bool _masked;
+    internal class PayloadData : IEnumerable<byte>
+    {
+        private readonly byte[] _data;
+        private long _extDataLength;
+        private readonly long _length;
+        private bool _masked;
 
-		#endregion
+        public const ulong MaxLength = Int64.MaxValue;
 
-		#region Public Fields
+        internal PayloadData()
+        {
+            _data = new byte[0];
+        }
 
-		public const ulong MaxLength = Int64.MaxValue;
+        internal PayloadData(byte[] data)
+            : this(data, false)
+        {
+        }
 
-		#endregion
+        internal PayloadData(byte[] data, bool masked)
+        {
+            _data = data;
+            _masked = masked;
+            _length = data.LongLength;
+        }
+        
+        public byte[] ApplicationData => _extDataLength > 0
+                                             ? _data.SubArray(_extDataLength, _length - _extDataLength)
+                                             : _data;
+        
+        public ulong Length => (ulong)_length;
 
-		#region Internal Constructors
+        internal void Mask(byte[] key)
+        {
+            for (long i = 0; i < _length; i++)
+            {
+                _data[i] = (byte)(_data[i] ^ key[i % 4]);
+            }
 
-		internal PayloadData()
-		{
-			_data = new byte[0];
-		}
+            _masked = !_masked;
+        }
 
-		internal PayloadData(byte[] data)
-			: this(data, false)
-		{
-		}
+        public IEnumerator<byte> GetEnumerator()
+        {
+            foreach (var b in _data)
+                yield return b;
+        }
 
-		internal PayloadData(byte[] data, bool masked)
-		{
-			_data = data;
-			_masked = masked;
-			_length = data.LongLength;
-		}
+        public byte[] ToByteArray()
+        {
+            return _data;
+        }
 
-		#endregion
+        public override string ToString()
+        {
+            return BitConverter.ToString(_data);
+        }
 
-		#region Internal Properties
-
-		internal long ExtensionDataLength
-		{
-			get
-			{
-				return _extDataLength;
-			}
-
-			set
-			{
-				_extDataLength = value;
-			}
-		}
-
-		internal bool IncludesReservedCloseStatusCode
-		{
-			get
-			{
-				return _length > 1 && _data.SubArray(0, 2).ToUInt16(ByteOrder.Big).IsReserved();
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		public byte[] ApplicationData
-		{
-			get
-			{
-				return _extDataLength > 0
-					   ? _data.SubArray(_extDataLength, _length - _extDataLength)
-					   : _data;
-			}
-		}
-
-		public byte[] ExtensionData
-		{
-			get
-			{
-				return _extDataLength > 0
-					   ? _data.SubArray(0, _extDataLength)
-					   : new byte[0];
-			}
-		}
-
-		public bool IsMasked
-		{
-			get
-			{
-				return _masked;
-			}
-		}
-
-		public ulong Length
-		{
-			get
-			{
-				return (ulong)_length;
-			}
-		}
-
-		#endregion
-
-		#region Internal Methods
-
-		internal void Mask(byte[] key)
-		{
-			for (long i = 0; i < _length; i++)
-			{
-				_data[i] = (byte)(_data[i] ^ key[i % 4]);
-			}
-
-			_masked = !_masked;
-		}
-
-		#endregion
-
-		#region Public Methods
-
-		public IEnumerator<byte> GetEnumerator()
-		{
-			foreach (var b in _data)
-				yield return b;
-		}
-
-		public byte[] ToByteArray()
-		{
-			return _data;
-		}
-
-		public override string ToString()
-		{
-			return BitConverter.ToString(_data);
-		}
-
-		#endregion
-
-		#region Explicit Interface Implementations
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
-
-		#endregion
-	}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
 }

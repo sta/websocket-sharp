@@ -1,4 +1,3 @@
-#region License
 /*
  * MessageEventArgs.cs
  *
@@ -24,16 +23,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Text;
 
 namespace WebSocketSharp
 {
-	using System.IO;
+    using System;
+    using System.IO;
 
-	/// <summary>
+    /// <summary>
 	/// Contains the event data associated with a <see cref="WebSocket.OnMessage"/> event.
 	/// </summary>
 	/// <remarks>
@@ -55,28 +51,10 @@ namespace WebSocketSharp
 			_message = message;
 		}
 
-		public Opcode Opcode
-		{
-			get
-			{
-				return _message.Opcode;
-			}
-		}
+		public Opcode Opcode => _message.Opcode;
 
-		public StreamReader Text
-		{
-			get
-			{
-				return _message.Text;
-			}
-		}
+        public StreamReader Text => _message.Text;
 
-		public Stream Data
-		{
-			get
-			{
-				return _message.RawData;
-			}
-		}
+        public Stream Data => _message.RawData;
 	}
 }

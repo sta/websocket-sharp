@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketSessionManager.cs
  *
@@ -24,21 +23,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Timers;
 
 namespace WebSocketSharp.Server
 {
+    using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
+    using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+
+    using Timer = System.Timers.Timer;
 
     /// <summary>
     /// Manages the sessions in a Websocket service.
@@ -51,7 +48,7 @@ namespace WebSocketSharp.Server
         private readonly ConcurrentDictionary<string, IWebSocketSession> _sessions;
         private volatile ServerState _state;
         private volatile bool _sweeping;
-        private System.Timers.Timer _sweepTimer;
+        private Timer _sweepTimer;
         private TimeSpan _waitTime;
 
         internal WebSocketSessionManager(int fragmentSize)
@@ -66,13 +63,7 @@ namespace WebSocketSharp.Server
             SetSweepTimer(60000);
         }
 
-        internal ServerState State
-        {
-            get
-            {
-                return _state;
-            }
-        }
+        internal ServerState State => _state;
 
         /// <summary>
         /// Gets the IDs for the active sessions in the Websocket service.
@@ -102,13 +93,7 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which
         /// supports the iteration over the collection of the IDs for the sessions.
         /// </value>
-        public IEnumerable<string> IDs
-        {
-            get
-            {
-                return _state == ServerState.ShuttingDown ? new string[0] : _sessions.Keys.AsEnumerable();
-            }
-        }
+        public IEnumerable<string> IDs => _state == ServerState.ShuttingDown ? new string[0] : _sessions.Keys.AsEnumerable();
 
         /// <summary>
         /// Gets the IDs for the inactive sessions in the Websocket service.
@@ -178,15 +163,9 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;IWebSocketSession&gt;</c> instance that provides an enumerator
         /// which supports the iteration over the collection of the sessions in the service.
         /// </value>
-        public IEnumerable<IWebSocketSession> Sessions
-        {
-            get
-            {
-                return _state == ServerState.ShuttingDown
-                           ? (IEnumerable<IWebSocketSession>)new IWebSocketSession[0]
-                           : _sessions.Values.ToList();
-            }
-        }
+        public IEnumerable<IWebSocketSession> Sessions => _state == ServerState.ShuttingDown
+                                                              ? (IEnumerable<IWebSocketSession>)new IWebSocketSession[0]
+                                                              : _sessions.Values.ToList();
 
         /// <summary>
         /// Gets the wait time for the response to the WebSocket Ping or Close.
@@ -223,7 +202,7 @@ namespace WebSocketSharp.Server
 
         private void SetSweepTimer(double interval)
         {
-            _sweepTimer = new System.Timers.Timer(interval);
+            _sweepTimer = new Timer(interval);
             _sweepTimer.Elapsed += async (sender, e) => await Sweep().ConfigureAwait(false);
         }
 

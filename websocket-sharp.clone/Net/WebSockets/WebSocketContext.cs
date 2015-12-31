@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketContext.cs
  *
@@ -24,16 +23,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
 namespace WebSocketSharp.Net.WebSockets
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Collections.Specialized;
-	using System.Security.Principal;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.Net;
+    using System.Security.Principal;
 
-	/// <summary>
+    using CookieCollection = WebSocketSharp.Net.CookieCollection;
+
+    /// <summary>
 	/// Exposes the properties used to access the information in a WebSocket connection request.
 	/// </summary>
 	/// <remarks>
@@ -163,7 +164,7 @@ namespace WebSocketSharp.Net.WebSockets
 		/// <value>
 		/// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
 		/// </value>
-		public abstract System.Net.IPEndPoint ServerEndPoint { get; }
+		public abstract IPEndPoint ServerEndPoint { get; }
 
 		/// <summary>
 		/// Gets the client information (identity, authentication, and security roles).
@@ -179,7 +180,7 @@ namespace WebSocketSharp.Net.WebSockets
 		/// <value>
 		/// A <see cref="System.Net.IPEndPoint"/> that represents the client endpoint.
 		/// </value>
-		public abstract System.Net.IPEndPoint UserEndPoint { get; }
+		public abstract IPEndPoint UserEndPoint { get; }
 
 		/// <summary>
 		/// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication

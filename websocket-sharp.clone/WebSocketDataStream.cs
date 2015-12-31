@@ -26,13 +26,13 @@ namespace WebSocketSharp
     internal class WebSocketDataStream : Stream
     {
         private readonly Func<Task<StreamReadInfo>> _readInfoFunc;
-        private readonly Action _consumedAction;
+        private readonly Func<Task> _consumedAction;
         private readonly Stream _innerStream;
         private StreamReadInfo _readInfo;
 
         private long _position;
 
-        public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<Task<StreamReadInfo>> readInfoFunc, Action consumedAction)
+        public WebSocketDataStream(Stream innerStream, StreamReadInfo initialReadInfo, Func<Task<StreamReadInfo>> readInfoFunc, Func<Task> consumedAction)
         {
             _innerStream = innerStream;
             _readInfo = initialReadInfo;
@@ -102,7 +102,7 @@ namespace WebSocketSharp
                     }
                     else
                     {
-                        _consumedAction();
+                        await _consumedAction().ConfigureAwait(false);
                     }
                 }
             }

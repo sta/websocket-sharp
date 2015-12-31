@@ -1,5 +1,4 @@
-﻿#region License
-/*
+﻿/*
  * ClientSslConfiguration.cs
  *
  * The MIT License
@@ -25,34 +24,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
-	using System.Net.Security;
-	using System.Security.Authentication;
-	using System.Security.Cryptography.X509Certificates;
+    using System.Net.Security;
+    using System.Security.Authentication;
+    using System.Security.Cryptography.X509Certificates;
 
-	/// <summary>
+    /// <summary>
 	/// Stores the parameters used to configure a <see cref="SslStream"/> instance as a client.
 	/// </summary>
 	public class ClientSslConfiguration : SslConfiguration
 	{
-		#region Private Fields
-
-		private X509CertificateCollection _certs;
+	    private X509CertificateCollection _certs;
 		private string _host;
 
-		#endregion
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
 		/// the specified <paramref name="targetHost"/>, <paramref name="clientCertificates"/>,
 		/// <paramref name="enabledSslProtocols"/>, and <paramref name="checkCertificateRevocation"/>.

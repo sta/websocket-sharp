@@ -1,4 +1,3 @@
-#region License
 /*
  * AuthenticationChallenge.cs
  *
@@ -24,28 +23,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections.Specialized;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal class AuthenticationChallenge : AuthenticationBase
-	{
-		#region Private Constructors
+    using System.Collections.Specialized;
+    using System.Text;
 
-		private AuthenticationChallenge(AuthenticationSchemes scheme, NameValueCollection parameters)
+    internal class AuthenticationChallenge : AuthenticationBase
+	{
+	    private AuthenticationChallenge(AuthenticationSchemes scheme, NameValueCollection parameters)
 			: base(scheme, parameters)
 		{
 		}
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal AuthenticationChallenge(AuthenticationSchemes scheme, string realm)
+        private AuthenticationChallenge(AuthenticationSchemes scheme, string realm)
 			: base(scheme, new NameValueCollection())
 		{
 			Parameters["realm"] = realm;
@@ -56,32 +47,8 @@ namespace WebSocketSharp.Net
 				Parameters["qop"] = "auth";
 			}
 		}
-
-		#endregion
-
-		#region Public Properties
-
-		public string Domain
-		{
-			get
-			{
-				return Parameters["domain"];
-			}
-		}
-
-		public string Stale
-		{
-			get
-			{
-				return Parameters["stale"];
-			}
-		}
-
-		#endregion
-
-		#region Internal Methods
-
-		internal static AuthenticationChallenge CreateBasicChallenge(string realm)
+        
+        internal static AuthenticationChallenge CreateBasicChallenge(string realm)
 		{
 			return new AuthenticationChallenge(AuthenticationSchemes.Basic, realm);
 		}
@@ -145,7 +112,5 @@ namespace WebSocketSharp.Net
 
 			return output.ToString();
 		}
-
-		#endregion
 	}
 }

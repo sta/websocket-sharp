@@ -1,4 +1,3 @@
-#region License
 /*
  * CookieException.cs
  *
@@ -27,44 +26,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Lawrence Pit <loz@cable.a2000.nl>
  */
-#endregion
-
-using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+    using System.Runtime.Serialization;
+    using System.Security.Permissions;
+
+    /// <summary>
 	/// The exception that is thrown when a <see cref="Cookie"/> gets an error.
 	/// </summary>
 	[Serializable]
 	internal class CookieException : FormatException, ISerializable
 	{
-		#region Internal Constructors
-
-		internal CookieException(string message)
+	    internal CookieException(string message)
 			: base(message)
 		{
 		}
-
-		internal CookieException(string message, Exception innerException)
-			: base(message, innerException)
-		{
-		}
-
-		#endregion
-
-		#region Protected Constructors
-
-		/// <summary>
+        
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="CookieException"/> class from
 		/// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
 		/// </summary>
@@ -80,23 +65,14 @@ namespace WebSocketSharp.Net
 		{
 		}
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="CookieException"/> class.
 		/// </summary>
 		public CookieException()
-			: base()
-		{
+	    {
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
 		/// the current <see cref="CookieException"/>.
 		/// </summary>
@@ -114,11 +90,7 @@ namespace WebSocketSharp.Net
 			base.GetObjectData(serializationInfo, streamingContext);
 		}
 
-		#endregion
-
-		#region Explicit Interface Implementation
-
-		/// <summary>
+	    /// <summary>
 		/// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
 		/// the current <see cref="CookieException"/>.
 		/// </summary>
@@ -137,7 +109,5 @@ namespace WebSocketSharp.Net
 		{
 			base.GetObjectData(serializationInfo, streamingContext);
 		}
-
-		#endregion
 	}
 }

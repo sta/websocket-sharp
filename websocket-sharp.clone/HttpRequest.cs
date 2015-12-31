@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpRequest.cs
  *
@@ -24,74 +23,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.IO;
+    using System.Text;
     using System.Threading.Tasks;
+
+    using WebSocketSharp.Net;
 
     internal class HttpRequest : HttpBase
   {
-    #region Private Fields
-
-    private string _method;
+        private string _method;
     private string _uri;
     private bool   _websocketRequest;
     private bool   _websocketRequestWasSet;
 
-    #endregion
-
-    #region Private Constructors
-
-    private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
+        private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
       : base (version, headers)
     {
       _method = method;
       _uri = uri;
     }
 
-    #endregion
-
-    #region Internal Constructors
-
-    internal HttpRequest (string method, string uri)
+        internal HttpRequest (string method, string uri)
       : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
     {
       Headers["User-Agent"] = "websocket-sharp/1.0";
     }
 
-    #endregion
-
-    #region Public Properties
-
-    public AuthenticationResponse AuthenticationResponse {
+        public AuthenticationResponse AuthenticationResponse {
       get {
         var res = Headers["Authorization"];
-        return res != null && res.Length > 0
+        return !string.IsNullOrEmpty(res)
                ? AuthenticationResponse.Parse (res)
                : null;
       }
     }
 
-    public CookieCollection Cookies {
-      get {
-        return Headers.GetCookies (false);
-      }
-    }
+    public CookieCollection Cookies => Headers.GetCookies (false);
 
-    public string HttpMethod {
-      get {
-        return _method;
-      }
-    }
+        public string HttpMethod => _method;
 
-    public bool IsWebSocketRequest {
+        public bool IsWebSocketRequest {
       get {
         if (!_websocketRequestWasSet) {
           var headers = Headers;
@@ -107,17 +83,9 @@ namespace WebSocketSharp
       }
     }
 
-    public string RequestUri {
-      get {
-        return _uri;
-      }
-    }
+    public string RequestUri => _uri;
 
-    #endregion
-
-    #region Internal Methods
-
-    internal static HttpRequest CreateConnectRequest (Uri uri)
+        internal static HttpRequest CreateConnectRequest (Uri uri)
     {
       var host = uri.DnsSafeHost;
       var port = uri.Port;
@@ -164,14 +132,10 @@ namespace WebSocketSharp
 
     internal static HttpRequest Read (Stream stream, int millisecondsTimeout)
     {
-      return Read<HttpRequest> (stream, Parse, millisecondsTimeout);
+      return Read (stream, Parse, millisecondsTimeout);
     }
 
-    #endregion
-
-    #region Public Methods
-
-    public void SetCookies (CookieCollection cookies)
+        public void SetCookies (CookieCollection cookies)
     {
       if (cookies == null || cookies.Count == 0)
         return;
@@ -179,7 +143,7 @@ namespace WebSocketSharp
       var buff = new StringBuilder (64);
       foreach (var cookie in cookies.Sorted)
         if (!cookie.Expired)
-          buff.AppendFormat ("{0}; ", cookie.ToString ());
+          buff.AppendFormat ("{0}; ", cookie);
 
       var len = buff.Length;
       if (len > 2) {
@@ -205,7 +169,5 @@ namespace WebSocketSharp
 
       return output.ToString ();
     }
-
-    #endregion
   }
 }

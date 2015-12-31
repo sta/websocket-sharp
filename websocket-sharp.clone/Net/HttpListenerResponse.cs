@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpListenerResponse.cs
  *
@@ -28,41 +27,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	using System.Linq;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Text;
 
-	/// <summary>
+    /// <summary>
 	/// Provides the access to a response to a request received by the <see cref="HttpListener"/>.
 	/// </summary>
 	/// <remarks>
 	/// The HttpListenerResponse class cannot be inherited.
 	/// </remarks>
-	public sealed class HttpListenerResponse : IDisposable
+	internal sealed class HttpListenerResponse : IDisposable
 	{
-		#region Private Fields
-
-		private bool _chunked;
+	    private bool _chunked;
 		private Encoding _contentEncoding;
 		private long _contentLength;
 		private bool _contentLengthWasSet;
 		private string _contentType;
-		private HttpListenerContext _context;
+		private readonly HttpListenerContext _context;
 		private CookieCollection _cookies;
 		private bool _disposed;
 		private bool _forceCloseChunked;
@@ -75,11 +69,7 @@ namespace WebSocketSharp.Net
 		private string _statusDescription;
 		private Version _version;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal HttpListenerResponse(HttpListenerContext context)
+	    internal HttpListenerResponse(HttpListenerContext context)
 		{
 			_context = context;
 			_headers = new WebHeaderCollection();
@@ -89,39 +79,13 @@ namespace WebSocketSharp.Net
 			_version = HttpVersion.Version11;
 		}
 
-		#endregion
+	    internal bool ConnectionClose => _headers["Connection"] == "close";
 
-		#region Internal Properties
+        internal bool ForceCloseChunked => _forceCloseChunked;
 
-		internal bool ConnectionClose
-		{
-			get
-			{
-				return _headers["Connection"] == "close";
-			}
-		}
+        internal bool HeadersSent => _headersWereSent;
 
-		internal bool ForceCloseChunked
-		{
-			get
-			{
-				return _forceCloseChunked;
-			}
-		}
-
-		internal bool HeadersSent
-		{
-			get
-			{
-				return _headersWereSent;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+        /// <summary>
 		/// Gets or sets the encoding for the entity body data included in the response.
 		/// </summary>
 		/// <value>
@@ -287,34 +251,7 @@ namespace WebSocketSharp.Net
 				_headers = value;
 			}
 		}
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the server requests a persistent connection.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the server requests a persistent connection; otherwise, <c>false</c>.
-		/// The default value is <c>true</c>.
-		/// </value>
-		/// <exception cref="InvalidOperationException">
-		/// The response has already been sent.
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public bool KeepAlive
-		{
-			get
-			{
-				return _keepAlive;
-			}
-
-			set
-			{
-				checkDisposedOrHeadersSent();
-				_keepAlive = value;
-			}
-		}
-
+        
 		/// <summary>
 		/// Gets a <see cref="Stream"/> to use to write the entity body data.
 		/// </summary>
@@ -332,78 +269,7 @@ namespace WebSocketSharp.Net
 				return _outputStream ?? (_outputStream = _context.Connection.GetResponseStream());
 			}
 		}
-
-		/// <summary>
-		/// Gets or sets the HTTP version used in the response.
-		/// </summary>
-		/// <value>
-		/// A <see cref="Version"/> that represents the version used in the response.
-		/// </value>
-		/// <exception cref="ArgumentException">
-		/// The value specified for a set operation doesn't have its <c>Major</c> property set to 1 or
-		/// doesn't have its <c>Minor</c> property set to either 0 or 1.
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// The value specified for a set operation is <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		/// The response has already been sent.
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public Version ProtocolVersion
-		{
-			get
-			{
-				return _version;
-			}
-
-			set
-			{
-				checkDisposedOrHeadersSent();
-				if (value == null)
-					throw new ArgumentNullException("value");
-
-				if (value.Major != 1 || (value.Minor != 0 && value.Minor != 1))
-					throw new ArgumentException("Not 1.0 or 1.1.", "value");
-
-				_version = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the URL to which the client is redirected to locate a requested resource.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Location response-header.
-		/// </value>
-		/// <exception cref="ArgumentException">
-		/// The value specified for a set operation is empty.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		/// The response has already been sent.
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public string RedirectLocation
-		{
-			get
-			{
-				return _location;
-			}
-
-			set
-			{
-				checkDisposedOrHeadersSent();
-				if (value.Length == 0)
-					throw new ArgumentException("An empty string.", "value");
-
-				_location = value;
-			}
-		}
-
+        
 		/// <summary>
 		/// Gets or sets a value indicating whether the response uses the chunked transfer encoding.
 		/// </summary>
@@ -457,47 +323,15 @@ namespace WebSocketSharp.Net
 			{
 				checkDisposedOrHeadersSent();
 				if (value < 100 || value > 999)
-					throw new System.Net.ProtocolViolationException(
+					throw new ProtocolViolationException(
 					  "StatusCode isn't between 100 and 999.");
 
 				_statusCode = value;
 				_statusDescription = value.GetStatusDescription();
 			}
 		}
-
-		/// <summary>
-		/// Gets or sets the description of the HTTP status code returned to the client.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> that represents the description of the status code.
-		/// </value>
-		/// <exception cref="InvalidOperationException">
-		/// The response has already been sent.
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public string StatusDescription
-		{
-			get
-			{
-				return _statusDescription;
-			}
-
-			set
-			{
-				checkDisposedOrHeadersSent();
-				_statusDescription = value != null && value.Length > 0
-									 ? value
-									 : _statusCode.GetStatusDescription();
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private bool canAddOrUpdate(Cookie cookie)
+        
+	    private bool canAddOrUpdate(Cookie cookie)
 		{
 			if (_cookies == null || _cookies.Count == 0)
 			{
@@ -559,11 +393,7 @@ namespace WebSocketSharp.Net
 			return Enumerable.Empty<Cookie>();
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void SendHeaders(MemoryStream stream, bool closing)
+	    internal void SendHeaders(MemoryStream stream, bool closing)
 		{
 			if (_contentType != null)
 			{
@@ -671,137 +501,7 @@ namespace WebSocketSharp.Net
 
 			_headersWereSent = true;
 		}
-
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
-		/// Closes the connection to the client without returning a response.
-		/// </summary>
-		public void Abort()
-		{
-			if (_disposed)
-				return;
-
-			close(true);
-		}
-
-		/// <summary>
-		/// Adds an HTTP header with the specified <paramref name="name"/> and <paramref name="value"/>
-		/// to the headers for the response.
-		/// </summary>
-		/// <param name="name">
-		/// A <see cref="string"/> that represents the name of the header to add.
-		/// </param>
-		/// <param name="value">
-		/// A <see cref="string"/> that represents the value of the header to add.
-		/// </param>
-		/// <exception cref="ArgumentException">
-		///   <para>
-		///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
-		///   </para>
-		///   <para>
-		///   -or-
-		///   </para>
-		///   <para>
-		///   <paramref name="name"/> is a restricted header name.
-		///   </para>
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// <paramref name="name"/> is <see langword="null"/> or empty.
-		/// </exception>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// The length of <paramref name="value"/> is greater than 65,535 characters.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		///   <para>
-		///   The response has already been sent.
-		///   </para>
-		///   <para>
-		///   -or-
-		///   </para>
-		///   <para>
-		///   The header cannot be allowed to add to the current headers.
-		///   </para>
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public void AddHeader(string name, string value)
-		{
-			checkDisposedOrHeadersSent();
-			_headers.Set(name, value);
-		}
-
-		/// <summary>
-		/// Appends the specified <paramref name="cookie"/> to the cookies sent with the response.
-		/// </summary>
-		/// <param name="cookie">
-		/// A <see cref="Cookie"/> to append.
-		/// </param>
-		/// <exception cref="ArgumentNullException">
-		/// <paramref name="cookie"/> is <see langword="null"/>.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		/// The response has already been sent.
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public void AppendCookie(Cookie cookie)
-		{
-			checkDisposedOrHeadersSent();
-			Cookies.Add(cookie);
-		}
-
-		/// <summary>
-		/// Appends a <paramref name="value"/> to the specified HTTP header sent with the response.
-		/// </summary>
-		/// <param name="name">
-		/// A <see cref="string"/> that represents the name of the header to append
-		/// <paramref name="value"/> to.
-		/// </param>
-		/// <param name="value">
-		/// A <see cref="string"/> that represents the value to append to the header.
-		/// </param>
-		/// <exception cref="ArgumentException">
-		///   <para>
-		///   <paramref name="name"/> or <paramref name="value"/> contains invalid characters.
-		///   </para>
-		///   <para>
-		///   -or-
-		///   </para>
-		///   <para>
-		///   <paramref name="name"/> is a restricted header name.
-		///   </para>
-		/// </exception>
-		/// <exception cref="ArgumentNullException">
-		/// <paramref name="name"/> is <see langword="null"/> or empty.
-		/// </exception>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// The length of <paramref name="value"/> is greater than 65,535 characters.
-		/// </exception>
-		/// <exception cref="InvalidOperationException">
-		///   <para>
-		///   The response has already been sent.
-		///   </para>
-		///   <para>
-		///   -or-
-		///   </para>
-		///   <para>
-		///   The current headers cannot allow the header to append a value.
-		///   </para>
-		/// </exception>
-		/// <exception cref="ObjectDisposedException">
-		/// This object is closed.
-		/// </exception>
-		public void AppendHeader(string name, string value)
-		{
-			checkDisposedOrHeadersSent();
-			_headers.Add(name, value);
-		}
-
+        
 		/// <summary>
 		/// Returns the response to the client and releases the resources used by
 		/// this <see cref="HttpListenerResponse"/> instance.
@@ -937,11 +637,7 @@ namespace WebSocketSharp.Net
 			Cookies.Add(cookie);
 		}
 
-		#endregion
-
-		#region Explicit Interface Implementation
-
-		/// <summary>
+	    /// <summary>
 		/// Releases all resources used by the <see cref="HttpListenerResponse"/>.
 		/// </summary>
 		void IDisposable.Dispose()
@@ -951,7 +647,5 @@ namespace WebSocketSharp.Net
 
 			close(true); // Same as Abort.
 		}
-
-		#endregion
 	}
 }

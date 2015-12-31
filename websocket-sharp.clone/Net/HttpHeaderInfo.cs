@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpHeaderInfo.cs
  *
@@ -24,65 +23,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
 	internal class HttpHeaderInfo
 	{
-		#region Private Fields
+	    private HttpHeaderType _type;
 
-		private HttpHeaderType _type;
+	    internal bool IsMultiValueInRequest => (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
 
-		#endregion
+	    internal bool IsMultiValueInResponse => (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
 
-		#region Public Constructors
+	    public bool IsRequest => (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
 
-		public HttpHeaderInfo()
-		{
-		}
+	    public bool IsResponse => (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
 
-		#endregion
-
-		#region Internal Properties
-
-		internal bool IsMultiValueInRequest
-		{
-			get
-			{
-				return (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
-			}
-		}
-
-		internal bool IsMultiValueInResponse
-		{
-			get
-			{
-				return (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		public bool IsRequest
-		{
-			get
-			{
-				return (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
-			}
-		}
-
-		public bool IsResponse
-		{
-			get
-			{
-				return (_type & HttpHeaderType.Response) == HttpHeaderType.Response;
-			}
-		}
-
-		public string Name
+	    public string Name
 		{
 			get;
 			set;
@@ -101,11 +57,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public bool IsMultiValue(bool response)
+	    public bool IsMultiValue(bool response)
 		{
 			return (_type & HttpHeaderType.MultiValue) != HttpHeaderType.MultiValue
 				   ? response
@@ -124,7 +76,5 @@ namespace WebSocketSharp.Net
 					 ? IsResponse
 					 : IsRequest;
 		}
-
-		#endregion
 	}
 }

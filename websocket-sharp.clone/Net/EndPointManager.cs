@@ -1,4 +1,3 @@
-#region License
 /*
  * EndPointManager.cs
  *
@@ -28,57 +27,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
 
 namespace WebSocketSharp.Net
 {
-	internal sealed class EndPointManager
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Net;
+
+    internal static class EndPointManager
 	{
-		#region Private Fields
+	    private static Dictionary<IPAddress, Dictionary<int, EndPointListener>> _ipToEndpoints;
 
-		private static Dictionary<IPAddress, Dictionary<int, EndPointListener>> _ipToEndpoints;
-
-		#endregion
-
-		#region Static Constructor
-
-		static EndPointManager()
+	    static EndPointManager()
 		{
 			_ipToEndpoints = new Dictionary<IPAddress, Dictionary<int, EndPointListener>>();
 		}
 
-		#endregion
-
-		#region Private Constructors
-
-		private EndPointManager()
-		{
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private static void addPrefix(string uriPrefix, HttpListener httpListener)
+        private static void addPrefix(string uriPrefix, HttpListener httpListener)
 		{
 			var prefix = new HttpListenerPrefix(uriPrefix);
 			if (prefix.Path.IndexOf('%') != -1)
@@ -98,7 +74,7 @@ namespace WebSocketSharp.Net
 
 		private static EndPointListener getEndPointListener(IPAddress address, int port, HttpListener httpListener)
 		{
-			Dictionary<int, EndPointListener> eps = null;
+			Dictionary<int, EndPointListener> eps;
 			if (_ipToEndpoints.ContainsKey(address))
 			{
 				eps = _ipToEndpoints[address];
@@ -109,7 +85,7 @@ namespace WebSocketSharp.Net
 				_ipToEndpoints[address] = eps;
 			}
 
-			EndPointListener epl = null;
+			EndPointListener epl;
 			if (eps.ContainsKey(port))
 			{
 				epl = eps[port];
@@ -142,36 +118,9 @@ namespace WebSocketSharp.Net
 			}
 
 			var epl = getEndPointListener(IPAddress.Any, pref.Port, httpListener);
-			epl.RemovePrefix(pref, httpListener);
+			epl.RemovePrefix(pref);
 		}
-
-		#endregion
-
-		#region Public Methods
-
-		public static void AddListener(HttpListener httpListener)
-		{
-			var added = new List<string>();
-			lock (((ICollection)_ipToEndpoints).SyncRoot)
-			{
-				try
-				{
-					foreach (var pref in httpListener.Prefixes)
-					{
-						addPrefix(pref, httpListener);
-						added.Add(pref);
-					}
-				}
-				catch
-				{
-					foreach (var pref in added)
-						removePrefix(pref, httpListener);
-
-					throw;
-				}
-			}
-		}
-
+        
 		public static void AddPrefix(string uriPrefix, HttpListener httpListener)
 		{
 			lock (((ICollection)_ipToEndpoints).SyncRoot)
@@ -203,7 +152,5 @@ namespace WebSocketSharp.Net
 			lock (((ICollection)_ipToEndpoints).SyncRoot)
 				removePrefix(uriPrefix, httpListener);
 		}
-
-		#endregion
 	}
 }

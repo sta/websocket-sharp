@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketServiceHost.cs
  *
@@ -24,55 +23,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  */
-#endregion
-
-using System;
-
-using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
-	/// <summary>
+    using System;
+
+    using WebSocketSharp.Net.WebSockets;
+
+    /// <summary>
 	/// Exposes the methods and properties used to access the information in a WebSocket service provided by the <see cref="WebSocketServer"/>.
 	/// </summary>
 	/// <remarks>
 	/// The WebSocketServiceHost class is an abstract class.
 	/// </remarks>
 	public abstract class WebSocketServiceHost
-	{
-		#region Protected Constructors
+    {
+        internal ServerState State => Sessions.State;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class.
-		/// </summary>
-		protected WebSocketServiceHost()
-		{
-		}
-
-		#endregion
-
-		#region Internal Properties
-
-		internal ServerState State
-		{
-			get
-			{
-				return Sessions.State;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+        /// <summary>
 		/// Gets or sets a value indicating whether the WebSocket service cleans up
 		/// the inactive sessions periodically.
 		/// </summary>
@@ -82,175 +55,131 @@ namespace WebSocketSharp.Server
 		/// </value>
 		public abstract bool KeepClean { get; set; }
 
-		/// <summary>
-		/// Gets the path to the WebSocket service.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> that represents the absolute path to the service.
-		/// </value>
-		public abstract string Path { get; }
+        /// <summary>
+        /// Gets the path to the WebSocket service.
+        /// </summary>
+        /// <value>
+        /// A <see cref="string"/> that represents the absolute path to the service.
+        /// </value>
+        public abstract string Path { get; }
 
-		/// <summary>
-		/// Gets the access to the sessions in the WebSocket service.
-		/// </summary>
-		/// <value>
-		/// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
-		/// </value>
-		public abstract WebSocketSessionManager Sessions { get; }
+        /// <summary>
+        /// Gets the access to the sessions in the WebSocket service.
+        /// </summary>
+        /// <value>
+        /// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
+        /// </value>
+        public abstract WebSocketSessionManager Sessions { get; }
 
-		/// <summary>
-		/// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
-		/// </summary>
-		/// <value>
-		/// A <see cref="System.Type"/> that represents the type of the behavior of the service.
-		/// </value>
-		public abstract Type Type { get; }
+        /// <summary>
+        /// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
+        /// </summary>
+        /// <value>
+        /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
+        /// </value>
+        public abstract Type Type { get; }
 
-		/// <summary>
-		/// Gets or sets the wait time for the response to the WebSocket Ping or Close.
-		/// </summary>
-		/// <value>
-		/// A <see cref="TimeSpan"/> that represents the wait time. The default value is
-		/// the same as 1 second.
-		/// </value>
-		public abstract TimeSpan WaitTime { get; set; }
+        /// <summary>
+        /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
+        /// </summary>
+        /// <value>
+        /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
+        /// the same as 1 second.
+        /// </value>
+        public abstract TimeSpan WaitTime { get; set; }
 
-		#endregion
+        internal void Start()
+        {
+            Sessions.Start();
+        }
 
-		#region Internal Methods
+        internal void StartSession(WebSocketContext context)
+        {
+            CreateSession().Start(context, Sessions);
+        }
 
-		internal void Start()
-		{
-			Sessions.Start();
-		}
+        internal void Stop(ushort code, string reason)
+        {
+            var e = new CloseEventArgs(code, reason);
 
-		internal void StartSession(WebSocketContext context)
-		{
-			CreateSession().Start(context, Sessions);
-		}
+            var send = !code.IsReserved();
+            var bytes =
+              send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
 
-		internal void Stop(ushort code, string reason)
-		{
-			var e = new CloseEventArgs(code, reason);
+            var timeout = send ? WaitTime : TimeSpan.Zero;
+            Sessions.Stop(e, bytes, timeout);
+        }
 
-			var send = !code.IsReserved();
-			var bytes =
-			  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
+        /// <summary>
+        /// Creates a new session in the WebSocket service.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
+        /// </returns>
+        protected abstract WebSocketBehavior CreateSession();
+    }
 
-			var timeout = send ? WaitTime : TimeSpan.Zero;
-			Sessions.Stop(e, bytes, timeout);
-		}
+    internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
+      where TBehavior : WebSocketBehavior
+    {
+        private Func<TBehavior> _initializer;
+        private string _path;
+        private WebSocketSessionManager _sessions;
 
-		#endregion
+        internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
+        {
+            _path = path;
+            _initializer = initializer;
+            _sessions = new WebSocketSessionManager(fragmentSize);
+        }
 
-		#region Protected Methods
+        public override bool KeepClean
+        {
+            get
+            {
+                return _sessions.KeepClean;
+            }
 
-		/// <summary>
-		/// Creates a new session in the WebSocket service.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="WebSocketBehavior"/> instance that represents a new session.
-		/// </returns>
-		protected abstract WebSocketBehavior CreateSession();
+            set
+            {
+                var msg = _sessions.State.CheckIfStartable();
+                if (msg != null)
+                {
+                    return;
+                }
 
-		#endregion
-	}
+                _sessions.KeepClean = value;
+            }
+        }
 
-	internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
-	  where TBehavior : WebSocketBehavior
-	{
-		#region Private Fields
+        public override string Path => _path;
 
-		private Func<TBehavior> _initializer;
-		private string _path;
-		private WebSocketSessionManager _sessions;
+        public override WebSocketSessionManager Sessions => _sessions;
 
-		#endregion
+        public override Type Type => typeof(TBehavior);
 
-		#region Internal Constructors
+        public override TimeSpan WaitTime
+        {
+            get
+            {
+                return _sessions.WaitTime;
+            }
 
-		internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
-		{
-			_path = path;
-			_initializer = initializer;
-			_sessions = new WebSocketSessionManager(fragmentSize);
-		}
+            set
+            {
+                var msg = _sessions.State.CheckIfStartable() ?? value.CheckIfValidWaitTime();
+                if (msg != null)
+                {
+                    return;
+                }
 
-		#endregion
+                _sessions.WaitTime = value;
+            }
+        }
 
-		#region Public Properties
-
-		public override bool KeepClean
-		{
-			get
-			{
-				return _sessions.KeepClean;
-			}
-
-			set
-			{
-				var msg = _sessions.State.CheckIfStartable();
-				if (msg != null)
-				{
-					return;
-				}
-
-				_sessions.KeepClean = value;
-			}
-		}
-
-		public override string Path
-		{
-			get
-			{
-				return _path;
-			}
-		}
-
-		public override WebSocketSessionManager Sessions
-		{
-			get
-			{
-				return _sessions;
-			}
-		}
-
-		public override Type Type
-		{
-			get
-			{
-				return typeof(TBehavior);
-			}
-		}
-
-		public override TimeSpan WaitTime
-		{
-			get
-			{
-				return _sessions.WaitTime;
-			}
-
-			set
-			{
-				var msg = _sessions.State.CheckIfStartable() ?? value.CheckIfValidWaitTime();
-				if (msg != null)
-				{
-					return;
-				}
-
-				_sessions.WaitTime = value;
-			}
-		}
-
-		#endregion
-
-		#region Protected Methods
-
-		protected override WebSocketBehavior CreateSession()
-		{
-			return _initializer();
-		}
-
-		#endregion
-	}
+        protected override WebSocketBehavior CreateSession()
+        {
+            return _initializer();
+        }
+    }
 }

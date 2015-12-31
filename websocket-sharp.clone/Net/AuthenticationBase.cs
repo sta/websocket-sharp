@@ -1,4 +1,3 @@
-#region License
 /*
  * AuthenticationBase.cs
  *
@@ -24,75 +23,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections.Specialized;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal abstract class AuthenticationBase
-	{
-		private AuthenticationSchemes _scheme;
+    using System;
+    using System.Collections.Specialized;
+    using System.Text;
 
-		internal NameValueCollection Parameters;
+    internal abstract class AuthenticationBase
+	{
+		private readonly AuthenticationSchemes _scheme;
+
+		internal readonly NameValueCollection Parameters;
 
 		protected AuthenticationBase(AuthenticationSchemes scheme, NameValueCollection parameters)
 		{
 			_scheme = scheme;
 			Parameters = parameters;
 		}
+        
+        public AuthenticationSchemes Scheme => _scheme;
 
-		public string Algorithm
-		{
-			get
-			{
-				return Parameters["algorithm"];
-			}
-		}
-
-		public string Nonce
-		{
-			get
-			{
-				return Parameters["nonce"];
-			}
-		}
-
-		public string Opaque
-		{
-			get
-			{
-				return Parameters["opaque"];
-			}
-		}
-
-		public string Qop
-		{
-			get
-			{
-				return Parameters["qop"];
-			}
-		}
-
-		public string Realm
-		{
-			get
-			{
-				return Parameters["realm"];
-			}
-		}
-
-		public AuthenticationSchemes Scheme
-		{
-			get
-			{
-				return _scheme;
-			}
-		}
-
-		internal static string CreateNonceValue()
+        internal static string CreateNonceValue()
 		{
 			var src = new byte[16];
 			var rand = new Random();

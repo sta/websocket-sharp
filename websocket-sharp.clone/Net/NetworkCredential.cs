@@ -1,4 +1,3 @@
-#region License
 /*
  * NetworkCredential.cs
  *
@@ -24,29 +23,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// Provides the credentials for HTTP authentication (Basic/Digest).
 	/// </summary>
 	public class NetworkCredential
 	{
-		#region Private Fields
-
-		private string _domain;
+	    private string _domain;
 		private string _password;
 		private string[] _roles;
 		private string _username;
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="NetworkCredential"/> class
 		/// with the specified user name and password.
 		/// </summary>
@@ -62,7 +54,7 @@ namespace WebSocketSharp.Net
 		/// <paramref name="username"/> is <see langword="null"/> or empty.
 		/// </exception>
 		public NetworkCredential(string username, string password)
-			: this(username, password, null, new string[0])
+			: this(username, password, null)
 		{
 		}
 
@@ -101,11 +93,7 @@ namespace WebSocketSharp.Net
 			_roles = roles;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the name of the user domain associated with the credentials.
 		/// </summary>
 		/// <value>
@@ -185,7 +173,5 @@ namespace WebSocketSharp.Net
 				_username = value;
 			}
 		}
-
-		#endregion
 	}
 }

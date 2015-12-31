@@ -1,4 +1,3 @@
-#region License
 /*
  * AuthenticationSchemes.cs
  *
@@ -28,20 +27,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Atsushi Enomoto <atsushi@ximian.com>
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// Contains the values of the schemes for authentication.
 	/// </summary>
 	[Flags]

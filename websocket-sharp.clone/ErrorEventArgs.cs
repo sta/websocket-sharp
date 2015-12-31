@@ -1,4 +1,3 @@
-#region License
 /*
  * ErrorEventArgs.cs
  *
@@ -24,20 +23,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Frank Razenberg <frank@zzattack.org>
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// Contains the event data associated with a <see cref="WebSocket.OnError"/> event.
 	/// </summary>
 	/// <remarks>

@@ -1,4 +1,3 @@
-#region License
 /*
  * QueryStringCollection.cs
  *
@@ -28,9 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Patrik Torstensson <Patrik.Torstensson@labs2.com>
@@ -38,14 +35,13 @@
  * - Tim Coleman <tim@timcoleman.com>
  * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  */
-#endregion
-
-using System.Collections.Specialized;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal sealed class QueryStringCollection : NameValueCollection
+    using System.Collections.Specialized;
+    using System.Text;
+
+    internal sealed class QueryStringCollection : NameValueCollection
 	{
 		public override string ToString()
 		{

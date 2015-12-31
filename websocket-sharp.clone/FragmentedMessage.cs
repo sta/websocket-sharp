@@ -17,10 +17,10 @@
 
 namespace WebSocketSharp
 {
-	using System;
-	using System.IO;
-	using System.Threading;
-	using System.Threading.Tasks;
+    using System;
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     internal class FragmentedMessage : WebSocketMessage
 	{

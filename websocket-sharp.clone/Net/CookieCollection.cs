@@ -1,4 +1,3 @@
-#region License
 /*
  * CookieCollection.cs
  *
@@ -28,41 +27,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Lawrence Pit <loz@cable.a2000.nl>
  * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  * - Sebastien Pouliot <sebastien@ximian.com>
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Text;
+
+    /// <summary>
 	/// Provides a collection container for instances of the <see cref="Cookie"/> class.
 	/// </summary>
 	[Serializable]
-	public class CookieCollection : ICollection, IEnumerable
+	public sealed class CookieCollection : ICollection, IEnumerable
 	{
-		#region Private Fields
-
-		private List<Cookie> _list;
+	    private readonly List<Cookie> _list;
 		private object _sync;
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="CookieCollection"/> class.
 		/// </summary>
 		public CookieCollection()
@@ -70,19 +60,9 @@ namespace WebSocketSharp.Net
 			_list = new List<Cookie>();
 		}
 
-		#endregion
+	    internal IList<Cookie> List => _list;
 
-		#region Internal Properties
-
-		internal IList<Cookie> List
-		{
-			get
-			{
-				return _list;
-			}
-		}
-
-		internal IEnumerable<Cookie> Sorted
+        internal IEnumerable<Cookie> Sorted
 		{
 			get
 			{
@@ -94,57 +74,33 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the number of cookies in the collection.
 		/// </summary>
 		/// <value>
 		/// An <see cref="int"/> that represents the number of cookies in the collection.
 		/// </value>
-		public int Count
-		{
-			get
-			{
-				return _list.Count;
-			}
-		}
+		public int Count => _list.Count;
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the collection is read-only.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the collection is read-only; otherwise, <c>false</c>.
 		/// The default value is <c>true</c>.
 		/// </value>
-		public bool IsReadOnly
-		{
-			// LAMESPEC: So how is one supposed to create a writable CookieCollection instance?
-			// We simply ignore this property, as this collection is always writable.
-			get
-			{
-				return true;
-			}
-		}
+		public bool IsReadOnly => true;
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the access to the collection is thread safe.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the access to the collection is thread safe; otherwise, <c>false</c>.
 		/// The default value is <c>false</c>.
 		/// </value>
-		public bool IsSynchronized
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool IsSynchronized => false;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the <see cref="Cookie"/> at the specified <paramref name="index"/> from
 		/// the collection.
 		/// </summary>
@@ -203,26 +159,16 @@ namespace WebSocketSharp.Net
 		/// <value>
 		/// An <see cref="Object"/> used to synchronize access to the collection.
 		/// </value>
-		public Object SyncRoot
+		public Object SyncRoot => _sync ?? (_sync = ((ICollection)_list).SyncRoot);
+
+        private static int compareCookieWithinSort(Cookie x, Cookie y)
 		{
-			get
-			{
-				return _sync ?? (_sync = ((ICollection)_list).SyncRoot);
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private static int compareCookieWithinSort(Cookie x, Cookie y)
-		{
-			return (x.Name.Length + x.Value.Length) - (y.Name.Length + y.Value.Length);
+			return x.Name.Length + x.Value.Length - (y.Name.Length + y.Value.Length);
 		}
 
 		private static int compareCookieWithinSorted(Cookie x, Cookie y)
 		{
-			var ret = 0;
+			int ret;
 			return (ret = x.Version - y.Version) != 0
 				   ? ret
 				   : (ret = x.Name.CompareTo(y.Name)) != 0
@@ -339,7 +285,7 @@ namespace WebSocketSharp.Net
 				else if (pair.StartsWith("max-age", StringComparison.InvariantCultureIgnoreCase))
 				{
 					var max = Int32.Parse(pair.GetValue('=', true));
-					var expires = DateTime.Now.AddSeconds((double)max);
+					var expires = DateTime.Now.AddSeconds(max);
 					if (cookie != null)
 						cookie.Expires = expires;
 				}
@@ -445,11 +391,7 @@ namespace WebSocketSharp.Net
 			return new List<string>(value.SplitHeaderValue(',', ';')).ToArray();
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal static CookieCollection Parse(string value, bool response)
+	    internal static CookieCollection Parse(string value, bool response)
 		{
 			return response
 				   ? parseResponse(value)
@@ -488,11 +430,7 @@ namespace WebSocketSharp.Net
 				_list.Sort(compareCookieWithinSort);
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Adds the specified <paramref name="cookie"/> to the collection.
 		/// </summary>
 		/// <param name="cookie">
@@ -637,7 +575,5 @@ namespace WebSocketSharp.Net
 		{
 			return _list.GetEnumerator();
 		}
-
-		#endregion
 	}
 }

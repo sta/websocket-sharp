@@ -17,9 +17,9 @@
 
 namespace WebSocketSharp
 {
-	using System.Diagnostics;
+    using System.Diagnostics;
 
-	internal class WebSocketFrameHeader
+    internal class WebSocketFrameHeader
 	{
 		public WebSocketFrameHeader(byte[] header)
 		{

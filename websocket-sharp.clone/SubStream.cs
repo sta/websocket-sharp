@@ -46,7 +46,7 @@ namespace WebSocketSharp
                     }
                     break;
                 case SeekOrigin.Current:
-                    if ((Position + offset > _length))
+                    if (Position + offset > _length)
                     {
                         throw new ArgumentOutOfRangeException(nameof(offset));
                     }
@@ -78,7 +78,7 @@ namespace WebSocketSharp
         /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between <paramref name="offset"/> and (<paramref name="offset"/> + <paramref name="count"/> - 1) replaced by the bytes read from the current source. </param><param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin storing the data read from the current stream. </param><param name="count">The maximum number of bytes to be read from the current stream. </param><exception cref="T:System.ArgumentException">The sum of <paramref name="offset"/> and <paramref name="count"/> is larger than the buffer length. </exception><exception cref="T:System.ArgumentNullException"><paramref name="buffer"/> is null. </exception><exception cref="T:System.ArgumentOutOfRangeException"><paramref name="offset"/> or <paramref name="count"/> is negative. </exception><exception cref="T:System.IO.IOException">An I/O error occurs. </exception><exception cref="T:System.NotSupportedException">The stream does not support reading. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            var actualCount = (int)Math.Min((_length - Position), count);
+            var actualCount = (int)Math.Min(_length - Position, count);
             return _innerStream.Read(buffer, offset, actualCount);
         }
 
@@ -97,10 +97,7 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports reading; otherwise, false.
         /// </returns>
-        public override bool CanRead
-        {
-            get { return true; }
-        }
+        public override bool CanRead => true;
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
@@ -108,10 +105,7 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports seeking; otherwise, false.
         /// </returns>
-        public override bool CanSeek
-        {
-            get { return true; }
-        }
+        public override bool CanSeek => true;
 
         /// <summary>
         /// When overridden in a derived class, gets a value indicating whether the current stream supports writing.
@@ -119,7 +113,7 @@ namespace WebSocketSharp
         /// <returns>
         /// true if the stream supports writing; otherwise, false.
         /// </returns>
-        public override bool CanWrite { get { return false; } }
+        public override bool CanWrite => false;
 
         /// <summary>
         /// When overridden in a derived class, gets the length in bytes of the stream.
@@ -128,10 +122,7 @@ namespace WebSocketSharp
         /// A long value representing the length of the stream in bytes.
         /// </returns>
         /// <exception cref="T:System.NotSupportedException">A class derived from Stream does not support seeking. </exception><exception cref="T:System.ObjectDisposedException">Methods were called after the stream was closed. </exception>
-        public override long Length
-        {
-            get { return _length; }
-        }
+        public override long Length => _length;
 
         /// <summary>
         /// When overridden in a derived class, gets or sets the position within the current stream.

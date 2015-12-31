@@ -1,4 +1,3 @@
-#region License
 /*
  * Cookie.cs
  *
@@ -28,9 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Lawrence Pit <loz@cable.a2000.nl>
@@ -38,15 +35,14 @@
  * - Daniel Nauck <dna@mono-project.de>
  * - Sebastien Pouliot <sebastien@ximian.com>
  */
-#endregion
-
-using System;
-using System.Globalization;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+    using System.Globalization;
+    using System.Text;
+
+    /// <summary>
 	/// Provides a set of methods and properties used to manage an HTTP Cookie.
 	/// </summary>
 	/// <remarks>
@@ -63,9 +59,7 @@ namespace WebSocketSharp.Net
 	[Serializable]
 	public sealed class Cookie
 	{
-		#region Private Fields
-
-		private string _comment;
+	    private string _comment;
 		private Uri _commentUri;
 		private bool _discard;
 		private string _domain;
@@ -75,28 +69,20 @@ namespace WebSocketSharp.Net
 		private string _path;
 		private string _port;
 		private int[] _ports;
-		private static readonly char[] _reservedCharsForName;
-		private static readonly char[] _reservedCharsForValue;
+		private static readonly char[] ReservedCharsForName;
+		private static readonly char[] ReservedCharsForValue;
 		private bool _secure;
-		private DateTime _timestamp;
+		private readonly DateTime _timestamp;
 		private string _value;
 		private int _version;
 
-		#endregion
-
-		#region Static Constructor
-
-		static Cookie()
+	    static Cookie()
 		{
-			_reservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
-			_reservedCharsForValue = new[] { ';', ',' };
+			ReservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
+			ReservedCharsForValue = new[] { ';', ',' };
 		}
 
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="Cookie"/> class.
 		/// </summary>
 		public Cookie()
@@ -244,11 +230,7 @@ namespace WebSocketSharp.Net
 			Domain = domain;
 		}
 
-		#endregion
-
-		#region Internal Properties
-
-		internal bool ExactDomain
+	    internal bool ExactDomain
 		{
 			get;
 			set;
@@ -272,19 +254,9 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		internal int[] Ports
-		{
-			get
-			{
-				return _ports;
-			}
-		}
+		internal int[] Ports => _ports;
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+        /// <summary>
 		/// Gets or sets the value of the Comment attribute of the cookie.
 		/// </summary>
 		/// <value>
@@ -557,15 +529,9 @@ namespace WebSocketSharp.Net
 		/// <value>
 		/// A <see cref="DateTime"/> that represents the time when the cookie was issued.
 		/// </value>
-		public DateTime TimeStamp
-		{
-			get
-			{
-				return _timestamp;
-			}
-		}
+		public DateTime TimeStamp => _timestamp;
 
-		/// <summary>
+        /// <summary>
 		/// Gets or sets the Value of the cookie.
 		/// </summary>
 		/// <value>
@@ -626,11 +592,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		private static bool canSetName(string name, out string message)
+	    private static bool canSetName(string name, out string message)
 		{
 			if (name.IsNullOrEmpty())
 			{
@@ -638,7 +600,7 @@ namespace WebSocketSharp.Net
 				return false;
 			}
 
-			if (name[0] == '$' || name.Contains(_reservedCharsForName))
+			if (name[0] == '$' || name.Contains(ReservedCharsForName))
 			{
 				message = "The value specified for the Name contains an invalid character.";
 				return false;
@@ -656,7 +618,7 @@ namespace WebSocketSharp.Net
 				return false;
 			}
 
-			if (value.Contains(_reservedCharsForValue) && !value.IsEnclosedIn('"'))
+			if (value.Contains(ReservedCharsForValue) && !value.IsEnclosedIn('"'))
 			{
 				message = "The value specified for the Value contains an invalid character.";
 				return false;
@@ -770,11 +732,7 @@ namespace WebSocketSharp.Net
 			return true;
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		// From client to server
+	    // From client to server
 		internal string ToRequestString(Uri uri)
 		{
 			if (_name.Length == 0)
@@ -816,11 +774,7 @@ namespace WebSocketSharp.Net
 				   : string.Empty;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Determines whether the specified <see cref="Object"/> is equal to the current
 		/// <see cref="Cookie"/>.
 		/// </summary>
@@ -875,7 +829,5 @@ namespace WebSocketSharp.Net
 			// See also bug #316017
 			return ToRequestString(null);
 		}
-
-		#endregion
 	}
 }

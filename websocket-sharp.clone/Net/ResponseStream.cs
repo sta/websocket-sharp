@@ -1,4 +1,3 @@
-#region License
 /*
  * ResponseStream.cs
  *
@@ -28,81 +27,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.IO;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	// FIXME: Does this buffer the response until Close?
+    using System;
+    using System.IO;
+    using System.Text;
+
+    // FIXME: Does this buffer the response until Close?
 	// Update: we send a single packet for the first non-chunked Write
 	// What happens when we set content-length to X and write X-1 bytes then close?
 	// what if we don't set content-length at all?
 	internal class ResponseStream : Stream
 	{
-		#region Private Static Fields
+	    private static byte[] _crlf = { 13, 10 };
 
-		private static byte[] _crlf = new byte[] { 13, 10 };
-
-		#endregion
-
-		#region Private Fields
-
-		private bool _disposed;
+	    private bool _disposed;
 		private bool _ignoreErrors;
 		private HttpListenerResponse _response;
 		private Stream _stream;
 		private bool _trailerSent;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignoreErrors)
+	    internal ResponseStream(Stream stream, HttpListenerResponse response, bool ignoreErrors)
 		{
 			_stream = stream;
 			_response = response;
 			_ignoreErrors = ignoreErrors;
 		}
 
-		#endregion
+	    public override bool CanRead => false;
 
-		#region Public Properties
+	    public override bool CanSeek => false;
 
-		public override bool CanRead
-		{
-			get
-			{
-				return false;
-			}
-		}
+	    public override bool CanWrite => true;
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override bool CanWrite
-		{
-			get
-			{
-				return true;
-			}
-		}
-
-		public override long Length
+	    public override long Length
 		{
 			get
 			{
@@ -123,11 +87,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		private static byte[] getChunkSizeBytes(int size, bool final)
+	    private static byte[] getChunkSizeBytes(int size, bool final)
 		{
 			return Encoding.ASCII.GetBytes(string.Format("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
 		}
@@ -143,11 +103,7 @@ namespace WebSocketSharp.Net
 			return stream;
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void WriteInternally(byte[] buffer, int offset, int count)
+	    internal void WriteInternally(byte[] buffer, int offset, int count)
 		{
 			if (_ignoreErrors)
 			{
@@ -165,11 +121,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public override IAsyncResult BeginRead(
+	    public override IAsyncResult BeginRead(
 		  byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			throw new NotSupportedException();
@@ -340,7 +292,5 @@ namespace WebSocketSharp.Net
 			if (chunked)
 				WriteInternally(_crlf, 0, 2);
 		}
-
-		#endregion
 	}
 }

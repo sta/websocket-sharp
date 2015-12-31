@@ -27,7 +27,7 @@ namespace WebSocketSharp.Tests
 
     using NUnit.Framework;
 
-    using global::WebSocketSharp.Server;
+    using WebSocketSharp.Server;
 
     public sealed class WebSocketServerTests
     {
@@ -125,7 +125,6 @@ namespace WebSocketSharp.Tests
             public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
             {
                 int count = 0;
-                const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
@@ -151,8 +150,6 @@ namespace WebSocketSharp.Tests
                     var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
                     Assert.True(result);
-
-                    await client.Close().ConfigureAwait(false);
                 }
             }
 
@@ -162,7 +159,6 @@ namespace WebSocketSharp.Tests
             {
                 var stopwatch = new Stopwatch();
                 int count = 0;
-                const string Message = "Message";
                 var stream = Encoding.UTF8.GetBytes(Message);
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
@@ -206,7 +202,6 @@ namespace WebSocketSharp.Tests
             {
                 var responseWatch = new Stopwatch();
                 int count = 0;
-                const string Message = "Message";
                 var stream = Encoding.UTF8.GetBytes(Message);
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
@@ -246,7 +241,7 @@ namespace WebSocketSharp.Tests
             public async Task CanSendOneMillionAsynchronousRequestsPerSecond()
             {
                 var stopwatch = new Stopwatch();
-                
+
                 var stream = new MemoryStream(Encoding.UTF8.GetBytes(Message));
                 var length = (int)stream.Length;
                 var waitHandle = new ManualResetEventSlim(false);
@@ -266,7 +261,7 @@ namespace WebSocketSharp.Tests
 
                     waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
-                    Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1), "Total time taken: " + stopwatch.Elapsed.ToString());
+                    Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1), "Total time taken: " + stopwatch.Elapsed);
                 }
             }
 
@@ -314,26 +309,24 @@ namespace WebSocketSharp.Tests
             public async Task WhenStreamVeryLargeStreamToServerThenResponds([Random(750000, 1500000, 5)]int length)
             {
                 var responseLength = 0;
-                //const int Length = 1000000;
 
                 var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
-                    Func<MessageEventArgs, Task> onMessage = e =>
+                    Func<MessageEventArgs, Task> onMessage = async e =>
                         {
                             var bytesRead = 0;
-                            var readLength = 10240;
+                            var readLength = 10240000;
                             do
                             {
                                 var buffer = new byte[readLength];
-                                bytesRead = e.Data.Read(buffer, 0, readLength);
+                                bytesRead = await e.Data.ReadAsync(buffer, 0, readLength).ConfigureAwait(false);
                                 responseLength += buffer.Count(x => x == 123);
                             }
                             while (bytesRead == readLength);
 
                             waitHandle.Set();
-                            return Task.FromResult(true);
                         };
 
                     client.OnMessage = onMessage;

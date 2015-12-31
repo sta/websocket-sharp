@@ -1,4 +1,3 @@
-#region License
 /*
  * ReadBufferState.cs
  *
@@ -28,22 +27,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
 	internal class ReadBufferState
 	{
-		#region Public Constructors
-
-		public ReadBufferState(byte[] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
+	    public ReadBufferState(byte[] buffer, int offset, int count, HttpStreamAsyncResult asyncResult)
 		{
 			Buffer = buffer;
 			Offset = offset;
@@ -52,11 +46,7 @@ namespace WebSocketSharp.Net
 			AsyncResult = asyncResult;
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		public HttpStreamAsyncResult AsyncResult
+	    public HttpStreamAsyncResult AsyncResult
 		{
 			get;
 			set;
@@ -85,7 +75,5 @@ namespace WebSocketSharp.Net
 			get;
 			set;
 		}
-
-		#endregion
 	}
 }

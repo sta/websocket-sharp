@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpHeaderType.cs
  *
@@ -24,13 +23,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp.Net
 {
-	[Flags]
+    using System;
+
+    [Flags]
 	internal enum HttpHeaderType
 	{
 		Unspecified = 0,

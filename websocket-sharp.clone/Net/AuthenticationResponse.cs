@@ -1,4 +1,3 @@
-#region License
 /*
  * AuthenticationResponse.cs
  *
@@ -28,36 +27,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections.Specialized;
-using System.Security.Cryptography;
-using System.Security.Principal;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal class AuthenticationResponse : AuthenticationBase
+    using System;
+    using System.Collections.Specialized;
+    using System.Security.Cryptography;
+    using System.Security.Principal;
+    using System.Text;
+
+    internal class AuthenticationResponse : AuthenticationBase
 	{
-		#region Private Fields
+	    private uint _nonceCount;
 
-		private uint _nonceCount;
-
-		#endregion
-
-		#region Private Constructors
-
-		private AuthenticationResponse(AuthenticationSchemes scheme, NameValueCollection parameters)
+	    private AuthenticationResponse(AuthenticationSchemes scheme, NameValueCollection parameters)
 			: base(scheme, parameters)
 		{
 		}
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal AuthenticationResponse(NetworkCredential credentials)
+	    internal AuthenticationResponse(NetworkCredential credentials)
 			: this(AuthenticationSchemes.Basic, new NameValueCollection(), credentials, 0)
 		{
 		}
@@ -83,77 +71,11 @@ namespace WebSocketSharp.Net
 				initAsDigest();
 		}
 
-		#endregion
-
-		#region Internal Properties
-
-		internal uint NonceCount
-		{
-			get
-			{
-				return _nonceCount < UInt32.MaxValue
-					   ? _nonceCount
-					   : 0;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		public string Cnonce
-		{
-			get
-			{
-				return Parameters["cnonce"];
-			}
-		}
-
-		public string Nc
-		{
-			get
-			{
-				return Parameters["nc"];
-			}
-		}
-
-		public string Password
-		{
-			get
-			{
-				return Parameters["password"];
-			}
-		}
-
-		public string Response
-		{
-			get
-			{
-				return Parameters["response"];
-			}
-		}
-
-		public string Uri
-		{
-			get
-			{
-				return Parameters["uri"];
-			}
-		}
-
-		public string UserName
-		{
-			get
-			{
-				return Parameters["username"];
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private static string createA1(string username, string password, string realm)
+	    internal uint NonceCount => _nonceCount < UInt32.MaxValue
+	                                    ? _nonceCount
+	                                    : 0;
+        
+        private static string createA1(string username, string password, string realm)
 		{
 			return string.Format("{0}:{1}:{2}", username, realm, password);
 		}
@@ -209,11 +131,7 @@ namespace WebSocketSharp.Net
 			Parameters["response"] = CreateRequestDigest(Parameters);
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal static string CreateRequestDigest(NameValueCollection parameters)
+	    internal static string CreateRequestDigest(NameValueCollection parameters)
 		{
 			var user = parameters["username"];
 			var pass = parameters["password"];
@@ -323,11 +241,7 @@ namespace WebSocketSharp.Net
 			return output.ToString();
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public IIdentity ToIdentity()
+	    public IIdentity ToIdentity()
 		{
 			var schm = Scheme;
 			return schm == AuthenticationSchemes.Basic
@@ -336,7 +250,5 @@ namespace WebSocketSharp.Net
 					 ? new HttpDigestIdentity(Parameters)
 					 : null;
 		}
-
-		#endregion
 	}
 }

@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketServer.cs
  *
@@ -26,31 +25,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Juan Manuel Lallana <juan.manuel.lallana@gmail.com>
  * - Jonas Hovgaard <j@jhovgaard.dk>
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
-using System.Text;
-using System.Threading;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
 
 namespace WebSocketSharp.Server
 {
+    using System;
     using System.Net;
+    using System.Net.Sockets;
+    using System.Security.Cryptography.X509Certificates;
+    using System.Security.Principal;
+    using System.Threading;
     using System.Threading.Tasks;
+
+    using WebSocketSharp.Net;
+    using WebSocketSharp.Net.WebSockets;
 
     using AuthenticationSchemes = WebSocketSharp.Net.AuthenticationSchemes;
     using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
@@ -210,13 +204,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// <c>true</c> if the server has started; otherwise, <c>false</c>.
         /// </value>
-        public bool IsListening
-        {
-            get
-            {
-                return _state == ServerState.Start;
-            }
-        }
+        public bool IsListening => _state == ServerState.Start;
 
         /// <summary>
         /// Gets a value indicating whether the server provides a secure connection.
@@ -224,13 +212,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// <c>true</c> if the server provides a secure connection; otherwise, <c>false</c>.
         /// </value>
-        public bool IsSecure
-        {
-            get
-            {
-                return _secure;
-            }
-        }
+        public bool IsSecure => _secure;
 
         /// <summary>
         /// Gets the port on which to listen for incoming connection requests.
@@ -238,13 +220,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// An <see cref="int"/> that represents the port number on which to listen.
         /// </value>
-        public int Port
-        {
-            get
-            {
-                return _port;
-            }
-        }
+        public int Port => _port;
 
         /// <summary>
         /// Gets or sets the name of the realm associated with the server.
@@ -363,13 +339,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// A <see cref="WebSocketServiceManager"/> that manages the WebSocket services.
         /// </value>
-        public WebSocketServiceManager WebSocketServices
-        {
-            get
-            {
-                return _services;
-            }
-        }
+        public WebSocketServiceManager WebSocketServices => _services;
 
         /// <summary>
         /// Adds a WebSocket service with the specified behavior and <paramref name="path"/>.
@@ -389,7 +359,7 @@ namespace WebSocketSharp.Server
         public void AddWebSocketService<TBehaviorWithNew>(string path)
           where TBehaviorWithNew : WebSocketBehavior, new()
         {
-            AddWebSocketService<TBehaviorWithNew>(path, () => new TBehaviorWithNew());
+            AddWebSocketService(path, () => new TBehaviorWithNew());
         }
 
         /// <summary>
@@ -429,7 +399,7 @@ namespace WebSocketSharp.Server
                 return;
             }
 
-            _services.Add<TBehavior>(path, initializer);
+            _services.Add(path, initializer);
         }
 
         /// <summary>
@@ -640,7 +610,7 @@ namespace WebSocketSharp.Server
         private void Init(AuthenticationSchemes authenticationSchemes)
         {
             _authSchemes = authenticationSchemes;
-            _listener = new TcpListener(_address, (int)_port);
+            _listener = new TcpListener(_address, _port);
             _services = new WebSocketServiceManager(_fragmentSize);
             _state = ServerState.Ready;
             _sync = new object();

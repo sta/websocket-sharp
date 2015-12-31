@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpListenerPrefix.cs
  *
@@ -28,78 +27,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  * - Oleg Mihailik <mihailik@gmail.com>
  */
-#endregion
-
-using System;
-using System.Net;
 
 namespace WebSocketSharp.Net
 {
-	internal sealed class HttpListenerPrefix
-	{
-		#region Private Fields
+    using System;
+    using System.Net;
 
-		IPAddress[] _addresses;
+    internal sealed class HttpListenerPrefix
+	{
+	    IPAddress[] _addresses;
 		string _host;
 		HttpListener _listener;
-		string _original;
+
+        readonly string _original;
 		string _path;
 		ushort _port;
 		bool _secure;
 
-		#endregion
-
-		#region Public Constructors
-
-		// Must be called after calling HttpListenerPrefix.CheckPrefix.
+	    // Must be called after calling HttpListenerPrefix.CheckPrefix.
 		public HttpListenerPrefix(string uriPrefix)
 		{
 			_original = uriPrefix;
 			parse(uriPrefix);
 		}
-
-		#endregion
-
-		#region Public Properties
-
-		public IPAddress[] Addresses
-		{
-			get
-			{
-				return _addresses;
-			}
-
-			set
-			{
-				_addresses = value;
-			}
-		}
-
-		public string Host
-		{
-			get
-			{
-				return _host;
-			}
-		}
-
-		public bool IsSecure
-		{
-			get
-			{
-				return _secure;
-			}
-		}
-
-		public HttpListener Listener
+        
+		public string Host => _host;
+        
+        public HttpListener Listener
 		{
 			get
 			{
@@ -112,27 +72,11 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		public string Path
-		{
-			get
-			{
-				return _path;
-			}
-		}
+		public string Path => _path;
 
-		public int Port
-		{
-			get
-			{
-				return (int)_port;
-			}
-		}
+        public int Port => _port;
 
-		#endregion
-
-		#region Private Methods
-
-		private void parse(string uriPrefix)
+        private void parse(string uriPrefix)
 		{
 			var defaultPort = uriPrefix.StartsWith("https://") ? 443 : 80;
 			if (defaultPort == 443)
@@ -162,11 +106,7 @@ namespace WebSocketSharp.Net
 				_path = _path.Substring(0, pathLen - 1);
 		}
 
-		#endregion
-
-		#region public Methods
-
-		public static void CheckPrefix(string uriPrefix)
+	    public static void CheckPrefix(string uriPrefix)
 		{
 			if (uriPrefix == null)
 			{
@@ -241,7 +181,5 @@ namespace WebSocketSharp.Net
 		{
 			return _original;
 		}
-
-		#endregion
 	}
 }

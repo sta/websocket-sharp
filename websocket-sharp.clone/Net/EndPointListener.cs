@@ -1,4 +1,3 @@
-#region License
 /*
  * EndPointListener.cs
  *
@@ -28,37 +27,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
-	using System;
-	using System.Collections;
-	using System.Collections.Generic;
-	using System.IO;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.Threading;
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Threading;
 
-	internal sealed class EndPointListener
+    internal sealed class EndPointListener
 	{
-		#region Private Fields
-
-		private List<HttpListenerPrefix> _all; // host == '+'
+	    private List<HttpListenerPrefix> _all; // host == '+'
 
 		private static readonly string DefaultCertFolderPath;
 
@@ -76,20 +67,12 @@ namespace WebSocketSharp.Net
 
 		private List<HttpListenerPrefix> _unhandled; // host == '*'
 
-		#endregion
-
-		#region Static Constructor
-
-		static EndPointListener()
+	    static EndPointListener()
 		{
 			DefaultCertFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		}
 
-		#endregion
-
-		#region Public Constructors
-
-		public EndPointListener(IPAddress address, int port, ServerSslConfiguration sslConfig, bool reuseAddress)
+	    public EndPointListener(IPAddress address, int port, ServerSslConfiguration sslConfig, bool reuseAddress)
 		{
 			_sslConfig = sslConfig;
 
@@ -114,31 +97,11 @@ namespace WebSocketSharp.Net
 			_socket.AcceptAsync(args);
 		}
 
-		#endregion
+	    public bool IsSecure => _sslConfig != null;
 
-		#region Public Properties
+        public ServerSslConfiguration SslConfiguration => _sslConfig;
 
-		public bool IsSecure
-		{
-			get
-			{
-				return _sslConfig != null;
-			}
-		}
-
-		public ServerSslConfiguration SslConfiguration
-		{
-			get
-			{
-				return _sslConfig;
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private static void addSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+        private static void addSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
 		{
 			if (prefixes == null) return;
 
@@ -265,7 +228,7 @@ namespace WebSocketSharp.Net
 
 			HttpListener bestMatch = null;
 			var bestLen = -1;
-			if (host != null && host.Length > 0)
+			if (host.Length > 0)
 			{
 				foreach (var pref in _prefixes.Keys)
 				{
@@ -314,31 +277,13 @@ namespace WebSocketSharp.Net
 
 			return null;
 		}
-
-		#endregion
-
-		#region Internal Methods
-
-		internal static bool CertificateExists(int port, string certificateFolderPath)
-		{
-			if (certificateFolderPath == null || certificateFolderPath.Length == 0) certificateFolderPath = DefaultCertFolderPath;
-
-			var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
-			var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
-
-			return File.Exists(cer) && File.Exists(key);
-		}
-
+        
 		internal void RemoveConnection(HttpConnection connection)
 		{
 			lock (_unregisteredSync) _unregistered.Remove(connection);
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public void AddPrefix(HttpListenerPrefix prefix, HttpListener httpListener)
+	    public void AddPrefix(HttpListenerPrefix prefix, HttpListener httpListener)
 		{
 			List<HttpListenerPrefix> current, future;
 			if (prefix.Host == "*")
@@ -415,7 +360,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		public void RemovePrefix(HttpListenerPrefix prefix, HttpListener httpListener)
+		public void RemovePrefix(HttpListenerPrefix prefix)
 		{
 			List<HttpListenerPrefix> current, future;
 			if (prefix.Host == "*")
@@ -468,7 +413,5 @@ namespace WebSocketSharp.Net
 
 			context.Listener.UnregisterContext(context);
 		}
-
-		#endregion
 	}
 }

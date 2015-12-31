@@ -1,4 +1,3 @@
-#region License
 /*
  * ChunkStream.cs
  *
@@ -28,29 +27,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  */
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal class ChunkStream
-	{
-		#region Private Fields
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Net;
+    using System.Text;
 
-		private int _chunkRead;
+    internal class ChunkStream
+	{
+	    private int _chunkRead;
 		private int _chunkSize;
 		private readonly List<Chunk> _chunks;
 		private bool _gotit;
@@ -59,17 +53,7 @@ namespace WebSocketSharp.Net
 		private bool _sawCr;
 		private InputChunkState _state;
 		private int _trailerState;
-
-		#endregion
-
-		#region Public Constructors
-
-		public ChunkStream(byte[] buffer, int offset, int size, WebHeaderCollection headers)
-			: this(headers)
-		{
-			Write(buffer, offset, size);
-		}
-
+        
 		public ChunkStream(WebHeaderCollection headers)
 		{
 			_headers = headers;
@@ -77,44 +61,12 @@ namespace WebSocketSharp.Net
 			_chunks = new List<Chunk>();
 			_saved = new StringBuilder();
 		}
+        
+        public int ChunkLeft => _chunkSize - _chunkRead;
 
-		#endregion
+        public bool WantMore => _chunkRead != _chunkSize || _chunkSize != 0 || _state != InputChunkState.None;
 
-		#region Internal Properties
-
-		internal WebHeaderCollection Headers
-		{
-			get
-			{
-				return _headers;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		public int ChunkLeft
-		{
-			get
-			{
-				return _chunkSize - _chunkRead;
-			}
-		}
-
-		public bool WantMore
-		{
-			get
-			{
-				return _chunkRead != _chunkSize || _chunkSize != 0 || _state != InputChunkState.None;
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private InputChunkState readCRLF(byte[] buffer, ref int offset, int size)
+        private InputChunkState readCRLF(byte[] buffer, ref int offset, int size)
 		{
 			if (!_sawCr)
 			{
@@ -158,9 +110,7 @@ namespace WebSocketSharp.Net
 
 		private InputChunkState readTrailer(byte[] buffer, ref int offset, int size)
 		{
-			var c = '\0';
-
-			// Short path
+		    // Short path
 			if (_trailerState == 2 && (char)buffer[offset] == '\r' && _saved.Length == 0)
 			{
 				offset++;
@@ -177,7 +127,7 @@ namespace WebSocketSharp.Net
 			var stString = "\r\n\r";
 			while (offset < size && st < 4)
 			{
-				c = (char)buffer[offset++];
+				var c = (char)buffer[offset++];
 				if ((st == 0 || st == 2) && c == '\r')
 				{
 					st++;
@@ -362,35 +312,14 @@ namespace WebSocketSharp.Net
 				   : InputChunkState.Body;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public int Read(byte[] buffer, int offset, int size)
+	    public int Read(byte[] buffer, int offset, int size)
 		{
 			return readFromChunks(buffer, offset, size);
 		}
-
-		public void ResetBuffer()
-		{
-			_chunkSize = -1;
-			_chunkRead = 0;
-			_chunks.Clear();
-		}
-
+        
 		public void Write(byte[] buffer, int offset, int size)
 		{
 			write(buffer, ref offset, size);
 		}
-
-		public void WriteAndReadBack(byte[] buffer, int offset, int size, ref int read)
-		{
-			if (offset + read > 0)
-				Write(buffer, offset, offset + read);
-
-			read = readFromChunks(buffer, offset, size);
-		}
-
-		#endregion
 	}
 }

@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpListenerPrefixCollection.cs
  *
@@ -28,22 +27,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
+    /// <summary>
 	/// Provides the collection used to store the URI prefixes for the <see cref="HttpListener"/>.
 	/// </summary>
 	/// <remarks>
@@ -52,72 +48,32 @@ namespace WebSocketSharp.Net
 	/// </remarks>
 	internal class HttpListenerPrefixCollection : ICollection<string>
 	{
-		#region Private Fields
+	    private readonly HttpListener _listener;
+		private readonly List<string> _prefixes;
 
-		private HttpListener _listener;
-		private List<string> _prefixes;
-
-		#endregion
-
-		#region Internal Constructors
-
-		internal HttpListenerPrefixCollection(HttpListener listener)
+	    internal HttpListenerPrefixCollection(HttpListener listener)
 		{
 			_listener = listener;
 			_prefixes = new List<string>();
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the number of prefixes in the collection.
 		/// </summary>
 		/// <value>
 		/// An <see cref="int"/> that represents the number of prefixes.
 		/// </value>
-		public int Count
-		{
-			get
-			{
-				return _prefixes.Count;
-			}
-		}
+		public int Count => _prefixes.Count;
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the access to the collection is read-only.
 		/// </summary>
 		/// <value>
 		/// Always returns <c>false</c>.
 		/// </value>
-		public bool IsReadOnly
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether the access to the collection is synchronized.
-		/// </summary>
-		/// <value>
-		/// Always returns <c>false</c>.
-		/// </value>
-		public bool IsSynchronized
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
+		public bool IsReadOnly => false;
+        
+        /// <summary>
 		/// Adds the specified <paramref name="uriPrefix"/> to the collection.
 		/// </summary>
 		/// <param name="uriPrefix">
@@ -186,26 +142,7 @@ namespace WebSocketSharp.Net
 
 			return _prefixes.Contains(uriPrefix);
 		}
-
-		/// <summary>
-		/// Copies the contents of the collection to the specified <see cref="Array"/>.
-		/// </summary>
-		/// <param name="array">
-		/// An <see cref="Array"/> that receives the URI prefix strings in the collection.
-		/// </param>
-		/// <param name="offset">
-		/// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-		/// at which copying begins.
-		/// </param>
-		/// <exception cref="ObjectDisposedException">
-		/// The <see cref="HttpListener"/> associated with this collection is closed.
-		/// </exception>
-		public void CopyTo(Array array, int offset)
-		{
-			_listener.CheckDisposed();
-			((ICollection)_prefixes).CopyTo(array, offset);
-		}
-
+        
 		/// <summary>
 		/// Copies the contents of the collection to the specified array of <see cref="string"/>.
 		/// </summary>
@@ -266,11 +203,7 @@ namespace WebSocketSharp.Net
 			return res;
 		}
 
-		#endregion
-
-		#region Explicit Interface Implementations
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
 		/// </summary>
 		/// <returns>
@@ -280,7 +213,5 @@ namespace WebSocketSharp.Net
 		{
 			return _prefixes.GetEnumerator();
 		}
-
-		#endregion
 	}
 }

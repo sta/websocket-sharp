@@ -1,4 +1,3 @@
-#region License
 /*
  * ChunkedRequestStream.cs
  *
@@ -28,69 +27,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.IO;
 
 namespace WebSocketSharp.Net
 {
-	internal class ChunkedRequestStream : RequestStream
+    using System;
+    using System.IO;
+
+    internal class ChunkedRequestStream : RequestStream
 	{
-		#region Private Const Fields
+	    private const int _bufferSize = 8192;
 
-		private const int _bufferSize = 8192;
-
-		#endregion
-
-		#region Private Fields
-
-		private HttpListenerContext _context;
+	    private HttpListenerContext _context;
 		private ChunkStream _decoder;
 		private bool _disposed;
 		private bool _noMoreData;
 
-		#endregion
-
-		#region Public Constructors
-
-		public ChunkedRequestStream(
+	    public ChunkedRequestStream(
 		  HttpListenerContext context, Stream stream, byte[] buffer, int offset, int length)
 			: base(stream, buffer, offset, length)
 		{
 			_context = context;
 			_decoder = new ChunkStream((WebHeaderCollection)context.Request.Headers);
 		}
-
-		#endregion
-
-		#region Public Properties
-
-		public ChunkStream Decoder
-		{
-			get
-			{
-				return _decoder;
-			}
-
-			set
-			{
-				_decoder = value;
-			}
-		}
-
-		#endregion
-
-		#region Private Methods
-
-		private void onRead(IAsyncResult asyncResult)
+        
+	    private void onRead(IAsyncResult asyncResult)
 		{
 			var readState = (ReadBufferState)asyncResult.AsyncState;
 			var ares = readState.AsyncResult;
@@ -121,11 +86,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public override IAsyncResult BeginRead(
+	    public override IAsyncResult BeginRead(
 		  byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			if (_disposed)
@@ -215,7 +176,5 @@ namespace WebSocketSharp.Net
 			var ares = BeginRead(buffer, offset, count, null, null);
 			return EndRead(ares);
 		}
-
-		#endregion
 	}
 }

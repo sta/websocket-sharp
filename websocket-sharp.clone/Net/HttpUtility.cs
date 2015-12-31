@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpUtility.cs
  *
@@ -28,9 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Patrik Torstensson <Patrik.Torstensson@labs2.com>
@@ -38,31 +35,24 @@
  * - Tim Coleman <tim@timcoleman.com>
  * - Gonzalo Paniagua Javier <gonzalo@ximian.com>
  */
-#endregion
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.IO;
-using System.Text;
 
 namespace WebSocketSharp.Net
 {
-	internal sealed class HttpUtility
-	{
-		#region Private Fields
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.Globalization;
+    using System.IO;
+    using System.Text;
 
-		private static Dictionary<string, char> _entities;
+    internal sealed class HttpUtility
+	{
+	    private static Dictionary<string, char> _entities;
 		private static char[] _hexChars = "0123456789abcdef".ToCharArray();
 		private static object _sync = new object();
 
-		#endregion
-
-		#region Private Methods
-
-		private static int getChar(byte[] bytes, int offset, int length)
+	    private static int getChar(byte[] bytes, int offset, int length)
 		{
 			var val = 0;
 			var end = length + offset;
@@ -465,39 +455,7 @@ namespace WebSocketSharp.Net
 
 			result.WriteByte((byte)c);
 		}
-
-		private static void urlPathEncode(char c, Stream result)
-		{
-			if (c < 33 || c > 126)
-			{
-				var bytes = Encoding.UTF8.GetBytes(c.ToString());
-				foreach (var b in bytes)
-				{
-					result.WriteByte((byte)'%');
-
-					var i = (int)b;
-					var idx = i >> 4;
-					result.WriteByte((byte)_hexChars[idx]);
-
-					idx = i & 0x0F;
-					result.WriteByte((byte)_hexChars[idx]);
-				}
-
-				return;
-			}
-
-			if (c == ' ')
-			{
-				result.WriteByte((byte)'%');
-				result.WriteByte((byte)'2');
-				result.WriteByte((byte)'0');
-
-				return;
-			}
-
-			result.WriteByte((byte)c);
-		}
-
+        
 		private static void writeCharBytes(char c, IList buffer, Encoding encoding)
 		{
 			if (c > 255)
@@ -511,11 +469,7 @@ namespace WebSocketSharp.Net
 			buffer.Add((byte)c);
 		}
 
-		#endregion
-
-		#region Internal Methods
-
-		internal static Uri CreateRequestUrl(
+	    internal static Uri CreateRequestUrl(
 		  string requestUri, string host, bool websocketRequest, bool secure)
 		{
 			if (requestUri == null || requestUri.Length == 0 || host == null || host.Length == 0)
@@ -725,11 +679,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public static string HtmlAttributeEncode(string s)
+	    public static string HtmlAttributeEncode(string s)
 		{
 			if (s == null || s.Length == 0 || !s.Contains('&', '"', '<', '>'))
 				return s;
@@ -749,15 +699,7 @@ namespace WebSocketSharp.Net
 
 			return output.ToString();
 		}
-
-		public static void HtmlAttributeEncode(string s, TextWriter output)
-		{
-			if (output == null)
-				throw new ArgumentNullException("output");
-
-			output.Write(HtmlAttributeEncode(s));
-		}
-
+        
 		/// <summary>
 		/// Decodes an HTML-encoded <see cref="string"/> and returns the decoded <see cref="string"/>.
 		/// </summary>
@@ -809,7 +751,7 @@ namespace WebSocketSharp.Net
 						haveTrailingDigits = false;
 					}
 
-					output.Append(entity.ToString());
+					output.Append(entity);
 					entity.Length = 0;
 					entity.Append('&');
 
@@ -821,7 +763,7 @@ namespace WebSocketSharp.Net
 					if (c == ';')
 					{
 						state = 0;
-						output.Append(entity.ToString());
+						output.Append(entity);
 						output.Append(c);
 						entity.Length = 0;
 					}
@@ -872,7 +814,7 @@ namespace WebSocketSharp.Net
 					}
 					else if (Char.IsDigit(c))
 					{
-						number = number * 10 + ((int)c - '0');
+						number = number * 10 + (c - '0');
 						haveTrailingDigits = true;
 					}
 					else
@@ -890,31 +832,13 @@ namespace WebSocketSharp.Net
 			}
 
 			if (entity.Length > 0)
-				output.Append(entity.ToString());
+				output.Append(entity);
 			else if (haveTrailingDigits)
 				output.Append(number.ToString(CultureInfo.InvariantCulture));
 
 			return output.ToString();
 		}
-
-		/// <summary>
-		/// Decodes an HTML-encoded <see cref="string"/> and sends the decoded <see cref="string"/>
-		/// to the specified <see cref="TextWriter"/>.
-		/// </summary>
-		/// <param name="s">
-		/// A <see cref="string"/> to decode.
-		/// </param>
-		/// <param name="output">
-		/// A <see cref="TextWriter"/> that receives the decoded string.
-		/// </param>
-		public static void HtmlDecode(string s, TextWriter output)
-		{
-			if (output == null)
-				throw new ArgumentNullException("output");
-
-			output.Write(HtmlDecode(s));
-		}
-
+        
 		/// <summary>
 		/// HTML-encodes a <see cref="string"/> and returns the encoded <see cref="string"/>.
 		/// </summary>
@@ -978,30 +902,7 @@ namespace WebSocketSharp.Net
 
 			return output.ToString();
 		}
-
-		/// <summary>
-		/// HTML-encodes a <see cref="string"/> and sends the encoded <see cref="string"/>
-		/// to the specified <see cref="TextWriter"/>.
-		/// </summary>
-		/// <param name="s">
-		/// A <see cref="string"/> to encode.
-		/// </param>
-		/// <param name="output">
-		/// A <see cref="TextWriter"/> that receives the encoded string.
-		/// </param>
-		public static void HtmlEncode(string s, TextWriter output)
-		{
-			if (output == null)
-				throw new ArgumentNullException("output");
-
-			output.Write(HtmlEncode(s));
-		}
-
-		public static NameValueCollection ParseQueryString(string query)
-		{
-			return ParseQueryString(query, Encoding.UTF8);
-		}
-
+        
 		public static NameValueCollection ParseQueryString(string query, Encoding encoding)
 		{
 			if (query == null)
@@ -1069,48 +970,7 @@ namespace WebSocketSharp.Net
 
 			return encoding.GetString(buff.ToArray());
 		}
-
-		public static string UrlDecode(byte[] bytes, Encoding encoding)
-		{
-			int len;
-			return bytes == null
-				   ? null
-				   : (len = bytes.Length) == 0
-					 ? string.Empty
-					 : InternalUrlDecode(bytes, 0, len, encoding ?? Encoding.UTF8);
-		}
-
-		public static string UrlDecode(byte[] bytes, int offset, int count, Encoding encoding)
-		{
-			if (bytes == null)
-				return null;
-
-			var len = bytes.Length;
-			if (len == 0 || count == 0)
-				return string.Empty;
-
-			if (offset < 0 || offset >= len)
-				throw new ArgumentOutOfRangeException("offset");
-
-			if (count < 0 || count > len - offset)
-				throw new ArgumentOutOfRangeException("count");
-
-			return InternalUrlDecode(bytes, offset, count, encoding ?? Encoding.UTF8);
-		}
-
-		public static byte[] UrlDecodeToBytes(byte[] bytes)
-		{
-			int len;
-			return bytes != null && (len = bytes.Length) > 0
-				   ? InternalUrlDecodeToBytes(bytes, 0, len)
-				   : bytes;
-		}
-
-		public static byte[] UrlDecodeToBytes(string s)
-		{
-			return UrlDecodeToBytes(s, Encoding.UTF8);
-		}
-
+        
 		public static byte[] UrlDecodeToBytes(string s, Encoding encoding)
 		{
 			if (s == null)
@@ -1122,35 +982,7 @@ namespace WebSocketSharp.Net
 			var bytes = (encoding ?? Encoding.UTF8).GetBytes(s);
 			return InternalUrlDecodeToBytes(bytes, 0, bytes.Length);
 		}
-
-		public static byte[] UrlDecodeToBytes(byte[] bytes, int offset, int count)
-		{
-			int len;
-			if (bytes == null || (len = bytes.Length) == 0)
-				return bytes;
-
-			if (count == 0)
-				return new byte[0];
-
-			if (offset < 0 || offset >= len)
-				throw new ArgumentOutOfRangeException("offset");
-
-			if (count < 0 || count > len - offset)
-				throw new ArgumentOutOfRangeException("count");
-
-			return InternalUrlDecodeToBytes(bytes, offset, count);
-		}
-
-		public static string UrlEncode(byte[] bytes)
-		{
-			int len;
-			return bytes == null
-				   ? null
-				   : (len = bytes.Length) == 0
-					 ? string.Empty
-					 : Encoding.ASCII.GetString(InternalUrlEncodeToBytes(bytes, 0, len));
-		}
-
+        
 		public static string UrlEncode(string s)
 		{
 			return UrlEncode(s, Encoding.UTF8);
@@ -1187,30 +1019,7 @@ namespace WebSocketSharp.Net
 
 			return Encoding.ASCII.GetString(InternalUrlEncodeToBytes(bytes, 0, realLen));
 		}
-
-		public static string UrlEncode(byte[] bytes, int offset, int count)
-		{
-			var encoded = UrlEncodeToBytes(bytes, offset, count);
-			return encoded == null
-				   ? null
-				   : encoded.Length == 0
-					 ? string.Empty
-					 : Encoding.ASCII.GetString(encoded);
-		}
-
-		public static byte[] UrlEncodeToBytes(byte[] bytes)
-		{
-			int len;
-			return bytes != null && (len = bytes.Length) > 0
-				   ? InternalUrlEncodeToBytes(bytes, 0, len)
-				   : bytes;
-		}
-
-		public static byte[] UrlEncodeToBytes(string s)
-		{
-			return UrlEncodeToBytes(s, Encoding.UTF8);
-		}
-
+        
 		public static byte[] UrlEncodeToBytes(string s, Encoding encoding)
 		{
 			if (s == null)
@@ -1240,38 +1049,5 @@ namespace WebSocketSharp.Net
 
 			return InternalUrlEncodeToBytes(bytes, offset, count);
 		}
-
-		public static string UrlEncodeUnicode(string s)
-		{
-			return s != null && s.Length > 0
-				   ? Encoding.ASCII.GetString(InternalUrlEncodeUnicodeToBytes(s))
-				   : s;
-		}
-
-		public static byte[] UrlEncodeUnicodeToBytes(string s)
-		{
-			return s == null
-				   ? null
-				   : s.Length == 0
-					 ? new byte[0]
-					 : InternalUrlEncodeUnicodeToBytes(s);
-		}
-
-		public static string UrlPathEncode(string s)
-		{
-			if (s == null || s.Length == 0)
-				return s;
-
-			using (var res = new MemoryStream())
-			{
-				foreach (var c in s)
-					urlPathEncode(c, res);
-
-				res.Close();
-				return Encoding.ASCII.GetString(res.ToArray());
-			}
-		}
-
-		#endregion
 	}
 }

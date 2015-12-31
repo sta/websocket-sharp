@@ -1,5 +1,4 @@
-﻿#region License
-/*
+﻿/*
  * ServerSslConfiguration.cs
  *
  * The MIT License
@@ -25,14 +24,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
 
 namespace WebSocketSharp.Net
 {
@@ -57,50 +53,7 @@ namespace WebSocketSharp.Net
             : this(serverCertificate, false, SslProtocols.Default, false)
         {
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-        /// the specified <paramref name="serverCertificate"/> and
-        /// <paramref name="clientCertificateRequired"/>.
-        /// </summary>
-        /// <param name="serverCertificate">
-        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-        /// the server.
-        /// </param>
-        /// <param name="clientCertificateRequired">
-        /// <c>true</c> if the client must supply a certificate for authentication;
-        /// otherwise, <c>false</c>.
-        /// </param>
-        public ServerSslConfiguration(X509Certificate2 serverCertificate, bool clientCertificateRequired)
-            : this(serverCertificate, clientCertificateRequired, SslProtocols.Default, false)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-        /// the specified <paramref name="serverCertificate"/>,
-        /// <paramref name="clientCertificateRequired"/>, and <paramref name="enabledSslProtocols"/>.
-        /// </summary>
-        /// <param name="serverCertificate">
-        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-        /// the server.
-        /// </param>
-        /// <param name="clientCertificateRequired">
-        /// <c>true</c> if the client must supply a certificate for authentication;
-        /// otherwise, <c>false</c>.
-        /// </param>
-        /// <param name="enabledSslProtocols">
-        /// The <see cref="SslProtocols"/> enum value that represents the protocols used for
-        /// authentication.
-        /// </param>
-        public ServerSslConfiguration(
-            X509Certificate2 serverCertificate,
-            bool clientCertificateRequired,
-            SslProtocols enabledSslProtocols)
-            : this(serverCertificate, clientCertificateRequired, enabledSslProtocols, false)
-        {
-        }
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
         /// the specified <paramref name="serverCertificate"/>,
@@ -126,8 +79,8 @@ namespace WebSocketSharp.Net
         public ServerSslConfiguration(
             X509Certificate2 serverCertificate,
             bool clientCertificateRequired,
-            SslProtocols enabledSslProtocols,
-            bool checkCertificateRevocation)
+            SslProtocols enabledSslProtocols = SslProtocols.Default,
+            bool checkCertificateRevocation = false)
       : base(enabledSslProtocols, checkCertificateRevocation)
         {
             ServerCertificate = serverCertificate;

@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketServiceManager.cs
  *
@@ -24,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
 namespace WebSocketSharp.Server
 {
@@ -32,12 +30,11 @@ namespace WebSocketSharp.Server
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
 
     using WebSocketSharp.Net;
-
-    using System.Linq;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Manages the WebSocket services provided by the <see cref="WebSocketServer"/> or

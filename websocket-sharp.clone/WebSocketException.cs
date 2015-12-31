@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketException.cs
  *
@@ -24,83 +23,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp
 {
-  /// <summary>
-  /// The exception that is thrown when a <see cref="WebSocket"/> gets a fatal error.
-  /// </summary>
-  public class WebSocketException : Exception
-  {
-    #region Private Fields
-
-    private CloseStatusCode _code;
-
-    #endregion
-
-    #region Internal Constructors
-
-    internal WebSocketException ()
-      : this (CloseStatusCode.Abnormal, null, null)
-    {
-    }
-
-    internal WebSocketException (Exception innerException)
-      : this (CloseStatusCode.Abnormal, null, innerException)
-    {
-    }
-
-    internal WebSocketException (string message)
-      : this (CloseStatusCode.Abnormal, message, null)
-    {
-    }
-
-    internal WebSocketException (CloseStatusCode code)
-      : this (code, null, null)
-    {
-    }
-
-    internal WebSocketException (string message, Exception innerException)
-      : this (CloseStatusCode.Abnormal, message, innerException)
-    {
-    }
-
-    internal WebSocketException (CloseStatusCode code, Exception innerException)
-      : this (code, null, innerException)
-    {
-    }
-
-    internal WebSocketException (CloseStatusCode code, string message)
-      : this (code, message, null)
-    {
-    }
-
-    internal WebSocketException (CloseStatusCode code, string message, Exception innerException)
-      : base (message ?? code.GetMessage (), innerException)
-    {
-      _code = code;
-    }
-
-    #endregion
-
-    #region Public Properties
+    using System;
 
     /// <summary>
-    /// Gets the status code indicating the cause of the exception.
+    /// The exception that is thrown when a <see cref="WebSocket"/> gets a fatal error.
     /// </summary>
-    /// <value>
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
-    /// indicating the cause of the exception.
-    /// </value>
-    public CloseStatusCode Code {
-      get {
-        return _code;
-      }
-    }
+    internal class WebSocketException : Exception
+    {
+        private readonly CloseStatusCode _code;
 
-    #endregion
-  }
+        internal WebSocketException(string message)
+          : this(CloseStatusCode.Abnormal, message, null)
+        {
+        }
+
+        internal WebSocketException(string message, Exception innerException)
+          : this(CloseStatusCode.Abnormal, message, innerException)
+        {
+        }
+
+        internal WebSocketException(CloseStatusCode code, string message, Exception innerException = null)
+          : base(message ?? code.GetMessage(), innerException)
+        {
+            _code = code;
+        }
+
+        /// <summary>
+        /// Gets the status code indicating the cause of the exception.
+        /// </summary>
+        /// <value>
+        /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
+        /// indicating the cause of the exception.
+        /// </value>
+        public CloseStatusCode Code => _code;
+    }
 }

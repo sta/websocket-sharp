@@ -17,40 +17,40 @@
 
 namespace WebSocketSharp
 {
-	using System.IO;
-	using System.Threading;
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
 
-	public abstract class WebSocketMessage
-	{
-		private readonly ManualResetEventSlim _waitHandle;
+    internal abstract class WebSocketMessage
+    {
+        private readonly ManualResetEventSlim _waitHandle;
 
-	    private readonly int _fragmentLength;
+        private readonly int _fragmentLength;
 
-	    protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle, int fragmentLength)
-		{
-			_waitHandle = waitHandle;
-	        _fragmentLength = fragmentLength;
-	        Opcode = opcode;
-		}
+        protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle, int fragmentLength)
+        {
+            _waitHandle = waitHandle;
+            _fragmentLength = fragmentLength;
+            Opcode = opcode;
+        }
 
-		public Opcode Opcode { get; private set; }
+        public Opcode Opcode { get; private set; }
 
-		public abstract Stream RawData { get; }
+        public abstract Stream RawData { get; }
 
-		public abstract StreamReader Text { get; }
+        public abstract StreamReader Text { get; }
 
-		internal void Consume()
-		{
-			var length = _fragmentLength;
-			if (RawData != null)
-			{
-				var buffer = new byte[length];
-				while (RawData.Read(buffer, 0, length) == length)
-				{
-				}
-			}
+        internal async Task Consume()
+        {
+            if (RawData != null)
+            {
+                var buffer = new byte[_fragmentLength];
+                while (await RawData.ReadAsync(buffer, 0, _fragmentLength).ConfigureAwait(false) == _fragmentLength)
+                {
+                }
+            }
 
-			_waitHandle.Set();
-		}
-	}
+            _waitHandle.Set();
+        }
+    }
 }

@@ -1,4 +1,3 @@
-#region License
 /*
  * TcpListenerWebSocketContext.cs
  *
@@ -24,28 +23,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
 
 namespace WebSocketSharp.Net.WebSockets
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Collections.Specialized;
-	using System.IO;
-	using System.Net.Security;
-	using System.Net.Sockets;
-	using System.Security.Cryptography.X509Certificates;
-	using System.Security.Principal;
-	using System.Text;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.IO;
+    using System.Net;
+    using System.Net.Security;
+    using System.Net.Sockets;
+    using System.Security.Principal;
+    using System.Text;
 
-	/// <summary>
+    using AuthenticationSchemes = WebSocketSharp.Net.AuthenticationSchemes;
+    using CookieCollection = WebSocketSharp.Net.CookieCollection;
+    using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
+    using NetworkCredential = WebSocketSharp.Net.NetworkCredential;
+
+    /// <summary>
 	/// Provides the properties used to access the information in a WebSocket connection request
 	/// received by the <see cref="TcpListener"/>.
 	/// </summary>
@@ -97,162 +98,90 @@ namespace WebSocketSharp.Net.WebSockets
 			_websocket = new WebSocket(this, protocol);
 		}
 
-		#region Internal Properties
+	    internal Stream Stream => _stream;
 
-		internal Stream Stream
-		{
-			get
-			{
-				return _stream;
-			}
-		}
-
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+        /// <summary>
 		/// Gets the HTTP cookies included in the request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
 		/// </value>
-		public override CookieCollection CookieCollection
-		{
-			get
-			{
-				return _cookies ?? (_cookies = _request.Cookies);
-			}
-		}
+		public override CookieCollection CookieCollection => _cookies ?? (_cookies = _request.Cookies);
 
-		/// <summary>
+        /// <summary>
 		/// Gets the HTTP headers included in the request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="NameValueCollection"/> that contains the headers.
 		/// </value>
-		public override NameValueCollection Headers
-		{
-			get
-			{
-				return _request.Headers;
-			}
-		}
+		public override NameValueCollection Headers => _request.Headers;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the value of the Host header included in the request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="string"/> that represents the value of the Host header.
 		/// </value>
-		public override string Host
-		{
-			get
-			{
-				return _request.Headers["Host"];
-			}
-		}
+		public override string Host => _request.Headers["Host"];
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the client is authenticated.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
 		/// </value>
-		public override bool IsAuthenticated
-		{
-			get
-			{
-				return _user != null && _user.Identity.IsAuthenticated;
-			}
-		}
+		public override bool IsAuthenticated => _user != null && _user.Identity.IsAuthenticated;
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the client connected from the local computer.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
 		/// </value>
-		public override bool IsLocal
-		{
-			get
-			{
-				return UserEndPoint.Address.IsLocal();
-			}
-		}
+		public override bool IsLocal => UserEndPoint.Address.IsLocal();
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the WebSocket connection is secured.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the connection is secured; otherwise, <c>false</c>.
 		/// </value>
-		public override bool IsSecureConnection
-		{
-			get
-			{
-				return _secure;
-			}
-		}
+		public override bool IsSecureConnection => _secure;
 
-		/// <summary>
+        /// <summary>
 		/// Gets a value indicating whether the request is a WebSocket connection request.
 		/// </summary>
 		/// <value>
 		/// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
 		/// </value>
-		public override bool IsWebSocketRequest
-		{
-			get
-			{
-				return _request.IsWebSocketRequest;
-			}
-		}
+		public override bool IsWebSocketRequest => _request.IsWebSocketRequest;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the value of the Origin header included in the request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="string"/> that represents the value of the Origin header.
 		/// </value>
-		public override string Origin
-		{
-			get
-			{
-				return _request.Headers["Origin"];
-			}
-		}
+		public override string Origin => _request.Headers["Origin"];
 
-		/// <summary>
+        /// <summary>
 		/// Gets the query string included in the request.
 		/// </summary>
 		/// <value>
 		/// A <see cref="NameValueCollection"/> that contains the query string parameters.
 		/// </value>
-		public override NameValueCollection QueryString
-		{
-			get
-			{
-				return _queryString
-					   ?? (_queryString = HttpUtility.InternalParseQueryString(_uri != null ? _uri.Query : null, Encoding.UTF8));
-			}
-		}
+		public override NameValueCollection QueryString => _queryString
+		                                                   ?? (_queryString = HttpUtility.InternalParseQueryString(_uri != null ? _uri.Query : null, Encoding.UTF8));
 
-		/// <summary>
+        /// <summary>
 		/// Gets the URI requested by the client.
 		/// </summary>
 		/// <value>
 		/// A <see cref="Uri"/> that represents the requested URI.
 		/// </value>
-		public override Uri RequestUri
-		{
-			get
-			{
-				return _uri;
-			}
-		}
+		public override Uri RequestUri => _uri;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the value of the Sec-WebSocket-Key header included in the request.
 		/// </summary>
 		/// <remarks>
@@ -262,15 +191,9 @@ namespace WebSocketSharp.Net.WebSockets
 		/// <value>
 		/// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
 		/// </value>
-		public override string SecWebSocketKey
-		{
-			get
-			{
-				return _request.Headers["Sec-WebSocket-Key"];
-			}
-		}
+		public override string SecWebSocketKey => _request.Headers["Sec-WebSocket-Key"];
 
-		/// <summary>
+        /// <summary>
 		/// Gets the values of the Sec-WebSocket-Protocol header included in the request.
 		/// </summary>
 		/// <remarks>
@@ -299,76 +222,42 @@ namespace WebSocketSharp.Net.WebSockets
 		/// <value>
 		/// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
 		/// </value>
-		public override string SecWebSocketVersion
-		{
-			get
-			{
-				return _request.Headers["Sec-WebSocket-Version"];
-			}
-		}
+		public override string SecWebSocketVersion => _request.Headers["Sec-WebSocket-Version"];
 
-		/// <summary>
+        /// <summary>
 		/// Gets the server endpoint as an IP address and a port number.
 		/// </summary>
 		/// <value>
 		/// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
 		/// </value>
-		public override System.Net.IPEndPoint ServerEndPoint
-		{
-			get
-			{
-				return (System.Net.IPEndPoint)_tcpClient.Client.LocalEndPoint;
-			}
-		}
+		public override IPEndPoint ServerEndPoint => (IPEndPoint)_tcpClient.Client.LocalEndPoint;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the client information (identity, authentication, and security roles).
 		/// </summary>
 		/// <value>
 		/// A <see cref="IPrincipal"/> that represents the client information.
 		/// </value>
-		public override IPrincipal User
-		{
-			get
-			{
-				return _user;
-			}
-		}
+		public override IPrincipal User => _user;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the client endpoint as an IP address and a port number.
 		/// </summary>
 		/// <value>
 		/// A <see cref="System.Net.IPEndPoint"/> that represents the client endpoint.
 		/// </value>
-		public override System.Net.IPEndPoint UserEndPoint
-		{
-			get
-			{
-				return (System.Net.IPEndPoint)_tcpClient.Client.RemoteEndPoint;
-			}
-		}
+		public override IPEndPoint UserEndPoint => (IPEndPoint)_tcpClient.Client.RemoteEndPoint;
 
-		/// <summary>
+        /// <summary>
 		/// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication
 		/// between client and server.
 		/// </summary>
 		/// <value>
 		/// A <see cref="WebSocketSharp.WebSocket"/>.
 		/// </value>
-		public override WebSocket WebSocket
-		{
-			get
-			{
-				return _websocket;
-			}
-		}
+		public override WebSocket WebSocket => _websocket;
 
-		#endregion
-
-		#region Internal Methods
-
-		internal void Close()
+        internal void Close()
 		{
 			_stream.Close();
 			_tcpClient.Close();
@@ -423,11 +312,7 @@ namespace WebSocketSharp.Net.WebSockets
 			if (valid) _user = new GenericPrincipal(id, cred.Roles);
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
+	    /// <summary>
 		/// Returns a <see cref="string"/> that represents the current
 		/// <see cref="TcpListenerWebSocketContext"/>.
 		/// </summary>
@@ -439,7 +324,5 @@ namespace WebSocketSharp.Net.WebSockets
 		{
 			return _request.ToString();
 		}
-
-		#endregion
 	}
 }

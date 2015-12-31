@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpVersion.cs
  *
@@ -27,27 +26,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Lawrence Pit <loz@cable.a2000.nl>
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// Provides the HTTP version numbers.
 	/// </summary>
 	internal class HttpVersion
 	{
-		#region Public Static Fields
-
-		/// <summary>
+	    /// <summary>
 		/// Provides a <see cref="Version"/> instance for HTTP 1.0.
 		/// </summary>
 		public static readonly Version Version10 = new Version(1, 0);
@@ -56,18 +50,5 @@ namespace WebSocketSharp.Net
 		/// Provides a <see cref="Version"/> instance for HTTP 1.1.
 		/// </summary>
 		public static readonly Version Version11 = new Version(1, 1);
-
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HttpVersion"/> class.
-		/// </summary>
-		public HttpVersion()
-		{
-		}
-
-		#endregion
 	}
 }

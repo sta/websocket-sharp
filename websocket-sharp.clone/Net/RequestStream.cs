@@ -1,4 +1,3 @@
-#region License
 /*
  * RequestStream.cs
  *
@@ -28,36 +27,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.IO;
 
 namespace WebSocketSharp.Net
 {
-	internal class RequestStream : Stream
-	{
-		#region Private Fields
+    using System;
+    using System.IO;
 
-		private byte[] _buffer;
+    internal class RequestStream : Stream
+	{
+	    private byte[] _buffer;
 		private bool _disposed;
 		private int _length;
 		private int _offset;
 		private long _remainingBody;
 		private Stream _stream;
 
-		#endregion
-
-		#region Internal Constructors
-
-		internal RequestStream(Stream stream, byte[] buffer, int offset, int length)
+	    internal RequestStream(Stream stream, byte[] buffer, int offset, int length)
 			: this(stream, buffer, offset, length, -1)
 		{
 		}
@@ -72,35 +62,13 @@ namespace WebSocketSharp.Net
 			_remainingBody = contentlength;
 		}
 
-		#endregion
+	    public override bool CanRead => true;
 
-		#region Public Properties
+        public override bool CanSeek => false;
 
-		public override bool CanRead
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public override bool CanWrite => false;
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override bool CanWrite
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		public override long Length
+        public override long Length
 		{
 			get
 			{
@@ -121,11 +89,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Private Methods
-
-		// Returns 0 if we can keep reading from the base stream,
+	    // Returns 0 if we can keep reading from the base stream,
 		// > 0 if we read something from the buffer.
 		// -1 if we had a content length set and we finished reading that many bytes.
 		private int fillFromBuffer(byte[] buffer, int offset, int count)
@@ -172,11 +136,7 @@ namespace WebSocketSharp.Net
 			return size;
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public override IAsyncResult BeginRead(
+	    public override IAsyncResult BeginRead(
 		  byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			if (_disposed)
@@ -282,7 +242,5 @@ namespace WebSocketSharp.Net
 		{
 			throw new NotSupportedException();
 		}
-
-		#endregion
 	}
 }

@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpStreamAsyncResult.cs
  *
@@ -28,64 +27,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-	internal class HttpStreamAsyncResult : IAsyncResult
-	{
-		#region Private Fields
+    using System;
+    using System.Threading;
 
-		private AsyncCallback _callback;
+    internal class HttpStreamAsyncResult : IAsyncResult
+	{
+	    private readonly AsyncCallback _callback;
 		private bool _completed;
-		private object _state;
-		private object _sync;
+		private readonly object _state;
+		private readonly object _sync;
 		private ManualResetEvent _waitHandle;
 
-		#endregion
-
-		#region Internal Fields
-
-		internal byte[] Buffer;
+	    internal byte[] Buffer;
 		internal int Count;
 		internal Exception Error;
 		internal int Offset;
 		internal int SyncRead;
 
-		#endregion
-
-		#region Public Constructors
-
-		public HttpStreamAsyncResult(AsyncCallback callback, object state)
+	    public HttpStreamAsyncResult(AsyncCallback callback, object state)
 		{
 			_callback = callback;
 			_state = state;
 			_sync = new object();
 		}
 
-		#endregion
+	    public object AsyncState => _state;
 
-		#region Public Properties
-
-		public object AsyncState
-		{
-			get
-			{
-				return _state;
-			}
-		}
-
-		public WaitHandle AsyncWaitHandle
+        public WaitHandle AsyncWaitHandle
 		{
 			get
 			{
@@ -94,15 +70,9 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		public bool CompletedSynchronously
-		{
-			get
-			{
-				return SyncRead == Count;
-			}
-		}
+		public bool CompletedSynchronously => SyncRead == Count;
 
-		public bool IsCompleted
+        public bool IsCompleted
 		{
 			get
 			{
@@ -111,11 +81,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Methods
-
-		public void Complete()
+	    public void Complete()
 		{
 			lock (_sync)
 			{
@@ -136,7 +102,5 @@ namespace WebSocketSharp.Net
 			Error = exception;
 			Complete();
 		}
-
-		#endregion
 	}
 }

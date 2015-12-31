@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpListenerException.cs
  *
@@ -28,31 +27,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Gonzalo Paniagua Javier <gonzalo@novell.com>
  */
-#endregion
-
-using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
+
+    /// <summary>
 	/// The exception that is thrown when a <see cref="HttpListener"/> gets an error
 	/// processing an HTTP request.
 	/// </summary>
 	[Serializable]
 	internal class HttpListenerException : Win32Exception
 	{
-		#region Protected Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="HttpListenerException"/> class from
 		/// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
 		/// </summary>
@@ -67,30 +61,7 @@ namespace WebSocketSharp.Net
 			: base(serializationInfo, streamingContext)
 		{
 		}
-
-		#endregion
-
-		#region Public Constructors
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HttpListenerException"/> class.
-		/// </summary>
-		public HttpListenerException()
-		{
-		}
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="HttpListenerException"/> class
-		/// with the specified <paramref name="errorCode"/>.
-		/// </summary>
-		/// <param name="errorCode">
-		/// An <see cref="int"/> that identifies the error.
-		/// </param>
-		public HttpListenerException(int errorCode)
-			: base(errorCode)
-		{
-		}
-
+        
 		/// <summary>
 		/// Initializes a new instance of the <see cref="HttpListenerException"/> class
 		/// with the specified <paramref name="errorCode"/> and <paramref name="message"/>.
@@ -106,24 +77,12 @@ namespace WebSocketSharp.Net
 		{
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets the error code that identifies the error that occurred.
 		/// </summary>
 		/// <value>
 		/// An <see cref="int"/> that identifies the error.
 		/// </value>
-		public override int ErrorCode
-		{
-			get
-			{
-				return NativeErrorCode;
-			}
-		}
-
-		#endregion
+		public override int ErrorCode => NativeErrorCode;
 	}
 }

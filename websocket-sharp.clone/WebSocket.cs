@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocket.cs
  *
@@ -30,16 +29,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Contributors
 /*
  * Contributors:
  * - Frank Razenberg <frank@zzattack.org>
  * - David Wood <dpwood@gmail.com>
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
 
 namespace WebSocketSharp
 {
@@ -66,19 +62,16 @@ namespace WebSocketSharp
     /// </remarks>
     public class WebSocket : IDisposable
     {
-        internal readonly int FragmentLength; // Max value is int.MaxValue - 14.
-
         private const string GuidId = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
         private const string SocketVersion = "13";
 
+        private readonly int _fragmentLength; // Max value is int.MaxValue - 14.
         private readonly Uri _uri;
         private readonly bool _secure;
         private readonly bool _client;
         private readonly string[] _protocols;
         private readonly ClientSslConfiguration _sslConfig;
-
         private readonly CancellationToken _cancellationToken;
-
         private bool _istransmitting;
         private AuthenticationChallenge _authChallenge;
         private string _base64Key;
@@ -111,9 +104,8 @@ namespace WebSocketSharp
         /// Initializes a new instance of the <see cref="WebSocket"/> class with
         /// the specified WebSocket URL and subprotocols.
         /// </summary>
-        /// <param name="url">
-        ///     A <see cref="string"/> that represents the WebSocket URL to connect.
-        /// </param>
+        /// <param name="url">A <see cref="string"/> that represents the WebSocket URL to connect.</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel websocket operations.</param>
         /// <param name="fragmentSize">Set the size of message packages. Smaller size equals less memory overhead when sending streams.</param>
         /// <param name="protocols">
         ///     An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
@@ -192,7 +184,7 @@ namespace WebSocketSharp
                 _protocols = protocols;
             }
 
-            FragmentLength = fragmentSize;
+            _fragmentLength = fragmentSize;
             _sslConfig = sslAuthConfiguration;
             _cancellationToken = cancellationToken;
             _registration = _cancellationToken.Register(async () => await Close().ConfigureAwait(false));
@@ -207,7 +199,7 @@ namespace WebSocketSharp
         // As server
         internal WebSocket(HttpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {
-            FragmentLength = fragmentSize;
+            _fragmentLength = fragmentSize;
             _context = context;
             _protocol = protocol;
 
@@ -222,7 +214,7 @@ namespace WebSocketSharp
         // As server
         internal WebSocket(TcpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {
-            FragmentLength = fragmentSize;
+            _fragmentLength = fragmentSize;
             _context = context;
             _protocol = protocol;
 
@@ -294,13 +286,7 @@ namespace WebSocketSharp
         /// A <see cref="string"/> that represents the extensions if any.
         /// The default value is <see cref="String.Empty"/>.
         /// </value>
-        public string Extensions
-        {
-            get
-            {
-                return _extensions ?? String.Empty;
-            }
-        }
+        public string Extensions => _extensions ?? String.Empty;
 
         /// <summary>
         /// Gets a value indicating whether the WebSocket connection is alive.
@@ -319,13 +305,7 @@ namespace WebSocketSharp
         /// <value>
         /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
         /// </value>
-        public bool IsSecure
-        {
-            get
-            {
-                return _secure;
-            }
-        }
+        public bool IsSecure => _secure;
 
         /// <summary>
         /// Gets or sets the value of the HTTP Origin header to send with the WebSocket connection
@@ -409,13 +389,7 @@ namespace WebSocketSharp
         /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the WebSocket
         /// connection. The default value is <see cref="WebSocketState.Connecting"/>.
         /// </value>
-        public WebSocketState ReadyState
-        {
-            get
-            {
-                return _readyState;
-            }
-        }
+        public WebSocketState ReadyState => _readyState;
 
         ///// <summary>
         ///// Gets or sets the SSL configuration used to authenticate the server and optionally the client
@@ -455,15 +429,9 @@ namespace WebSocketSharp
         /// <value>
         /// A <see cref="Uri"/> that represents the WebSocket URL to connect.
         /// </value>
-        public Uri Url
-        {
-            get
-            {
-                return _client
-                       ? _uri
-                       : _context.RequestUri;
-            }
-        }
+        public Uri Url => _client
+                              ? _uri
+                              : _context.RequestUri;
 
         /// <summary>
         /// Gets or sets the wait time for the response to the Ping or Close.
@@ -497,13 +465,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal CookieCollection CookieCollection
-        {
-            get
-            {
-                return _cookies;
-            }
-        }
+        internal CookieCollection CookieCollection => _cookies;
 
         // As server
         internal Func<WebSocketContext, string> CustomHandshakeRequestChecker
@@ -519,13 +481,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal bool IsConnected
-        {
-            get
-            {
-                return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
-            }
-        }
+        internal bool IsConnected => _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
 
         /// <summary>
         /// Closes the WebSocket connection, and releases all associated resources.
@@ -1570,11 +1526,11 @@ namespace WebSocketSharp
                 int bytesRead;
                 do
                 {
-                    var buffer = new byte[FragmentLength];
-                    bytesRead = stream.Read(buffer, 0, FragmentLength);
-                    var finalCode = bytesRead < FragmentLength ? Fin.Final : Fin.More;
+                    var buffer = new byte[_fragmentLength];
+                    bytesRead = stream.Read(buffer, 0, _fragmentLength);
+                    var finalCode = bytesRead < _fragmentLength ? Fin.Final : Fin.More;
 
-                    var data = bytesRead == FragmentLength ? buffer : buffer.SubArray(0, bytesRead);
+                    var data = bytesRead == _fragmentLength ? buffer : buffer.SubArray(0, bytesRead);
 
 
                     if (!await SendBytes(new WebSocketFrame(finalCode, opcode, data, compressed, _client).ToByteArray()).ConfigureAwait(false))
@@ -1584,7 +1540,7 @@ namespace WebSocketSharp
 
                     opcode = Opcode.Cont;
                 }
-                while (bytesRead == FragmentLength && _readyState == WebSocketState.Open);
+                while (bytesRead == _fragmentLength && _readyState == WebSocketState.Open);
 
                 return true;
             }
@@ -1726,7 +1682,7 @@ namespace WebSocketSharp
 
         private async Task StartReceiving(CancellationToken cancellationToken)
         {
-            var reader = new WebSocketStreamReader(_stream, FragmentLength);
+            var reader = new WebSocketStreamReader(_stream, _fragmentLength);
             WebSocketMessage message;
             while ((message = await reader.Read(cancellationToken).ConfigureAwait(false)) != null)
             {

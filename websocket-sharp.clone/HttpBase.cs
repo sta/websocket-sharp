@@ -1,4 +1,3 @@
-#region License
 /*
  * HttpBase.cs
  *
@@ -24,19 +23,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using System.Threading;
-using WebSocketSharp.Net;
 
 namespace WebSocketSharp
 {
-	internal abstract class HttpBase
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.IO;
+    using System.Text;
+    using System.Threading;
+
+    using WebSocketSharp.Net;
+
+    internal abstract class HttpBase
 	{
 	    private const int _headersMaxLength = 8192;
 

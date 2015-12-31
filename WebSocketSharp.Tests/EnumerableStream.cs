@@ -1,10 +1,10 @@
 namespace WebSocketSharp.Tests
 {
-	using System;
-	using System.Collections.Generic;
-	using System.IO;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
 
-	internal class EnumerableStream : Stream
+    internal class EnumerableStream : Stream
 	{
 		private readonly IEnumerator<byte> _enumerator;
 
@@ -51,31 +51,13 @@ namespace WebSocketSharp.Tests
 			throw new NotSupportedException();
 		}
 
-		public override bool CanRead
-		{
-			get
-			{
-				return true;
-			}
-		}
+		public override bool CanRead => true;
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public override bool CanSeek => false;
 
-		public override bool CanWrite
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public override bool CanWrite => false;
 
-		public override long Length
+        public override long Length
 		{
 			get
 			{

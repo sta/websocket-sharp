@@ -1,4 +1,3 @@
-#region License
 /*
  * SslConfiguration.cs
  *
@@ -27,21 +26,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
-#region Authors
 /*
  * Authors:
  * - Liryna <liryna.stark@gmail.com>
  */
-#endregion
-
-using System.Net.Security;
-using System.Security.Authentication;
 
 namespace WebSocketSharp.Net
 {
-	/// <summary>
+    using System.Net.Security;
+    using System.Security.Authentication;
+
+    /// <summary>
 	/// Stores the parameters used to configure a <see cref="SslStream"/> instance.
 	/// </summary>
 	/// <remarks>
@@ -49,16 +45,10 @@ namespace WebSocketSharp.Net
 	/// </remarks>
 	public abstract class SslConfiguration
 	{
-		#region Private Fields
-
-		private LocalCertificateSelectionCallback _certSelectionCallback;
+	    private LocalCertificateSelectionCallback _certSelectionCallback;
 		private RemoteCertificateValidationCallback _certValidationCallback;
 
-	    #endregion
-
-		#region Protected Constructors
-
-		/// <summary>
+	    /// <summary>
 		/// Initializes a new instance of the <see cref="SslConfiguration"/> class with
 		/// the specified <paramref name="enabledSslProtocols"/> and
 		/// <paramref name="checkCertificateRevocation"/>.
@@ -77,11 +67,7 @@ namespace WebSocketSharp.Net
 			CheckCertificateRevocation = checkCertificateRevocation;
 		}
 
-		#endregion
-
-		#region Protected Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets or sets the callback used to select a certificate to supply to the remote party.
 		/// </summary>
 		/// <remarks>
@@ -132,11 +118,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		#endregion
-
-		#region Public Properties
-
-		/// <summary>
+	    /// <summary>
 		/// Gets or sets a value indicating whether the certificate revocation list is checked
 		/// during authentication.
 		/// </summary>
@@ -153,7 +135,5 @@ namespace WebSocketSharp.Net
 		/// authentication.
 		/// </value>
 		public SslProtocols EnabledSslProtocols { get; protected set; }
-
-	    #endregion
 	}
 }

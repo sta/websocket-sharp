@@ -1,4 +1,3 @@
-#region License
 /*
  * CloseEventArgs.cs
  *
@@ -24,13 +23,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
-
-using System;
 
 namespace WebSocketSharp
 {
-	/// <summary>
+    using System;
+
+    /// <summary>
 	/// Contains the event data associated with a <see cref="WebSocket.OnClose"/> event.
 	/// </summary>
 	/// <remarks>
@@ -55,7 +53,7 @@ namespace WebSocketSharp
 			_rawData = _payloadData.ApplicationData;
 		}
 
-		internal CloseEventArgs(ushort code)
+        private CloseEventArgs(ushort code)
 		{
 			_rawData = code.InternalToByteArray(ByteOrder.Big);
 		}

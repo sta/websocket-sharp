@@ -1,4 +1,3 @@
-#region License
 /*
  * WebSocketBehavior.cs
  *
@@ -24,7 +23,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#endregion
 
 namespace WebSocketSharp.Server
 {
@@ -70,13 +68,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="WebSocketContext"/> that provides the access to the current connection request,
         /// or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        public WebSocketContext Context
-        {
-            get
-            {
-                return _context;
-            }
-        }
+        public WebSocketContext Context => _context;
 
         /// <summary>
         /// Gets or sets the delegate called to validate the HTTP cookies included in a connection
@@ -120,13 +112,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="string"/> that represents the unique ID of the current session,
         /// or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        public string ID
-        {
-            get
-            {
-                return _id;
-            }
-        }
+        public string ID => _id;
 
         /// <summary>
         /// Gets or sets the delegate called to validate the Origin header included in a connection
@@ -207,13 +193,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="DateTime"/> that represents the time that the current session has started,
         /// or <see cref="DateTime.MaxValue"/> if the WebSocket connection isn't established.
         /// </value>
-        public DateTime StartTime
-        {
-            get
-            {
-                return _start;
-            }
-        }
+        public DateTime StartTime => _start;
 
         /// <summary>
         /// Gets the state of the <see cref="WebSocket"/> used in the current session.
@@ -222,15 +202,9 @@ namespace WebSocketSharp.Server
         /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
         /// the <see cref="WebSocket"/> used in the current session.
         /// </value>
-        public WebSocketState State
-        {
-            get
-            {
-                return _websocket != null
-                       ? _websocket.ReadyState
-                       : WebSocketState.Connecting;
-            }
-        }
+        public WebSocketState State => _websocket != null
+                                           ? _websocket.ReadyState
+                                           : WebSocketState.Connecting;
 
         /// <summary>
         /// Gets the access to the sessions in the WebSocket service.
@@ -303,7 +277,7 @@ namespace WebSocketSharp.Server
         /// Called when the <see cref="WebSocket"/> used in the current session gets an error.
         /// </summary>
         /// <param name="e">
-        /// A <see cref="ErrorEventArgs"/> that represents the event data passed to
+        /// A <see cref="WebSocketSharp.ErrorEventArgs"/> that represents the event data passed to
         /// a <see cref="WebSocket.OnError"/> event.
         /// </param>
         protected virtual Task OnError(ErrorEventArgs e)
