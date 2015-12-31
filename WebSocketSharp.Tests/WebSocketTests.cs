@@ -65,7 +65,7 @@ namespace WebSocketSharp.Tests
                         waitHandle.Set();
                         return Task.FromResult(true);
                     };
-                _sut.OnMessage += onMessage;
+                _sut.OnMessage = onMessage;
 
                 var connected = _sut.Connect();
                 Console.WriteLine("Connected: " + connected);
@@ -91,12 +91,12 @@ namespace WebSocketSharp.Tests
                         waitHandle.Set();
                         return Task.FromResult(true);
                     };
-                _sut.OnMessage += onMessage;
+                _sut.OnMessage = onMessage;
 
                 var connected = _sut.Connect();
                 Console.WriteLine("Connected: " + connected);
 
-                var sent = await _sut.Send(Message);
+                var sent = await _sut.Send(Message).ConfigureAwait(false);
                 Console.WriteLine("Sent: " + sent);
 
                 var result = waitHandle.Wait(2000);

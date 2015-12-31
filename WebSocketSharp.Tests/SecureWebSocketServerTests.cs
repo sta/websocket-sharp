@@ -93,66 +93,7 @@ namespace WebSocketSharp.Tests
                     Assert.True(result);
                 }
             }
-
-            [Test]
-            public async Task WhenClientSendsAsyncTextMessageThenResponds()
-            {
-                const string Message = "Message";
-                var waitHandle = new ManualResetEventSlim(false);
-                using (var client = new WebSocket("wss://localhost:443/echo"))
-                {
-                    Func<MessageEventArgs, Task> onMessage = e =>
-                        {
-                            if (e.Text.ReadToEnd() == Message)
-                            {
-                                waitHandle.Set();
-                            }
-                            return Task.FromResult(true);
-                        };
-                    client.OnMessage = onMessage;
-
-                    await client.Connect().ConfigureAwait(false);
-                    await client.Send(Message).ConfigureAwait(false);
-
-                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 2000);
-
-                    Assert.True(result);
-                }
-            }
-
-            [Test]
-            public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
-            {
-                int count = 0;
-                const string Message = "Message";
-                var waitHandle = new ManualResetEventSlim(false);
-                using (var client = new WebSocket("wss://localhost:443/echo"))
-                {
-                    Func<MessageEventArgs, Task> onMessage = e =>
-                        {
-                            if (e.Text.ReadToEnd() == Message)
-                            {
-                                if (Interlocked.Increment(ref count) == multiplicity)
-                                {
-                                    waitHandle.Set();
-                                }
-                            }
-                            return Task.FromResult(true);
-                        };
-                    client.OnMessage = onMessage;
-
-                    await client.Connect().ConfigureAwait(false);
-                    for (int i = 0; i < multiplicity; i++)
-                    {
-                        await client.Send(Message).ConfigureAwait(false);
-                    }
-
-                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
-
-                    Assert.True(result);
-                }
-            }
-
+            
             [Test]
             public async Task WhenClientSendsMultipleTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
             {
