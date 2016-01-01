@@ -61,7 +61,7 @@ namespace WebSocketSharp.Net
 		/// Equivalent to status code 200.
 		/// Indicates that the client's request has succeeded.
 		/// </summary>
-		OK = 200,
+		Ok = 200,
 
 		/// <summary>
 		/// Equivalent to status code 201.

@@ -163,7 +163,7 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
-                    const int Multiplicity = 20000;
+                    const int Multiplicity = 5000;
                     Func<MessageEventArgs, Task> onMessage = async e =>
                         {
                             var msg = await e.Text.ReadToEndAsync().ConfigureAwait(false);
@@ -191,8 +191,6 @@ namespace WebSocketSharp.Tests
                     Console.WriteLine(stopwatch.Elapsed);
 
                     Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1));
-
-                    await client.Close().ConfigureAwait(false);
                 }
             }
 
@@ -247,7 +245,7 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
-                    const int Multiplicity = (int)1E6;
+                    const int Multiplicity = (int)1E3;
 
                     client.OnMessage = e => Task.FromResult(true);
 

@@ -431,7 +431,7 @@ namespace WebSocketSharp.Net
 			set
 			{
 				string msg;
-				if (!canSetName(value, out msg))
+				if (!CanSetName(value, out msg))
 					throw new CookieException(msg);
 
 				_name = value;
@@ -490,7 +490,7 @@ namespace WebSocketSharp.Net
 					  "The value specified for the Port attribute isn't enclosed in double quotes.");
 
 				string err;
-				if (!tryCreatePorts(value, out _ports, out err))
+				if (!TryCreatePorts(value, out _ports, out err))
 					throw new CookieException(
 					  string.Format(
 						"The value specified for the Port attribute contains an invalid value: {0}", err));
@@ -559,7 +559,7 @@ namespace WebSocketSharp.Net
 			set
 			{
 				string msg;
-				if (!canSetValue(value, out msg))
+				if (!CanSetValue(value, out msg))
 					throw new CookieException(msg);
 
 				_value = value.Length > 0 ? value : "\"\"";
@@ -592,7 +592,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-	    private static bool canSetName(string name, out string message)
+	    private static bool CanSetName(string name, out string message)
 		{
 			if (name.IsNullOrEmpty())
 			{
@@ -610,7 +610,7 @@ namespace WebSocketSharp.Net
 			return true;
 		}
 
-		private static bool canSetValue(string value, out string message)
+		private static bool CanSetValue(string value, out string message)
 		{
 			if (value == null)
 			{
@@ -628,7 +628,7 @@ namespace WebSocketSharp.Net
 			return true;
 		}
 
-		private static int hash(int i, int j, int k, int l, int m)
+		private static int Hash(int i, int j, int k, int l, int m)
 		{
 			return i ^
 				   (j << 13 | j >> 19) ^
@@ -637,7 +637,7 @@ namespace WebSocketSharp.Net
 				   (m << 20 | m >> 12);
 		}
 
-		private string toResponseStringVersion0()
+		private string ToResponseStringVersion0()
 		{
 			var output = new StringBuilder(64);
 			output.AppendFormat("{0}={1}", _name, _value);
@@ -664,7 +664,7 @@ namespace WebSocketSharp.Net
 			return output.ToString();
 		}
 
-		private string toResponseStringVersion1()
+		private string ToResponseStringVersion1()
 		{
 			var output = new StringBuilder(64);
 			output.AppendFormat("{0}={1}; Version={2}", _name, _value, _version);
@@ -704,7 +704,7 @@ namespace WebSocketSharp.Net
 			return output.ToString();
 		}
 
-		private static bool tryCreatePorts(string value, out int[] result, out string parseError)
+		private static bool TryCreatePorts(string value, out int[] result, out string parseError)
 		{
 			var ports = value.Trim('"').Split(',');
 			var len = ports.Length;
@@ -770,7 +770,7 @@ namespace WebSocketSharp.Net
 		internal string ToResponseString()
 		{
 			return _name.Length > 0
-				   ? (_version == 0 ? toResponseStringVersion0() : toResponseStringVersion1())
+				   ? (_version == 0 ? ToResponseStringVersion0() : ToResponseStringVersion1())
 				   : string.Empty;
 		}
 
@@ -804,7 +804,7 @@ namespace WebSocketSharp.Net
 		/// </returns>
 		public override int GetHashCode()
 		{
-			return hash(
+			return Hash(
 			  StringComparer.InvariantCultureIgnoreCase.GetHashCode(_name),
 			  _value.GetHashCode(),
 			  _path.GetHashCode(),

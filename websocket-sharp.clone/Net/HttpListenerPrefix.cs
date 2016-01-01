@@ -54,7 +54,7 @@ namespace WebSocketSharp.Net
 		public HttpListenerPrefix(string uriPrefix)
 		{
 			_original = uriPrefix;
-			parse(uriPrefix);
+			Parse(uriPrefix);
 		}
         
 		public string Host => _host;
@@ -76,7 +76,7 @@ namespace WebSocketSharp.Net
 
         public int Port => _port;
 
-        private void parse(string uriPrefix)
+        private void Parse(string uriPrefix)
 		{
 			var defaultPort = uriPrefix.StartsWith("https://") ? 443 : 80;
 			if (defaultPort == 443)

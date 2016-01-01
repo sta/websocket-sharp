@@ -107,7 +107,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				_contentEncoding = value;
 			}
 		}
@@ -137,7 +137,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				if (value < 0)
 					throw new ArgumentOutOfRangeException("Less than zero.", "value");
 
@@ -173,7 +173,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				if (value == null)
 					throw new ArgumentNullException("value");
 
@@ -205,7 +205,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				_cookies = value;
 			}
 		}
@@ -244,7 +244,7 @@ namespace WebSocketSharp.Net
 
 				// TODO: Check if this is marked readonly after headers are sent.
 
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				if (value == null)
 					throw new ArgumentNullException("value");
 
@@ -265,7 +265,7 @@ namespace WebSocketSharp.Net
 		{
 			get
 			{
-				checkDisposed();
+				CheckDisposed();
 				return _outputStream ?? (_outputStream = _context.Connection.GetResponseStream());
 			}
 		}
@@ -291,7 +291,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				_chunked = value;
 			}
 		}
@@ -301,7 +301,7 @@ namespace WebSocketSharp.Net
 		/// </summary>
 		/// <value>
 		/// An <see cref="int"/> that represents the status code for the response to the request.
-		/// The default value is <see cref="HttpStatusCode.OK"/>.
+		/// The default value is <see cref="HttpStatusCode.Ok"/>.
 		/// </value>
 		/// <exception cref="InvalidOperationException">
 		/// The response has already been sent.
@@ -321,7 +321,7 @@ namespace WebSocketSharp.Net
 
 			set
 			{
-				checkDisposedOrHeadersSent();
+				CheckDisposedOrHeadersSent();
 				if (value < 100 || value > 999)
 					throw new ProtocolViolationException(
 					  "StatusCode isn't between 100 and 999.");
@@ -331,14 +331,14 @@ namespace WebSocketSharp.Net
 			}
 		}
         
-	    private bool canAddOrUpdate(Cookie cookie)
+	    private bool CanAddOrUpdate(Cookie cookie)
 		{
 			if (_cookies == null || _cookies.Count == 0)
 			{
 				return true;
 			}
 
-			var found = findCookie(cookie).ToList();
+			var found = FindCookie(cookie).ToList();
 			if (found.Count == 0)
 			{
 				return true;
@@ -348,7 +348,7 @@ namespace WebSocketSharp.Net
 			return found.Any(c => c.Version == ver);
 		}
 
-		private void checkDisposed()
+		private void CheckDisposed()
 		{
 			if (_disposed)
 			{
@@ -356,7 +356,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		private void checkDisposedOrHeadersSent()
+		private void CheckDisposedOrHeadersSent()
 		{
 			if (_disposed)
 			{
@@ -375,7 +375,7 @@ namespace WebSocketSharp.Net
 			_context.Connection.Close(force);
 		}
 
-		private IEnumerable<Cookie> findCookie(Cookie cookie)
+		private IEnumerable<Cookie> FindCookie(Cookie cookie)
 		{
 			var name = cookie.Name;
 			var domain = cookie.Domain;
@@ -577,7 +577,7 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void CopyFrom(HttpListenerResponse templateResponse)
 		{
-			checkDisposedOrHeadersSent();
+			CheckDisposedOrHeadersSent();
 
 			_headers.Clear();
 			_headers.Add(templateResponse._headers);
@@ -627,11 +627,11 @@ namespace WebSocketSharp.Net
 		/// </exception>
 		public void SetCookie(Cookie cookie)
 		{
-			checkDisposedOrHeadersSent();
+			CheckDisposedOrHeadersSent();
 			if (cookie == null)
 				throw new ArgumentNullException("cookie");
 
-			if (!canAddOrUpdate(cookie))
+			if (!CanAddOrUpdate(cookie))
 				throw new ArgumentException("Cannot be replaced.", "cookie");
 
 			Cookies.Add(cookie);

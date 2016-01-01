@@ -72,7 +72,6 @@ namespace WebSocketSharp
         private readonly string[] _protocols;
         private readonly ClientSslConfiguration _sslConfig;
         private readonly CancellationToken _cancellationToken;
-        private bool _istransmitting;
         private AuthenticationChallenge _authChallenge;
         private string _base64Key;
         private Action _closeContext;
@@ -83,7 +82,6 @@ namespace WebSocketSharp
         private string _extensions;
         private AutoResetEvent _exitReceiving;
         private object _forConn;
-        private object _forEvent;
         private object _forSend;
         private Func<WebSocketContext, string> _handshakeRequestChecker;
         private uint _nonceCount;
@@ -708,7 +706,7 @@ namespace WebSocketSharp
 
             return InnerSend(Opcode.Text, new MemoryStream(Encoding.UTF8.GetBytes(data)));
         }
-        
+
         /// <summary>
         /// Sets an HTTP <paramref name="cookie"/> to send with the WebSocket connection request
         /// to the server.
@@ -862,7 +860,7 @@ namespace WebSocketSharp
         {
             _registration.Dispose();
             var send = _readyState == WebSocketState.Open;
-            InnerClose(new CloseEventArgs(CloseStatusCode.Away), send, send);
+            InnerClose(new CloseEventArgs(CloseStatusCode.Away), send, send).Wait(TimeSpan.FromSeconds(2));
         }
 
         // As server
@@ -906,25 +904,11 @@ namespace WebSocketSharp
 
         internal Task<bool> InnerSend(Fin final, Opcode opcode, byte[] data)
         {
-            lock (_forSend)
+            using (var ml = new MonitorLock(_forSend))
             {
-                while (_istransmitting)
-                {
-                    Monitor.Wait(_forSend);
-                }
-            }
-            var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
-            try
-            {
+                var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
+
                 return SendBytes(frame.ToByteArray());
-            }
-            finally
-            {
-                lock (_forSend)
-                {
-                    _istransmitting = false;
-                    Monitor.Pulse(_forSend);
-                }
             }
         }
 
@@ -1033,7 +1017,7 @@ namespace WebSocketSharp
             e.WasClean = await CloseHandshake(
                 send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
                 wait ? WaitTime : TimeSpan.Zero,
-                _client ? (Action)ReleaseClientResources : ReleaseServerResources)
+                _client ? (Func<Task>)ReleaseClientResources : ReleaseServerResources)
                 .ConfigureAwait(false);
 
             _readyState = WebSocketState.Closed;
@@ -1112,7 +1096,8 @@ namespace WebSocketSharp
             e.WasClean = await CloseHandshake(
                 send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
                 wait ? _waitTime : TimeSpan.Zero,
-                _client ? (Action)ReleaseClientResources : ReleaseServerResources).ConfigureAwait(false);
+                _client ? (Func<Task>)ReleaseClientResources : ReleaseServerResources)
+                .ConfigureAwait(false);
 
             _readyState = WebSocketState.Closed;
             try
@@ -1125,7 +1110,7 @@ namespace WebSocketSharp
             }
         }
 
-        private async Task<bool> CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Action release)
+        private async Task<bool> CloseHandshake(byte[] frameAsBytes, TimeSpan timeout, Func<Task> release)
         {
             if (frameAsBytes == null)
             {
@@ -1139,7 +1124,7 @@ namespace WebSocketSharp
             }
             var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
 
-            release();
+            await release().ConfigureAwait(false);
             if (_receivePong != null)
             {
                 _receivePong.Close();
@@ -1216,16 +1201,22 @@ namespace WebSocketSharp
 
             var headers = req.Headers;
             if (!_origin.IsNullOrEmpty())
+            {
                 headers["Origin"] = _origin;
+            }
 
             headers["Sec-WebSocket-Key"] = _base64Key;
 
             if (_protocols != null)
+            {
                 headers["Sec-WebSocket-Protocol"] = _protocols.ToString(", ");
+            }
 
             var extensions = CreateExtensions();
             if (extensions != null)
+            {
                 headers["Sec-WebSocket-Extensions"] = extensions;
+            }
 
             headers["Sec-WebSocket-Version"] = SocketVersion;
 
@@ -1272,7 +1263,7 @@ namespace WebSocketSharp
         // As client
         private async Task<bool> DoHandshake()
         {
-            SetClientStream();
+            await SetClientStream().ConfigureAwait(false);
             var res = await SendHandshakeRequest().ConfigureAwait(false);
             var msg = InnerCheckIfValidHandshakeResponse(res);
             if (msg != null)
@@ -1303,7 +1294,6 @@ namespace WebSocketSharp
             _compression = CompressionMethod.None;
             _cookies = new CookieCollection();
             _forConn = new object();
-            _forEvent = new object();
             _forSend = new object();
             _readyState = WebSocketState.Connecting;
         }
@@ -1314,16 +1304,13 @@ namespace WebSocketSharp
             {
                 StartReceiving(_cancellationToken);
 
-                lock (_forEvent)
+                try
                 {
-                    try
-                    {
-                        OnOpen?.Invoke();
-                    }
-                    catch (Exception ex)
-                    {
-                        ProcessException(ex, "An exception has occurred during an OnOpen event.");
-                    }
+                    OnOpen?.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    ProcessException(ex, "An exception has occurred during an OnOpen event.");
                 }
             }
             catch (Exception ex)
@@ -1408,11 +1395,11 @@ namespace WebSocketSharp
         }
 
         // As client
-        private void ReleaseClientResources()
+        private async Task ReleaseClientResources()
         {
             if (_stream != null)
             {
-                _stream.Flush();
+                await _stream.FlushAsync().ConfigureAwait(false);
                 _stream.Dispose();
                 _stream = null;
             }
@@ -1425,7 +1412,7 @@ namespace WebSocketSharp
         }
 
         // As server
-        private void ReleaseServerResources()
+        private async Task ReleaseServerResources()
         {
             if (_closeContext == null)
             {
@@ -1434,7 +1421,7 @@ namespace WebSocketSharp
 
             _closeContext();
             _closeContext = null;
-            _stream.Flush();
+            await _stream.FlushAsync().ConfigureAwait(false);
             _stream = null;
             _context = null;
         }
@@ -1575,8 +1562,8 @@ namespace WebSocketSharp
                 {
                     if (res.Headers.Contains("Connection", "close"))
                     {
-                        ReleaseClientResources();
-                        SetClientStream();
+                        await ReleaseClientResources().ConfigureAwait(false);
+                        await SetClientStream().ConfigureAwait(false);
                     }
 
                     var authRes = new AuthenticationResponse(_authChallenge, _credentials, _nonceCount);
@@ -1615,7 +1602,7 @@ namespace WebSocketSharp
                 {
                     if (res.Headers.Contains("Connection", "close"))
                     {
-                        ReleaseClientResources();
+                        await ReleaseClientResources().ConfigureAwait(false);
                         _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
                         _stream = _tcpClient.GetStream();
                     }
@@ -1637,13 +1624,13 @@ namespace WebSocketSharp
         }
 
         // As client
-        private void SetClientStream()
+        private async Task SetClientStream()
         {
             if (_proxyUri != null)
             {
                 _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
                 _stream = _tcpClient.GetStream();
-                SendProxyConnectRequest();
+                await SendProxyConnectRequest().ConfigureAwait(false);
             }
             else
             {
@@ -1654,9 +1641,8 @@ namespace WebSocketSharp
             if (_secure)
             {
                 var certSelectionCallback = _sslConfig?.CertificateSelection;
-                var certificateValidationCallback = _sslConfig != null && _sslConfig.CertificateValidationCallback != null
-                                                        ? _sslConfig.CertificateValidationCallback
-                                                        : ((sender, certificate, chain, sslPolicyErrors) => true);
+                var certificateValidationCallback = _sslConfig?.CertificateValidationCallback
+                    ?? ((sender, certificate, chain, sslPolicyErrors) => true);
                 var sslStream = new SslStream(
                   _stream,
                   false,
@@ -1665,15 +1651,16 @@ namespace WebSocketSharp
 
                 if (_sslConfig == null)
                 {
-                    sslStream.AuthenticateAsClient(_uri.DnsSafeHost);
+                    await sslStream.AuthenticateAsClientAsync(_uri.DnsSafeHost).ConfigureAwait(false);
                 }
                 else
                 {
-                    sslStream.AuthenticateAsClient(
+                    await sslStream.AuthenticateAsClientAsync(
                         _uri.DnsSafeHost,
                         _sslConfig.ClientCertificates,
                         _sslConfig.EnabledSslProtocols,
-                        _sslConfig.CheckCertificateRevocation);
+                        _sslConfig.CheckCertificateRevocation)
+                        .ConfigureAwait(false);
                 }
 
                 _stream = sslStream;
@@ -1696,7 +1683,7 @@ namespace WebSocketSharp
                         {
                             await OnMessage.Invoke(new MessageEventArgs(message)).ConfigureAwait(false);
                         }
-                        message.Consume();
+                        await message.Consume().ConfigureAwait(false);
                         break;
                     case Opcode.Close:
                         ProcessCloseFrame(message);
@@ -1723,7 +1710,7 @@ namespace WebSocketSharp
         private bool ValidateSecWebSocketExtensionsHeader(string value)
         {
             var compress = _compression != CompressionMethod.None;
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
             {
                 if (compress)
                 {

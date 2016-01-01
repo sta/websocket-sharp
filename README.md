@@ -13,12 +13,6 @@
 - **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
 - .NET **4.5** or later (includes compatible)
 
-## Branches ##
-
-- **[master]** for production releases.
-- **[hybi-00]** for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
-- **[draft75]** for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
-
 ## Build ##
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
@@ -30,8 +24,6 @@ websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build 
 ### Self Build ###
 
 You should add your **websocket-sharp.dll** (e.g. `/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll`) to the library references of your project.
-
-If you would like to use that dll in your **[Unity]** project, you should add it to any folder of your project (e.g. `Assets/Plugins`) in **Unity Editor**.
 
 ### NuGet Gallery ###
 
@@ -58,8 +50,9 @@ namespace Example
     public static void Main (string[] args)
     {
       using (var ws = new WebSocket ("ws://dragonsnest.far/Laputa")) {
-        ws.OnMessage += (sender, e) =>
+        ws.OnMessage = e => {
           Console.WriteLine ("Laputa says: " + e.Data);
+          }
 
         ws.Connect ();
         ws.Send ("BALUS");
@@ -101,7 +94,7 @@ Setting the `WebSocket` events.
 A `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
 
 ```cs
-ws.OnOpen += (sender, e) => {
+ws.OnOpen = (sender, e) => {
   ...
 };
 ```
@@ -538,52 +531,6 @@ I tested this with the [Squid]. And it's necessary to disable the following conf
 #http_access deny CONNECT !SSL_ports
 ```
 
-### Logging ###
-
-The `WebSocket` class includes the own logging function.
-
-You can use it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
-
-So if you would like to change the current logging level (`WebSocketSharp.LogLevel.Error` as the default), you should set the `WebSocket.Log.Level` property to any of the `LogLevel` enum values.
-
-```cs
-ws.Log.Level = LogLevel.Debug;
-```
-
-The above means a log with lower than `LogLevel.Debug` cannot be outputted.
-
-And if you would like to output a log, you should use any of the output methods. The following outputs a log with `LogLevel.Debug`.
-
-```cs
-ws.Log.Debug ("This is a debug message.");
-```
-
-The `WebSocketServer` and `HttpServer` classes include the same logging function.
-
-## Examples ##
-
-Examples using websocket-sharp.
-
-### Example ###
-
-**[Example]** connects to the **[Echo server]** with the WebSocket.
-
-### Example1 ###
-
-**[Example1]** connects to the **[Audio Data delivery server]** with the WebSocket. (But it's only implemented the chat feature, still unfinished.)
-
-And Example1 uses **[Json.NET]**.
-
-### Example2 ###
-
-**[Example2]** starts a WebSocket server.
-
-### Example3 ###
-
-**[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
-
-Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser after Example3 running?
-
 ## Supported WebSocket Specifications ##
 
 websocket-sharp supports **[RFC 6455][rfc6455]**, and it's based on the following WebSocket references:
@@ -591,11 +538,6 @@ websocket-sharp supports **[RFC 6455][rfc6455]**, and it's based on the followin
 - **[The WebSocket Protocol][rfc6455]**
 - **[The WebSocket API][api]**
 - **[Compression Extensions for WebSocket][compression]**
-
-Thanks for translating to japanese.
-
-- **[The WebSocket Protocol 日本語訳][rfc6455_ja]**
-- **[The WebSocket API 日本語訳][api_ja]**
 
 ## License ##
 

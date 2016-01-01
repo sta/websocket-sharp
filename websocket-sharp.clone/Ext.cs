@@ -133,7 +133,7 @@ namespace WebSocketSharp
 
             return vals.Split(',').Any(val => val.Trim().Equals(value, StringComparison.OrdinalIgnoreCase));
         }
-        
+
         /// <summary>
         /// Gets the collection of the HTTP cookies from the specified HTTP <paramref name="headers"/>.
         /// </summary>
@@ -519,20 +519,11 @@ namespace WebSocketSharp
         public static string ToString<T>(this T[] array, string separator)
         {
             if (array == null)
+            {
                 throw new ArgumentNullException(nameof(array));
+            }
 
-            var len = array.Length;
-            if (len == 0)
-                return string.Empty;
-
-            if (separator == null)
-                separator = string.Empty;
-
-            var buff = new StringBuilder(64);
-            (len - 1).Times(i => buff.AppendFormat("{0}{1}", array[i].ToString(), separator));
-
-            buff.Append(array[len - 1]);
-            return buff.ToString();
+            return string.Join(separator ?? string.Empty, array);
         }
 
         /// <summary>
@@ -690,7 +681,7 @@ namespace WebSocketSharp
                        : null;
         }
 
-        internal static string CheckIfValidSessionID(this string id)
+        internal static string CheckIfValidSessionId(this string id)
         {
             return string.IsNullOrEmpty(id)
                    ? "'id' is null or empty."
@@ -1134,7 +1125,7 @@ namespace WebSocketSharp
                        : string.Empty;
         }
 
-        internal static IPAddress ToIPAddress(this string hostNameOrAddress)
+        internal static IPAddress ToIpAddress(this string hostNameOrAddress)
         {
             try
             {

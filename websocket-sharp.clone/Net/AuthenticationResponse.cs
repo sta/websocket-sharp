@@ -68,7 +68,7 @@ namespace WebSocketSharp.Net
 			Parameters["uri"] = credentials.Domain;
 			_nonceCount = nonceCount;
 			if (scheme == AuthenticationSchemes.Digest)
-				initAsDigest();
+				InitAsDigest();
 		}
 
 	    internal uint NonceCount => _nonceCount < UInt32.MaxValue
@@ -84,7 +84,7 @@ namespace WebSocketSharp.Net
 		  string username, string password, string realm, string nonce, string cnonce)
 		{
 			return string.Format(
-			  "{0}:{1}:{2}", hash(createA1(username, password, realm)), nonce, cnonce);
+			  "{0}:{1}:{2}", Hash(createA1(username, password, realm)), nonce, cnonce);
 		}
 
 		private static string createA2(string method, string uri)
@@ -94,10 +94,10 @@ namespace WebSocketSharp.Net
 
 		private static string createA2(string method, string uri, string entity)
 		{
-			return string.Format("{0}:{1}:{2}", method, uri, hash(entity));
+			return string.Format("{0}:{1}:{2}", method, uri, Hash(entity));
 		}
 
-		private static string hash(string value)
+		private static string Hash(string value)
 		{
 			var src = Encoding.UTF8.GetBytes(value);
 			var md5 = MD5.Create();
@@ -110,7 +110,7 @@ namespace WebSocketSharp.Net
 			return res.ToString();
 		}
 
-		private void initAsDigest()
+		private void InitAsDigest()
 		{
 			var qops = Parameters["qop"];
 			if (qops != null)
@@ -152,12 +152,12 @@ namespace WebSocketSharp.Net
 					 ? createA2(method, uri, parameters["entity"])
 					 : createA2(method, uri);
 
-			var secret = hash(a1);
+			var secret = Hash(a1);
 			var data = qop != null
-					   ? string.Format("{0}:{1}:{2}:{3}:{4}", nonce, nc, cnonce, qop, hash(a2))
-					   : string.Format("{0}:{1}", nonce, hash(a2));
+					   ? string.Format("{0}:{1}:{2}:{3}:{4}", nonce, nc, cnonce, qop, Hash(a2))
+					   : string.Format("{0}:{1}", nonce, Hash(a2));
 
-			return hash(string.Format("{0}:{1}", secret, data));
+			return Hash(string.Format("{0}:{1}", secret, data));
 		}
 
 		internal static AuthenticationResponse Parse(string value)

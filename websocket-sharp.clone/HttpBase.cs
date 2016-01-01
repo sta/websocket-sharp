@@ -37,7 +37,7 @@ namespace WebSocketSharp
 
     internal abstract class HttpBase
 	{
-	    private const int _headersMaxLength = 8192;
+	    private const int HeadersMaxLength = 8192;
 
 	    internal byte[] EntityBodyData;
 
@@ -138,7 +138,7 @@ namespace WebSocketSharp
 			Exception exception = null;
 			try
 			{
-				http = parser(ReadHeaders(stream, _headersMaxLength));
+				http = parser(ReadHeaders(stream, HeadersMaxLength));
 				var contentLen = http.Headers["Content-Length"];
 			    if (!string.IsNullOrEmpty(contentLen))
 			    {

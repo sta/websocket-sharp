@@ -45,7 +45,7 @@ namespace WebSocketSharp.Net
 	// what if we don't set content-length at all?
 	internal class ResponseStream : Stream
 	{
-	    private static byte[] _crlf = { 13, 10 };
+	    private static byte[] crlf = { 13, 10 };
 
 	    private bool _disposed;
 		private bool _ignoreErrors;
@@ -87,12 +87,12 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-	    private static byte[] getChunkSizeBytes(int size, bool final)
+	    private static byte[] GetChunkSizeBytes(int size, bool final)
 		{
 			return Encoding.ASCII.GetBytes(string.Format("{0:x}\r\n{1}", size, final ? "\r\n" : ""));
 		}
 
-		private MemoryStream getHeaders(bool closing)
+		private MemoryStream GetHeaders(bool closing)
 		{
 			if (_response.HeadersSent)
 				return null;
@@ -133,7 +133,7 @@ namespace WebSocketSharp.Net
 			if (_disposed)
 				throw new ObjectDisposedException(GetType().ToString());
 
-			var headers = getHeaders(false);
+			var headers = GetHeaders(false);
 			var chunked = _response.SendChunked;
 			byte[] bytes = null;
 			if (headers != null)
@@ -144,7 +144,7 @@ namespace WebSocketSharp.Net
 					headers.Position = headers.Length;
 					if (chunked)
 					{
-						bytes = getChunkSizeBytes(count, false);
+						bytes = GetChunkSizeBytes(count, false);
 						headers.Write(bytes, 0, bytes.Length);
 					}
 
@@ -156,7 +156,7 @@ namespace WebSocketSharp.Net
 			}
 			else if (chunked)
 			{
-				bytes = getChunkSizeBytes(count, false);
+				bytes = GetChunkSizeBytes(count, false);
 				WriteInternally(bytes, 0, bytes.Length);
 			}
 
@@ -170,7 +170,7 @@ namespace WebSocketSharp.Net
 
 			_disposed = true;
 
-			var headers = getHeaders(true);
+			var headers = GetHeaders(true);
 			var chunked = _response.SendChunked;
 			byte[] bytes = null;
 			if (headers != null)
@@ -180,7 +180,7 @@ namespace WebSocketSharp.Net
 					var start = headers.Position;
 					if (chunked && !_trailerSent)
 					{
-						bytes = getChunkSizeBytes(0, true);
+						bytes = GetChunkSizeBytes(0, true);
 						headers.Position = headers.Length;
 						headers.Write(bytes, 0, bytes.Length);
 					}
@@ -192,7 +192,7 @@ namespace WebSocketSharp.Net
 			}
 			else if (chunked && !_trailerSent)
 			{
-				bytes = getChunkSizeBytes(0, true);
+				bytes = GetChunkSizeBytes(0, true);
 				WriteInternally(bytes, 0, bytes.Length);
 				_trailerSent = true;
 			}
@@ -214,7 +214,7 @@ namespace WebSocketSharp.Net
 			{
 				_stream.EndWrite(ares);
 				if (_response.SendChunked)
-					_stream.Write(_crlf, 0, 2);
+					_stream.Write(crlf, 0, 2);
 			};
 
 			if (_ignoreErrors)
@@ -257,7 +257,7 @@ namespace WebSocketSharp.Net
 			if (_disposed)
 				throw new ObjectDisposedException(GetType().ToString());
 
-			var headers = getHeaders(false);
+			var headers = GetHeaders(false);
 			var chunked = _response.SendChunked;
 			byte[] bytes = null;
 			if (headers != null)
@@ -269,7 +269,7 @@ namespace WebSocketSharp.Net
 					headers.Position = headers.Length;
 					if (chunked)
 					{
-						bytes = getChunkSizeBytes(count, false);
+						bytes = GetChunkSizeBytes(count, false);
 						headers.Write(bytes, 0, bytes.Length);
 					}
 
@@ -282,7 +282,7 @@ namespace WebSocketSharp.Net
 			}
 			else if (chunked)
 			{
-				bytes = getChunkSizeBytes(count, false);
+				bytes = GetChunkSizeBytes(count, false);
 				WriteInternally(bytes, 0, bytes.Length);
 			}
 
@@ -290,7 +290,7 @@ namespace WebSocketSharp.Net
 				WriteInternally(buffer, offset, count);
 
 			if (chunked)
-				WriteInternally(_crlf, 0, 2);
+				WriteInternally(crlf, 0, 2);
 		}
 	}
 }

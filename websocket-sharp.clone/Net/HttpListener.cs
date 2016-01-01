@@ -263,20 +263,20 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void cleanup(bool force)
+        private void Cleanup(bool force)
         {
             lock (_ctxRegistrySync)
             {
                 if (!force)
-                    sendServiceUnavailable();
+                    SendServiceUnavailable();
 
-                cleanupContextRegistry();
-                cleanupConnections();
-                cleanupWaitQueue();
+                CleanupContextRegistry();
+                CleanupConnections();
+                CleanupWaitQueue();
             }
         }
 
-        private void cleanupConnections()
+        private void CleanupConnections()
         {
             lock (_connectionsSync)
             {
@@ -293,7 +293,7 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void cleanupContextRegistry()
+        private void CleanupContextRegistry()
         {
             lock (_ctxRegistrySync)
             {
@@ -310,7 +310,7 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void cleanupWaitQueue()
+        private void CleanupWaitQueue()
         {
             lock (_waitQueueSync)
             {
@@ -325,14 +325,14 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void close(bool force)
+        private void Close(bool force)
         {
             EndPointManager.RemoveListener(this);
-            cleanup(force);
+            Cleanup(force);
         }
 
         // Must be called with a lock on _ctxQueue.
-        private HttpListenerContext getContextFromQueue()
+        private HttpListenerContext GetContextFromQueue()
         {
             if (_ctxQueue.Count == 0)
                 return null;
@@ -343,7 +343,7 @@ namespace WebSocketSharp.Net
             return ctx;
         }
 
-        private void sendServiceUnavailable()
+        private void SendServiceUnavailable()
         {
             lock (_ctxQueueSync)
             {
@@ -381,7 +381,7 @@ namespace WebSocketSharp.Net
             {
                 lock (_ctxQueueSync)
                 {
-                    var ctx = getContextFromQueue();
+                    var ctx = GetContextFromQueue();
                     if (ctx != null)
                     {
                         asyncResult.Complete(ctx, true);
@@ -516,7 +516,7 @@ namespace WebSocketSharp.Net
             if (_disposed)
                 return;
 
-            close(true);
+            Close(true);
             _disposed = true;
         }
     }

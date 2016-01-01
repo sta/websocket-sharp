@@ -5,18 +5,11 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketSharp.Tests", "WebSocketSharp.Tests\WebSocketSharp.Tests.csproj", "{D24DD051-53FD-4567-B6AD-F6306E715E47}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{33F84F73-39BD-4FFF-9F64-606276A5E845}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		README.md = README.md
-		tasks.ps1 = tasks.ps1
-		websocket-sharp.nuspec = websocket-sharp.nuspec
-		websocket-sharp.symbols.nuspec = websocket-sharp.symbols.nuspec
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06BF336E-24FF-4267-A4AE-0D0CA8BB60F4}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		global.json = global.json
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebSocketSharp", "websocket-sharp.clone\WebSocketSharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"

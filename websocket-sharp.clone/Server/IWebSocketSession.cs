@@ -49,7 +49,7 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="string"/> that represents the unique ID of the session.
     /// </value>
-    string ID { get; }
+    string Id { get; }
 
     /// <summary>
     /// Gets the WebSocket subprotocol used in the session.

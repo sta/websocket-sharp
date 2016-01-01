@@ -115,7 +115,7 @@ namespace WebSocketSharp.Server
                 throw new ArgumentException(msg, "url");
             }
 
-            _address = _uri.DnsSafeHost.ToIPAddress();
+            _address = _uri.DnsSafeHost.ToIpAddress();
             if (_address == null || !_address.IsLocal())
             {
                 throw new ArgumentException("The host part isn't a local host name: " + url, "url");

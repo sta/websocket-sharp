@@ -68,7 +68,7 @@ namespace WebSocketSharp.Net
 			{
 				var list = new List<Cookie>(_list);
 				if (list.Count > 1)
-					list.Sort(compareCookieWithinSorted);
+					list.Sort(CompareCookieWithinSorted);
 
 				return list;
 			}
@@ -161,12 +161,12 @@ namespace WebSocketSharp.Net
 		/// </value>
 		public Object SyncRoot => _sync ?? (_sync = ((ICollection)_list).SyncRoot);
 
-        private static int compareCookieWithinSort(Cookie x, Cookie y)
+        private static int CompareCookieWithinSort(Cookie x, Cookie y)
 		{
 			return x.Name.Length + x.Value.Length - (y.Name.Length + y.Value.Length);
 		}
 
-		private static int compareCookieWithinSorted(Cookie x, Cookie y)
+		private static int CompareCookieWithinSorted(Cookie x, Cookie y)
 		{
 			int ret;
 			return (ret = x.Version - y.Version) != 0
@@ -176,13 +176,13 @@ namespace WebSocketSharp.Net
 					 : y.Path.Length - x.Path.Length;
 		}
 
-		private static CookieCollection parseRequest(string value)
+		private static CookieCollection ParseRequest(string value)
 		{
 			var cookies = new CookieCollection();
 
 			Cookie cookie = null;
 			var ver = 0;
-			var pairs = splitCookieHeaderValue(value);
+			var pairs = SplitCookieHeaderValue(value);
 			for (var i = 0; i < pairs.Length; i++)
 			{
 				var pair = pairs[i].Trim();
@@ -247,12 +247,12 @@ namespace WebSocketSharp.Net
 			return cookies;
 		}
 
-		private static CookieCollection parseResponse(string value)
+		private static CookieCollection ParseResponse(string value)
 		{
 			var cookies = new CookieCollection();
 
 			Cookie cookie = null;
-			var pairs = splitCookieHeaderValue(value);
+			var pairs = SplitCookieHeaderValue(value);
 			for (var i = 0; i < pairs.Length; i++)
 			{
 				var pair = pairs[i].Trim();
@@ -366,7 +366,7 @@ namespace WebSocketSharp.Net
 			return cookies;
 		}
 
-		private int searchCookie(Cookie cookie)
+		private int SearchCookie(Cookie cookie)
 		{
 			var name = cookie.Name;
 			var path = cookie.Path;
@@ -386,7 +386,7 @@ namespace WebSocketSharp.Net
 			return -1;
 		}
 
-		private static string[] splitCookieHeaderValue(string value)
+		private static string[] SplitCookieHeaderValue(string value)
 		{
 			return new List<string>(value.SplitHeaderValue(',', ';')).ToArray();
 		}
@@ -394,13 +394,13 @@ namespace WebSocketSharp.Net
 	    internal static CookieCollection Parse(string value, bool response)
 		{
 			return response
-				   ? parseResponse(value)
-				   : parseRequest(value);
+				   ? ParseResponse(value)
+				   : ParseRequest(value);
 		}
 
 		internal void SetOrRemove(Cookie cookie)
 		{
-			var pos = searchCookie(cookie);
+			var pos = SearchCookie(cookie);
 			if (pos == -1)
 			{
 				if (!cookie.Expired)
@@ -427,7 +427,7 @@ namespace WebSocketSharp.Net
 		internal void Sort()
 		{
 			if (_list.Count > 1)
-				_list.Sort(compareCookieWithinSort);
+				_list.Sort(CompareCookieWithinSort);
 		}
 
 	    /// <summary>
@@ -444,7 +444,7 @@ namespace WebSocketSharp.Net
 			if (cookie == null)
 				throw new ArgumentNullException("cookie");
 
-			var pos = searchCookie(cookie);
+			var pos = SearchCookie(cookie);
 			if (pos == -1)
 			{
 				_list.Add(cookie);

@@ -93,7 +93,7 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which
         /// supports the iteration over the collection of the IDs for the sessions.
         /// </value>
-        public IEnumerable<string> IDs => _state == ServerState.ShuttingDown ? new string[0] : _sessions.Keys.AsEnumerable();
+        public IEnumerable<string> Ds => _state == ServerState.ShuttingDown ? new string[0] : _sessions.Keys.AsEnumerable();
 
         /// <summary>
         /// Gets the IDs for the inactive sessions in the Websocket service.
@@ -258,7 +258,7 @@ namespace WebSocketSharp.Server
         internal async Task<IDictionary<string, bool>> InnerBroadping(byte[] frameAsBytes, TimeSpan timeout)
         {
             var tasks = Sessions.TakeWhile(session => _state == ServerState.Start)
-                .ToDictionary(session => session.ID, session => session.Context.WebSocket.InnerPing(frameAsBytes, timeout));
+                .ToDictionary(session => session.Id, session => session.Context.WebSocket.InnerPing(frameAsBytes, timeout));
             await Task.WhenAll(tasks.Values).ConfigureAwait(false);
 
             return tasks.ToDictionary(x => x.Key, x => x.Value.Result);
@@ -558,7 +558,7 @@ namespace WebSocketSharp.Server
         /// </param>
         private bool TryGetSession(string id, out IWebSocketSession session)
         {
-            var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionID();
+            var msg = _state.CheckIfStart() ?? id.CheckIfValidSessionId();
             if (msg != null)
             {
                 session = null;

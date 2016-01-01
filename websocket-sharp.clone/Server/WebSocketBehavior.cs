@@ -112,7 +112,7 @@ namespace WebSocketSharp.Server
         /// A <see cref="string"/> that represents the unique ID of the current session,
         /// or <see langword="null"/> if the WebSocket connection isn't established.
         /// </value>
-        public string ID => _id;
+        public string Id => _id;
 
         /// <summary>
         /// Gets or sets the delegate called to validate the Origin header included in a connection

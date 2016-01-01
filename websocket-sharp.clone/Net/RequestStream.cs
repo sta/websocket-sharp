@@ -92,7 +92,7 @@ namespace WebSocketSharp.Net
 	    // Returns 0 if we can keep reading from the base stream,
 		// > 0 if we read something from the buffer.
 		// -1 if we had a content length set and we finished reading that many bytes.
-		private int fillFromBuffer(byte[] buffer, int offset, int count)
+		private int FillFromBuffer(byte[] buffer, int offset, int count)
 		{
 			if (buffer == null)
 				throw new ArgumentNullException("buffer");
@@ -142,7 +142,7 @@ namespace WebSocketSharp.Net
 			if (_disposed)
 				throw new ObjectDisposedException(GetType().ToString());
 
-			var nread = fillFromBuffer(buffer, offset, count);
+			var nread = FillFromBuffer(buffer, offset, count);
 			if (nread > 0 || nread == -1)
 			{
 				var ares = new HttpStreamAsyncResult(callback, state);
@@ -214,7 +214,7 @@ namespace WebSocketSharp.Net
 
 			// Call fillFromBuffer to check for buffer boundaries even when
 			// _remainingBody is 0.
-			var nread = fillFromBuffer(buffer, offset, count);
+			var nread = FillFromBuffer(buffer, offset, count);
 			if (nread == -1) // No more bytes available (Content-Length).
 				return 0;
 

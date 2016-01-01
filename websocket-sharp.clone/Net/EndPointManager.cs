@@ -47,11 +47,11 @@ namespace WebSocketSharp.Net
 
     internal static class EndPointManager
 	{
-	    private static Dictionary<IPAddress, Dictionary<int, EndPointListener>> _ipToEndpoints;
+	    private static Dictionary<IPAddress, Dictionary<int, EndPointListener>> ipToEndpoints;
 
 	    static EndPointManager()
 		{
-			_ipToEndpoints = new Dictionary<IPAddress, Dictionary<int, EndPointListener>>();
+			ipToEndpoints = new Dictionary<IPAddress, Dictionary<int, EndPointListener>>();
 		}
 
         private static void addPrefix(string uriPrefix, HttpListener httpListener)
@@ -68,21 +68,21 @@ namespace WebSocketSharp.Net
 			}
 
 			// Always listens on all the interfaces, no matter the host name/ip used.
-			var epl = getEndPointListener(IPAddress.Any, prefix.Port, httpListener);
+			var epl = GetEndPointListener(IPAddress.Any, prefix.Port, httpListener);
 			epl.AddPrefix(prefix, httpListener);
 		}
 
-		private static EndPointListener getEndPointListener(IPAddress address, int port, HttpListener httpListener)
+		private static EndPointListener GetEndPointListener(IPAddress address, int port, HttpListener httpListener)
 		{
 			Dictionary<int, EndPointListener> eps;
-			if (_ipToEndpoints.ContainsKey(address))
+			if (ipToEndpoints.ContainsKey(address))
 			{
-				eps = _ipToEndpoints[address];
+				eps = ipToEndpoints[address];
 			}
 			else
 			{
 				eps = new Dictionary<int, EndPointListener>();
-				_ipToEndpoints[address] = eps;
+				ipToEndpoints[address] = eps;
 			}
 
 			EndPointListener epl;
@@ -117,24 +117,24 @@ namespace WebSocketSharp.Net
 				return;
 			}
 
-			var epl = getEndPointListener(IPAddress.Any, pref.Port, httpListener);
+			var epl = GetEndPointListener(IPAddress.Any, pref.Port, httpListener);
 			epl.RemovePrefix(pref);
 		}
         
 		public static void AddPrefix(string uriPrefix, HttpListener httpListener)
 		{
-			lock (((ICollection)_ipToEndpoints).SyncRoot)
+			lock (((ICollection)ipToEndpoints).SyncRoot)
 				addPrefix(uriPrefix, httpListener);
 		}
 
 		public static void RemoveEndPoint(EndPointListener epListener, IPEndPoint endpoint)
 		{
-			lock (((ICollection)_ipToEndpoints).SyncRoot)
+			lock (((ICollection)ipToEndpoints).SyncRoot)
 			{
-				var eps = _ipToEndpoints[endpoint.Address];
+				var eps = ipToEndpoints[endpoint.Address];
 				eps.Remove(endpoint.Port);
 				if (eps.Count == 0)
-					_ipToEndpoints.Remove(endpoint.Address);
+					ipToEndpoints.Remove(endpoint.Address);
 
 				epListener.Close();
 			}
@@ -142,14 +142,14 @@ namespace WebSocketSharp.Net
 
 		public static void RemoveListener(HttpListener httpListener)
 		{
-			lock (((ICollection)_ipToEndpoints).SyncRoot)
+			lock (((ICollection)ipToEndpoints).SyncRoot)
 				foreach (var pref in httpListener.Prefixes)
 					removePrefix(pref, httpListener);
 		}
 
 		public static void RemovePrefix(string uriPrefix, HttpListener httpListener)
 		{
-			lock (((ICollection)_ipToEndpoints).SyncRoot)
+			lock (((ICollection)ipToEndpoints).SyncRoot)
 				removePrefix(uriPrefix, httpListener);
 		}
 	}

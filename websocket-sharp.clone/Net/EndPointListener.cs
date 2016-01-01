@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
 
 			var args = new SocketAsyncEventArgs();
 			args.UserToken = this;
-			args.Completed += onAccept;
+			args.Completed += OnAccept;
 			_socket.AcceptAsync(args);
 		}
 
@@ -101,7 +101,7 @@ namespace WebSocketSharp.Net
 
         public ServerSslConfiguration SslConfiguration => _sslConfig;
 
-        private static void addSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+        private static void AddSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
 		{
 			if (prefixes == null) return;
 
@@ -111,7 +111,7 @@ namespace WebSocketSharp.Net
 			prefixes.Add(prefix);
 		}
 
-		private void checkIfRemove()
+		private void CheckIfRemove()
 		{
 			if (_prefixes.Count > 0) return;
 
@@ -154,7 +154,7 @@ namespace WebSocketSharp.Net
 			return bestMatch;
 		}
 
-		private static void onAccept(object sender, EventArgs e)
+		private static void OnAccept(object sender, EventArgs e)
 		{
 			var args = (SocketAsyncEventArgs)e;
 			var epl = (EndPointListener)args.UserToken;
@@ -198,7 +198,7 @@ namespace WebSocketSharp.Net
 			}
 		}
 
-		private static bool removeSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+		private static bool RemoveSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
 		{
 			if (prefixes == null) return false;
 
@@ -216,7 +216,7 @@ namespace WebSocketSharp.Net
 			return false;
 		}
 
-		private HttpListener searchListener(Uri uri, out HttpListenerPrefix prefix)
+		private HttpListener SearchListener(Uri uri, out HttpListenerPrefix prefix)
 		{
 			prefix = null;
 			if (uri == null) return null;
@@ -294,7 +294,7 @@ namespace WebSocketSharp.Net
 					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
-					addSpecial(future, prefix);
+					AddSpecial(future, prefix);
 				}
 				while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
 
@@ -309,7 +309,7 @@ namespace WebSocketSharp.Net
 					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
 					prefix.Listener = httpListener;
-					addSpecial(future, prefix);
+					AddSpecial(future, prefix);
 				}
 				while (Interlocked.CompareExchange(ref _all, future, current) != current);
 
@@ -337,7 +337,7 @@ namespace WebSocketSharp.Net
 		public bool BindContext(HttpListenerContext context)
 		{
 			HttpListenerPrefix pref;
-			var httpl = searchListener(context.Request.Url, out pref);
+			var httpl = SearchListener(context.Request.Url, out pref);
 			if (httpl == null) return false;
 
 			context.Listener = httpl;
@@ -370,11 +370,11 @@ namespace WebSocketSharp.Net
 					current = _unhandled;
 					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
-					if (!removeSpecial(future, prefix)) break; // Prefix not found.
+					if (!RemoveSpecial(future, prefix)) break; // Prefix not found.
 				}
 				while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
 
-				checkIfRemove();
+				CheckIfRemove();
 				return;
 			}
 
@@ -385,11 +385,11 @@ namespace WebSocketSharp.Net
 					current = _all;
 					future = current != null ? new List<HttpListenerPrefix>(current) : new List<HttpListenerPrefix>();
 
-					if (!removeSpecial(future, prefix)) break; // Prefix not found.
+					if (!RemoveSpecial(future, prefix)) break; // Prefix not found.
 				}
 				while (Interlocked.CompareExchange(ref _all, future, current) != current);
 
-				checkIfRemove();
+				CheckIfRemove();
 				return;
 			}
 
@@ -404,7 +404,7 @@ namespace WebSocketSharp.Net
 			}
 			while (Interlocked.CompareExchange(ref _prefixes, prefs2, prefs) != prefs);
 
-			checkIfRemove();
+			CheckIfRemove();
 		}
 
 		public void UnbindContext(HttpListenerContext context)

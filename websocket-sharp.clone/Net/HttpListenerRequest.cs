@@ -255,7 +255,7 @@ namespace WebSocketSharp.Net
         /// </value>
         public string UserHostAddress => LocalEndPoint.ToString();
 
-        private static bool tryCreateVersion(string version, out Version result)
+        private static bool TryCreateVersion(string version, out Version result)
         {
             try
             {
@@ -430,7 +430,7 @@ namespace WebSocketSharp.Net
 
             if (parts[2].Length != 8 ||
                 !parts[2].StartsWith("HTTP/") ||
-                !tryCreateVersion(parts[2].Substring(5), out _version) ||
+                !TryCreateVersion(parts[2].Substring(5), out _version) ||
                 _version.Major < 1)
                 _context.ErrorMessage = "Invalid request line (version)";
         }

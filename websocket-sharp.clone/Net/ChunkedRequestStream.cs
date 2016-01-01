@@ -40,7 +40,7 @@ namespace WebSocketSharp.Net
 
     internal class ChunkedRequestStream : RequestStream
 	{
-	    private const int _bufferSize = 8192;
+	    private const int BufferSize = 8192;
 
 	    private HttpListenerContext _context;
 		private ChunkStream _decoder;
@@ -55,7 +55,7 @@ namespace WebSocketSharp.Net
 			_decoder = new ChunkStream((WebHeaderCollection)context.Request.Headers);
 		}
         
-	    private void onRead(IAsyncResult asyncResult)
+	    private void OnRead(IAsyncResult asyncResult)
 		{
 			var readState = (ReadBufferState)asyncResult.AsyncState;
 			var ares = readState.AsyncResult;
@@ -76,8 +76,8 @@ namespace WebSocketSharp.Net
 				}
 
 				ares.Offset = 0;
-				ares.Count = Math.Min(_bufferSize, _decoder.ChunkLeft + 6);
-				base.BeginRead(ares.Buffer, ares.Offset, ares.Count, onRead, readState);
+				ares.Count = Math.Min(BufferSize, _decoder.ChunkLeft + 6);
+				base.BeginRead(ares.Buffer, ares.Offset, ares.Count, OnRead, readState);
 			}
 			catch (Exception ex)
 			{
@@ -130,13 +130,13 @@ namespace WebSocketSharp.Net
 				return ares;
 			}
 
-			ares.Buffer = new byte[_bufferSize];
+			ares.Buffer = new byte[BufferSize];
 			ares.Offset = 0;
-			ares.Count = _bufferSize;
+			ares.Count = BufferSize;
 
 			var readState = new ReadBufferState(buffer, offset, count, ares);
 			readState.InitialCount += nread;
-			base.BeginRead(ares.Buffer, ares.Offset, ares.Count, onRead, readState);
+			base.BeginRead(ares.Buffer, ares.Offset, ares.Count, OnRead, readState);
 
 			return ares;
 		}

@@ -54,46 +54,20 @@ namespace WebSocketSharp.Tests
             }
             
             [Test]
-            public void WhenSendingMessageThenReceivesEcho()
+            public async Task WhenSendingMessageThenReceivesEcho()
             {
                 var waitHandle = new ManualResetEventSlim(false);
                 const string Message = "Test Ping";
                 var echoReceived = false;
-                Func<MessageEventArgs, Task> onMessage = e =>
+                Func<MessageEventArgs, Task> onMessage = async e =>
                     {
-                        echoReceived = e.Text.ReadToEnd() == Message;
-                        waitHandle.Set();
-                        return Task.FromResult(true);
-                    };
-                _sut.OnMessage = onMessage;
-
-                var connected = _sut.Connect();
-                Console.WriteLine("Connected: " + connected);
-
-                var sent = _sut.Send(Message);
-                Console.WriteLine("Sent: " + sent);
-
-                var result = waitHandle.Wait(2000);
-                
-                Assert.True(result && echoReceived);
-            }
-
-            [Test]
-            public async Task WhenSendingMessageAsyncThenReceivesEcho()
-            {
-                var waitHandle = new ManualResetEventSlim(false);
-                const string Message = "Test Ping";
-                var echoReceived = false;
-                Func<MessageEventArgs, Task> onMessage = e =>
-                    {
-                        var readToEnd = e.Text.ReadToEnd();
+                        var readToEnd = await e.Text.ReadToEndAsync().ConfigureAwait(false);
                         echoReceived = readToEnd == Message;
                         waitHandle.Set();
-                        return Task.FromResult(true);
                     };
                 _sut.OnMessage = onMessage;
 
-                var connected = _sut.Connect();
+                var connected = await _sut.Connect().ConfigureAwait(false);
                 Console.WriteLine("Connected: " + connected);
 
                 var sent = await _sut.Send(Message).ConfigureAwait(false);

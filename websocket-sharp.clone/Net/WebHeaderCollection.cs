@@ -54,13 +54,13 @@ namespace WebSocketSharp.Net
     [ComVisible(true)]
     internal class WebHeaderCollection : NameValueCollection, ISerializable
     {
-        private static readonly Dictionary<string, HttpHeaderInfo> _headers;
+        private static readonly Dictionary<string, HttpHeaderInfo> Headers;
         private readonly bool _internallyCreated;
         private HttpHeaderType _state;
 
         static WebHeaderCollection()
         {
-            _headers =
+            Headers =
               new Dictionary<string, HttpHeaderInfo>(StringComparer.InvariantCultureIgnoreCase) {
           {
             "Accept",
@@ -644,23 +644,23 @@ namespace WebSocketSharp.Net
         private void add(string name, string value, bool ignoreRestricted)
         {
             var act = ignoreRestricted
-                      ? (Action<string, string>)addWithoutCheckingNameAndRestricted
-                      : addWithoutCheckingName;
+                      ? (Action<string, string>)AddWithoutCheckingNameAndRestricted
+                      : AddWithoutCheckingName;
 
-            doWithCheckingState(act, checkName(name), value, true);
+            doWithCheckingState(act, CheckName(name), value, true);
         }
 
-        private void addWithoutCheckingName(string name, string value)
+        private void AddWithoutCheckingName(string name, string value)
         {
-            doWithoutCheckingName(base.Add, name, value);
+            DoWithoutCheckingName(base.Add, name, value);
         }
 
-        private void addWithoutCheckingNameAndRestricted(string name, string value)
+        private void AddWithoutCheckingNameAndRestricted(string name, string value)
         {
-            base.Add(name, checkValue(value));
+            base.Add(name, CheckValue(value));
         }
 
-        private static int checkColonSeparated(string header)
+        private static int CheckColonSeparated(string header)
         {
             var i = header.IndexOf(':');
             if (i == -1)
@@ -669,9 +669,9 @@ namespace WebSocketSharp.Net
             return i;
         }
 
-        private static HttpHeaderType checkHeaderType(string name)
+        private static HttpHeaderType CheckHeaderType(string name)
         {
-            var info = getHeaderInfo(name);
+            var info = GetHeaderInfo(name);
             return info == null
                    ? HttpHeaderType.Unspecified
                    : info.IsRequest && !info.IsResponse
@@ -681,7 +681,7 @@ namespace WebSocketSharp.Net
                        : HttpHeaderType.Unspecified;
         }
 
-        private static string checkName(string name)
+        private static string CheckName(string name)
         {
             if (name == null || name.Length == 0)
                 throw new ArgumentNullException("name");
@@ -693,13 +693,13 @@ namespace WebSocketSharp.Net
             return name;
         }
 
-        private void checkRestricted(string name)
+        private void CheckRestricted(string name)
         {
-            if (!_internallyCreated && isRestricted(name, true))
+            if (!_internallyCreated && IsRestricted(name, true))
                 throw new ArgumentException("This header must be modified with the appropiate property.");
         }
 
-        private void checkState(bool response)
+        private void CheckState(bool response)
         {
             if (_state == HttpHeaderType.Unspecified)
                 return;
@@ -713,7 +713,7 @@ namespace WebSocketSharp.Net
                   "This collection has already been used to store the response headers.");
         }
 
-        private static string checkValue(string value)
+        private static string CheckValue(string value)
         {
             if (value == null || value.Length == 0)
                 return String.Empty;
@@ -731,7 +731,7 @@ namespace WebSocketSharp.Net
         private static string convert(string key)
         {
             HttpHeaderInfo info;
-            return _headers.TryGetValue(key, out info)
+            return Headers.TryGetValue(key, out info)
                    ? info.Name
                    : String.Empty;
         }
@@ -739,7 +739,7 @@ namespace WebSocketSharp.Net
         private void doWithCheckingState(
           Action<string, string> action, string name, string value, bool setState)
         {
-            var type = checkHeaderType(name);
+            var type = CheckHeaderType(name);
             if (type == HttpHeaderType.Request)
                 doWithCheckingState(action, name, value, false, setState);
             else if (type == HttpHeaderType.Response)
@@ -751,42 +751,42 @@ namespace WebSocketSharp.Net
         private void doWithCheckingState(
           Action<string, string> action, string name, string value, bool response, bool setState)
         {
-            checkState(response);
+            CheckState(response);
             action(name, value);
             if (setState && _state == HttpHeaderType.Unspecified)
                 _state = response ? HttpHeaderType.Response : HttpHeaderType.Request;
         }
 
-        private void doWithoutCheckingName(Action<string, string> action, string name, string value)
+        private void DoWithoutCheckingName(Action<string, string> action, string name, string value)
         {
-            checkRestricted(name);
-            action(name, checkValue(value));
+            CheckRestricted(name);
+            action(name, CheckValue(value));
         }
 
-        private static HttpHeaderInfo getHeaderInfo(string name)
+        private static HttpHeaderInfo GetHeaderInfo(string name)
         {
-            foreach (var info in _headers.Values)
+            foreach (var info in Headers.Values)
                 if (info.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
                     return info;
 
             return null;
         }
 
-        private static bool isRestricted(string name, bool response)
+        private static bool IsRestricted(string name, bool response)
         {
-            var info = getHeaderInfo(name);
+            var info = GetHeaderInfo(name);
             return info != null && info.IsRestricted(response);
         }
 
-        private void removeWithoutCheckingName(string name, string unuse)
+        private void RemoveWithoutCheckingName(string name, string unuse)
         {
-            checkRestricted(name);
+            CheckRestricted(name);
             base.Remove(name);
         }
 
-        private void setWithoutCheckingName(string name, string value)
+        private void SetWithoutCheckingName(string name, string value)
         {
-            doWithoutCheckingName(base.Set, name, value);
+            DoWithoutCheckingName(base.Set, name, value);
         }
 
         internal static string Convert(HttpRequestHeader header)
@@ -801,13 +801,13 @@ namespace WebSocketSharp.Net
 
         internal void InternalSet(string header, bool response)
         {
-            var pos = checkColonSeparated(header);
+            var pos = CheckColonSeparated(header);
             InternalSet(header.Substring(0, pos), header.Substring(pos + 1), response);
         }
 
         internal void InternalSet(string name, string value, bool response)
         {
-            value = checkValue(value);
+            value = CheckValue(value);
             if (IsMultiValue(name, response))
                 base.Add(name, value);
             else
@@ -829,7 +829,7 @@ namespace WebSocketSharp.Net
             if (headerName == null || headerName.Length == 0)
                 return false;
 
-            var info = getHeaderInfo(headerName);
+            var info = GetHeaderInfo(headerName);
             return info != null && info.IsMultiValue(response);
         }
 
@@ -890,7 +890,7 @@ namespace WebSocketSharp.Net
             if (header.IsNullOrEmpty())
                 throw new ArgumentNullException("header");
 
-            var pos = checkColonSeparated(header);
+            var pos = CheckColonSeparated(header);
             add(header.Substring(0, pos), header.Substring(pos + 1), false);
         }
 
@@ -925,7 +925,7 @@ namespace WebSocketSharp.Net
         /// </exception>
         public void Add(HttpRequestHeader header, string value)
         {
-            doWithCheckingState(addWithoutCheckingName, Convert(header), value, false, true);
+            doWithCheckingState(AddWithoutCheckingName, Convert(header), value, false, true);
         }
 
         /// <summary>
@@ -959,7 +959,7 @@ namespace WebSocketSharp.Net
         /// </exception>
         public void Add(HttpResponseHeader header, string value)
         {
-            doWithCheckingState(addWithoutCheckingName, Convert(header), value, true, true);
+            doWithCheckingState(AddWithoutCheckingName, Convert(header), value, true, true);
         }
 
         /// <summary>
@@ -1118,7 +1118,7 @@ namespace WebSocketSharp.Net
         /// </exception>
         public override void Remove(string name)
         {
-            doWithCheckingState(removeWithoutCheckingName, checkName(name), null, false);
+            doWithCheckingState(RemoveWithoutCheckingName, CheckName(name), null, false);
         }
 
         /// <summary>
@@ -1153,7 +1153,7 @@ namespace WebSocketSharp.Net
         /// </exception>
         public override void Set(string name, string value)
         {
-            doWithCheckingState(setWithoutCheckingName, checkName(name), value, true);
+            doWithCheckingState(SetWithoutCheckingName, CheckName(name), value, true);
         }
 
         /// <summary>
