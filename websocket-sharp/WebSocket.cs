@@ -1825,7 +1825,7 @@ namespace WebSocketSharp
                pong.WaitOne (timeout);
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _logger.Error (ex.ToString ());
         return false;
       }
     }
