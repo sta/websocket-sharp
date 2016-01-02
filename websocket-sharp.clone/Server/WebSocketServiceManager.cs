@@ -47,7 +47,6 @@ namespace WebSocketSharp.Server
         private volatile bool _clean;
         private readonly Dictionary<string, WebSocketServiceHost> _hosts;
         private volatile ServerState _state;
-        private readonly object _sync;
         private TimeSpan _waitTime;
 
         internal WebSocketServiceManager(int fragmentSize, bool keepClean = true)
@@ -56,7 +55,6 @@ namespace WebSocketSharp.Server
             _clean = keepClean;
             _hosts = new Dictionary<string, WebSocketServiceHost>();
             _state = ServerState.Ready;
-            _sync = ((ICollection)_hosts).SyncRoot;
             _waitTime = TimeSpan.FromSeconds(1);
         }
 
@@ -66,16 +64,7 @@ namespace WebSocketSharp.Server
         /// <value>
         /// An <see cref="int"/> that represents the number of the services.
         /// </value>
-        public int Count
-        {
-            get
-            {
-                lock (_sync)
-                {
-                    return _hosts.Count;
-                }
-            }
-        }
+        public int Count => _hosts.Count;
 
         /// <summary>
         /// Gets the host instances for the Websocket services.
@@ -84,16 +73,7 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;WebSocketServiceHost&gt;</c> instance that provides an enumerator
         /// which supports the iteration over the collection of the host instances for the services.
         /// </value>
-        public IEnumerable<WebSocketServiceHost> Hosts
-        {
-            get
-            {
-                lock (_sync)
-                {
-                    return _hosts.Values.ToList();
-                }
-            }
-        }
+        public IEnumerable<WebSocketServiceHost> Hosts => _hosts.Values.ToArray();
 
         /// <summary>
         /// Gets the WebSocket service host with the specified <paramref name="path"/>.
@@ -123,16 +103,7 @@ namespace WebSocketSharp.Server
         /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which supports
         /// the iteration over the collection of the paths for the services.
         /// </value>
-        public IEnumerable<string> Paths
-        {
-            get
-            {
-                lock (_sync)
-                {
-                    return _hosts.Keys.ToList();
-                }
-            }
-        }
+        public IEnumerable<string> Paths => _hosts.Keys.ToArray();
 
         /// <summary>
         /// Gets the total number of the sessions in the WebSocket services.
@@ -163,14 +134,15 @@ namespace WebSocketSharp.Server
 
             internal set
             {
-                lock (_sync)
+                if (value == _waitTime)
                 {
-                    if (value == _waitTime)
-                        return;
+                    return;
+                }
 
-                    _waitTime = value;
-                    foreach (var host in _hosts.Values)
-                        host.WaitTime = value;
+                _waitTime = value;
+                foreach (var host in _hosts.Values.ToArray())
+                {
+                    host.WaitTime = value;
                 }
             }
         }
@@ -306,46 +278,40 @@ namespace WebSocketSharp.Server
         internal void Add<TBehavior>(string path, Func<TBehavior> initializer)
           where TBehavior : WebSocketBehavior
         {
-            lock (_sync)
+            path = HttpUtility.UrlDecode(path).TrimEndSlash();
+
+            WebSocketServiceHost host;
+            if (_hosts.TryGetValue(path, out host))
             {
-                path = HttpUtility.UrlDecode(path).TrimEndSlash();
-
-                WebSocketServiceHost host;
-                if (_hosts.TryGetValue(path, out host))
-                {
-                    return;
-                }
-
-                host = new WebSocketServiceHost<TBehavior>(path, _fragmentSize, initializer);
-                if (!_clean)
-                    host.KeepClean = false;
-
-                if (_waitTime != host.WaitTime)
-                    host.WaitTime = _waitTime;
-
-                if (_state == ServerState.Start)
-                    host.Start();
-
-                _hosts.Add(path, host);
+                return;
             }
+
+            host = new WebSocketServiceHost<TBehavior>(path, _fragmentSize, initializer);
+            if (!_clean)
+            {
+                host.KeepClean = false;
+            }
+
+            host.WaitTime = _waitTime;
+
+            if (_state == ServerState.Start)
+            {
+                host.Start();
+            }
+
+            _hosts.Add(path, host);
         }
 
         internal bool InternalTryGetServiceHost(string path, out WebSocketServiceHost host)
         {
-            bool res;
-            lock (_sync)
-            {
-                path = HttpUtility.UrlDecode(path).TrimEndSlash();
-                res = _hosts.TryGetValue(path, out host);
-            }
-
-            return res;
+            path = HttpUtility.UrlDecode(path).TrimEndSlash();
+            return _hosts.TryGetValue(path, out host);
         }
 
         internal async Task<bool> Remove(string path)
         {
             WebSocketServiceHost host;
-            lock (_sync)
+            lock (_hosts)
             {
                 path = HttpUtility.UrlDecode(path).TrimEndSlash();
                 if (!_hosts.TryGetValue(path, out host))
@@ -366,30 +332,26 @@ namespace WebSocketSharp.Server
 
         internal void Start()
         {
-            lock (_sync)
+            foreach (var host in _hosts.Values.ToArray())
             {
-                foreach (var host in _hosts.Values)
-                    host.Start();
-
-                _state = ServerState.Start;
+                host.Start();
             }
+
+            _state = ServerState.Start;
         }
 
         internal async Task Stop(CloseEventArgs e, bool send, bool wait)
         {
-            using (var ml = new MonitorLock(_sync))
-            {
-                _state = ServerState.ShuttingDown;
+            _state = ServerState.ShuttingDown;
 
-                var bytes =
-                  send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray().ConfigureAwait(false) : null;
+            var bytes =
+              send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray().ConfigureAwait(false) : null;
 
-                var timeout = wait ? _waitTime : TimeSpan.Zero;
-                var tasks = _hosts.Values.Select(host => host.Sessions.Stop(e, bytes, timeout));
-                await Task.WhenAll(tasks).ConfigureAwait(false);
-                _hosts.Clear();
-                _state = ServerState.Stop;
-            }
+            var timeout = wait ? _waitTime : TimeSpan.Zero;
+            var tasks = _hosts.Values.ToArray().Select(host => host.Sessions.Stop(e, bytes, timeout));
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+            _hosts.Clear();
+            _state = ServerState.Stop;
         }
 
         private async Task<bool> InnerBroadcast(Opcode opcode, byte[] data)
