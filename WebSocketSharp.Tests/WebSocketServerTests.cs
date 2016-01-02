@@ -26,6 +26,7 @@ namespace WebSocketSharp.Tests
     using System.Threading.Tasks;
 
     using NUnit.Framework;
+    using NUnit.Framework.Constraints;
 
     using WebSocketSharp.Server;
 
@@ -49,9 +50,9 @@ namespace WebSocketSharp.Tests
             }
 
             [TearDown]
-            public void Teardown()
+            public async Task Teardown()
             {
-                _sut.Stop();
+                await _sut.Stop().ConfigureAwait(false);
                 Debug.Listeners.Clear();
             }
 
@@ -116,7 +117,7 @@ namespace WebSocketSharp.Tests
             {
                 using (var client = new WebSocket("ws://localhost:8080/fjgkdfjhgld"))
                 {
-                    Assert.DoesNotThrow(async () => await client.Connect().ConfigureAwait(false));
+                    Assert.That(async () => await client.Connect().ConfigureAwait(false), new ThrowsNothingConstraint());
                 }
                 return Task.FromResult(true);
             }
@@ -154,7 +155,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            [Ignore]
+            [Ignore("Performance")]
             public async Task CanSendTwentyThousandSynchronousRequestsPerSecond()
             {
                 var stopwatch = new Stopwatch();
@@ -195,7 +196,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            [Ignore]
+            [Ignore("Performance")]
             public async Task CanReceiveTwentyFiveThousandSynchronousRequestsInSixSeconds()
             {
                 var responseWatch = new Stopwatch();
@@ -235,7 +236,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            [Ignore]
+            [Ignore("Performance")]
             public async Task CanSendOneMillionAsynchronousRequestsPerSecond()
             {
                 var stopwatch = new Stopwatch();
@@ -264,7 +265,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            [Ignore]
+            [Ignore("Performance")]
             public async Task CanReceiveOneMillionAsynchronousResponsesInTenSecond()
             {
                 var responseWatch = new Stopwatch();

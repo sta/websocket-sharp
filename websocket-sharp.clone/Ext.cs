@@ -411,46 +411,7 @@ namespace WebSocketSharp
 
             return subArray;
         }
-
-        /// <summary>
-        /// Retrieves a sub-array from the specified <paramref name="array"/>.
-        /// A sub-array starts at the specified element position in <paramref name="array"/>.
-        /// </summary>
-        /// <returns>
-        /// An array of T that receives a sub-array, or an empty array of T
-        /// if any problems with the parameters.
-        /// </returns>
-        /// <param name="array">
-        /// An array of T from which to retrieve a sub-array.
-        /// </param>
-        /// <param name="startIndex">
-        /// A <see cref="long"/> that represents the zero-based starting position of
-        /// a sub-array in <paramref name="array"/>.
-        /// </param>
-        /// <param name="length">
-        /// A <see cref="long"/> that represents the number of elements to retrieve.
-        /// </param>
-        /// <typeparam name="T">
-        /// The type of elements in <paramref name="array"/>.
-        /// </typeparam>
-        public static T[] SubArray<T>(this T[] array, long startIndex, long length)
-        {
-            long len;
-            if (array == null || (len = array.LongLength) == 0)
-                return new T[0];
-
-            if (startIndex < 0 || length <= 0 || startIndex + length > len)
-                return new T[0];
-
-            if (startIndex == 0 && length == len)
-                return array;
-
-            var subArray = new T[length];
-            Array.Copy(array, startIndex, subArray, 0, length);
-
-            return subArray;
-        }
-
+        
         /// <summary>
         /// Executes the specified <c>Action&lt;int&gt;</c> delegate <paramref name="n"/> times.
         /// </summary>
@@ -491,7 +452,7 @@ namespace WebSocketSharp
                 throw new ArgumentNullException(nameof(source));
 
             return source.Length > 1 && !sourceOrder.IsHostOrder()
-                   ? source.Reverse()
+                   ? source.Reverse().ToArray()
                    : source;
         }
 
@@ -1026,18 +987,6 @@ namespace WebSocketSharp
                    : value;
         }
 
-        private static T[] Reverse<T>(this T[] array)
-        {
-            var len = array.Length;
-            var reverse = new T[len];
-
-            var end = len - 1;
-            for (var i = 0; i <= end; i++)
-                reverse[i] = array[end - i];
-
-            return reverse;
-        }
-
         internal static IEnumerable<string> SplitHeaderValue(this string value, params char[] separators)
         {
             var len = value.Length;
@@ -1171,8 +1120,7 @@ namespace WebSocketSharp
         /// When this method returns, a <see cref="string"/> that represents the error message
         /// if <paramref name="uriString"/> is invalid; otherwise, <see cref="String.Empty"/>.
         /// </param>
-        internal static bool TryCreateWebSocketUri(
-          this string uriString, out Uri result, out string message)
+        internal static bool TryCreateWebSocketUri(this string uriString, out Uri result, out string message)
         {
             result = null;
             if (uriString.Length == 0)
