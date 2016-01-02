@@ -1817,17 +1817,17 @@ namespace WebSocketSharp
 
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
-      try {
-        AutoResetEvent pong;
-        return _readyState == WebSocketState.Open &&
-               send (frameAsBytes) &&
-               (pong = _receivePong) != null &&
-               pong.WaitOne (timeout);
-      }
-      catch (Exception ex) {
-        _logger.Error (ex.ToString ());
+      if (_readyState != WebSocketState.Open)
         return false;
-      }
+
+      if (!send (frameAsBytes))
+        return false;
+
+      var receivePong = _receivePong;
+      if (receivePong == null)
+        return false;
+
+      return receivePong.WaitOne (timeout);
     }
 
     // As server, used to broadcast
