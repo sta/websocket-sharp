@@ -17,19 +17,24 @@
 
 namespace WebSocketSharp
 {
-	internal class StreamReadInfo
-	{
-		public StreamReadInfo(bool isFinal, ulong payloadLength, byte[] maskingKey)
-		{
-			IsFinal = isFinal;
-			PayloadLength = payloadLength;
-			MaskingKey = maskingKey;
-		}
+    internal class StreamReadInfo
+    {
+        public StreamReadInfo(bool isFinal, ulong payloadLength, byte[] maskingKey)
+        {
+            IsFinal = isFinal;
+            PayloadLength = payloadLength;
+            MaskingKey = maskingKey;
+        }
 
-		public bool IsFinal { get; set; }
+        public bool IsFinal { get; }
 
-		public ulong PayloadLength { get; set; }
+        public ulong PayloadLength { get; private set; }
 
-		public byte[] MaskingKey { get; set; }
-	}
+        public byte[] MaskingKey { get; }
+
+        public void ReducePayloadLength(ulong reduction)
+        {
+            PayloadLength -= reduction;
+        }
+    }
 }

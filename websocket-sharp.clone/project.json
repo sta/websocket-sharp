@@ -12,9 +12,11 @@
 
     "dependencies": {
     },
+
     "runtimes": {
         "win": { },
-        "linux": { }
+        "linux": { },
+        "osx": { }
     },
     "frameworks": {
         "net45": { }

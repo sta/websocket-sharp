@@ -73,7 +73,7 @@ namespace WebSocketSharp
                 var read = await _innerStream.ReadAsync(buffer, position, (int)toread, cancellationToken).ConfigureAwait(false);
                 bytesRead += read;
 
-                _readInfo.PayloadLength -= Convert.ToUInt64(Convert.ToUInt32(read));
+                _readInfo.ReducePayloadLength(Convert.ToUInt32(read));
 
                 if (_readInfo.MaskingKey.Length > 0)
                 {
