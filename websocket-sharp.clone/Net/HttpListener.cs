@@ -44,13 +44,13 @@ namespace WebSocketSharp.Net
     using System.Collections;
     using System.Collections.Generic;
     using System.Security.Principal;
+    using System.Threading.Tasks;
 
     /// <summary>
 	/// Provides a simple, programmatically controlled HTTP listener.
 	/// </summary>
 	internal sealed class HttpListener : IDisposable
     {
-        private readonly Func<HttpListenerRequest, AuthenticationSchemes> _authSchemeSelector;
         private readonly Dictionary<HttpConnection, HttpConnection> _connections;
         private readonly object _connectionsSync;
         private readonly List<HttpListenerContext> _ctxQueue;
@@ -63,7 +63,6 @@ namespace WebSocketSharp.Net
         private Func<IIdentity, NetworkCredential> _credFinder;
         private bool _disposed;
         private readonly AuthenticationSchemes _authSchemes;
-        private bool _ignoreWriteExceptions;
         private string _realm;
         private bool _reuseAddress;
 
@@ -103,53 +102,7 @@ namespace WebSocketSharp.Net
                 _reuseAddress = value;
             }
         }
-
-        /// <summary>
-        /// Gets or sets the delegate called to select the scheme used to authenticate the clients.
-        /// </summary>
-        /// <remarks>
-        /// If you set this property, the listener uses the authentication scheme selected by
-        /// the delegate for each request. Or if you don't set, the listener uses the value of
-        /// the <see cref="HttpListener.AuthenticationSchemes"/> property as the authentication
-        /// scheme for all requests.
-        /// </remarks>
-        /// <value>
-        /// A <c>Func&lt;<see cref="HttpListenerRequest"/>, <see cref="AuthenticationSchemes"/>&gt;</c>
-        /// delegate that references the method used to select an authentication scheme. The default
-        /// value is <see langword="null"/>.
-        /// </value>
-        /// <exception cref="ObjectDisposedException">
-        /// This listener has been closed.
-        /// </exception>
-        public Func<HttpListenerRequest, AuthenticationSchemes> AuthenticationSchemeSelector
-        {
-            get
-            {
-                CheckDisposed();
-                return _authSchemeSelector;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the listener returns exceptions that occur when
-        /// sending the response to the client.
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if the listener shouldn't return those exceptions; otherwise, <c>false</c>.
-        /// The default value is <c>false</c>.
-        /// </value>
-        /// <exception cref="ObjectDisposedException">
-        /// This listener has been closed.
-        /// </exception>
-        public bool IgnoreWriteExceptions
-        {
-            get
-            {
-                CheckDisposed();
-                return _ignoreWriteExceptions;
-            }
-        }
-
+        
         /// <summary>
         /// Gets the URI prefixes handled by the listener.
         /// </summary>
@@ -248,50 +201,51 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void Cleanup(bool force)
+        private async Task Cleanup(bool force)
         {
-            lock (_ctxRegistrySync)
+            if (!force)
             {
-                if (!force)
-                    SendServiceUnavailable();
+                SendServiceUnavailable();
+            }
 
-                CleanupContextRegistry();
-                CleanupConnections();
-                CleanupWaitQueue();
+            await CleanupContextRegistry().ConfigureAwait(false);
+            await CleanupConnections().ConfigureAwait(false);
+            CleanupWaitQueue();
+        }
+
+        private async Task CleanupConnections()
+        {
+            if (_connections.Count == 0)
+            {
+                return;
+            }
+
+            // Need to copy this since closing will call RemoveConnection.
+            var keys = _connections.Keys;
+            var conns = new HttpConnection[keys.Count];
+            keys.CopyTo(conns, 0);
+            _connections.Clear();
+            for (var i = conns.Length - 1; i >= 0; i--)
+            {
+                await conns[i].Close(true).ConfigureAwait(false);
             }
         }
 
-        private void CleanupConnections()
+        private async Task CleanupContextRegistry()
         {
-            lock (_connectionsSync)
+            if (_ctxRegistry.Count == 0)
             {
-                if (_connections.Count == 0)
-                    return;
-
-                // Need to copy this since closing will call RemoveConnection.
-                var keys = _connections.Keys;
-                var conns = new HttpConnection[keys.Count];
-                keys.CopyTo(conns, 0);
-                _connections.Clear();
-                for (var i = conns.Length - 1; i >= 0; i--)
-                    conns[i].Close(true);
+                return;
             }
-        }
 
-        private void CleanupContextRegistry()
-        {
-            lock (_ctxRegistrySync)
+            // Need to copy this since closing will call UnregisterContext.
+            var keys = _ctxRegistry.Keys;
+            var ctxs = new HttpListenerContext[keys.Count];
+            keys.CopyTo(ctxs, 0);
+            _ctxRegistry.Clear();
+            for (var i = ctxs.Length - 1; i >= 0; i--)
             {
-                if (_ctxRegistry.Count == 0)
-                    return;
-
-                // Need to copy this since closing will call UnregisterContext.
-                var keys = _ctxRegistry.Keys;
-                var ctxs = new HttpListenerContext[keys.Count];
-                keys.CopyTo(ctxs, 0);
-                _ctxRegistry.Clear();
-                for (var i = ctxs.Length - 1; i >= 0; i--)
-                    ctxs[i].Connection.Close(true);
+                await ctxs[i].Connection.Close(true).ConfigureAwait(false);
             }
         }
 
@@ -304,16 +258,18 @@ namespace WebSocketSharp.Net
 
                 var ex = new ObjectDisposedException(GetType().ToString());
                 foreach (var ares in _waitQueue)
+                {
                     ares.Complete(ex);
+                }
 
                 _waitQueue.Clear();
             }
         }
 
-        private void Close(bool force)
+        private async Task Close(bool force)
         {
-            EndPointManager.RemoveListener(this);
-            Cleanup(force);
+            await EndPointManager.RemoveListener(this).ConfigureAwait(false);
+            await Cleanup(force).ConfigureAwait(false);
         }
 
         // Must be called with a lock on _ctxQueue.
@@ -415,9 +371,7 @@ namespace WebSocketSharp.Net
 
         internal AuthenticationSchemes SelectAuthenticationScheme(HttpListenerContext context)
         {
-            return AuthenticationSchemeSelector != null
-                   ? AuthenticationSchemeSelector(context.Request)
-                   : _authSchemes;
+            return _authSchemes;
         }
 
         internal void UnregisterContext(HttpListenerContext context)
@@ -432,73 +386,18 @@ namespace WebSocketSharp.Net
                     _ctxQueue.RemoveAt(i);
             }
         }
-
-        /// <summary>
-        /// Ends an asynchronous operation to get an incoming request.
-        /// </summary>
-        /// <remarks>
-        /// This method completes an asynchronous operation started by calling
-        /// the <c>BeginGetContext</c> method.
-        /// </remarks>
-        /// <returns>
-        /// A <see cref="HttpListenerContext"/> that represents a request.
-        /// </returns>
-        /// <param name="asyncResult">
-        /// An <see cref="IAsyncResult"/> obtained by calling the <c>BeginGetContext</c> method.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="asyncResult"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="asyncResult"/> wasn't obtained by calling the <c>BeginGetContext</c> method.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// This method was already called for the specified <paramref name="asyncResult"/>.
-        /// </exception>
-        /// <exception cref="ObjectDisposedException">
-        /// This listener has been closed.
-        /// </exception>
-        public HttpListenerContext EndGetContext(IAsyncResult asyncResult)
-        {
-            CheckDisposed();
-            if (asyncResult == null)
-                throw new ArgumentNullException("asyncResult");
-
-            var ares = asyncResult as ListenerAsyncResult;
-            if (ares == null)
-                throw new ArgumentException("A wrong IAsyncResult.", "asyncResult");
-
-            if (ares.EndCalled)
-                throw new InvalidOperationException("This IAsyncResult cannot be reused.");
-
-            ares.EndCalled = true;
-            if (!ares.IsCompleted)
-                ares.AsyncWaitHandle.WaitOne();
-
-            lock (_waitQueueSync)
-            {
-                var i = _waitQueue.IndexOf(ares);
-                if (i >= 0)
-                    _waitQueue.RemoveAt(i);
-            }
-
-            var ctx = ares.GetContext();
-            var schm = SelectAuthenticationScheme(ctx);
-            if (schm != AuthenticationSchemes.Anonymous)
-                ctx.SetUser(schm, Realm, UserCredentialsFinder);
-
-            return ctx; // This will throw on error.
-        }
-
+        
         /// <summary>
         /// Releases all resources used by the listener.
         /// </summary>
         void IDisposable.Dispose()
         {
             if (_disposed)
+            {
                 return;
+            }
 
-            Close(true);
+            Close(true).Wait();
             _disposed = true;
         }
     }

@@ -225,7 +225,7 @@ namespace WebSocketSharp.Net
                 if (conn._requestBuffer.Length > 32768)
                 {
                     await conn.SendError("Bad request", 400).ConfigureAwait(false);
-                    conn.Close(true);
+                    await conn.Close(true).ConfigureAwait(false);
 
                     return;
                 }
@@ -234,7 +234,7 @@ namespace WebSocketSharp.Net
             {
                 if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
                 {
-                    conn.SendError();
+                    await conn.SendError().ConfigureAwait(false);
                 }
 
                 conn.InnerClose();
@@ -256,8 +256,8 @@ namespace WebSocketSharp.Net
 
                 if (conn._context.HasError)
                 {
-                    conn.SendError();
-                    conn.Close(true);
+                    await conn.SendError().ConfigureAwait(false);
+                    await conn.Close(true).ConfigureAwait(false);
 
                     return;
                 }
@@ -265,7 +265,7 @@ namespace WebSocketSharp.Net
                 if (!conn._listener.BindContext(conn._context))
                 {
                     await conn.SendError("Invalid host", 400).ConfigureAwait(false);
-                    conn.Close(true);
+                    await conn.Close(true).ConfigureAwait(false);
 
                     return;
                 }
@@ -483,19 +483,18 @@ namespace WebSocketSharp.Net
                 return _outputStream;
             }
 
-            var listener = _context.Listener;
-            var ignore = listener?.IgnoreWriteExceptions ?? true;
+            var ignore = _context.Listener == null;
             _outputStream = new ResponseStream(_stream, _context.Response, ignore);
 
             return _outputStream;
         }
 
-        private void SendError()
+        private Task SendError()
         {
-            SendError(_context.ErrorMessage, _context.ErrorStatus);
+            return SendError(_context.ErrorMessage, _context.ErrorStatus);
         }
 
-        public async Task SendError(string message, int status)
+        private async Task SendError(string message, int status)
         {
             if (_socket == null)
             {

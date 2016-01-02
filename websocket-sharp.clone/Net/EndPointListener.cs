@@ -43,6 +43,7 @@ namespace WebSocketSharp.Net
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading;
@@ -107,20 +108,32 @@ namespace WebSocketSharp.Net
             if (prefixes == null) return;
 
             var path = prefix.Path;
-            foreach (var pref in prefixes) if (pref.Path == path) throw new HttpListenerException(400, "The prefix is already in use."); // TODO: Code?
+            if (prefixes.Any(pref => pref.Path == path))
+            {
+                throw new HttpListenerException(400, "The prefix is already in use."); // TODO: Code?
+            }
 
             prefixes.Add(prefix);
         }
 
-        private void CheckIfRemove()
+        private async Task CheckIfRemove()
         {
-            if (_prefixes.Count > 0) return;
+            if (_prefixes.Count > 0)
+            {
+                return;
+            }
 
-            if (_unhandled != null && _unhandled.Count > 0) return;
+            if (_unhandled != null && _unhandled.Count > 0)
+            {
+                return;
+            }
 
-            if (_all != null && _all.Count > 0) return;
+            if (_all != null && _all.Count > 0)
+            {
+                return;
+            }
 
-            EndPointManager.RemoveEndPoint(this, _endpoint);
+            await EndPointManager.RemoveEndPoint(this, _endpoint).ConfigureAwait(false);
         }
 
         private static HttpListener MatchFromList(
@@ -350,21 +363,17 @@ namespace WebSocketSharp.Net
             return true;
         }
 
-        public void Close()
+        public async Task Close()
         {
             _socket.Close();
 
-            lock (_unregisteredSync)
-            {
-                var conns = new List<HttpConnection>(_unregistered.Keys);
-                _unregistered.Clear();
-                foreach (var conn in conns) conn.Close(true);
-
-                conns.Clear();
-            }
+            var conns = new List<HttpConnection>(_unregistered.Keys);
+            _unregistered.Clear();
+            var closeTasks = conns.Select(conn => conn.Close(true));
+            await Task.WhenAll(closeTasks).ConfigureAwait(false);
         }
 
-        public void RemovePrefix(HttpListenerPrefix prefix)
+        public async Task RemovePrefix(HttpListenerPrefix prefix)
         {
             List<HttpListenerPrefix> current, future;
             if (prefix.Host == "*")
@@ -378,7 +387,7 @@ namespace WebSocketSharp.Net
                 }
                 while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
 
-                CheckIfRemove();
+                await CheckIfRemove().ConfigureAwait(false);
                 return;
             }
 
@@ -393,7 +402,7 @@ namespace WebSocketSharp.Net
                 }
                 while (Interlocked.CompareExchange(ref _all, future, current) != current);
 
-                CheckIfRemove();
+                await CheckIfRemove().ConfigureAwait(false);
                 return;
             }
 
@@ -408,7 +417,7 @@ namespace WebSocketSharp.Net
             }
             while (Interlocked.CompareExchange(ref _prefixes, prefs2, prefs) != prefs);
 
-            CheckIfRemove();
+            await CheckIfRemove().ConfigureAwait(false);
         }
 
         public void UnbindContext(HttpListenerContext context)

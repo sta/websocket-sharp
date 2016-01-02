@@ -651,7 +651,8 @@ namespace WebSocketSharp.Net
 					res.WriteByte((byte)c);
 				}
 
-				res.Close();
+                res.Close();
+
 				return res.ToArray();
 			}
 		}

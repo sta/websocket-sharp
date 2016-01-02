@@ -370,10 +370,10 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void InnerClose(bool force)
+        private Task InnerClose(bool force)
         {
             _disposed = true;
-            _context.Connection.Close(force);
+            return _context.Connection.Close(force);
         }
 
         private IEnumerable<Cookie> FindCookie(Cookie cookie)
@@ -527,14 +527,14 @@ namespace WebSocketSharp.Net
         /// Returns the response to the client and releases the resources used by
         /// this <see cref="HttpListenerResponse"/> instance.
         /// </summary>
-        public void Close()
+        public Task Close()
         {
             if (_disposed)
             {
-                return;
+                return Task.FromResult(false);
             }
 
-            InnerClose(false);
+            return InnerClose(false);
         }
 
         /// <summary>
@@ -570,7 +570,7 @@ namespace WebSocketSharp.Net
             var output = OutputStream;
 
             await output.WriteAsync(responseEntity, 0, len).ConfigureAwait(false);
-            InnerClose(false);
+            await InnerClose(false).ConfigureAwait(false);
 
         }
 
@@ -654,9 +654,11 @@ namespace WebSocketSharp.Net
         void IDisposable.Dispose()
         {
             if (_disposed)
+            {
                 return;
+            }
 
-            InnerClose(true); // Same as Abort.
+            InnerClose(true).Wait(); // Same as Abort.
         }
     }
 }

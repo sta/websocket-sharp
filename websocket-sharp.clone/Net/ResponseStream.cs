@@ -122,14 +122,12 @@ namespace WebSocketSharp.Net
             }
         }
 
-        public override IAsyncResult BeginRead(
-          byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             throw new NotSupportedException();
         }
 
-        public override IAsyncResult BeginWrite(
-          byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             throw new NotSupportedException();
         }
