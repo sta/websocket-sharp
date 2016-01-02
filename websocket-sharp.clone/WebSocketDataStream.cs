@@ -93,7 +93,7 @@ namespace WebSocketSharp
                     {
                         try
                         {
-                            _readInfo = _readInfoFunc().Result;
+                            _readInfo = await _readInfoFunc().ConfigureAwait(false);
                         }
                         catch
                         {
@@ -108,6 +108,16 @@ namespace WebSocketSharp
             }
 
             return bytesRead;
+        }
+
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int EndRead(IAsyncResult asyncResult)
+        {
+            throw new NotSupportedException();
         }
 
         public override int ReadByte()

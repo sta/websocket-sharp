@@ -147,11 +147,11 @@ namespace WebSocketSharp
                 header = (header << 4) + (int)_opcode;
                 header = (header << 1) + (int)_mask;
                 header = (header << 7) + _payloadLength;
-                buff.Write(((ushort)header).InternalToByteArray(ByteOrder.Big), 0, 2);
+                await buff.WriteAsync(((ushort)header).InternalToByteArray(ByteOrder.Big), 0, 2).ConfigureAwait(false);
 
                 if (_payloadLength > 125)
                 {
-                    buff.Write(_extPayloadLength, 0, _extPayloadLength.Length);
+                    await buff.WriteAsync(_extPayloadLength, 0, _extPayloadLength.Length).ConfigureAwait(false);
                 }
 
                 if (_mask == Mask.Mask)

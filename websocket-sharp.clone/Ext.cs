@@ -411,7 +411,7 @@ namespace WebSocketSharp
 
             return subArray;
         }
-        
+
         /// <summary>
         /// Executes the specified <c>Action&lt;int&gt;</c> delegate <paramref name="n"/> times.
         /// </summary>
@@ -1279,7 +1279,7 @@ namespace WebSocketSharp
         {
             var bytes = await stream.ReadBytes(buffer, offset, length).ConfigureAwait(false);
             var len = bytes.Length;
-            destination.Write(bytes, 0, len);
+            await destination.WriteAsync(bytes, 0, len).ConfigureAwait(false);
 
             return len == offset + length;
         }

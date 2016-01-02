@@ -213,8 +213,10 @@ namespace WebSocketSharp.Net
 			Action<IAsyncResult> endWrite = ares =>
 			{
 				_stream.EndWrite(ares);
-				if (_response.SendChunked)
-					_stream.Write(crlf, 0, 2);
+			    if (_response.SendChunked)
+			    {
+			        _stream.Write(crlf, 0, 2);
+			    }
 			};
 
 			if (_ignoreErrors)

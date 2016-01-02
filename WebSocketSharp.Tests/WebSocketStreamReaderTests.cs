@@ -44,7 +44,11 @@ namespace WebSocketSharp.Tests
                 var data2 = Enumerable.Repeat((byte)2, 1000).ToArray();
                 var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
                 var frame3 = new WebSocketFrame(Fin.Final, Opcode.Close, new byte[0], false, true);
-                var stream = new MemoryStream((await frame1.ToByteArray().ConfigureAwait(false)).Concat(await frame2.ToByteArray().ConfigureAwait(false)).Concat(frame3.ToByteArray().Result).ToArray());
+                var stream = new MemoryStream(
+                    (await frame1.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame2.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame3.ToByteArray().ConfigureAwait(false))
+                    .ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
             }
 

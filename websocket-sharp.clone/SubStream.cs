@@ -2,6 +2,8 @@ namespace WebSocketSharp
 {
     using System;
     using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     internal class SubStream : Stream
     {
@@ -82,11 +84,22 @@ namespace WebSocketSharp
             return _innerStream.Read(buffer, offset, actualCount);
         }
 
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            var actualCount = (int)Math.Min(_length - Position, count);
+            return _innerStream.ReadAsync(buffer, offset, actualCount, cancellationToken);
+        }
+
         /// <summary>
         /// When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
         /// </summary>
         /// <param name="buffer">An array of bytes. This method copies <paramref name="count"/> bytes from <paramref name="buffer"/> to the current stream. </param><param name="offset">The zero-based byte offset in <paramref name="buffer"/> at which to begin copying bytes to the current stream. </param><param name="count">The number of bytes to be written to the current stream. </param>
         public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             throw new NotSupportedException();
         }

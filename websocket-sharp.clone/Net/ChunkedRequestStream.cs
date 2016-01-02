@@ -42,8 +42,8 @@ namespace WebSocketSharp.Net
 	{
 	    private const int BufferSize = 8192;
 
-	    private HttpListenerContext _context;
-		private ChunkStream _decoder;
+	    private readonly HttpListenerContext _context;
+		private readonly ChunkStream _decoder;
 		private bool _disposed;
 		private bool _noMoreData;
 

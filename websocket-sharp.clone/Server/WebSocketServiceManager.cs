@@ -397,6 +397,7 @@ namespace WebSocketSharp.Server
             var results =
                 Hosts
                 .TakeWhile(host => _state == ServerState.Start)
+                .AsParallel()
                 .Select(host => host.Sessions.InnerBroadcast(opcode, data))
                 .ToArray();
             await Task.WhenAll(results).ConfigureAwait(false);
@@ -407,6 +408,7 @@ namespace WebSocketSharp.Server
         {
             var tasks =
                 Hosts.TakeWhile(host => _state == ServerState.Start)
+                    .AsParallel()
                     .Select(host => host.Sessions.InnerBroadcast(opcode, stream))
                     .ToArray();
 
