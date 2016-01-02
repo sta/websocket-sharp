@@ -39,7 +39,7 @@ namespace WebSocketSharp
 	///   </para>
 	///   <para>
 	///   If you would like to get the message data, you should access
-	///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.RawData"/> property.
+	///   the <see cref="MessageEventArgs.Data"/> or <see cref="MessageEventArgs.Text"/> property.
 	///   </para>
 	/// </remarks>
 	public class MessageEventArgs : EventArgs

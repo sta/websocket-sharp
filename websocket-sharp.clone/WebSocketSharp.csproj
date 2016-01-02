@@ -84,7 +84,6 @@
     <Compile Include="WebSocket.cs" />
     <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
-    <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\Cookie.cs" />
     <Compile Include="Net\CookieCollection.cs" />
     <Compile Include="Net\CookieException.cs" />
@@ -132,9 +131,7 @@
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
     <Compile Include="Net\ReadBufferState.cs" />
-    <Compile Include="Net\Chunk.cs" />
     <Compile Include="Net\InputChunkState.cs" />
-    <Compile Include="Net\ChunkedRequestStream.cs" />
     <Compile Include="Net\QueryStringCollection.cs" />
     <Compile Include="WebSocketFrame.cs" />
     <Compile Include="Net\AuthenticationChallenge.cs" />

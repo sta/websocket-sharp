@@ -32,6 +32,7 @@ namespace WebSocketSharp.Net.WebSockets
     using System.IO;
     using System.Net;
     using System.Security.Principal;
+    using System.Threading.Tasks;
 
     using CookieCollection = WebSocketSharp.Net.CookieCollection;
     using HttpListenerContext = WebSocketSharp.Net.HttpListenerContext;
@@ -41,23 +42,23 @@ namespace WebSocketSharp.Net.WebSockets
 	/// received by the <see cref="Net.HttpListener"/>.
 	/// </summary>
 	internal class HttpListenerWebSocketContext : WebSocketContext
-	{
-		private readonly HttpListenerContext _context;
-		private readonly WebSocket _websocket;
+    {
+        private readonly HttpListenerContext _context;
+        private readonly WebSocket _websocket;
 
-		internal HttpListenerWebSocketContext(HttpListenerContext context, string protocol)
-		{
-			_context = context;
-			_websocket = new WebSocket(this, protocol);
-		}
+        internal HttpListenerWebSocketContext(HttpListenerContext context, string protocol)
+        {
+            _context = context;
+            _websocket = new WebSocket(this, protocol);
+        }
 
-		/// <summary>
-		/// Gets the HTTP cookies included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
-		/// </value>
-		public override CookieCollection CookieCollection => _context.Request.Cookies;
+        /// <summary>
+        /// Gets the HTTP cookies included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+        /// </value>
+        public override CookieCollection CookieCollection => _context.Request.Cookies;
 
         /// <summary>
 		/// Gets the HTTP headers included in the request.
@@ -155,26 +156,26 @@ namespace WebSocketSharp.Net.WebSockets
 		/// header.
 		/// </value>
 		public override IEnumerable<string> SecWebSocketProtocols
-		{
-			get
-			{
-				var protocols = _context.Request.Headers["Sec-WebSocket-Protocol"];
-				if (protocols != null)
-					foreach (var protocol in protocols.Split(','))
-						yield return protocol.Trim();
-			}
-		}
+        {
+            get
+            {
+                var protocols = _context.Request.Headers["Sec-WebSocket-Protocol"];
+                if (protocols != null)
+                    foreach (var protocol in protocols.Split(','))
+                        yield return protocol.Trim();
+            }
+        }
 
-		/// <summary>
-		/// Gets the value of the Sec-WebSocket-Version header included in the request.
-		/// </summary>
-		/// <remarks>
-		/// This property represents the WebSocket protocol version.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
-		/// </value>
-		public override string SecWebSocketVersion => _context.Request.Headers["Sec-WebSocket-Version"];
+        /// <summary>
+        /// Gets the value of the Sec-WebSocket-Version header included in the request.
+        /// </summary>
+        /// <remarks>
+        /// This property represents the WebSocket protocol version.
+        /// </remarks>
+        /// <value>
+        /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
+        /// </value>
+        public override string SecWebSocketVersion => _context.Request.Headers["Sec-WebSocket-Version"];
 
         /// <summary>
 		/// Gets the server endpoint as an IP address and a port number.
@@ -220,13 +221,13 @@ namespace WebSocketSharp.Net.WebSockets
 		/// <see cref="HttpListenerWebSocketContext"/>.
 		/// </returns>
 		public override string ToString()
-		{
-			return _context.Request.ToString();
-		}
+        {
+            return _context.Request.ToString();
+        }
 
-		internal void Close()
-		{
-			_context.Connection.Close(true);
-		}
-	}
+        internal Task Close()
+        {
+            return _context.Connection.Close(true);
+        }
+    }
 }

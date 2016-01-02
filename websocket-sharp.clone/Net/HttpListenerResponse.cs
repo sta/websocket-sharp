@@ -370,7 +370,7 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private void close(bool force)
+        private void InnerClose(bool force)
         {
             _disposed = true;
             _context.Connection.Close(force);
@@ -394,7 +394,7 @@ namespace WebSocketSharp.Net
             return Enumerable.Empty<Cookie>();
         }
 
-        internal async Task SendHeaders(MemoryStream stream, bool closing)
+        internal async Task<MemoryStream> SendHeaders(bool closing)
         {
             if (_contentType != null)
             {
@@ -423,12 +423,16 @@ namespace WebSocketSharp.Net
                 }
 
                 if (_contentLengthWasSet)
+                {
                     _headers.InternalSet("Content-Length", _contentLength.ToString(provider), true);
+                }
             }
 
             var reqVer = _context.Request.ProtocolVersion;
             if (!_contentLengthWasSet && !_chunked && reqVer > HttpVersion.Version10)
+            {
                 _chunked = true;
+            }
 
             /*
 			 * Apache forces closing the connection for these status codes:
@@ -440,16 +444,18 @@ namespace WebSocketSharp.Net
 			 * - HttpStatusCode.InternalServerError   500
 			 * - HttpStatusCode.ServiceUnavailable    503
 			 */
-            var connClose = _statusCode == 400 ||
-                            _statusCode == 408 ||
-                            _statusCode == 411 ||
-                            _statusCode == 413 ||
-                            _statusCode == 414 ||
-                            _statusCode == 500 ||
-                            _statusCode == 503;
+            var connClose = _statusCode == 400
+                || _statusCode == 408
+                || _statusCode == 411
+                || _statusCode == 413
+                || _statusCode == 414
+                || _statusCode == 500
+                || _statusCode == 503;
 
             if (!connClose)
+            {
                 connClose = !_context.Request.KeepAlive;
+            }
 
             // They sent both KeepAlive: true and Connection: close!?
             if (!_keepAlive || connClose)
@@ -459,7 +465,9 @@ namespace WebSocketSharp.Net
             }
 
             if (_chunked)
+            {
                 _headers.InternalSet("Transfer-Encoding", "chunked", true);
+            }
 
             var reuses = _context.Connection.Reuses;
             if (reuses >= 100)
@@ -494,6 +502,8 @@ namespace WebSocketSharp.Net
                 }
             }
 
+
+            var stream = new MemoryStream();
             var enc = _contentEncoding ?? Encoding.Default;
             var writer = new StreamWriter(stream, enc, 256);
             await writer.WriteAsync(string.Format("HTTP/{0} {1} {2}{3}", _version, _statusCode, _statusDescription, Environment.NewLine)).ConfigureAwait(false);
@@ -509,6 +519,8 @@ namespace WebSocketSharp.Net
             }
 
             _headersWereSent = true;
+
+            return stream;
         }
 
         /// <summary>
@@ -518,9 +530,11 @@ namespace WebSocketSharp.Net
         public void Close()
         {
             if (_disposed)
+            {
                 return;
+            }
 
-            close(false);
+            InnerClose(false);
         }
 
         /// <summary>
@@ -543,33 +557,21 @@ namespace WebSocketSharp.Net
         /// <exception cref="ObjectDisposedException">
         /// This object is closed.
         /// </exception>
-        public void Close(byte[] responseEntity, bool willBlock)
+        public async Task Close(byte[] responseEntity)
         {
             if (responseEntity == null)
-                throw new ArgumentNullException("responseEntity");
+            {
+                throw new ArgumentNullException(nameof(responseEntity));
+            }
 
             var len = responseEntity.Length;
             ContentLength64 = len;
 
             var output = OutputStream;
-            if (willBlock)
-            {
-                output.Write(responseEntity, 0, len);
-                close(false);
 
-                return;
-            }
+            await output.WriteAsync(responseEntity, 0, len).ConfigureAwait(false);
+            InnerClose(false);
 
-            output.BeginWrite(
-              responseEntity,
-              0,
-              len,
-              ar =>
-              {
-                  output.EndWrite(ar);
-                  close(false);
-              },
-              null);
         }
 
         /// <summary>
@@ -654,7 +656,7 @@ namespace WebSocketSharp.Net
             if (_disposed)
                 return;
 
-            close(true); // Same as Abort.
+            InnerClose(true); // Same as Abort.
         }
     }
 }

@@ -201,7 +201,7 @@ namespace WebSocketSharp
             _context = context;
             _protocol = protocol;
 
-            _closeContext = context.Close;
+            _closeContext = () => context.Close().Wait();
             _secure = context.IsSecureConnection;
             _stream = context.Stream;
             _waitTime = TimeSpan.FromSeconds(1);

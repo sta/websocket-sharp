@@ -42,6 +42,7 @@ namespace WebSocketSharp.Net
     using System.IO;
     using System.Net;
     using System.Text;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Provides the access to a request to the <see cref="HttpListener"/>.
@@ -52,9 +53,6 @@ namespace WebSocketSharp.Net
     internal sealed class HttpListenerRequest
     {
         private static readonly byte[] _100continue;
-
-        private bool _chunked;
-
         private long _contentLength;
         private bool _contentLengthWasSet;
         private readonly HttpListenerContext _context;
@@ -98,7 +96,7 @@ namespace WebSocketSharp.Net
         /// <value>
         /// <c>true</c> if the request has the entity body; otherwise, <c>false</c>.
         /// </value>
-        public bool HasEntityBody => _contentLength > 0 || _chunked;
+        public bool HasEntityBody => _contentLength > 0;
 
         /// <summary>
         /// Gets the HTTP headers used in the request.
@@ -124,7 +122,7 @@ namespace WebSocketSharp.Net
         /// </value>
         public Stream InputStream => _inputStream ??
                                      (_inputStream = HasEntityBody
-                                                         ? _context.Connection.GetRequestStream(_chunked, _contentLength)
+                                                         ? _context.Connection.GetRequestStream(_contentLength)
                                                          : Stream.Null);
 
         /// <summary>
@@ -327,10 +325,10 @@ namespace WebSocketSharp.Net
                 val.ToUri();
         }
 
-        internal void FinishInitialization()
+        internal async Task FinishInitialization()
         {
             var host = _headers["Host"];
-            var noHost = host == null || host.Length == 0;
+            var noHost = string.IsNullOrEmpty(host);
             if (_version > HttpVersion.Version10 && noHost)
             {
                 _context.ErrorMessage = "Invalid Host header";
@@ -348,24 +346,20 @@ namespace WebSocketSharp.Net
             }
 
             var enc = Headers["Transfer-Encoding"];
-            if (_version > HttpVersion.Version10 && enc != null && enc.Length > 0)
+            if (_version > HttpVersion.Version10 && !string.IsNullOrEmpty(enc))
             {
-                _chunked = enc.ToLower() == "chunked";
-                if (!_chunked)
-                {
-                    _context.ErrorMessage = String.Empty;
-                    _context.ErrorStatus = 501;
+                _context.ErrorMessage = String.Empty;
+                _context.ErrorStatus = 501;
 
-                    return;
-                }
+                return;
             }
 
-            if (!_chunked && !_contentLengthWasSet)
+            if (!_contentLengthWasSet)
             {
-                var method = _method.ToLower();
+                var method = _method.ToLowerInvariant();
                 if (method == "post" || method == "put")
                 {
-                    _context.ErrorMessage = String.Empty;
+                    _context.ErrorMessage = string.Empty;
                     _context.ErrorStatus = 411;
 
                     return;
@@ -373,22 +367,26 @@ namespace WebSocketSharp.Net
             }
 
             var expect = Headers["Expect"];
-            if (expect != null && expect.Length > 0 && expect.ToLower() == "100-continue")
+            if (!string.IsNullOrEmpty(expect) && expect.ToLower() == "100-continue")
             {
                 var output = _context.Connection.GetResponseStream();
-                output.WriteInternally(_100continue, 0, _100continue.Length);
+                await output.WriteInternally(_100continue, 0, _100continue.Length).ConfigureAwait(false);
             }
         }
 
         // Returns true is the stream could be reused.
-        internal bool FlushInput()
+        internal async Task<bool> FlushInput()
         {
             if (!HasEntityBody)
+            {
                 return true;
+            }
 
             var len = 2048;
             if (_contentLength > 0)
+            {
                 len = (int)Math.Min(_contentLength, len);
+            }
 
             var buff = new byte[len];
             while (true)
@@ -396,12 +394,12 @@ namespace WebSocketSharp.Net
                 // TODO: Test if MS has a timeout when doing this.
                 try
                 {
-                    var ares = InputStream.BeginRead(buff, 0, len, null, null);
-                    if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne(100))
-                        return false;
+                    var ares = await InputStream.ReadAsync(buff, 0, len).ConfigureAwait(false);
 
-                    if (InputStream.EndRead(ares) <= 0)
+                    if (ares <= 0)
+                    {
                         return true;
+                    }
                 }
                 catch
                 {
