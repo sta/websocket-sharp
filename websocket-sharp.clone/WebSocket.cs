@@ -193,22 +193,7 @@ namespace WebSocketSharp
 
             InnerInit();
         }
-
-        // As server
-        internal WebSocket(HttpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
-        {
-            _fragmentLength = fragmentSize;
-            _context = context;
-            _protocol = protocol;
-
-            _closeContext = () => context.Close().Wait();
-            _secure = context.IsSecureConnection;
-            _stream = context.Stream;
-            _waitTime = TimeSpan.FromSeconds(1);
-
-            InnerInit();
-        }
-
+        
         // As server
         internal WebSocket(TcpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {

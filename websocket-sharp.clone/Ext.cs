@@ -57,7 +57,6 @@ namespace WebSocketSharp
     using WebSocketSharp.Server;
 
     using CookieCollection = WebSocketSharp.Net.CookieCollection;
-    using HttpListenerResponse = WebSocketSharp.Net.HttpListenerResponse;
     using HttpStatusCode = WebSocketSharp.Net.HttpStatusCode;
 
     /// <summary>
@@ -665,7 +664,7 @@ namespace WebSocketSharp
         internal static void CloseWithAuthChallenge(
           this HttpListenerResponse response, string challenge)
         {
-            response.Headers.InternalSet("WWW-Authenticate", challenge, true);
+            response.Headers.Set("WWW-Authenticate", challenge);
             response.Close(HttpStatusCode.Unauthorized);
         }
 

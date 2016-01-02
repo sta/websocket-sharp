@@ -71,6 +71,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpRequest.cs" />
     <Compile Include="MonitorLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
@@ -87,20 +88,8 @@
     <Compile Include="Net\Cookie.cs" />
     <Compile Include="Net\CookieCollection.cs" />
     <Compile Include="Net\CookieException.cs" />
-    <Compile Include="Net\EndPointListener.cs" />
-    <Compile Include="Net\EndPointManager.cs" />
-    <Compile Include="Net\HttpConnection.cs" />
-    <Compile Include="Net\HttpListener.cs" />
-    <Compile Include="Net\HttpListenerContext.cs" />
-    <Compile Include="Net\HttpListenerException.cs" />
-    <Compile Include="Net\HttpListenerPrefixCollection.cs" />
-    <Compile Include="Net\HttpListenerRequest.cs" />
-    <Compile Include="Net\HttpListenerResponse.cs" />
     <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpUtility.cs" />
-    <Compile Include="Net\ListenerAsyncResult.cs" />
-    <Compile Include="Net\RequestStream.cs" />
-    <Compile Include="Net\ResponseStream.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
@@ -111,7 +100,6 @@
     <Compile Include="Opcode.cs" />
     <Compile Include="PayloadData.cs" />
     <Compile Include="Rsv.cs" />
-    <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
     <Compile Include="Net\HttpHeaderType.cs" />
@@ -131,17 +119,14 @@
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
     <Compile Include="Net\ReadBufferState.cs" />
-    <Compile Include="Net\InputChunkState.cs" />
     <Compile Include="Net\QueryStringCollection.cs" />
     <Compile Include="WebSocketFrame.cs" />
     <Compile Include="Net\AuthenticationChallenge.cs" />
     <Compile Include="Net\AuthenticationResponse.cs" />
     <Compile Include="Net\AuthenticationBase.cs" />
     <Compile Include="HttpBase.cs" />
-    <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
     <Compile Include="Server\WebSocketBehavior.cs" />
-    <Compile Include="Net\HttpListenerPrefix.cs" />
     <Compile Include="Net\ClientSslConfiguration.cs" />
     <Compile Include="Net\ServerSslConfiguration.cs" />
     <Compile Include="Net\SslConfiguration.cs" />
