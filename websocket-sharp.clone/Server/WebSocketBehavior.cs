@@ -202,9 +202,7 @@ namespace WebSocketSharp.Server
         /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
         /// the <see cref="WebSocket"/> used in the current session.
         /// </value>
-        public WebSocketState State => _websocket != null
-                                           ? _websocket.ReadyState
-                                           : WebSocketState.Connecting;
+        public WebSocketState State => _websocket?.ReadyState ?? WebSocketState.Connecting;
 
         /// <summary>
         /// Gets the access to the sessions in the WebSocket service.
@@ -218,7 +216,7 @@ namespace WebSocketSharp.Server
         {
             if (_websocket != null)
             {
-                context.WebSocket.InnerClose(HttpStatusCode.ServiceUnavailable);
+                await context.WebSocket.InnerClose(HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
 
                 return;
             }

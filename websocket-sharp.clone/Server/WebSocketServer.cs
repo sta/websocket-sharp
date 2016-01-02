@@ -76,7 +76,7 @@ namespace WebSocketSharp.Server
         private WebSocketServiceManager _services;
         private volatile ServerState _state;
         private object _sync;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
         /// WebSocket URL.
@@ -415,15 +415,10 @@ namespace WebSocketSharp.Server
         /// <param name="path">
         /// A <see cref="string"/> that represents the absolute path to the service to find.
         /// </param>
-        public bool RemoveWebSocketService(string path)
+        public Task<bool> RemoveWebSocketService(string path)
         {
             var msg = path.CheckIfValidServicePath();
-            if (msg != null)
-            {
-                return false;
-            }
-
-            return _services.Remove(path);
+            return msg != null ? Task.FromResult(false) : _services.Remove(path);
         }
 
         /// <summary>
@@ -449,7 +444,7 @@ namespace WebSocketSharp.Server
         /// <summary>
         /// Stops receiving the WebSocket connection requests.
         /// </summary>
-        public void Stop()
+        public async Task Stop()
         {
             lock (_sync)
             {
@@ -463,7 +458,7 @@ namespace WebSocketSharp.Server
             }
 
             StopReceiving();
-            _services.Stop(new CloseEventArgs(), true, true);
+            await _services.Stop(new CloseEventArgs(), true, true).ConfigureAwait(false);
 
             _state = ServerState.Stop;
         }
@@ -479,7 +474,7 @@ namespace WebSocketSharp.Server
         /// <param name="reason">
         /// A <see cref="string"/> that represents the reason for stop.
         /// </param>
-        public void Stop(CloseStatusCode code, string reason)
+        public async Task Stop(CloseStatusCode code, string reason)
         {
             CloseEventArgs e = null;
             lock (_sync)
@@ -499,7 +494,7 @@ namespace WebSocketSharp.Server
             StopReceiving();
 
             var send = !code.IsReserved();
-            _services.Stop(e, send, send);
+            await _services.Stop(e, send, send).ConfigureAwait(false);
 
             _state = ServerState.Stop;
         }
@@ -524,7 +519,7 @@ namespace WebSocketSharp.Server
 
         private string CheckIfCertificateExists()
         {
-            return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
+            return _secure && (_sslConfig?.ServerCertificate == null)
                    ? "The secure connection requires a server certificate."
                    : null;
         }
@@ -541,7 +536,7 @@ namespace WebSocketSharp.Server
             }
         }
 
-        private void Abort()
+        private async Task Abort()
         {
             lock (_sync)
             {
@@ -554,12 +549,12 @@ namespace WebSocketSharp.Server
             }
 
             _listener.Stop();
-            _services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false);
+            await _services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false).ConfigureAwait(false);
 
             _state = ServerState.Stop;
         }
 
-        private bool AuthenticateRequest(AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
+        private async Task<bool> AuthenticateRequest(AuthenticationSchemes scheme, TcpListenerWebSocketContext context)
         {
             var chal = scheme == AuthenticationSchemes.Basic
                        ? AuthenticationChallenge.CreateBasicChallenge(Realm).ToBasicString()
@@ -569,7 +564,7 @@ namespace WebSocketSharp.Server
 
             if (chal == null)
             {
-                context.Close(HttpStatusCode.Forbidden);
+                await context.Close(HttpStatusCode.Forbidden).ConfigureAwait(false);
                 return false;
             }
 
@@ -577,13 +572,15 @@ namespace WebSocketSharp.Server
             var schm = scheme.ToString();
             var realm = Realm;
             var credFinder = UserCredentialsFinder;
-            Func<bool> auth = null;
-            auth = () =>
+            Func<Task<bool>> auth = () => Task.FromResult(false);
+
+            auth = async () =>
             {
+                var auth1 = auth;
                 retry++;
                 if (retry > 99)
                 {
-                    context.Close(HttpStatusCode.Forbidden);
+                    await context.Close(HttpStatusCode.Forbidden).ConfigureAwait(false);
                     return false;
                 }
 
@@ -591,20 +588,20 @@ namespace WebSocketSharp.Server
                 if (res == null || !res.StartsWith(schm, StringComparison.OrdinalIgnoreCase))
                 {
                     context.SendAuthenticationChallenge(chal);
-                    return auth();
+                    return await auth1().ConfigureAwait(false);
                 }
 
                 context.SetUser(scheme, realm, credFinder);
                 if (!context.IsAuthenticated)
                 {
                     context.SendAuthenticationChallenge(chal);
-                    return auth();
+                    return await auth1().ConfigureAwait(false);
                 }
 
                 return true;
             };
 
-            return auth();
+            return await auth().ConfigureAwait(false);
         }
 
         private void Init(AuthenticationSchemes authenticationSchemes)
@@ -616,12 +613,12 @@ namespace WebSocketSharp.Server
             _sync = new object();
         }
 
-        private void ProcessWebSocketRequest(TcpListenerWebSocketContext context)
+        private async Task ProcessWebSocketRequest(TcpListenerWebSocketContext context)
         {
             var uri = context.RequestUri;
             if (uri == null)
             {
-                context.Close(HttpStatusCode.BadRequest);
+                await context.Close(HttpStatusCode.BadRequest).ConfigureAwait(false);
                 return;
             }
 
@@ -633,7 +630,7 @@ namespace WebSocketSharp.Server
                     Uri.CheckHostName(expected) == UriHostNameType.Dns &&
                     actual != expected)
                 {
-                    context.Close(HttpStatusCode.NotFound);
+                    await context.Close(HttpStatusCode.NotFound).ConfigureAwait(false);
                     return;
                 }
             }
@@ -641,11 +638,11 @@ namespace WebSocketSharp.Server
             WebSocketServiceHost host;
             if (!_services.InternalTryGetServiceHost(uri.AbsolutePath, out host))
             {
-                context.Close(HttpStatusCode.NotImplemented);
+                await context.Close(HttpStatusCode.NotImplemented).ConfigureAwait(false);
                 return;
             }
 
-            host.StartSession(context);
+            await host.StartSession(context).ConfigureAwait(false);
         }
 
         private async Task ReceiveRequest(CancellationToken cancellationToken)
@@ -659,12 +656,12 @@ namespace WebSocketSharp.Server
                     try
                     {
                         var ctx = client.GetWebSocketContext(null, _secure, _sslConfig);
-                        if (_authSchemes != AuthenticationSchemes.Anonymous && !AuthenticateRequest(_authSchemes, ctx))
+                        if (_authSchemes != AuthenticationSchemes.Anonymous && !await AuthenticateRequest(_authSchemes, ctx).ConfigureAwait(false))
                         {
                             return;
                         }
 
-                        ProcessWebSocketRequest(ctx);
+                        await ProcessWebSocketRequest(ctx).ConfigureAwait(false);
                     }
                     catch (Exception)
                     {
@@ -679,7 +676,7 @@ namespace WebSocketSharp.Server
 
             if (IsListening)
             {
-                Abort();
+                await Abort().ConfigureAwait(false);
             }
         }
 

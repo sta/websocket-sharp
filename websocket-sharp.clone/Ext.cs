@@ -708,11 +708,11 @@ namespace WebSocketSharp
             response.Close(HttpStatusCode.Unauthorized);
         }
 
-        internal static byte[] Compress(this byte[] data, CompressionMethod method, Opcode opcode)
+        internal static Task<byte[]> Compress(this byte[] data, CompressionMethod method, Opcode opcode)
         {
             return method == CompressionMethod.Deflate && opcode.IsData()
                    ? data.Compress()
-                   : data;
+                   : Task.FromResult(data);
         }
 
         internal static Stream Compress(this Stream stream, CompressionMethod method)
@@ -893,7 +893,9 @@ namespace WebSocketSharp
         {
             var bytes = BitConverter.GetBytes(value);
             if (!order.IsHostOrder())
+            {
                 Array.Reverse(bytes);
+            }
 
             return bytes;
         }
@@ -972,12 +974,7 @@ namespace WebSocketSharp
             return $"\"{value.Replace("\"", "\\\"")}\"";
         }
 
-        internal static byte[] ReadBytes(this Stream stream, int length)
-        {
-            return stream.ReadBytes(new byte[length], 0, length);
-        }
-
-        internal static byte[] ReadBytes(this Stream stream, long length, int bufferLength)
+        internal static async Task<byte[]> ReadBytes(this Stream stream, long length, int bufferLength)
         {
             using (var res = new MemoryStream())
             {
@@ -988,7 +985,7 @@ namespace WebSocketSharp
                 var end = false;
                 for (long i = 0; i < cnt; i++)
                 {
-                    if (!stream.ReadBytes(buff, 0, bufferLength, res))
+                    if (!await stream.ReadBytes(buff, 0, bufferLength, res).ConfigureAwait(false))
                     {
                         end = true;
                         break;
@@ -997,7 +994,7 @@ namespace WebSocketSharp
 
                 if (!end && rem > 0)
                 {
-                    stream.ReadBytes(new byte[rem], 0, rem, res);
+                    await stream.ReadBytes(new byte[rem], 0, rem, res).ConfigureAwait(false);
                 }
 
                 res.Close();
@@ -1005,7 +1002,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal static async Task<byte[]> ReadBytesAsync(this Stream stream, int length)
+        internal static async Task<byte[]> ReadBytes(this Stream stream, int length)
         {
             var buff = new byte[length];
 
@@ -1014,7 +1011,7 @@ namespace WebSocketSharp
             var bytes = len < 1
                                ? new byte[0]
                                : len < length
-                                     ? stream.ReadBytes(buff, len, length - len)
+                                     ? await stream.ReadBytes(buff, len, length - len).ConfigureAwait(false)
                                      : buff;
 
             return bytes;
@@ -1091,7 +1088,7 @@ namespace WebSocketSharp
             }
         }
 
-        internal static byte[] ToByteArray(this Stream stream)
+        internal static async Task<byte[]> ToByteArray(this Stream stream)
         {
             if (stream == null)
             {
@@ -1101,7 +1098,7 @@ namespace WebSocketSharp
             using (var output = new MemoryStream())
             {
                 stream.Position = 0;
-                stream.CopyTo(output);
+                await stream.CopyToAsync(output).ConfigureAwait(false);
                 output.Flush();
 
                 return output.ToArray();
@@ -1246,20 +1243,20 @@ namespace WebSocketSharp
                      : value.Substring(start + 1, len).Replace("\\\"", "\"");
         }
 
-        internal static void WriteBytes(this Stream stream, byte[] bytes)
+        internal static Task WriteBytes(this Stream stream, byte[] bytes)
         {
             using (var input = new MemoryStream(bytes))
             {
-                input.CopyTo(stream);
+                return input.CopyToAsync(stream);
             }
         }
 
-        private static byte[] Compress(this byte[] data)
+        private static Task<byte[]> Compress(this byte[] data)
         {
             if (data.LongLength == 0)
             {
                 //return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
-                return data;
+                return Task.FromResult(data);
             }
 
             using (var input = new MemoryStream(data))
@@ -1273,16 +1270,18 @@ namespace WebSocketSharp
             return new DeflateStream(stream, CompressionLevel.Optimal, true);
         }
 
-        private static MemoryStream CompressToMemory(this Stream stream)
+        private static async Task<MemoryStream> CompressToMemory(this Stream stream)
         {
             var output = new MemoryStream();
             if (stream.Length == 0)
+            {
                 return output;
+            }
 
             stream.Position = 0;
             using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
             {
-                stream.CopyTo(ds);
+                await stream.CopyToAsync(ds).ConfigureAwait(false);
                 ds.Close(); // "BFINAL" set to 1.
                 output.Position = 0;
 
@@ -1290,21 +1289,21 @@ namespace WebSocketSharp
             }
         }
 
-        private static byte[] CompressToArray(this Stream stream)
+        private static async Task<byte[]> CompressToArray(this Stream stream)
         {
-            using (var output = stream.CompressToMemory())
+            using (var output = await stream.CompressToMemory().ConfigureAwait(false))
             {
                 output.Close();
                 return output.ToArray();
             }
         }
 
-        private static byte[] ReadBytes(this Stream stream, byte[] buffer, int offset, int length)
+        private static async Task<byte[]> ReadBytes(this Stream stream, byte[] buffer, int offset, int length)
         {
             var len = 0;
             try
             {
-                len = stream.Read(buffer, offset, length);
+                len = await stream.ReadAsync(buffer, offset, length).ConfigureAwait(false);
                 if (len < 1)
                 {
                     return buffer.SubArray(0, offset);
@@ -1312,7 +1311,7 @@ namespace WebSocketSharp
 
                 while (len < length)
                 {
-                    var readLen = stream.Read(buffer, offset + len, length - len);
+                    var readLen = await stream.ReadAsync(buffer, offset + len, length - len).ConfigureAwait(false);
                     if (readLen < 1)
                         break;
 
@@ -1328,9 +1327,9 @@ namespace WebSocketSharp
                    : buffer;
         }
 
-        private static bool ReadBytes(this Stream stream, byte[] buffer, int offset, int length, Stream destination)
+        private static async Task<bool> ReadBytes(this Stream stream, byte[] buffer, int offset, int length, Stream destination)
         {
-            var bytes = stream.ReadBytes(buffer, offset, length);
+            var bytes = await stream.ReadBytes(buffer, offset, length).ConfigureAwait(false);
             var len = bytes.Length;
             destination.Write(bytes, 0, len);
 

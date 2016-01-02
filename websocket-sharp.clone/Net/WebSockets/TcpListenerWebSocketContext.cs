@@ -40,6 +40,7 @@ namespace WebSocketSharp.Net.WebSockets
     using System.Net.Sockets;
     using System.Security.Principal;
     using System.Text;
+    using System.Threading.Tasks;
 
     using AuthenticationSchemes = WebSocketSharp.Net.AuthenticationSchemes;
     using CookieCollection = WebSocketSharp.Net.CookieCollection;
@@ -51,54 +52,54 @@ namespace WebSocketSharp.Net.WebSockets
 	/// received by the <see cref="TcpListener"/>.
 	/// </summary>
 	internal class TcpListenerWebSocketContext : WebSocketContext
-	{
-		private readonly bool _secure;
-		private readonly Stream _stream;
-		private readonly TcpClient _tcpClient;
-		private readonly Uri _uri;
-		private readonly WebSocket _websocket;
-		private CookieCollection _cookies;
-		private NameValueCollection _queryString;
-		private HttpRequest _request;
-		private IPrincipal _user;
+    {
+        private readonly bool _secure;
+        private readonly Stream _stream;
+        private readonly TcpClient _tcpClient;
+        private readonly Uri _uri;
+        private readonly WebSocket _websocket;
+        private CookieCollection _cookies;
+        private NameValueCollection _queryString;
+        private HttpRequest _request;
+        private IPrincipal _user;
 
-		internal TcpListenerWebSocketContext(
-			TcpClient tcpClient,
-			string protocol,
-			bool secure,
-			ServerSslConfiguration sslConfiguration)
-		{
-			_tcpClient = tcpClient;
-			_secure = secure;
+        internal TcpListenerWebSocketContext(
+            TcpClient tcpClient,
+            string protocol,
+            bool secure,
+            ServerSslConfiguration sslConfiguration)
+        {
+            _tcpClient = tcpClient;
+            _secure = secure;
 
-			var netStream = tcpClient.GetStream();
-			if (secure)
-			{
-				var sslStream = new SslStream(netStream, false);
-				sslStream.AuthenticateAsServer(
-					sslConfiguration.ServerCertificate,
-					sslConfiguration.ClientCertificateRequired,
-					sslConfiguration.EnabledSslProtocols,
-					sslConfiguration.CheckCertificateRevocation);
+            var netStream = tcpClient.GetStream();
+            if (secure)
+            {
+                var sslStream = new SslStream(netStream, false);
+                sslStream.AuthenticateAsServer(
+                    sslConfiguration.ServerCertificate,
+                    sslConfiguration.ClientCertificateRequired,
+                    sslConfiguration.EnabledSslProtocols,
+                    sslConfiguration.CheckCertificateRevocation);
 
-				_stream = sslStream;
-			}
-			else
-			{
-				_stream = netStream;
-			}
+                _stream = sslStream;
+            }
+            else
+            {
+                _stream = netStream;
+            }
 
-			_request = HttpRequest.Read(_stream, 90000);
-			_uri = HttpUtility.CreateRequestUrl(
-				_request.RequestUri,
-				_request.Headers["Host"],
-				_request.IsWebSocketRequest,
-				secure);
+            _request = HttpRequest.Read(_stream, 90000);
+            _uri = HttpUtility.CreateRequestUrl(
+                _request.RequestUri,
+                _request.Headers["Host"],
+                _request.IsWebSocketRequest,
+                secure);
 
-			_websocket = new WebSocket(this, protocol);
-		}
+            _websocket = new WebSocket(this, protocol);
+        }
 
-	    internal Stream Stream => _stream;
+        internal Stream Stream => _stream;
 
         /// <summary>
 		/// Gets the HTTP cookies included in the request.
@@ -171,7 +172,7 @@ namespace WebSocketSharp.Net.WebSockets
 		/// A <see cref="NameValueCollection"/> that contains the query string parameters.
 		/// </value>
 		public override NameValueCollection QueryString => _queryString
-		                                                   ?? (_queryString = HttpUtility.InternalParseQueryString(_uri != null ? _uri.Query : null, Encoding.UTF8));
+                                                           ?? (_queryString = HttpUtility.InternalParseQueryString(_uri?.Query, Encoding.UTF8));
 
         /// <summary>
 		/// Gets the URI requested by the client.
@@ -205,24 +206,24 @@ namespace WebSocketSharp.Net.WebSockets
 		/// header.
 		/// </value>
 		public override IEnumerable<string> SecWebSocketProtocols
-		{
-			get
-			{
-				var protocols = _request.Headers["Sec-WebSocket-Protocol"];
-				if (protocols != null) foreach (var protocol in protocols.Split(',')) yield return protocol.Trim();
-			}
-		}
+        {
+            get
+            {
+                var protocols = _request.Headers["Sec-WebSocket-Protocol"];
+                if (protocols != null) foreach (var protocol in protocols.Split(',')) yield return protocol.Trim();
+            }
+        }
 
-		/// <summary>
-		/// Gets the value of the Sec-WebSocket-Version header included in the request.
-		/// </summary>
-		/// <remarks>
-		/// This property represents the WebSocket protocol version.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
-		/// </value>
-		public override string SecWebSocketVersion => _request.Headers["Sec-WebSocket-Version"];
+        /// <summary>
+        /// Gets the value of the Sec-WebSocket-Version header included in the request.
+        /// </summary>
+        /// <remarks>
+        /// This property represents the WebSocket protocol version.
+        /// </remarks>
+        /// <value>
+        /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
+        /// </value>
+        public override string SecWebSocketVersion => _request.Headers["Sec-WebSocket-Version"];
 
         /// <summary>
 		/// Gets the server endpoint as an IP address and a port number.
@@ -258,71 +259,71 @@ namespace WebSocketSharp.Net.WebSockets
 		public override WebSocket WebSocket => _websocket;
 
         internal void Close()
-		{
-			_stream.Close();
-			_tcpClient.Close();
-		}
+        {
+            _stream.Close();
+            _tcpClient.Close();
+        }
 
-		internal void Close(HttpStatusCode code)
-		{
-			_websocket.InnerClose(HttpResponse.CreateCloseResponse(code));
-		}
+        internal Task Close(HttpStatusCode code)
+        {
+            return _websocket.InnerClose(HttpResponse.CreateCloseResponse(code));
+        }
 
-		internal void SendAuthenticationChallenge(string challenge)
-		{
-			var buff = HttpResponse.CreateUnauthorizedResponse(challenge).ToByteArray();
-			_stream.Write(buff, 0, buff.Length);
-			_request = HttpRequest.Read(_stream, 15000);
-		}
+        internal void SendAuthenticationChallenge(string challenge)
+        {
+            var buff = HttpResponse.CreateUnauthorizedResponse(challenge).ToByteArray();
+            _stream.Write(buff, 0, buff.Length);
+            _request = HttpRequest.Read(_stream, 15000);
+        }
 
-		internal void SetUser(
-			AuthenticationSchemes scheme,
-			string realm,
-			Func<IIdentity, NetworkCredential> credentialsFinder)
-		{
-			var authRes = _request.AuthenticationResponse;
-			if (authRes == null)
-			{
-				return;
-			}
+        internal void SetUser(
+            AuthenticationSchemes scheme,
+            string realm,
+            Func<IIdentity, NetworkCredential> credentialsFinder)
+        {
+            var authRes = _request.AuthenticationResponse;
+            if (authRes == null)
+            {
+                return;
+            }
 
-			var id = authRes.ToIdentity();
-			if (id == null)
-			{
-				return;
-			}
+            var id = authRes.ToIdentity();
+            if (id == null)
+            {
+                return;
+            }
 
-			NetworkCredential cred = null;
-			try
-			{
-				cred = credentialsFinder(id);
-			}
-			catch
-			{
-			}
+            NetworkCredential cred = null;
+            try
+            {
+                cred = credentialsFinder(id);
+            }
+            catch
+            {
+            }
 
-			if (cred == null) return;
+            if (cred == null) return;
 
-			var valid = scheme == AuthenticationSchemes.Basic
-							? ((HttpBasicIdentity)id).Password == cred.Password
-							: scheme == AuthenticationSchemes.Digest
-								  ? ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null)
-								  : false;
+            var valid = scheme == AuthenticationSchemes.Basic
+                            ? ((HttpBasicIdentity)id).Password == cred.Password
+                            : scheme == AuthenticationSchemes.Digest
+                                  ? ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null)
+                                  : false;
 
-			if (valid) _user = new GenericPrincipal(id, cred.Roles);
-		}
+            if (valid) _user = new GenericPrincipal(id, cred.Roles);
+        }
 
-	    /// <summary>
-		/// Returns a <see cref="string"/> that represents the current
-		/// <see cref="TcpListenerWebSocketContext"/>.
-		/// </summary>
-		/// <returns>
-		/// A <see cref="string"/> that represents the current
-		/// <see cref="TcpListenerWebSocketContext"/>.
-		/// </returns>
-		public override string ToString()
-		{
-			return _request.ToString();
-		}
-	}
+        /// <summary>
+        /// Returns a <see cref="string"/> that represents the current
+        /// <see cref="TcpListenerWebSocketContext"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="string"/> that represents the current
+        /// <see cref="TcpListenerWebSocketContext"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return _request.ToString();
+        }
+    }
 }

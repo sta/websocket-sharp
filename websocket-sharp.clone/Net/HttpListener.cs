@@ -62,9 +62,8 @@ namespace WebSocketSharp.Net
         private readonly HttpListenerPrefixCollection _prefixes;
         private Func<IIdentity, NetworkCredential> _credFinder;
         private bool _disposed;
-        private AuthenticationSchemes _authSchemes;
+        private readonly AuthenticationSchemes _authSchemes;
         private bool _ignoreWriteExceptions;
-        private bool _listening;
         private string _realm;
         private bool _reuseAddress;
 
@@ -91,7 +90,7 @@ namespace WebSocketSharp.Net
             _waitQueue = new List<ListenerAsyncResult>();
             _waitQueueSync = ((ICollection)_waitQueue).SyncRoot;
         }
-        
+
         internal bool ReuseAddress
         {
             get
@@ -104,7 +103,7 @@ namespace WebSocketSharp.Net
                 _reuseAddress = value;
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the delegate called to select the scheme used to authenticate the clients.
         /// </summary>
@@ -149,32 +148,18 @@ namespace WebSocketSharp.Net
                 CheckDisposed();
                 return _ignoreWriteExceptions;
             }
-
-            set
-            {
-                CheckDisposed();
-                _ignoreWriteExceptions = value;
-            }
         }
 
         /// <summary>
-        /// Gets a value indicating whether the listener has been started.
+        /// Gets the URI prefixes handled by the listener.
         /// </summary>
         /// <value>
-        /// <c>true</c> if the listener has been started; otherwise, <c>false</c>.
+        /// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
         /// </value>
-        public bool IsListening => _listening;
-        
-        /// <summary>
-		/// Gets the URI prefixes handled by the listener.
-		/// </summary>
-		/// <value>
-		/// A <see cref="HttpListenerPrefixCollection"/> that contains the URI prefixes.
-		/// </value>
-		/// <exception cref="ObjectDisposedException">
-		/// This listener has been closed.
-		/// </exception>
-		public HttpListenerPrefixCollection Prefixes
+        /// <exception cref="ObjectDisposedException">
+        /// This listener has been closed.
+        /// </exception>
+        public HttpListenerPrefixCollection Prefixes
         {
             get
             {
@@ -235,7 +220,7 @@ namespace WebSocketSharp.Net
                 _sslConfig = value;
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the delegate called to find the credentials for an identity used to
         /// authenticate a client.
@@ -373,9 +358,6 @@ namespace WebSocketSharp.Net
             if (_prefixes.Count == 0)
                 throw new InvalidOperationException("The listener has no URI prefix on which listens.");
 
-            if (!_listening)
-                throw new InvalidOperationException("The listener hasn't been started.");
-
             // Lock _waitQueue early to avoid race conditions.
             lock (_waitQueueSync)
             {
@@ -450,7 +432,7 @@ namespace WebSocketSharp.Net
                     _ctxQueue.RemoveAt(i);
             }
         }
-        
+
         /// <summary>
         /// Ends an asynchronous operation to get an incoming request.
         /// </summary>
@@ -507,7 +489,7 @@ namespace WebSocketSharp.Net
 
             return ctx; // This will throw on error.
         }
-        
+
         /// <summary>
         /// Releases all resources used by the listener.
         /// </summary>

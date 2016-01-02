@@ -260,20 +260,20 @@ namespace WebSocketSharp.Server
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public Task<IDictionary<string, IDictionary<string, bool>>> Broadping(string message)
+        public async Task<IDictionary<string, IDictionary<string, bool>>> Broadping(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
-                return Broadping();
+                return await Broadping().ConfigureAwait(false);
             }
 
             byte[] data = null;
             var msg = _state.CheckIfStart() ??
                       (data = Encoding.UTF8.GetBytes(message)).CheckIfValidControlData("message");
 
-            return msg != null 
-                ? Task.FromResult<IDictionary<string, IDictionary<string, bool>>>(new Dictionary<string, IDictionary<string, bool>>()) 
-                : Broadping(WebSocketFrame.CreatePingFrame(data, false).ToByteArray(), _waitTime);
+            return msg != null
+                ? new Dictionary<string, IDictionary<string, bool>>()
+                : await Broadping(await WebSocketFrame.CreatePingFrame(data, false).ToByteArray().ConfigureAwait(false), _waitTime).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace WebSocketSharp.Server
             return res;
         }
 
-        internal bool Remove(string path)
+        internal async Task<bool> Remove(string path)
         {
             WebSocketServiceHost host;
             lock (_sync)
@@ -357,7 +357,9 @@ namespace WebSocketSharp.Server
             }
 
             if (host.State == ServerState.Start)
-                host.Stop((ushort)CloseStatusCode.Away, null);
+            {
+                await host.Stop((ushort)CloseStatusCode.Away, null).ConfigureAwait(false);
+            }
 
             return true;
         }
@@ -373,19 +375,18 @@ namespace WebSocketSharp.Server
             }
         }
 
-        internal void Stop(CloseEventArgs e, bool send, bool wait)
+        internal async Task Stop(CloseEventArgs e, bool send, bool wait)
         {
-            lock (_sync)
+            using (var ml = new MonitorLock(_sync))
             {
                 _state = ServerState.ShuttingDown;
 
                 var bytes =
-                  send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
+                  send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray().ConfigureAwait(false) : null;
 
                 var timeout = wait ? _waitTime : TimeSpan.Zero;
-                foreach (var host in _hosts.Values)
-                    host.Sessions.Stop(e, bytes, timeout);
-
+                var tasks = _hosts.Values.Select(host => host.Sessions.Stop(e, bytes, timeout));
+                await Task.WhenAll(tasks).ConfigureAwait(false);
                 _hosts.Clear();
                 _state = ServerState.Stop;
             }

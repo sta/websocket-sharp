@@ -90,7 +90,7 @@ namespace WebSocketSharp
 
             var size = header.PayloadLength < 126 ? 0 : header.PayloadLength == 126 ? 2 : 8;
 
-            var extPayloadLen = size > 0 ? await _innerStream.ReadBytesAsync(size).ConfigureAwait(false) : new byte[0];
+            var extPayloadLen = size > 0 ? await _innerStream.ReadBytes(size).ConfigureAwait(false) : new byte[0];
             if (size > 0 && extPayloadLen.Length != size)
             {
                 throw new WebSocketException("The 'Extended Payload Length' of a frame cannot be read from the data source.");
@@ -99,7 +99,7 @@ namespace WebSocketSharp
             /* Masking Key */
 
             var masked = header.Mask == Mask.Mask;
-            var maskingKey = masked ? await _innerStream.ReadBytesAsync(4).ConfigureAwait(false) : new byte[0];
+            var maskingKey = masked ? await _innerStream.ReadBytes(4).ConfigureAwait(false) : new byte[0];
             if (masked && maskingKey.Length != 4)
             {
                 throw new WebSocketException("The 'Masking Key' of a frame cannot be read from the data source.");

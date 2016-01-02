@@ -30,6 +30,7 @@ namespace WebSocketSharp
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
 
     internal class WebSocketFrame : IEnumerable<byte>
     {
@@ -48,9 +49,9 @@ namespace WebSocketSharp
 
         static WebSocketFrame()
         {
-            EmptyUnmaskPingBytes = CreatePingFrame(false).ToByteArray();
+            EmptyUnmaskPingBytes = CreatePingFrame(false).ToByteArray().Result;
         }
-        
+
         internal WebSocketFrame(Fin fin, Opcode opcode, byte[] data, bool compressed, bool mask)
             : this(fin, opcode, new PayloadData(data), compressed, mask)
         {
@@ -95,7 +96,7 @@ namespace WebSocketSharp
 
             _payloadData = payloadData;
         }
-        
+
         private static byte[] CreateMaskingKey()
         {
             var key = new byte[4];
@@ -104,12 +105,12 @@ namespace WebSocketSharp
 
             return key;
         }
-        
+
         private static bool IsData(Opcode opcode)
         {
             return opcode == Opcode.Text || opcode == Opcode.Binary;
         }
-        
+
         internal static WebSocketFrame CreateCloseFrame(PayloadData payloadData, bool mask)
         {
             return new WebSocketFrame(Fin.Final, Opcode.Close, payloadData, false, mask);
@@ -129,13 +130,13 @@ namespace WebSocketSharp
         {
             return new WebSocketFrame(Fin.Final, Opcode.Pong, new PayloadData(data), false, mask);
         }
-        
+
         public IEnumerator<byte> GetEnumerator()
         {
             return ((IEnumerable<byte>)ToByteArray()).GetEnumerator();
         }
 
-        public byte[] ToByteArray()
+        public async Task<byte[]> ToByteArray()
         {
             using (var buff = new MemoryStream())
             {
@@ -155,7 +156,7 @@ namespace WebSocketSharp
 
                 if (_mask == Mask.Mask)
                 {
-                    buff.Write(_maskingKey, 0, _maskingKey.Length);
+                    await buff.WriteAsync(_maskingKey, 0, _maskingKey.Length).ConfigureAwait(false);
                 }
 
                 if (_payloadLength > 0)
@@ -163,11 +164,11 @@ namespace WebSocketSharp
                     var payload = _payloadData.ToByteArray();
                     if (_payloadLength < 127)
                     {
-                        buff.Write(payload, 0, payload.Length);
+                        await buff.WriteAsync(payload, 0, payload.Length).ConfigureAwait(false);
                     }
                     else
                     {
-                        buff.WriteBytes(payload);
+                        await buff.WriteBytes(payload).ConfigureAwait(false);
                     }
                 }
 
@@ -178,7 +179,8 @@ namespace WebSocketSharp
 
         public override string ToString()
         {
-            return BitConverter.ToString(ToByteArray());
+            var byteArray = ToByteArray().Result;
+            return BitConverter.ToString(byteArray);
         }
 
         IEnumerator IEnumerable.GetEnumerator()

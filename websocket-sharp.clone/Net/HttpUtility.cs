@@ -472,8 +472,10 @@ namespace WebSocketSharp.Net
 	    internal static Uri CreateRequestUrl(
 		  string requestUri, string host, bool websocketRequest, bool secure)
 		{
-			if (requestUri == null || requestUri.Length == 0 || host == null || host.Length == 0)
-				return null;
+	        if (string.IsNullOrEmpty(requestUri) || host == null || host.Length == 0)
+	        {
+	            return null;
+	        }
 
 			string schm = null;
 			string path = null;

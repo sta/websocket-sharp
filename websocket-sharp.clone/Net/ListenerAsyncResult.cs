@@ -50,9 +50,7 @@ namespace WebSocketSharp.Net
         private ManualResetEvent _waitHandle;
 
         internal bool EndCalled;
-
-        private bool _inGet;
-
+        
         public ListenerAsyncResult(AsyncCallback callback, object state)
         {
             _callback = callback;
@@ -82,7 +80,7 @@ namespace WebSocketSharp.Net
             }
         }
 
-        private static void complete(ListenerAsyncResult asyncResult)
+        private static void InnerComplete(ListenerAsyncResult asyncResult)
         {
             asyncResult._completed = true;
 
@@ -108,12 +106,14 @@ namespace WebSocketSharp.Net
 
         internal void Complete(Exception exception)
         {
-            _exception = _inGet && exception is ObjectDisposedException
+            _exception = exception is ObjectDisposedException
                          ? new HttpListenerException(500, "Listener closed.")
                          : exception;
 
             lock (_sync)
-                complete(this);
+            {
+                InnerComplete(this);
+            }
         }
 
         internal void Complete(HttpListenerContext context, bool syncCompleted = false)
@@ -153,7 +153,7 @@ namespace WebSocketSharp.Net
             _syncCompleted = syncCompleted;
 
             lock (_sync)
-                complete(this);
+                InnerComplete(this);
         }
 
         internal HttpListenerContext GetContext()

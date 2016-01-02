@@ -33,7 +33,6 @@ namespace WebSocketSharp
     internal class PayloadData : IEnumerable<byte>
     {
         private readonly byte[] _data;
-        private long _extDataLength;
         private readonly long _length;
         private bool _masked;
 
@@ -55,11 +54,9 @@ namespace WebSocketSharp
             _masked = masked;
             _length = data.LongLength;
         }
-        
-        public byte[] ApplicationData => _extDataLength > 0
-                                             ? _data.SubArray(_extDataLength, _length - _extDataLength)
-                                             : _data;
-        
+
+        public byte[] ApplicationData => _data;
+
         public ulong Length => (ulong)_length;
 
         internal void Mask(byte[] key)

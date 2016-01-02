@@ -98,8 +98,6 @@ namespace WebSocketSharp.Net
 				return;
 
 			_prefixes.Add(uriPrefix);
-			if (_listener.IsListening)
-				EndPointManager.AddPrefix(uriPrefix, _listener);
 		}
 
 		/// <summary>
@@ -113,8 +111,6 @@ namespace WebSocketSharp.Net
 			_listener.CheckDisposed();
 
 			_prefixes.Clear();
-			if (_listener.IsListening)
-				EndPointManager.RemoveListener(_listener);
 		}
 
 		/// <summary>
@@ -193,12 +189,12 @@ namespace WebSocketSharp.Net
 		public bool Remove(string uriPrefix)
 		{
 			_listener.CheckDisposed();
-			if (uriPrefix == null)
-				throw new ArgumentNullException("uriPrefix");
+		    if (uriPrefix == null)
+		    {
+		        throw new ArgumentNullException(nameof(uriPrefix));
+		    }
 
 			var res = _prefixes.Remove(uriPrefix);
-			if (res && _listener.IsListening)
-				EndPointManager.RemovePrefix(uriPrefix, _listener);
 
 			return res;
 		}

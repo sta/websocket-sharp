@@ -567,7 +567,7 @@ namespace WebSocketSharp
 
             if (await InnerConnect().ConfigureAwait(false))
             {
-                InnerOpen();
+                await InnerOpen().ConfigureAwait(false);
                 return true;
             }
 
@@ -581,13 +581,13 @@ namespace WebSocketSharp
         /// <c>true</c> if the <see cref="WebSocket"/> receives a Pong to this Ping in a time;
         /// otherwise, <c>false</c>.
         /// </returns>
-        public Task<bool> Ping()
+        public async Task<bool> Ping()
         {
             var bytes = _client
-                        ? WebSocketFrame.CreatePingFrame(true).ToByteArray()
+                        ? await WebSocketFrame.CreatePingFrame(true).ToByteArray().ConfigureAwait(false)
                         : WebSocketFrame.EmptyUnmaskPingBytes;
 
-            return InnerPing(bytes, _waitTime);
+            return await InnerPing(bytes, _waitTime).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -600,11 +600,11 @@ namespace WebSocketSharp
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public Task<bool> Ping(string message)
+        public async Task<bool> Ping(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
-                return Ping();
+                return await Ping().ConfigureAwait(false);
             }
 
             var data = Encoding.UTF8.GetBytes(message);
@@ -613,10 +613,11 @@ namespace WebSocketSharp
             {
                 Error("An error has occurred in sending the ping.", null);
 
-                return Task.FromResult(false);
+                return false;
             }
 
-            return InnerPing(WebSocketFrame.CreatePingFrame(data, _client).ToByteArray(), _waitTime);
+            var frameAsBytes = await WebSocketFrame.CreatePingFrame(data, _client).ToByteArray().ConfigureAwait(false);
+            return await InnerPing(frameAsBytes, _waitTime).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -864,20 +865,20 @@ namespace WebSocketSharp
         }
 
         // As server
-        internal void InnerClose(HttpResponse response)
+        internal async Task InnerClose(HttpResponse response)
         {
             _readyState = WebSocketState.Closing;
 
-            SendHttpResponse(response);
-            ReleaseServerResources();
+            await SendHttpResponse(response).ConfigureAwait(false);
+            await ReleaseServerResources().ConfigureAwait(false);
 
             _readyState = WebSocketState.Closed;
         }
 
         // As server
-        internal void InnerClose(HttpStatusCode code)
+        internal Task InnerClose(HttpStatusCode code)
         {
-            InnerClose(CreateHandshakeCloseResponse(code));
+            return InnerClose(CreateHandshakeCloseResponse(code));
         }
 
         internal async Task<bool> InnerPing(byte[] frameAsBytes, TimeSpan timeout)
@@ -902,13 +903,14 @@ namespace WebSocketSharp
             return InnerSend(opcode, new MemoryStream(data), _compression == CompressionMethod.Deflate);
         }
 
-        internal Task<bool> InnerSend(Fin final, Opcode opcode, byte[] data)
+        internal async Task<bool> InnerSend(Fin final, Opcode opcode, byte[] data)
         {
             using (var ml = new MonitorLock(_forSend))
             {
                 var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
 
-                return SendBytes(frame.ToByteArray());
+                var bytes = await frame.ToByteArray().ConfigureAwait(false);
+                return await SendBytes(bytes).ConfigureAwait(false);
             }
         }
 
@@ -940,12 +942,12 @@ namespace WebSocketSharp
                 if (await AcceptHandshake().ConfigureAwait(false))
                 {
                     _readyState = WebSocketState.Open;
-                    InnerOpen();
+                    await InnerOpen().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
             {
-                ProcessException(ex, "An exception has occurred while connecting.");
+                await ProcessException(ex, "An exception has occurred while connecting.").ConfigureAwait(false);
             }
         }
 
@@ -976,7 +978,7 @@ namespace WebSocketSharp
             if (msg != null)
             {
                 Error("An error has occurred while connecting.", null);
-                InnerClose(HttpStatusCode.BadRequest);
+                await InnerClose(HttpStatusCode.BadRequest).ConfigureAwait(false);
 
                 return false;
             }
@@ -996,9 +998,9 @@ namespace WebSocketSharp
         }
 
         // As server
-        private void InnerClose(CloseStatusCode code, string reason, bool wait)
+        private Task InnerClose(CloseStatusCode code, string reason, bool wait)
         {
-            InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), wait);
+            return InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), wait);
         }
 
         private async Task InnerClose(PayloadData payload, bool send, bool wait)
@@ -1015,7 +1017,7 @@ namespace WebSocketSharp
 
             var e = new CloseEventArgs(payload);
             e.WasClean = await CloseHandshake(
-                send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
+                send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray().ConfigureAwait(false) : null,
                 wait ? WaitTime : TimeSpan.Zero,
                 _client ? (Func<Task>)ReleaseClientResources : ReleaseServerResources)
                 .ConfigureAwait(false);
@@ -1094,7 +1096,7 @@ namespace WebSocketSharp
             }
 
             e.WasClean = await CloseHandshake(
-                send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray() : null,
+                send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray().ConfigureAwait(false) : null,
                 wait ? _waitTime : TimeSpan.Zero,
                 _client ? (Func<Task>)ReleaseClientResources : ReleaseServerResources)
                 .ConfigureAwait(false);
@@ -1165,7 +1167,7 @@ namespace WebSocketSharp
                 }
                 catch (Exception ex)
                 {
-                    ProcessException(ex, "An exception has occurred while connecting.");
+                    await ProcessException(ex, "An exception has occurred while connecting.").ConfigureAwait(false);
                 }
 
                 return false;
@@ -1298,11 +1300,11 @@ namespace WebSocketSharp
             _readyState = WebSocketState.Connecting;
         }
 
-        private void InnerOpen()
+        private async Task InnerOpen()
         {
             try
             {
-                StartReceiving(_cancellationToken);
+                StartReceiving();
 
                 try
                 {
@@ -1310,22 +1312,22 @@ namespace WebSocketSharp
                 }
                 catch (Exception ex)
                 {
-                    ProcessException(ex, "An exception has occurred during an OnOpen event.");
+                    await ProcessException(ex, "An exception has occurred during an OnOpen event.").ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
             {
-                ProcessException(ex, "An exception has occurred while opening.");
+                await ProcessException(ex, "An exception has occurred while opening.").ConfigureAwait(false);
             }
         }
 
-        private void ProcessCloseFrame(WebSocketMessage message)
+        private async Task ProcessCloseFrame(WebSocketMessage message)
         {
-            var payload = message.RawData.ToByteArray();
-            InnerClose(new PayloadData(payload), !payload.IncludesReservedCloseStatusCode(), false);
+            var payload = await message.RawData.ToByteArray().ConfigureAwait(false);
+            await InnerClose(new PayloadData(payload), !payload.IncludesReservedCloseStatusCode(), false).ConfigureAwait(false);
         }
 
-        private void ProcessException(Exception exception, string message)
+        private async Task ProcessException(Exception exception, string message)
         {
             var code = CloseStatusCode.Abnormal;
             var reason = message;
@@ -1339,19 +1341,19 @@ namespace WebSocketSharp
             Error(message ?? code.GetMessage(), exception);
             if (!_client && _readyState == WebSocketState.Connecting)
             {
-                InnerClose(HttpStatusCode.BadRequest);
+                await InnerClose(HttpStatusCode.BadRequest).ConfigureAwait(false);
             }
             else
             {
-                InnerClose(code, reason ?? code.GetMessage(), false);
+                await InnerClose(code, reason ?? code.GetMessage(), false).ConfigureAwait(false);
             }
         }
 
-        private void ProcessPingFrame(WebSocketMessage message)
+        private async Task<bool> ProcessPingFrame(WebSocketMessage message)
         {
-            //send(new WebSocketFrame(Opcode.Pong, message.RawData.ToByteArray(), _client).ToByteArray());
-
-            InnerSend(WebSocketFrame.CreatePongFrame(message.RawData.ToByteArray(), _client).ToByteArray());
+            var rawdata = await message.RawData.ToByteArray().ConfigureAwait(false);
+            var pongBytes = await WebSocketFrame.CreatePongFrame(rawdata, _client).ToByteArray().ConfigureAwait(false);
+            return await InnerSend(pongBytes).ConfigureAwait(false);
         }
 
         private void ProcessPongFrame()
@@ -1389,9 +1391,9 @@ namespace WebSocketSharp
             }
         }
 
-        private void ProcessUnsupportedFrame(CloseStatusCode code, string reason)
+        private Task ProcessUnsupportedFrame(CloseStatusCode code, string reason)
         {
-            ProcessException(new WebSocketException(code, reason), null);
+            return ProcessException(new WebSocketException(code, reason), null);
         }
 
         // As client
@@ -1399,7 +1401,7 @@ namespace WebSocketSharp
         {
             if (_stream != null)
             {
-                await _stream.FlushAsync().ConfigureAwait(false);
+                await _stream.FlushAsync(_cancellationToken).ConfigureAwait(false);
                 _stream.Dispose();
                 _stream = null;
             }
@@ -1421,7 +1423,7 @@ namespace WebSocketSharp
 
             _closeContext();
             _closeContext = null;
-            await _stream.FlushAsync().ConfigureAwait(false);
+            await _stream.FlushAsync(_cancellationToken).ConfigureAwait(false);
             _stream = null;
             _context = null;
         }
@@ -1519,8 +1521,8 @@ namespace WebSocketSharp
 
                     var data = bytesRead == _fragmentLength ? buffer : buffer.SubArray(0, bytesRead);
 
-
-                    if (!await SendBytes(new WebSocketFrame(finalCode, opcode, data, compressed, _client).ToByteArray()).ConfigureAwait(false))
+                    var bytes = await new WebSocketFrame(finalCode, opcode, data, compressed, _client).ToByteArray().ConfigureAwait(false);
+                    if (!await SendBytes(bytes).ConfigureAwait(false))
                     {
                         return false;
                     }
@@ -1667,11 +1669,11 @@ namespace WebSocketSharp
             }
         }
 
-        private async Task StartReceiving(CancellationToken cancellationToken)
+        private async Task StartReceiving()
         {
             var reader = new WebSocketStreamReader(_stream, _fragmentLength);
             WebSocketMessage message;
-            while ((message = await reader.Read(cancellationToken).ConfigureAwait(false)) != null)
+            while ((message = await reader.Read(_cancellationToken).ConfigureAwait(false)) != null)
             {
                 switch (message.Opcode)
                 {
@@ -1686,16 +1688,16 @@ namespace WebSocketSharp
                         await message.Consume().ConfigureAwait(false);
                         break;
                     case Opcode.Close:
-                        ProcessCloseFrame(message);
+                        await ProcessCloseFrame(message).ConfigureAwait(false);
                         break;
                     case Opcode.Ping:
-                        ProcessPingFrame(message);
+                        await ProcessPingFrame(message).ConfigureAwait(false);
                         break;
                     case Opcode.Pong:
                         ProcessPongFrame();
                         break;
                     default:
-                        ProcessUnsupportedFrame(CloseStatusCode.IncorrectData, "An incorrect data has been received.");
+                        await ProcessUnsupportedFrame(CloseStatusCode.IncorrectData, "An incorrect data has been received.").ConfigureAwait(false);
                         break;
                 }
             }

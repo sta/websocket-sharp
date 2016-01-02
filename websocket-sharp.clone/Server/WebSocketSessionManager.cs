@@ -239,20 +239,22 @@ namespace WebSocketSharp.Server
 
         internal async Task<bool> InnerBroadcast(Opcode opcode, Stream stream)
         {
-            var allBroadcasts = new List<bool>();
             var sentCode = opcode;
             bool isFinal;
             do
             {
                 var buffer = new byte[_fragmentSize];
-                var bytesRead = stream.Read(buffer, 0, _fragmentSize);
+                var bytesRead = await stream.ReadAsync(buffer, 0, _fragmentSize).ConfigureAwait(false);
                 isFinal = bytesRead != _fragmentSize;
                 var result = await InnerBroadcast(isFinal ? Fin.Final : Fin.More, sentCode, isFinal ? buffer.SubArray(0, bytesRead) : buffer).ConfigureAwait(false);
-                allBroadcasts.Add(result);
+                if (!result)
+                {
+                    return false;
+                }
                 sentCode = Opcode.Cont;
             }
             while (!isFinal);
-            return allBroadcasts.All(x => x);
+            return true;
         }
 
         internal async Task<IDictionary<string, bool>> InnerBroadping(byte[] frameAsBytes, TimeSpan timeout)
@@ -369,11 +371,11 @@ namespace WebSocketSharp.Server
         /// <param name="message">
         /// A <see cref="string"/> that represents the message to send.
         /// </param>
-        public Task<IDictionary<string, bool>> Broadping(string message)
+        public async Task<IDictionary<string, bool>> Broadping(string message)
         {
             if (string.IsNullOrEmpty(message))
             {
-                return Broadping();
+                return await Broadping().ConfigureAwait(false);
             }
 
             byte[] data = null;
@@ -382,10 +384,10 @@ namespace WebSocketSharp.Server
 
             if (msg != null)
             {
-                return null;
+                return new Dictionary<string, bool>();
             }
 
-            return InnerBroadping(WebSocketFrame.CreatePingFrame(data, false).ToByteArray(), _waitTime);
+            return await InnerBroadping(await WebSocketFrame.CreatePingFrame(data, false).ToByteArray().ConfigureAwait(false), _waitTime).ConfigureAwait(false);
         }
 
         /// <summary>

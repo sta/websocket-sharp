@@ -44,7 +44,7 @@ namespace WebSocketSharp.Tests
                 var data2 = Enumerable.Repeat((byte)2, 1000).ToArray();
                 var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2, false, true);
                 var frame3 = new WebSocketFrame(Fin.Final, Opcode.Close, new byte[0], false, true);
-                var stream = new MemoryStream(frame1.ToByteArray().Concat(frame2.ToByteArray()).Concat(frame3.ToByteArray()).ToArray());
+                var stream = new MemoryStream(frame1.ToByteArray().Result.Concat(frame2.ToByteArray().Result).Concat(frame3.ToByteArray().Result).ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
             }
 
@@ -111,11 +111,11 @@ namespace WebSocketSharp.Tests
                 var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
 
                 var stream = new MemoryStream(
-                    frame1.ToByteArray()
-                    .Concat(frame2.ToByteArray())
-                    .Concat(frame3.ToByteArray())
-                    .Concat(frame4.ToByteArray())
-                    .Concat(frame5.ToByteArray())
+                  (await frame1.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame2.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame3.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame4.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame5.ToByteArray().ConfigureAwait(false))
                     .ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
 
@@ -123,7 +123,7 @@ namespace WebSocketSharp.Tests
                 WebSocketMessage message;
                 while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
                 {
-                    message.Consume();
+                    await message.Consume().ConfigureAwait(false);
                     messages += 1;
                 }
 
@@ -134,19 +134,21 @@ namespace WebSocketSharp.Tests
             public async Task WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
             {
                 var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
-                var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var frame1Compressed = await data1.Compress(CompressionMethod.Deflate, Opcode.Binary).ConfigureAwait(false);
+                var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, frame1Compressed, false, true);
                 var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
-                var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, data2.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var frame2Compressed = await data2.Compress(CompressionMethod.Deflate, Opcode.Binary).ConfigureAwait(false);
+                var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, frame2Compressed, false, true);
                 var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
-                var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, data1.Compress(CompressionMethod.Deflate, Opcode.Binary), false, true);
+                var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, frame1Compressed, false, true);
                 var frame5 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
 
                 var stream = new MemoryStream(
-                    frame1.ToByteArray()
-                    .Concat(frame2.ToByteArray())
-                    .Concat(frame3.ToByteArray())
-                    .Concat(frame4.ToByteArray())
-                    .Concat(frame5.ToByteArray())
+                    (await frame1.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame2.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame3.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame4.ToByteArray().ConfigureAwait(false))
+                    .Concat(await frame5.ToByteArray().ConfigureAwait(false))
                     .ToArray());
                 _sut = new WebSocketStreamReader(stream, 100000);
 
@@ -154,7 +156,7 @@ namespace WebSocketSharp.Tests
                 WebSocketMessage message;
                 while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
                 {
-                    message.Consume();
+                    await message.Consume().ConfigureAwait(false);
                     messages += 1;
                 }
 

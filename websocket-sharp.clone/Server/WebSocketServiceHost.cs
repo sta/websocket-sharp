@@ -32,6 +32,7 @@
 namespace WebSocketSharp.Server
 {
     using System;
+    using System.Threading.Tasks;
 
     using WebSocketSharp.Net.WebSockets;
 
@@ -93,21 +94,22 @@ namespace WebSocketSharp.Server
             Sessions.Start();
         }
 
-        internal void StartSession(WebSocketContext context)
+        internal Task StartSession(WebSocketContext context)
         {
-            CreateSession().Start(context, Sessions);
+            var session = CreateSession();
+            return session.Start(context, Sessions);
         }
 
-        internal void Stop(ushort code, string reason)
+        internal async Task Stop(ushort code, string reason)
         {
             var e = new CloseEventArgs(code, reason);
 
             var send = !code.IsReserved();
             var bytes =
-              send ? WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray() : null;
+              send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, false).ToByteArray().ConfigureAwait(false) : null;
 
             var timeout = send ? WaitTime : TimeSpan.Zero;
-            Sessions.Stop(e, bytes, timeout);
+            await Sessions.Stop(e, bytes, timeout).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -122,9 +124,9 @@ namespace WebSocketSharp.Server
     internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
       where TBehavior : WebSocketBehavior
     {
-        private Func<TBehavior> _initializer;
-        private string _path;
-        private WebSocketSessionManager _sessions;
+        private readonly Func<TBehavior> _initializer;
+        private readonly string _path;
+        private readonly WebSocketSessionManager _sessions;
 
         internal WebSocketServiceHost(string path, int fragmentSize, Func<TBehavior> initializer)
         {

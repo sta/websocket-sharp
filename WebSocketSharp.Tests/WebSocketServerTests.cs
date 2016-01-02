@@ -339,6 +339,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
+            [Timeout(60000)]
             public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)]int length)
             {
                 var responseLength = 0;
@@ -350,15 +351,11 @@ namespace WebSocketSharp.Tests
                 {
                     using (var client = new WebSocket(WsLocalhostRadio))
                     {
-                        Func<MessageEventArgs, Task> onMessage = e =>
+                        Func<MessageEventArgs, Task> onMessage = async e =>
                             {
-                                while (e.Data.ReadByte() == 123)
-                                {
-                                    responseLength++;
-                                }
-
+                                var bytes = await e.Data.ReadBytes(length).ConfigureAwait(false);
+                                responseLength = bytes.Count(x => x == 123);
                                 waitHandle.Set();
-                                return Task.FromResult(true);
                             };
 
                         client.OnMessage = onMessage;
@@ -367,7 +364,7 @@ namespace WebSocketSharp.Tests
                         await client.Connect().ConfigureAwait(false);
                         await sender.Send(stream).ConfigureAwait(false);
 
-                        var result = waitHandle.Wait(Debugger.IsAttached ? -1 : 15000);
+                        waitHandle.Wait();
 
                         Assert.AreEqual(length, responseLength);
                     }
