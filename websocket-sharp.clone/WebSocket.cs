@@ -95,8 +95,8 @@ namespace WebSocketSharp
         private Stream _stream;
         private TcpClient _tcpClient;
         private TimeSpan _waitTime;
-
         private CancellationTokenRegistration _registration;
+        private Task _receiveTask;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocket"/> class with
@@ -193,7 +193,7 @@ namespace WebSocketSharp
 
             InnerInit();
         }
-        
+
         // As server
         internal WebSocket(TcpListenerWebSocketContext context, string protocol, int fragmentSize = 102392)
         {
@@ -758,7 +758,7 @@ namespace WebSocketSharp
 
                 if (msg != null)
                 {
-                    Error("An error has occurred in setting the credentials.", null);
+                    Error(msg, null);
 
                     return;
                 }
@@ -1289,7 +1289,7 @@ namespace WebSocketSharp
         {
             try
             {
-                StartReceiving();
+                _receiveTask = StartReceiving();
 
                 try
                 {

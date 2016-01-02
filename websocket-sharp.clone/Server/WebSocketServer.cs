@@ -75,7 +75,6 @@ namespace WebSocketSharp.Server
         private bool _reuseAddress;
         private WebSocketServiceManager _services;
         private volatile ServerState _state;
-        private object _sync;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
@@ -426,19 +425,16 @@ namespace WebSocketSharp.Server
         /// </summary>
         public void Start()
         {
-            lock (_sync)
+            var msg = _state.CheckIfStartable() ?? CheckIfCertificateExists();
+            if (msg != null)
             {
-                var msg = _state.CheckIfStartable() ?? CheckIfCertificateExists();
-                if (msg != null)
-                {
-                    return;
-                }
-
-                _services.Start();
-                _receiveTask = StartReceiving(_tokenSource.Token);
-
-                _state = ServerState.Start;
+                return;
             }
+
+            _services.Start();
+            _receiveTask = StartReceiving(_tokenSource.Token);
+
+            _state = ServerState.Start;
         }
 
         /// <summary>
@@ -446,16 +442,13 @@ namespace WebSocketSharp.Server
         /// </summary>
         public async Task Stop()
         {
-            lock (_sync)
+            var msg = _state.CheckIfStart();
+            if (msg != null)
             {
-                var msg = _state.CheckIfStart();
-                if (msg != null)
-                {
-                    return;
-                }
-
-                _state = ServerState.ShuttingDown;
+                return;
             }
+
+            _state = ServerState.ShuttingDown;
 
             StopReceiving();
             await _services.Stop(new CloseEventArgs(), true, true).ConfigureAwait(false);
@@ -477,19 +470,17 @@ namespace WebSocketSharp.Server
         public async Task Stop(CloseStatusCode code, string reason)
         {
             CloseEventArgs e = null;
-            lock (_sync)
+
+            var msg =
+              _state.CheckIfStart() ??
+              (e = new CloseEventArgs(code, reason)).RawData.CheckIfValidControlData("reason");
+
+            if (msg != null)
             {
-                var msg =
-                  _state.CheckIfStart() ??
-                  (e = new CloseEventArgs(code, reason)).RawData.CheckIfValidControlData("reason");
-
-                if (msg != null)
-                {
-                    return;
-                }
-
-                _state = ServerState.ShuttingDown;
+                return;
             }
+
+            _state = ServerState.ShuttingDown;
 
             StopReceiving();
 
@@ -538,15 +529,12 @@ namespace WebSocketSharp.Server
 
         private async Task Abort()
         {
-            lock (_sync)
+            if (!IsListening)
             {
-                if (!IsListening)
-                {
-                    return;
-                }
-
-                _state = ServerState.ShuttingDown;
+                return;
             }
+
+            _state = ServerState.ShuttingDown;
 
             _listener.Stop();
             await _services.Stop(new CloseEventArgs(CloseStatusCode.ServerError), true, false).ConfigureAwait(false);
@@ -610,7 +598,6 @@ namespace WebSocketSharp.Server
             _listener = new TcpListener(_address, _port);
             _services = new WebSocketServiceManager(_fragmentSize);
             _state = ServerState.Ready;
-            _sync = new object();
         }
 
         private async Task ProcessWebSocketRequest(TcpListenerWebSocketContext context)
