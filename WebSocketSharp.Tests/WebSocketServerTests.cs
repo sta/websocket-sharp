@@ -28,33 +28,19 @@ namespace WebSocketSharp.Tests
     using NUnit.Framework;
     using NUnit.Framework.Constraints;
 
+    using WebSocketSharp.Net;
     using WebSocketSharp.Server;
 
     public sealed class WebSocketServerTests
     {
-        public class GivenAWebSocketServer
+        public abstract class GivenAWebSocketServer
         {
             private const string WsLocalhostRadio = "ws://localhost:8080/radio";
             private const string WsLocalhostEcho = "ws://localhost:8080/echo";
             private const string Message = "Message";
-            private WebSocketServer _sut;
+            protected WebSocketServer _sut;
 
-            [SetUp]
-            public void Setup()
-            {
-                Debug.Listeners.Add(new ConsoleTraceListener());
-                _sut = new WebSocketServer(port: 8080);
-                _sut.AddWebSocketService<TestEchoService>("/echo");
-                _sut.AddWebSocketService<TestRadioService>("/radio");
-                _sut.Start();
-            }
-
-            [TearDown]
-            public async Task Teardown()
-            {
-                await _sut.Stop().ConfigureAwait(false);
-                Debug.Listeners.Clear();
-            }
+            protected abstract void SetCredentials(WebSocket ws);
 
             [Test]
             public void CanGetDefinedPort()
@@ -67,6 +53,7 @@ namespace WebSocketSharp.Tests
             {
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     await client.Connect().ConfigureAwait(false);
 
                     Assert.AreEqual(WebSocketState.Open, client.ReadyState);
@@ -76,10 +63,10 @@ namespace WebSocketSharp.Tests
             [Test]
             public async Task WhenClientSendsTextMessageThenResponds()
             {
-                const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     Func<MessageEventArgs, Task> onMessage = e =>
                         {
                             if (e.Text.ReadToEnd() == Message)
@@ -105,6 +92,7 @@ namespace WebSocketSharp.Tests
             {
                 using (var client = new WebSocket("ws://localhost:8080/fjgkdfjhgld"))
                 {
+                    SetCredentials(client);
                     await client.Connect().ConfigureAwait(false);
 
                     Assert.True(client.ReadyState == WebSocketState.Closed);
@@ -117,18 +105,20 @@ namespace WebSocketSharp.Tests
             {
                 using (var client = new WebSocket("ws://localhost:8080/fjgkdfjhgld"))
                 {
+                    SetCredentials(client);
                     Assert.That(async () => await client.Connect().ConfigureAwait(false), new ThrowsNothingConstraint());
                 }
                 return Task.FromResult(true);
             }
 
             [Test]
-            public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)]int multiplicity)
+            public async Task WhenClientSendsMultipleAsyncTextMessageThenResponds([Random(1, 100, 10)] int multiplicity)
             {
                 int count = 0;
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     Func<MessageEventArgs, Task> onMessage = e =>
                         {
                             if (e.Text.ReadToEnd() == Message)
@@ -155,7 +145,7 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            public async Task WhenStreamVeryLargeStreamToServerThenResponds([Random(750000, 1500000, 5)]int length)
+            public async Task WhenStreamVeryLargeStreamToServerThenResponds([Random(750000, 1500000, 5)] int length)
             {
                 var responseLength = 0;
 
@@ -163,20 +153,21 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     Func<MessageEventArgs, Task> onMessage = async e =>
-                    {
-                        var bytesRead = 0;
-                        var readLength = 10240000;
-                        do
                         {
-                            var buffer = new byte[readLength];
-                            bytesRead = await e.Data.ReadAsync(buffer, 0, readLength).ConfigureAwait(false);
-                            responseLength += buffer.Count(x => x == 123);
-                        }
-                        while (bytesRead == readLength);
+                            var bytesRead = 0;
+                            var readLength = 10240000;
+                            do
+                            {
+                                var buffer = new byte[readLength];
+                                bytesRead = await e.Data.ReadAsync(buffer, 0, readLength).ConfigureAwait(false);
+                                responseLength += buffer.Count(x => x == 123);
+                            }
+                            while (bytesRead == readLength);
 
-                        waitHandle.Set();
-                    };
+                            waitHandle.Set();
+                        };
 
                     client.OnMessage = onMessage;
 
@@ -191,7 +182,7 @@ namespace WebSocketSharp.Tests
 
             [Test]
             [Timeout(60000)]
-            public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)]int length)
+            public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)] int length)
             {
                 var responseLength = 0;
 
@@ -200,14 +191,16 @@ namespace WebSocketSharp.Tests
 
                 using (var sender = new WebSocket(WsLocalhostRadio))
                 {
+                    SetCredentials(sender);
                     using (var client = new WebSocket(WsLocalhostRadio))
                     {
+                        SetCredentials(client);
                         Func<MessageEventArgs, Task> onMessage = async e =>
-                        {
-                            var bytes = await e.Data.ReadBytes(length).ConfigureAwait(false);
-                            responseLength = bytes.Count(x => x == 123);
-                            waitHandle.Set();
-                        };
+                            {
+                                var bytes = await e.Data.ReadBytes(length).ConfigureAwait(false);
+                                responseLength = bytes.Count(x => x == 123);
+                                waitHandle.Set();
+                            };
 
                         client.OnMessage = onMessage;
 
@@ -233,6 +226,7 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     const int Multiplicity = 20000;
                     Func<MessageEventArgs, Task> onMessage = e =>
                         {
@@ -270,6 +264,7 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     const int Multiplicity = 25000;
                     Func<MessageEventArgs, Task> onMessage = async e =>
                         {
@@ -309,6 +304,7 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
                 using (var client = new WebSocket(WsLocalhostEcho))
                 {
+                    SetCredentials(client);
                     const int Multiplicity = (int)1E3;
 
                     client.OnMessage = e => Task.FromResult(true);
@@ -323,7 +319,10 @@ namespace WebSocketSharp.Tests
 
                     waitHandle.Wait(Debugger.IsAttached ? 30000 : 5000);
 
-                    Assert.LessOrEqual(stopwatch.Elapsed, TimeSpan.FromSeconds(1), "Total time taken: " + stopwatch.Elapsed);
+                    Assert.LessOrEqual(
+                        stopwatch.Elapsed,
+                        TimeSpan.FromSeconds(1),
+                        "Total time taken: " + stopwatch.Elapsed);
                 }
             }
 
@@ -338,33 +337,114 @@ namespace WebSocketSharp.Tests
                 var stream = new MemoryStream(Encoding.UTF8.GetBytes(Message));
                 var length = (int)stream.Length;
                 var waitHandle = new ManualResetEventSlim(false);
-                var client = new WebSocket(WsLocalhostEcho);
-
-                const int Multiplicity = 1000000;
-                Func<MessageEventArgs, Task> onMessage = async e =>
-                    {
-                        if (await e.Text.ReadToEndAsync().ConfigureAwait(false) == Message && Interlocked.Increment(ref count) == Multiplicity)
+                using (var client = new WebSocket(WsLocalhostEcho))
+                {
+                    SetCredentials(client);
+                    const int Multiplicity = 1000000;
+                    Func<MessageEventArgs, Task> onMessage = async e =>
                         {
-                            responseWatch.Stop();
-                            waitHandle.Set();
-                        }
-                    };
-                client.OnMessage = onMessage;
+                            if (await e.Text.ReadToEndAsync().ConfigureAwait(false) == Message
+                                && Interlocked.Increment(ref count) == Multiplicity)
+                            {
+                                responseWatch.Stop();
+                                waitHandle.Set();
+                            }
+                        };
+                    client.OnMessage = onMessage;
 
-                await client.Connect().ConfigureAwait(false);
-                responseWatch.Start();
+                    await client.Connect().ConfigureAwait(false);
+                    responseWatch.Start();
 
-                var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.Send(stream, length));
+                    var tasks = Enumerable.Range(0, Multiplicity).Select(x => client.Send(stream, length));
 
-                await Task.WhenAll(tasks).ConfigureAwait(false);
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                waitHandle.Wait();
+                    waitHandle.Wait();
 
-                Console.WriteLine(responseWatch.Elapsed);
+                    Console.WriteLine(responseWatch.Elapsed);
 
-                Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(10));
+                    Assert.LessOrEqual(responseWatch.Elapsed, TimeSpan.FromSeconds(10));
+                }
+            }
+        }
 
-                client.Dispose();
+        [TestFixture]
+        public class GivenAWebSocketServerAllowingAnonymousConnections : GivenAWebSocketServer
+        {
+            [SetUp]
+            public void Setup()
+            {
+                Debug.Listeners.Add(new ConsoleTraceListener());
+                _sut = new WebSocketServer(port: 8080);
+                _sut.AddWebSocketService<TestEchoService>("/echo");
+                _sut.AddWebSocketService<TestRadioService>("/radio");
+                _sut.Start();
+            }
+
+            [TearDown]
+            public async Task Teardown()
+            {
+                await _sut.Stop().ConfigureAwait(false);
+                Debug.Listeners.Clear();
+            }
+
+            protected override void SetCredentials(WebSocket ws)
+            {
+            }
+        }
+
+        [TestFixture]
+        public class GivenAWebSocketServerUsingBasicAuthentication : GivenAWebSocketServer
+        {
+            [SetUp]
+            public void Setup()
+            {
+                Debug.Listeners.Add(new ConsoleTraceListener());
+                _sut = new WebSocketServer(port: 8080, authenticationSchemes: AuthenticationSchemes.Basic);
+                _sut.UserCredentialsFinder = id => new NetworkCredential(id.Name, "password");
+                _sut.AddWebSocketService<TestEchoService>("/echo");
+                _sut.AddWebSocketService<TestRadioService>("/radio");
+                _sut.Start();
+            }
+
+            [TearDown]
+            public async Task Teardown()
+            {
+                await _sut.Stop().ConfigureAwait(false);
+                Debug.Listeners.Clear();
+            }
+
+            protected override void SetCredentials(WebSocket ws)
+            {
+                ws.SetCredentials("username", "password", true);
+            }
+        }
+
+        [TestFixture]
+        public class GivenAWebSocketServerUsingDigestAuthentication : GivenAWebSocketServer
+        {
+            [SetUp]
+            public void Setup()
+            {
+                Debug.Listeners.Add(new ConsoleTraceListener());
+                _sut = new WebSocketServer(port: 8080, authenticationSchemes: AuthenticationSchemes.Digest);
+                _sut.UserCredentialsFinder = id => new NetworkCredential(id.Name, "password", "Test");
+                _sut.Realm = "Test";
+                _sut.AddWebSocketService<TestEchoService>("/echo");
+                _sut.AddWebSocketService<TestRadioService>("/radio");
+                _sut.Start();
+            }
+
+            [TearDown]
+            public async Task Teardown()
+            {
+                await _sut.Stop().ConfigureAwait(false);
+                Debug.Listeners.Clear();
+            }
+
+            protected override void SetCredentials(WebSocket ws)
+            {
+                ws.SetCredentials("username", "password", true);
             }
         }
     }

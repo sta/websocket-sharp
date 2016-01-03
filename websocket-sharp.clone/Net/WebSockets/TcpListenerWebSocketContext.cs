@@ -282,12 +282,8 @@ namespace WebSocketSharp.Net.WebSockets
             Func<IIdentity, NetworkCredential> credentialsFinder)
         {
             var authRes = _request.AuthenticationResponse;
-            if (authRes == null)
-            {
-                return;
-            }
 
-            var id = authRes.ToIdentity();
+            var id = authRes?.ToIdentity();
             if (id == null)
             {
                 return;
@@ -302,13 +298,14 @@ namespace WebSocketSharp.Net.WebSockets
             {
             }
 
-            if (cred == null) return;
+            if (cred == null)
+            {
+                return;
+            }
 
             var valid = scheme == AuthenticationSchemes.Basic
                             ? ((HttpBasicIdentity)id).Password == cred.Password
-                            : scheme == AuthenticationSchemes.Digest
-                                  ? ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null)
-                                  : false;
+                            : scheme == AuthenticationSchemes.Digest && ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null);
 
             if (valid) _user = new GenericPrincipal(id, cred.Roles);
         }

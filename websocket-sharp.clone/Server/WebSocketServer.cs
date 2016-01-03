@@ -75,62 +75,7 @@ namespace WebSocketSharp.Server
         private bool _reuseAddress;
         private WebSocketServiceManager _services;
         private volatile ServerState _state;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
-        /// WebSocket URL.
-        /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   An instance initialized by this constructor listens for the incoming connection requests
-        ///   on the port in <paramref name="url"/>.
-        ///   </para>
-        ///   <para>
-        ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on which
-        ///   to listen. It's determined by the scheme (ws or wss) in <paramref name="url"/>.
-        ///   (Port 80 if the scheme is ws.)
-        ///   </para>
-        /// </remarks>
-        /// <param name="url">
-        /// A <see cref="string"/> that represents the WebSocket URL of the server.
-        /// </param>
-        /// <param name="certificate2">An <see cref="X509Certificate2"/> to use for securing the connection.</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="url"/> is invalid.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="url"/> is <see langword="null"/>.
-        /// </exception>
-        public WebSocketServer(string url, ServerSslConfiguration certificate2, AuthenticationSchemes authenticationSchemes = AuthenticationSchemes.Anonymous)
-        {
-            if (url == null)
-            {
-                throw new ArgumentNullException("url");
-            }
-
-            string msg;
-            if (!TryCreateUri(url, out _uri, out msg))
-            {
-                throw new ArgumentException(msg, "url");
-            }
-
-            _address = _uri.DnsSafeHost.ToIpAddress();
-            if (_address == null || !_address.IsLocal())
-            {
-                throw new ArgumentException("The host part isn't a local host name: " + url, "url");
-            }
-
-            if (_uri.Scheme == "wss" && certificate2 == null)
-            {
-                throw new ArgumentException("Certificate missing for secure connection.");
-            }
-
-            _port = _uri.Port;
-            _secure = _uri.Scheme == "wss";
-
-            Init(authenticationSchemes);
-        }
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
         /// <paramref name="address"/>, <paramref name="port"/>, and <paramref name="secure"/>.
@@ -489,25 +434,7 @@ namespace WebSocketSharp.Server
 
             _state = ServerState.Stop;
         }
-
-        private static bool TryCreateUri(string uriString, out Uri result, out string message)
-        {
-            if (!uriString.TryCreateWebSocketUri(out result, out message))
-            {
-                return false;
-            }
-
-            if (result.PathAndQuery != "/")
-            {
-                result = null;
-                message = "Includes the path or query component: " + uriString;
-
-                return false;
-            }
-
-            return true;
-        }
-
+        
         private string CheckIfCertificateExists()
         {
             return _secure && (_sslConfig?.ServerCertificate == null)

@@ -962,7 +962,7 @@ namespace WebSocketSharp
             var msg = CheckIfValidHandshakeRequest(_context);
             if (msg != null)
             {
-                Error("An error has occurred while connecting.", null);
+                Error(msg, null);
                 await InnerClose(HttpStatusCode.BadRequest).ConfigureAwait(false);
 
                 return false;
@@ -979,7 +979,8 @@ namespace WebSocketSharp
                 ProcessSecWebSocketExtensionsHeader(extensions);
             }
 
-            return await SendHttpResponse(InnerCreateHandshakeResponse()).ConfigureAwait(false);
+            var innerCreateHandshakeResponse = InnerCreateHandshakeResponse();
+            return await SendHttpResponse(innerCreateHandshakeResponse).ConfigureAwait(false);
         }
 
         // As server
@@ -1236,13 +1237,19 @@ namespace WebSocketSharp
             headers["Sec-WebSocket-Accept"] = CreateResponseKey(_base64Key);
 
             if (_protocol != null)
+            {
                 headers["Sec-WebSocket-Protocol"] = _protocol;
+            }
 
             if (_extensions != null)
+            {
                 headers["Sec-WebSocket-Extensions"] = _extensions;
+            }
 
             if (_cookies.Count > 0)
+            {
                 res.SetCookies(_cookies);
+            }
 
             return res;
         }
@@ -1725,8 +1732,10 @@ namespace WebSocketSharp
         // As server
         private bool ValidateSecWebSocketKeyHeader(string value)
         {
-            if (value == null || value.Length == 0)
+            if (string.IsNullOrEmpty(value))
+            {
                 return false;
+            }
 
             _base64Key = value;
             return true;
