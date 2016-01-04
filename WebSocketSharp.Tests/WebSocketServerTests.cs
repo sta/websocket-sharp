@@ -36,7 +36,7 @@ namespace WebSocketSharp.Tests
         public abstract class GivenAWebSocketServer
         {
             private const string WsLocalhostRadio = "ws://localhost:8080/radio";
-            private const string WsLocalhostEcho = "ws://localhost:8080/echo";
+            protected const string WsLocalhostEcho = "ws://localhost:8080/echo";
             private const string Message = "Message";
             protected WebSocketServer _sut;
 
@@ -414,6 +414,17 @@ namespace WebSocketSharp.Tests
                 Debug.Listeners.Clear();
             }
 
+            [Test]
+            public async Task WhenCredentialsAreNotSetThenCannotConnect()
+            {
+                using (var client = new WebSocket(WsLocalhostEcho))
+                {
+                    var connected = await client.Connect().ConfigureAwait(false);
+
+                    Assert.False(connected);
+                }
+            }
+
             protected override void SetCredentials(WebSocket ws)
             {
                 ws.SetCredentials("username", "password", true);
@@ -440,6 +451,17 @@ namespace WebSocketSharp.Tests
             {
                 await _sut.Stop().ConfigureAwait(false);
                 Debug.Listeners.Clear();
+            }
+
+            [Test]
+            public async Task WhenCredentialsAreNotSetThenCannotConnect()
+            {
+                using (var client = new WebSocket(WsLocalhostEcho))
+                {
+                    var connected = await client.Connect().ConfigureAwait(false);
+
+                    Assert.False(connected);
+                }
             }
 
             protected override void SetCredentials(WebSocket ws)
