@@ -30,6 +30,11 @@ namespace WebSocketSharp
             _innerStream.Flush();
         }
 
+        public override Task FlushAsync(CancellationToken cancellationToken)
+        {
+            return _innerStream.FlushAsync(cancellationToken);
+        }
+
         /// <summary>
         /// When overridden in a derived class, sets the position within the current stream.
         /// </summary>

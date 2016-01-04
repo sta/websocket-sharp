@@ -864,7 +864,9 @@ namespace WebSocketSharp
         {
             var bytes = BitConverter.GetBytes(value);
             if (!order.IsHostOrder())
+            {
                 Array.Reverse(bytes);
+            }
 
             return bytes;
         }
@@ -1047,7 +1049,7 @@ namespace WebSocketSharp
             {
                 stream.Position = 0;
                 await stream.CopyToAsync(output).ConfigureAwait(false);
-                output.Flush();
+                await output.FlushAsync().ConfigureAwait(false);
 
                 return output.ToArray();
             }
