@@ -1880,7 +1880,7 @@ namespace WebSocketSharp
           send (opcode, cached, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
+          _logger.Error (ex.ToString ());
         }
       }
     }
