@@ -399,7 +399,7 @@ namespace WebSocketSharp.Server
         public Task CloseSession(string id)
         {
             IWebSocketSession session;
-            return TryGetSession(id, out session) ? session.Context.WebSocket.Close() : Task.FromResult(false);
+            return TryGetSession(id, out session) ? session.Context.WebSocket.Close() : AsyncEx.Completed();
         }
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace WebSocketSharp.Server
             {
                 return session.Context.WebSocket.Close(code, reason);
             }
-            return Task.FromResult(false);
+            return AsyncEx.Completed();
         }
 
         /// <summary>

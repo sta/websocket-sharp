@@ -81,7 +81,7 @@ namespace WebSocketSharp.Tests
                             {
                                 waitHandle.Set();
                             }
-                            return Task.FromResult(true);
+                            return AsyncEx.Completed();
                         };
                     client.OnMessage = onMessage;
 

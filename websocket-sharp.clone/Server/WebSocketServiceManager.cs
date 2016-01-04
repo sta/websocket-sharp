@@ -177,7 +177,7 @@ namespace WebSocketSharp.Server
             var msg = _state.CheckIfStart() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                return Task.FromResult(false); ;
+                return Task.FromResult(false);
             }
 
             var rawData = Encoding.UTF8.GetBytes(data);

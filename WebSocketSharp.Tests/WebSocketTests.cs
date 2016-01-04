@@ -89,7 +89,7 @@ namespace WebSocketSharp.Tests
             private Task PrintError(ErrorEventArgs e)
             {
                 Console.WriteLine(e.Message);
-                return Task.FromResult(true);
+                return AsyncEx.Completed();
             }
         }
     }

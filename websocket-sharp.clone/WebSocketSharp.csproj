@@ -71,6 +71,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncEx.cs" />
     <Compile Include="HttpRequest.cs" />
     <Compile Include="MonitorLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
