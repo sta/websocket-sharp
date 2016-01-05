@@ -1634,14 +1634,11 @@ namespace WebSocketSharp
 
             if (_secure)
             {
-                var certSelectionCallback = _sslConfig?.CertificateSelection;
-                var certificateValidationCallback = _sslConfig?.CertificateValidationCallback
-                    ?? ((sender, certificate, chain, sslPolicyErrors) => true);
                 var sslStream = new SslStream(
                   _stream,
                   false,
-                  certificateValidationCallback,
-                  certSelectionCallback ?? ((sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) => null));
+                  _sslConfig?.CertificateValidationCallback,
+                  _sslConfig?.CertificateSelection);
 
                 if (_sslConfig == null)
                 {

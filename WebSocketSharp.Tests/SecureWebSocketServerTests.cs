@@ -60,7 +60,8 @@ namespace WebSocketSharp.Tests
             [Test]
             public async Task ClientCanConnectToServer()
             {
-                using (var client = new WebSocket("wss://localhost:443/echo"))
+                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
                 {
                     await client.Connect().ConfigureAwait(false);
 
@@ -73,7 +74,8 @@ namespace WebSocketSharp.Tests
             {
                 const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
-                using (var client = new WebSocket("wss://localhost:443/echo"))
+                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
                 {
                     Func<MessageEventArgs, Task> onMessage = e =>
                         {
@@ -100,7 +102,8 @@ namespace WebSocketSharp.Tests
                 int count = 0;
                 const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
-                using (var client = new WebSocket("wss://localhost:443/echo"))
+                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
                 {
                     Func<MessageEventArgs, Task> onMessage = async e =>
                         {
@@ -134,7 +137,8 @@ namespace WebSocketSharp.Tests
 
                 var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
                 var waitHandle = new ManualResetEventSlim(false);
-                using (var client = new WebSocket("wss://localhost:443/echo"))
+                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
                 {
                     Func<MessageEventArgs, Task> onMessage = async e =>
                         {
@@ -165,11 +169,11 @@ namespace WebSocketSharp.Tests
                 var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
                 var waitHandle = new ManualResetEventSlim(false);
 
-                using (var sender = new WebSocket("wss://localhost:443/radio"))
+                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                using (var sender = new WebSocket("wss://localhost:443/radio", sslAuthConfiguration: clientSslConfiguration))
                 {
-                    using (var client = new WebSocket("wss://localhost:443/radio"))
+                    using (var client = new WebSocket("wss://localhost:443/radio", sslAuthConfiguration: clientSslConfiguration))
                     {
-
                         Func<MessageEventArgs, Task> onMessage = async e =>
                             {
                                 var bytes = await e.Data.ReadBytes(Length).ConfigureAwait(false);

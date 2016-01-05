@@ -75,7 +75,7 @@ namespace WebSocketSharp.Server
         private bool _reuseAddress;
         private WebSocketServiceManager _services;
         private volatile ServerState _state;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WebSocketServer"/> class with the specified
         /// <paramref name="address"/>, <paramref name="port"/>, and <paramref name="secure"/>.
@@ -93,6 +93,7 @@ namespace WebSocketSharp.Server
         /// <param name="certificate">
         /// A <see cref="X509Certificate2"/> used to secure the connection.
         /// </param>
+        /// <param name="authenticationSchemes">Supported authentication schemes.</param>
         /// <exception cref="ArgumentException">
         ///   <para>
         ///   <paramref name="address"/> isn't a local IP address.

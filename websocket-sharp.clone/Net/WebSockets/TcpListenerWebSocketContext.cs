@@ -75,7 +75,7 @@ namespace WebSocketSharp.Net.WebSockets
             var netStream = tcpClient.GetStream();
             if (secure)
             {
-                var sslStream = new SslStream(netStream, false);
+                var sslStream = new SslStream(netStream, false, sslConfiguration.ClientCertificateValidationCallback, sslConfiguration.UserCertificateSelectionCallback);
                 sslStream.AuthenticateAsServer(
                     sslConfiguration.ServerCertificate,
                     sslConfiguration.ClientCertificateRequired,

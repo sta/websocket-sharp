@@ -43,19 +43,6 @@ namespace WebSocketSharp.Net
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-        /// the specified <paramref name="serverCertificate"/>.
-        /// </summary>
-        /// <param name="serverCertificate">
-        /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-        /// the server.
-        /// </param>
-        public ServerSslConfiguration(X509Certificate2 serverCertificate)
-            : this(serverCertificate, false, SslProtocols.Default, false)
-        {
-        }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
         /// the specified <paramref name="serverCertificate"/>,
         /// <paramref name="clientCertificateRequired"/>, <paramref name="enabledSslProtocols"/>,
         /// and <paramref name="checkCertificateRevocation"/>.
@@ -76,15 +63,21 @@ namespace WebSocketSharp.Net
         /// <c>true</c> if the certificate revocation list is checked during authentication;
         /// otherwise, <c>false</c>.
         /// </param>
+        /// <param name="clientCertificateValidationCallback">A user delegate used to verify remote SSL certificate</param>
+        /// <param name="userCertificateSelectionCallback">A user delegate used to select local SSL certificate</param>
         public ServerSslConfiguration(
             X509Certificate2 serverCertificate,
-            bool clientCertificateRequired,
+            bool clientCertificateRequired = false,
             SslProtocols enabledSslProtocols = SslProtocols.Default,
-            bool checkCertificateRevocation = false)
+            bool checkCertificateRevocation = false,
+            RemoteCertificateValidationCallback clientCertificateValidationCallback = null,
+            LocalCertificateSelectionCallback userCertificateSelectionCallback = null)
       : base(enabledSslProtocols, checkCertificateRevocation)
         {
             ServerCertificate = serverCertificate;
             ClientCertificateRequired = clientCertificateRequired;
+            ClientCertificateValidationCallback = clientCertificateValidationCallback;
+            UserCertificateSelectionCallback = userCertificateSelectionCallback;
             EnabledSslProtocols = enabledSslProtocols;
             CheckCertificateRevocation = checkCertificateRevocation;
         }
@@ -110,6 +103,8 @@ namespace WebSocketSharp.Net
         /// <c>true</c>.
         /// </value>
         public RemoteCertificateValidationCallback ClientCertificateValidationCallback { get; private set; }
+
+        public LocalCertificateSelectionCallback UserCertificateSelectionCallback { get; private set; }
 
         /// <summary>
         /// Gets or sets the certificate used to authenticate the server on the secure connection.
