@@ -1841,20 +1841,22 @@ namespace WebSocketSharp
           }
 
           try {
-            byte[] cached;
-            if (!cache.TryGetValue (_compression, out cached)) {
-              cached = new WebSocketFrame (
-                Fin.Final,
-                opcode,
-                data.Compress (_compression),
-                _compression != CompressionMethod.None,
-                false)
+            byte[] found;
+            if (!cache.TryGetValue (_compression, out found)) {
+              found =
+                new WebSocketFrame (
+                  Fin.Final,
+                  opcode,
+                  data.Compress (_compression),
+                  _compression != CompressionMethod.None,
+                  false
+                )
                 .ToArray ();
 
-              cache.Add (_compression, cached);
+              cache.Add (_compression, found);
             }
 
-            sendBytes (cached);
+            sendBytes (found);
           }
           catch (Exception ex) {
             _logger.Error (ex.ToString ());
