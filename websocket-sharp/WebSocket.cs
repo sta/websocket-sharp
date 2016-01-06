@@ -1870,16 +1870,16 @@ namespace WebSocketSharp
     {
       lock (_forSend) {
         try {
-          Stream cached;
-          if (!cache.TryGetValue (_compression, out cached)) {
-            cached = stream.Compress (_compression);
-            cache.Add (_compression, cached);
+          Stream found;
+          if (!cache.TryGetValue (_compression, out found)) {
+            found = stream.Compress (_compression);
+            cache.Add (_compression, found);
           }
           else {
-            cached.Position = 0;
+            found.Position = 0;
           }
 
-          send (opcode, cached, _compression != CompressionMethod.None);
+          send (opcode, found, _compression != CompressionMethod.None);
         }
         catch (Exception ex) {
           _logger.Error (ex.ToString ());
