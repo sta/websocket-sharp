@@ -2549,9 +2549,11 @@ namespace WebSocketSharp
           if (len < length)
             _logger.Warn (
               String.Format (
-                "The data with 'length' cannot be read from 'stream':\n  expected: {0}\n  actual: {1}",
+                "The length of the data is less than 'length':\n  expected: {0}\n  actual: {1}",
                 length,
-                len));
+                len
+              )
+            );
 
           var sent = send (Opcode.Binary, new MemoryStream (data));
           if (completed != null)
@@ -2560,7 +2562,8 @@ namespace WebSocketSharp
         ex => {
           _logger.Error (ex.ToString ());
           error ("An exception has occurred while sending data.", ex);
-        });
+        }
+      );
     }
 
     /// <summary>
