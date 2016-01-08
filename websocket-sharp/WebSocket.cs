@@ -968,6 +968,20 @@ namespace WebSocketSharp
       }
     }
 
+    private void fatal (string message, Exception exception)
+    {
+      var code = exception is WebSocketException
+                 ? ((WebSocketException) exception).Code
+                 : CloseStatusCode.Abnormal;
+
+      close (
+        new CloseEventArgs (code, message ?? code.GetMessage ()),
+        !code.IsReserved (),
+        false,
+        false
+      );
+    }
+
     private void init ()
     {
       _compression = CompressionMethod.None;
@@ -1558,28 +1572,33 @@ namespace WebSocketSharp
       _receivePong = new AutoResetEvent (false);
 
       Action receive = null;
-      receive = () =>
-        WebSocketFrame.ReadFrameAsync (
-          _stream,
-          false,
-          frame => {
-            if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
-              var exit = _exitReceiving;
-              if (exit != null)
-                exit.Set ();
+      receive =
+        () =>
+          WebSocketFrame.ReadFrameAsync (
+            _stream,
+            false,
+            frame => {
+              if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
+                var exit = _exitReceiving;
+                if (exit != null)
+                  exit.Set ();
 
-              return;
+                return;
+              }
+
+              // Receive next asap because the Ping or Close needs a response to it.
+              receive ();
+
+              if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
+                return;
+
+              message ();
+            },
+            ex => {
+              _logger.Fatal (ex.ToString ());
+              fatal ("An exception has occurred while receiving.", ex);
             }
-
-            // Receive next asap because the Ping or Close needs a response to it.
-            receive ();
-
-            if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
-              return;
-
-            message ();
-          },
-          ex => processException (ex, "An exception has occurred while receiving a message."));
+          );
 
       receive ();
     }
