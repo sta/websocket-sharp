@@ -1168,7 +1168,7 @@ namespace WebSocketSharp
     {
       var msg = checkIfValidReceivedFrame (frame);
       if (msg != null)
-        return processUnsupportedFrame (frame, CloseStatusCode.ProtocolError, msg);
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
       return frame.IsFragment
