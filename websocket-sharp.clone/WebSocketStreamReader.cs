@@ -25,7 +25,7 @@ namespace WebSocketSharp
     {
         private readonly Stream _innerStream;
         private readonly int _fragmentLength;
-        private readonly ManualResetEventSlim _waitHandle = new ManualResetEventSlim(true);
+        private readonly SemaphoreSlim _waitHandle = new SemaphoreSlim(1);
         private bool _isClosed;
 
         public WebSocketStreamReader(Stream innerStream, int fragmentLength)
@@ -44,8 +44,7 @@ namespace WebSocketSharp
                 }
             }
 
-            _waitHandle.Wait(cancellationToken);
-            _waitHandle.Reset();
+await            _waitHandle.WaitAsync(cancellationToken).ConfigureAwait(false);
             var header = await ReadHeader(cancellationToken).ConfigureAwait(false);
             if (header == null)
             {
@@ -63,7 +62,7 @@ namespace WebSocketSharp
             return msg;
         }
 
-        private WebSocketMessage CreateMessage(WebSocketFrameHeader header, StreamReadInfo readInfo, ManualResetEventSlim waitHandle)
+        private WebSocketMessage CreateMessage(WebSocketFrameHeader header, StreamReadInfo readInfo, SemaphoreSlim waitHandle)
         {
             switch (header.Opcode)
             {

@@ -66,6 +66,11 @@ namespace WebSocketSharp
         private const string SocketVersion = "13";
 
         private readonly int _fragmentLength; // Max value is int.MaxValue - 14.
+
+        private Func<MessageEventArgs, Task> _onMessage;
+        private Func<ErrorEventArgs, Task> _onError;
+        private Func<Task> _onOpen;
+        private Func<CloseEventArgs, Task> _onClose;
         private readonly Uri _uri;
         private readonly bool _secure;
         private readonly bool _client;
@@ -81,8 +86,8 @@ namespace WebSocketSharp
         private NetworkCredential _credentials;
         private string _extensions;
         private AutoResetEvent _exitReceiving;
-        private object _forConn;
-        private object _forSend;
+        private SemaphoreSlim _forConn;
+        private SemaphoreSlim _forSend;
         private Func<WebSocketContext, string> _handshakeRequestChecker;
         private uint _nonceCount;
         private string _origin;
@@ -105,11 +110,15 @@ namespace WebSocketSharp
         /// <param name="url">A <see cref="string"/> that represents the WebSocket URL to connect.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel websocket operations.</param>
         /// <param name="fragmentSize">Set the size of message packages. Smaller size equals less memory overhead when sending streams.</param>
+        /// <param name="onOpen">Delegate to be invoked when the WebSocket connection has been established.</param>
+        /// <param name="onClose">Delegate to be invoked when the WebSocket connection has been closed.</param>
+        /// <param name="onError">Delegate to be invoked when the <see cref="WebSocket"/> gets an error.</param>
         /// <param name="protocols">
         ///     An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
         ///     Each value of <paramref name="protocols"/> must be a token defined in
         ///     <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
         /// </param>
+        /// <param name="onMessage">Delegate to be invoked when the <see cref="WebSocket"/> receives a message.</param>
         /// <exception cref="ArgumentException">
         ///   <para>
         ///   <paramref name="url"/> is invalid.
@@ -124,8 +133,8 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, params string[] protocols)
-            : this(url, null, cancellationToken, fragmentSize, protocols)
+        public WebSocket(string url, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, Func<Task> onOpen = null, Func<CloseEventArgs, Task> onClose = null, Func<MessageEventArgs, Task> onMessage = null, Func<ErrorEventArgs, Task> onError = null, params string[] protocols)
+            : this(url, null, cancellationToken, fragmentSize, onOpen, onClose, onMessage, onError, protocols)
         {
         }
 
@@ -139,6 +148,9 @@ namespace WebSocketSharp
         /// <param name="sslAuthConfiguration">A <see cref="ClientSslAuthConfiguration"/> for securing the connection.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to cancel websocket operations.</param>
         /// <param name="fragmentSize"></param>
+        /// <param name="onOpen">Delegate to be invoked when the WebSocket connection has been established.</param>
+        /// <param name="onClose">Delegate to be invoked when the WebSocket connection has been closed.</param>
+        /// <param name="onError">Delegate to be invoked when the <see cref="WebSocket"/> gets an error.</param>
         /// <param name="protocols">
         /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
         /// Each value of <paramref name="protocols"/> must be a token defined in
@@ -158,7 +170,7 @@ namespace WebSocketSharp
         /// <exception cref="ArgumentNullException">
         /// <paramref name="url"/> is <see langword="null"/>.
         /// </exception>
-        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, params string[] protocols)
+        public WebSocket(string url, ClientSslConfiguration sslAuthConfiguration, CancellationToken cancellationToken = default(CancellationToken), int fragmentSize = 102392, Func<Task> onOpen = null, Func<CloseEventArgs, Task> onClose = null, Func<MessageEventArgs, Task> onMessage = null, Func<ErrorEventArgs, Task> onError = null, params string[] protocols)
         {
             if (url == null)
             {
@@ -183,6 +195,10 @@ namespace WebSocketSharp
             }
 
             _fragmentLength = fragmentSize;
+            _onMessage = onMessage ?? (m => AsyncEx.Completed());
+            _onError = onError ?? (e => AsyncEx.Completed());
+            _onOpen = onOpen ?? AsyncEx.Completed;
+            _onClose = onClose ?? (c => AsyncEx.Completed());
             _sslConfig = sslAuthConfiguration;
             _cancellationToken = cancellationToken;
             _registration = _cancellationToken.Register(async () => await Close().ConfigureAwait(false));
@@ -208,26 +224,6 @@ namespace WebSocketSharp
 
             InnerInit();
         }
-
-        /// <summary>
-        /// Occurs when the WebSocket connection has been closed.
-        /// </summary>
-        public Func<CloseEventArgs, Task> OnClose { get; set; }
-
-        /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> gets an error.
-        /// </summary>
-        public Func<ErrorEventArgs, Task> OnError { get; set; }
-
-        /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> receives a message.
-        /// </summary>
-        public Func<MessageEventArgs, Task> OnMessage { get; set; }
-
-        /// <summary>
-        /// Occurs when the WebSocket connection has been established.
-        /// </summary>
-        public Func<Task> OnOpen { get; set; }
 
         /// <summary>
         /// Gets the HTTP cookies included in the WebSocket connection request and response.
@@ -890,12 +886,17 @@ namespace WebSocketSharp
 
         internal async Task<bool> InnerSend(Fin final, Opcode opcode, byte[] data)
         {
-            using (var ml = new MonitorLock(_forSend))
+            try
             {
+                await _forSend.WaitAsync(_cancellationToken).ConfigureAwait(false);
                 var frame = new WebSocketFrame(final, opcode, data, _compression != CompressionMethod.None, false);
 
                 var bytes = await frame.ToByteArray().ConfigureAwait(false);
                 return await SendBytes(bytes).ConfigureAwait(false);
+            }
+            finally
+            {
+                _forSend.Release();
             }
         }
 
@@ -916,7 +917,7 @@ namespace WebSocketSharp
 
             _readyState = WebSocketState.Closed;
 
-            OnClose?.Invoke(e);
+            await _onClose.Invoke(e).ConfigureAwait(false);
         }
 
         // As server
@@ -1011,7 +1012,7 @@ namespace WebSocketSharp
             _readyState = WebSocketState.Closed;
             try
             {
-                OnClose?.Invoke(e);
+                await _onClose.Invoke(e).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -1090,7 +1091,7 @@ namespace WebSocketSharp
             _readyState = WebSocketState.Closed;
             try
             {
-                OnClose?.Invoke(e);
+                await _onClose.Invoke(e).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -1106,9 +1107,14 @@ namespace WebSocketSharp
             }
 
             bool sent = false;
-            using (var ml = new MonitorLock(_forSend))
+            try
             {
+                await _forSend.WaitAsync(_cancellationToken).ConfigureAwait(false);
                 sent = await SendBytes(frameAsBytes).ConfigureAwait(false);
+            }
+            finally
+            {
+                _forSend.Release();
             }
             var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
 
@@ -1132,8 +1138,9 @@ namespace WebSocketSharp
 
         private async Task<bool> InnerConnect()
         {
-            using (var ml = new MonitorLock(_forConn))
+            try
             {
+                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
                 var msg = _readyState.CheckIfConnectable();
                 if (msg != null)
                 {
@@ -1145,7 +1152,9 @@ namespace WebSocketSharp
                 try
                 {
                     _readyState = WebSocketState.Connecting;
-                    if (_client ? await DoHandshake().ConfigureAwait(false) : await AcceptHandshake().ConfigureAwait(false))
+                    if (_client
+                            ? await DoHandshake().ConfigureAwait(false)
+                            : await AcceptHandshake().ConfigureAwait(false))
                     {
                         _readyState = WebSocketState.Open;
                         return true;
@@ -1157,6 +1166,10 @@ namespace WebSocketSharp
                 }
 
                 return false;
+            }
+            finally
+            {
+                _forConn.Release();
             }
         }
 
@@ -1280,15 +1293,15 @@ namespace WebSocketSharp
 
         private void Error(string message, Exception exception)
         {
-            OnError?.Invoke(new ErrorEventArgs(message, exception));
+            _onError.Invoke(new ErrorEventArgs(message, exception));
         }
 
         private void InnerInit()
         {
             _compression = CompressionMethod.None;
             _cookies = new CookieCollection();
-            _forConn = new object();
-            _forSend = new object();
+            _forConn = new SemaphoreSlim(1);
+            _forSend = new SemaphoreSlim(1);
             _readyState = WebSocketState.Connecting;
         }
 
@@ -1300,7 +1313,7 @@ namespace WebSocketSharp
 
                 try
                 {
-                    OnOpen?.Invoke();
+                    await _onOpen.Invoke().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -1502,8 +1515,9 @@ namespace WebSocketSharp
 
         private async Task<bool> InnerSend(Opcode opcode, Stream stream, bool compressed)
         {
-            using (var ml = new MonitorLock(_forSend))
+            try
             {
+                await _forSend.WaitAsync(_cancellationToken).ConfigureAwait(false);
                 int bytesRead;
                 do
                 {
@@ -1513,7 +1527,10 @@ namespace WebSocketSharp
 
                     var data = bytesRead == _fragmentLength ? buffer : buffer.SubArray(0, bytesRead);
 
-                    var bytes = await new WebSocketFrame(finalCode, opcode, data, compressed, _client).ToByteArray().ConfigureAwait(false);
+                    var bytes =
+                        await
+                        new WebSocketFrame(finalCode, opcode, data, compressed, _client).ToByteArray()
+                            .ConfigureAwait(false);
                     if (!await SendBytes(bytes).ConfigureAwait(false))
                     {
                         return false;
@@ -1524,6 +1541,10 @@ namespace WebSocketSharp
                 while (bytesRead == _fragmentLength && _readyState == WebSocketState.Open);
 
                 return true;
+            }
+            finally
+            {
+                _forSend.Release();
             }
         }
 
@@ -1670,10 +1691,7 @@ namespace WebSocketSharp
                         break;
                     case Opcode.Text:
                     case Opcode.Binary:
-                        if (OnMessage != null)
-                        {
-                            await OnMessage.Invoke(new MessageEventArgs(message)).ConfigureAwait(false);
-                        }
+                        await _onMessage.Invoke(new MessageEventArgs(message)).ConfigureAwait(false);
                         await message.Consume().ConfigureAwait(false);
                         break;
                     case Opcode.Close:
@@ -1765,6 +1783,26 @@ namespace WebSocketSharp
         private bool InnerValidateSecWebSocketVersionServerHeader(string value)
         {
             return value == null || value == SocketVersion;
+        }
+
+        internal void SetOnOpen(Func<Task> onOpen)
+        {
+            _onOpen = onOpen;
+        }
+
+        internal void SetOnClose(Func<CloseEventArgs, Task> onClose)
+        {
+            _onClose = onClose;
+        }
+
+        internal void SetOnMessage(Func<MessageEventArgs, Task> onMessage)
+        {
+            _onMessage = onMessage;
+        }
+
+        internal void SetOnError(Func<ErrorEventArgs, Task> onError)
+        {
+            _onError = onError;
         }
     }
 }

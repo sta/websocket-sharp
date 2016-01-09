@@ -20,6 +20,7 @@ namespace WebSocketSharp.Tests
     using System;
     using System.Diagnostics;
     using System.Linq;
+    using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using System.Threading;
     using System.Threading.Tasks;
@@ -39,7 +40,12 @@ namespace WebSocketSharp.Tests
             public void Setup()
             {
                 var cert = GetRandomCertificate();
-                _sut = new WebSocketServer(port: 443, certificate: new ServerSslConfiguration(cert));
+                var serverSslConfiguration = new ServerSslConfiguration(
+                    cert,
+                    true,
+                    SslProtocols.Tls,
+                    clientCertificateValidationCallback: (sender, certificate, chain, errors) => true);
+                _sut = new WebSocketServer(port: 443, certificate: serverSslConfiguration);
                 _sut.AddWebSocketService<TestEchoService>("/echo");
                 _sut.AddWebSocketService<TestRadioService>("/radio");
                 _sut.Start();
@@ -60,7 +66,12 @@ namespace WebSocketSharp.Tests
             [Test]
             public async Task ClientCanConnectToServer()
             {
-                var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+                var clientSslConfiguration = new ClientSslConfiguration(
+                    "localhost",
+                    clientCertificates: new X509Certificate2Collection(GetRandomCertificate()),
+                    enabledSslProtocols: SslProtocols.Tls,
+                    certificateValidationCallback: (sender, certificate, chain, errors) => true);
+
                 using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
                 {
                     await client.Connect().ConfigureAwait(false);
@@ -75,18 +86,16 @@ namespace WebSocketSharp.Tests
                 const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
                 var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
-                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
+                Func<MessageEventArgs, Task> onMessage = e =>
                 {
-                    Func<MessageEventArgs, Task> onMessage = e =>
-                        {
-                            if (e.Text.ReadToEnd() == Message)
-                            {
-                                waitHandle.Set();
-                            }
-                            return AsyncEx.Completed();
-                        };
-                    client.OnMessage = onMessage;
-
+                    if (e.Text.ReadToEnd() == Message)
+                    {
+                        waitHandle.Set();
+                    }
+                    return AsyncEx.Completed();
+                };
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration, onMessage: onMessage))
+                {
                     await client.Connect().ConfigureAwait(false);
                     await client.Send(Message).ConfigureAwait(false);
 
@@ -103,20 +112,18 @@ namespace WebSocketSharp.Tests
                 const string Message = "Message";
                 var waitHandle = new ManualResetEventSlim(false);
                 var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
-                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
+                Func<MessageEventArgs, Task> onMessage = async e =>
+                                        {
+                                            if (await e.Text.ReadToEndAsync().ConfigureAwait(false) == Message)
+                                            {
+                                                if (Interlocked.Increment(ref count) == multiplicity)
+                                                {
+                                                    waitHandle.Set();
+                                                }
+                                            }
+                                        };
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration, onMessage: onMessage))
                 {
-                    Func<MessageEventArgs, Task> onMessage = async e =>
-                        {
-                            if (await e.Text.ReadToEndAsync().ConfigureAwait(false) == Message)
-                            {
-                                if (Interlocked.Increment(ref count) == multiplicity)
-                                {
-                                    waitHandle.Set();
-                                }
-                            }
-                        };
-                    client.OnMessage = onMessage;
-
                     await client.Connect().ConfigureAwait(false);
                     for (int i = 0; i < multiplicity; i++)
                     {
@@ -138,18 +145,17 @@ namespace WebSocketSharp.Tests
                 var stream = new EnumerableStream(Enumerable.Repeat((byte)123, Length));
                 var waitHandle = new ManualResetEventSlim(false);
                 var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
-                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration))
+
+                Func<MessageEventArgs, Task> onMessage = async e =>
+                    {
+                        var bytes = await e.Data.ReadBytes(Length).ConfigureAwait(false);
+                        responseLength = bytes.Count(x => x == 123);
+
+                        waitHandle.Set();
+                    };
+
+                using (var client = new WebSocket("wss://localhost:443/echo", sslAuthConfiguration: clientSslConfiguration, onMessage: onMessage))
                 {
-                    Func<MessageEventArgs, Task> onMessage = async e =>
-                        {
-                            var bytes = await e.Data.ReadBytes(Length).ConfigureAwait(false);
-                            responseLength = bytes.Count(x => x == 123);
-
-                            waitHandle.Set();
-                        };
-
-                    client.OnMessage = onMessage;
-
                     await client.Connect().ConfigureAwait(false);
                     await client.Send(stream).ConfigureAwait(false);
 
@@ -170,20 +176,19 @@ namespace WebSocketSharp.Tests
                 var waitHandle = new ManualResetEventSlim(false);
 
                 var clientSslConfiguration = new ClientSslConfiguration("localhost", certificateValidationCallback: (sender, certificate, chain, errors) => true);
+
+                Func<MessageEventArgs, Task> onMessage = async e =>
+                    {
+                        var bytes = await e.Data.ReadBytes(Length).ConfigureAwait(false);
+                        responseLength = bytes.Count(x => x == 123);
+
+                        waitHandle.Set();
+                    };
+
                 using (var sender = new WebSocket("wss://localhost:443/radio", sslAuthConfiguration: clientSslConfiguration))
                 {
-                    using (var client = new WebSocket("wss://localhost:443/radio", sslAuthConfiguration: clientSslConfiguration))
+                    using (var client = new WebSocket("wss://localhost:443/radio", sslAuthConfiguration: clientSslConfiguration, onMessage: onMessage))
                     {
-                        Func<MessageEventArgs, Task> onMessage = async e =>
-                            {
-                                var bytes = await e.Data.ReadBytes(Length).ConfigureAwait(false);
-                                responseLength = bytes.Count(x => x == 123);
-
-                                waitHandle.Set();
-                            };
-
-                        client.OnMessage = onMessage;
-
                         await sender.Connect().ConfigureAwait(false);
                         await client.Connect().ConfigureAwait(false);
                         await sender.Send(stream).ConfigureAwait(false);

@@ -26,7 +26,7 @@ namespace WebSocketSharp
 	{
 		private readonly Stream _stream;
 
-	    public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<Task<StreamReadInfo>> payloadFunc, ManualResetEventSlim waitHandle, int fragmentLength)
+	    public FragmentedMessage(Opcode opcode, Stream stream, StreamReadInfo initialRead, Func<Task<StreamReadInfo>> payloadFunc, SemaphoreSlim waitHandle, int fragmentLength)
 			: base(opcode, waitHandle, fragmentLength)
 		{
 			_stream = new WebSocketDataStream(stream, initialRead, payloadFunc, Consume);

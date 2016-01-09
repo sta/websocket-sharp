@@ -73,7 +73,6 @@
   <ItemGroup>
     <Compile Include="AsyncEx.cs" />
     <Compile Include="HttpRequest.cs" />
-    <Compile Include="MonitorLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FragmentedMessage.cs" />

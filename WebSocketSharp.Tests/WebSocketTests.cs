@@ -32,8 +32,7 @@ namespace WebSocketSharp.Tests
             [SetUp]
             public void Setup()
             {
-                _sut = new WebSocket("ws://echo.websocket.org");
-                _sut.OnError = PrintError;
+                _sut = new WebSocket("ws://echo.websocket.org", onError: PrintError);
             }
 
             [TearDown]
@@ -52,7 +51,7 @@ namespace WebSocketSharp.Tests
 
                 Assert.AreEqual(WebSocketState.Closed, _sut.ReadyState);
             }
-            
+
             [Test]
             public async Task WhenSendingMessageThenReceivesEcho()
             {
@@ -65,8 +64,7 @@ namespace WebSocketSharp.Tests
                         echoReceived = readToEnd == Message;
                         waitHandle.Set();
                     };
-                _sut.OnMessage = onMessage;
-
+                _sut = new WebSocket("ws://echo.websocket.org", onError: PrintError, onMessage: onMessage);
                 var connected = await _sut.Connect().ConfigureAwait(false);
                 Console.WriteLine("Connected: " + connected);
 
@@ -81,8 +79,7 @@ namespace WebSocketSharp.Tests
             [Test]
             public async Task WhenConnectingToAddressThenConnects()
             {
-                await _sut.Connect().ConfigureAwait(false);
-
+                var connected = await _sut.Connect().ConfigureAwait(false);
                 Assert.IsTrue(_sut.ReadyState == WebSocketState.Open);
             }
 

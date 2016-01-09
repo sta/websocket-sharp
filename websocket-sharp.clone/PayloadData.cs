@@ -71,8 +71,7 @@ namespace WebSocketSharp
 
         public IEnumerator<byte> GetEnumerator()
         {
-            foreach (var b in _data)
-                yield return b;
+            return ((IEnumerable<byte>)_data).GetEnumerator();
         }
 
         public byte[] ToByteArray()

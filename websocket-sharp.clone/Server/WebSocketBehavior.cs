@@ -231,10 +231,10 @@ namespace WebSocketSharp.Server
             var waitTime = sessions.WaitTime;
             _websocket.WaitTime = waitTime;
 
-            _websocket.OnOpen = InnerOnOpen;
-            _websocket.OnMessage = OnMessage;
-            _websocket.OnError = OnError;
-            _websocket.OnClose = InnerOnClose;
+            _websocket.SetOnOpen(InnerOnOpen);
+            _websocket.SetOnMessage(OnMessage);
+            _websocket.SetOnError(OnError);
+            _websocket.SetOnClose(InnerOnClose);
 
             await _websocket.ConnectAsServer().ConfigureAwait(false);
         }

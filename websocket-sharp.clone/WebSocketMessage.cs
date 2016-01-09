@@ -23,11 +23,11 @@ namespace WebSocketSharp
 
     internal abstract class WebSocketMessage
     {
-        private readonly ManualResetEventSlim _waitHandle;
+        private readonly SemaphoreSlim _waitHandle;
 
         private readonly int _fragmentLength;
 
-        protected WebSocketMessage(Opcode opcode, ManualResetEventSlim waitHandle, int fragmentLength)
+        protected WebSocketMessage(Opcode opcode, SemaphoreSlim waitHandle, int fragmentLength)
         {
             _waitHandle = waitHandle;
             _fragmentLength = fragmentLength;
@@ -41,7 +41,7 @@ namespace WebSocketSharp
         public abstract StreamReader Text { get; }
 
         internal async Task Consume()
-        {
+        { 
             if (RawData != null)
             {
                 var buffer = new byte[_fragmentLength];
@@ -50,7 +50,7 @@ namespace WebSocketSharp
                 }
             }
 
-            _waitHandle.Set();
+            _waitHandle.Release();
         }
     }
 }

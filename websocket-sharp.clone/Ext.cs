@@ -845,8 +845,7 @@ namespace WebSocketSharp
           bool secure,
           ServerSslConfiguration sslConfiguration)
         {
-            return new TcpListenerWebSocketContext(
-              tcpClient, protocol, secure, sslConfiguration);
+            return new TcpListenerWebSocketContext(tcpClient, protocol, secure, sslConfiguration);
         }
 
         internal static byte[] InternalToByteArray(this ushort value, ByteOrder order)
