@@ -44,7 +44,7 @@ namespace WebSocketSharp.Server
     {
         private readonly int _fragmentSize;
         private volatile bool _clean;
-        private readonly object _forSweep;
+        private readonly SemaphoreSlim _forSweep = new SemaphoreSlim(1);
         private readonly ConcurrentDictionary<string, IWebSocketSession> _sessions;
         private volatile ServerState _state;
         private volatile bool _sweeping;
@@ -55,7 +55,6 @@ namespace WebSocketSharp.Server
         {
             _fragmentSize = fragmentSize;
             _clean = true;
-            _forSweep = new object();
             _sessions = new ConcurrentDictionary<string, IWebSocketSession>();
             _state = ServerState.Ready;
             _waitTime = TimeSpan.FromSeconds(1);
@@ -507,40 +506,37 @@ namespace WebSocketSharp.Server
             {
                 return;
             }
+            try
+            {
+                await _forSweep.WaitAsync().ConfigureAwait(false);
 
-            lock (_forSweep)
-            {
-                while (_sweeping)
+                var inactive = await InactiveIDs().ConfigureAwait(false);
+                foreach (var id in inactive.TakeWhile(id => _state == ServerState.Start))
                 {
-                    Monitor.Wait(_forSweep);
-                }
-                _sweeping = true;
-            }
-            var inactive = await InactiveIDs().ConfigureAwait(false);
-            foreach (var id in inactive.TakeWhile(id => _state == ServerState.Start))
-            {
-                IWebSocketSession session;
-                if (_sessions.TryGetValue(id, out session))
-                {
-                    var state = session.State;
-                    switch (state)
+                    IWebSocketSession session;
+                    if (_sessions.TryGetValue(id, out session))
                     {
-                        case WebSocketState.Open:
-                            await session.Context.WebSocket.Close(CloseStatusCode.ProtocolError).ConfigureAwait(false);
-                            break;
-                        case WebSocketState.Closing:
-                            continue;
-                        default:
-                            Remove(id);
-                            break;
+                        var state = session.State;
+                        switch (state)
+                        {
+                            case WebSocketState.Open:
+                                await
+                                    session.Context.WebSocket.Close(CloseStatusCode.ProtocolError).ConfigureAwait(false);
+                                break;
+                            case WebSocketState.Closing:
+                                continue;
+                            case WebSocketState.Connecting:
+                            case WebSocketState.Closed:
+                            default:
+                                Remove(id);
+                                break;
+                        }
                     }
                 }
             }
-
-            lock (_forSweep)
+            finally
             {
-                _sweeping = false;
-                Monitor.Pulse(_forSweep);
+                _forSweep.Release();
             }
         }
 

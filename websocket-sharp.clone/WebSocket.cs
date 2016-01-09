@@ -85,7 +85,6 @@ namespace WebSocketSharp
         private CookieCollection _cookies;
         private NetworkCredential _credentials;
         private string _extensions;
-        private AutoResetEvent _exitReceiving;
         private SemaphoreSlim _forConn;
         private SemaphoreSlim _forSend;
         private Func<WebSocketContext, string> _handshakeRequestChecker;
@@ -237,9 +236,7 @@ namespace WebSocketSharp
         {
             get
             {
-                lock (_cookies.SyncRoot)
-                    foreach (Cookie cookie in _cookies)
-                        yield return cookie;
+                return _cookies;
             }
         }
 
@@ -313,31 +310,28 @@ namespace WebSocketSharp
 
             set
             {
-                lock (_forConn)
+                var msg = CheckIfAvailable(false, false);
+                if (msg == null)
                 {
-                    var msg = CheckIfAvailable(false, false);
-                    if (msg == null)
+                    if (value.IsNullOrEmpty())
                     {
-                        if (value.IsNullOrEmpty())
-                        {
-                            _origin = value;
-                            return;
-                        }
-
-                        Uri origin;
-                        if (!Uri.TryCreate(value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-                            msg = "The syntax of the origin must be '<scheme>://<host>[:<port>]'.";
-                    }
-
-                    if (msg != null)
-                    {
-                        Error("An error has occurred in setting the origin.", null);
-
+                        _origin = value;
                         return;
                     }
 
-                    _origin = value.TrimEnd('/');
+                    Uri origin;
+                    if (!Uri.TryCreate(value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
+                        msg = "The syntax of the origin must be '<scheme>://<host>[:<port>]'.";
                 }
+
+                if (msg != null)
+                {
+                    Error(msg, null);
+
+                    return;
+                }
+
+                _origin = value.TrimEnd('/');
             }
         }
 
@@ -370,38 +364,6 @@ namespace WebSocketSharp
         /// </value>
         public WebSocketState ReadyState => _readyState;
 
-        ///// <summary>
-        ///// Gets or sets the SSL configuration used to authenticate the server and optionally the client
-        ///// on the secure connection.
-        ///// </summary>
-        ///// <value>
-        ///// A <see cref="ClientSslAuthConfiguration"/> that represents the SSL configuration used to
-        ///// authenticate the server and optionally the client.
-        ///// </value>
-        //public ClientSslAuthConfiguration SslConfiguration
-        //{
-        //	get
-        //	{
-        //		return _sslConfig;
-        //	}
-
-        //	set
-        //	{
-        //		lock (_forConn)
-        //		{
-        //			var msg = checkIfAvailable(false, false);
-        //			if (msg != null)
-        //			{
-        //				error("An error has occurred in setting the ssl configuration.", null);
-
-        //				return;
-        //			}
-
-        //			_sslConfig = value;
-        //		}
-        //	}
-        //}
-
         /// <summary>
         /// Gets the WebSocket URL to connect.
         /// </summary>
@@ -429,18 +391,15 @@ namespace WebSocketSharp
 
             set
             {
-                lock (_forConn)
+                var msg = CheckIfAvailable(true, false) ?? value.CheckIfValidWaitTime();
+                if (msg != null)
                 {
-                    var msg = CheckIfAvailable(true, false) ?? value.CheckIfValidWaitTime();
-                    if (msg != null)
-                    {
-                        Error("An error has occurred in setting the wait time.", null);
+                    Error(msg, null);
 
-                        return;
-                    }
-
-                    _waitTime = value;
+                    return;
                 }
+
+                _waitTime = value;
             }
         }
 
@@ -470,7 +429,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfClosable();
             if (msg != null)
             {
-                Error("An error has occurred in closing the connection.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -524,7 +483,7 @@ namespace WebSocketSharp
 
             if (msg != null)
             {
-                Error("An error has occurred in closing the connection.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -541,7 +500,7 @@ namespace WebSocketSharp
             var msg = CheckIfCanConnect();
             if (msg != null)
             {
-                Error("An error has occurred in connecting.", null);
+                Error(msg, null);
 
                 return false;
             }
@@ -592,7 +551,7 @@ namespace WebSocketSharp
             var msg = data.CheckIfValidControlData("message");
             if (msg != null)
             {
-                Error("An error has occurred in sending the ping.", null);
+                Error(msg, null);
 
                 return false;
             }
@@ -612,7 +571,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                Error("An error has occurred in sending the data.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -637,7 +596,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfOpen();
             if (msg != null)
             {
-                Error("An error has occurred in sending the data.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -662,7 +621,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfOpen();
             if (msg != null)
             {
-                Error("An error has occurred in sending the data.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -681,7 +640,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfOpen() ?? data.CheckIfValidSendData();
             if (msg != null)
             {
-                Error("An error has occurred in sending the data.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -698,20 +657,19 @@ namespace WebSocketSharp
         /// </param>
         public void SetCookie(Cookie cookie)
         {
-            lock (_forConn)
+            lock (_cookies.SyncRoot)
             {
                 var msg = CheckIfAvailable(false, false) ??
                           (cookie == null ? "'cookie' is null." : null);
 
                 if (msg != null)
                 {
-                    Error("An error has occurred in setting the cookie.", null);
+                    Error(msg, null);
 
                     return;
                 }
 
-                lock (_cookies.SyncRoot)
-                    _cookies.SetOrRemove(cookie);
+                _cookies.SetOrRemove(cookie);
             }
         }
 
@@ -732,36 +690,33 @@ namespace WebSocketSharp
         /// </param>
         public void SetCredentials(string username, string password, bool preAuth)
         {
-            lock (_forConn)
+            var msg = CheckIfAvailable(false, false);
+            if (msg == null)
             {
-                var msg = CheckIfAvailable(false, false);
-                if (msg == null)
+                if (username.IsNullOrEmpty())
                 {
-                    if (username.IsNullOrEmpty())
-                    {
-                        _credentials = null;
-                        _preAuth = false;
-
-                        return;
-                    }
-
-                    msg = username.Contains(':') || !username.IsText()
-                          ? "'username' contains an invalid character."
-                          : !password.IsNullOrEmpty() && !password.IsText()
-                            ? "'password' contains an invalid character."
-                            : null;
-                }
-
-                if (msg != null)
-                {
-                    Error(msg, null);
+                    _credentials = null;
+                    _preAuth = false;
 
                     return;
                 }
 
-                _credentials = new NetworkCredential(username, password, _uri.PathAndQuery);
-                _preAuth = preAuth;
+                msg = username.Contains(':') || !username.IsText()
+                      ? "'username' contains an invalid character."
+                      : !password.IsNullOrEmpty() && !password.IsText()
+                        ? "'password' contains an invalid character."
+                        : null;
             }
+
+            if (msg != null)
+            {
+                Error(msg, null);
+
+                return;
+            }
+
+            _credentials = new NetworkCredential(username, password, _uri.PathAndQuery);
+            _preAuth = preAuth;
         }
 
         /// <summary>
@@ -781,55 +736,53 @@ namespace WebSocketSharp
         /// </param>
         public void SetProxy(string url, string username, string password)
         {
-            lock (_forConn)
+            var msg = CheckIfAvailable(false, false);
+            if (msg == null)
             {
-                var msg = CheckIfAvailable(false, false);
-                if (msg == null)
+                if (url.IsNullOrEmpty())
                 {
-                    if (url.IsNullOrEmpty())
+                    _proxyUri = null;
+                    _proxyCredentials = null;
+
+                    return;
+                }
+
+                Uri uri;
+                if (!Uri.TryCreate(url, UriKind.Absolute, out uri) ||
+                    uri.Scheme != "http" ||
+                    uri.Segments.Length > 1)
+                {
+                    msg = "The syntax of the proxy url must be 'http://<host>[:<port>]'.";
+                }
+                else
+                {
+                    _proxyUri = uri;
+
+                    if (username.IsNullOrEmpty())
                     {
-                        _proxyUri = null;
                         _proxyCredentials = null;
 
                         return;
                     }
 
-                    Uri uri;
-                    if (!Uri.TryCreate(url, UriKind.Absolute, out uri) ||
-                        uri.Scheme != "http" ||
-                        uri.Segments.Length > 1)
-                    {
-                        msg = "The syntax of the proxy url must be 'http://<host>[:<port>]'.";
-                    }
-                    else
-                    {
-                        _proxyUri = uri;
-
-                        if (username.IsNullOrEmpty())
-                        {
-                            _proxyCredentials = null;
-
-                            return;
-                        }
-
-                        msg = username.Contains(':') || !username.IsText()
-                              ? "'username' contains an invalid character."
-                              : !password.IsNullOrEmpty() && !password.IsText()
-                                ? "'password' contains an invalid character."
-                                : null;
-                    }
+                    msg = username.Contains(':') || !username.IsText()
+                          ? "'username' contains an invalid character."
+                          : !password.IsNullOrEmpty() && !password.IsText()
+                            ? "'password' contains an invalid character."
+                            : null;
                 }
-
-                if (msg != null)
-                {
-                    Error("An error has occurred in setting the proxy.", null);
-
-                    return;
-                }
-
-                _proxyCredentials = new NetworkCredential(
-                  username, password, String.Format("{0}:{1}", _uri.DnsSafeHost, _uri.Port));
             }
+
+            if (msg != null)
+            {
+                Error(msg, null);
+
+                return;
+            }
+
+            _proxyCredentials = new NetworkCredential(
+              username, password,
+              $"{_uri.DnsSafeHost}:{_uri.Port}");
         }
 
         /// <summary>
@@ -903,15 +856,21 @@ namespace WebSocketSharp
         // As server
         internal async Task InnerClose(CloseEventArgs e, byte[] frameAsBytes, TimeSpan timeout)
         {
-            lock (_forConn)
+            try
             {
+                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
+
                 if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed)
                 {
                     return;
                 }
-
-                _readyState = WebSocketState.Closing;
             }
+            finally
+            {
+                _forConn.Release();
+            }
+
+            _readyState = WebSocketState.Closing;
 
             e.WasClean = await CloseHandshake(frameAsBytes, timeout, ReleaseServerResources).ConfigureAwait(false);
 
@@ -992,14 +951,20 @@ namespace WebSocketSharp
 
         private async Task InnerClose(PayloadData payload, bool send, bool wait)
         {
-            lock (_forConn)
+            try
             {
+                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
+
                 if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed)
                 {
                     return;
                 }
 
                 _readyState = WebSocketState.Closing;
+            }
+            finally
+            {
+                _forConn.Release();
             }
 
             var e = new CloseEventArgs(payload);
@@ -1072,15 +1037,21 @@ namespace WebSocketSharp
 
         private async Task InnerClose(CloseEventArgs e, bool send, bool wait)
         {
-            lock (_forConn)
+            try
             {
+                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
+
                 if (_readyState == WebSocketState.Closing || _readyState == WebSocketState.Closed)
                 {
                     return;
                 }
-
-                _readyState = WebSocketState.Closing;
             }
+            finally
+            {
+                _forConn.Release();
+            }
+
+            _readyState = WebSocketState.Closing;
 
             e.WasClean = await CloseHandshake(
                 send ? await WebSocketFrame.CreateCloseFrame(e.PayloadData, _client).ToByteArray().ConfigureAwait(false) : null,
@@ -1116,7 +1087,7 @@ namespace WebSocketSharp
             {
                 _forSend.Release();
             }
-            var received = timeout == TimeSpan.Zero || (sent && _exitReceiving != null && _exitReceiving.WaitOne(timeout));
+            var received = timeout == TimeSpan.Zero || sent;
 
             await release().ConfigureAwait(false);
             if (_receivePong != null)
@@ -1125,51 +1096,44 @@ namespace WebSocketSharp
                 _receivePong = null;
             }
 
-            if (_exitReceiving != null)
-            {
-                _exitReceiving.Close();
-                _exitReceiving = null;
-            }
-
-            var res = sent && received;
-
-            return res;
+            return received;
         }
 
         private async Task<bool> InnerConnect()
         {
             try
             {
-                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
-                var msg = _readyState.CheckIfConnectable();
-                if (msg != null)
-                {
-                    Error("An error has occurred in connecting.", null);
-
-                    return false;
-                }
-
                 try
                 {
-                    _readyState = WebSocketState.Connecting;
-                    if (_client
-                            ? await DoHandshake().ConfigureAwait(false)
-                            : await AcceptHandshake().ConfigureAwait(false))
+                    await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
+                    var msg = _readyState.CheckIfConnectable();
+                    if (msg != null)
                     {
-                        _readyState = WebSocketState.Open;
-                        return true;
+                        Error(msg, null);
+
+                        return false;
                     }
                 }
-                catch (Exception ex)
+                finally
                 {
-                    await ProcessException(ex, "An exception has occurred while connecting.").ConfigureAwait(false);
+                    _forConn.Release();
+                }
+
+                _readyState = WebSocketState.Connecting;
+                if (_client
+                        ? await DoHandshake().ConfigureAwait(false)
+                        : await AcceptHandshake().ConfigureAwait(false))
+                {
+                    _readyState = WebSocketState.Open;
+                    return true;
                 }
 
                 return false;
             }
-            finally
+            catch (Exception ex)
             {
-                _forConn.Release();
+                await ProcessException(ex, "An exception has occurred while connecting.").ConfigureAwait(false);
+                return false;
             }
         }
 
@@ -1275,7 +1239,6 @@ namespace WebSocketSharp
             var msg = InnerCheckIfValidHandshakeResponse(res);
             if (msg != null)
             {
-                msg = "An error has occurred while connecting.";
                 Error(msg, null);
                 await InnerClose(new CloseEventArgs(CloseStatusCode.Abnormal, msg), false, false).ConfigureAwait(false);
 
@@ -1433,11 +1396,19 @@ namespace WebSocketSharp
             _context = null;
         }
 
-        private Task<bool> InnerSend(byte[] frameAsBytes)
+        private async Task<bool> InnerSend(byte[] frameAsBytes)
         {
-            lock (_forConn)
+            try
             {
-                return _readyState != WebSocketState.Open ? Task.FromResult(false) : SendBytes(frameAsBytes);
+                await _forConn.WaitAsync(_cancellationToken).ConfigureAwait(false);
+
+                var response = _readyState == WebSocketState.Open && await SendBytes(frameAsBytes).ConfigureAwait(false);
+
+                return response;
+            }
+            finally
+            {
+                _forConn.Release();
             }
         }
 

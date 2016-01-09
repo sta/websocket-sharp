@@ -88,7 +88,6 @@
     <Compile Include="Net\Cookie.cs" />
     <Compile Include="Net\CookieCollection.cs" />
     <Compile Include="Net\CookieException.cs" />
-    <Compile Include="Net\HttpStreamAsyncResult.cs" />
     <Compile Include="Net\HttpUtility.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
     <Compile Include="Net\HttpVersion.cs" />
@@ -118,7 +117,6 @@
     <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
-    <Compile Include="Net\ReadBufferState.cs" />
     <Compile Include="Net\QueryStringCollection.cs" />
     <Compile Include="WebSocketFrame.cs" />
     <Compile Include="Net\AuthenticationChallenge.cs" />

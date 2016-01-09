@@ -30,9 +30,9 @@ namespace WebSocketSharp.Net
 	{
 	    private HttpHeaderType _type;
 
-	    internal bool IsMultiValueInRequest => (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
+	    private bool IsMultiValueInRequest => (_type & HttpHeaderType.MultiValueInRequest) == HttpHeaderType.MultiValueInRequest;
 
-	    internal bool IsMultiValueInResponse => (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
+	    private bool IsMultiValueInResponse => (_type & HttpHeaderType.MultiValueInResponse) == HttpHeaderType.MultiValueInResponse;
 
 	    public bool IsRequest => (_type & HttpHeaderType.Request) == HttpHeaderType.Request;
 

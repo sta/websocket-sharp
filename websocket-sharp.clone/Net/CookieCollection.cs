@@ -48,7 +48,7 @@ namespace WebSocketSharp.Net
 	/// Provides a collection container for instances of the <see cref="Cookie"/> class.
 	/// </summary>
 	[Serializable]
-    public sealed class CookieCollection : ICollection, IEnumerable
+    public sealed class CookieCollection : ICollection<Cookie>
     {
         private readonly List<Cookie> _list;
         private object _sync;
@@ -75,6 +75,11 @@ namespace WebSocketSharp.Net
             }
         }
 
+        public bool Remove(Cookie item)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Gets the number of cookies in the collection.
         /// </summary>
@@ -93,29 +98,20 @@ namespace WebSocketSharp.Net
 		public bool IsReadOnly => true;
 
         /// <summary>
-		/// Gets a value indicating whether the access to the collection is thread safe.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the access to the collection is thread safe; otherwise, <c>false</c>.
-		/// The default value is <c>false</c>.
-		/// </value>
-		public bool IsSynchronized => false;
-
-        /// <summary>
-		/// Gets the <see cref="Cookie"/> at the specified <paramref name="index"/> from
-		/// the collection.
-		/// </summary>
-		/// <value>
-		/// A <see cref="Cookie"/> at the specified <paramref name="index"/> in the collection.
-		/// </value>
-		/// <param name="index">
-		/// An <see cref="int"/> that represents the zero-based index of the <see cref="Cookie"/>
-		/// to find.
-		/// </param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <paramref name="index"/> is out of allowable range of indexes for the collection.
-		/// </exception>
-		public Cookie this[int index]
+        /// Gets the <see cref="Cookie"/> at the specified <paramref name="index"/> from
+        /// the collection.
+        /// </summary>
+        /// <value>
+        /// A <see cref="Cookie"/> at the specified <paramref name="index"/> in the collection.
+        /// </value>
+        /// <param name="index">
+        /// An <see cref="int"/> that represents the zero-based index of the <see cref="Cookie"/>
+        /// to find.
+        /// </param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+        /// </exception>
+        public Cookie this[int index]
         {
             get
             {
@@ -158,12 +154,7 @@ namespace WebSocketSharp.Net
         /// <value>
         /// An <see cref="Object"/> used to synchronize access to the collection.
         /// </value>
-        public Object SyncRoot => _sync ?? (_sync = ((ICollection)_list).SyncRoot);
-
-        private static int CompareCookieWithinSort(Cookie x, Cookie y)
-        {
-            return x.Name.Length + x.Value.Length - (y.Name.Length + y.Value.Length);
-        }
+        public object SyncRoot => _sync ?? (_sync = ((ICollection)_list).SyncRoot);
 
         private static int CompareCookieWithinSorted(Cookie x, Cookie y)
         {
@@ -416,7 +407,9 @@ namespace WebSocketSharp.Net
             if (pos == -1)
             {
                 if (!cookie.Expired)
+                {
                     _list.Add(cookie);
+                }
 
                 return;
             }
@@ -434,12 +427,6 @@ namespace WebSocketSharp.Net
         {
             foreach (Cookie cookie in cookies)
                 SetOrRemove(cookie);
-        }
-
-        internal void Sort()
-        {
-            if (_list.Count > 1)
-                _list.Sort(CompareCookieWithinSort);
         }
 
         /// <summary>
@@ -466,78 +453,14 @@ namespace WebSocketSharp.Net
             _list[pos] = cookie;
         }
 
-        /// <summary>
-        /// Adds the specified <paramref name="cookies"/> to the collection.
-        /// </summary>
-        /// <param name="cookies">
-        /// A <see cref="CookieCollection"/> that contains the cookies to add.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="cookies"/> is <see langword="null"/>.
-        /// </exception>
-        public void Add(CookieCollection cookies)
+        public void Clear()
         {
-            if (cookies == null)
-                throw new ArgumentNullException("cookies");
-
-            foreach (Cookie cookie in cookies)
-                Add(cookie);
+            _list.Clear();
         }
 
-        /// <summary>
-        /// Copies the elements of the collection to the specified <see cref="Array"/>, starting at
-        /// the specified <paramref name="index"/> in the <paramref name="array"/>.
-        /// </summary>
-        /// <param name="array">
-        /// An <see cref="Array"/> that represents the destination of the elements copied from
-        /// the collection.
-        /// </param>
-        /// <param name="index">
-        /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-        /// at which copying begins.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> is less than zero.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="array"/> is multidimensional.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The number of elements in the collection is greater than the available space from
-        ///   <paramref name="index"/> to the end of the destination <paramref name="array"/>.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="InvalidCastException">
-        /// The elements in the collection cannot be cast automatically to the type of the destination
-        /// <paramref name="array"/>.
-        /// </exception>
-        public void CopyTo(Array array, int index)
+        public bool Contains(Cookie item)
         {
-            if (array == null)
-                throw new ArgumentNullException("array");
-
-            if (index < 0)
-                throw new ArgumentOutOfRangeException("index", "Less than zero.");
-
-            if (array.Rank > 1)
-                throw new ArgumentException("Multidimensional.", "array");
-
-            if (array.Length - index < _list.Count)
-                throw new ArgumentException(
-                  "The number of elements in this collection is greater than the available space of the destination array.");
-
-            if (!array.GetType().GetElementType().IsAssignableFrom(typeof(Cookie)))
-                throw new InvalidCastException(
-                  "The elements in this collection cannot be cast automatically to the type of the destination array.");
-
-            ((IList)_list).CopyTo(array, index);
+            return _list.Contains(item);
         }
 
         /// <summary>
@@ -575,6 +498,11 @@ namespace WebSocketSharp.Net
                   "The number of elements in this collection is greater than the available space of the destination array.");
 
             _list.CopyTo(array, index);
+        }
+
+        IEnumerator<Cookie> IEnumerable<Cookie>.GetEnumerator()
+        {
+            return _list.GetEnumerator();
         }
 
         /// <summary>

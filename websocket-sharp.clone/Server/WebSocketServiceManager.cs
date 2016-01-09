@@ -28,6 +28,7 @@ namespace WebSocketSharp.Server
 {
     using System;
     using System.Collections;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -45,7 +46,7 @@ namespace WebSocketSharp.Server
         private readonly int _fragmentSize;
 
         private volatile bool _clean;
-        private readonly Dictionary<string, WebSocketServiceHost> _hosts;
+        private readonly ConcurrentDictionary<string, WebSocketServiceHost> _hosts;
         private volatile ServerState _state;
         private TimeSpan _waitTime;
 
@@ -53,7 +54,7 @@ namespace WebSocketSharp.Server
         {
             _fragmentSize = fragmentSize;
             _clean = keepClean;
-            _hosts = new Dictionary<string, WebSocketServiceHost>();
+            _hosts = new ConcurrentDictionary<string, WebSocketServiceHost>();
             _state = ServerState.Ready;
             _waitTime = TimeSpan.FromSeconds(1);
         }
@@ -299,7 +300,10 @@ namespace WebSocketSharp.Server
                 host.Start();
             }
 
-            _hosts.Add(path, host);
+            if (!_hosts.TryAdd(path, host))
+            {
+                throw new Exception("Failed to add host");
+            }
         }
 
         internal bool InternalTryGetServiceHost(string path, out WebSocketServiceHost host)
@@ -311,15 +315,11 @@ namespace WebSocketSharp.Server
         internal async Task<bool> Remove(string path)
         {
             WebSocketServiceHost host;
-            lock (_hosts)
-            {
-                path = HttpUtility.UrlDecode(path).TrimEndSlash();
-                if (!_hosts.TryGetValue(path, out host))
-                {
-                    return false;
-                }
 
-                _hosts.Remove(path);
+            path = HttpUtility.UrlDecode(path).TrimEndSlash();
+            if (!_hosts.TryRemove(path, out host))
+            {
+                return false;
             }
 
             if (host.State == ServerState.Start)

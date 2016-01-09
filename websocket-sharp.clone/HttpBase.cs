@@ -172,7 +172,9 @@ namespace WebSocketSharp
                         : null;
 
             if (msg != null)
+            {
                 throw new WebSocketException(msg, exception);
+            }
 
             return http;
         }

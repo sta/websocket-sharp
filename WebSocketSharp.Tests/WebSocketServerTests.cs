@@ -35,7 +35,7 @@ namespace WebSocketSharp.Tests
     {
         public abstract class GivenAWebSocketServer
         {
-            private const string WsLocalhostRadio = "ws://localhost:8080/radio";
+            protected const string WsLocalhostRadio = "ws://localhost:8080/radio";
             protected const string WsLocalhostEcho = "ws://localhost:8080/echo";
             private const string Message = "Message";
             protected WebSocketServer Sut;
@@ -116,16 +116,16 @@ namespace WebSocketSharp.Tests
                 int count = 0;
                 var waitHandle = new ManualResetEventSlim(false);
                 Func<MessageEventArgs, Task> onMessage = e =>
-                                        {
-                                            if (e.Text.ReadToEnd() == Message)
-                                            {
-                                                if (Interlocked.Increment(ref count) == multiplicity)
-                                                {
-                                                    waitHandle.Set();
-                                                }
-                                            }
-                                            return Task.FromResult(true);
-                                        };
+                {
+                    if (e.Text.ReadToEnd() == Message)
+                    {
+                        if (Interlocked.Increment(ref count) == multiplicity)
+                        {
+                            waitHandle.Set();
+                        }
+                    }
+                    return Task.FromResult(true);
+                };
                 using (var client = new WebSocket(WsLocalhostEcho, onMessage: onMessage))
                 {
                     SetCredentials(client);
@@ -150,19 +150,19 @@ namespace WebSocketSharp.Tests
                 var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
                 var waitHandle = new ManualResetEventSlim(false);
                 Func<MessageEventArgs, Task> onMessage = async e =>
+                {
+                    var bytesRead = 0;
+                    var readLength = 10240000;
+                    do
                     {
-                        var bytesRead = 0;
-                        var readLength = 10240000;
-                        do
-                        {
-                            var buffer = new byte[readLength];
-                            bytesRead = await e.Data.ReadAsync(buffer, 0, readLength).ConfigureAwait(false);
-                            responseLength += buffer.Count(x => x == 123);
-                        }
-                        while (bytesRead == readLength);
+                        var buffer = new byte[readLength];
+                        bytesRead = await e.Data.ReadAsync(buffer, 0, readLength).ConfigureAwait(false);
+                        responseLength += buffer.Count(x => x == 123);
+                    }
+                    while (bytesRead == readLength);
 
-                        waitHandle.Set();
-                    };
+                    waitHandle.Set();
+                };
 
                 using (var client = new WebSocket(WsLocalhostEcho, onMessage: onMessage))
                 {
@@ -178,36 +178,38 @@ namespace WebSocketSharp.Tests
             }
 
             [Test]
-            [Timeout(60000)]
-            public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)] int length)
+            public async Task WhenWritingFromMultipleThreadsThenMessagesDoNotInterleave([Random(2, 50, 5)]int writerCount, [Random((int)1E6, (int)1E7, 5)] int messageLength)
             {
-                var responseLength = 0;
-
-                var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
                 var waitHandle = new ManualResetEventSlim(false);
-
-                Func<MessageEventArgs, Task> onMessage = async e =>
-                    {
-                        var bytes = await e.Data.ReadBytes(length).ConfigureAwait(false);
-                        responseLength = bytes.Count(x => x == 123);
-                        waitHandle.Set();
-                    };
-
-                using (var sender = new WebSocket(WsLocalhostRadio))
+                var cleanResponses = 0;
+                Func<MessageEventArgs, Task> onMessage = e =>
                 {
-                    SetCredentials(sender);
-                    using (var client = new WebSocket(WsLocalhostRadio, onMessage: onMessage))
+                    var c = e.Text.ReadToEnd().Distinct().Select(x => (int)x).ToArray();
+                    if (c.Length == 1)
                     {
-                        SetCredentials(client);
-
-                        await sender.Connect().ConfigureAwait(false);
-                        await client.Connect().ConfigureAwait(false);
-                        await sender.Send(stream).ConfigureAwait(false);
-
-                        waitHandle.Wait();
-
-                        Assert.AreEqual(length, responseLength);
+                        if (Interlocked.Increment(ref cleanResponses) == writerCount)
+                        {
+                            waitHandle.Set();
+                        }
                     }
+                    return Task.FromResult(true);
+                };
+                using (var client = new WebSocket(WsLocalhostEcho, onMessage: onMessage))
+                {
+                    SetCredentials(client);
+
+                    await client.Connect().ConfigureAwait(false);
+
+                    var writes =
+                        Enumerable.Range(0, writerCount)
+                            .AsParallel()
+                            .Select(_ => client.Send(new EnumerableStream(Enumerable.Repeat((byte)_, messageLength))))
+                            .ToArray();
+                    await Task.WhenAll(writes).ConfigureAwait(false);
+
+                    var result = waitHandle.Wait(Debugger.IsAttached ? 30000 : 10000);
+
+                    Assert.True(result);
                 }
             }
 
@@ -393,8 +395,10 @@ namespace WebSocketSharp.Tests
             public void Setup()
             {
                 Debug.Listeners.Add(new ConsoleTraceListener());
-                Sut = new WebSocketServer(port: 8080, authenticationSchemes: AuthenticationSchemes.Basic);
-                Sut.UserCredentialsFinder = id => new NetworkCredential(id.Name, "password");
+                Sut = new WebSocketServer(port: 8080, authenticationSchemes: AuthenticationSchemes.Basic)
+                {
+                    UserCredentialsFinder = id => new NetworkCredential(id.Name, "password")
+                };
                 Sut.AddWebSocketService<TestEchoService>("/echo");
                 Sut.AddWebSocketService<TestRadioService>("/radio");
                 Sut.Start();
@@ -415,6 +419,40 @@ namespace WebSocketSharp.Tests
                     var connected = await client.Connect().ConfigureAwait(false);
 
                     Assert.False(connected);
+                }
+            }
+
+            [Test]
+            [Timeout(60000)]
+            public async Task WhenStreamVeryLargeStreamToServerThenBroadcasts([Random(750000, 1500000, 5)] int length)
+            {
+                var responseLength = 0;
+
+                var stream = new EnumerableStream(Enumerable.Repeat((byte)123, length));
+                var waitHandle = new ManualResetEventSlim(false);
+
+                Func<MessageEventArgs, Task> onMessage = async e =>
+                {
+                    var bytes = await e.Data.ReadBytes(length).ConfigureAwait(false);
+                    responseLength = bytes.Count(x => x == 123);
+                    waitHandle.Set();
+                };
+
+                using (var sender = new WebSocket(WsLocalhostRadio))
+                {
+                    SetCredentials(sender);
+                    using (var client = new WebSocket(WsLocalhostRadio, onMessage: onMessage))
+                    {
+                        SetCredentials(client);
+
+                        await sender.Connect().ConfigureAwait(false);
+                        await client.Connect().ConfigureAwait(false);
+                        await sender.Send(stream).ConfigureAwait(false);
+
+                        waitHandle.Wait();
+
+                        Assert.AreEqual(length, responseLength);
+                    }
                 }
             }
 

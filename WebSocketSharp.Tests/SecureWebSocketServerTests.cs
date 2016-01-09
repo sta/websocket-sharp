@@ -52,9 +52,9 @@ namespace WebSocketSharp.Tests
             }
 
             [TearDown]
-            public void Teardown()
+            public Task Teardown()
             {
-                _sut.Stop();
+                return _sut.Stop();
             }
 
             [Test]

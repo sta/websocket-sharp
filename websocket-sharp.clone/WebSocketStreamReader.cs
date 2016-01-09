@@ -36,22 +36,23 @@ namespace WebSocketSharp
 
         public async Task<WebSocketMessage> Read(CancellationToken cancellationToken)
         {
-            lock (_innerStream)
+            WebSocketFrameHeader header;
+            StreamReadInfo readInfo = null;
+
+            await _waitHandle.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            if (_isClosed)
             {
-                if (_isClosed)
-                {
-                    return null;
-                }
+                return null;
             }
 
-await            _waitHandle.WaitAsync(cancellationToken).ConfigureAwait(false);
-            var header = await ReadHeader(cancellationToken).ConfigureAwait(false);
+            header = await ReadHeader(cancellationToken).ConfigureAwait(false);
             if (header == null)
             {
                 return null;
             }
 
-            var readInfo = await GetStreamReadInfo(header, cancellationToken).ConfigureAwait(false);
+            readInfo = await GetStreamReadInfo(header, cancellationToken).ConfigureAwait(false);
 
             var msg = CreateMessage(header, readInfo, _waitHandle);
             if (msg.Opcode == Opcode.Close)
