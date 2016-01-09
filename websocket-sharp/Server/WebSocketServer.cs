@@ -88,9 +88,9 @@ namespace WebSocketSharp.Server
     /// An instance initialized by this constructor listens for the incoming connection requests on
     /// port 80.
     /// </remarks>
-    public WebSocketServer ()
+    public WebSocketServer (bool wildcardServicesPath = false)
     {
-      init (null, System.Net.IPAddress.Any, 80, false);
+      init (null, System.Net.IPAddress.Any, 80, false, wildcardServicesPath);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="url"/> is invalid.
     ///   </para>
     /// </exception>
-    public WebSocketServer (string url)
+    public WebSocketServer (string url, bool wildcardServicesPath = false)
     {
       if (url == null)
         throw new ArgumentNullException ("url");
@@ -167,7 +167,7 @@ namespace WebSocketSharp.Server
       if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
 
-      init (host, addr, uri.Port, uri.Scheme == "wss");
+      init (host, addr, uri.Port, uri.Scheme == "wss", wildcardServicesPath);
     }
 
     /// <summary>
@@ -188,13 +188,13 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
-    public WebSocketServer (int port, bool secure)
+    public WebSocketServer (int port, bool secure, bool wildcardServicesPath = false)
     {
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init (null, System.Net.IPAddress.Any, port, secure);
+      init (null, System.Net.IPAddress.Any, port, secure, wildcardServicesPath);
     }
 
     /// <summary>
@@ -258,7 +258,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
     /// </exception>
-    public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
+    public WebSocketServer (System.Net.IPAddress address, int port, bool secure, bool wildcardServicesPath = false)
     {
       if (address == null)
         throw new ArgumentNullException ("address");
@@ -270,7 +270,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException (
           "port", "Not between 1 and 65535 inclusive: " + port);
 
-      init (null, address, port, secure);
+      init (null, address, port, secure, wildcardServicesPath);
     }
 
     #endregion
@@ -592,7 +592,7 @@ namespace WebSocketSharp.Server
              : null;
     }
 
-    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
+    private void init (string hostname, System.Net.IPAddress address, int port, bool secure, bool wildcardServicesPath)
     {
       _hostname = hostname ?? address.ToString ();
       _address = address;
@@ -603,7 +603,7 @@ namespace WebSocketSharp.Server
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
       _logger = new Logger ();
-      _services = new WebSocketServiceManager (_logger);
+      _services = new WebSocketServiceManager (_logger, wildcardServicesPath);
       _sync = new object ();
     }
 
