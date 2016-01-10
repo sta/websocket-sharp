@@ -148,11 +148,11 @@ namespace WebSocketSharp.Tests
             [Test]
             public async Task WhenReadingStreamWithCompressedFramesAndPingsThenReadsAllData()
             {
-                var data1 = Enumerable.Repeat((byte)1, 1000000).ToArray();
-                var frame1Compressed = await data1.Compress(CompressionMethod.Deflate, Opcode.Binary).ConfigureAwait(false);
+                var data1 = new MemoryStream(Enumerable.Repeat((byte)1, 1000000).ToArray());
+                var frame1Compressed = await (await data1.Compress().ConfigureAwait(false)).ToByteArray().ConfigureAwait(false);
                 var frame1 = new WebSocketFrame(Fin.More, Opcode.Binary, frame1Compressed, false, true);
-                var data2 = Enumerable.Repeat((byte)2, 1000000).ToArray();
-                var frame2Compressed = await data2.Compress(CompressionMethod.Deflate, Opcode.Binary).ConfigureAwait(false);
+                var data2 = new MemoryStream(Enumerable.Repeat((byte)2, 1000000).ToArray());
+                var frame2Compressed = await (await data2.Compress().ConfigureAwait(false)).ToByteArray().ConfigureAwait(false);
                 var frame2 = new WebSocketFrame(Fin.Final, Opcode.Cont, frame2Compressed, false, true);
                 var frame3 = new WebSocketFrame(Fin.Final, Opcode.Ping, new byte[0], false, true);
                 var frame4 = new WebSocketFrame(Fin.Final, Opcode.Binary, frame1Compressed, false, true);

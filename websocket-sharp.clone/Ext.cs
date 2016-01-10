@@ -177,7 +177,7 @@ namespace WebSocketSharp
         /// <param name="code">
         /// An <see cref="int"/> that represents the HTTP status code.
         /// </param>
-        public static string GetStatusDescription(this int code)
+        private static string GetStatusDescription(this int code)
         {
             switch (code)
             {
@@ -456,37 +456,6 @@ namespace WebSocketSharp
         }
 
         /// <summary>
-        /// Converts the specified <paramref name="array"/> to a <see cref="string"/>
-        /// that concatenates the each element of <paramref name="array"/> across the
-        /// specified <paramref name="separator"/>.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> converted from <paramref name="array"/>,
-        /// or <see cref="String.Empty"/> if <paramref name="array"/> is empty.
-        /// </returns>
-        /// <param name="array">
-        /// An array of T to convert.
-        /// </param>
-        /// <param name="separator">
-        /// A <see cref="string"/> that represents the separator string.
-        /// </param>
-        /// <typeparam name="T">
-        /// The type of elements in <paramref name="array"/>.
-        /// </typeparam>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> is <see langword="null"/>.
-        /// </exception>
-        public static string ToString<T>(this T[] array, string separator)
-        {
-            if (array == null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            return string.Join(separator ?? string.Empty, array);
-        }
-
-        /// <summary>
         /// Converts the specified <see cref="string"/> to a <see cref="Uri"/>.
         /// </summary>
         /// <returns>
@@ -655,46 +624,10 @@ namespace WebSocketSharp
                    : null;
         }
 
-        internal static void Close(this HttpListenerResponse response, HttpStatusCode code)
-        {
-            response.StatusCode = (int)code;
-            response.OutputStream.Close();
-        }
-
-        internal static void CloseWithAuthChallenge(
-          this HttpListenerResponse response, string challenge)
-        {
-            response.Headers.Set("WWW-Authenticate", challenge);
-            response.Close(HttpStatusCode.Unauthorized);
-        }
-
-        internal static Task<byte[]> Compress(this byte[] data, CompressionMethod method, Opcode opcode)
-        {
-            return method == CompressionMethod.Deflate && opcode.IsData()
-                   ? data.Compress()
-                   : Task.FromResult(data);
-        }
-
-        internal static Stream Compress(this Stream stream, CompressionMethod method)
-        {
-            return method == CompressionMethod.Deflate
-                   ? stream.Compress()
-                   : stream;
-        }
-
-        internal static Stream Compress(this Stream stream, long length, CompressionMethod method)
+        internal static Task<Stream> Compress(this Stream stream, long length)
         {
             var subStream = new SubStream(stream, length);
-            if (method != CompressionMethod.Deflate)
-            {
-                return subStream;
-            }
-            return new DeflateStream(subStream, CompressionLevel.Optimal, true);
-        }
-
-        private static bool IsData(this Opcode opcode)
-        {
-            return opcode == Opcode.Binary || opcode == Opcode.Text || opcode == Opcode.Cont;
+            return subStream.Compress();
         }
 
         internal static bool Contains<T>(this IEnumerable<T> source, Func<T, bool> condition)
@@ -1046,7 +979,7 @@ namespace WebSocketSharp
 
             using (var output = new MemoryStream())
             {
-                stream.Position = 0;
+                //stream.Seek(0, SeekOrigin.Begin);
                 await stream.CopyToAsync(output).ConfigureAwait(false);
                 await output.FlushAsync().ConfigureAwait(false);
 
@@ -1069,19 +1002,6 @@ namespace WebSocketSharp
             return method != CompressionMethod.None
                    ? $"permessage-{method.ToString().ToLower()}"
                        : string.Empty;
-        }
-
-        internal static IPAddress ToIpAddress(this string hostNameOrAddress)
-        {
-            try
-            {
-                var addrs = Dns.GetHostAddresses(hostNameOrAddress);
-                return addrs[0];
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         internal static ushort ToUInt16(this byte[] source, ByteOrder sourceOrder)
@@ -1199,51 +1119,19 @@ namespace WebSocketSharp
             }
         }
 
-        private static Task<byte[]> Compress(this byte[] data)
+        public static async Task<Stream> Compress(this Stream stream)
         {
-            if (data.LongLength == 0)
-            {
-                //return new Byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
-                return Task.FromResult(data);
-            }
+            stream.Seek(0, SeekOrigin.Begin);
+            var compressed = new MemoryStream();
+            var deflate = new DeflateStream(compressed, CompressionLevel.Optimal, true);
+            await stream.CopyToAsync(deflate).ConfigureAwait(false);
+            await deflate.FlushAsync().ConfigureAwait(false);
+            deflate.Close();
+            await compressed.FlushAsync().ConfigureAwait(false);
 
-            using (var input = new MemoryStream(data))
-            {
-                return input.CompressToArray();
-            }
-        }
+            compressed.Seek(0, SeekOrigin.Begin);
 
-        private static Stream Compress(this Stream stream)
-        {
-            return new DeflateStream(stream, CompressionLevel.Optimal, true);
-        }
-
-        private static async Task<MemoryStream> CompressToMemory(this Stream stream)
-        {
-            var output = new MemoryStream();
-            if (stream.Length == 0)
-            {
-                return output;
-            }
-
-            stream.Position = 0;
-            using (var ds = new DeflateStream(output, CompressionMode.Compress, true))
-            {
-                await stream.CopyToAsync(ds).ConfigureAwait(false);
-                ds.Close(); // "BFINAL" set to 1.
-                output.Position = 0;
-
-                return output;
-            }
-        }
-
-        private static async Task<byte[]> CompressToArray(this Stream stream)
-        {
-            using (var output = await stream.CompressToMemory().ConfigureAwait(false))
-            {
-                output.Close();
-                return output.ToArray();
-            }
+            return compressed;
         }
 
         private static async Task<byte[]> ReadBytes(this Stream stream, byte[] buffer, int offset, int length)

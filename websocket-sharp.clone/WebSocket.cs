@@ -1174,7 +1174,7 @@ namespace WebSocketSharp
 
             if (_protocols != null)
             {
-                headers["Sec-WebSocket-Protocol"] = _protocols.ToString(", ");
+                headers["Sec-WebSocket-Protocol"] = string.Join(", ", _protocols);
             }
 
             var extensions = CreateExtensions();
@@ -1419,9 +1419,9 @@ namespace WebSocketSharp
             var sent = false;
             try
             {
-                if (_compression != CompressionMethod.None)
+                if (_compression == CompressionMethod.Deflate)
                 {
-                    stream = stream.Compress(_compression);
+                    stream = await stream.Compress().ConfigureAwait(false);
                     compressed = true;
                 }
 
@@ -1455,9 +1455,9 @@ namespace WebSocketSharp
             var sent = false;
             try
             {
-                if (_compression != CompressionMethod.None)
+                if (_compression == CompressionMethod.Deflate)
                 {
-                    stream = stream.Compress(length, _compression);
+                    stream = await stream.Compress(length).ConfigureAwait(false);
                     compressed = true;
                 }
 
