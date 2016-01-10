@@ -1181,7 +1181,7 @@ namespace WebSocketSharp
                    ? processPongFrame (frame)
                    : frame.IsClose
                      ? processCloseFrame (frame)
-                     : processUnsupportedFrame (frame, CloseStatusCode.UnsupportedData, null);
+                     : processUnsupportedFrame (frame);
     }
 
     // As server
@@ -1209,10 +1209,10 @@ namespace WebSocketSharp
       }
     }
 
-    private bool processUnsupportedFrame (WebSocketFrame frame, CloseStatusCode code, string reason)
+    private bool processUnsupportedFrame (WebSocketFrame frame)
     {
-      _logger.Debug ("An unsupported frame:" + frame.PrintToString (false));
-      processException (new WebSocketException (code, reason), null);
+      _logger.Fatal ("An unsupported frame:" + frame.PrintToString (false));
+      fatal ("There is no way to handle it.", null);
 
       return false;
     }
