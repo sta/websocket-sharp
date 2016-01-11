@@ -734,22 +734,42 @@ namespace WebSocketSharp
                          : null;
     }
 
-    private string checkIfValidReceivedFrame (WebSocketFrame frame)
+    private bool checkIfValidReceivedFrame (WebSocketFrame frame, out string message)
     {
+      message = null;
+
       var masked = frame.IsMasked;
-      return _client && masked
-             ? "A frame from the server is masked."
-             : !_client && !masked
-               ? "A frame from a client isn't masked."
-               : _inContinuation && frame.IsData
-                 ? "A data frame has been received while receiving continuation frames."
-                 : frame.IsCompressed && _compression == CompressionMethod.None
-                   ? "A compressed frame has been received without any agreement for it."
-                   : frame.Rsv2 == Rsv.On
-                     ? "The RSV2 of a frame is non-zero without any negotiation for it."
-                     : frame.Rsv3 == Rsv.On
-                       ? "The RSV3 of a frame is non-zero without any negotiation for it."
-                       : null;
+      if (_client && masked) {
+        message = "A frame from the server is masked.";
+        return false;
+      }
+
+      if (!_client && !masked) {
+        message = "A frame from a client isn't masked.";
+        return false;
+      }
+
+      if (_inContinuation && frame.IsData) {
+        message = "A data frame has been received while receiving continuation frames.";
+        return false;
+      }
+
+      if (frame.IsCompressed && _compression == CompressionMethod.None) {
+        message = "A compressed frame has been received without any agreement for it.";
+        return false;
+      }
+
+      if (frame.Rsv2 == Rsv.On) {
+        message = "The RSV2 of a frame is non-zero without any negotiation for it.";
+        return false;
+      }
+
+      if (frame.Rsv3 == Rsv.On) {
+        message = "The RSV3 of a frame is non-zero without any negotiation for it.";
+        return false;
+      }
+
+      return true;
     }
 
     private void close (CloseEventArgs e, bool send, bool receive, bool received)
@@ -1166,8 +1186,8 @@ namespace WebSocketSharp
 
     private bool processReceivedFrame (WebSocketFrame frame)
     {
-      var msg = checkIfValidReceivedFrame (frame);
-      if (msg != null)
+      string msg;
+      if (!checkIfValidReceivedFrame (frame, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
