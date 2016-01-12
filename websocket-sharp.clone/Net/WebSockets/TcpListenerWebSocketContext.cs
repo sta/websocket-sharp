@@ -35,6 +35,7 @@ namespace WebSocketSharp.Net.WebSockets
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Net.Security;
     using System.Net.Sockets;
@@ -56,12 +57,13 @@ namespace WebSocketSharp.Net.WebSockets
         private readonly bool _secure;
         private readonly Stream _stream;
         private readonly TcpClient _tcpClient;
-        private readonly Uri _uri;
+        private readonly Task<Uri> _uri;
         private readonly WebSocket _websocket;
         private CookieCollection _cookies;
         private NameValueCollection _queryString;
-        private HttpRequest _request;
+        private Task<HttpRequest> _request;
         private IPrincipal _user;
+        private NameValueCollection _headers;
 
         internal TcpListenerWebSocketContext(
             TcpClient tcpClient,
@@ -90,11 +92,7 @@ namespace WebSocketSharp.Net.WebSockets
             }
 
             _request = HttpRequest.Read(_stream, 90000);
-            _uri = HttpUtility.CreateRequestUrl(
-                _request.RequestUri,
-                _request.Headers["Host"],
-                _request.IsWebSocketRequest,
-                secure);
+            _uri = CreateRequestUri(secure);
 
             _websocket = new WebSocket(this, protocol);
         }
@@ -102,28 +100,39 @@ namespace WebSocketSharp.Net.WebSockets
         internal Stream Stream => _stream;
 
         /// <summary>
-		/// Gets the HTTP cookies included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
-		/// </value>
-		public override CookieCollection CookieCollection => _cookies ?? (_cookies = _request.Cookies);
+        /// Gets the HTTP cookies included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+        /// </value>
+        public override async Task<CookieCollection> GetCookieCollection()
+        {
+            return _cookies ?? (_cookies = (await _request.ConfigureAwait(false)).Cookies);
+        }
 
         /// <summary>
-		/// Gets the HTTP headers included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="NameValueCollection"/> that contains the headers.
-		/// </value>
-		public override NameValueCollection Headers => _request.Headers;
+        /// Gets the HTTP headers included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="NameValueCollection"/> that contains the headers.
+        /// </value>
+        public override async Task<string> GetHeader(string key)
+        {
+            var headers = await GetHeaders().ConfigureAwait(false);
+            return headers?[key];
+        }
 
         /// <summary>
-		/// Gets the value of the Host header included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Host header.
-		/// </value>
-		public override string Host => _request.Headers["Host"];
+        /// Gets the value of the Host header included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="string"/> that represents the value of the Host header.
+        /// </value>
+        public override async Task<string> GetHost()
+        {
+            var req = await _request.ConfigureAwait(false);
+            return req.Headers["Host"];
+        }
 
         /// <summary>
 		/// Gets a value indicating whether the client is authenticated.
@@ -150,49 +159,65 @@ namespace WebSocketSharp.Net.WebSockets
 		public override bool IsSecureConnection => _secure;
 
         /// <summary>
-		/// Gets a value indicating whether the request is a WebSocket connection request.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
-		/// </value>
-		public override bool IsWebSocketRequest => _request.IsWebSocketRequest;
+        /// Gets a value indicating whether the request is a WebSocket connection request.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+        /// </value>
+        public override async Task<bool> IsWebSocketRequest()
+        {
+            var req = await _request.ConfigureAwait(false);
+            return req.IsWebSocketRequest;
+        }
 
         /// <summary>
-		/// Gets the value of the Origin header included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Origin header.
-		/// </value>
-		public override string Origin => _request.Headers["Origin"];
+        /// Gets the value of the Origin header included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="string"/> that represents the value of the Origin header.
+        /// </value>
+        public override async Task<string> GetOrigin()
+        {
+            var req = await _request.ConfigureAwait(false);
+            return req.Headers["Origin"];
+        }
 
         /// <summary>
-		/// Gets the query string included in the request.
-		/// </summary>
-		/// <value>
-		/// A <see cref="NameValueCollection"/> that contains the query string parameters.
-		/// </value>
-		public override NameValueCollection QueryString => _queryString
-                                                           ?? (_queryString = HttpUtility.InternalParseQueryString(_uri?.Query, Encoding.UTF8));
+        /// Gets the query string included in the request.
+        /// </summary>
+        /// <value>
+        /// A <see cref="NameValueCollection"/> that contains the query string parameters.
+        /// </value>
+        public override async Task<NameValueCollection> GetQueryString()
+        {
+            return _queryString ?? (_queryString = HttpUtility.InternalParseQueryString((await _uri.ConfigureAwait(false))?.Query, Encoding.UTF8));
+        }
 
         /// <summary>
-		/// Gets the URI requested by the client.
-		/// </summary>
-		/// <value>
-		/// A <see cref="Uri"/> that represents the requested URI.
-		/// </value>
-		public override Uri RequestUri => _uri;
+        /// Gets the URI requested by the client.
+        /// </summary>
+        /// <value>
+        /// A <see cref="Uri"/> that represents the requested URI.
+        /// </value>
+        public override Task<Uri> GetRequestUri()
+        {
+            return _uri;
+        }
 
         /// <summary>
-		/// Gets the value of the Sec-WebSocket-Key header included in the request.
-		/// </summary>
-		/// <remarks>
-		/// This property provides a part of the information used by the server to prove that it
-		/// received a valid WebSocket connection request.
-		/// </remarks>
-		/// <value>
-		/// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
-		/// </value>
-		public override string SecWebSocketKey => _request.Headers["Sec-WebSocket-Key"];
+        /// Gets the value of the Sec-WebSocket-Key header included in the request.
+        /// </summary>
+        /// <remarks>
+        /// This property provides a part of the information used by the server to prove that it
+        /// received a valid WebSocket connection request.
+        /// </remarks>
+        /// <value>
+        /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
+        /// </value>
+        public override Task<string> GetSecWebSocketKey()
+        {
+            return GetHeader("Sec-WebSocket-Key");
+        }
 
         /// <summary>
 		/// Gets the values of the Sec-WebSocket-Protocol header included in the request.
@@ -205,13 +230,14 @@ namespace WebSocketSharp.Net.WebSockets
 		/// an enumerator which supports the iteration over the values of the Sec-WebSocket-Protocol
 		/// header.
 		/// </value>
-		public override IEnumerable<string> SecWebSocketProtocols
+		public override async Task<IEnumerable<string>> GetSecWebSocketProtocols()
         {
-            get
+            var protocols = await GetHeader("Sec-WebSocket-Protocol").ConfigureAwait(false);
+            if (protocols != null)
             {
-                var protocols = _request.Headers["Sec-WebSocket-Protocol"];
-                if (protocols != null) foreach (var protocol in protocols.Split(',')) yield return protocol.Trim();
+                return protocols.Split(',').Select(x => x.Trim());
             }
+            return Enumerable.Empty<string>();
         }
 
         /// <summary>
@@ -223,15 +249,18 @@ namespace WebSocketSharp.Net.WebSockets
         /// <value>
         /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
         /// </value>
-        public override string SecWebSocketVersion => _request.Headers["Sec-WebSocket-Version"];
+        public override Task<string> GetSecWebSocketVersion()
+        {
+            return GetHeader("Sec-WebSocket-Version");
+        }
 
         /// <summary>
-		/// Gets the server endpoint as an IP address and a port number.
-		/// </summary>
-		/// <value>
-		/// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
-		/// </value>
-		public override IPEndPoint ServerEndPoint => (IPEndPoint)_tcpClient.Client.LocalEndPoint;
+        /// Gets the server endpoint as an IP address and a port number.
+        /// </summary>
+        /// <value>
+        /// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
+        /// </value>
+        public override IPEndPoint ServerEndPoint => (IPEndPoint)_tcpClient.Client.LocalEndPoint;
 
         /// <summary>
 		/// Gets the client information (identity, authentication, and security roles).
@@ -276,12 +305,13 @@ namespace WebSocketSharp.Net.WebSockets
             _request = HttpRequest.Read(_stream, 15000);
         }
 
-        internal void SetUser(
+        internal async Task SetUser(
             AuthenticationSchemes scheme,
             string realm,
             Func<IIdentity, NetworkCredential> credentialsFinder)
         {
-            var authRes = _request.AuthenticationResponse;
+            var req = await _request.ConfigureAwait(false);
+            var authRes = req.AuthenticationResponse;
 
             var id = authRes?.ToIdentity();
             if (id == null)
@@ -305,7 +335,7 @@ namespace WebSocketSharp.Net.WebSockets
 
             var valid = scheme == AuthenticationSchemes.Basic
                             ? ((HttpBasicIdentity)id).Password == cred.Password
-                            : scheme == AuthenticationSchemes.Digest && ((HttpDigestIdentity)id).IsValid(cred.Password, realm, _request.HttpMethod, null);
+                            : scheme == AuthenticationSchemes.Digest && ((HttpDigestIdentity)id).IsValid(cred.Password, realm, req.HttpMethod, null);
 
             if (valid) _user = new GenericPrincipal(id, cred.Roles);
         }
@@ -321,6 +351,21 @@ namespace WebSocketSharp.Net.WebSockets
         public override string ToString()
         {
             return _request.ToString();
+        }
+
+        private async Task<NameValueCollection> GetHeaders()
+        {
+            return _headers ?? (_headers = (await _request.ConfigureAwait(false)).Headers);
+        }
+
+        private async Task<Uri> CreateRequestUri(bool secure)
+        {
+            var req = await _request.ConfigureAwait(false);
+            return HttpUtility.CreateRequestUrl(
+                    req.RequestUri,
+                    req.Headers["Host"],
+                    req.IsWebSocketRequest,
+                    secure);
         }
     }
 }

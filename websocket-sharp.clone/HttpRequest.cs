@@ -130,15 +130,16 @@ namespace WebSocketSharp
 
             var headers = new WebHeaderCollection();
             for (int i = 1; i < headerParts.Length; i++)
+            {
                 headers.InternalSet(headerParts[i], false);
+            }
 
-            return new HttpRequest(
-              requestLine[0], requestLine[1], new Version(requestLine[2].Substring(5)), headers);
+            return new HttpRequest(requestLine[0], requestLine[1], new Version(requestLine[2].Substring(5)), headers);
         }
 
-        internal static HttpRequest Read(Stream stream, int millisecondsTimeout)
+        internal static Task<HttpRequest> Read(Stream stream, int millisecondsTimeout)
         {
-            return Read(stream, Parse, millisecondsTimeout).Result;
+            return Read(stream, Parse, millisecondsTimeout);
         }
 
         public void SetCookies(CookieCollection cookies)

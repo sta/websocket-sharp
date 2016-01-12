@@ -87,7 +87,7 @@ namespace WebSocketSharp
         private string _extensions;
         private SemaphoreSlim _forConn;
         private SemaphoreSlim _forSend;
-        private Func<WebSocketContext, string> _handshakeRequestChecker;
+        private Func<WebSocketContext, Task<string>> _handshakeRequestChecker;
         private uint _nonceCount;
         private string _origin;
         private bool _preAuth;
@@ -313,7 +313,7 @@ namespace WebSocketSharp
                 var msg = CheckIfAvailable(false, false);
                 if (msg == null)
                 {
-                    if (value.IsNullOrEmpty())
+                    if (string.IsNullOrEmpty(value))
                     {
                         _origin = value;
                         return;
@@ -370,9 +370,10 @@ namespace WebSocketSharp
         /// <value>
         /// A <see cref="Uri"/> that represents the WebSocket URL to connect.
         /// </value>
-        public Uri Url => _client
-                              ? _uri
-                              : _context.RequestUri;
+        public Task<Uri> GetUrl()
+        {
+            return _client ? Task.FromResult(_uri) : _context.GetRequestUri();
+        }
 
         /// <summary>
         /// Gets or sets the wait time for the response to the Ping or Close.
@@ -406,7 +407,7 @@ namespace WebSocketSharp
         internal CookieCollection CookieCollection => _cookies;
 
         // As server
-        internal Func<WebSocketContext, string> CustomHandshakeRequestChecker
+        internal Func<WebSocketContext, Task<string>> CustomHandshakeRequestChecker
         {
             get
             {
@@ -451,7 +452,7 @@ namespace WebSocketSharp
             var msg = _readyState.CheckIfClosable();
             if (msg != null)
             {
-                Error("An error has occurred in closing the connection.", null);
+                Error(msg, null);
 
                 return Task.FromResult(false);
             }
@@ -693,7 +694,7 @@ namespace WebSocketSharp
             var msg = CheckIfAvailable(false, false);
             if (msg == null)
             {
-                if (username.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(username))
                 {
                     _credentials = null;
                     _preAuth = false;
@@ -703,7 +704,7 @@ namespace WebSocketSharp
 
                 msg = username.Contains(':') || !username.IsText()
                       ? "'username' contains an invalid character."
-                      : !password.IsNullOrEmpty() && !password.IsText()
+                      : !string.IsNullOrEmpty(password) && !password.IsText()
                         ? "'password' contains an invalid character."
                         : null;
             }
@@ -739,7 +740,7 @@ namespace WebSocketSharp
             var msg = CheckIfAvailable(false, false);
             if (msg == null)
             {
-                if (url.IsNullOrEmpty())
+                if (string.IsNullOrEmpty(url))
                 {
                     _proxyUri = null;
                     _proxyCredentials = null;
@@ -758,7 +759,7 @@ namespace WebSocketSharp
                 {
                     _proxyUri = uri;
 
-                    if (username.IsNullOrEmpty())
+                    if (string.IsNullOrEmpty(username))
                     {
                         _proxyCredentials = null;
 
@@ -767,7 +768,7 @@ namespace WebSocketSharp
 
                     msg = username.Contains(':') || !username.IsText()
                           ? "'username' contains an invalid character."
-                          : !password.IsNullOrEmpty() && !password.IsText()
+                          : !string.IsNullOrEmpty(password) && !password.IsText()
                             ? "'password' contains an invalid character."
                             : null;
                 }
@@ -919,7 +920,7 @@ namespace WebSocketSharp
         // As server
         private async Task<bool> AcceptHandshake()
         {
-            var msg = CheckIfValidHandshakeRequest(_context);
+            var msg = await CheckIfValidHandshakeRequest(_context).ConfigureAwait(false);
             if (msg != null)
             {
                 Error(msg, null);
@@ -928,12 +929,12 @@ namespace WebSocketSharp
                 return false;
             }
 
-            if (_protocol != null && !_context.SecWebSocketProtocols.Contains(protocol => protocol == _protocol))
+            if (_protocol != null && !(await _context.GetSecWebSocketProtocols().ConfigureAwait(false)).Contains(protocol => protocol == _protocol))
             {
                 _protocol = null;
             }
 
-            var extensions = _context.Headers["Sec-WebSocket-Extensions"];
+            var extensions = await _context.GetHeader("Sec-WebSocket-Extensions").ConfigureAwait(false);
             if (!string.IsNullOrEmpty(extensions))
             {
                 ProcessSecWebSocketExtensionsHeader(extensions);
@@ -944,9 +945,9 @@ namespace WebSocketSharp
         }
 
         // As server
-        private Task InnerClose(CloseStatusCode code, string reason, bool wait)
+        private Task InnerClose(CloseStatusCode code, string reason)
         {
-            return InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), wait);
+            return InnerClose(new PayloadData(((ushort)code).Append(reason)), !code.IsReserved(), false);
         }
 
         private async Task InnerClose(PayloadData payload, bool send, bool wait)
@@ -1002,18 +1003,17 @@ namespace WebSocketSharp
         }
 
         // As server
-        private string CheckIfValidHandshakeRequest(WebSocketContext context)
+        private async Task<string> CheckIfValidHandshakeRequest(WebSocketContext context)
         {
-            var headers = context.Headers;
-            return context.RequestUri == null
+            return context.GetRequestUri() == null
                    ? "An invalid request url."
-                   : !context.IsWebSocketRequest
+                   : !await context.IsWebSocketRequest().ConfigureAwait(false)
                      ? "Not a WebSocket connection request."
-                     : !ValidateSecWebSocketKeyHeader(headers["Sec-WebSocket-Key"])
+                     : !ValidateSecWebSocketKeyHeader(await context.GetHeader("Sec-WebSocket-Key").ConfigureAwait(false))
                        ? "Invalid Sec-WebSocket-Key header."
-                       : !InnerValidateSecWebSocketVersionClientHeader(headers["Sec-WebSocket-Version"])
+                       : !InnerValidateSecWebSocketVersionClientHeader(await context.GetHeader("Sec-WebSocket-Version").ConfigureAwait(false))
                          ? "Invalid Sec-WebSocket-Version header."
-                         : CustomHandshakeRequestChecker(context);
+                         : await CustomHandshakeRequestChecker(context).ConfigureAwait(false);
         }
 
         // As client
@@ -1165,7 +1165,7 @@ namespace WebSocketSharp
             var req = HttpRequest.CreateWebSocketRequest(_uri);
 
             var headers = req.Headers;
-            if (!_origin.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(_origin))
             {
                 headers["Origin"] = _origin;
             }
@@ -1313,7 +1313,7 @@ namespace WebSocketSharp
             }
             else
             {
-                await InnerClose(code, reason ?? code.GetMessage(), false).ConfigureAwait(false);
+                await InnerClose(code, reason ?? code.GetMessage()).ConfigureAwait(false);
             }
         }
 

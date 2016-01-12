@@ -9,7 +9,7 @@
     "projectUrl": "https://github.com/jjrdk/websocket-sharp",
     "licenseUrl": "https://raw.githubusercontent.com/jjrdk/websocket-sharp/master/LICENSE.txt",
     "summary": "This is a clone of websocket-sharp which is updated to use .NET 4.5 in order to make use of task based asynchronicity.",
-
+    "releaseNotes": "This version removes all synchronous reads and writes.",
     "dependencies": {
     },
 

@@ -41,6 +41,7 @@ namespace WebSocketSharp.Net
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Linq;
     using System.Net;
     using System.Runtime.InteropServices;
     using System.Runtime.Serialization;
@@ -549,99 +550,8 @@ namespace WebSocketSharp.Net
         {
             _state = HttpHeaderType.Unspecified;
         }
-
-        /// <summary>
-        /// Gets or sets the specified request <paramref name="header"/> in the collection.
-        /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the value of the request <paramref name="header"/>.
-        /// </value>
-        /// <param name="header">
-        /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-        /// to get or set.
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="header"/> is a restricted header.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> contains invalid characters.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The length of <paramref name="value"/> is greater than 65,535 characters.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-        /// <paramref name="header"/>.
-        /// </exception>
-        public string this[HttpRequestHeader header]
-        {
-            get
-            {
-                return Get(Convert(header));
-            }
-
-            set
-            {
-                Add(header, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the specified response <paramref name="header"/> in the collection.
-        /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the value of the response <paramref name="header"/>.
-        /// </value>
-        /// <param name="header">
-        /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-        /// to get or set.
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="header"/> is a restricted header.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> contains invalid characters.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The length of <paramref name="value"/> is greater than 65,535 characters.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-        /// <paramref name="header"/>.
-        /// </exception>
-        public string this[HttpResponseHeader header]
-        {
-            get
-            {
-                return Get(Convert(header));
-            }
-
-            set
-            {
-                Add(header, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets a collection of header names in the collection.
-        /// </summary>
-        /// <value>
-        /// A <see cref="NameObjectCollectionBase.KeysCollection"/> that contains all header names
-        /// in the collection.
-        /// </value>
-        public override KeysCollection Keys => base.Keys;
-
-        private void add(string name, string value, bool ignoreRestricted)
+        
+        private void InnerAdd(string name, string value, bool ignoreRestricted)
         {
             var act = ignoreRestricted
                       ? (Action<string, string>)AddWithoutCheckingNameAndRestricted
@@ -727,17 +637,8 @@ namespace WebSocketSharp.Net
 
             return value;
         }
-
-        private static string convert(string key)
-        {
-            HttpHeaderInfo info;
-            return Headers.TryGetValue(key, out info)
-                   ? info.Name
-                   : String.Empty;
-        }
-
-        private void doWithCheckingState(
-          Action<string, string> action, string name, string value, bool setState)
+        
+        private void doWithCheckingState(Action<string, string> action, string name, string value, bool setState)
         {
             var type = CheckHeaderType(name);
             if (type == HttpHeaderType.Request)
@@ -748,8 +649,7 @@ namespace WebSocketSharp.Net
                 action(name, value);
         }
 
-        private void doWithCheckingState(
-          Action<string, string> action, string name, string value, bool response, bool setState)
+        private void doWithCheckingState(Action<string, string> action, string name, string value, bool response, bool setState)
         {
             CheckState(response);
             action(name, value);
@@ -788,24 +688,14 @@ namespace WebSocketSharp.Net
         {
             DoWithoutCheckingName(base.Set, name, value);
         }
-
-        internal static string Convert(HttpRequestHeader header)
-        {
-            return convert(header.ToString());
-        }
-
-        internal static string Convert(HttpResponseHeader header)
-        {
-            return convert(header.ToString());
-        }
-
+        
         internal void InternalSet(string header, bool response)
         {
             var pos = CheckColonSeparated(header);
             InternalSet(header.Substring(0, pos), header.Substring(pos + 1), response);
         }
 
-        internal void InternalSet(string name, string value, bool response)
+        private void InternalSet(string name, string value, bool response)
         {
             value = CheckValue(value);
             if (IsMultiValue(name, response))
@@ -814,154 +704,27 @@ namespace WebSocketSharp.Net
                 base.Set(name, value);
         }
 
-        internal static bool IsHeaderName(string name)
+        private static bool IsHeaderName(string name)
         {
             return name != null && name.Length > 0 && name.IsToken();
         }
 
-        internal static bool IsHeaderValue(string value)
+        private static bool IsHeaderValue(string value)
         {
             return value.IsText();
         }
 
-        internal static bool IsMultiValue(string headerName, bool response)
+        private static bool IsMultiValue(string headerName, bool response)
         {
-            if (headerName == null || headerName.Length == 0)
+            if (string.IsNullOrEmpty(headerName))
+            {
                 return false;
+            }
 
             var info = GetHeaderInfo(headerName);
             return info != null && info.IsMultiValue(response);
         }
-
-        internal string ToStringMultiValue(bool response)
-        {
-            var buff = new StringBuilder();
-            Count.Times(
-              i =>
-              {
-                  var key = GetKey(i);
-                  if (IsMultiValue(key, response))
-                      foreach (var val in GetValues(i))
-                          buff.AppendFormat("{0}: {1}\r\n", key, val);
-                  else
-                      buff.AppendFormat("{0}: {1}\r\n", key, Get(i));
-              });
-
-            return buff.Append("\r\n").ToString();
-        }
-
-        /// <summary>
-        /// Adds the specified <paramref name="header"/> to the collection.
-        /// </summary>
-        /// <param name="header">
-        /// A <see cref="string"/> that represents the header with the name and value separated by
-        /// a colon (<c>':'</c>).
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="header"/> is <see langword="null"/>, empty, or the name part of
-        /// <paramref name="header"/> is empty.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="header"/> doesn't contain a colon.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="header"/> is a restricted header.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The name or value part of <paramref name="header"/> contains invalid characters.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The length of the value part of <paramref name="header"/> is greater than 65,535 characters.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The current <see cref="WebHeaderCollection"/> instance doesn't allow
-        /// the <paramref name="header"/>.
-        /// </exception>
-        public void Add(string header)
-        {
-            if (header.IsNullOrEmpty())
-                throw new ArgumentNullException("header");
-
-            var pos = CheckColonSeparated(header);
-            add(header.Substring(0, pos), header.Substring(pos + 1), false);
-        }
-
-        /// <summary>
-        /// Adds the specified request <paramref name="header"/> with the specified
-        /// <paramref name="value"/> to the collection.
-        /// </summary>
-        /// <param name="header">
-        /// One of the <see cref="HttpRequestHeader"/> enum values, represents the request header
-        /// to add.
-        /// </param>
-        /// <param name="value">
-        /// A <see cref="string"/> that represents the value of the header to add.
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="header"/> is a restricted header.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> contains invalid characters.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The length of <paramref name="value"/> is greater than 65,535 characters.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the request
-        /// <paramref name="header"/>.
-        /// </exception>
-        public void Add(HttpRequestHeader header, string value)
-        {
-            doWithCheckingState(AddWithoutCheckingName, Convert(header), value, false, true);
-        }
-
-        /// <summary>
-        /// Adds the specified response <paramref name="header"/> with the specified
-        /// <paramref name="value"/> to the collection.
-        /// </summary>
-        /// <param name="header">
-        /// One of the <see cref="HttpResponseHeader"/> enum values, represents the response header
-        /// to add.
-        /// </param>
-        /// <param name="value">
-        /// A <see cref="string"/> that represents the value of the header to add.
-        /// </param>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="header"/> is a restricted header.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> contains invalid characters.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The length of <paramref name="value"/> is greater than 65,535 characters.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The current <see cref="WebHeaderCollection"/> instance doesn't allow the response
-        /// <paramref name="header"/>.
-        /// </exception>
-        public void Add(HttpResponseHeader header, string value)
-        {
-            doWithCheckingState(AddWithoutCheckingName, Convert(header), value, true, true);
-        }
-
+        
         /// <summary>
         /// Adds a header with the specified <paramref name="name"/> and <paramref name="value"/>
         /// to the collection.
@@ -995,7 +758,7 @@ namespace WebSocketSharp.Net
         /// </exception>
         public override void Add(string name, string value)
         {
-            add(name, value, false);
+            InnerAdd(name, value, false);
         }
 
         /// <summary>
@@ -1066,19 +829,20 @@ namespace WebSocketSharp.Net
           SerializationInfo serializationInfo, StreamingContext streamingContext)
         {
             if (serializationInfo == null)
-                throw new ArgumentNullException("serializationInfo");
+            {
+                throw new ArgumentNullException(nameof(serializationInfo));
+            }
 
             serializationInfo.AddValue("InternallyCreated", _internallyCreated);
             serializationInfo.AddValue("State", (int)_state);
 
             var cnt = Count;
             serializationInfo.AddValue("Count", cnt);
-            cnt.Times(
-              i =>
-              {
-                  serializationInfo.AddValue(i.ToString(), GetKey(i));
-                  serializationInfo.AddValue((cnt + i).ToString(), Get(i));
-              });
+            for (int i = 0; i < cnt; i++)
+            {
+                serializationInfo.AddValue(i.ToString(), GetKey(i));
+                serializationInfo.AddValue((cnt + i).ToString(), Get(i));
+            }
         }
 
         /// <summary>
@@ -1165,10 +929,9 @@ namespace WebSocketSharp.Net
         /// </returns>
         public override string ToString()
         {
-            var buff = new StringBuilder();
-            Count.Times(i => buff.AppendFormat("{0}: {1}\r\n", GetKey(i), Get(i)));
+            var pairs = Enumerable.Range(0, Count).Select(i => $"{GetKey(i)}: {Get(i)}");
 
-            return buff.Append("\r\n").ToString();
+            return string.Join(Environment.NewLine, pairs) + Environment.NewLine;
         }
 
         /// <summary>

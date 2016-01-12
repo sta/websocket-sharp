@@ -47,7 +47,6 @@ namespace WebSocketSharp.Server
         private readonly SemaphoreSlim _forSweep = new SemaphoreSlim(1);
         private readonly ConcurrentDictionary<string, IWebSocketSession> _sessions;
         private volatile ServerState _state;
-        private volatile bool _sweeping;
         private Timer _sweepTimer;
         private TimeSpan _waitTime;
 
@@ -502,7 +501,7 @@ namespace WebSocketSharp.Server
         /// </summary>
         private async Task Sweep()
         {
-            if (_state != ServerState.Start || _sweeping || Count == 0)
+            if (_state != ServerState.Start || Count == 0)
             {
                 return;
             }

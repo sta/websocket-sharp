@@ -346,12 +346,12 @@ namespace WebSocketSharp.Server
             return _websocket != null ? _websocket.Send(data) : Task.FromResult(false);
         }
 
-        private string CheckIfValidConnectionRequest(WebSocketContext context)
+        private async Task<string> CheckIfValidConnectionRequest(WebSocketContext context)
         {
-            return _originValidator != null && !_originValidator(context.Origin)
+            return _originValidator != null && !_originValidator(await context.GetOrigin().ConfigureAwait(false))
                    ? "Invalid Origin header."
                    : _cookiesValidator != null &&
-                     !_cookiesValidator(context.CookieCollection, context.WebSocket.CookieCollection)
+                     !_cookiesValidator(await context.GetCookieCollection().ConfigureAwait(false), context.WebSocket.CookieCollection)
                      ? "Invalid Cookies."
                      : null;
         }

@@ -63,9 +63,7 @@ namespace WebSocketSharp.Server
         private readonly int _port;
         private readonly Uri _uri;
         private readonly ServerSslConfiguration _sslConfig;
-
         private readonly int _fragmentSize;
-
         private readonly bool _secure;
         private Task _receiveTask;
         private AuthenticationSchemes _authSchemes;
@@ -435,7 +433,7 @@ namespace WebSocketSharp.Server
 
             _state = ServerState.Stop;
         }
-        
+
         private string CheckIfCertificateExists()
         {
             return _secure && (_sslConfig?.ServerCertificate == null)
@@ -500,14 +498,14 @@ namespace WebSocketSharp.Server
                     return false;
                 }
 
-                var res = context.Headers["Authorization"];
+                var res = await context.GetHeader("Authorization").ConfigureAwait(false);
                 if (res == null || !res.StartsWith(schm, StringComparison.OrdinalIgnoreCase))
                 {
                     context.SendAuthenticationChallenge(chal);
                     return await auth1().ConfigureAwait(false);
                 }
 
-                context.SetUser(scheme, realm, credFinder);
+                await context.SetUser(scheme, realm, credFinder).ConfigureAwait(false);
                 if (!context.IsAuthenticated)
                 {
                     context.SendAuthenticationChallenge(chal);
@@ -530,7 +528,7 @@ namespace WebSocketSharp.Server
 
         private async Task ProcessWebSocketRequest(TcpListenerWebSocketContext context)
         {
-            var uri = context.RequestUri;
+            var uri = await context.GetRequestUri().ConfigureAwait(false);
             if (uri == null)
             {
                 await context.Close(HttpStatusCode.BadRequest).ConfigureAwait(false);

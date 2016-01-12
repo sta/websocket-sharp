@@ -35,23 +35,16 @@ namespace WebSocketSharp
         private readonly byte[] _data;
         private readonly long _length;
         private bool _masked;
-
-        public const ulong MaxLength = Int64.MaxValue;
-
+        
         internal PayloadData()
         {
             _data = new byte[0];
         }
-
+        
         internal PayloadData(byte[] data)
-            : this(data, false)
-        {
-        }
-
-        internal PayloadData(byte[] data, bool masked)
         {
             _data = data;
-            _masked = masked;
+            _masked = false;
             _length = data.LongLength;
         }
 
