@@ -848,7 +848,8 @@ namespace WebSocketSharp
           }
         }
         catch (Exception ex) {
-          processException (ex, "An exception has occurred while connecting.");
+          _logger.Fatal (ex.ToString ());
+          fatal ("An exception has occurred while connecting.", ex);
         }
 
         return false;
