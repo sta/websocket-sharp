@@ -840,8 +840,8 @@ namespace WebSocketSharp
           return false;
         }
 
+        _readyState = WebSocketState.Connecting;
         try {
-          _readyState = WebSocketState.Connecting;
           if (doHandshake ()) {
             _readyState = WebSocketState.Open;
             return true;
