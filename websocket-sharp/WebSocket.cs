@@ -1118,25 +1118,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    private void processException (Exception exception, string message)
-    {
-      _logger.Fatal (exception.ToString ());
-      if (!_client && _readyState == WebSocketState.Connecting) {
-        Close (HttpStatusCode.BadRequest);
-        return;
-      }
-
-      var code = exception is WebSocketException
-                 ? ((WebSocketException) exception).Code
-                 : CloseStatusCode.Abnormal;
-
-      close (
-        new CloseEventArgs (code, message ?? code.GetMessage ()),
-        !code.IsReserved (),
-        false,
-        false);
-    }
-
     private bool processFragmentFrame (WebSocketFrame frame)
     {
       if (!_inContinuation) {
