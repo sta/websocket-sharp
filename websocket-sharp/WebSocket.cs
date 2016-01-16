@@ -957,15 +957,8 @@ namespace WebSocketSharp
       setClientStream ();
       var res = sendHandshakeRequest ();
       var msg = checkIfValidHandshakeResponse (res);
-      if (msg != null) {
-        _logger.Error (msg);
-
-        msg = "An error has occurred while connecting.";
-        error (msg, null);
-        close (new CloseEventArgs (CloseStatusCode.Abnormal, msg), false, false, false);
-
-        return false;
-      }
+      if (msg != null)
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       var cookies = res.Cookies;
       if (cookies.Count > 0)
