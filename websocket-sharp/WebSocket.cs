@@ -715,24 +715,47 @@ namespace WebSocketSharp
     }
 
     // As client
-    private string checkIfValidHandshakeResponse (HttpResponse response)
+    private bool checkIfValidHandshakeResponse (HttpResponse response, out string message)
     {
+      message = null;
+
+      if (response.IsRedirect) {
+        message = "Indicates the redirection.";
+        return false;
+      }
+
+      if (response.IsUnauthorized) {
+        message = "Requires the authentication.";
+        return false;
+      }
+
+      if (!response.IsWebSocketResponse) {
+        message = "Not a WebSocket connection response.";
+        return false;
+      }
+
       var headers = response.Headers;
-      return response.IsRedirect
-             ? "Indicates the redirection."
-             : response.IsUnauthorized
-               ? "Requires the authentication."
-               : !response.IsWebSocketResponse
-                 ? "Not a WebSocket connection response."
-                 : !validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])
-                   ? "Includes an invalid Sec-WebSocket-Accept header."
-                   : !validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])
-                     ? "Includes an invalid Sec-WebSocket-Protocol header."
-                     : !validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])
-                       ? "Includes an invalid Sec-WebSocket-Extensions header."
-                       : !validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])
-                         ? "Includes an invalid Sec-WebSocket-Version header."
-                         : null;
+      if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
+        message = "Includes an invalid Sec-WebSocket-Accept header.";
+        return false;
+      }
+
+      if (!validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])) {
+        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+        return false;
+      }
+
+      if (!validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])) {
+        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+        return false;
+      }
+
+      if (!validateSecWebSocketVersionServerHeader (headers["Sec-WebSocket-Version"])) {
+        message = "Includes an invalid Sec-WebSocket-Version header.";
+        return false;
+      }
+
+      return true;
     }
 
     private bool checkIfValidReceivedFrame (WebSocketFrame frame, out string message)
@@ -956,8 +979,9 @@ namespace WebSocketSharp
     {
       setClientStream ();
       var res = sendHandshakeRequest ();
-      var msg = checkIfValidHandshakeResponse (res);
-      if (msg != null)
+
+      string msg;
+      if (!checkIfValidHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       var cookies = res.Cookies;
