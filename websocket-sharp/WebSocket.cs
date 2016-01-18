@@ -730,7 +730,7 @@ namespace WebSocketSharp
       }
 
       if (!response.IsWebSocketResponse) {
-        message = "Not a WebSocket connection response.";
+        message = "Not a WebSocket handshake response.";
         return false;
       }
 
