@@ -669,11 +669,8 @@ namespace WebSocketSharp
 
       var msg = checkIfValidHandshakeRequest (_context);
       if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred while accepting.", null);
-        Close (HttpStatusCode.BadRequest);
-
-        return false;
+        sendHttpResponse (createHandshakeCloseResponse (HttpStatusCode.BadRequest));
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
       if (_protocol != null &&
