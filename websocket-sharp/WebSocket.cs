@@ -664,8 +664,7 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (
-        String.Format ("A connection request from {0}:\n{1}", _context.UserEndPoint, _context));
+      _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       var msg = checkIfValidHandshakeRequest (_context);
       if (msg != null) {
@@ -673,14 +672,16 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
-      if (_protocol != null &&
-          !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol))
+      if (_protocol != null
+          && !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol)
+      ) {
         _protocol = null;
+      }
 
       if (!_ignoreExtensions) {
-        var exts = _context.Headers["Sec-WebSocket-Extensions"];
-        if (exts != null && exts.Length > 0)
-          processSecWebSocketExtensionsHeader (exts);
+        var val = _context.Headers["Sec-WebSocket-Extensions"];
+        if (val != null && val.Length > 0)
+          processSecWebSocketExtensionsHeader (val);
       }
 
       return sendHttpResponse (createHandshakeResponse ());
