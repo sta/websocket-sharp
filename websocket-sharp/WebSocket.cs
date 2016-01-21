@@ -666,8 +666,8 @@ namespace WebSocketSharp
     {
       _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
 
-      var msg = checkIfValidHandshakeRequest (_context);
-      if (msg != null) {
+      string msg;
+      if (!checkIfValidHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeCloseResponse (HttpStatusCode.BadRequest));
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
@@ -698,18 +698,36 @@ namespace WebSocketSharp
     }
 
     // As server
-    private string checkIfValidHandshakeRequest (WebSocketContext context)
+    private bool checkIfValidHandshakeRequest (WebSocketContext context, out string message)
     {
+      message = null;
+
+      if (context.RequestUri == null) {
+        message = "Specifies an invalid Request-URI.";
+        return false;
+      }
+
+      if (!context.IsWebSocketRequest) {
+        message = "Not a WebSocket handshake request.";
+        return false;
+      }
+
       var headers = context.Headers;
-      return context.RequestUri == null
-             ? "Specifies an invalid Request-URI."
-             : !context.IsWebSocketRequest
-               ? "Not a WebSocket connection request."
-               : !validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])
-                 ? "Includes an invalid Sec-WebSocket-Key header."
-                 : !validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])
-                   ? "Includes an invalid Sec-WebSocket-Version header."
-                   : CustomHandshakeRequestChecker (context);
+      if (!validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])) {
+        message = "Includes an invalid Sec-WebSocket-Key header.";
+        return false;
+      }
+
+      if (!validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])) {
+        message = "Includes an invalid Sec-WebSocket-Version header.";
+        return false;
+      }
+
+      message = CustomHandshakeRequestChecker (context);
+      if (message != null)
+        return false;
+
+      return true;
     }
 
     // As client
