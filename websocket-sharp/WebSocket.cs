@@ -259,7 +259,7 @@ namespace WebSocketSharp
     // As server
     internal Func<WebSocketContext, string> CustomHandshakeRequestChecker {
       get {
-        return _handshakeRequestChecker ?? (context => null);
+        return _handshakeRequestChecker;
       }
 
       set {
