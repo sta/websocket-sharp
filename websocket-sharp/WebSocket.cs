@@ -672,6 +672,11 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
+      if (!customCheckIfValidHandshakeRequest (_context, out msg)) {
+        sendHttpResponse (createHandshakeCloseResponse (HttpStatusCode.BadRequest));
+        throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
+      }
+
       if (_protocol != null
           && !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol)
       ) {
@@ -722,10 +727,6 @@ namespace WebSocketSharp
         message = "Includes an invalid Sec-WebSocket-Version header.";
         return false;
       }
-
-      message = CustomHandshakeRequestChecker (context);
-      if (message != null)
-        return false;
 
       return true;
     }
@@ -982,6 +983,14 @@ namespace WebSocketSharp
         ret.SetCookies (_cookies);
 
       return ret;
+    }
+
+    // As server
+    private bool customCheckIfValidHandshakeRequest (WebSocketContext context, out string message)
+    {
+      message = null;
+      return _handshakeRequestChecker == null
+             || (message = _handshakeRequestChecker (context)) == null;
     }
 
     private MessageEventArgs dequeueFromMessageEventQueue ()
