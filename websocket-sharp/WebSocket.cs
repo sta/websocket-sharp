@@ -1046,6 +1046,11 @@ namespace WebSocketSharp
       );
     }
 
+    private void fatal (string message, CloseStatusCode code)
+    {
+      close (new CloseEventArgs (code, message), !code.IsReserved (), false, false);
+    }
+
     private void init ()
     {
       _compression = CompressionMethod.None;
