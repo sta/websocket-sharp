@@ -1038,12 +1038,7 @@ namespace WebSocketSharp
                  ? ((WebSocketException) exception).Code
                  : CloseStatusCode.Abnormal;
 
-      close (
-        new CloseEventArgs (code, message ?? code.GetMessage ()),
-        !code.IsReserved (),
-        false,
-        false
-      );
+      fatal (message, code);
     }
 
     private void fatal (string message, CloseStatusCode code)
