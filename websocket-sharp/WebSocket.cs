@@ -1257,7 +1257,7 @@ namespace WebSocketSharp
     private bool processUnsupportedFrame (WebSocketFrame frame)
     {
       _logger.Fatal ("An unsupported frame:" + frame.PrintToString (false));
-      fatal ("There is no way to handle it.", null);
+      fatal ("There is no way to handle it.", CloseStatusCode.PolicyViolation);
 
       return false;
     }
