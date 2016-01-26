@@ -442,13 +442,15 @@ As a WebSocket server, if you would like to ignore the extensions requested from
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () => new Chat () {
-    // To ignore the extensions requested from a client.
-    IgnoreExtensions = true
-  });
+  () =>
+    new Chat () {
+      // To ignore the extensions requested from a client.
+      IgnoreExtensions = true
+    }
+);
 ```
 
-If it's set to `true`, the server doesn't return the **Sec-WebSocket-Extensions header** in the connection response.
+If it's set to `true`, the server doesn't return the **Sec-WebSocket-Extensions** header in its response.
 
 I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
 
