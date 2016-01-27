@@ -533,7 +533,7 @@ using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
 }
 ```
 
-And if you would like to send the **Origin header** with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin header] before connecting, such as the following.
+And if you would like to send the **Origin** header with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
 
 ```csharp
 ws.Origin = "http://example.com";
@@ -562,7 +562,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin header**, **Cookies**, or both included in a WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the **Origin** header, **Cookies**, or both included in a WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
@@ -683,7 +683,7 @@ websocket-sharp is provided under **[The MIT License]**.
 [MonoDevelop]: http://monodevelop.com
 [NuGet Gallery]: http://www.nuget.org
 [NuGet Gallery: websocket-sharp]: http://www.nuget.org/packages/WebSocketSharp
-[Origin header]: http://tools.ietf.org/html/rfc6454#section-7
+[Origin]: http://tools.ietf.org/html/rfc6454#section-7
 [Query]: http://tools.ietf.org/html/rfc3986#section-3.4
 [Security Sandbox of the Webplayer]: http://docs.unity3d.com/Manual/SecuritySandbox.html
 [Squid]: http://www.squid-cache.org
