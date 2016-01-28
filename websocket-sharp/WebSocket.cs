@@ -683,11 +683,8 @@ namespace WebSocketSharp
         _protocol = null;
       }
 
-      if (!_ignoreExtensions) {
-        var val = _context.Headers["Sec-WebSocket-Extensions"];
-        if (val != null && val.Length > 0)
-          processSecWebSocketExtensionsHeader (val);
-      }
+      if (!_ignoreExtensions)
+        processSecWebSocketExtensionsHeader (_context.Headers["Sec-WebSocket-Extensions"]);
 
       return sendHttpResponse (createHandshakeResponse ());
     }
@@ -1232,6 +1229,9 @@ namespace WebSocketSharp
     // As server
     private void processSecWebSocketExtensionsHeader (string value)
     {
+      if (value == null || value.Length == 0)
+        return;
+
       var buff = new StringBuilder (80);
 
       var comp = false;
@@ -1239,10 +1239,13 @@ namespace WebSocketSharp
         var ext = e.Trim ();
         if (!comp && ext.IsCompressionExtension (CompressionMethod.Deflate)) {
           _compression = CompressionMethod.Deflate;
-          var str = _compression.ToExtensionString (
-            "client_no_context_takeover", "server_no_context_takeover");
+          buff.AppendFormat (
+            "{0}, ",
+            _compression.ToExtensionString (
+              "client_no_context_takeover", "server_no_context_takeover"
+            )
+          );
 
-          buff.AppendFormat ("{0}, ", str);
           comp = true;
         }
       }
