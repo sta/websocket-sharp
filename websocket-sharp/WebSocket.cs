@@ -668,12 +668,12 @@ namespace WebSocketSharp
 
       string msg;
       if (!checkIfValidHandshakeRequest (_context, out msg)) {
-        sendHttpResponse (createHandshakeCloseResponse (HttpStatusCode.BadRequest));
+        sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
       if (!customCheckIfValidHandshakeRequest (_context, out msg)) {
-        sendHttpResponse (createHandshakeCloseResponse (HttpStatusCode.BadRequest));
+        sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
         throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
       }
 
@@ -916,7 +916,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    private HttpResponse createHandshakeCloseResponse (HttpStatusCode code)
+    private HttpResponse createHandshakeFailureResponse (HttpStatusCode code)
     {
       var ret = HttpResponse.CreateCloseResponse (code);
       ret.Headers["Sec-WebSocket-Version"] = _version;
@@ -1816,7 +1816,7 @@ namespace WebSocketSharp
     // As server
     internal void Close (HttpStatusCode code)
     {
-      Close (createHandshakeCloseResponse (code));
+      Close (createHandshakeFailureResponse (code));
     }
 
     // As server
