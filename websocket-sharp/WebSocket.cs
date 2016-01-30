@@ -677,11 +677,8 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
       }
 
-      if (_protocol != null
-          && !_context.SecWebSocketProtocols.Contains (protocol => protocol == _protocol)
-      ) {
-        _protocol = null;
-      }
+      if (_protocol != null)
+        processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
 
       if (!_ignoreExtensions)
         processSecWebSocketExtensionsHeader (_context.Headers["Sec-WebSocket-Extensions"]);
@@ -1255,6 +1252,15 @@ namespace WebSocketSharp
         buff.Length = len - 2;
         _extensions = buff.ToString ();
       }
+    }
+
+    // As server
+    private void processSecWebSocketProtocolHeader (IEnumerable<string> values)
+    {
+      if (values.Contains (p => p == _protocol))
+        return;
+
+      _protocol = null;
     }
 
     private bool processUnsupportedFrame (WebSocketFrame frame)
