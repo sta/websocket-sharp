@@ -677,6 +677,8 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
       }
 
+      _base64Key = _context.Headers["Sec-WebSocket-Key"];
+
       if (_protocol != null)
         processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
 
@@ -1712,11 +1714,7 @@ namespace WebSocketSharp
     // As server
     private bool validateSecWebSocketKeyHeader (string value)
     {
-      if (value == null || value.Length == 0)
-        return false;
-
-      _base64Key = value;
-      return true;
+      return value != null && value.Length > 0;
     }
 
     // As client
