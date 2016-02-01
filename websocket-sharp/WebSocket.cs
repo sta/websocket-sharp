@@ -720,7 +720,7 @@ namespace WebSocketSharp
       }
 
       if (!validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])) {
-        message = "Includes an invalid Sec-WebSocket-Version header.";
+        message = "Includes no Sec-WebSocket-Version header, or it has an invalid value.";
         return false;
       }
 
