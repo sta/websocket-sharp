@@ -715,7 +715,7 @@ namespace WebSocketSharp
 
       var headers = context.Headers;
       if (!validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])) {
-        message = "Includes an invalid Sec-WebSocket-Key header.";
+        message = "Includes no Sec-WebSocket-Key header, or it has an invalid value.";
         return false;
       }
 
