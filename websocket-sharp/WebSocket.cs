@@ -667,7 +667,7 @@ namespace WebSocketSharp
       _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       string msg;
-      if (!checkIfValidHandshakeRequest (_context, out msg)) {
+      if (!checkHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
@@ -688,18 +688,8 @@ namespace WebSocketSharp
       return sendHttpResponse (createHandshakeResponse ());
     }
 
-    private string checkIfAvailable (
-      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
-    {
-      return !client && _client
-             ? "This operation isn't available in: client"
-             : !server && !_client
-               ? "This operation isn't available in: server"
-               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
-    }
-
     // As server
-    private bool checkIfValidHandshakeRequest (WebSocketContext context, out string message)
+    private bool checkHandshakeRequest (WebSocketContext context, out string message)
     {
       message = null;
 
@@ -725,6 +715,16 @@ namespace WebSocketSharp
       }
 
       return true;
+    }
+
+    private string checkIfAvailable (
+      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
+    {
+      return !client && _client
+             ? "This operation isn't available in: client"
+             : !server && !_client
+               ? "This operation isn't available in: server"
+               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
     // As client
