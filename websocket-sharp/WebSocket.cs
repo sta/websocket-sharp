@@ -672,7 +672,7 @@ namespace WebSocketSharp
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
       }
 
-      if (!customCheckIfValidHandshakeRequest (_context, out msg)) {
+      if (!customCheckHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
         throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
       }
@@ -982,7 +982,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool customCheckIfValidHandshakeRequest (WebSocketContext context, out string message)
+    private bool customCheckHandshakeRequest (WebSocketContext context, out string message)
     {
       message = null;
       return _handshakeRequestChecker == null
