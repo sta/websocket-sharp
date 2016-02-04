@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -297,10 +297,10 @@ namespace WebSocketSharp.Server
     private string checkIfValidConnectionRequest (WebSocketContext context)
     {
       return _originValidator != null && !_originValidator (context.Origin)
-             ? "Invalid Origin header."
-             : _cookiesValidator != null &&
-               !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
-               ? "Invalid Cookies."
+             ? "Includes no Origin header, or it has an invalid value."
+             : _cookiesValidator != null
+               && !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
+               ? "Includes no cookie, or an invalid cookie exists."
                : null;
     }
 
