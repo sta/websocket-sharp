@@ -294,7 +294,7 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private string checkIfValidConnectionRequest (WebSocketContext context)
+    private string checkHandshakeRequest (WebSocketContext context)
     {
       return _originValidator != null && !_originValidator (context.Origin)
              ? "Includes no Origin header, or it has an invalid value."
@@ -352,7 +352,7 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       _websocket = context.WebSocket;
-      _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
       _websocket.EmitOnPing = _emitOnPing;
       _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;
