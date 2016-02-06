@@ -116,18 +116,24 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate called to validate the HTTP cookies included in
-    /// a connection request to the WebSocket service.
+    /// a handshake request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the connection request.
+    /// the handshake request.
     /// </remarks>
     /// <value>
     ///   <para>
     ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate that references
-    ///   the method(s) used to validate the cookies. 1st <see cref="CookieCollection"/> passed to
-    ///   this delegate contains the cookies to validate if any. 2nd <see cref="CookieCollection"/>
-    ///   passed to this delegate receives the cookies to send to the client.
+    ///   the method(s) used to validate the cookies.
+    ///   </para>
+    ///   <para>
+    ///   1st <see cref="CookieCollection"/> parameter passed to this delegate contains
+    ///   the cookies to validate if any.
+    ///   </para>
+    ///   <para>
+    ///   2nd <see cref="CookieCollection"/> parameter passed to this delegate receives
+    ///   the cookies to send to the client.
     ///   </para>
     ///   <para>
     ///   This delegate should return <c>true</c> if the cookies are valid.
