@@ -208,16 +208,19 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate called to validate the Origin header included in
-    /// a connection request to the WebSocket service.
+    /// a handshake request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the connection request.
+    /// the handshake request.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to validate
-    ///   the origin header. A <see cref="string"/> passed to this delegate represents the value of
+    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to
+    ///   validate the origin header.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="string"/> parameter passed to this delegate represents the value of
     ///   the origin header to validate if any.
     ///   </para>
     ///   <para>
