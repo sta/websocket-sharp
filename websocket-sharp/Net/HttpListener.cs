@@ -401,6 +401,14 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private static bool HasFlag(Enum enumRef, Enum flag)
+    {
+      long value = Convert.ToInt64(enumRef);
+      long flagVal = Convert.ToInt64(flag);
+
+      return (value & flagVal) == flagVal;
+    }
+
     private void cleanup (bool force)
     {
       lock (_ctxRegistrySync) {
@@ -509,26 +517,40 @@ namespace WebSocketSharp.Net
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
+      var basicAllowed = HasFlag(schm, AuthenticationSchemes.Basic);
+      var digestAllowed = HasFlag(schm, AuthenticationSchemes.Digest);
+      if (!basicAllowed && !digestAllowed) {
         context.Response.Close (HttpStatusCode.Forbidden);
         return false;
       }
 
       var realm = Realm;
       var req = context.Request;
-      var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], schm, realm, req.HttpMethod, UserCredentialsFinder);
+      if (basicAllowed) {
+        var user = HttpUtility.CreateUser(
+          req.Headers["Authorization"], AuthenticationSchemes.Basic, realm, req.HttpMethod, UserCredentialsFinder);
 
-      if (user != null && user.Identity.IsAuthenticated) {
-        context.User = user;
-        return true;
+        if (user != null && user.Identity.IsAuthenticated) {
+          context.User = user;
+          return true;
+        }
       }
 
-      if (schm == AuthenticationSchemes.Basic)
+      if (digestAllowed) {
+        var user = HttpUtility.CreateUser(
+          req.Headers["Authorization"], AuthenticationSchemes.Digest, realm, req.HttpMethod, UserCredentialsFinder);
+
+        if (user != null && user.Identity.IsAuthenticated) {
+          context.User = user;
+          return true;
+        }
+      }
+
+      if (!digestAllowed)
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
 
-      if (schm == AuthenticationSchemes.Digest)
+      else
         context.Response.CloseWithAuthChallenge (
           AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
 
