@@ -102,10 +102,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the information in a connection request to the WebSocket service.
+    /// Gets the information in a handshake request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the connection request,
+    /// A <see cref="WebSocketContext"/> instance that provides the access to the handshake request,
     /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public WebSocketContext Context {
@@ -190,11 +190,11 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets a value indicating whether the WebSocket service ignores
-    /// the Sec-WebSocket-Extensions header included in a connection request.
+    /// the Sec-WebSocket-Extensions header included in a handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service ignores the extensions;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the WebSocket service ignores the extensions requested from
+    /// a client; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool IgnoreExtensions {
       get {
