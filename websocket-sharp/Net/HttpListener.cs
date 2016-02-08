@@ -110,6 +110,11 @@ namespace WebSocketSharp.Net
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
+    static HttpListener()
+    {
+        DefaultServerString = "websocket-sharp/1.0";
+    }
+
     #endregion
 
     #region Internal Properties
@@ -133,6 +138,13 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets the server string to include in the response when a
+    /// request is handled entirely by the library and not by any user 
+    /// callbacks
+    /// </summary>
+    public static string DefaultServerString { get; set; }
 
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.

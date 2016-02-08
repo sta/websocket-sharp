@@ -515,7 +515,7 @@ namespace WebSocketSharp.Net
       }
 
       if (headers["Server"] == null)
-        headers.InternalSet ("Server", "websocket-sharp/1.0", true);
+        headers.InternalSet ("Server", HttpListener.DefaultServerString, true);
 
       var prov = CultureInfo.InvariantCulture;
       if (headers["Date"] == null)
