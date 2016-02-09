@@ -754,7 +754,7 @@ namespace WebSocketSharp
       }
 
       if (!validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])) {
-        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+        message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
         return false;
       }
 
@@ -1723,7 +1723,10 @@ namespace WebSocketSharp
       if (value == null)
         return _protocols == null;
 
-      if (_protocols == null || !_protocols.Contains (protocol => protocol == value))
+      if (value.Length == 0)
+        return false;
+
+      if (_protocols == null || !_protocols.Contains (p => p == value))
         return false;
 
       _protocol = value;
