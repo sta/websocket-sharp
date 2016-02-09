@@ -749,7 +749,7 @@ namespace WebSocketSharp
 
       var headers = response.Headers;
       if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
-        message = "Includes an invalid Sec-WebSocket-Accept header.";
+        message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
         return false;
       }
 
