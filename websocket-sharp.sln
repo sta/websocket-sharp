@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp", "websocket-sharp\websocket-sharp.csproj", "{B357BAC7-529E-4D81-A0D2-71041B19C8DE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{52805AEC-EFB1-4F42-BB8E-3ED4E692C568}"
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example2", "Example2\Example2.csproj", "{B81A24C8-25BB-42B2-AF99-1E1EACCE74C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example3", "Example3\Example3.csproj", "{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "websocket-sharp.shared", "websocket-sharp\websocket-sharp.shared.shproj", "{891A08FC-F143-4325-BC16-B9864D036B99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp.droid", "websocket-sharp\websocket-sharp.droid.csproj", "{E1153FA4-356A-454D-B32E-136102F2482F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "websocket-sharp.ios", "websocket-sharp\websocket-sharp.ios.csproj", "{DCE46CB2-0317-4A62-9613-AE6A240C46DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,9 +65,24 @@ Global
 		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release_Ubuntu|Any CPU.Build.0 = Release_Ubuntu|Any CPU
 		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C648BA25-77E5-4A40-A97F-D0AA37B9FB26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCE46CB2-0317-4A62-9613-AE6A240C46DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Debug_Ubuntu|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Debug_Ubuntu|Any CPU.Build.0 = Debug|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Release_Ubuntu|Any CPU.ActiveCfg = Release|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Release_Ubuntu|Any CPU.Build.0 = Release|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1153FA4-356A-454D-B32E-136102F2482F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = websocket-sharp\websocket-sharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.inheritsSet = null
@@ -70,5 +91,6 @@ Global
 		$2.inheritsSet = Mono
 		$2.inheritsScope = text/x-csharp
 		$2.scope = text/x-csharp
+		StartupItem = websocket-sharp\websocket-sharp.csproj
 	EndGlobalSection
 EndGlobal

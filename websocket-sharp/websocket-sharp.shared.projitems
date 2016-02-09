@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{891A08FC-F143-4325-BC16-B9864D036B99}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>websocket-sharp.shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ByteOrder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CloseEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CloseStatusCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompressionMethod.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ErrorEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Ext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Fin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HttpResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LogLevel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Mask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MessageEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Opcode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PayloadData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Rsv.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebSocket.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebSocketException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebSocketFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WebSocketState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\AuthenticationBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\AuthenticationChallenge.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\AuthenticationResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\AuthenticationSchemes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\Chunk.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ChunkStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ChunkedRequestStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ClientSslConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\Cookie.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\CookieCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\CookieException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\EndPointListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\EndPointManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpBasicIdentity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpDigestIdentity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpHeaderInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpHeaderType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerAsyncResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerPrefix.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerPrefixCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpListenerResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpRequestHeader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpResponseHeader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpStatusCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpStreamAsyncResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpUtility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\HttpVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\InputChunkState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\InputState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\LineState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\NetworkCredential.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\QueryStringCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ReadBufferState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\RequestStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ResponseStream.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\ServerSslConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\SslConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\WebHeaderCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\WebSockets\HttpListenerWebSocketContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\WebSockets\TcpListenerWebSocketContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Net\WebSockets\WebSocketContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\HttpRequestEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\HttpServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\IWebSocketSession.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\ServerState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketServer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketServiceHost.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketServiceHost`1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketServiceManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Server\WebSocketSessionManager.cs" />
+  </ItemGroup>
+</Project>
