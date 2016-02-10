@@ -1259,6 +1259,17 @@ namespace WebSocketSharp
       }
     }
 
+    // As client
+    private void processSecWebSocketExtensionsServerHeader (string value)
+    {
+      if (value == null) {
+        _compression = CompressionMethod.None;
+        return;
+      }
+
+      _extensions = value;
+    }
+
     // As server
     private void processSecWebSocketProtocolHeader (IEnumerable<string> values)
     {
