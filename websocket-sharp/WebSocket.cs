@@ -1005,6 +1005,9 @@ namespace WebSocketSharp
       if (!checkIfValidHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
+      if (_protocols != null)
+        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+
       var cookies = res.Cookies;
       if (cookies.Count > 0)
         _cookies.SetOrRemove (cookies);
@@ -1729,7 +1732,6 @@ namespace WebSocketSharp
       if (_protocols == null || !_protocols.Contains (p => p == value))
         return false;
 
-      _protocol = value;
       return true;
     }
 
