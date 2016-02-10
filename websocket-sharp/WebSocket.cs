@@ -267,6 +267,13 @@ namespace WebSocketSharp
       }
     }
 
+    // As client
+    internal bool ExtensionsRequested {
+      get {
+        return _compression != CompressionMethod.None;
+      }
+    }
+
     internal bool HasMessage {
       get {
         lock (_forMessageEventQueue)
