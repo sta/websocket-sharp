@@ -1015,6 +1015,9 @@ namespace WebSocketSharp
       if (_protocols != null)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
+      if (ExtensionsRequested)
+        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+
       var cookies = res.Cookies;
       if (cookies.Count > 0)
         _cookies.SetOrRemove (cookies);
@@ -1689,20 +1692,19 @@ namespace WebSocketSharp
     // As client
     private bool validateSecWebSocketExtensionsHeader (string value)
     {
-      var comp = _compression != CompressionMethod.None;
-      if (value == null || value.Length == 0) {
-        if (comp)
-          _compression = CompressionMethod.None;
-
+      if (value == null)
         return true;
-      }
 
-      if (!comp)
+      if (value.Length == 0)
         return false;
 
+      if (!ExtensionsRequested)
+        return false;
+
+      var comp = _compression != CompressionMethod.None;
       foreach (var e in value.SplitHeaderValue (',')) {
         var ext = e.Trim ();
-        if (ext.IsCompressionExtension (_compression)) {
+        if (comp && ext.IsCompressionExtension (_compression)) {
           if (!ext.Contains ("server_no_context_takeover")) {
             _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
             return false;
@@ -1712,13 +1714,15 @@ namespace WebSocketSharp
             _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
 
           var method = _compression.ToExtensionString ();
-          var invalid = ext.SplitHeaderValue (';').Contains (
-            t => {
-              t = t.Trim ();
-              return t != method &&
-                     t != "server_no_context_takeover" &&
-                     t != "client_no_context_takeover";
-            });
+          var invalid =
+            ext.SplitHeaderValue (';').Contains (
+              t => {
+                t = t.Trim ();
+                return t != method
+                       && t != "server_no_context_takeover"
+                       && t != "client_no_context_takeover";
+              }
+            );
 
           if (invalid)
             return false;
@@ -1728,7 +1732,6 @@ namespace WebSocketSharp
         }
       }
 
-      _extensions = value;
       return true;
     }
 
