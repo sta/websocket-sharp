@@ -28,6 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 #region Authors
@@ -57,6 +58,23 @@ namespace WebSocketSharp.Net
 {
   internal sealed class HttpConnection
   {
+
+    #region Private Classes
+
+    private class HttpSecureConnectionState
+    {
+        public readonly HttpConnection Connection;
+        public readonly Action<HttpConnection> Callback;
+
+        public HttpSecureConnectionState(HttpConnection connection, Action<HttpConnection> callback)
+        {
+            Connection = connection;
+            Callback = callback;
+        }
+    }
+
+    #endregion
+
     #region Private Fields
 
     private byte[]              _buffer;
@@ -83,35 +101,13 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Internal Constructors
 
-    internal HttpConnection (Socket socket, EndPointListener listener)
+
+    #region Constructors
+
+    private HttpConnection()
     {
-      _socket = socket;
-      _listener = listener;
-      _secure = listener.IsSecure;
 
-      var netStream = new NetworkStream (socket, false);
-      if (_secure) {
-        var conf = listener.SslConfiguration;
-        var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
-        sslStream.AuthenticateAsServer (
-          conf.ServerCertificate,
-          conf.ClientCertificateRequired,
-          conf.EnabledSslProtocols,
-          conf.CheckCertificateRevocation);
-
-        _stream = sslStream;
-      }
-      else {
-        _stream = netStream;
-      }
-
-      _sync = new object ();
-      _timeout = 90000; // 90k ms for first request, 15k ms from then on.
-      _timer = new Timer (onTimeout, this, Timeout.Infinite, Timeout.Infinite);
-
-      init ();
     }
 
     #endregion
@@ -167,6 +163,28 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Private Methods
+
+    // SSL handshake is ready to be processed
+    private static void FinishAuth(IAsyncResult result)
+    {
+        var state = result.AsyncState as HttpSecureConnectionState;
+        var stream = state.Connection.Stream as SslStream;
+        stream.EndAuthenticateAsServer(result);
+        FinishSetup(state.Connection, state.Callback);
+    }
+
+    // Connection is ready to be used
+    private static void FinishSetup(HttpConnection connection, Action<HttpConnection> callback)
+    {
+        connection._sync = new object();
+        connection._timeout = 90000; // 90k ms for first request, 15k ms from then on.
+        connection._timer = new Timer (onTimeout, connection, Timeout.Infinite, Timeout.Infinite);
+
+        connection.init ();
+        if (callback != null) {
+            callback(connection);
+        }
+    }
 
     private void close ()
     {
@@ -442,6 +460,26 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Methods
+
+    public static void CreateAsync(Socket socket, EndPointListener listener, Action<HttpConnection> callback)
+    {
+        var retVal = new HttpConnection();
+        retVal._socket = socket;
+        retVal._listener = listener;
+        retVal._secure = listener.IsSecure;
+
+
+        if (!listener.IsSecure) {
+            retVal._stream = new NetworkStream (socket, false);
+            FinishSetup(retVal, callback);
+        } else {
+            var netStream = new NetworkStream (socket, false);
+            var conf = listener.SslConfiguration;
+            var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
+            retVal._stream = sslStream;
+            sslStream.BeginAuthenticateAsServer(conf.ServerCertificate, FinishAuth, new HttpSecureConnectionState(retVal, callback));
+        }
+    }
 
     public void BeginReadRequest ()
     {
