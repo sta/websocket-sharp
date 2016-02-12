@@ -100,6 +100,7 @@ namespace WebSocketSharp
     private bool                           _preAuth;
     private string                         _protocol;
     private string[]                       _protocols;
+    private bool                           _protocolsRequested;
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
@@ -935,7 +936,8 @@ namespace WebSocketSharp
 
       headers["Sec-WebSocket-Key"] = _base64Key;
 
-      if (_protocols != null)
+      _protocolsRequested = _protocols != null;
+      if (_protocolsRequested)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
       _extensionsRequested = _compression != CompressionMethod.None;
@@ -1006,7 +1008,7 @@ namespace WebSocketSharp
       if (!checkIfValidHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
-      if (_protocols != null)
+      if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
       if (_extensionsRequested)
@@ -1746,12 +1748,12 @@ namespace WebSocketSharp
     private bool validateSecWebSocketProtocolHeader (string value)
     {
       if (value == null)
-        return _protocols == null;
+        return !_protocolsRequested;
 
       if (value.Length == 0)
         return false;
 
-      if (_protocols == null || !_protocols.Contains (p => p == value))
+      if (!_protocolsRequested || !_protocols.Contains (p => p == value))
         return false;
 
       return true;
