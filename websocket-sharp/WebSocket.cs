@@ -80,6 +80,7 @@ namespace WebSocketSharp
     private bool                           _enableRedirection;
     private AutoResetEvent                 _exitReceiving;
     private string                         _extensions;
+    private bool                           _extensionsRequested;
     private object                         _forConn;
     private object                         _forMessageEventQueue;
     private object                         _forSend;
@@ -264,13 +265,6 @@ namespace WebSocketSharp
 
       set {
         _handshakeRequestChecker = value;
-      }
-    }
-
-    // As client
-    internal bool ExtensionsRequested {
-      get {
-        return _compression != CompressionMethod.None;
       }
     }
 
@@ -944,9 +938,9 @@ namespace WebSocketSharp
       if (_protocols != null)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
-      var exts = createExtensions ();
-      if (exts != null)
-        headers["Sec-WebSocket-Extensions"] = exts;
+      _extensionsRequested = _compression != CompressionMethod.None;
+      if (_extensionsRequested)
+        headers["Sec-WebSocket-Extensions"] = createExtensions ();
 
       headers["Sec-WebSocket-Version"] = _version;
 
@@ -1015,7 +1009,7 @@ namespace WebSocketSharp
       if (_protocols != null)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
 
-      if (ExtensionsRequested)
+      if (_extensionsRequested)
         processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
 
       processCookies (res.Cookies);
@@ -1705,7 +1699,7 @@ namespace WebSocketSharp
       if (value.Length == 0)
         return false;
 
-      if (!ExtensionsRequested)
+      if (!_extensionsRequested)
         return false;
 
       var comp = _compression != CompressionMethod.None;
