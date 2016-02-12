@@ -1018,9 +1018,7 @@ namespace WebSocketSharp
       if (ExtensionsRequested)
         processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
 
-      var cookies = res.Cookies;
-      if (cookies.Count > 0)
-        _cookies.SetOrRemove (cookies);
+      processCookies (res.Cookies);
 
       return true;
     }
@@ -1156,6 +1154,15 @@ namespace WebSocketSharp
       close (new CloseEventArgs (payload), !payload.IncludesReservedCloseStatusCode, false, true);
 
       return false;
+    }
+
+    // As client
+    private void processCookies (CookieCollection cookies)
+    {
+      if (cookies.Count == 0)
+        return;
+
+      _cookies.SetOrRemove (cookies);
     }
 
     private bool processDataFrame (WebSocketFrame frame)
