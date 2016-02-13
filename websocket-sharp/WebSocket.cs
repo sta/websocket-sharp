@@ -1753,10 +1753,7 @@ namespace WebSocketSharp
       if (value.Length == 0)
         return false;
 
-      if (!_protocolsRequested || !_protocols.Contains (p => p == value))
-        return false;
-
-      return true;
+      return _protocolsRequested && _protocols.Contains (p => p == value);
     }
 
     // As server
