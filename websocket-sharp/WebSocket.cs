@@ -719,18 +719,8 @@ namespace WebSocketSharp
       return true;
     }
 
-    private string checkIfAvailable (
-      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
-    {
-      return !client && _client
-             ? "This operation isn't available in: client"
-             : !server && !_client
-               ? "This operation isn't available in: server"
-               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
-    }
-
     // As client
-    private bool checkIfValidHandshakeResponse (HttpResponse response, out string message)
+    private bool checkHandshakeResponse (HttpResponse response, out string message)
     {
       message = null;
 
@@ -771,6 +761,16 @@ namespace WebSocketSharp
       }
 
       return true;
+    }
+
+    private string checkIfAvailable (
+      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
+    {
+      return !client && _client
+             ? "This operation isn't available in: client"
+             : !server && !_client
+               ? "This operation isn't available in: server"
+               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
     private bool checkIfValidReceivedFrame (WebSocketFrame frame, out string message)
@@ -1005,7 +1005,7 @@ namespace WebSocketSharp
       var res = sendHandshakeRequest ();
 
       string msg;
-      if (!checkIfValidHandshakeResponse (res, out msg))
+      if (!checkHandshakeResponse (res, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
