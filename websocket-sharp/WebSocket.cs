@@ -773,7 +773,7 @@ namespace WebSocketSharp
                : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
-    private bool checkIfValidReceivedFrame (WebSocketFrame frame, out string message)
+    private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
 
@@ -1224,7 +1224,7 @@ namespace WebSocketSharp
     private bool processReceivedFrame (WebSocketFrame frame)
     {
       string msg;
-      if (!checkIfValidReceivedFrame (frame, out msg))
+      if (!checkReceivedFrame (frame, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
