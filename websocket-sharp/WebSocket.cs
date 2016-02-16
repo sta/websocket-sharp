@@ -750,7 +750,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (!validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])) {
+      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
         message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
         return false;
       }
@@ -1756,7 +1756,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool validateSecWebSocketProtocolHeader (string value)
+    private bool validateSecWebSocketProtocolServerHeader (string value)
     {
       if (value == null)
         return !_protocolsRequested;
