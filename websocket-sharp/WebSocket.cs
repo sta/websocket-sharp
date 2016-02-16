@@ -716,6 +716,11 @@ namespace WebSocketSharp
         return false;
       }
 
+      if (!validateSecWebSocketProtocolClientHeader (headers["Sec-WebSocket-Protocol"])) {
+        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+        return false;
+      }
+
       return true;
     }
 
@@ -1742,6 +1747,12 @@ namespace WebSocketSharp
     private bool validateSecWebSocketKeyHeader (string value)
     {
       return value != null && value.Length > 0;
+    }
+
+    // As server
+    private bool validateSecWebSocketProtocolClientHeader (string value)
+    {
+      return value == null || value.Length > 0;
     }
 
     // As client
