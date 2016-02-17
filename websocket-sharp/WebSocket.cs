@@ -721,6 +721,13 @@ namespace WebSocketSharp
         return false;
       }
 
+      if (!_ignoreExtensions
+          && !validateSecWebSocketExtensionsClientHeader (headers["Sec-WebSocket-Extensions"])
+      ) {
+        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+        return false;
+      }
+
       return true;
     }
 
@@ -1695,6 +1702,12 @@ namespace WebSocketSharp
     private bool validateSecWebSocketAcceptHeader (string value)
     {
       return value != null && value == CreateResponseKey (_base64Key);
+    }
+
+    // As server
+    private bool validateSecWebSocketExtensionsClientHeader (string value)
+    {
+      return value == null || value.Length > 0;
     }
 
     // As client
