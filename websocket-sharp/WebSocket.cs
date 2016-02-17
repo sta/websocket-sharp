@@ -762,7 +762,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])) {
+      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
         message = "Includes an invalid Sec-WebSocket-Extensions header.";
         return false;
       }
@@ -1711,7 +1711,7 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool validateSecWebSocketExtensionsHeader (string value)
+    private bool validateSecWebSocketExtensionsServerHeader (string value)
     {
       if (value == null)
         return true;
