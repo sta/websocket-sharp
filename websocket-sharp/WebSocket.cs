@@ -685,7 +685,7 @@ namespace WebSocketSharp
         processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
 
       if (!_ignoreExtensions)
-        processSecWebSocketExtensionsHeader (_context.Headers["Sec-WebSocket-Extensions"]);
+        processSecWebSocketExtensionsClientHeader (_context.Headers["Sec-WebSocket-Extensions"]);
 
       return sendHttpResponse (createHandshakeResponse ());
     }
@@ -1254,7 +1254,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    private void processSecWebSocketExtensionsHeader (string value)
+    private void processSecWebSocketExtensionsClientHeader (string value)
     {
       if (value == null)
         return;
