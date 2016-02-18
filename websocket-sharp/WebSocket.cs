@@ -1256,7 +1256,7 @@ namespace WebSocketSharp
     // As server
     private void processSecWebSocketExtensionsHeader (string value)
     {
-      if (value == null || value.Length == 0)
+      if (value == null)
         return;
 
       var buff = new StringBuilder (80);
