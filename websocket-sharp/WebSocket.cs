@@ -1017,8 +1017,12 @@ namespace WebSocketSharp
       var res = sendHandshakeRequest ();
 
       string msg;
-      if (!checkHandshakeResponse (res, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkHandshakeResponse (res, out msg)) {
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while connecting.", CloseStatusCode.ProtocolError);
+
+        return false;
+      }
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
