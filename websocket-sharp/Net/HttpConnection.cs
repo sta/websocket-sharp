@@ -169,7 +169,11 @@ namespace WebSocketSharp.Net
     {
         var state = result.AsyncState as HttpSecureConnectionState;
         var stream = state.Connection.Stream as SslStream;
-        stream.EndAuthenticateAsServer(result);
+        try {
+            stream.EndAuthenticateAsServer(result);
+        } catch(IOException) {
+            stream.Close();
+        }
         FinishSetup(state.Connection, state.Callback);
     }
 
