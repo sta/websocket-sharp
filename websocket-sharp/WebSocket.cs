@@ -671,12 +671,20 @@ namespace WebSocketSharp
       string msg;
       if (!checkHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while accepting.", CloseStatusCode.ProtocolError);
+
+        return false;
       }
 
       if (!customCheckHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
-        throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
+
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while accepting.", CloseStatusCode.PolicyViolation);
+
+        return false;
       }
 
       _base64Key = _context.Headers["Sec-WebSocket-Key"];
