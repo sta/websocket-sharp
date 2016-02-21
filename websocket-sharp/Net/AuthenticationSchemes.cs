@@ -2,13 +2,13 @@
 /*
  * AuthenticationSchemes.cs
  *
- * This code is derived from System.Net.AuthenticationSchemes.cs of Mono
+ * This code is derived from AuthenticationSchemes.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,25 +42,25 @@ using System;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Contains the values of the schemes for authentication.
+  /// Specifies the scheme for authentication.
   /// </summary>
   [Flags]
   public enum AuthenticationSchemes
   {
     /// <summary>
-    /// Indicates that no authentication is allowed.
+    /// No authentication is allowed.
     /// </summary>
     None,
     /// <summary>
-    /// Indicates digest authentication.
+    /// Specifies digest authentication.
     /// </summary>
     Digest = 1,
     /// <summary>
-    /// Indicates basic authentication.
+    /// Specifies basic authentication.
     /// </summary>
     Basic = 8,
     /// <summary>
-    /// Indicates anonymous authentication.
+    /// Specifies anonymous authentication.
     /// </summary>
     Anonymous = 0x8000
   }
