@@ -44,7 +44,6 @@ namespace WebSocketSharp.Net
   /// <summary>
   /// Specifies the scheme for authentication.
   /// </summary>
-  [Flags]
   public enum AuthenticationSchemes
   {
     /// <summary>
