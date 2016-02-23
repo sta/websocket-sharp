@@ -793,6 +793,23 @@ namespace WebSocketSharp
                : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
+    private bool checkIfAvailable (bool client, bool server, out string message)
+    {
+      message = null;
+
+      if (!client && _client) {
+        message = "This operation isn't available in: client";
+        return false;
+      }
+
+      if (!server && !_client) {
+        message = "This operation isn't available in: server";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
