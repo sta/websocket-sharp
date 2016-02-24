@@ -811,6 +811,13 @@ namespace WebSocketSharp
     }
 
     private bool checkIfAvailable (
+      bool connecting, bool open, bool closing, bool closed, out string message
+    )
+    {
+      return checkIfAvailable (true, true, connecting, open, closing, closed, out message);
+    }
+
+    private bool checkIfAvailable (
       bool client,
       bool server,
       bool connecting,
