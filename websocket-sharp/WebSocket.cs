@@ -2494,7 +2494,8 @@ namespace WebSocketSharp
           if (connector.EndInvoke (ar))
             open ();
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
