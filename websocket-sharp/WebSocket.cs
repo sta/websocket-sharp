@@ -797,7 +797,29 @@ namespace WebSocketSharp
       bool connecting, bool open, bool closing, bool closed, out string message
     )
     {
-      return checkIfAvailable (true, true, connecting, open, closing, closed, out message);
+      message = null;
+
+      if (!connecting && _readyState == WebSocketState.Connecting) {
+        message = "This operation isn't available in: connecting";
+        return false;
+      }
+
+      if (!open && _readyState == WebSocketState.Open) {
+        message = "This operation isn't available in: open";
+        return false;
+      }
+
+      if (!closing && _readyState == WebSocketState.Closing) {
+        message = "This operation isn't available in: closing";
+        return false;
+      }
+
+      if (!closed && _readyState == WebSocketState.Closed) {
+        message = "This operation isn't available in: closed";
+        return false;
+      }
+
+      return true;
     }
 
     private bool checkIfAvailable (
@@ -822,27 +844,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (!connecting && _readyState == WebSocketState.Connecting) {
-        message = "This operation isn't available in: connecting";
-        return false;
-      }
-
-      if (!open && _readyState == WebSocketState.Open) {
-        message = "This operation isn't available in: open";
-        return false;
-      }
-
-      if (!closing && _readyState == WebSocketState.Closing) {
-        message = "This operation isn't available in: closing";
-        return false;
-      }
-
-      if (!closed && _readyState == WebSocketState.Closed) {
-        message = "This operation isn't available in: closed";
-        return false;
-      }
-
-      return true;
+      return checkIfAvailable (connecting, open, closing, closed, out message);
     }
 
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
