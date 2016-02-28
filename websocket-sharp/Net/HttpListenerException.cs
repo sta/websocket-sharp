@@ -47,35 +47,37 @@ namespace WebSocketSharp.Net
   /// The exception that is thrown when a <see cref="HttpListener"/> gets an error
   /// processing an HTTP request.
   /// </summary>
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
   [Serializable]
-  public class HttpListenerException : Win32Exception
+#endif
+    public class HttpListenerException : Win32Exception
   {
-    #region Protected Constructors
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerException"/> class from
-    /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
-    /// </summary>
-    /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that contains the serialized object data.
-    /// </param>
-    /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
-    /// </param>
-    protected HttpListenerException (
+        #region Protected Constructors
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpListenerException"/> class from
+        /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
+        /// </summary>
+        /// <param name="serializationInfo">
+        /// A <see cref="SerializationInfo"/> that contains the serialized object data.
+        /// </param>
+        /// <param name="streamingContext">
+        /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
+        /// </param>
+        protected HttpListenerException (
       SerializationInfo serializationInfo, StreamingContext streamingContext)
       : base (serializationInfo, streamingContext)
     {
     }
+#endif
+#endregion
 
-    #endregion
+        #region Public Constructors
 
-    #region Public Constructors
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HttpListenerException"/> class.
-    /// </summary>
-    public HttpListenerException ()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpListenerException"/> class.
+        /// </summary>
+        public HttpListenerException ()
     {
     }
 
@@ -106,9 +108,9 @@ namespace WebSocketSharp.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the error code that identifies the error that occurred.
@@ -122,6 +124,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    #endregion
+#endregion
   }
 }

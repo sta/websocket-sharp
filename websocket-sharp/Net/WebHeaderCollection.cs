@@ -1427,24 +1427,24 @@ namespace WebSocketSharp.Net
       return buff.Append ("\r\n").ToString ();
     }
 
-    #endregion
+        #endregion
 
-    #region Explicit Interface Implementations
-
-    /// <summary>
-    /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
-    /// the current <see cref="WebHeaderCollection"/>.
-    /// </summary>
-    /// <param name="serializationInfo">
-    /// A <see cref="SerializationInfo"/> that holds the serialized object data.
-    /// </param>
-    /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="serializationInfo"/> is <see langword="null"/>.
-    /// </exception>
-    [SecurityPermission (
+#region Explicit Interface Implementations
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
+        /// <summary>
+        /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
+        /// the current <see cref="WebHeaderCollection"/>.
+        /// </summary>
+        /// <param name="serializationInfo">
+        /// A <see cref="SerializationInfo"/> that holds the serialized object data.
+        /// </param>
+        /// <param name="streamingContext">
+        /// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
+        /// </param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="serializationInfo"/> is <see langword="null"/>.
+        /// </exception>
+        [SecurityPermission (
       SecurityAction.LinkDemand,
       Flags = SecurityPermissionFlag.SerializationFormatter,
       SerializationFormatter = true)]
@@ -1453,7 +1453,7 @@ namespace WebSocketSharp.Net
     {
       GetObjectData (serializationInfo, streamingContext);
     }
-
-    #endregion
+#endif
+#endregion
   }
 }

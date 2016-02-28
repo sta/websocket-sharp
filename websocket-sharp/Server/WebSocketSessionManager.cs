@@ -401,7 +401,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (data.LongLength <= WebSocket.FragmentLength)
+      if (data.Length <= WebSocket.FragmentLength)
         broadcast (Opcode.Binary, data, null);
       else
         broadcast (Opcode.Binary, new MemoryStream (data), null);
@@ -424,7 +424,7 @@ namespace WebSocketSharp.Server
       }
 
       var bytes = data.UTF8Encode ();
-      if (bytes.LongLength <= WebSocket.FragmentLength)
+      if (bytes.Length <= WebSocket.FragmentLength)
         broadcast (Opcode.Text, bytes, null);
       else
         broadcast (Opcode.Text, new MemoryStream (bytes), null);
@@ -454,7 +454,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (data.LongLength <= WebSocket.FragmentLength)
+      if (data.Length <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Binary, data, completed);
       else
         broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
@@ -485,7 +485,7 @@ namespace WebSocketSharp.Server
       }
 
       var bytes = data.UTF8Encode ();
-      if (bytes.LongLength <= WebSocket.FragmentLength)
+      if (bytes.Length <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Text, bytes, completed);
       else
         broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);

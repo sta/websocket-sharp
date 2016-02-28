@@ -46,24 +46,26 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  /// <summary>
-  /// Provides a set of methods and properties used to manage an HTTP Cookie.
-  /// </summary>
-  /// <remarks>
-  ///   <para>
-  ///   The Cookie class supports the following cookie formats:
-  ///   <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>,
-  ///   <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see>, and
-  ///   <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>
-  ///   </para>
-  ///   <para>
-  ///   The Cookie class cannot be inherited.
-  ///   </para>
-  /// </remarks>
-  [Serializable]
+    /// <summary>
+    /// Provides a set of methods and properties used to manage an HTTP Cookie.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   The Cookie class supports the following cookie formats:
+    ///   <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>,
+    ///   <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see>, and
+    ///   <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>
+    ///   </para>
+    ///   <para>
+    ///   The Cookie class cannot be inherited.
+    ///   </para>
+    /// </remarks>
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
+    [Serializable]
+#endif
   public sealed class Cookie
   {
-    #region Private Fields
+#region Private Fields
 
     private string                 _comment;
     private Uri                    _commentUri;
@@ -82,9 +84,9 @@ namespace WebSocketSharp.Net
     private string                 _value;
     private int                    _version;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static Cookie ()
     {
@@ -92,9 +94,9 @@ namespace WebSocketSharp.Net
       _reservedCharsForValue = new[] { ';', ',' };
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class.
@@ -244,9 +246,9 @@ namespace WebSocketSharp.Net
       Domain = domain;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal bool ExactDomain {
       get; set;
@@ -274,9 +276,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the value of the Comment attribute of the cookie.
@@ -576,9 +578,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static bool canSetName (string name, out string message)
     {
@@ -712,9 +714,9 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     // From client to server
     internal string ToRequestString (Uri uri)
@@ -757,9 +759,9 @@ namespace WebSocketSharp.Net
              : String.Empty;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Determines whether the specified <see cref="Object"/> is equal to the current
@@ -817,6 +819,6 @@ namespace WebSocketSharp.Net
       return ToRequestString (null);
     }
 
-    #endregion
+#endregion
   }
 }

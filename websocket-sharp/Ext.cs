@@ -75,7 +75,7 @@ namespace WebSocketSharp
 
     private static byte[] compress (this byte[] data)
     {
-      if (data.LongLength == 0)
+      if (data.Length == 0)
         //return new byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
         return data;
 
@@ -110,7 +110,7 @@ namespace WebSocketSharp
 
     private static byte[] decompress (this byte[] data)
     {
-      if (data.LongLength == 0)
+      if (data.Length == 0)
         return data;
 
       using (var input = new MemoryStream (data))
@@ -275,17 +275,21 @@ namespace WebSocketSharp
       };
 
       return contains (0);
-    }
+        }
 
-    internal static T[] Copy<T> (this T[] source, long length)
-    {
-      var dest = new T[length];
-      Array.Copy (source, 0, dest, 0, length);
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        internal static T[] Copy<T> (this T[] source, int length)
+#else
+        internal static T[] Copy<T>(this T[] source, long length)
+#endif
+        {
+            var dest = new T[length];
+            Array.Copy(source, 0, dest, 0, length);
 
-      return dest;
-    }
+            return dest;
+        }
 
-    internal static void CopyTo (this Stream source, Stream destination, int bufferLength)
+        internal static void CopyTo (this Stream source, Stream destination, int bufferLength)
     {
       var buff = new byte[bufferLength];
       var nread = 0;
@@ -830,7 +834,7 @@ namespace WebSocketSharp
     internal static System.Net.IPAddress ToIPAddress (this string hostnameOrAddress)
     {
       try {
-        return System.Net.Dns.GetHostAddresses (hostnameOrAddress)[0];
+        return DnsHelper.GetHostAddresses (hostnameOrAddress)[0];
       }
       catch {
         return null;
@@ -980,9 +984,9 @@ namespace WebSocketSharp
         });
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Determines whether the specified <see cref="string"/> contains any of characters in
@@ -1289,7 +1293,7 @@ namespace WebSocketSharp
         return true;
 
       var host = System.Net.Dns.GetHostName ();
-      var addrs = System.Net.Dns.GetHostAddresses (host);
+      var addrs = DnsHelper.GetHostAddresses (host);
       foreach (var addr in addrs)
         if (address.Equals (addr))
           return true;
@@ -1452,31 +1456,32 @@ namespace WebSocketSharp
       return subArray;
     }
 
-    /// <summary>
-    /// Retrieves a sub-array from the specified <paramref name="array"/>. A sub-array starts at
-    /// the specified element position in <paramref name="array"/>.
-    /// </summary>
-    /// <returns>
-    /// An array of T that receives a sub-array, or an empty array of T if any problems with
-    /// the parameters.
-    /// </returns>
-    /// <param name="array">
-    /// An array of T from which to retrieve a sub-array.
-    /// </param>
-    /// <param name="startIndex">
-    /// A <see cref="long"/> that represents the zero-based starting position of
-    /// a sub-array in <paramref name="array"/>.
-    /// </param>
-    /// <param name="length">
-    /// A <see cref="long"/> that represents the number of elements to retrieve.
-    /// </param>
-    /// <typeparam name="T">
-    /// The type of elements in <paramref name="array"/>.
-    /// </typeparam>
-    public static T[] SubArray<T> (this T[] array, long startIndex, long length)
+        /// <summary>
+        /// Retrieves a sub-array from the specified <paramref name="array"/>. A sub-array starts at
+        /// the specified element position in <paramref name="array"/>.
+        /// </summary>
+        /// <returns>
+        /// An array of T that receives a sub-array, or an empty array of T if any problems with
+        /// the parameters.
+        /// </returns>
+        /// <param name="array">
+        /// An array of T from which to retrieve a sub-array.
+        /// </param>
+        /// <param name="startIndex">
+        /// A <see cref="long"/> that represents the zero-based starting position of
+        /// a sub-array in <paramref name="array"/>.
+        /// </param>
+        /// <param name="length">
+        /// A <see cref="long"/> that represents the number of elements to retrieve.
+        /// </param>
+        /// <typeparam name="T">
+        /// The type of elements in <paramref name="array"/>.
+        /// </typeparam>
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
+    public static T[] SubArray<T>(this T[] array, long startIndex, long length)
     {
       long len;
-      if (array == null || (len = array.LongLength) == 0)
+      if (array == null || (len = array.Length) == 0)
         return new T[0];
 
       if (startIndex < 0 || length <= 0 || startIndex + length > len)
@@ -1490,6 +1495,7 @@ namespace WebSocketSharp
 
       return subArray;
     }
+#endif
 
     /// <summary>
     /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
@@ -1873,7 +1879,7 @@ namespace WebSocketSharp
       if (content == null)
         throw new ArgumentNullException ("content");
 
-      var len = content.LongLength;
+      var len = content.Length;
       if (len == 0) {
         response.Close ();
         return;
@@ -1889,6 +1895,6 @@ namespace WebSocketSharp
       output.Close ();
     }
 
-    #endregion
+#endregion
   }
 }

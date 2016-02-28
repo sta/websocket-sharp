@@ -84,7 +84,7 @@ namespace WebSocketSharp
     }
 
     internal PayloadData (byte[] data)
-      : this (data, data.LongLength)
+      : this (data, data.Length)
     {
     }
 

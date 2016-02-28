@@ -1,0 +1,70 @@
+﻿{
+    "title": "websocket-sharp.dnx",
+    "version": "1.0.2-beta-00001",
+    "description": "A C# corednx implementation of the WebSocket protocol client and server.",
+    "authors": [ "sta", "Stef Heyenrath" ],
+    "tags": [ "" ],
+    "projectUrl": "https://github.com/StefH/websocket-sharp",
+    "licenseUrl": "https://raw.githubusercontent.com/sta/websocket-sharp/master/LICENSE.txt",
+
+    "compileExclude": [
+    ],
+
+    "compile": [
+        "../websocket-sharp/*.cs",
+        "../websocket-sharp/Helpers/*.cs",
+        "../websocket-sharp/Server/*.cs",
+        "../websocket-sharp/Net/*.cs",
+        "../websocket-sharp/Net/WebSockets/*.cs"
+    ],
+
+    "frameworks": {
+        "net452": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "dnxcore5": {
+            "dependencies": {
+                "Microsoft.CSharp": "4.0.1-beta-*",
+
+                "System.Runtime": "4.0.21-beta-*",
+                "System.Runtime.Serialization.Primitives": "4.1.0-beta-*",
+
+                "System.Collections": "4.0.11-beta-*",
+
+                "System.Console": "4.0.0-beta-*",
+
+                "System.Net.NameResolution": "4.0.0-beta-*",
+                "System.Net.NetworkInformation": "4.1.0-beta-*",
+                "System.Net.Security": "4.0.0-beta-*",
+                "System.Net.Http": "4.0.1-beta-*",
+                "System.Net.Primitives": "4.0.11-beta-*",
+
+                "System.Security.Principal": "4.0.1-beta-*",
+                "System.Security.Cryptography.Algorithms": "4.0.0-beta-*",
+                "System.Security.Cryptography.Cng": "4.0.0-beta-*",
+                "System.Security.Cryptography.Primitives": "4.0.0-beta-*",
+
+                "System.Threading": "4.0.11-beta-*",
+                "System.Threading.Thread": "4.0.0-beta-*",
+                "System.Threading.Tasks": "4.0.11-beta-*",
+                "System.Threading.ThreadPool": "4.0.10-beta-*",
+
+                "System.Reflection": "4.1.0-beta-*",
+                "System.Reflection.Extensions": "4.0.1-beta-*",
+                "System.Reflection.Primitives": "4.0.1-beta-*",
+                "System.Reflection.TypeExtensions": "4.1.0-beta-*",
+
+                "System.ServiceModel.Primitives": "4.1.0-beta-*",
+                "System.ServiceModel.Security": "4.0.1-beta-*",
+                "System.ServiceModel.Http": "4.0.11-beta-*",
+                "System.ServiceModel.NetTcp": "4.0.1-beta-*",
+
+                "System.Private.Networking": "4.0.1-beta-*"
+            }
+        }
+    }
+}

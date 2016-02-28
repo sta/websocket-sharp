@@ -588,7 +588,7 @@ Extended Payload Length: {7}
                   ? stream.ReadBytes ((int) len)
                   : stream.ReadBytes (llen, 1024);
 
-      if (bytes.LongLength != llen)
+      if (bytes.Length != llen)
         throw new WebSocketException (
           "The payload data of a frame cannot be read from the stream.");
 
@@ -615,7 +615,7 @@ Extended Payload Length: {7}
 
       var llen = (long) len;
       Action<byte[]> compl = bytes => {
-        if (bytes.LongLength != llen)
+        if (bytes.Length != llen)
           throw new WebSocketException (
             "The payload data of a frame cannot be read from the stream.");
 

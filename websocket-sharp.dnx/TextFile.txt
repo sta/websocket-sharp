@@ -1,0 +1,63 @@
+﻿"net20": {
+            "frameworkAssemblies": {
+                "System": "",
+                "System.Core": "",
+                "System.ServiceModel": ""
+            }
+        },
+        "net35": {
+            "frameworkAssemblies": {
+                "System": "",
+                "System.Core": "",
+                "System.ServiceModel": ""
+            }
+        },
+        "net45": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "net46": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "net451": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "net452": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "dnx451": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "dnx452": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },
+        "dnx46": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Core": "4.0.0.0",
+                "System.ServiceModel": "4.0.0.0"
+            }
+        },

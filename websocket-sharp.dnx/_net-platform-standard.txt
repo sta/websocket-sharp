@@ -1,0 +1,27 @@
+﻿https://github.com/dotnet/corefx/blob/master/Documentation/architecture/net-platform-standard.md#mapping-the-net-platform-standard-to-platforms
+
++-------------------------------------+-----------------------+
+|              Platform               |   NuGet identifier    |
++-------------------------------------+-----------------------+
+| .NET Framework 2.0 - 4.6            | net20 - net46         |
+| .NET Micro Framework                | netmf                 |
+| Windows 8                           | win8, netcore45       |
+| Windows 8.1                         | win8, netcore451      |
+| Windows Phone Silverlight (8, 8.1)  | wp8, wp81             |
+| Windows Phone 8.1                   | wpa8.1                |
+| Universal Windows Platform 10       | uap10, netcore50      |
+| DNX on .NET Framework 4.5.1 - 4.6   | dnx451 - dnx46        |
+| DNX on .NET Core 5.0                | dnxcore50             |
+| Silverlight 4, 5                    | sl4, sl5              |
+| MonoAndroid                         | monoandroid           |
+| MonoTouch                           | monotouch             |
+| MonoMac                             | monomac               |
+| Xamarin iOS                         | xamarinios            |
+| Xamarin PlayStation 3               | xamarinpsthree        |
+| Xamarin PlayStation 4               | xamarinpsfour         |
+| Xamarin PlayStation Vita            | xamarinpsvita         |
+| Xamarin Watch OS                    | xamarinwatchos        |
+| Xamarin TV OS                       | xamarintvos           |
+| Xamarin Xbox 360                    | xamarinxboxthreesixty |
+| Xamarin Xbox One                    | xamarinxboxone        |
++-------------------------------------+-----------------------+
