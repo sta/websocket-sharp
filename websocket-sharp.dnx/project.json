@@ -19,16 +19,12 @@
     ],
 
     "frameworks": {
-        "net452": {
-            "frameworkAssemblies": {
-                "System": "4.0.0.0",
-                "System.Core": "4.0.0.0",
-                "System.ServiceModel": "4.0.0.0"
-            }
-        },
+
         "dnxcore5": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.1-beta-*",
+
+                "System.Globalization.Extensions": "4.0.0-beta-*",
 
                 "System.Runtime": "4.0.21-beta-*",
                 "System.Runtime.Serialization.Primitives": "4.1.0-beta-*",
@@ -37,6 +33,8 @@
 
                 "System.Console": "4.0.0-beta-*",
 
+                "System.Diagnostics.StackTrace": "4.0.1-beta-*",
+
                 "System.Net.NameResolution": "4.0.0-beta-*",
                 "System.Net.NetworkInformation": "4.1.0-beta-*",
                 "System.Net.Security": "4.0.0-beta-*",
@@ -44,8 +42,16 @@
                 "System.Net.Primitives": "4.0.11-beta-*",
 
                 "System.Security.Principal": "4.0.1-beta-*",
+       
+                
                 "System.Security.Cryptography.Algorithms": "4.0.0-beta-*",
+                "System.Security.Cryptography.Csp": "4.0.0-beta-*",
                 "System.Security.Cryptography.Cng": "4.0.0-beta-*",
+               
+                "System.Security.Cryptography.OpenSsl": "4.0.0-beta-*",
+           
+                "System.Security.Cryptography.Encoding": "4.0.0-beta-*",
+                 
                 "System.Security.Cryptography.Primitives": "4.0.0-beta-*",
 
                 "System.Threading": "4.0.11-beta-*",

@@ -1,5 +1,4 @@
 ﻿//using System;
-//using WebSocketSharp.ReflectionExtensions;
 
 //namespace WebSocketSharp
 //{
@@ -7,7 +6,7 @@
 //    {
 //        public static bool IsAssignableFrom(this Type type, Type c)
 //        {
-//#if DNXCORE50 || UAP10_0
+//#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
 //            return type.GetTypeInfo().IsAssignableFrom(c);
 //#else
 //            return type.IsAssignableFrom(c);

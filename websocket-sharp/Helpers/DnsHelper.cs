@@ -10,7 +10,7 @@ namespace WebSocketSharp
             return Dns.GetHostAddressesAsync(hostNameOrAddress).Result;
 #else
             return Dns.GetHostAddresses(hostNameOrAddress);
+#endif
         }
     }
 }
-#endif
