@@ -793,6 +793,60 @@ namespace WebSocketSharp
                : _readyState.CheckIfAvailable (connecting, open, closing, closed);
     }
 
+    private bool checkIfAvailable (
+      bool connecting, bool open, bool closing, bool closed, out string message
+    )
+    {
+      message = null;
+
+      if (!connecting && _readyState == WebSocketState.Connecting) {
+        message = "This operation isn't available in: connecting";
+        return false;
+      }
+
+      if (!open && _readyState == WebSocketState.Open) {
+        message = "This operation isn't available in: open";
+        return false;
+      }
+
+      if (!closing && _readyState == WebSocketState.Closing) {
+        message = "This operation isn't available in: closing";
+        return false;
+      }
+
+      if (!closed && _readyState == WebSocketState.Closed) {
+        message = "This operation isn't available in: closed";
+        return false;
+      }
+
+      return true;
+    }
+
+    private bool checkIfAvailable (
+      bool client,
+      bool server,
+      bool connecting,
+      bool open,
+      bool closing,
+      bool closed,
+      out string message
+    )
+    {
+      message = null;
+
+      if (!client && _client) {
+        message = "This operation isn't available in: client";
+        return false;
+      }
+
+      if (!server && !_client) {
+        message = "This operation isn't available in: server";
+        return false;
+      }
+
+      return checkIfAvailable (connecting, open, closing, closed, out message);
+    }
+
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
@@ -891,27 +945,28 @@ namespace WebSocketSharp
     private bool connect ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfAvailable (true, false, false, true);
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in connecting.", null);
 
           return false;
         }
 
-        _readyState = WebSocketState.Connecting;
         try {
-          if (doHandshake ()) {
-            _readyState = WebSocketState.Open;
-            return true;
-          }
+          _readyState = WebSocketState.Connecting;
+          if (!doHandshake ())
+            return false;
+
+          _readyState = WebSocketState.Open;
+          return true;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while connecting.", ex);
-        }
 
-        return false;
+          return false;
+        }
       }
     }
 
@@ -2403,8 +2458,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void Connect ()
     {
-      var msg = checkIfAvailable (true, false, true, false, false, true);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
 
@@ -2428,8 +2483,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void ConnectAsync ()
     {
-      var msg = checkIfAvailable (true, false, true, false, false, true);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
 
@@ -2442,7 +2497,8 @@ namespace WebSocketSharp
           if (connector.EndInvoke (ar))
             open ();
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
