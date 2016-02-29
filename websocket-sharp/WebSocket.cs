@@ -953,19 +953,20 @@ namespace WebSocketSharp
           return false;
         }
 
-        _readyState = WebSocketState.Connecting;
         try {
-          if (doHandshake ()) {
-            _readyState = WebSocketState.Open;
-            return true;
-          }
+          _readyState = WebSocketState.Connecting;
+          if (!doHandshake ())
+            return false;
+
+          _readyState = WebSocketState.Open;
+          return true;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while connecting.", ex);
-        }
 
-        return false;
+          return false;
+        }
       }
     }
 
