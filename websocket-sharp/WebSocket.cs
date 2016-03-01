@@ -2088,8 +2088,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void Accept ()
     {
-      var msg = checkIfAvailable (false, true, true, false, false, false);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (false, true, true, false, false, false, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in accepting.", null);
 
