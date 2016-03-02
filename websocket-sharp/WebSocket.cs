@@ -2081,7 +2081,7 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Accepts the WebSocket connection request.
+    /// Accepts the WebSocket handshake request.
     /// </summary>
     /// <remarks>
     /// This method isn't available in a client.
