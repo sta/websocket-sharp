@@ -2127,7 +2127,8 @@ namespace WebSocketSharp
           if (acceptor.EndInvoke (ar))
             open ();
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
