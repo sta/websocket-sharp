@@ -2101,7 +2101,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Accepts the WebSocket connection request asynchronously.
+    /// Accepts the WebSocket handshake request asynchronously.
     /// </summary>
     /// <remarks>
     ///   <para>
