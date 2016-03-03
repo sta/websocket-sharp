@@ -640,8 +640,8 @@ namespace WebSocketSharp
     private bool accept ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfAvailable (true, false, false, false);
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, false, false, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in accepting.", null);
 
