@@ -649,17 +649,18 @@ namespace WebSocketSharp
         }
 
         try {
-          if (acceptHandshake ()) {
-            _readyState = WebSocketState.Open;
-            return true;
-          }
+          if (!acceptHandshake ())
+            return false;
+
+          _readyState = WebSocketState.Open;
+          return true;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while accepting.", ex);
-        }
 
-        return false;
+          return false;
+        }
       }
     }
 
