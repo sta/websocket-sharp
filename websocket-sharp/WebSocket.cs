@@ -1994,15 +1994,19 @@ namespace WebSocketSharp
     internal void InternalAccept ()
     {
       try {
-        if (acceptHandshake ()) {
-          _readyState = WebSocketState.Open;
-          open ();
-        }
+        if (!acceptHandshake ())
+          return;
+
+        _readyState = WebSocketState.Open;
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
         fatal ("An exception has occurred while accepting.", ex);
+
+        return;
       }
+
+      open ();
     }
 
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
