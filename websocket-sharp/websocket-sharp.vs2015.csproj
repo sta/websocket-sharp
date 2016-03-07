@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\CultureInfoHelper.cs" />
     <Compile Include="Helpers\DnsHelper.cs" />
     <Compile Include="MessageEventArgs.cs" />

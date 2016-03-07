@@ -12,6 +12,7 @@
 
     "compile": [
         "../websocket-sharp/*.cs",
+        "../websocket-sharp/Extensions/*.cs",
         "../websocket-sharp/Helpers/*.cs",
         "../websocket-sharp/Server/*.cs",
         "../websocket-sharp/Net/*.cs",

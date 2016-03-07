@@ -56,9 +56,14 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Provides a collection of the HTTP headers associated with a request or response.
     /// </summary>
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
     [Serializable]
     [ComVisible(true)]
     public class WebHeaderCollection : NameValueCollection, ISerializable
+#else
+    [ComVisible(true)]
+    public class WebHeaderCollection : NameValueCollection
+#endif
     {
         #region Private Fields
 
@@ -66,9 +71,9 @@ namespace WebSocketSharp.Net
         private bool _internallyUsed;
         private HttpHeaderType _state;
 
-        #endregion
+#endregion
 
-        #region Static Constructor
+#region Static Constructor
 
         static WebHeaderCollection()
         {
@@ -449,9 +454,9 @@ namespace WebSocketSharp.Net
               };
         }
 
-        #endregion
+#endregion
 
-        #region Internal Constructors
+#region Internal Constructors
 
         internal WebHeaderCollection(HttpHeaderType state, bool internallyUsed)
         {
@@ -459,10 +464,10 @@ namespace WebSocketSharp.Net
             _internallyUsed = internallyUsed;
         }
 
-        #endregion
+#endregion
 
-        #region Protected Constructors
-
+#region Protected Constructors
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
         /// <summary>
         /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class from
         /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
@@ -503,10 +508,10 @@ namespace WebSocketSharp.Net
                 throw new ArgumentException(ex.Message, "serializationInfo", ex);
             }
         }
+#endif
+#endregion
 
-        #endregion
-
-        #region Public Constructors
+#region Public Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class.
@@ -515,9 +520,9 @@ namespace WebSocketSharp.Net
         {
         }
 
-        #endregion
+#endregion
 
-        #region Internal Properties
+#region Internal Properties
 
         internal HttpHeaderType State
         {
@@ -527,9 +532,9 @@ namespace WebSocketSharp.Net
             }
         }
 
-        #endregion
+#endregion
 
-        #region Public Properties
+#region Public Properties
 
         /// <summary>
         /// Gets all header names in the collection.
@@ -656,9 +661,9 @@ namespace WebSocketSharp.Net
             }
         }
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         private void add(string name, string value, bool ignoreRestricted)
         {
@@ -806,9 +811,9 @@ namespace WebSocketSharp.Net
             doWithoutCheckingName(base.Set, name, value);
         }
 
-        #endregion
+#endregion
 
-        #region Internal Methods
+#region Internal Methods
 
         internal static string Convert(HttpRequestHeader header)
         {
@@ -876,9 +881,9 @@ namespace WebSocketSharp.Net
             return buff.Append("\r\n").ToString();
         }
 
-        #endregion
+#endregion
 
-        #region Protected Methods
+#region Protected Methods
 
         /// <summary>
         /// Adds a header to the collection without checking if the header is on
@@ -908,9 +913,9 @@ namespace WebSocketSharp.Net
             add(headerName, headerValue, true);
         }
 
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
 
         /// <summary>
         /// Adds the specified <paramref name="header"/> to the collection.
@@ -1249,9 +1254,11 @@ namespace WebSocketSharp.Net
         /// <param name="sender">
         /// An <see cref="object"/> that represents the source of the deserialization event.
         /// </param>
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
         public override void OnDeserialization(object sender)
         {
         }
+#endif
 
         /// <summary>
         /// Removes the specified request <paramref name="header"/> from the collection.
@@ -1448,9 +1455,9 @@ namespace WebSocketSharp.Net
             return buff.Append("\r\n").ToString();
         }
 
-        #endregion
+#endregion
 
-        #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 #if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
         /// <summary>
         /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
@@ -1475,6 +1482,6 @@ namespace WebSocketSharp.Net
             GetObjectData(serializationInfo, streamingContext);
         }
 #endif
-        #endregion
+#endregion
     }
 }

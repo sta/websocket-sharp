@@ -572,70 +572,78 @@ Extended Payload Length: {7}
         error);
     }
 
-    private static WebSocketFrame readPayloadData (Stream stream, WebSocketFrame frame)
-    {
-      var len = frame.FullPayloadLength;
-      if (len == 0) {
-        frame._payloadData = PayloadData.Empty;
-        return frame;
-      }
+        private static WebSocketFrame readPayloadData(Stream stream, WebSocketFrame frame)
+        {
+            var len = frame.FullPayloadLength;
+            if (len == 0)
+            {
+                frame._payloadData = PayloadData.Empty;
+                return frame;
+            }
 
-      if (len > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TooBig, "A frame has a long payload length.");
+            if (len > PayloadData.MaxLength)
+                throw new WebSocketException(CloseStatusCode.TooBig, "A frame has a long payload length.");
 
-      var llen = (long) len;
-      var bytes = frame._payloadLength < 127
-                  ? stream.ReadBytes ((int) len)
-                  : stream.ReadBytes (llen, 1024);
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            int llen = (int)len;
+#else
+            long llen = (long)len;
+#endif
+            var bytes = frame._payloadLength < 127
+                  ? stream.ReadBytes((int)len)
+                  : stream.ReadBytes(llen, 1024);
 
-      if (bytes.Length != llen)
-        throw new WebSocketException (
-          "The payload data of a frame cannot be read from the stream.");
+            if (bytes.Length != llen)
+                throw new WebSocketException(
+                  "The payload data of a frame cannot be read from the stream.");
 
-      frame._payloadData = new PayloadData (bytes, llen);
-      return frame;
-    }
+            frame._payloadData = new PayloadData(bytes, llen);
+            return frame;
+        }
 
-    private static void readPayloadDataAsync (
-      Stream stream,
-      WebSocketFrame frame,
-      Action<WebSocketFrame> completed,
-      Action<Exception> error)
-    {
-      var len = frame.FullPayloadLength;
-      if (len == 0) {
-        frame._payloadData = PayloadData.Empty;
-        completed (frame);
+        private static void readPayloadDataAsync(Stream stream, WebSocketFrame frame, Action<WebSocketFrame> completed, Action<Exception> error)
+        {
+            var len = frame.FullPayloadLength;
+            if (len == 0)
+            {
+                frame._payloadData = PayloadData.Empty;
+                completed(frame);
 
-        return;
-      }
+                return;
+            }
 
-      if (len > PayloadData.MaxLength)
-        throw new WebSocketException (CloseStatusCode.TooBig, "A frame has a long payload length.");
+            if (len > PayloadData.MaxLength)
+                throw new WebSocketException(CloseStatusCode.TooBig, "A frame has a long payload length.");
 
-      var llen = (long) len;
-      Action<byte[]> compl = bytes => {
-        if (bytes.Length != llen)
-          throw new WebSocketException (
-            "The payload data of a frame cannot be read from the stream.");
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            int llen = (int)len;
+#else
+            long llen = (long)len;
+#endif
+            Action<byte[]> compl = bytes =>
+            {
+                if (bytes.Length != llen)
+                    throw new WebSocketException(
+                      "The payload data of a frame cannot be read from the stream.");
 
-        frame._payloadData = new PayloadData (bytes, llen);
-        completed (frame);
-      };
+                frame._payloadData = new PayloadData(bytes, llen);
+                completed(frame);
+            };
 
-      if (frame._payloadLength < 127) {
-        stream.ReadBytesAsync ((int) len, compl, error);
-        return;
-      }
+            if (frame._payloadLength < 127)
+            {
+                stream.ReadBytesAsync((int)len, compl, error);
+                return;
+            }
 
-      stream.ReadBytesAsync (llen, 1024, compl, error);
-    }
+            stream.ReadBytesAsync(llen, 1024, compl, error);
+        }
 
-    #endregion
+        #endregion
 
-    #region Internal Methods
+        #region Internal Methods
 
-    internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
+        internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
     {
       return new WebSocketFrame (Fin.Final, Opcode.Close, payloadData, false, mask);
     }
@@ -702,9 +710,9 @@ Extended Payload Length: {7}
       _maskingKey = WebSocket.EmptyBytes;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public IEnumerator<byte> GetEnumerator ()
     {
@@ -758,15 +766,15 @@ Extended Payload Length: {7}
       return BitConverter.ToString (ToArray ());
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
     }
 
-    #endregion
+#endregion
   }
 }

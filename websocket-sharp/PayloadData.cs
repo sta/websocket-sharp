@@ -37,17 +37,22 @@ namespace WebSocketSharp
     #region Private Fields
 
     private byte[] _data;
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+    private int   _extDataLength;
+    private int   _length;
+#else
     private long   _extDataLength;
     private long   _length;
+#endif
 
-    #endregion
+        #endregion
 
-    #region Public Fields
+        #region Public Fields
 
-    /// <summary>
-    /// Represents the empty payload data.
-    /// </summary>
-    public static readonly PayloadData Empty;
+        /// <summary>
+        /// Represents the empty payload data.
+        /// </summary>
+        public static readonly PayloadData Empty;
 
     /// <summary>
     /// Represents the allowable max length.
@@ -64,9 +69,9 @@ namespace WebSocketSharp
     /// </remarks>
     public static readonly ulong MaxLength;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static PayloadData ()
     {
@@ -74,9 +79,9 @@ namespace WebSocketSharp
       MaxLength = Int64.MaxValue;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal PayloadData ()
     {
@@ -88,35 +93,46 @@ namespace WebSocketSharp
     {
     }
 
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+    internal PayloadData (byte[] data, int length)
+#else
     internal PayloadData (byte[] data, long length)
-    {
+#endif
+        {
       _data = data;
       _length = length;
     }
 
-    #endregion
+        #endregion
 
-    #region Internal Properties
+        #region Internal Properties
 
-    internal long ExtensionDataLength {
-      get {
-        return _extDataLength;
-      }
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        internal int ExtensionDataLength
+#else
+        internal long ExtensionDataLength
+#endif
+        {
+            get
+            {
+                return _extDataLength;
+            }
 
-      set {
-        _extDataLength = value;
-      }
-    }
+            set
+            {
+                _extDataLength = value;
+            }
+        }
 
-    internal bool IncludesReservedCloseStatusCode {
+        internal bool IncludesReservedCloseStatusCode {
       get {
         return _length > 1 && _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public byte[] ApplicationData {
       get {
@@ -140,9 +156,9 @@ namespace WebSocketSharp
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void Mask (byte[] key)
     {
@@ -150,9 +166,9 @@ namespace WebSocketSharp
         _data[i] = (byte) (_data[i] ^ key[i % 4]);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public IEnumerator<byte> GetEnumerator ()
     {
@@ -170,15 +186,15 @@ namespace WebSocketSharp
       return BitConverter.ToString (_data);
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
     }
 
-    #endregion
+#endregion
   }
 }

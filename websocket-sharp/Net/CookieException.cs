@@ -38,15 +38,21 @@
 
 using System;
 using System.Runtime.Serialization;
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
 using System.Security.Permissions;
+#endif
 
 namespace WebSocketSharp.Net
 {
     /// <summary>
     /// The exception that is thrown when a <see cref="Cookie"/> gets an error.
     /// </summary>
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
     [Serializable]
     public class CookieException : FormatException, ISerializable
+#else
+    public class CookieException : FormatException
+#endif
     {
         #region Internal Constructors
 
@@ -63,7 +69,7 @@ namespace WebSocketSharp.Net
         #endregion
 
         #region Protected Constructors
-
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
         /// <summary>
         /// Initializes a new instance of the <see cref="CookieException"/> class from
         /// the specified <see cref="SerializationInfo"/> and <see cref="StreamingContext"/>.
@@ -79,8 +85,8 @@ namespace WebSocketSharp.Net
           : base(serializationInfo, streamingContext)
         {
         }
-
-        #endregion
+#endif
+#endregion
 
         #region Public Constructors
 

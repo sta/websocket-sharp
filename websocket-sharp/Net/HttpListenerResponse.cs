@@ -434,7 +434,7 @@ namespace WebSocketSharp.Net
             {
                 checkDisposedOrHeadersSent();
                 if (value < 100 || value > 999)
-                    throw new System.Net.ProtocolViolationException(
+                    throw new InvalidOperationException(
                       "A value isn't between 100 and 999 inclusive.");
 
                 _statusCode = value;

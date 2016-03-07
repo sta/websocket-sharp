@@ -44,6 +44,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using WebSocketSharp;
 
 namespace WebSocketSharp.Net
 {
@@ -192,7 +193,7 @@ namespace WebSocketSharp.Net
                     throw new ArgumentNullException("name");
 
                 foreach (var cookie in Sorted)
-                    if (cookie.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                    if (cookie.Name.EqualsInvariantCultureIgnoreCase(name))
                         return cookie;
 
                 return null;
@@ -245,23 +246,23 @@ namespace WebSocketSharp.Net
                 if (pair.Length == 0)
                     continue;
 
-                if (pair.StartsWith("$version", StringComparison.InvariantCultureIgnoreCase))
+                if (pair.StartsWithInvariantCultureIgnoreCase("$version"))
                 {
                     ver = Int32.Parse(pair.GetValue('=', true));
                 }
-                else if (pair.StartsWith("$path", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("$path"))
                 {
                     if (cookie != null)
                         cookie.Path = pair.GetValue('=');
                 }
-                else if (pair.StartsWith("$domain", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("$domain"))
                 {
                     if (cookie != null)
                         cookie.Domain = pair.GetValue('=');
                 }
-                else if (pair.StartsWith("$port", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("$port"))
                 {
-                    var port = pair.Equals("$port", StringComparison.InvariantCultureIgnoreCase)
+                    var port = pair.EqualsInvariantCultureIgnoreCase("$port")
                                ? "\"\""
                                : pair.GetValue('=');
 
@@ -313,12 +314,12 @@ namespace WebSocketSharp.Net
                 if (pair.Length == 0)
                     continue;
 
-                if (pair.StartsWith("version", StringComparison.InvariantCultureIgnoreCase))
+                if (pair.StartsWithInvariantCultureIgnoreCase("version"))
                 {
                     if (cookie != null)
                         cookie.Version = Int32.Parse(pair.GetValue('=', true));
                 }
-                else if (pair.StartsWith("expires", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("expires"))
                 {
                     var buff = new StringBuilder(pair.GetValue('='), 32);
                     if (i < pairs.Length - 1)
@@ -336,53 +337,53 @@ namespace WebSocketSharp.Net
                     if (cookie != null && cookie.Expires == DateTime.MinValue)
                         cookie.Expires = expires.ToLocalTime();
                 }
-                else if (pair.StartsWith("max-age", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("max-age"))
                 {
                     var max = Int32.Parse(pair.GetValue('=', true));
                     var expires = DateTime.Now.AddSeconds((double)max);
                     if (cookie != null)
                         cookie.Expires = expires;
                 }
-                else if (pair.StartsWith("path", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("path"))
                 {
                     if (cookie != null)
                         cookie.Path = pair.GetValue('=');
                 }
-                else if (pair.StartsWith("domain", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("domain"))
                 {
                     if (cookie != null)
                         cookie.Domain = pair.GetValue('=');
                 }
-                else if (pair.StartsWith("port", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("port"))
                 {
-                    var port = pair.Equals("port", StringComparison.InvariantCultureIgnoreCase)
+                    var port = pair.EqualsInvariantCultureIgnoreCase("port")
                                ? "\"\""
                                : pair.GetValue('=');
 
                     if (cookie != null)
                         cookie.Port = port;
                 }
-                else if (pair.StartsWith("comment", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("comment"))
                 {
                     if (cookie != null)
                         cookie.Comment = pair.GetValue('=').UrlDecode();
                 }
-                else if (pair.StartsWith("commenturl", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("commenturl"))
                 {
                     if (cookie != null)
                         cookie.CommentUri = pair.GetValue('=', true).ToUri();
                 }
-                else if (pair.StartsWith("discard", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("discard"))
                 {
                     if (cookie != null)
                         cookie.Discard = true;
                 }
-                else if (pair.StartsWith("secure", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("secure"))
                 {
                     if (cookie != null)
                         cookie.Secure = true;
                 }
-                else if (pair.StartsWith("httponly", StringComparison.InvariantCultureIgnoreCase))
+                else if (pair.StartsWithInvariantCultureIgnoreCase("httponly"))
                 {
                     if (cookie != null)
                         cookie.HttpOnly = true;
@@ -428,9 +429,9 @@ namespace WebSocketSharp.Net
             for (var i = _list.Count - 1; i >= 0; i--)
             {
                 var c = _list[i];
-                if (c.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase) &&
-                    c.Path.Equals(path, StringComparison.InvariantCulture) &&
-                    c.Domain.Equals(domain, StringComparison.InvariantCultureIgnoreCase) &&
+                if (c.Name.EqualsInvariantCultureIgnoreCase(name) &&
+                    c.Path.EqualsInvariantCulture(path) &&
+                    c.Domain.Equals(domain) &&
                     c.Version == ver)
                     return i;
             }

@@ -61,6 +61,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="MessageEventArgs.cs" />

@@ -41,8 +41,8 @@
 #endregion
 
 using System;
-using System.Globalization;
 using System.Text;
+using WebSocketSharp;
 
 namespace WebSocketSharp.Net
 {
@@ -835,10 +835,10 @@ namespace WebSocketSharp.Net
         {
             var cookie = comparand as Cookie;
             return cookie != null &&
-                   _name.Equals(cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
-                   _value.Equals(cookie.Value, StringComparison.InvariantCulture) &&
-                   _path.Equals(cookie.Path, StringComparison.InvariantCulture) &&
-                   _domain.Equals(cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
+                   _name.EqualsInvariantCultureIgnoreCase(cookie.Name) &&
+                   _value.EqualsInvariantCulture(cookie.Value) &&
+                   _path.EqualsInvariantCulture(cookie.Path) &&
+                   _domain.EqualsInvariantCultureIgnoreCase(cookie.Domain) &&
                    _version == cookie.Version;
         }
 
@@ -851,10 +851,18 @@ namespace WebSocketSharp.Net
         public override int GetHashCode()
         {
             return hash(
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
               StringComparer.InvariantCultureIgnoreCase.GetHashCode(_name),
+#else
+              StringComparer.OrdinalIgnoreCase.GetHashCode(_name),
+#endif
               _value.GetHashCode(),
               _path.GetHashCode(),
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
               StringComparer.InvariantCultureIgnoreCase.GetHashCode(_domain),
+#else
+              StringComparer.OrdinalIgnoreCase.GetHashCode(_domain),
+#endif
               _version);
         }
 
@@ -876,6 +884,6 @@ namespace WebSocketSharp.Net
             return ToRequestString(null);
         }
 
-        #endregion
+#endregion
     }
 }

@@ -1513,6 +1513,7 @@ namespace WebSocketSharp
             return subArray;
         }
 
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
         /// <summary>
         /// Retrieves a sub-array from the specified <paramref name="array"/>. A sub-array starts at
         /// the specified element position in <paramref name="array"/>.
@@ -1547,10 +1548,12 @@ namespace WebSocketSharp
                 return array;
 
             var subArray = new T[length];
+
             Array.Copy(array, startIndex, subArray, 0, length);
 
             return subArray;
         }
+#endif
 
         /// <summary>
         /// Executes the specified <see cref="Action"/> delegate <paramref name="n"/> times.
@@ -1951,6 +1954,6 @@ namespace WebSocketSharp
             output.Close();
         }
 
-        #endregion
+#endregion
     }
 }
