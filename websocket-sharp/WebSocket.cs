@@ -653,7 +653,6 @@ namespace WebSocketSharp
             return false;
 
           _readyState = WebSocketState.Open;
-          return true;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
@@ -661,6 +660,8 @@ namespace WebSocketSharp
 
           return false;
         }
+
+        return true;
       }
     }
 
