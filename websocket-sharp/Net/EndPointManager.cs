@@ -104,7 +104,7 @@ namespace WebSocketSharp.Net
         return addr;
 
       try {
-        var host = Dns.GetHostEntry (hostname);
+        var host = DnsHelper.GetHostEntry (hostname);
         return host != null ? host.AddressList[0] : IPAddress.Any;
       }
       catch {

@@ -12,5 +12,14 @@ namespace WebSocketSharp
             return Dns.GetHostAddresses(hostNameOrAddress);
 #endif
         }
+
+        public static IPHostEntry GetHostEntry(string hostNameOrAddress)
+        {
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            return Dns.GetHostEntryAsync(hostNameOrAddress).Result;
+#else
+            return Dns.GetHostEntry(hostNameOrAddress);
+#endif
+        }
     }
 }

@@ -77,9 +77,12 @@ namespace WebSocketSharp.Net
 
         static WebHeaderCollection()
         {
-            _headers =
-              new Dictionary<string, HttpHeaderInfo>(StringComparer.InvariantCultureIgnoreCase) {
-          {
+#if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
+            _headers = new Dictionary<string, HttpHeaderInfo>(StringComparer.InvariantCultureIgnoreCase) {
+#else
+            _headers = new Dictionary<string, HttpHeaderInfo>(StringComparer.OrdinalIgnoreCase) {
+#endif
+            {
             "Accept",
             new HttpHeaderInfo (
               "Accept",
@@ -788,7 +791,7 @@ namespace WebSocketSharp.Net
         private static HttpHeaderInfo getHeaderInfo(string name)
         {
             foreach (var info in _headers.Values)
-                if (info.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                if (info.Name.EqualsInvariantCultureIgnoreCase(name))
                     return info;
 
             return null;

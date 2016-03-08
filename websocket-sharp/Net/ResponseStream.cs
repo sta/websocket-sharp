@@ -40,6 +40,10 @@
 using System;
 using System.IO;
 using System.Text;
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+using System.Threading;
+using System.Threading.Tasks;
+#endif
 
 namespace WebSocketSharp.Net
 {
@@ -277,21 +281,36 @@ namespace WebSocketSharp.Net
         #endregion
 
         #region Public Methods
-
-        public override IAsyncResult BeginRead(
-          byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+#if (DNXCORE50 || DOTNET5_4 || UAP10_0)
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             throw new NotSupportedException();
         }
+#else
+        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+        {
+            throw new NotSupportedException();
+        }
+#endif
 
-        public override IAsyncResult BeginWrite(
-          byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+#if (DNXCORE50 || DOTNET5_4 || UAP10_0)
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(GetType().ToString());
+
+            return _body.WriteAsync(buffer, offset, count, cancellationToken);
+        }
+#else
+        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
         {
             if (_disposed)
                 throw new ObjectDisposedException(GetType().ToString());
 
             return _body.BeginWrite(buffer, offset, count, callback, state);
         }
+#endif
+
 
 #if (DNXCORE50 || UAP10_0 || DOTNET5_4)
         public void Close ()
@@ -307,6 +326,7 @@ namespace WebSocketSharp.Net
             Close(!disposing);
         }
 
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
         public override int EndRead(IAsyncResult asyncResult)
         {
             throw new NotSupportedException();
@@ -319,6 +339,7 @@ namespace WebSocketSharp.Net
 
             _body.EndWrite(asyncResult);
         }
+#endif
 
         public override void Flush()
         {

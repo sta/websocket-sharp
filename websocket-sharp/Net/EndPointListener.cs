@@ -82,47 +82,59 @@ namespace WebSocketSharp.Net
         Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
     }
 
-    #endregion
+        #endregion
 
-    #region Internal Constructors
+        #region Internal Constructors
 
-    internal EndPointListener (
-      IPAddress address,
-      int port,
-      bool reuseAddress,
-      bool secure,
-      string certificateFolderPath,
-      ServerSslConfiguration sslConfig)
-    {
-      if (secure) {
-        var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
-        if (cert == null)
-          throw new ArgumentException ("No server certificate could be found.");
+        internal EndPointListener(
+          IPAddress address,
+          int port,
+          bool reuseAddress,
+          bool secure,
+          string certificateFolderPath,
+          ServerSslConfiguration sslConfig)
+        {
+            if (secure)
+            {
+                var cert = getCertificate(port, certificateFolderPath, sslConfig.ServerCertificate);
+                if (cert == null)
+                    throw new ArgumentException("No server certificate could be found.");
 
-        _secure = secure;
-        _sslConfig = sslConfig;
-        _sslConfig.ServerCertificate = cert;
-      }
+                _secure = secure;
+                _sslConfig = sslConfig;
+                _sslConfig.ServerCertificate = cert;
+            }
 
-      _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
-      _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
-      _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
+            _prefixes = new Dictionary<HttpListenerPrefix, HttpListener>();
+            _unregistered = new Dictionary<HttpConnection, HttpConnection>();
+            _unregisteredSync = ((ICollection)_unregistered).SyncRoot;
 
-      _socket = new Socket (address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-      if (reuseAddress)
-        _socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            _socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            if (reuseAddress)
+                _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-      _endpoint = new IPEndPoint (address, port);
-      _socket.Bind (_endpoint);
-      _socket.Listen (500);
-      _socket.BeginAccept (onAccept, this);
-    }
+            _endpoint = new IPEndPoint(address, port);
+            _socket.Bind(_endpoint);
+            _socket.Listen(500);
 
-    #endregion
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            var acceptSocketTask = _socket.AcceptAsync();
+            var lsnr = this;
+            acceptSocketTask.ContinueWith(task =>
+            {
+                var sock = task.Result;
+               processAccepted(sock, lsnr);
+            });
+#else
+            _socket.BeginAccept (onAccept, this);
+#endif
+        }
 
-    #region Public Properties
+        #endregion
 
-    public IPAddress Address {
+        #region Public Properties
+
+        public IPAddress Address {
       get {
         return _endpoint.Address;
       }
@@ -146,9 +158,9 @@ namespace WebSocketSharp.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
@@ -236,26 +248,30 @@ namespace WebSocketSharp.Net
       return bestMatch;
     }
 
-    private static void onAccept (IAsyncResult asyncResult)
-    {
-      var lsnr = (EndPointListener) asyncResult.AsyncState;
+#if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
+        private static void onAccept(IAsyncResult asyncResult)
+        {
+            var lsnr = (EndPointListener)asyncResult.AsyncState;
 
-      Socket sock = null;
-      try {
-        sock = lsnr._socket.EndAccept (asyncResult);
-        lsnr._socket.BeginAccept (onAccept, lsnr);
-      }
-      catch {
-        if (sock != null)
-          sock.Close ();
+            Socket sock = null;
+            try
+            {
+                sock = lsnr._socket.EndAccept(asyncResult);
+                lsnr._socket.BeginAccept(onAccept, lsnr);
+            }
+            catch
+            {
+                if (sock != null)
+                    sock.Close();
 
-        return;
-      }
+                return;
+            }
 
-      processAccepted (sock, lsnr);
-    }
+            processAccepted(sock, lsnr);
+        }
+#endif
 
-    private static void processAccepted (Socket socket, EndPointListener listener)
+        private static void processAccepted (Socket socket, EndPointListener listener)
     {
       HttpConnection conn = null;
       try {
@@ -348,9 +364,9 @@ namespace WebSocketSharp.Net
       return null;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static bool CertificateExists (int port, string certificateFolderPath)
     {
@@ -369,9 +385,9 @@ namespace WebSocketSharp.Net
         _unregistered.Remove (connection);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public void AddPrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
@@ -507,6 +523,6 @@ namespace WebSocketSharp.Net
       context.Listener.UnregisterContext (context);
     }
 
-    #endregion
+#endregion
   }
 }

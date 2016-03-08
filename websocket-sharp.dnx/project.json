@@ -28,6 +28,7 @@
                 "System.Globalization.Extensions": "4.0.0-beta-*",
 
                 "System.Runtime": "4.0.21-beta-*",
+                "System.Runtime.InteropServices": "4.0.21-beta-*",
                 "System.Runtime.Serialization.Primitives": "4.1.0-beta-*",
 
                 "System.Collections": "4.0.11-beta-*",
@@ -42,17 +43,18 @@
                 "System.Net.Http": "4.0.1-beta-*",
                 "System.Net.Primitives": "4.0.11-beta-*",
 
+
                 "System.Security.Principal": "4.0.1-beta-*",
-       
-                
+
+
                 "System.Security.Cryptography.Algorithms": "4.0.0-beta-*",
                 "System.Security.Cryptography.Csp": "4.0.0-beta-*",
                 "System.Security.Cryptography.Cng": "4.0.0-beta-*",
-               
+
                 "System.Security.Cryptography.OpenSsl": "4.0.0-beta-*",
-           
+
                 "System.Security.Cryptography.Encoding": "4.0.0-beta-*",
-                 
+
                 "System.Security.Cryptography.Primitives": "4.0.0-beta-*",
 
                 "System.Threading": "4.0.11-beta-*",
