@@ -386,8 +386,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
             error ("An error has occurred in setting the enable redirection.", null);
 
