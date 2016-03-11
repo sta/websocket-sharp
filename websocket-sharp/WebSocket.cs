@@ -593,10 +593,10 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, true, true, false, false, true) ??
-                    value.CheckIfValidWaitTime ();
-
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, true, true, false, false, true, out msg)
+              || !value.CheckWaitTime (out msg)
+          ) {
             _logger.Error (msg);
             error ("An error has occurred in setting the wait time.", null);
 
