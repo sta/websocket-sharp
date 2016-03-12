@@ -482,20 +482,22 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg == null) {
-            if (value.IsNullOrEmpty ()) {
-              _origin = value;
-              return;
-            }
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the origin.", null);
 
-            Uri origin;
-            if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-              msg = "The syntax of an origin must be '<scheme>://<host>[:<port>]'.";
+            return;
           }
 
-          if (msg != null) {
-            _logger.Error (msg);
+          if (value.IsNullOrEmpty ()) {
+            _origin = value;
+            return;
+          }
+
+          Uri origin;
+          if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1) {
+            _logger.Error ("The syntax of an origin must be '<scheme>://<host>[:<port>]'.");
             error ("An error has occurred in setting the origin.", null);
 
             return;
