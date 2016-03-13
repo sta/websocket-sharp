@@ -325,7 +325,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the HTTP cookies included in the WebSocket connection request and response.
+    /// Gets the HTTP cookies included in the WebSocket handshake request and response.
     /// </summary>
     /// <value>
     /// An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
