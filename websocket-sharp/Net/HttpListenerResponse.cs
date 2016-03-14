@@ -766,6 +766,12 @@ namespace WebSocketSharp.Net
                 return;
             }
 
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            output.WriteAsync(responseEntity, 0, len).ContinueWith(task =>
+            {
+                close(false);
+            });
+#else
             output.BeginWrite(
               responseEntity,
               0,
@@ -776,6 +782,7 @@ namespace WebSocketSharp.Net
                   close(false);
               },
               null);
+#endif
         }
 
         /// <summary>
@@ -875,9 +882,9 @@ namespace WebSocketSharp.Net
             Cookies.Add(cookie);
         }
 
-        #endregion
+#endregion
 
-        #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
         /// <summary>
         /// Releases all resources used by the <see cref="HttpListenerResponse"/>.
@@ -890,6 +897,6 @@ namespace WebSocketSharp.Net
             close(true); // Same as the Abort method.
         }
 
-        #endregion
+#endregion
     }
 }

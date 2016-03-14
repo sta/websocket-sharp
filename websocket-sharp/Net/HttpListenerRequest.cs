@@ -649,7 +649,7 @@ namespace WebSocketSharp.Net
             }
         }
 
-        // Returns true is the stream could be reused.
+        // Returns true if the stream could be reused.
         internal bool FlushInput()
         {
             if (!HasEntityBody)
@@ -665,12 +665,22 @@ namespace WebSocketSharp.Net
                 // TODO: Test if MS has a timeout when doing this.
                 try
                 {
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+                    InputStream.ReadAsync(buff, 0, len)
+                        .ContinueWith(task =>
+                        {
+                            return task.IsCompleted;
+                        }).Wait(100);
+
+                    return false;
+#else
                     var ares = InputStream.BeginRead(buff, 0, len, null, null);
                     if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne(100))
                         return false;
 
                     if (InputStream.EndRead(ares) <= 0)
                         return true;
+#endif
                 }
                 catch
                 {
@@ -705,9 +715,9 @@ namespace WebSocketSharp.Net
                 _context.ErrorMessage = "Invalid request line (version)";
         }
 
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
 
         /// <summary>
         /// Begins getting the client's X.509 v.3 certificate asynchronously.
@@ -791,6 +801,6 @@ namespace WebSocketSharp.Net
             return buff.ToString();
         }
 
-        #endregion
+#endregion
     }
 }

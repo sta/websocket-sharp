@@ -1819,8 +1819,7 @@ namespace WebSocketSharp
             if (res.IsProxyAuthenticationRequired)
             {
                 var chal = res.Headers["Proxy-Authenticate"];
-                _logger.Warn(
-                  String.Format("Received a proxy authentication requirement for '{0}'.", chal));
+                _logger.Warn(string.Format("Received a proxy authentication requirement for '{0}'.", chal));
 
                 if (chal.IsNullOrEmpty())
                     throw new WebSocketException("No proxy authentication challenge is specified.");
@@ -1834,7 +1833,7 @@ namespace WebSocketSharp
                     if (res.HasConnectionClose)
                     {
                         releaseClientResources();
-                        _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
+                        _tcpClient = TcpClientFactory.CreateAndConnect(_proxyUri.DnsSafeHost, _proxyUri.Port);
                         _stream = _tcpClient.GetStream();
                     }
 
@@ -1857,12 +1856,12 @@ namespace WebSocketSharp
         {
             if (_proxyUri != null)
             {
-                _tcpClient = new TcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
+                _tcpClient = TcpClientFactory.CreateAndConnect(_proxyUri.DnsSafeHost, _proxyUri.Port);
                 _stream = _tcpClient.GetStream();
                 sendProxyConnectRequest();
             }
             else {
-                _tcpClient = new TcpClient(_uri.DnsSafeHost, _uri.Port);
+                _tcpClient = TcpClientFactory.CreateAndConnect(_uri.DnsSafeHost, _uri.Port);
                 _stream = _tcpClient.GetStream();
             }
 

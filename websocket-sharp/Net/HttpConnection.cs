@@ -52,6 +52,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebSocketSharp.Net
 {
@@ -265,6 +266,79 @@ namespace WebSocketSharp.Net
             _requestBuffer = new MemoryStream();
         }
 
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        private static void onRead(Task<int> task, HttpConnection conn)
+        {
+            if (conn._socket == null)
+                return;
+
+            lock (conn._sync)
+            {
+                if (conn._socket == null)
+                    return;
+
+                var nread = -1;
+                var len = 0;
+                try
+                {
+                    conn._timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    nread = conn._stream.EndRead(asyncResult);
+                    conn._requestBuffer.Write(conn._buffer, 0, nread);
+                    len = (int)conn._requestBuffer.Length;
+                }
+                catch (Exception ex)
+                {
+                    if (conn._requestBuffer != null && conn._requestBuffer.Length > 0)
+                    {
+                        conn.SendError(ex.Message, 400);
+                        return;
+                    }
+
+                    conn.close();
+                    return;
+                }
+
+                if (nread <= 0)
+                {
+                    conn.close();
+                    return;
+                }
+
+                if (conn.processInput(conn._requestBuffer.GetBuffer(), len))
+                {
+                    if (!conn._context.HasError)
+                        conn._context.Request.FinishInitialization();
+
+                    if (conn._context.HasError)
+                    {
+                        conn.SendError();
+                        return;
+                    }
+
+                    if (!conn._listener.BindContext(conn._context))
+                    {
+                        conn.SendError("Invalid host", 400);
+                        return;
+                    }
+
+                    var lsnr = conn._context.Listener;
+                    if (conn._lastListener != lsnr)
+                    {
+                        conn.removeConnection();
+                        lsnr.AddConnection(conn);
+                        conn._lastListener = lsnr;
+                    }
+
+                    conn._contextBound = true;
+                    lsnr.RegisterContext(conn._context);
+
+                    return;
+                }
+
+                conn._stream.BeginRead(conn._buffer, 0, _bufferLength, onRead, conn);
+            }
+        }
+#else
         private static void onRead(IAsyncResult asyncResult)
         {
             var conn = (HttpConnection)asyncResult.AsyncState;
@@ -337,7 +411,7 @@ namespace WebSocketSharp.Net
                 conn._stream.BeginRead(conn._buffer, 0, _bufferLength, onRead, conn);
             }
         }
-
+#endif
         private static void onTimeout(object state)
         {
             var conn = (HttpConnection)state;
@@ -443,9 +517,9 @@ namespace WebSocketSharp.Net
             _contextBound = false;
         }
 
-        #endregion
+#endregion
 
-        #region Internal Methods
+#region Internal Methods
 
         internal void Close(bool force)
         {
@@ -481,9 +555,9 @@ namespace WebSocketSharp.Net
             }
         }
 
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
 
         public void BeginReadRequest()
         {
@@ -496,7 +570,14 @@ namespace WebSocketSharp.Net
             try
             {
                 _timer.Change(_timeout, Timeout.Infinite);
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+
+                var thiz = this;
+                _stream.ReadAsync(_buffer, 0, _bufferLength)
+                    .ContinueWith(task => onRead(task, thiz));
+#else
                 _stream.BeginRead(_buffer, 0, _bufferLength, onRead, this);
+#endif
             }
             catch
             {
@@ -599,6 +680,6 @@ namespace WebSocketSharp.Net
             }
         }
 
-        #endregion
+#endregion
     }
 }

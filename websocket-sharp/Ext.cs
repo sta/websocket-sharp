@@ -53,6 +53,9 @@ using System.IO.Compression;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+using System.Threading.Tasks;
+#endif
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 using WebSocketSharp.Server;
@@ -64,14 +67,14 @@ namespace WebSocketSharp
     /// </summary>
     public static class Ext
     {
-        #region Private Fields
+#region Private Fields
 
         private static readonly byte[] _last = new byte[] { 0x00 };
         private const string _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
-        #endregion
+#endregion
 
-        #region Private Methods
+#region Private Methods
 
         private static byte[] compress(this byte[] data)
         {
@@ -150,9 +153,9 @@ namespace WebSocketSharp
                 action();
         }
 
-        #endregion
+#endregion
 
-        #region Internal Methods
+#region Internal Methods
 
         internal static byte[] Append(this ushort code, string reason)
         {
@@ -285,7 +288,7 @@ namespace WebSocketSharp
         }
 
 #if (DNXCORE50 || UAP10_0 || DOTNET5_4)
-        internal static T[] Copy<T> (this T[] source, int length)
+        internal static T[] Copy<T>(this T[] source, int length)
 #else
         internal static T[] Copy<T>(this T[] source, long length)
 #endif
@@ -304,6 +307,27 @@ namespace WebSocketSharp
                 destination.Write(buff, 0, nread);
         }
 
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        internal static async Task CopyToAsync(this Stream source, Stream destination, int bufferLength, Action completed, Action<Exception> error)
+        {
+            var buff = new byte[bufferLength];
+
+            try
+            {
+                await source.CopyToAsync(destination, bufferLength);
+            }
+            catch (Exception ex)
+            {
+                if (error != null)
+                    error(ex);
+
+                return;
+            }
+
+            if (completed != null)
+                completed();
+        }
+#else
         internal static void CopyToAsync(
           this Stream source,
           Stream destination,
@@ -347,7 +371,7 @@ namespace WebSocketSharp
                     error(ex);
             }
         }
-
+#endif
         internal static byte[] Decompress(this byte[] data, CompressionMethod method)
         {
             return method == CompressionMethod.Deflate
@@ -662,8 +686,34 @@ namespace WebSocketSharp
             }
         }
 
-        internal static void ReadBytesAsync(
-          this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        internal static async Task ReadBytesAsync(this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
+        {
+            var buff = new byte[length];
+            int nread = 0;
+
+            do
+            {
+                try
+                {
+                    nread = await stream.ReadAsync(buff, 0, length);
+                }
+                catch (Exception ex)
+                {
+                    if (error != null)
+                        error(ex);
+
+                    return;
+                }
+            } while (stream.CanRead && nread > 0);
+
+            if (completed != null)
+                completed(buff.SubArray(0, nread));
+
+            return;
+        }
+#else
+        internal static void ReadBytesAsync(this Stream stream, int length, Action<byte[]> completed, Action<Exception> error)
         {
             var buff = new byte[length];
             var offset = 0;
@@ -704,13 +754,45 @@ namespace WebSocketSharp
                     error(ex);
             }
         }
+#endif
 
-        internal static void ReadBytesAsync(
-          this Stream stream,
-          long length,
-          int bufferLength,
-          Action<byte[]> completed,
-          Action<Exception> error)
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        internal static async Task ReadBytesAsync(this Stream stream, long length, int bufferLength, Action<byte[]> completed, Action<Exception> error)
+        {
+            var dest = new MemoryStream();
+            var buff = new byte[bufferLength];
+            int nread = 0;
+
+            do
+            {
+                try
+                {
+                    nread = await stream.ReadAsync(buff, 0, bufferLength);
+
+                    if (nread > 0)
+                    {
+                        await dest.WriteAsync(buff, 0, nread);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    dest.Dispose();
+
+                    if (error != null)
+                        error(ex);
+
+                    return;
+                }
+            } while (stream.CanRead && nread > 0);
+
+            dest.Dispose();
+
+            if (completed != null)
+                completed(dest.ToArray());
+
+        }
+#else
+        internal static void ReadBytesAsync(this Stream stream, long length, int bufferLength, Action<byte[]> completed, Action<Exception> error)
         {
             var dest = new MemoryStream();
             var buff = new byte[bufferLength];
@@ -768,6 +850,7 @@ namespace WebSocketSharp
                     error(ex);
             }
         }
+#endif
 
         internal static string RemovePrefix(this string value, params string[] prefixes)
         {
@@ -1039,9 +1122,9 @@ namespace WebSocketSharp
               });
         }
 
-        #endregion
+#endregion
 
-        #region Public Methods
+#region Public Methods
 
         /// <summary>
         /// Determines whether the specified <see cref="string"/> contains any of characters in

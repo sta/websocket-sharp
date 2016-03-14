@@ -232,7 +232,7 @@ namespace WebSocketSharp.Net
 #if !(DNXCORE50 || DOTNET5_4 || UAP10_0)
         public override void Close ()
         {
-          _disposed = true;
+            _disposed = true;
         }
 #endif
 

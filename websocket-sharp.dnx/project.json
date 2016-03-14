@@ -43,25 +43,21 @@
                 "System.Net.Http": "4.0.1-beta-*",
                 "System.Net.Primitives": "4.0.11-beta-*",
 
-
                 "System.Security.Principal": "4.0.1-beta-*",
-
 
                 "System.Security.Cryptography.Algorithms": "4.0.0-beta-*",
                 "System.Security.Cryptography.Csp": "4.0.0-beta-*",
                 "System.Security.Cryptography.Cng": "4.0.0-beta-*",
-
                 "System.Security.Cryptography.OpenSsl": "4.0.0-beta-*",
-
                 "System.Security.Cryptography.Encoding": "4.0.0-beta-*",
-
                 "System.Security.Cryptography.Primitives": "4.0.0-beta-*",
+                "System.Security.Cryptography.X509Certificates": "4.0.0-beta-*",
 
                 "System.Threading": "4.0.11-beta-*",
-                "System.Threading.Thread": "4.0.0-beta-*",
                 "System.Threading.Tasks": "4.0.11-beta-*",
+                "System.Threading.Thread": "4.0.0-beta-*",
                 "System.Threading.ThreadPool": "4.0.10-beta-*",
-
+                
                 "System.Reflection": "4.1.0-beta-*",
                 "System.Reflection.Extensions": "4.0.1-beta-*",
                 "System.Reflection.Primitives": "4.0.1-beta-*",

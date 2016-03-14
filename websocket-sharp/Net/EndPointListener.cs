@@ -57,42 +57,36 @@ using System.Threading;
 
 namespace WebSocketSharp.Net
 {
-  internal sealed class EndPointListener
-  {
-    #region Private Fields
-
-    private List<HttpListenerPrefix>                     _all; // host == '+'
-    private static readonly string                       _defaultCertFolderPath;
-    private IPEndPoint                                   _endpoint;
-    private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
-    private bool                                         _secure;
-    private Socket                                       _socket;
-    private ServerSslConfiguration                       _sslConfig;
-    private List<HttpListenerPrefix>                     _unhandled; // host == '*'
-    private Dictionary<HttpConnection, HttpConnection>   _unregistered;
-    private object                                       _unregisteredSync;
-
-    #endregion
-
-    #region Static Constructor
-
-    static EndPointListener ()
+    internal sealed class EndPointListener
     {
-      _defaultCertFolderPath =
-        Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
-    }
+        #region Private Fields
+
+        private List<HttpListenerPrefix> _all; // host == '+'
+        private static readonly string _defaultCertFolderPath;
+        private IPEndPoint _endpoint;
+        private Dictionary<HttpListenerPrefix, HttpListener> _prefixes;
+        private bool _secure;
+        private Socket _socket;
+        private ServerSslConfiguration _sslConfig;
+        private List<HttpListenerPrefix> _unhandled; // host == '*'
+        private Dictionary<HttpConnection, HttpConnection> _unregistered;
+        private object _unregisteredSync;
+
+        #endregion
+
+        #region Static Constructor
+
+        static EndPointListener()
+        {
+            _defaultCertFolderPath =
+              Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        }
 
         #endregion
 
         #region Internal Constructors
 
-        internal EndPointListener(
-          IPAddress address,
-          int port,
-          bool reuseAddress,
-          bool secure,
-          string certificateFolderPath,
-          ServerSslConfiguration sslConfig)
+        internal EndPointListener(IPAddress address, int port, bool reuseAddress, bool secure, string certificateFolderPath, ServerSslConfiguration sslConfig)
         {
             if (secure)
             {
@@ -123,10 +117,10 @@ namespace WebSocketSharp.Net
             acceptSocketTask.ContinueWith(task =>
             {
                 var sock = task.Result;
-               processAccepted(sock, lsnr);
+                processAccepted(sock, lsnr);
             });
 #else
-            _socket.BeginAccept (onAccept, this);
+            _socket.BeginAccept(onAccept, this);
 #endif
         }
 
@@ -134,119 +128,138 @@ namespace WebSocketSharp.Net
 
         #region Public Properties
 
-        public IPAddress Address {
-      get {
-        return _endpoint.Address;
-      }
-    }
-
-    public bool IsSecure {
-      get {
-        return _secure;
-      }
-    }
-
-    public int Port {
-      get {
-        return _endpoint.Port;
-      }
-    }
-
-    public ServerSslConfiguration SslConfiguration {
-      get {
-        return _sslConfig;
-      }
-    }
-
-#endregion
-
-#region Private Methods
-
-    private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
-    {
-      var path = prefix.Path;
-      foreach (var pref in prefixes)
-        if (pref.Path == path)
-          throw new HttpListenerException (400, "The prefix is already in use."); // TODO: Code?
-
-      prefixes.Add (prefix);
-    }
-
-    private void checkIfRemove ()
-    {
-      if (_prefixes.Count > 0)
-        return;
-
-      var list = _unhandled;
-      if (list != null && list.Count > 0)
-        return;
-
-      list = _all;
-      if (list != null && list.Count > 0)
-        return;
-
-      EndPointManager.RemoveEndPoint (this);
-    }
-
-    private static RSACryptoServiceProvider createRSAFromFile (string filename)
-    {
-      byte[] pvk = null;
-      using (var fs = File.Open (filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-        pvk = new byte[fs.Length];
-        fs.Read (pvk, 0, pvk.Length);
-      }
-
-      var rsa = new RSACryptoServiceProvider ();
-      rsa.ImportCspBlob (pvk);
-
-      return rsa;
-    }
-
-    private static X509Certificate2 getCertificate (
-      int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
-    {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
-
-      try {
-        var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-        var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
-        if (File.Exists (cer) && File.Exists (key)) {
-          var cert = new X509Certificate2 (cer);
-          cert.PrivateKey = createRSAFromFile (key);
-
-          return cert;
+        public IPAddress Address
+        {
+            get
+            {
+                return _endpoint.Address;
+            }
         }
-      }
-      catch {
-      }
 
-      return defaultCertificate;
-    }
-
-    private static HttpListener matchFromList (
-      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
-    {
-      prefix = null;
-      if (list == null)
-        return null;
-
-      HttpListener bestMatch = null;
-      var bestLen = -1;
-      foreach (var pref in list) {
-        var ppath = pref.Path;
-        if (ppath.Length < bestLen)
-          continue;
-
-        if (path.StartsWith (ppath)) {
-          bestLen = ppath.Length;
-          bestMatch = pref.Listener;
-          prefix = pref;
+        public bool IsSecure
+        {
+            get
+            {
+                return _secure;
+            }
         }
-      }
 
-      return bestMatch;
-    }
+        public int Port
+        {
+            get
+            {
+                return _endpoint.Port;
+            }
+        }
+
+        public ServerSslConfiguration SslConfiguration
+        {
+            get
+            {
+                return _sslConfig;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static void addSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+        {
+            var path = prefix.Path;
+            foreach (var pref in prefixes)
+                if (pref.Path == path)
+                    throw new HttpListenerException(400, "The prefix is already in use."); // TODO: Code?
+
+            prefixes.Add(prefix);
+        }
+
+        private void checkIfRemove()
+        {
+            if (_prefixes.Count > 0)
+                return;
+
+            var list = _unhandled;
+            if (list != null && list.Count > 0)
+                return;
+
+            list = _all;
+            if (list != null && list.Count > 0)
+                return;
+
+            EndPointManager.RemoveEndPoint(this);
+        }
+
+        private static RSACryptoServiceProvider createRSAFromFile(string filename)
+        {
+            byte[] pvk = null;
+            using (var fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                pvk = new byte[fs.Length];
+                fs.Read(pvk, 0, pvk.Length);
+            }
+
+            var rsa = new RSACryptoServiceProvider();
+            rsa.ImportCspBlob(pvk);
+
+            return rsa;
+        }
+
+        private static X509Certificate2 getCertificate(
+          int port, string certificateFolderPath, X509Certificate2 defaultCertificate)
+        {
+            if (certificateFolderPath == null || certificateFolderPath.Length == 0)
+                certificateFolderPath = _defaultCertFolderPath;
+
+            try
+            {
+                var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
+                var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
+                if (File.Exists(cer) && File.Exists(key))
+                {
+
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+                    var cert = new X509Certificate2(cer);
+                    cert.PrivateKey = createRSAFromFile(key);
+#else
+                    var cert = new X509Certificate2(cer);
+                    cert.PrivateKey = createRSAFromFile(key);
+#endif
+                    return cert;
+                }
+            }
+            catch
+            {
+            }
+
+            return defaultCertificate;
+        }
+
+        private static HttpListener matchFromList(
+          string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
+        {
+            prefix = null;
+            if (list == null)
+                return null;
+
+            HttpListener bestMatch = null;
+            var bestLen = -1;
+            foreach (var pref in list)
+            {
+                var ppath = pref.Path;
+                if (ppath.Length < bestLen)
+                    continue;
+
+                if (path.StartsWith(ppath))
+                {
+                    bestLen = ppath.Length;
+                    bestMatch = pref.Listener;
+                    prefix = pref;
+                }
+            }
+
+            return bestMatch;
+        }
 
 #if !(DNXCORE50 || UAP10_0 || DOTNET5_4)
         private static void onAccept(IAsyncResult asyncResult)
@@ -271,258 +284,279 @@ namespace WebSocketSharp.Net
         }
 #endif
 
-        private static void processAccepted (Socket socket, EndPointListener listener)
-    {
-      HttpConnection conn = null;
-      try {
-        conn = new HttpConnection (socket, listener);
-        lock (listener._unregisteredSync)
-          listener._unregistered[conn] = conn;
+        private static void processAccepted(Socket socket, EndPointListener listener)
+        {
+            HttpConnection conn = null;
+            try
+            {
+                conn = new HttpConnection(socket, listener);
+                lock (listener._unregisteredSync)
+                  listener._unregistered[conn] = conn;
 
-        conn.BeginReadRequest ();
-      }
-      catch {
-        if (conn != null) {
-          conn.Close (true);
-          return;
+                conn.BeginReadRequest();
+            }
+            catch
+            {
+                if (conn != null)
+                {
+                    conn.Close(true);
+                    return;
+                }
+
+                socket.Close();
+            }
         }
 
-        socket.Close ();
-      }
-    }
+        private static bool removeSpecial(List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
+        {
+            var path = prefix.Path;
+            var cnt = prefixes.Count;
+            for (var i = 0; i < cnt; i++)
+            {
+                if (prefixes[i].Path == path)
+                {
+                    prefixes.RemoveAt(i);
+                    return true;
+                }
+            }
 
-    private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
-    {
-      var path = prefix.Path;
-      var cnt = prefixes.Count;
-      for (var i = 0; i < cnt; i++) {
-        if (prefixes[i].Path == path) {
-          prefixes.RemoveAt (i);
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-    private HttpListener searchListener (Uri uri, out HttpListenerPrefix prefix)
-    {
-      prefix = null;
-      if (uri == null)
-        return null;
-
-      var host = uri.Host;
-      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
-      var port = uri.Port;
-      var path = HttpUtility.UrlDecode (uri.AbsolutePath);
-      var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
-
-      HttpListener bestMatch = null;
-      var bestLen = -1;
-      if (host != null && host.Length > 0) {
-        foreach (var pref in _prefixes.Keys) {
-          var ppath = pref.Path;
-          if (ppath.Length < bestLen)
-            continue;
-
-          if (pref.Port != port)
-            continue;
-
-          if (dns) {
-            var phost = pref.Host;
-            if (Uri.CheckHostName (phost) == UriHostNameType.Dns && phost != host)
-              continue;
-          }
-
-          if (path.StartsWith (ppath) || pathSlash.StartsWith (ppath)) {
-            bestLen = ppath.Length;
-            bestMatch = _prefixes[pref];
-            prefix = pref;
-          }
+            return false;
         }
 
-        if (bestLen != -1)
-          return bestMatch;
-      }
+        private HttpListener searchListener(Uri uri, out HttpListenerPrefix prefix)
+        {
+            prefix = null;
+            if (uri == null)
+                return null;
 
-      var list = _unhandled;
-      bestMatch = matchFromList (host, path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+            var host = uri.Host;
+            var dns = Uri.CheckHostName(host) == UriHostNameType.Dns;
+            var port = uri.Port;
+            var path = HttpUtility.UrlDecode(uri.AbsolutePath);
+            var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
 
-      if (bestMatch != null)
-        return bestMatch;
+            HttpListener bestMatch = null;
+            var bestLen = -1;
+            if (host != null && host.Length > 0)
+            {
+                foreach (var pref in _prefixes.Keys)
+                {
+                    var ppath = pref.Path;
+                    if (ppath.Length < bestLen)
+                        continue;
 
-      list = _all;
-      bestMatch = matchFromList (host, path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+                    if (pref.Port != port)
+                        continue;
 
-      if (bestMatch != null)
-        return bestMatch;
+                    if (dns)
+                    {
+                        var phost = pref.Host;
+                        if (Uri.CheckHostName(phost) == UriHostNameType.Dns && phost != host)
+                            continue;
+                    }
 
-      return null;
-    }
+                    if (path.StartsWith(ppath) || pathSlash.StartsWith(ppath))
+                    {
+                        bestLen = ppath.Length;
+                        bestMatch = _prefixes[pref];
+                        prefix = pref;
+                    }
+                }
+
+                if (bestLen != -1)
+                    return bestMatch;
+            }
+
+            var list = _unhandled;
+            bestMatch = matchFromList(host, path, list, out prefix);
+            if (path != pathSlash && bestMatch == null)
+                bestMatch = matchFromList(host, pathSlash, list, out prefix);
+
+            if (bestMatch != null)
+                return bestMatch;
+
+            list = _all;
+            bestMatch = matchFromList(host, path, list, out prefix);
+            if (path != pathSlash && bestMatch == null)
+                bestMatch = matchFromList(host, pathSlash, list, out prefix);
+
+            if (bestMatch != null)
+                return bestMatch;
+
+            return null;
+        }
 
 #endregion
 
 #region Internal Methods
 
-    internal static bool CertificateExists (int port, string certificateFolderPath)
-    {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
+        internal static bool CertificateExists(int port, string certificateFolderPath)
+        {
+            if (certificateFolderPath == null || certificateFolderPath.Length == 0)
+                certificateFolderPath = _defaultCertFolderPath;
 
-      var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-      var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
+            var cer = Path.Combine(certificateFolderPath, String.Format("{0}.cer", port));
+            var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
 
-      return File.Exists (cer) && File.Exists (key);
-    }
+            return File.Exists(cer) && File.Exists(key);
+        }
 
-    internal void RemoveConnection (HttpConnection connection)
-    {
-      lock (_unregisteredSync)
-        _unregistered.Remove (connection);
-    }
+        internal void RemoveConnection(HttpConnection connection)
+        {
+            lock (_unregisteredSync)
+              _unregistered.Remove(connection);
+        }
 
 #endregion
 
 #region Public Methods
 
-    public void AddPrefix (HttpListenerPrefix prefix, HttpListener listener)
-    {
-      List<HttpListenerPrefix> current, future;
-      if (prefix.Host == "*") {
-        do {
-          current = _unhandled;
-          future = current != null
-                   ? new List<HttpListenerPrefix> (current)
-                   : new List<HttpListenerPrefix> ();
+        public void AddPrefix(HttpListenerPrefix prefix, HttpListener listener)
+        {
+            List<HttpListenerPrefix> current, future;
+            if (prefix.Host == "*")
+            {
+                do
+                {
+                    current = _unhandled;
+                    future = current != null
+                             ? new List<HttpListenerPrefix>(current)
+                             : new List<HttpListenerPrefix>();
 
-          prefix.Listener = listener;
-          addSpecial (future, prefix);
+                    prefix.Listener = listener;
+                    addSpecial(future, prefix);
+                }
+                while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
+
+                return;
+            }
+
+            if (prefix.Host == "+")
+            {
+                do
+                {
+                    current = _all;
+                    future = current != null
+                             ? new List<HttpListenerPrefix>(current)
+                             : new List<HttpListenerPrefix>();
+
+                    prefix.Listener = listener;
+                    addSpecial(future, prefix);
+                }
+                while (Interlocked.CompareExchange(ref _all, future, current) != current);
+
+                return;
+            }
+
+            Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+            do
+            {
+                prefs = _prefixes;
+                if (prefs.ContainsKey(prefix))
+                {
+                    if (prefs[prefix] != listener)
+                        throw new HttpListenerException(
+                          400, String.Format("There's another listener for {0}.", prefix)); // TODO: Code?
+
+                    return;
+                }
+
+                prefs2 = new Dictionary<HttpListenerPrefix, HttpListener>(prefs);
+                prefs2[prefix] = listener;
+            }
+            while (Interlocked.CompareExchange(ref _prefixes, prefs2, prefs) != prefs);
         }
-        while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
 
-        return;
-      }
+        public bool BindContext(HttpListenerContext context)
+        {
+            HttpListenerPrefix pref;
+            var lsnr = searchListener(context.Request.Url, out pref);
+            if (lsnr == null)
+                return false;
 
-      if (prefix.Host == "+") {
-        do {
-          current = _all;
-          future = current != null
-                   ? new List<HttpListenerPrefix> (current)
-                   : new List<HttpListenerPrefix> ();
+            context.Listener = lsnr;
+            context.Connection.Prefix = pref;
 
-          prefix.Listener = listener;
-          addSpecial (future, prefix);
-        }
-        while (Interlocked.CompareExchange (ref _all, future, current) != current);
-
-        return;
-      }
-
-      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
-      do {
-        prefs = _prefixes;
-        if (prefs.ContainsKey (prefix)) {
-          if (prefs[prefix] != listener)
-            throw new HttpListenerException (
-              400, String.Format ("There's another listener for {0}.", prefix)); // TODO: Code?
-
-          return;
+            return true;
         }
 
-        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
-        prefs2[prefix] = listener;
-      }
-      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
-    }
+        public void Close()
+        {
+            _socket.Close();
 
-    public bool BindContext (HttpListenerContext context)
-    {
-      HttpListenerPrefix pref;
-      var lsnr = searchListener (context.Request.Url, out pref);
-      if (lsnr == null)
-        return false;
+            lock (_unregisteredSync)
+            {
+                var conns = new List<HttpConnection>(_unregistered.Keys);
+                _unregistered.Clear();
+                foreach (var conn in conns)
+                    conn.Close(true);
 
-      context.Listener = lsnr;
-      context.Connection.Prefix = pref;
-
-      return true;
-    }
-
-    public void Close ()
-    {
-      _socket.Close ();
-
-      lock (_unregisteredSync) {
-        var conns = new List<HttpConnection> (_unregistered.Keys);
-        _unregistered.Clear ();
-        foreach (var conn in conns)
-          conn.Close (true);
-
-        conns.Clear ();
-      }
-    }
-
-    public void RemovePrefix (HttpListenerPrefix prefix, HttpListener listener)
-    {
-      List<HttpListenerPrefix> current, future;
-      if (prefix.Host == "*") {
-        do {
-          current = _unhandled;
-          if (current == null)
-            break;
-
-          future = new List<HttpListenerPrefix> (current);
-          if (!removeSpecial (future, prefix))
-            break; // The prefix wasn't found.
+                conns.Clear();
+            }
         }
-        while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
 
-        checkIfRemove ();
-        return;
-      }
+        public void RemovePrefix(HttpListenerPrefix prefix, HttpListener listener)
+        {
+            List<HttpListenerPrefix> current, future;
+            if (prefix.Host == "*")
+            {
+                do
+                {
+                    current = _unhandled;
+                    if (current == null)
+                        break;
 
-      if (prefix.Host == "+") {
-        do {
-          current = _all;
-          if (current == null)
-            break;
+                    future = new List<HttpListenerPrefix>(current);
+                    if (!removeSpecial(future, prefix))
+                        break; // The prefix wasn't found.
+                }
+                while (Interlocked.CompareExchange(ref _unhandled, future, current) != current);
 
-          future = new List<HttpListenerPrefix> (current);
-          if (!removeSpecial (future, prefix))
-            break; // The prefix wasn't found.
+                checkIfRemove();
+                return;
+            }
+
+            if (prefix.Host == "+")
+            {
+                do
+                {
+                    current = _all;
+                    if (current == null)
+                        break;
+
+                    future = new List<HttpListenerPrefix>(current);
+                    if (!removeSpecial(future, prefix))
+                        break; // The prefix wasn't found.
+                }
+                while (Interlocked.CompareExchange(ref _all, future, current) != current);
+
+                checkIfRemove();
+                return;
+            }
+
+            Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
+            do
+            {
+                prefs = _prefixes;
+                if (!prefs.ContainsKey(prefix))
+                    break;
+
+                prefs2 = new Dictionary<HttpListenerPrefix, HttpListener>(prefs);
+                prefs2.Remove(prefix);
+            }
+            while (Interlocked.CompareExchange(ref _prefixes, prefs2, prefs) != prefs);
+
+            checkIfRemove();
         }
-        while (Interlocked.CompareExchange (ref _all, future, current) != current);
 
-        checkIfRemove ();
-        return;
-      }
+        public void UnbindContext(HttpListenerContext context)
+        {
+            if (context == null || context.Listener == null)
+                return;
 
-      Dictionary<HttpListenerPrefix, HttpListener> prefs, prefs2;
-      do {
-        prefs = _prefixes;
-        if (!prefs.ContainsKey (prefix))
-          break;
-
-        prefs2 = new Dictionary<HttpListenerPrefix, HttpListener> (prefs);
-        prefs2.Remove (prefix);
-      }
-      while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
-
-      checkIfRemove ();
-    }
-
-    public void UnbindContext (HttpListenerContext context)
-    {
-      if (context == null || context.Listener == null)
-        return;
-
-      context.Listener.UnregisterContext (context);
-    }
+            context.Listener.UnregisterContext(context);
+        }
 
 #endregion
-  }
+    }
 }
