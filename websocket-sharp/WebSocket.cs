@@ -373,10 +373,10 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects
-    /// the connection request to the new URL located in the connection response.
+    /// the handshake request to the new URL located in the handshake response.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocket"/> redirects the connection request to
+    /// <c>true</c> if the <see cref="WebSocket"/> redirects the handshake request to
     /// the new URL; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool EnableRedirection {
