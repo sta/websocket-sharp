@@ -52,7 +52,9 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
 using System.Threading.Tasks;
+#endif
 
 namespace WebSocketSharp.Net
 {
@@ -517,9 +519,9 @@ namespace WebSocketSharp.Net
             _contextBound = false;
         }
 
-#endregion
+        #endregion
 
-#region Internal Methods
+        #region Internal Methods
 
         internal void Close(bool force)
         {
@@ -555,9 +557,9 @@ namespace WebSocketSharp.Net
             }
         }
 
-#endregion
+        #endregion
 
-#region Public Methods
+        #region Public Methods
 
         public void BeginReadRequest()
         {
@@ -680,6 +682,6 @@ namespace WebSocketSharp.Net
             }
         }
 
-#endregion
+        #endregion
     }
 }
