@@ -24,6 +24,7 @@
         "dnxcore5": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.1-beta-*",
+                "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
 
                 "System.Globalization.Extensions": "4.0.0-beta-*",
 
@@ -57,7 +58,7 @@
                 "System.Threading.Tasks": "4.0.11-beta-*",
                 "System.Threading.Thread": "4.0.0-beta-*",
                 "System.Threading.ThreadPool": "4.0.10-beta-*",
-                
+
                 "System.Reflection": "4.1.0-beta-*",
                 "System.Reflection.Extensions": "4.0.1-beta-*",
                 "System.Reflection.Primitives": "4.0.1-beta-*",

@@ -279,12 +279,11 @@ namespace WebSocketSharp.Net
                 if (conn._socket == null)
                     return;
 
-                var nread = -1;
+                var nread = task.Result;
                 var len = 0;
                 try
                 {
                     conn._timer.Change(Timeout.Infinite, Timeout.Infinite);
-                    nread = conn._stream.EndRead(asyncResult);
                     conn._requestBuffer.Write(conn._buffer, 0, nread);
                     len = (int)conn._requestBuffer.Length;
                 }
@@ -337,7 +336,8 @@ namespace WebSocketSharp.Net
                     return;
                 }
 
-                conn._stream.BeginRead(conn._buffer, 0, _bufferLength, onRead, conn);
+                conn._stream.ReadAsync(conn._buffer, 0, _bufferLength)
+                    .ContinueWith(t => onRead(t, conn));
             }
         }
 #else

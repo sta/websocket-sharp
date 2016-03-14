@@ -54,6 +54,9 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+using Microsoft.Extensions.PlatformAbstractions;
+#endif
 
 namespace WebSocketSharp.Net
 {
@@ -78,8 +81,13 @@ namespace WebSocketSharp.Net
 
         static EndPointListener()
         {
-            _defaultCertFolderPath =
-              Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            IApplicationEnvironment env = PlatformServices.Default.Application;
+
+            _defaultCertFolderPath = env.ApplicationBasePath; // TODO : stef
+#else
+            _defaultCertFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+#endif
         }
 
         #endregion
@@ -386,9 +394,9 @@ namespace WebSocketSharp.Net
             return null;
         }
 
-#endregion
+        #endregion
 
-#region Internal Methods
+        #region Internal Methods
 
         internal static bool CertificateExists(int port, string certificateFolderPath)
         {
@@ -407,9 +415,9 @@ namespace WebSocketSharp.Net
               _unregistered.Remove(connection);
         }
 
-#endregion
+        #endregion
 
-#region Public Methods
+        #region Public Methods
 
         public void AddPrefix(HttpListenerPrefix prefix, HttpListener listener)
         {
@@ -557,6 +565,6 @@ namespace WebSocketSharp.Net
             context.Listener.UnregisterContext(context);
         }
 
-#endregion
+        #endregion
     }
 }

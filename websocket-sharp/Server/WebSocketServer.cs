@@ -48,6 +48,10 @@ using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
 
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+using System.Threading.Tasks;
+#endif
+
 namespace WebSocketSharp.Server
 {
     /// <summary>
@@ -681,21 +685,22 @@ namespace WebSocketSharp.Server
             host.StartSession(context);
         }
 
-        private void receiveRequest()
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+        private async Task receiveRequestAsync()
         {
             while (true)
             {
                 try
                 {
-                    var cl = _listener.AcceptTcpClient();
+                    TcpClient cl = await _listener.AcceptTcpClientAsync();
+
                     ThreadPool.QueueUserWorkItem(
                       state =>
                       {
                           try
                           {
                               var ctx = cl.GetWebSocketContext(null, _secure, _sslConfig, _logger);
-                              if (_authSchemes != AuthenticationSchemes.Anonymous &&
-                        !authenticate(ctx, _authSchemes, Realm, UserCredentialsFinder))
+                              if (_authSchemes != AuthenticationSchemes.Anonymous && !authenticate(ctx, _authSchemes, Realm, UserCredentialsFinder))
                                   return;
 
                               processRequest(ctx);
@@ -722,7 +727,49 @@ namespace WebSocketSharp.Server
             if (IsListening)
                 abort();
         }
+#else
+        private void receiveRequest()
+        {
+            while (true)
+            {
+                try
+                {
+                    TcpClient cl = _listener.AcceptTcpClient();
 
+                    ThreadPool.QueueUserWorkItem(
+                      state =>
+                      {
+                          try
+                          {
+                              var ctx = cl.GetWebSocketContext(null, _secure, _sslConfig, _logger);
+                              if (_authSchemes != AuthenticationSchemes.Anonymous && !authenticate(ctx, _authSchemes, Realm, UserCredentialsFinder))
+                                  return;
+
+                              processRequest(ctx);
+                          }
+                          catch (Exception ex)
+                          {
+                              _logger.Fatal(ex.ToString());
+                              cl.Close();
+                          }
+                      });
+                }
+                catch (SocketException ex)
+                {
+                    _logger.Warn("Receiving has been stopped.\n  reason: " + ex.Message);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Fatal(ex.ToString());
+                    break;
+                }
+            }
+
+            if (IsListening)
+                abort();
+        }
+#endif
         private void startReceiving()
         {
             if (_reuseAddress)
@@ -730,9 +777,14 @@ namespace WebSocketSharp.Server
                   SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
             _listener.Start();
+
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+            receiveRequestAsync();
+#else
             _receiveThread = new Thread(new ThreadStart(receiveRequest));
             _receiveThread.IsBackground = true;
             _receiveThread.Start();
+#endif
         }
 
         private void stopReceiving(int millisecondsTimeout)

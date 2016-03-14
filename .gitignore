@@ -13,3 +13,4 @@ obj
 *.userprefs
 UpgradeLog*.*
 /.vs/config/applicationhost.config
+websocket-sharp.dnx/project.lock.json
