@@ -459,7 +459,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets the value of the HTTP Origin header to send with
-    /// the WebSocket connection request to the server.
+    /// the WebSocket handshake request to the server.
     /// </summary>
     /// <remarks>
     /// The <see cref="WebSocket"/> sends the Origin header if this property has any.
