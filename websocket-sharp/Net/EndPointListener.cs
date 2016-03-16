@@ -243,6 +243,12 @@ namespace WebSocketSharp.Net
       Socket sock = null;
       try {
         sock = lsnr._socket.EndAccept (asyncResult);
+      }
+      catch (ObjectDisposedException) {
+        return;
+      }
+
+      try {
         lsnr._socket.BeginAccept (onAccept, lsnr);
       }
       catch {
@@ -251,6 +257,9 @@ namespace WebSocketSharp.Net
 
         return;
       }
+
+      if (sock == null)
+        return;
 
       processAccepted (sock, lsnr);
     }
