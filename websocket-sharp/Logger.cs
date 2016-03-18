@@ -29,6 +29,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace WebSocketSharp
 {
@@ -217,12 +218,22 @@ namespace WebSocketSharp
                 LogData data = null;
                 try
                 {
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+                    var st = new StackTrace(new Exception(), true);
+                    data = new LogData(level, st.GetFrames().First(), message);
+#else
                     data = new LogData(level, new StackFrame(2, true), message);
+#endif
                     _output(data, _file);
                 }
                 catch (Exception ex)
                 {
+#if (DNXCORE50 || UAP10_0 || DOTNET5_4)
+                    var st = new StackTrace(ex, true);
+                    data = new LogData(LogLevel.Fatal, st.GetFrames().First(), ex.Message);
+#else
                     data = new LogData(LogLevel.Fatal, new StackFrame(0, true), ex.Message);
+#endif
                     Console.WriteLine(data.ToString());
                 }
             }

@@ -225,10 +225,9 @@ namespace WebSocketSharp.Net
                 var key = Path.Combine(certificateFolderPath, String.Format("{0}.key", port));
                 if (File.Exists(cer) && File.Exists(key))
                 {
-
 #if (DNXCORE50 || UAP10_0 || DOTNET5_4)
                     var cert = new X509Certificate2(cer);
-                    cert.PrivateKey = createRSAFromFile(key);
+                    throw new NotSupportedException(); // TODO
 #else
                     var cert = new X509Certificate2(cer);
                     cert.PrivateKey = createRSAFromFile(key);

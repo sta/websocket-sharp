@@ -44,8 +44,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -1925,8 +1923,8 @@ namespace WebSocketSharp
                                       return;
                                   }
 
-                            // Receive next asap because the Ping or Close needs a response to it.
-                            receive();
+                                  // Receive next asap because the Ping or Close needs a response to it.
+                                  receive();
 
                                   if (_inMessage || !HasMessage || _readyState != WebSocketState.Open)
                                       return;
@@ -2171,7 +2169,7 @@ namespace WebSocketSharp
             var buff = new StringBuilder(base64Key, 64);
             buff.Append(_guid);
 #if (DNXCORE50 || UAP10_0 || DOTNET5_4)
-            SHA1 sha1 = new System.Security.Cryptography.SHA1.Create();
+            SHA1 sha1 = SHA1.Create();
 #else
             SHA1 sha1 = new SHA1CryptoServiceProvider();
 #endif
