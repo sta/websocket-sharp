@@ -26,7 +26,7 @@
                 "Microsoft.CSharp": "4.0.1-beta-*",
                 "Microsoft.Extensions.PlatformAbstractions": "1.0.0-rc1-final",
 
-                "System.Globalization.Extensions": "4.0.0-beta-*",
+                "System.Globalization.Extensions": "4.0.1-beta-*",
 
                 "System.Runtime": "4.0.21-beta-*",
                 "System.Runtime.InteropServices": "4.0.21-beta-*",
