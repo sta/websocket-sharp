@@ -2776,11 +2776,16 @@ namespace WebSocketSharp
     public void SetCookie (Cookie cookie)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (true, false, true, false, false, true) ??
-                  (cookie == null ? "'cookie' is null." : null);
-
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
           _logger.Error (msg);
+          error ("An error has occurred in setting a cookie.", null);
+
+          return;
+        }
+
+        if (cookie == null) {
+          _logger.Error ("'cookie' is null.");
           error ("An error has occurred in setting a cookie.", null);
 
           return;
