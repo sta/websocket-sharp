@@ -2814,25 +2814,31 @@ namespace WebSocketSharp
     public void SetCredentials (string username, string password, bool preAuth)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (true, false, true, false, false, true);
-        if (msg == null) {
-          if (username.IsNullOrEmpty ()) {
-            _credentials = null;
-            _preAuth = false;
-            _logger.Warn ("The credentials were set back to the default.");
+        string msg;
+        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+          _logger.Error (msg);
+          error ("An error has occurred in setting the credentials.", null);
 
-            return;
-          }
-
-          msg = username.Contains (':') || !username.IsText ()
-                ? "'username' contains an invalid character."
-                : !password.IsNullOrEmpty () && !password.IsText ()
-                  ? "'password' contains an invalid character."
-                  : null;
+          return;
         }
 
-        if (msg != null) {
-          _logger.Error (msg);
+        if (username.IsNullOrEmpty ()) {
+          _credentials = null;
+          _preAuth = false;
+          _logger.Warn ("The credentials were set back to the default.");
+
+          return;
+        }
+
+        if (username.Contains (':') || !username.IsText ()) {
+          _logger.Error ("'username' contains an invalid character.");
+          error ("An error has occurred in setting the credentials.", null);
+
+          return;
+        }
+
+        if (!password.IsNullOrEmpty () && !password.IsText ()) {
+          _logger.Error ("'password' contains an invalid character.");
           error ("An error has occurred in setting the credentials.", null);
 
           return;
