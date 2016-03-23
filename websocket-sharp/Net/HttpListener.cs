@@ -435,18 +435,20 @@ namespace WebSocketSharp.Net
 
     private void cleanupConnections ()
     {
+      var conns = default(HttpConnection[]);
       lock (_connectionsSync) {
         if (_connections.Count == 0)
           return;
 
         // Need to copy this since closing will call the RemoveConnection method.
         var keys = _connections.Keys;
-        var conns = new HttpConnection[keys.Count];
+        conns = new HttpConnection[keys.Count];
         keys.CopyTo (conns, 0);
         _connections.Clear ();
-        for (var i = conns.Length - 1; i >= 0; i--)
-          conns[i].Close (true);
       }
+
+      for (var i = conns.Length - 1; i >= 0; i--)
+        conns[i].Close (true);
     }
 
     private void cleanupContextRegistry ()
@@ -818,6 +820,7 @@ namespace WebSocketSharp.Net
       _listening = false;
       EndPointManager.RemoveListener (this);
       sendServiceUnavailable ();
+            cleanupConnections();
     }
 
     #endregion
