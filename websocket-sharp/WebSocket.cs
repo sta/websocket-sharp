@@ -2895,9 +2895,9 @@ namespace WebSocketSharp
         }
 
         if (username.IsNullOrEmpty ()) {
+          _logger.Warn ("The proxy credentials are set back to the default.");
           _proxyUri = uri;
           _proxyCredentials = null;
-          _logger.Warn ("The proxy credentials were set back to the default.");
 
           return;
         }
