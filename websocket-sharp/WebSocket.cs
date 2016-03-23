@@ -2876,9 +2876,9 @@ namespace WebSocketSharp
         }
 
         if (url.IsNullOrEmpty ()) {
+          _logger.Warn ("The proxy url and credentials are set back to the default.");
           _proxyUri = null;
           _proxyCredentials = null;
-          _logger.Warn ("The proxy url and credentials were set back to the default.");
 
           return;
         }
