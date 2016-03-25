@@ -2765,9 +2765,16 @@ namespace WebSocketSharp
     /// </param>
     public void SetCookie (Cookie cookie)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting a cookie.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting a cookie.", null);
 
