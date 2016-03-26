@@ -2810,9 +2810,16 @@ namespace WebSocketSharp
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the credentials.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the credentials.", null);
 
