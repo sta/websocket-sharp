@@ -2870,9 +2870,16 @@ namespace WebSocketSharp
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the proxy.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the proxy.", null);
 
