@@ -80,6 +80,7 @@ namespace WebSocketSharp
     private bool                           _enableRedirection;
     private AutoResetEvent                 _exitReceiving;
     private string                         _extensions;
+    private bool                           _extensionsRequested;
     private object                         _forConn;
     private object                         _forMessageEventQueue;
     private object                         _forSend;
@@ -99,6 +100,7 @@ namespace WebSocketSharp
     private bool                           _preAuth;
     private string                         _protocol;
     private string[]                       _protocols;
+    private bool                           _protocolsRequested;
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
@@ -309,8 +311,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
             error ("An error has occurred in setting the compression.", null);
 
@@ -323,7 +325,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the HTTP cookies included in the WebSocket connection request and response.
+    /// Gets the HTTP cookies included in the WebSocket handshake request and response.
     /// </summary>
     /// <value>
     /// An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
@@ -371,10 +373,10 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects
-    /// the connection request to the new URL located in the connection response.
+    /// the handshake request to the new URL located in the handshake response.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocket"/> redirects the connection request to
+    /// <c>true</c> if the <see cref="WebSocket"/> redirects the handshake request to
     /// the new URL; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool EnableRedirection {
@@ -384,8 +386,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
             error ("An error has occurred in setting the enable redirection.", null);
 
@@ -457,7 +459,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets the value of the HTTP Origin header to send with
-    /// the WebSocket connection request to the server.
+    /// the WebSocket handshake request to the server.
     /// </summary>
     /// <remarks>
     /// The <see cref="WebSocket"/> sends the Origin header if this property has any.
@@ -480,20 +482,22 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg == null) {
-            if (value.IsNullOrEmpty ()) {
-              _origin = value;
-              return;
-            }
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+            _logger.Error (msg);
+            error ("An error has occurred in setting the origin.", null);
 
-            Uri origin;
-            if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1)
-              msg = "The syntax of an origin must be '<scheme>://<host>[:<port>]'.";
+            return;
           }
 
-          if (msg != null) {
-            _logger.Error (msg);
+          if (value.IsNullOrEmpty ()) {
+            _origin = value;
+            return;
+          }
+
+          Uri origin;
+          if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1) {
+            _logger.Error ("The syntax of an origin must be '<scheme>://<host>[:<port>]'.");
             error ("An error has occurred in setting the origin.", null);
 
             return;
@@ -552,8 +556,8 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, false, true, false, false, true);
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
             error ("An error has occurred in setting the ssl configuration.", null);
 
@@ -591,10 +595,10 @@ namespace WebSocketSharp
 
       set {
         lock (_forConn) {
-          var msg = checkIfAvailable (true, true, true, false, false, true) ??
-                    value.CheckIfValidWaitTime ();
-
-          if (msg != null) {
+          string msg;
+          if (!checkIfAvailable (true, true, true, false, false, true, out msg)
+              || !value.CheckWaitTime (out msg)
+          ) {
             _logger.Error (msg);
             error ("An error has occurred in setting the wait time.", null);
 
@@ -638,8 +642,8 @@ namespace WebSocketSharp
     private bool accept ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfAvailable (true, false, false, false);
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, false, false, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in accepting.", null);
 
@@ -647,17 +651,19 @@ namespace WebSocketSharp
         }
 
         try {
-          if (acceptHandshake ()) {
-            _readyState = WebSocketState.Open;
-            return true;
-          }
+          if (!acceptHandshake ())
+            return false;
+
+          _readyState = WebSocketState.Open;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while accepting.", ex);
+
+          return false;
         }
 
-        return false;
+        return true;
       }
     }
 
@@ -667,14 +673,22 @@ namespace WebSocketSharp
       _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
 
       string msg;
-      if (!checkIfValidHandshakeRequest (_context, out msg)) {
+      if (!checkHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while accepting.", CloseStatusCode.ProtocolError);
+
+        return false;
       }
 
-      if (!customCheckIfValidHandshakeRequest (_context, out msg)) {
+      if (!customCheckHandshakeRequest (_context, out msg)) {
         sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
-        throw new WebSocketException (CloseStatusCode.PolicyViolation, msg);
+
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while accepting.", CloseStatusCode.PolicyViolation);
+
+        return false;
       }
 
       _base64Key = _context.Headers["Sec-WebSocket-Key"];
@@ -683,23 +697,13 @@ namespace WebSocketSharp
         processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
 
       if (!_ignoreExtensions)
-        processSecWebSocketExtensionsHeader (_context.Headers["Sec-WebSocket-Extensions"]);
+        processSecWebSocketExtensionsClientHeader (_context.Headers["Sec-WebSocket-Extensions"]);
 
       return sendHttpResponse (createHandshakeResponse ());
     }
 
-    private string checkIfAvailable (
-      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
-    {
-      return !client && _client
-             ? "This operation isn't available in: client"
-             : !server && !_client
-               ? "This operation isn't available in: server"
-               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
-    }
-
     // As server
-    private bool checkIfValidHandshakeRequest (WebSocketContext context, out string message)
+    private bool checkHandshakeRequest (WebSocketContext context, out string message)
     {
       message = null;
 
@@ -724,11 +728,23 @@ namespace WebSocketSharp
         return false;
       }
 
+      if (!validateSecWebSocketProtocolClientHeader (headers["Sec-WebSocket-Protocol"])) {
+        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+        return false;
+      }
+
+      if (!_ignoreExtensions
+          && !validateSecWebSocketExtensionsClientHeader (headers["Sec-WebSocket-Extensions"])
+      ) {
+        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+        return false;
+      }
+
       return true;
     }
 
     // As client
-    private bool checkIfValidHandshakeResponse (HttpResponse response, out string message)
+    private bool checkHandshakeResponse (HttpResponse response, out string message)
     {
       message = null;
 
@@ -749,16 +765,16 @@ namespace WebSocketSharp
 
       var headers = response.Headers;
       if (!validateSecWebSocketAcceptHeader (headers["Sec-WebSocket-Accept"])) {
-        message = "Includes an invalid Sec-WebSocket-Accept header.";
+        message = "Includes no Sec-WebSocket-Accept header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketProtocolHeader (headers["Sec-WebSocket-Protocol"])) {
-        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+      if (!validateSecWebSocketProtocolServerHeader (headers["Sec-WebSocket-Protocol"])) {
+        message = "Includes no Sec-WebSocket-Protocol header, or it has an invalid value.";
         return false;
       }
 
-      if (!validateSecWebSocketExtensionsHeader (headers["Sec-WebSocket-Extensions"])) {
+      if (!validateSecWebSocketExtensionsServerHeader (headers["Sec-WebSocket-Extensions"])) {
         message = "Includes an invalid Sec-WebSocket-Extensions header.";
         return false;
       }
@@ -771,7 +787,71 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool checkIfValidReceivedFrame (WebSocketFrame frame, out string message)
+    private string checkIfAvailable (
+      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
+    {
+      return !client && _client
+             ? "This operation isn't available in: client"
+             : !server && !_client
+               ? "This operation isn't available in: server"
+               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
+    }
+
+    private bool checkIfAvailable (
+      bool connecting, bool open, bool closing, bool closed, out string message
+    )
+    {
+      message = null;
+
+      if (!connecting && _readyState == WebSocketState.Connecting) {
+        message = "This operation isn't available in: connecting";
+        return false;
+      }
+
+      if (!open && _readyState == WebSocketState.Open) {
+        message = "This operation isn't available in: open";
+        return false;
+      }
+
+      if (!closing && _readyState == WebSocketState.Closing) {
+        message = "This operation isn't available in: closing";
+        return false;
+      }
+
+      if (!closed && _readyState == WebSocketState.Closed) {
+        message = "This operation isn't available in: closed";
+        return false;
+      }
+
+      return true;
+    }
+
+    private bool checkIfAvailable (
+      bool client,
+      bool server,
+      bool connecting,
+      bool open,
+      bool closing,
+      bool closed,
+      out string message
+    )
+    {
+      message = null;
+
+      if (!client && _client) {
+        message = "This operation isn't available in: client";
+        return false;
+      }
+
+      if (!server && !_client) {
+        message = "This operation isn't available in: server";
+        return false;
+      }
+
+      return checkIfAvailable (connecting, open, closing, closed, out message);
+    }
+
+    private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
 
@@ -869,27 +949,29 @@ namespace WebSocketSharp
     private bool connect ()
     {
       lock (_forConn) {
-        var msg = _readyState.CheckIfAvailable (true, false, false, true);
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in connecting.", null);
 
           return false;
         }
 
-        _readyState = WebSocketState.Connecting;
         try {
-          if (doHandshake ()) {
-            _readyState = WebSocketState.Open;
-            return true;
-          }
+          _readyState = WebSocketState.Connecting;
+          if (!doHandshake ())
+            return false;
+
+          _readyState = WebSocketState.Open;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while connecting.", ex);
+
+          return false;
         }
 
-        return false;
+        return true;
       }
     }
 
@@ -934,12 +1016,13 @@ namespace WebSocketSharp
 
       headers["Sec-WebSocket-Key"] = _base64Key;
 
-      if (_protocols != null)
+      _protocolsRequested = _protocols != null;
+      if (_protocolsRequested)
         headers["Sec-WebSocket-Protocol"] = _protocols.ToString (", ");
 
-      var exts = createExtensions ();
-      if (exts != null)
-        headers["Sec-WebSocket-Extensions"] = exts;
+      _extensionsRequested = _compression != CompressionMethod.None;
+      if (_extensionsRequested)
+        headers["Sec-WebSocket-Extensions"] = createExtensions ();
 
       headers["Sec-WebSocket-Version"] = _version;
 
@@ -982,7 +1065,7 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool customCheckIfValidHandshakeRequest (WebSocketContext context, out string message)
+    private bool customCheckHandshakeRequest (WebSocketContext context, out string message)
     {
       message = null;
       return _handshakeRequestChecker == null
@@ -1002,12 +1085,20 @@ namespace WebSocketSharp
       var res = sendHandshakeRequest ();
 
       string msg;
-      if (!checkIfValidHandshakeResponse (res, out msg))
-        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
+      if (!checkHandshakeResponse (res, out msg)) {
+        _logger.Fatal (msg);
+        fatal ("An error has occurred while connecting.", CloseStatusCode.ProtocolError);
 
-      var cookies = res.Cookies;
-      if (cookies.Count > 0)
-        _cookies.SetOrRemove (cookies);
+        return false;
+      }
+
+      if (_protocolsRequested)
+        _protocol = res.Headers["Sec-WebSocket-Protocol"];
+
+      if (_extensionsRequested)
+        processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
+
+      processCookies (res.Cookies);
 
       return true;
     }
@@ -1145,6 +1236,15 @@ namespace WebSocketSharp
       return false;
     }
 
+    // As client
+    private void processCookies (CookieCollection cookies)
+    {
+      if (cookies.Count == 0)
+        return;
+
+      _cookies.SetOrRemove (cookies);
+    }
+
     private bool processDataFrame (WebSocketFrame frame)
     {
       enqueueToMessageEventQueue (
@@ -1208,7 +1308,7 @@ namespace WebSocketSharp
     private bool processReceivedFrame (WebSocketFrame frame)
     {
       string msg;
-      if (!checkIfValidReceivedFrame (frame, out msg))
+      if (!checkReceivedFrame (frame, out msg))
         throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       frame.Unmask ();
@@ -1226,9 +1326,9 @@ namespace WebSocketSharp
     }
 
     // As server
-    private void processSecWebSocketExtensionsHeader (string value)
+    private void processSecWebSocketExtensionsClientHeader (string value)
     {
-      if (value == null || value.Length == 0)
+      if (value == null)
         return;
 
       var buff = new StringBuilder (80);
@@ -1254,6 +1354,17 @@ namespace WebSocketSharp
         buff.Length = len - 2;
         _extensions = buff.ToString ();
       }
+    }
+
+    // As client
+    private void processSecWebSocketExtensionsServerHeader (string value)
+    {
+      if (value == null) {
+        _compression = CompressionMethod.None;
+        return;
+      }
+
+      _extensions = value;
     }
 
     // As server
@@ -1665,23 +1776,28 @@ namespace WebSocketSharp
       return value != null && value == CreateResponseKey (_base64Key);
     }
 
-    // As client
-    private bool validateSecWebSocketExtensionsHeader (string value)
+    // As server
+    private bool validateSecWebSocketExtensionsClientHeader (string value)
     {
-      var comp = _compression != CompressionMethod.None;
-      if (value == null || value.Length == 0) {
-        if (comp)
-          _compression = CompressionMethod.None;
+      return value == null || value.Length > 0;
+    }
 
+    // As client
+    private bool validateSecWebSocketExtensionsServerHeader (string value)
+    {
+      if (value == null)
         return true;
-      }
 
-      if (!comp)
+      if (value.Length == 0)
         return false;
 
+      if (!_extensionsRequested)
+        return false;
+
+      var comp = _compression != CompressionMethod.None;
       foreach (var e in value.SplitHeaderValue (',')) {
         var ext = e.Trim ();
-        if (ext.IsCompressionExtension (_compression)) {
+        if (comp && ext.IsCompressionExtension (_compression)) {
           if (!ext.Contains ("server_no_context_takeover")) {
             _logger.Error ("The server hasn't sent back 'server_no_context_takeover'.");
             return false;
@@ -1691,13 +1807,15 @@ namespace WebSocketSharp
             _logger.Warn ("The server hasn't sent back 'client_no_context_takeover'.");
 
           var method = _compression.ToExtensionString ();
-          var invalid = ext.SplitHeaderValue (';').Contains (
-            t => {
-              t = t.Trim ();
-              return t != method &&
-                     t != "server_no_context_takeover" &&
-                     t != "client_no_context_takeover";
-            });
+          var invalid =
+            ext.SplitHeaderValue (';').Contains (
+              t => {
+                t = t.Trim ();
+                return t != method
+                       && t != "server_no_context_takeover"
+                       && t != "client_no_context_takeover";
+              }
+            );
 
           if (invalid)
             return false;
@@ -1707,7 +1825,6 @@ namespace WebSocketSharp
         }
       }
 
-      _extensions = value;
       return true;
     }
 
@@ -1717,17 +1834,22 @@ namespace WebSocketSharp
       return value != null && value.Length > 0;
     }
 
+    // As server
+    private bool validateSecWebSocketProtocolClientHeader (string value)
+    {
+      return value == null || value.Length > 0;
+    }
+
     // As client
-    private bool validateSecWebSocketProtocolHeader (string value)
+    private bool validateSecWebSocketProtocolServerHeader (string value)
     {
       if (value == null)
-        return _protocols == null;
+        return !_protocolsRequested;
 
-      if (_protocols == null || !_protocols.Contains (protocol => protocol == value))
+      if (value.Length == 0)
         return false;
 
-      _protocol = value;
-      return true;
+      return _protocolsRequested && _protocols.Contains (p => p == value);
     }
 
     // As server
@@ -1876,15 +1998,19 @@ namespace WebSocketSharp
     internal void InternalAccept ()
     {
       try {
-        if (acceptHandshake ()) {
-          _readyState = WebSocketState.Open;
-          open ();
-        }
+        if (!acceptHandshake ())
+          return;
+
+        _readyState = WebSocketState.Open;
       }
       catch (Exception ex) {
         _logger.Fatal (ex.ToString ());
         fatal ("An exception has occurred while accepting.", ex);
+
+        return;
       }
+
+      open ();
     }
 
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
@@ -1964,15 +2090,15 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Accepts the WebSocket connection request.
+    /// Accepts the WebSocket handshake request.
     /// </summary>
     /// <remarks>
     /// This method isn't available in a client.
     /// </remarks>
     public void Accept ()
     {
-      var msg = checkIfAvailable (false, true, true, false, false, false);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (false, true, true, false, false, false, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in accepting.", null);
 
@@ -1984,7 +2110,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Accepts the WebSocket connection request asynchronously.
+    /// Accepts the WebSocket handshake request asynchronously.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -1996,8 +2122,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void AcceptAsync ()
     {
-      var msg = checkIfAvailable (false, true, true, false, false, false);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (false, true, true, false, false, false, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in accepting.", null);
 
@@ -2010,7 +2136,8 @@ namespace WebSocketSharp
           if (acceptor.EndInvoke (ar))
             open ();
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
@@ -2018,8 +2145,8 @@ namespace WebSocketSharp
     /// </summary>
     public void Close ()
     {
-      var msg = _readyState.CheckIfAvailable (true, true, false, false);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, true, false, false, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
@@ -2170,8 +2297,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void CloseAsync ()
     {
-      var msg = _readyState.CheckIfAvailable (true, true, false, false);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, true, false, false, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
@@ -2341,8 +2468,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void Connect ()
     {
-      var msg = checkIfAvailable (true, false, true, false, false, true);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
 
@@ -2366,8 +2493,8 @@ namespace WebSocketSharp
     /// </remarks>
     public void ConnectAsync ()
     {
-      var msg = checkIfAvailable (true, false, true, false, false, true);
-      if (msg != null) {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in connecting.", null);
 
@@ -2380,7 +2507,8 @@ namespace WebSocketSharp
           if (connector.EndInvoke (ar))
             open ();
         },
-        null);
+        null
+      );
     }
 
     /// <summary>
@@ -2640,7 +2768,7 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Sets an HTTP <paramref name="cookie"/> to send with
-    /// the WebSocket connection request to the server.
+    /// the WebSocket handshake request to the server.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that represents the cookie to send.
@@ -2648,11 +2776,16 @@ namespace WebSocketSharp
     public void SetCookie (Cookie cookie)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (true, false, true, false, false, true) ??
-                  (cookie == null ? "'cookie' is null." : null);
-
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
           _logger.Error (msg);
+          error ("An error has occurred in setting a cookie.", null);
+
+          return;
+        }
+
+        if (cookie == null) {
+          _logger.Error ("'cookie' is null.");
           error ("An error has occurred in setting a cookie.", null);
 
           return;
@@ -2675,31 +2808,37 @@ namespace WebSocketSharp
     /// used to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials
-    /// with the first connection request to the server; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials with
+    /// the first handshake request to the server; otherwise, <c>false</c>.
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
       lock (_forConn) {
-        var msg = checkIfAvailable (true, false, true, false, false, true);
-        if (msg == null) {
-          if (username.IsNullOrEmpty ()) {
-            _credentials = null;
-            _preAuth = false;
-            _logger.Warn ("The credentials were set back to the default.");
+        string msg;
+        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+          _logger.Error (msg);
+          error ("An error has occurred in setting the credentials.", null);
 
-            return;
-          }
-
-          msg = username.Contains (':') || !username.IsText ()
-                ? "'username' contains an invalid character."
-                : !password.IsNullOrEmpty () && !password.IsText ()
-                  ? "'password' contains an invalid character."
-                  : null;
+          return;
         }
 
-        if (msg != null) {
-          _logger.Error (msg);
+        if (username.IsNullOrEmpty ()) {
+          _logger.Warn ("The credentials are set back to the default.");
+          _credentials = null;
+          _preAuth = false;
+
+          return;
+        }
+
+        if (username.Contains (':') || !username.IsText ()) {
+          _logger.Error ("'username' contains an invalid character.");
+          error ("An error has occurred in setting the credentials.", null);
+
+          return;
+        }
+
+        if (!password.IsNullOrEmpty () && !password.IsText ()) {
+          _logger.Error ("'password' contains an invalid character.");
           error ("An error has occurred in setting the credentials.", null);
 
           return;

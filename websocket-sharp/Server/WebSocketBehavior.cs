@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -102,10 +102,10 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the information in a connection request to the WebSocket service.
+    /// Gets the information in a handshake request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> that provides the access to the connection request,
+    /// A <see cref="WebSocketContext"/> instance that provides the access to the handshake request,
     /// or <see langword="null"/> if the WebSocket connection isn't established.
     /// </value>
     public WebSocketContext Context {
@@ -116,18 +116,24 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate called to validate the HTTP cookies included in
-    /// a connection request to the WebSocket service.
+    /// a handshake request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the connection request.
+    /// the handshake request.
     /// </remarks>
     /// <value>
     ///   <para>
     ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate that references
-    ///   the method(s) used to validate the cookies. 1st <see cref="CookieCollection"/> passed to
-    ///   this delegate contains the cookies to validate if any. 2nd <see cref="CookieCollection"/>
-    ///   passed to this delegate receives the cookies to send to the client.
+    ///   the method(s) used to validate the cookies.
+    ///   </para>
+    ///   <para>
+    ///   1st <see cref="CookieCollection"/> parameter passed to this delegate contains
+    ///   the cookies to validate if any.
+    ///   </para>
+    ///   <para>
+    ///   2nd <see cref="CookieCollection"/> parameter passed to this delegate receives
+    ///   the cookies to send to the client.
     ///   </para>
     ///   <para>
     ///   This delegate should return <c>true</c> if the cookies are valid.
@@ -184,11 +190,11 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets a value indicating whether the WebSocket service ignores
-    /// the Sec-WebSocket-Extensions header included in a connection request.
+    /// the Sec-WebSocket-Extensions header included in a handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service ignores the extensions;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the WebSocket service ignores the extensions requested from
+    /// a client; otherwise, <c>false</c>. The default value is <c>false</c>.
     /// </value>
     public bool IgnoreExtensions {
       get {
@@ -202,16 +208,19 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate called to validate the Origin header included in
-    /// a connection request to the WebSocket service.
+    /// a handshake request to the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the connection request.
+    /// the handshake request.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to validate
-    ///   the origin header. A <see cref="string"/> passed to this delegate represents the value of
+    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to
+    ///   validate the origin header.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="string"/> parameter passed to this delegate represents the value of
     ///   the origin header to validate if any.
     ///   </para>
     ///   <para>
@@ -294,13 +303,13 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
-    private string checkIfValidConnectionRequest (WebSocketContext context)
+    private string checkHandshakeRequest (WebSocketContext context)
     {
       return _originValidator != null && !_originValidator (context.Origin)
-             ? "Invalid Origin header."
-             : _cookiesValidator != null &&
-               !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
-               ? "Invalid Cookies."
+             ? "Includes no Origin header, or it has an invalid value."
+             : _cookiesValidator != null
+               && !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
+               ? "Includes no cookie, or an invalid cookie exists."
                : null;
     }
 
@@ -352,7 +361,7 @@ namespace WebSocketSharp.Server
       _sessions = sessions;
 
       _websocket = context.WebSocket;
-      _websocket.CustomHandshakeRequestChecker = checkIfValidConnectionRequest;
+      _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
       _websocket.EmitOnPing = _emitOnPing;
       _websocket.IgnoreExtensions = _ignoreExtensions;
       _websocket.Protocol = _protocol;

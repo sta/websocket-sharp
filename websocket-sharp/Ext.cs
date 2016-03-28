@@ -14,7 +14,7 @@
  * Copyright (c) 2003 Ben Maurer
  * Copyright (c) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
  * Copyright (c) 2009 Stephane Delcroix
- * Copyright (c) 2010-2015 sta.blockhead
+ * Copyright (c) 2010-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -212,6 +212,18 @@ namespace WebSocketSharp
     internal static string CheckIfValidWaitTime (this TimeSpan time)
     {
       return time <= TimeSpan.Zero ? "A wait time is zero or less." : null;
+    }
+
+    internal static bool CheckWaitTime (this TimeSpan time, out string message)
+    {
+      message = null;
+
+      if (time <= TimeSpan.Zero) {
+        message = "A wait time is zero or less.";
+        return false;
+      }
+
+      return true;
     }
 
     internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
