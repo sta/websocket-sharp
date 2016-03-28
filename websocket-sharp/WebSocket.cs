@@ -114,7 +114,7 @@ namespace WebSocketSharp
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
     private Stream                         _stream;
-    private TcpClient                      _tcpClient;
+    private FixedTcpClient                 _tcpClient;
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
@@ -1683,7 +1683,7 @@ namespace WebSocketSharp
         if (_proxyCredentials != null) {
           if (res.HasConnectionClose) {
             releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _tcpClient = new FixedTcpClient(_proxyUri.DnsSafeHost, _proxyUri.Port);
             _stream = _tcpClient.GetStream ();
           }
 
@@ -1706,11 +1706,11 @@ namespace WebSocketSharp
     {
       if (_localIpEndPoint == null)
       {
-        _tcpClient = new TcpClient ();
+        _tcpClient = new FixedTcpClient();
       }
       else
       {
-        _tcpClient = new TcpClient (_localIpEndPoint);
+        _tcpClient = new FixedTcpClient(_localIpEndPoint);
       }
       if (_proxyUri != null) {
         _tcpClient.Connect (_proxyUri.DnsSafeHost, _proxyUri.Port);
