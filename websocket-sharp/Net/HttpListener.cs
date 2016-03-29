@@ -782,8 +782,7 @@ namespace WebSocketSharp.Net
         return;
 
       _listening = false;
-      EndPointManager.RemoveListener (this);
-      sendServiceUnavailable ();
+      close (false);
     }
 
     #endregion
