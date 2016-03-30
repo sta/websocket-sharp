@@ -449,14 +449,16 @@ namespace WebSocketSharp.Net
     {
       _socket.Close ();
 
+      List<HttpConnection> conns = null;
       lock (_unregisteredSync) {
-        var conns = new List<HttpConnection> (_unregistered.Keys);
+        conns = new List<HttpConnection> (_unregistered.Keys);
         _unregistered.Clear ();
-        foreach (var conn in conns)
-          conn.Close (true);
-
-        conns.Clear ();
       }
+
+      foreach (var conn in conns)
+        conn.Close (true);
+
+      conns.Clear ();
     }
 
     public void RemovePrefix (HttpListenerPrefix prefix, HttpListener listener)
