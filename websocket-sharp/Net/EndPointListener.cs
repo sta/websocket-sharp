@@ -451,6 +451,9 @@ namespace WebSocketSharp.Net
 
       List<HttpConnection> conns = null;
       lock (_unregisteredSync) {
+        if (_unregistered.Count == 0)
+          return;
+
         conns = new List<HttpConnection> (_unregistered.Keys);
         _unregistered.Clear ();
       }
