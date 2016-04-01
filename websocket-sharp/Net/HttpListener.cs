@@ -683,7 +683,11 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      close (false);
+      if (_listening) {
+        _listening = false;
+        close (false);
+      }
+
       _disposed = true;
     }
 
