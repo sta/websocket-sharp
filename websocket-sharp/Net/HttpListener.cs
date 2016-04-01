@@ -73,7 +73,7 @@ namespace WebSocketSharp.Net
     private Func<IIdentity, NetworkCredential>                   _credFinder;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
-    private bool                                                 _listening;
+    private volatile bool                                        _listening;
     private Logger                                               _logger;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
@@ -630,7 +630,11 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      close (true);
+      if (_listening) {
+        _listening = false;
+        close (true);
+      }
+
       _disposed = true;
     }
 
