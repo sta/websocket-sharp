@@ -503,10 +503,19 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void AddConnection (HttpConnection connection)
+    internal bool AddConnection (HttpConnection connection)
     {
-      lock (_connectionsSync)
+      if (!_listening)
+        return false;
+
+      lock (_connectionsSync) {
+        if (!_listening)
+          return false;
+
         _connections[connection] = connection;
+      }
+
+      return true;
     }
 
     internal bool Authenticate (HttpListenerContext context)

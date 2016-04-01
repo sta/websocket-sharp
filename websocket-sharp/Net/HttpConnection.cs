@@ -294,7 +294,11 @@ namespace WebSocketSharp.Net
           var lsnr = conn._context.Listener;
           if (conn._lastListener != lsnr) {
             conn.removeConnection ();
-            lsnr.AddConnection (conn);
+            if (!lsnr.AddConnection (conn)) {
+              conn.close ();
+              return;
+            }
+
             conn._lastListener = lsnr;
           }
 
