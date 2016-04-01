@@ -433,18 +433,20 @@ namespace WebSocketSharp.Net
 
     private void cleanupContextRegistry ()
     {
+      HttpListenerContext[] ctxs = null;
       lock (_ctxRegistrySync) {
         if (_ctxRegistry.Count == 0)
           return;
 
         // Need to copy this since closing will call the UnregisterContext method.
         var keys = _ctxRegistry.Keys;
-        var ctxs = new HttpListenerContext[keys.Count];
+        ctxs = new HttpListenerContext[keys.Count];
         keys.CopyTo (ctxs, 0);
         _ctxRegistry.Clear ();
-        for (var i = ctxs.Length - 1; i >= 0; i--)
-          ctxs[i].Connection.Close (true);
       }
+
+      for (var i = ctxs.Length - 1; i >= 0; i--)
+        ctxs[i].Connection.Close (true);
     }
 
     private void cleanupWaitQueue ()
