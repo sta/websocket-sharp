@@ -581,25 +581,33 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (GetType ().ToString ());
     }
 
-    internal void RegisterContext (HttpListenerContext context)
+    internal bool RegisterContext (HttpListenerContext context)
     {
-      lock (_ctxRegistrySync)
-        _ctxRegistry[context] = context;
+      if (!_listening)
+        return false;
 
       HttpListenerAsyncResult ares = null;
-      lock (_waitQueueSync) {
-        if (_waitQueue.Count == 0) {
-          lock (_ctxQueueSync)
-            _ctxQueue.Add (context);
-        }
-        else {
-          ares = _waitQueue[0];
-          _waitQueue.RemoveAt (0);
+      lock (_ctxRegistrySync) {
+        if (!_listening)
+          return false;
+
+        _ctxRegistry[context] = context;
+        lock (_waitQueueSync) {
+          if (_waitQueue.Count == 0) {
+            lock (_ctxQueueSync)
+              _ctxQueue.Add (context);
+          }
+          else {
+            ares = _waitQueue[0];
+            _waitQueue.RemoveAt (0);
+          }
         }
       }
 
       if (ares != null)
         ares.Complete (context);
+
+      return true;
     }
 
     internal void RemoveConnection (HttpConnection connection)
