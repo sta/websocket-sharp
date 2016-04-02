@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -449,14 +449,19 @@ namespace WebSocketSharp.Net
     {
       _socket.Close ();
 
+      HttpConnection[] conns = null;
       lock (_unregisteredSync) {
-        var conns = new List<HttpConnection> (_unregistered.Keys);
-        _unregistered.Clear ();
-        foreach (var conn in conns)
-          conn.Close (true);
+        if (_unregistered.Count == 0)
+          return;
 
-        conns.Clear ();
+        var keys = _unregistered.Keys;
+        conns = new HttpConnection[keys.Count];
+        keys.CopyTo (conns, 0);
+        _unregistered.Clear ();
       }
+
+      for (var i = conns.Length - 1; i >= 0; i--)
+        conns[i].Close (true);
     }
 
     public void RemovePrefix (HttpListenerPrefix prefix, HttpListener listener)
