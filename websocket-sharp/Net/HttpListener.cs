@@ -406,11 +406,11 @@ namespace WebSocketSharp.Net
       lock (_ctxRegistrySync) {
         if (!force)
           sendServiceUnavailable ();
-
-        cleanupContextRegistry ();
-        cleanupConnections ();
-        cleanupWaitQueue ();
       }
+
+      cleanupContextRegistry ();
+      cleanupConnections ();
+      cleanupWaitQueue ();
     }
 
     private void cleanupConnections ()
