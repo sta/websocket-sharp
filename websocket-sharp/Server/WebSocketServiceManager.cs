@@ -33,6 +33,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace WebSocketSharp.Server
 {
@@ -315,7 +317,12 @@ namespace WebSocketSharp.Server
       bool ret;
       lock (_sync) {
         path = HttpUtility.UrlDecode (path).TrimEndSlash ();
-        ret = _hosts.TryGetValue (path, out host);
+
+        var results = from result in _hosts
+                        where Regex.Match(path, result.Key, RegexOptions.Singleline).Success
+                        select result;
+        ret = results.Count() != 0;
+        host = results.First().Value;
       }
 
       if (!ret)
