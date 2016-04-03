@@ -469,16 +469,17 @@ namespace WebSocketSharp.Net
       cleanup (force);
     }
 
-    // Must be called with a lock on _ctxQueue.
     private HttpListenerContext getContextFromQueue ()
     {
-      if (_ctxQueue.Count == 0)
-        return null;
+      lock (_ctxQueueSync) {
+        if (_ctxQueue.Count == 0)
+          return null;
 
-      var ctx = _ctxQueue[0];
-      _ctxQueue.RemoveAt (0);
+        var ctx = _ctxQueue[0];
+        _ctxQueue.RemoveAt (0);
 
-      return ctx;
+        return ctx;
+      }
     }
 
     private void sendServiceUnavailable ()
@@ -561,12 +562,10 @@ namespace WebSocketSharp.Net
 
       // Lock _waitQueue early to avoid race conditions.
       lock (_waitQueueSync) {
-        lock (_ctxQueueSync) {
-          var ctx = getContextFromQueue ();
-          if (ctx != null) {
-            asyncResult.Complete (ctx, true);
-            return asyncResult;
-          }
+        var ctx = getContextFromQueue ();
+        if (ctx != null) {
+          asyncResult.Complete (ctx, true);
+          return asyncResult;
         }
 
         _waitQueue.Add (asyncResult);
