@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>http://teamcity.loccioni.com/repository/download/Aulos_LoccioniAulosCSharp_Develop/1209:id/html/index.html</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <iconUrl>https://trello-attachments.s3.amazonaws.com/55d5dbd19330afb229c8307e/128x128/053650646840a5f2193be3d047079bac/logo_nuget.png</iconUrl>
+    <projectUrl>https://git.loccioni.com/aulos/Loccioni-Aulos-CSharp</projectUrl>
+  </metadata>
+</package>
