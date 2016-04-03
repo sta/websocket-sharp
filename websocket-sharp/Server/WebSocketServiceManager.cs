@@ -322,7 +322,7 @@ namespace WebSocketSharp.Server
                         where Regex.Match(path, result.Key, RegexOptions.Singleline).Success
                         select result;
         ret = results.Count() != 0;
-        host = results.First().Value;
+        host = results.FirstOrDefault().Value;
       }
 
       if (!ret)
