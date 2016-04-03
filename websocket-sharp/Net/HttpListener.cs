@@ -560,15 +560,20 @@ namespace WebSocketSharp.Net
       if (!_listening)
         throw new InvalidOperationException ("The listener hasn't been started.");
 
-      // Lock _waitQueue early to avoid race conditions.
-      lock (_waitQueueSync) {
-        var ctx = getContextFromQueue ();
-        if (ctx != null) {
-          asyncResult.Complete (ctx, true);
-          return asyncResult;
-        }
+      // Lock _ctxRegistrySync early to avoid race conditions.
+      lock (_ctxRegistrySync) {
+        if (!_listening)
+          throw new InvalidOperationException ("The listener is stopped/closed.");
 
-        _waitQueue.Add (asyncResult);
+        lock (_waitQueueSync) {
+          var ctx = getContextFromQueue ();
+          if (ctx != null) {
+            asyncResult.Complete (ctx, true);
+            return asyncResult;
+          }
+
+          _waitQueue.Add (asyncResult);
+        }
       }
 
       return asyncResult;
