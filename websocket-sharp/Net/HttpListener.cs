@@ -451,16 +451,18 @@ namespace WebSocketSharp.Net
 
     private void cleanupWaitQueue ()
     {
+      HttpListenerAsyncResult[] aress = null;
       lock (_waitQueueSync) {
         if (_waitQueue.Count == 0)
           return;
 
-        var ex = new ObjectDisposedException (GetType ().ToString ());
-        foreach (var ares in _waitQueue)
-          ares.Complete (ex);
-
+        aress = _waitQueue.ToArray ();
         _waitQueue.Clear ();
       }
+
+      var ex = new ObjectDisposedException (GetType ().ToString ());
+      foreach (var ares in aress)
+        ares.Complete (ex);
     }
 
     private void close (bool force)
