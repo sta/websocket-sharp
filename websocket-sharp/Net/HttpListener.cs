@@ -465,6 +465,21 @@ namespace WebSocketSharp.Net
         ares.Complete (ex);
     }
 
+    private void cleanupWaitQueue (Exception exception)
+    {
+      HttpListenerAsyncResult[] aress = null;
+      lock (_waitQueueSync) {
+        if (_waitQueue.Count == 0)
+          return;
+
+        aress = _waitQueue.ToArray ();
+        _waitQueue.Clear ();
+      }
+
+      foreach (var ares in aress)
+        ares.Complete (exception);
+    }
+
     private void close (bool force)
     {
       EndPointManager.RemoveListener (this);
