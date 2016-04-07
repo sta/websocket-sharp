@@ -834,7 +834,14 @@ namespace WebSocketSharp.Net
         return;
 
       _listening = false;
-      close (false);
+
+      EndPointManager.RemoveListener (this);
+      lock (_ctxRegistrySync)
+        sendServiceUnavailable ();
+
+      cleanupContextRegistry ();
+      cleanupConnections ();
+      cleanupWaitQueue (new HttpListenerException (995, "The listener is stopped."));
     }
 
     #endregion
