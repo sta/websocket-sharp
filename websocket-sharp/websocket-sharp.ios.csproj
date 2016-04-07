@@ -8,7 +8,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>websocketsharp.ios</RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>websocket-sharp.ios</AssemblyName>
+    <AssemblyName>websocket-sharp</AssemblyName>
+    <ReleaseVersion>1.1.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
