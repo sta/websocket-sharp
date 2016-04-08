@@ -162,7 +162,7 @@ namespace WebSocketSharp.Net
     internal void Complete (Exception exception)
     {
       _exception = _inGet && (exception is ObjectDisposedException)
-                   ? new HttpListenerException (500, "Listener closed.")
+                   ? new HttpListenerException (995, "Listener closed.")
                    : exception;
 
       lock (_sync)
