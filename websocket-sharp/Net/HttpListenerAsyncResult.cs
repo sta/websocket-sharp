@@ -143,16 +143,19 @@ namespace WebSocketSharp.Net
         waitHandle.Set ();
 
       var callback = asyncResult._callback;
-      if (callback != null)
-        ThreadPool.QueueUserWorkItem (
-          state => {
-            try {
-              callback (asyncResult);
-            }
-            catch {
-            }
-          },
-          null);
+      if (callback == null)
+        return;
+
+      ThreadPool.QueueUserWorkItem (
+        state => {
+          try {
+            callback (asyncResult);
+          }
+          catch {
+          }
+        },
+        null
+      );
     }
 
     #endregion
