@@ -136,11 +136,13 @@ namespace WebSocketSharp.Net
 
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
-      asyncResult._completed = true;
+      lock (asyncResult._sync) {
+        asyncResult._completed = true;
 
-      var waitHandle = asyncResult._waitHandle;
-      if (waitHandle != null)
-        waitHandle.Set ();
+        var waitHandle = asyncResult._waitHandle;
+        if (waitHandle != null)
+          waitHandle.Set ();
+      }
 
       var callback = asyncResult._callback;
       if (callback == null)
@@ -168,8 +170,7 @@ namespace WebSocketSharp.Net
                    ? new HttpListenerException (995, "The listener is closed.")
                    : exception;
 
-      lock (_sync)
-        complete (this);
+      complete (this);
     }
 
     internal void Complete (HttpListenerContext context)
@@ -188,8 +189,7 @@ namespace WebSocketSharp.Net
       _context = context;
       _syncCompleted = syncCompleted;
 
-      lock (_sync)
-        complete (this);
+      complete (this);
     }
 
     internal HttpListenerContext GetContext ()
