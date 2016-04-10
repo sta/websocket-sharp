@@ -45,7 +45,6 @@
 #endregion
 
 using System;
-using System.Security.Principal;
 using System.Threading;
 
 namespace WebSocketSharp.Net
