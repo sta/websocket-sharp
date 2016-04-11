@@ -483,7 +483,15 @@ namespace WebSocketSharp.Net
     private void close (bool force)
     {
       EndPointManager.RemoveListener (this);
-      cleanup (force);
+
+      lock (_ctxRegistrySync) {
+        if (!force)
+          sendServiceUnavailable ();
+      }
+
+      cleanupContextRegistry ();
+      cleanupConnections ();
+      cleanupWaitQueue (new ObjectDisposedException (GetType ().ToString ()));
     }
 
     private HttpListenerContext getContextFromQueue ()
