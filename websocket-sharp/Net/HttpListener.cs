@@ -401,18 +401,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private void cleanup (bool force)
-    {
-      lock (_ctxRegistrySync) {
-        if (!force)
-          sendServiceUnavailable ();
-      }
-
-      cleanupContextRegistry ();
-      cleanupConnections ();
-      cleanupWaitQueue ();
-    }
-
     private void cleanupConnections ()
     {
       HttpConnection[] conns = null;
@@ -447,22 +435,6 @@ namespace WebSocketSharp.Net
 
       for (var i = ctxs.Length - 1; i >= 0; i--)
         ctxs[i].Connection.Close (true);
-    }
-
-    private void cleanupWaitQueue ()
-    {
-      HttpListenerAsyncResult[] aress = null;
-      lock (_waitQueueSync) {
-        if (_waitQueue.Count == 0)
-          return;
-
-        aress = _waitQueue.ToArray ();
-        _waitQueue.Clear ();
-      }
-
-      var ex = new ObjectDisposedException (GetType ().ToString ());
-      foreach (var ares in aress)
-        ares.Complete (ex);
     }
 
     private void cleanupWaitQueue (Exception exception)
