@@ -454,7 +454,10 @@ namespace WebSocketSharp.Net
 
     private void close (bool force)
     {
-      EndPointManager.RemoveListener (this);
+      if (_listening) {
+        _listening = false;
+        EndPointManager.RemoveListener (this);
+      }
 
       lock (_ctxRegistrySync) {
         if (!force)
@@ -464,6 +467,8 @@ namespace WebSocketSharp.Net
       cleanupContextRegistry ();
       cleanupConnections ();
       cleanupWaitQueue (new ObjectDisposedException (GetType ().ToString ()));
+
+      _disposed = true;
     }
 
     private HttpListenerContext getContextFromQueue ()
@@ -648,12 +653,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      if (_listening) {
-        _listening = false;
-        close (true);
-      }
-
-      _disposed = true;
+      close (true);
     }
 
     /// <summary>
@@ -701,12 +701,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      if (_listening) {
-        _listening = false;
-        close (false);
-      }
-
-      _disposed = true;
+      close (false);
     }
 
     /// <summary>
@@ -836,12 +831,7 @@ namespace WebSocketSharp.Net
       if (_disposed)
         return;
 
-      if (_listening) {
-        _listening = false;
-        close (true);
-      }
-
-      _disposed = true;
+      close (true);
     }
 
     #endregion
