@@ -809,8 +809,8 @@ namespace WebSocketSharp.Net
         return;
 
       _listening = false;
-
       EndPointManager.RemoveListener (this);
+
       lock (_ctxRegistrySync)
         sendServiceUnavailable ();
 
