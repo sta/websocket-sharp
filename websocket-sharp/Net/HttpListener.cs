@@ -555,13 +555,6 @@ namespace WebSocketSharp.Net
 
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
-      CheckDisposed ();
-      if (_prefixes.Count == 0)
-        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
-
-      if (!_listening)
-        throw new InvalidOperationException ("The listener hasn't been started.");
-
       // Lock _ctxRegistrySync early to avoid race conditions.
       lock (_ctxRegistrySync) {
         if (!_listening)
@@ -690,6 +683,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
+      CheckDisposed ();
+      if (_prefixes.Count == 0)
+        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
+
+      if (!_listening)
+        throw new InvalidOperationException ("The listener hasn't been started.");
+
       return BeginGetContext (new HttpListenerAsyncResult (callback, state));
     }
 
@@ -774,6 +774,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerContext GetContext ()
     {
+      CheckDisposed ();
+      if (_prefixes.Count == 0)
+        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
+
+      if (!_listening)
+        throw new InvalidOperationException ("The listener hasn't been started.");
+
       var ares = BeginGetContext (new HttpListenerAsyncResult (null, null));
       ares.InGet = true;
 
