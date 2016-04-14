@@ -558,7 +558,7 @@ namespace WebSocketSharp.Net
       // Lock _ctxRegistrySync early to avoid race conditions.
       lock (_ctxRegistrySync) {
         if (!_listening)
-          throw new InvalidOperationException ("The listener is stopped/closed.");
+          throw new HttpListenerException (995);
 
         lock (_waitQueueSync) {
           var ctx = getContextFromQueue ();
