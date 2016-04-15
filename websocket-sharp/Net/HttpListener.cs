@@ -471,6 +471,19 @@ namespace WebSocketSharp.Net
       _disposed = true;
     }
 
+    private HttpListenerAsyncResult getAsyncResultFromQueue ()
+    {
+      lock (_waitQueueSync) {
+        if (_waitQueue.Count == 0)
+          return null;
+
+        var ares = _waitQueue[0];
+        _waitQueue.RemoveAt (0);
+
+        return ares;
+      }
+    }
+
     private HttpListenerContext getContextFromQueue ()
     {
       lock (_ctxQueueSync) {
