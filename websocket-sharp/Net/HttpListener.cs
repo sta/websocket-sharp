@@ -534,23 +534,21 @@ namespace WebSocketSharp.Net
 
       var realm = Realm;
       var req = context.Request;
-      var user = HttpUtility.CreateUser (
-        req.Headers["Authorization"], schm, realm, req.HttpMethod, UserCredentialsFinder);
+      var user =
+        HttpUtility.CreateUser (
+          req.Headers["Authorization"], schm, realm, req.HttpMethod, UserCredentialsFinder
+        );
 
-      if (user != null && user.Identity.IsAuthenticated) {
-        context.User = user;
-        return true;
+      if (user == null || !user.Identity.IsAuthenticated) {
+        context.Response.CloseWithAuthChallenge (
+          new AuthenticationChallenge (schm, realm).ToString ()
+        );
+
+        return false;
       }
 
-      if (schm == AuthenticationSchemes.Basic)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-
-      if (schm == AuthenticationSchemes.Digest)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
-
-      return false;
+      context.User = user;
+      return true;
     }
 
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
