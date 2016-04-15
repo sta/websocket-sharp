@@ -596,28 +596,23 @@ namespace WebSocketSharp.Net
       if (!_listening)
         return false;
 
-      HttpListenerAsyncResult ares = null;
       lock (_ctxRegistrySync) {
         if (!_listening)
           return false;
 
         _ctxRegistry[context] = context;
-        lock (_waitQueueSync) {
-          if (_waitQueue.Count == 0) {
-            lock (_ctxQueueSync)
-              _ctxQueue.Add (context);
-          }
-          else {
-            ares = _waitQueue[0];
-            _waitQueue.RemoveAt (0);
-          }
+
+        var ares = getAsyncResultFromQueue ();
+        if (ares == null) {
+          lock (_ctxQueueSync)
+            _ctxQueue.Add (context);
         }
+        else {
+          ares.Complete (context);
+        }
+
+        return true;
       }
-
-      if (ares != null)
-        ares.Complete (context);
-
-      return true;
     }
 
     internal void RemoveConnection (HttpConnection connection)
