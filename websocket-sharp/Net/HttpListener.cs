@@ -631,12 +631,6 @@ namespace WebSocketSharp.Net
     {
       lock (_ctxRegistrySync)
         _ctxRegistry.Remove (context);
-
-      lock (_ctxQueueSync) {
-        var idx = _ctxQueue.IndexOf (context);
-        if (idx >= 0)
-          _ctxQueue.RemoveAt (idx);
-      }
     }
 
     #endregion
