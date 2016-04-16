@@ -844,7 +844,7 @@ namespace WebSocketSharp.Net
       EndPointManager.RemoveListener (this);
 
       lock (_ctxRegistrySync)
-        sendServiceUnavailable ();
+        cleanupContextQueue (true);
 
       cleanupContextRegistry ();
       cleanupConnections ();
