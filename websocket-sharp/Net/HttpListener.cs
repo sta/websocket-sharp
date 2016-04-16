@@ -516,24 +516,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private void sendServiceUnavailable ()
-    {
-      HttpListenerContext[] ctxs = null;
-      lock (_ctxQueueSync) {
-        if (_ctxQueue.Count == 0)
-          return;
-
-        ctxs = _ctxQueue.ToArray ();
-        _ctxQueue.Clear ();
-      }
-
-      foreach (var ctx in ctxs) {
-        var res = ctx.Response;
-        res.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
-        res.Close ();
-      }
-    }
-
     #endregion
 
     #region Internal Methods
