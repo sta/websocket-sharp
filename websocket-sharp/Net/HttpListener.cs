@@ -419,6 +419,27 @@ namespace WebSocketSharp.Net
         conns[i].Close (true);
     }
 
+    private void cleanupContextQueue (bool sendServiceUnavailable)
+    {
+      HttpListenerContext[] ctxs = null;
+      lock (_ctxQueueSync) {
+        if (_ctxQueue.Count == 0)
+          return;
+
+        ctxs = _ctxQueue.ToArray ();
+        _ctxQueue.Clear ();
+      }
+
+      if (!sendServiceUnavailable)
+        return;
+
+      foreach (var ctx in ctxs) {
+        var res = ctx.Response;
+        res.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
+        res.Close ();
+      }
+    }
+
     private void cleanupContextRegistry ()
     {
       HttpListenerContext[] ctxs = null;
