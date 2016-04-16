@@ -566,23 +566,21 @@ namespace WebSocketSharp.Net
 
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
-      // Lock _ctxRegistrySync early to avoid race conditions.
       lock (_ctxRegistrySync) {
         if (!_listening)
           throw new HttpListenerException (995);
 
-        lock (_waitQueueSync) {
-          var ctx = getContextFromQueue ();
-          if (ctx != null) {
-            asyncResult.Complete (ctx, true);
-            return asyncResult;
-          }
-
-          _waitQueue.Add (asyncResult);
+        var ctx = getContextFromQueue ();
+        if (ctx == null) {
+          lock (_waitQueueSync)
+            _waitQueue.Add (asyncResult);
         }
-      }
+        else {
+          asyncResult.Complete (ctx, true);
+        }
 
-      return asyncResult;
+        return asyncResult;
+      }
     }
 
     internal void CheckDisposed ()
