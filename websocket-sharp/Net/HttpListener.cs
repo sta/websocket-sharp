@@ -480,10 +480,8 @@ namespace WebSocketSharp.Net
         EndPointManager.RemoveListener (this);
       }
 
-      lock (_ctxRegistrySync) {
-        if (!force)
-          sendServiceUnavailable ();
-      }
+      lock (_ctxRegistrySync)
+        cleanupContextQueue (!force);
 
       cleanupContextRegistry ();
       cleanupConnections ();
