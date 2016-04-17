@@ -492,28 +492,24 @@ namespace WebSocketSharp.Net
 
     private HttpListenerAsyncResult getAsyncResultFromQueue ()
     {
-      lock (_waitQueueSync) {
-        if (_waitQueue.Count == 0)
-          return null;
+      if (_waitQueue.Count == 0)
+        return null;
 
-        var ares = _waitQueue[0];
-        _waitQueue.RemoveAt (0);
+      var ares = _waitQueue[0];
+      _waitQueue.RemoveAt (0);
 
-        return ares;
-      }
+      return ares;
     }
 
     private HttpListenerContext getContextFromQueue ()
     {
-      lock (_ctxQueueSync) {
-        if (_ctxQueue.Count == 0)
-          return null;
+      if (_ctxQueue.Count == 0)
+        return null;
 
-        var ctx = _ctxQueue[0];
-        _ctxQueue.RemoveAt (0);
+      var ctx = _ctxQueue[0];
+      _ctxQueue.RemoveAt (0);
 
-        return ctx;
-      }
+      return ctx;
     }
 
     #endregion
@@ -572,13 +568,10 @@ namespace WebSocketSharp.Net
           throw new HttpListenerException (995);
 
         var ctx = getContextFromQueue ();
-        if (ctx == null) {
-          lock (_waitQueueSync)
-            _waitQueue.Add (asyncResult);
-        }
-        else {
+        if (ctx == null)
+          _waitQueue.Add (asyncResult);
+        else
           asyncResult.Complete (ctx, true);
-        }
 
         return asyncResult;
       }
@@ -602,13 +595,10 @@ namespace WebSocketSharp.Net
         _ctxRegistry[context] = context;
 
         var ares = getAsyncResultFromQueue ();
-        if (ares == null) {
-          lock (_ctxQueueSync)
-            _ctxQueue.Add (context);
-        }
-        else {
+        if (ares == null)
+          _ctxQueue.Add (context);
+        else
           ares.Complete (context);
-        }
 
         return true;
       }
