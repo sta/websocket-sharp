@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Ximian, Inc. (http://www.ximian.com)
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,6 @@
 #endregion
 
 using System;
-using System.Security.Principal;
 using System.Threading;
 
 namespace WebSocketSharp.Net
@@ -136,23 +135,28 @@ namespace WebSocketSharp.Net
 
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
-      asyncResult._completed = true;
+      lock (asyncResult._sync) {
+        asyncResult._completed = true;
 
-      var waitHandle = asyncResult._waitHandle;
-      if (waitHandle != null)
-        waitHandle.Set ();
+        var waitHandle = asyncResult._waitHandle;
+        if (waitHandle != null)
+          waitHandle.Set ();
+      }
 
       var callback = asyncResult._callback;
-      if (callback != null)
-        ThreadPool.QueueUserWorkItem (
-          state => {
-            try {
-              callback (asyncResult);
-            }
-            catch {
-            }
-          },
-          null);
+      if (callback == null)
+        return;
+
+      ThreadPool.QueueUserWorkItem (
+        state => {
+          try {
+            callback (asyncResult);
+          }
+          catch {
+          }
+        },
+        null
+      );
     }
 
     #endregion
@@ -162,11 +166,10 @@ namespace WebSocketSharp.Net
     internal void Complete (Exception exception)
     {
       _exception = _inGet && (exception is ObjectDisposedException)
-                   ? new HttpListenerException (500, "Listener closed.")
+                   ? new HttpListenerException (995, "The listener is closed.")
                    : exception;
 
-      lock (_sync)
-        complete (this);
+      complete (this);
     }
 
     internal void Complete (HttpListenerContext context)
@@ -176,17 +179,22 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      var lsnr = context.Listener;
-      if (!lsnr.Authenticate (context)) {
-        lsnr.BeginGetContext (this);
+      try {
+        var lsnr = context.Listener;
+        if (!lsnr.Authenticate (context)) {
+          lsnr.BeginGetContext (this);
+          return;
+        }
+      }
+      catch (Exception ex) {
+        Complete (ex);
         return;
       }
 
       _context = context;
       _syncCompleted = syncCompleted;
 
-      lock (_sync)
-        complete (this);
+      complete (this);
     }
 
     internal HttpListenerContext GetContext ()
