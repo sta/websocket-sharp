@@ -104,12 +104,12 @@ namespace WebSocketSharp
       Fin fin, Opcode opcode, PayloadData payloadData, bool compressed, bool mask)
     {
       _fin = fin;
-      _rsv1 = opcode.IsData () && compressed ? Rsv.On : Rsv.Off;
+      var len = payloadData.Length;
+      _rsv1 = opcode.IsData () && compressed && len > 0 ? Rsv.On : Rsv.Off;
       _rsv2 = Rsv.Off;
       _rsv3 = Rsv.Off;
       _opcode = opcode;
 
-      var len = payloadData.Length;
       if (len < 126) {
         _payloadLength = (byte) len;
         _extPayloadLength = WebSocket.EmptyBytes;
