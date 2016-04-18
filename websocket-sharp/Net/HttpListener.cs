@@ -526,9 +526,8 @@ namespace WebSocketSharp.Net
           return false;
 
         _connections[connection] = connection;
+        return true;
       }
-
-      return true;
     }
 
     internal bool Authenticate (HttpListenerContext context)
