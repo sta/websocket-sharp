@@ -179,18 +179,6 @@ namespace WebSocketSharp.Net
 
     internal void Complete (HttpListenerContext context, bool syncCompleted)
     {
-      try {
-        var lsnr = context.Listener;
-        if (!lsnr.Authenticate (context)) {
-          lsnr.BeginGetContext (this);
-          return;
-        }
-      }
-      catch (Exception ex) {
-        Complete (ex);
-        return;
-      }
-
       _context = context;
       _syncCompleted = syncCompleted;
 

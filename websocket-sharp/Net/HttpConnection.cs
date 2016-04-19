@@ -302,9 +302,8 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
-          conn._contextBound = true;
-          if (!lsnr.RegisterContext (conn._context))
-            conn._contextBound = false;
+          if (lsnr.RegisterContext (conn._context))
+            conn._contextBound = true;
 
           return;
         }
