@@ -626,7 +626,7 @@ namespace WebSocketSharp.Server
       return !(usr || port) ? "The secure connection requires a server certificate." : null;
     }
 
-    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
+    private void init (string hostname, System.Net.IPAddress address, int port, bool secure, bool wildcardServicesPath = false)
     {
       _hostname = hostname ?? address.ToString ();
       _address = address;
@@ -638,7 +638,7 @@ namespace WebSocketSharp.Server
         String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
 
       _logger = _listener.Log;
-      _services = new WebSocketServiceManager (_logger);
+      _services = new WebSocketServiceManager (_logger, wildcardServicesPath);
       _sync = new object ();
 
       var os = Environment.OSVersion;

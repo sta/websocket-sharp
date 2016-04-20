@@ -50,17 +50,18 @@ namespace WebSocketSharp.Server
     private volatile ServerState                     _state;
     private object                                   _sync;
     private TimeSpan                                 _waitTime;
+    private bool                                     _wildcardServices;
 
     #endregion
 
     #region Internal Constructors
 
-    internal WebSocketServiceManager ()
-      : this (new Logger ())
+    internal WebSocketServiceManager (bool wildcardServices = false)
+      : this (new Logger (), wildcardServices)
     {
     }
 
-    internal WebSocketServiceManager (Logger logger)
+    internal WebSocketServiceManager (Logger logger, bool wildcardServices)
     {
       _logger = logger;
 
@@ -69,6 +70,7 @@ namespace WebSocketSharp.Server
       _state = ServerState.Ready;
       _sync = ((ICollection) _hosts).SyncRoot;
       _waitTime = TimeSpan.FromSeconds (1);
+      _wildcardServices = wildcardServices;
     }
 
     #endregion
@@ -314,8 +316,19 @@ namespace WebSocketSharp.Server
     {
       bool ret;
       lock (_sync) {
-        path = HttpUtility.UrlDecode (path).TrimEndSlash ();
-        ret = _hosts.TryGetValue (path, out host);
+        if (!_wildcardServices) {
+          path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+        }
+        else {
+          foreach (var key in _hosts.Keys) {
+            if (new System.Text.RegularExpressions.Regex(key).IsMatch(path)) { 
+              path = key;
+              break;
+            }
+          }
+        }
+
+        ret = _hosts.TryGetValue(path, out host);
       }
 
       if (!ret)
