@@ -530,36 +530,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal bool Authenticate (HttpListenerContext context)
-    {
-      var schm = SelectAuthenticationScheme (context);
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
-        context.Response.Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
-      var realm = Realm;
-      var req = context.Request;
-      var user =
-        HttpUtility.CreateUser (
-          req.Headers["Authorization"], schm, realm, req.HttpMethod, UserCredentialsFinder
-        );
-
-      if (user == null || !user.Identity.IsAuthenticated) {
-        context.Response.CloseWithAuthChallenge (
-          new AuthenticationChallenge (schm, realm).ToString ()
-        );
-
-        return false;
-      }
-
-      context.User = user;
-      return true;
-    }
-
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
       lock (_ctxRegistrySync) {
@@ -587,7 +557,7 @@ namespace WebSocketSharp.Net
       if (!_listening)
         return false;
 
-      if (!Authenticate (context))
+      if (!context.Authenticate ())
         return false;
 
       lock (_ctxRegistrySync) {

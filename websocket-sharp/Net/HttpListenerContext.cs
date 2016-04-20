@@ -166,6 +166,40 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Internal Methods
+
+    internal bool Authenticate ()
+    {
+      var schm = _listener.SelectAuthenticationScheme (this);
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
+        _response.Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var realm = _listener.Realm;
+      var user =
+        HttpUtility.CreateUser (
+          _request.Headers["Authorization"],
+          schm,
+          realm,
+          _request.HttpMethod,
+          _listener.UserCredentialsFinder
+        );
+
+      if (user == null || !user.Identity.IsAuthenticated) {
+        _response.CloseWithAuthChallenge (new AuthenticationChallenge (schm, realm).ToString ());
+        return false;
+      }
+
+      _user = user;
+      return true;
+    }
+
+    #endregion
+
     #region Public Methods
 
     /// <summary>
