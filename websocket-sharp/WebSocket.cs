@@ -787,16 +787,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    private string checkIfAvailable (
-      bool client, bool server, bool connecting, bool open, bool closing, bool closed)
-    {
-      return !client && _client
-             ? "This operation isn't available in: client"
-             : !server && !_client
-               ? "This operation isn't available in: server"
-               : _readyState.CheckIfAvailable (connecting, open, closing, closed);
-    }
-
     private bool checkIfAvailable (
       bool connecting, bool open, bool closing, bool closed, out string message
     )
@@ -2775,9 +2765,16 @@ namespace WebSocketSharp
     /// </param>
     public void SetCookie (Cookie cookie)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting a cookie.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting a cookie.", null);
 
@@ -2813,9 +2810,16 @@ namespace WebSocketSharp
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the credentials.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the credentials.", null);
 
@@ -2866,50 +2870,68 @@ namespace WebSocketSharp
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
+      string msg;
+      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the proxy.", null);
+
+        return;
+      }
+
       lock (_forConn) {
-        var msg = checkIfAvailable (true, false, true, false, false, true);
-        if (msg == null) {
-          if (url.IsNullOrEmpty ()) {
-            _proxyUri = null;
-            _proxyCredentials = null;
-            _logger.Warn ("The proxy url and credentials were set back to the default.");
-
-            return;
-          }
-
-          Uri uri;
-          if (!Uri.TryCreate (url, UriKind.Absolute, out uri) ||
-              uri.Scheme != "http" ||
-              uri.Segments.Length > 1) {
-            msg = "The syntax of a proxy url must be 'http://<host>[:<port>]'.";
-          }
-          else {
-            _proxyUri = uri;
-
-            if (username.IsNullOrEmpty ()) {
-              _proxyCredentials = null;
-              _logger.Warn ("The proxy credentials were set back to the default.");
-
-              return;
-            }
-
-            msg = username.Contains (':') || !username.IsText ()
-                  ? "'username' contains an invalid character."
-                  : !password.IsNullOrEmpty () && !password.IsText ()
-                    ? "'password' contains an invalid character."
-                    : null;
-          }
-        }
-
-        if (msg != null) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the proxy.", null);
 
           return;
         }
 
-        _proxyCredentials = new NetworkCredential (
-          username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port));
+        if (url.IsNullOrEmpty ()) {
+          _logger.Warn ("The proxy url and credentials are set back to the default.");
+          _proxyUri = null;
+          _proxyCredentials = null;
+
+          return;
+        }
+
+        Uri uri;
+        if (!Uri.TryCreate (url, UriKind.Absolute, out uri)
+            || uri.Scheme != "http"
+            || uri.Segments.Length > 1
+        ) {
+          _logger.Error ("The syntax of a proxy url must be 'http://<host>[:<port>]'.");
+          error ("An error has occurred in setting the proxy.", null);
+
+          return;
+        }
+
+        if (username.IsNullOrEmpty ()) {
+          _logger.Warn ("The proxy credentials are set back to the default.");
+          _proxyUri = uri;
+          _proxyCredentials = null;
+
+          return;
+        }
+
+        if (username.Contains (':') || !username.IsText ()) {
+          _logger.Error ("'username' contains an invalid character.");
+          error ("An error has occurred in setting the proxy.", null);
+
+          return;
+        }
+
+        if (!password.IsNullOrEmpty () && !password.IsText ()) {
+          _logger.Error ("'password' contains an invalid character.");
+          error ("An error has occurred in setting the proxy.", null);
+
+          return;
+        }
+
+        _proxyUri = uri;
+        _proxyCredentials =
+          new NetworkCredential (
+            username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
+          );
       }
     }
 
