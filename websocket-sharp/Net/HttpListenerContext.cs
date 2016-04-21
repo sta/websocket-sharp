@@ -170,7 +170,7 @@ namespace WebSocketSharp.Net
 
     internal bool Authenticate ()
     {
-      var schm = _listener.SelectAuthenticationScheme (this);
+      var schm = _listener.SelectAuthenticationScheme (_request);
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 

@@ -582,11 +582,10 @@ namespace WebSocketSharp.Net
         _connections.Remove (connection);
     }
 
-    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerContext context)
+    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerRequest request)
     {
-      return AuthenticationSchemeSelector != null
-             ? AuthenticationSchemeSelector (context.Request)
-             : _authSchemes;
+      var selector = _authSchemeSelector;
+      return selector != null ? selector (request) : _authSchemes;
     }
 
     internal void UnregisterContext (HttpListenerContext context)
