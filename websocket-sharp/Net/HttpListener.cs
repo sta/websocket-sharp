@@ -71,6 +71,7 @@ namespace WebSocketSharp.Net
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
     private Func<IIdentity, NetworkCredential>                   _credFinder;
+    private static readonly string                               _defaultRealm;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
     private volatile bool                                        _listening;
@@ -81,6 +82,15 @@ namespace WebSocketSharp.Net
     private ServerSslConfiguration                               _sslConfig;
     private List<HttpListenerAsyncResult>                        _waitQueue;
     private object                                               _waitQueueSync;
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpListener ()
+    {
+      _defaultRealm = "SECRET AREA";
+    }
 
     #endregion
 
@@ -550,6 +560,12 @@ namespace WebSocketSharp.Net
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
+    }
+
+    internal string GetRealm ()
+    {
+      var realm = _realm;
+      return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
     internal bool RegisterContext (HttpListenerContext context)
