@@ -315,9 +315,13 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Gets or sets the name of the realm associated with the listener.
     /// </summary>
+    /// <remarks>
+    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
+    /// the name of the realm.
+    /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <c>"SECRET AREA"</c>.
+    /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -325,7 +329,7 @@ namespace WebSocketSharp.Net
     public string Realm {
       get {
         CheckDisposed ();
-        return _realm != null && _realm.Length > 0 ? _realm : (_realm = "SECRET AREA");
+        return _realm;
       }
 
       set {
