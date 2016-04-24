@@ -388,9 +388,13 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Gets or sets the name of the realm associated with the server.
     /// </summary>
+    /// <remarks>
+    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
+    /// the name of the realm.
+    /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <c>"SECRET AREA"</c>.
+    /// <see langword="null"/>.
     /// </value>
     public string Realm {
       get {
