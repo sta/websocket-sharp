@@ -63,6 +63,7 @@ namespace WebSocketSharp.Server
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
     private Func<IIdentity, NetworkCredential> _credFinder;
+    private static readonly string             _defaultRealm;
     private bool                               _dnsStyle;
     private string                             _hostname;
     private TcpListener                        _listener;
@@ -76,6 +77,15 @@ namespace WebSocketSharp.Server
     private ServerSslConfiguration             _sslConfig;
     private volatile ServerState               _state;
     private object                             _sync;
+
+    #endregion
+
+    #region Static Constructor
+
+    static WebSocketServer ()
+    {
+      _defaultRealm = "SECRET AREA";
+    }
 
     #endregion
 
@@ -393,13 +403,17 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Gets or sets the name of the realm associated with the server.
     /// </summary>
+    /// <remarks>
+    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
+    /// the name of the realm.
+    /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <c>"SECRET AREA"</c>.
+    /// <see langword="null"/>.
     /// </value>
     public string Realm {
       get {
-        return _realm ?? (_realm = "SECRET AREA");
+        return _realm;
       }
 
       set {
@@ -592,6 +606,12 @@ namespace WebSocketSharp.Server
              : null;
     }
 
+    private string getRealm ()
+    {
+      var realm = _realm;
+      return realm != null && realm.Length > 0 ? realm : _defaultRealm;
+    }
+
     private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
       _hostname = hostname ?? address.ToString ();
@@ -642,7 +662,7 @@ namespace WebSocketSharp.Server
               try {
                 var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
                 if (_authSchemes != AuthenticationSchemes.Anonymous &&
-                    !authenticate (ctx, _authSchemes, Realm, UserCredentialsFinder))
+                    !authenticate (ctx, _authSchemes, getRealm (), UserCredentialsFinder))
                   return;
 
                 processRequest (ctx);
