@@ -558,6 +558,51 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool authenticate (TcpListenerWebSocketContext context)
+    {
+      var schm = _authSchemes;
+      if (schm == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
+        context.Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var realm = getRealm ();
+      var chal = new AuthenticationChallenge (schm, realm).ToString ();
+
+      var retry = -1;
+      Func<bool> auth = null;
+      auth =
+        () => {
+          retry++;
+          if (retry > 99) {
+            context.Close (HttpStatusCode.Forbidden);
+            return false;
+          }
+
+          var user =
+            HttpUtility.CreateUser (
+              context.Headers["Authorization"],
+              schm,
+              realm,
+              context.HttpMethod,
+              UserCredentialsFinder
+            );
+
+          if (user != null && user.Identity.IsAuthenticated) {
+            context.SetUser (user);
+            return true;
+          }
+
+          context.SendAuthenticationChallenge (chal);
+          return auth ();
+        };
+
+      return auth ();
+    }
+
     private static bool authenticate (
       TcpListenerWebSocketContext context,
       AuthenticationSchemes scheme,
