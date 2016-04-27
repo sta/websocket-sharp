@@ -706,8 +706,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
-                if (_authSchemes != AuthenticationSchemes.Anonymous &&
-                    !authenticate (ctx, _authSchemes, getRealm (), UserCredentialsFinder))
+                if (!authenticate (ctx))
                   return;
 
                 processRequest (ctx);
