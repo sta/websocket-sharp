@@ -674,7 +674,8 @@ namespace WebSocketSharp.Server
                 _logger.Fatal (ex.ToString ());
                 cl.Close ();
               }
-            });
+            }
+          );
         }
         catch (SocketException ex) {
           _logger.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
