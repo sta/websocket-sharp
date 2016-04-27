@@ -603,47 +603,6 @@ namespace WebSocketSharp.Server
       return auth ();
     }
 
-    private static bool authenticate (
-      TcpListenerWebSocketContext context,
-      AuthenticationSchemes scheme,
-      string realm,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
-    {
-      var chal = scheme == AuthenticationSchemes.Basic
-                 ? AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ()
-                 : scheme == AuthenticationSchemes.Digest
-                   ? AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ()
-                   : null;
-
-      if (chal == null) {
-        context.Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
-      var retry = -1;
-      Func<bool> auth = null;
-      auth = () => {
-        retry++;
-        if (retry > 99) {
-          context.Close (HttpStatusCode.Forbidden);
-          return false;
-        }
-
-        var user = HttpUtility.CreateUser (
-          context.Headers["Authorization"], scheme, realm, context.HttpMethod, credentialsFinder);
-
-        if (user != null && user.Identity.IsAuthenticated) {
-          context.SetUser (user);
-          return true;
-        }
-
-        context.SendAuthenticationChallenge (chal);
-        return auth ();
-      };
-
-      return auth ();
-    }
-
     private string checkIfCertificateExists ()
     {
       return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
