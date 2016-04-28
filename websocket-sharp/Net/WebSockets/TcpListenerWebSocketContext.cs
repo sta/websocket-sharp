@@ -355,6 +355,53 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Methods
 
+    internal bool Authenticate (
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
+    {
+      if (scheme == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (scheme != AuthenticationSchemes.Basic && scheme != AuthenticationSchemes.Digest) {
+        Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
+
+      var retry = -1;
+      Func<bool> auth = null;
+      auth =
+        () => {
+          retry++;
+          if (retry > 99) {
+            Close (HttpStatusCode.Forbidden);
+            return false;
+          }
+
+          var user =
+            HttpUtility.CreateUser (
+              _request.Headers["Authorization"],
+              scheme,
+              realm,
+              _request.HttpMethod,
+              credentialsFinder
+            );
+
+          if (user == null || !user.Identity.IsAuthenticated) {
+            SendAuthenticationChallenge (chal);
+            return auth ();
+          }
+
+          _user = user;
+          return true;
+        };
+
+      return auth ();
+    }
+
     internal void Close ()
     {
       _stream.Close ();
