@@ -1297,7 +1297,7 @@ namespace WebSocketSharp
       if (address == null)
         return false;
 
-      if (address.Equals (System.Net.IPAddress.Any) || System.Net.IPAddress.IsLoopback (address))
+      if (address.Equals (System.Net.IPAddress.Any) || address.Equals (System.Net.IPAddress.IPv6Any) || System.Net.IPAddress.IsLoopback (address))
         return true;
 
       var host = System.Net.Dns.GetHostName ();
