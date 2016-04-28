@@ -420,11 +420,6 @@ namespace WebSocketSharp.Net.WebSockets
       _request = HttpRequest.Read (_stream, 15000);
     }
 
-    internal void SetUser (IPrincipal value)
-    {
-      _user = value;
-    }
-
     #endregion
 
     #region Public Methods
