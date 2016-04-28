@@ -107,12 +107,6 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Properties
 
-    internal string HttpMethod {
-      get {
-        return _request.HttpMethod;
-      }
-    }
-
     internal Logger Log {
       get {
         return _logger;
