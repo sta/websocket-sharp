@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 
 namespace WebSocketSharp.Net.WebSockets
@@ -101,6 +102,14 @@ namespace WebSocketSharp.Net.WebSockets
     /// <c>true</c> if the connection is secured; otherwise, <c>false</c>.
     /// </value>
     public abstract bool IsSecureConnection { get; }
+
+    /// <summary>
+    /// Gets client certificate provided during connection or null if certificate is not used.
+    /// </summary>
+    /// <value>
+    /// A <see cref="X509Certificate"/> representing used client certificate or null if certificate is not present.
+    /// </value>
+    public abstract X509Certificate ClientCertificate { get; }
 
     /// <summary>
     /// Gets a value indicating whether the request is a WebSocket connection request.

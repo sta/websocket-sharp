@@ -202,6 +202,25 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
+    /// Gets client certificate provided during connection or null if certificate is not used.
+    /// </summary>
+    /// <value>
+    /// A <see cref="X509Certificate"/> representing used client certificate or null if certificate is not present.
+    /// </value>
+    public override X509Certificate ClientCertificate {
+      get {
+        if (_stream == null)
+          return null;
+
+        SslStream sslStream = _stream as SslStream;
+        if (sslStream == null)
+          return null;
+
+        return sslStream.RemoteCertificate;
+      }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the request is a WebSocket connection request.
     /// </summary>
     /// <value>
@@ -350,7 +369,6 @@ namespace WebSocketSharp.Net.WebSockets
         return _websocket;
       }
     }
-
     #endregion
 
     #region Internal Methods
