@@ -73,7 +73,8 @@ namespace WebSocketSharp.Net.WebSockets
       string protocol,
       bool secure,
       ServerSslConfiguration sslConfig,
-      Logger logger)
+      Logger logger
+    )
     {
       _tcpClient = tcpClient;
       _secure = secure;
@@ -81,14 +82,15 @@ namespace WebSocketSharp.Net.WebSockets
 
       var netStream = tcpClient.GetStream ();
       if (secure) {
-        var sslStream = new SslStream (
-          netStream, false, sslConfig.ClientCertificateValidationCallback);
+        var sslStream =
+          new SslStream (netStream, false, sslConfig.ClientCertificateValidationCallback);
 
         sslStream.AuthenticateAsServer (
           sslConfig.ServerCertificate,
           sslConfig.ClientCertificateRequired,
           sslConfig.EnabledSslProtocols,
-          sslConfig.CheckCertificateRevocation);
+          sslConfig.CheckCertificateRevocation
+        );
 
         _stream = sslStream;
       }
@@ -97,8 +99,10 @@ namespace WebSocketSharp.Net.WebSockets
       }
 
       _request = HttpRequest.Read (_stream, 90000);
-      _uri = HttpUtility.CreateRequestUrl (
-        _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure);
+      _uri =
+        HttpUtility.CreateRequestUrl (
+          _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure
+        );
 
       _websocket = new WebSocket (this, protocol);
     }
