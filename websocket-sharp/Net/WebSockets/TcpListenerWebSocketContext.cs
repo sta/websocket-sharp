@@ -231,9 +231,13 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override NameValueCollection QueryString {
       get {
-        return _queryString ??
-               (_queryString = HttpUtility.InternalParseQueryString (
-                 _uri != null ? _uri.Query : null, Encoding.UTF8));
+        return _queryString
+               ?? (
+                 _queryString =
+                   HttpUtility.InternalParseQueryString (
+                     _uri != null ? _uri.Query : null, Encoding.UTF8
+                   )
+               );
       }
     }
 
