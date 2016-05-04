@@ -85,10 +85,10 @@ namespace WebSocketSharp.Net
 
       var path = pref.Path;
       if (path.IndexOf ('%') != -1)
-        throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
+        throw new HttpListenerException (87, "Invalid path.");
 
       if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
-        throw new HttpListenerException (400, "Invalid path."); // TODO: Code?
+        throw new HttpListenerException (87, "Invalid path.");
 
       // Listens on all the interfaces if host name cannot be parsed by IPAddress.
       getEndPointListener (pref, listener).AddPrefix (pref, listener);
