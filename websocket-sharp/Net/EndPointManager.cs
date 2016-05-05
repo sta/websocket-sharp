@@ -113,7 +113,8 @@ namespace WebSocketSharp.Net
     }
 
     private static EndPointListener getEndPointListener (
-      HttpListenerPrefix prefix, HttpListener listener)
+      HttpListenerPrefix prefix, HttpListener listener
+    )
     {
       var addr = convertToIPAddress (prefix.Host);
 
@@ -133,13 +134,15 @@ namespace WebSocketSharp.Net
         lsnr = eps[port];
       }
       else {
-        lsnr = new EndPointListener (
-          addr,
-          port,
-          listener.ReuseAddress,
-          prefix.IsSecure,
-          listener.CertificateFolderPath,
-          listener.SslConfiguration);
+        lsnr =
+          new EndPointListener (
+            addr,
+            port,
+            listener.ReuseAddress,
+            prefix.IsSecure,
+            listener.CertificateFolderPath,
+            listener.SslConfiguration
+          );
 
         eps[port] = lsnr;
       }
