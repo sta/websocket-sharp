@@ -212,9 +212,10 @@ namespace WebSocketSharp.Net
 
     public static void RemoveListener (HttpListener listener)
     {
-      lock (((ICollection) _addressToEndpoints).SyncRoot)
+      lock (((ICollection) _addressToEndpoints).SyncRoot) {
         foreach (var pref in listener.Prefixes)
           removePrefix (pref, listener);
+      }
     }
 
     public static void RemovePrefix (string uriPrefix, HttpListener listener)
