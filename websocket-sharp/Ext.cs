@@ -1283,10 +1283,13 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Determines whether the specified <see cref="System.Net.IPAddress"/> represents
-    /// the local IP address.
+    /// a local IP address.
     /// </summary>
+    /// <remarks>
+    /// This local means NOT REMOTE for the current host.
+    /// </remarks>
     /// <returns>
-    /// <c>true</c> if <paramref name="address"/> represents the local IP address;
+    /// <c>true</c> if <paramref name="address"/> represents a local IP address;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="address">
@@ -1313,9 +1316,10 @@ namespace WebSocketSharp
 
       var host = System.Net.Dns.GetHostName ();
       var addrs = System.Net.Dns.GetHostAddresses (host);
-      foreach (var addr in addrs)
+      foreach (var addr in addrs) {
         if (address.Equals (addr))
           return true;
+      }
 
       return false;
     }
