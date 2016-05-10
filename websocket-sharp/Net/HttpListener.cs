@@ -70,7 +70,6 @@ namespace WebSocketSharp.Net
     private object                                               _ctxQueueSync;
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
-    private Func<IIdentity, NetworkCredential>                   _credFinder;
     private static readonly string                               _defaultRealm;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
@@ -80,6 +79,7 @@ namespace WebSocketSharp.Net
     private string                                               _realm;
     private bool                                                 _reuseAddress;
     private ServerSslConfiguration                               _sslConfig;
+    private Func<IIdentity, NetworkCredential>                   _userCredFinder;
     private List<HttpListenerAsyncResult>                        _waitQueue;
     private object                                               _waitQueueSync;
 
@@ -402,12 +402,12 @@ namespace WebSocketSharp.Net
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
         CheckDisposed ();
-        return _credFinder ?? (_credFinder = id => null);
+        return _userCredFinder ?? (_userCredFinder = id => null);
       }
 
       set {
         CheckDisposed ();
-        _credFinder = value;
+        _userCredFinder = value;
       }
     }
 
