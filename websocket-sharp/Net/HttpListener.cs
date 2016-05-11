@@ -572,6 +572,12 @@ namespace WebSocketSharp.Net
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
+    internal Func<IIdentity, NetworkCredential> GetUserCredentialsFinder ()
+    {
+      var finder = _userCredFinder;
+      return finder ?? (id => null);
+    }
+
     internal bool RegisterContext (HttpListenerContext context)
     {
       if (!_listening)
