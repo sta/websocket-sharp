@@ -554,10 +554,19 @@ namespace WebSocketSharp.Net
       AuthenticationSchemes scheme,
       string realm,
       string method,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
     {
-      if (response == null ||
-          !response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+      if (response == null)
+        return null;
+
+      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest))
+        return null;
+
+      if (!response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+        return null;
+
+      if (credentialsFinder == null)
         return null;
 
       var res = AuthenticationResponse.Parse (response);
@@ -578,15 +587,19 @@ namespace WebSocketSharp.Net
       if (cred == null)
         return null;
 
-      var valid = scheme == AuthenticationSchemes.Basic
-                  ? ((HttpBasicIdentity) id).Password == cred.Password
-                  : scheme == AuthenticationSchemes.Digest
-                    ? ((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
-                    : false;
+      if (scheme == AuthenticationSchemes.Basic
+          && ((HttpBasicIdentity) id).Password != cred.Password
+      ) {
+        return null;
+      }
 
-      return valid
-             ? new GenericPrincipal (id, cred.Roles)
-             : null;
+      if (scheme == AuthenticationSchemes.Digest
+          && !((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
+      ) {
+        return null;
+      }
+
+      return new GenericPrincipal (id, cred.Roles);
     }
 
     internal static Encoding GetEncoding (string contentType)
