@@ -557,16 +557,24 @@ namespace WebSocketSharp.Net
       Func<IIdentity, NetworkCredential> credentialsFinder
     )
     {
-      if (response == null)
+      if (response == null || response.Length == 0)
+        return null;
+
+      if (credentialsFinder == null)
         return null;
 
       if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest))
         return null;
 
-      if (!response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
-        return null;
+      if (scheme == AuthenticationSchemes.Digest) {
+        if (realm == null || realm.Length == 0)
+          return null;
 
-      if (credentialsFinder == null)
+        if (method == null || method.Length == 0)
+          return null;
+      }
+
+      if (!response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
         return null;
 
       var res = AuthenticationResponse.Parse (response);
