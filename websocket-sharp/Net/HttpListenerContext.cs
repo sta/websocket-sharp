@@ -186,7 +186,7 @@ namespace WebSocketSharp.Net
           schm,
           realm,
           _request.HttpMethod,
-          _listener.UserCredentialsFinder
+          _listener.GetUserCredentialsFinder ()
         );
 
       if (user == null || !user.Identity.IsAuthenticated) {
