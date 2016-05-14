@@ -574,8 +574,7 @@ namespace WebSocketSharp.Net
 
     internal Func<IIdentity, NetworkCredential> GetUserCredentialsFinder ()
     {
-      var finder = _userCredFinder;
-      return finder ?? (id => null);
+      return _userCredFinder;
     }
 
     internal bool RegisterContext (HttpListenerContext context)
