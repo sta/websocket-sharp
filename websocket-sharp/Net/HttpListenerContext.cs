@@ -125,10 +125,10 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP request information from a client.
+    /// Gets the HTTP request object that represents a client request.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerRequest"/> that represents the HTTP request.
+    /// A <see cref="HttpListenerRequest"/> that represents the client request.
     /// </value>
     public HttpListenerRequest Request {
       get {
