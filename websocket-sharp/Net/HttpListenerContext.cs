@@ -174,7 +174,7 @@ namespace WebSocketSharp.Net
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (schm != AuthenticationSchemes.Basic && schm != AuthenticationSchemes.Digest) {
+      if (schm == AuthenticationSchemes.None) {
         _response.Close (HttpStatusCode.Forbidden);
         return false;
       }
