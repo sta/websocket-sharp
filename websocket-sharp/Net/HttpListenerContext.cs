@@ -44,8 +44,8 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides the access to the HTTP request and response information
-  /// used by the <see cref="HttpListener"/>.
+  /// Provides the access to the HTTP request and response objects used by
+  /// the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
   /// The HttpListenerContext class cannot be inherited.
