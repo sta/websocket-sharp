@@ -48,7 +48,7 @@ namespace WebSocketSharp.Net
   /// the <see cref="HttpListener"/>.
   /// </summary>
   /// <remarks>
-  /// The HttpListenerContext class cannot be inherited.
+  /// This class cannot be inherited.
   /// </remarks>
   public sealed class HttpListenerContext
   {
