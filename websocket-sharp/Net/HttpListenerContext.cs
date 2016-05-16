@@ -199,14 +199,15 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Accepts a WebSocket connection request.
+    /// Accepts a WebSocket handshake request.
     /// </summary>
     /// <returns>
-    /// A <see cref="HttpListenerWebSocketContext"/> that represents the WebSocket connection
-    /// request.
+    /// A <see cref="HttpListenerWebSocketContext"/> that represents
+    /// the WebSocket handshake request.
     /// </returns>
     /// <param name="protocol">
-    /// A <see cref="string"/> that represents the subprotocol used in the WebSocket connection.
+    /// A <see cref="string"/> that represents the subprotocol supported on
+    /// this WebSocket connection.
     /// </param>
     /// <exception cref="ArgumentException">
     ///   <para>
