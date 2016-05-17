@@ -392,9 +392,9 @@ namespace WebSocketSharp.Net
     /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate that
-    /// references the method used to find the credentials. The default value is a function that
-    /// only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
+    /// that references the method used to find the credentials. The default value is
+    /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -402,7 +402,7 @@ namespace WebSocketSharp.Net
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
         CheckDisposed ();
-        return _userCredFinder ?? (_userCredFinder = id => null);
+        return _userCredFinder;
       }
 
       set {
