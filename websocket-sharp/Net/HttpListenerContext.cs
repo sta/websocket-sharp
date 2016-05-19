@@ -54,13 +54,14 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private HttpConnection       _connection;
-    private string               _error;
-    private int                  _errorStatus;
-    private HttpListener         _listener;
-    private HttpListenerRequest  _request;
-    private HttpListenerResponse _response;
-    private IPrincipal           _user;
+    private HttpConnection               _connection;
+    private string                       _error;
+    private int                          _errorStatus;
+    private HttpListener                 _listener;
+    private HttpListenerRequest          _request;
+    private HttpListenerResponse         _response;
+    private IPrincipal                   _user;
+    private HttpListenerWebSocketContext _websocketContext;
 
     #endregion
 
@@ -220,8 +221,14 @@ namespace WebSocketSharp.Net
     ///   <paramref name="protocol"/> contains an invalid character.
     ///   </para>
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// This method has already been called.
+    /// </exception>
     public HttpListenerWebSocketContext AcceptWebSocket (string protocol)
     {
+      if (_websocketContext != null)
+        throw new InvalidOperationException ("The accepting is already in progress.");
+
       if (protocol != null) {
         if (protocol.Length == 0)
           throw new ArgumentException ("An empty string.", "protocol");
@@ -230,7 +237,8 @@ namespace WebSocketSharp.Net
           throw new ArgumentException ("Contains an invalid character.", "protocol");
       }
 
-      return new HttpListenerWebSocketContext (this, protocol);
+      _websocketContext = new HttpListenerWebSocketContext (this, protocol);
+      return _websocketContext;
     }
 
     #endregion
