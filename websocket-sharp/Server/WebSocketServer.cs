@@ -62,7 +62,6 @@ namespace WebSocketSharp.Server
 
     private System.Net.IPAddress               _address;
     private AuthenticationSchemes              _authSchemes;
-    private Func<IIdentity, NetworkCredential> _credFinder;
     private static readonly string             _defaultRealm;
     private bool                               _dnsStyle;
     private string                             _hostname;
@@ -77,6 +76,7 @@ namespace WebSocketSharp.Server
     private ServerSslConfiguration             _sslConfig;
     private volatile ServerState               _state;
     private object                             _sync;
+    private Func<IIdentity, NetworkCredential> _userCredFinder;
 
     #endregion
 
@@ -490,7 +490,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
-        return _credFinder;
+        return _userCredFinder;
       }
 
       set {
@@ -500,7 +500,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        _credFinder = value;
+        _userCredFinder = value;
       }
     }
 
@@ -620,7 +620,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
-                if (!ctx.Authenticate (_authSchemes, getRealm (), _credFinder))
+                if (!ctx.Authenticate (_authSchemes, getRealm (), _userCredFinder))
                   return;
 
                 processRequest (ctx);
