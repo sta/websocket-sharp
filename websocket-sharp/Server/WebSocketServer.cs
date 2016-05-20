@@ -484,13 +484,13 @@ namespace WebSocketSharp.Server
     /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate that
-    /// references the method(s) used to find the credentials. The default value is a function that
-    /// only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
+    /// that references the method(s) used to find the credentials. The default value is
+    /// <see langword="null"/>.
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
-        return _credFinder ?? (_credFinder = identity => null);
+        return _credFinder;
       }
 
       set {
@@ -620,7 +620,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
-                if (!ctx.Authenticate (_authSchemes, getRealm (), UserCredentialsFinder))
+                if (!ctx.Authenticate (_authSchemes, getRealm (), _credFinder))
                   return;
 
                 processRequest (ctx);
