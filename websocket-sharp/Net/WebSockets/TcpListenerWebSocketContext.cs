@@ -366,7 +366,7 @@ namespace WebSocketSharp.Net.WebSockets
       if (scheme == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (scheme != AuthenticationSchemes.Basic && scheme != AuthenticationSchemes.Digest) {
+      if (scheme == AuthenticationSchemes.None) {
         Close (HttpStatusCode.Forbidden);
         return false;
       }
