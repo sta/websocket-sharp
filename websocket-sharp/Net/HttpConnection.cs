@@ -62,7 +62,7 @@ namespace WebSocketSharp.Net
     private byte[]              _buffer;
     private const int           _bufferLength = 8192;
     private HttpListenerContext _context;
-    private bool                _contextBound;
+    private bool                _contextRegistered;
     private StringBuilder       _currentLine;
     private InputState          _inputState;
     private RequestStream       _inputStream;
@@ -303,7 +303,7 @@ namespace WebSocketSharp.Net
           }
 
           if (lsnr.RegisterContext (conn._context))
-            conn._contextBound = true;
+            conn._contextRegistered = true;
 
           return;
         }
@@ -402,11 +402,11 @@ namespace WebSocketSharp.Net
 
     private void unbind ()
     {
-      if (!_contextBound)
+      if (!_contextRegistered)
         return;
 
       _listener.UnbindContext (_context);
-      _contextBound = false;
+      _contextRegistered = false;
     }
 
     #endregion
