@@ -409,6 +409,15 @@ namespace WebSocketSharp.Net
       _contextRegistered = false;
     }
 
+    private void unregisterContext ()
+    {
+      if (!_contextRegistered)
+        return;
+
+      _context.Listener.UnregisterContext (_context);
+      _contextRegistered = false;
+    }
+
     #endregion
 
     #region Internal Methods
