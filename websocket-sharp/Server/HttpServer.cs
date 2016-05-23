@@ -158,7 +158,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "url");
 
       var host = uri.DnsSafeHost;
-      var addr = host.ToIPAddress ();
+      var addr = (uri.HostNameType == System.UriHostNameType.IPv4 || uri.HostNameType == System.UriHostNameType.IPv6) ? System.Net.IPAddress.Parse(uri.DnsSafeHost) : host.ToIPAddress();
       if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
 
