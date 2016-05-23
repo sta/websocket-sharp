@@ -180,7 +180,7 @@ namespace WebSocketSharp.Net
         closeSocket ();
       }
 
-      unbind ();
+      unregisterContext ();
       removeConnection ();
     }
 
@@ -437,7 +437,7 @@ namespace WebSocketSharp.Net
             // Don't close. Keep working.
             _reuses++;
             disposeRequestBuffer ();
-            unbind ();
+            unregisterContext ();
             init ();
             BeginReadRequest ();
 
