@@ -400,15 +400,6 @@ namespace WebSocketSharp.Net
         _listener.RemoveConnection (this);
     }
 
-    private void unbind ()
-    {
-      if (!_contextRegistered)
-        return;
-
-      _listener.UnbindContext (_context);
-      _contextRegistered = false;
-    }
-
     private void unregisterContext ()
     {
       if (!_contextRegistered)
