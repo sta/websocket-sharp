@@ -120,26 +120,12 @@ namespace WebSocketSharp.Net
 
     private void parse (string uriPrefix)
     {
-      var defaultPort = uriPrefix.StartsWith ("https://") ? 443 : 80;
-      if (defaultPort == 443)
-        _secure = true;
+      var uri = new System.Uri(uriPrefix);
 
-      var len = uriPrefix.Length;
-      var startHost = uriPrefix.IndexOf (':') + 3;
-      var colon = uriPrefix.IndexOf (':', startHost, len - startHost);
-      var root = 0;
-      if (colon > 0) {
-        root = uriPrefix.IndexOf ('/', colon, len - colon);
-        _host = uriPrefix.Substring (startHost, colon - startHost);
-        _port = (ushort) Int32.Parse (uriPrefix.Substring (colon + 1, root - colon - 1));
-      }
-      else {
-        root = uriPrefix.IndexOf ('/', startHost, len - startHost);
-        _host = uriPrefix.Substring (startHost, root - startHost);
-        _port = (ushort) defaultPort;
-      }
-
-      _path = uriPrefix.Substring (root);
+      _port = (ushort)uri.Port;
+      _host = uri.Host;
+      _path = uri.PathAndQuery;
+      _secure = uri.Scheme.Equals("https");
 
       var pathLen = _path.Length;
       if (pathLen > 1)
@@ -152,42 +138,13 @@ namespace WebSocketSharp.Net
 
     public static void CheckPrefix (string uriPrefix)
     {
-      if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+        var uri = new System.Uri(uriPrefix);
 
-      var len = uriPrefix.Length;
-      if (len == 0)
-        throw new ArgumentException ("An empty string.");
+        if (!uri.Scheme.Equals("http") && !uri.Scheme.Equals("https"))
+          throw new ArgumentException ("The scheme isn't 'http' or 'https'.");
 
-      if (!(uriPrefix.StartsWith ("http://") || uriPrefix.StartsWith ("https://")))
-        throw new ArgumentException ("The scheme isn't 'http' or 'https'.");
-
-      var startHost = uriPrefix.IndexOf (':') + 3;
-      if (startHost >= len)
-        throw new ArgumentException ("No host is specified.");
-
-      var colon = uriPrefix.IndexOf (':', startHost, len - startHost);
-      if (startHost == colon)
-        throw new ArgumentException ("No host is specified.");
-
-      if (colon > 0) {
-        var root = uriPrefix.IndexOf ('/', colon, len - colon);
-        if (root == -1)
-          throw new ArgumentException ("No path is specified.");
-
-        int port;
-        if (!Int32.TryParse (uriPrefix.Substring (colon + 1, root - colon - 1), out port) ||
-            !port.IsPortNumber ())
-          throw new ArgumentException ("An invalid port is specified.");
-      }
-      else {
-        var root = uriPrefix.IndexOf ('/', startHost, len - startHost);
-        if (root == -1)
-          throw new ArgumentException ("No path is specified.");
-      }
-
-      if (uriPrefix[len - 1] != '/')
-        throw new ArgumentException ("Ends without '/'.");
+        if (!uri.PathAndQuery.EndsWith("/"))
+          throw new ArgumentException ("Ends without '/'.");
     }
 
     // The Equals and GetHashCode methods are required to detect duplicates in any collection.
