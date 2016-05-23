@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>websocket-sharp.snk</AssemblyOriginatorKeyFile>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,12 +49,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <GenerateDocumentation>true</GenerateDocumentation>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="doc/doc.sh" workingdir="doc/" externalConsole="true" />
+        <Command type="AfterBuild" command="doc/doc.sh" workingdir="doc/" externalConsole="True" />
       </CustomCommands>
     </CustomCommands>
+    <DocumentationFile>bin\Release_Ubuntu\websocket-sharp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

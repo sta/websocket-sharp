@@ -158,11 +158,14 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "url");
 
       var host = uri.DnsSafeHost;
-      var addr = host.ToIPAddress ();
+      bool hostIsIpAddress = (uri.HostNameType == System.UriHostNameType.IPv4 || uri.HostNameType == System.UriHostNameType.IPv6);
+      var addr = hostIsIpAddress ? System.Net.IPAddress.Parse(uri.DnsSafeHost) : host.ToIPAddress();
       if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
-
-      init (host, addr, uri.Port, uri.Scheme == "https");
+      if (uri.HostNameType == System.UriHostNameType.IPv6) {
+        host = "[" + host + "]";
+      }
+      init(host, addr, uri.Port, uri.Scheme == "https");
     }
 
     /// <summary>
@@ -632,14 +635,14 @@ namespace WebSocketSharp.Server
 
     private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
-      _hostname = hostname ?? address.ToString ();
+			_hostname = hostname ?? (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6 ? ("[" + address.ToString() + "]") : address.ToString());
       _address = address;
       _port = port;
       _secure = secure;
 
       _listener = new HttpListener ();
-      _listener.Prefixes.Add (
-        String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
+      string prefix = String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port);
+      _listener.Prefixes.Add (prefix);
 
       _logger = _listener.Log;
       _services = new WebSocketServiceManager (_logger);
