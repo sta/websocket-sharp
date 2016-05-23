@@ -516,14 +516,6 @@ namespace WebSocketSharp.Net
       checkIfRemove ();
     }
 
-    public void UnbindContext (HttpListenerContext context)
-    {
-      if (context == null || context.Listener == null)
-        return;
-
-      context.Listener.UnregisterContext (context);
-    }
-
     #endregion
   }
 }
