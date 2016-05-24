@@ -405,7 +405,7 @@ namespace WebSocketSharp.Net
       if (!_contextRegistered)
         return;
 
-      _context.Listener.UnregisterContext (_context);
+      _context.Unregister ();
       _contextRegistered = false;
     }
 
