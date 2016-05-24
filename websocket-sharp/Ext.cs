@@ -841,6 +841,10 @@ namespace WebSocketSharp
 
     internal static System.Net.IPAddress ToIPAddress (this string hostnameOrAddress)
     {
+      System.Net.IPAddress addr;
+      if (System.Net.IPAddress.TryParse (hostnameOrAddress, out addr))
+        return addr;
+
       try {
         return System.Net.Dns.GetHostAddresses (hostnameOrAddress)[0];
       }
