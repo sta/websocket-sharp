@@ -195,6 +195,11 @@ namespace WebSocketSharp.Net
       return true;
     }
 
+    internal void Unregister ()
+    {
+      _listener.UnregisterContext (this);
+    }
+
     #endregion
 
     #region Public Methods
