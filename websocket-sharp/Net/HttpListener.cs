@@ -582,9 +582,6 @@ namespace WebSocketSharp.Net
       if (!_listening)
         return false;
 
-      if (!context.Authenticate ())
-        return false;
-
       lock (_ctxRegistrySync) {
         if (!_listening)
           return false;

@@ -302,6 +302,9 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
+          if (!conn._context.Authenticate ())
+            return;
+
           if (conn._context.Register ())
             conn._contextRegistered = true;
 
