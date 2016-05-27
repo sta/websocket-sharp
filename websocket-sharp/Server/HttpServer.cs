@@ -630,9 +630,17 @@ namespace WebSocketSharp.Server
       return !(usr || port) ? "The secure connection requires a server certificate." : null;
     }
 
+    private static string convertToString (System.Net.IPAddress address)
+    {
+      var str = address.ToString ();
+      return address.AddressFamily == AddressFamily.InterNetworkV6
+             ? String.Format ("[{0}]", str)
+             : str;
+    }
+
     private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
-      _hostname = hostname ?? address.ToString ();
+      _hostname = hostname ?? convertToString (address);
       _address = address;
       _port = port;
       _secure = secure;
