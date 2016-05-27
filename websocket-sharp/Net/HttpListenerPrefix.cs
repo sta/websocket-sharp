@@ -126,15 +126,14 @@ namespace WebSocketSharp.Net
 
       var len = uriPrefix.Length;
       var startHost = uriPrefix.IndexOf (':') + 3;
-      var colon = uriPrefix.IndexOf (':', startHost, len - startHost);
-      var root = 0;
-      if (colon > 0) {
-        root = uriPrefix.IndexOf ('/', colon, len - colon);
+      var root = uriPrefix.IndexOf ('/', startHost, len - startHost);
+
+      var colon = uriPrefix.LastIndexOf (':', root - 1, root - startHost - 1);
+      if (uriPrefix[root - 1] != ']' && colon > startHost) {
         _host = uriPrefix.Substring (startHost, colon - startHost);
         _port = (ushort) Int32.Parse (uriPrefix.Substring (colon + 1, root - colon - 1));
       }
       else {
-        root = uriPrefix.IndexOf ('/', startHost, len - startHost);
         _host = uriPrefix.Substring (startHost, root - startHost);
         _port = (ushort) defaultPort;
       }
