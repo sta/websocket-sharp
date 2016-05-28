@@ -19,10 +19,33 @@ namespace Example3
 
       var httpsv = new HttpServer (4649);
       //var httpsv = new HttpServer (5963, true);
-      //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
-      //var httpsv = new HttpServer (System.Net.IPAddress.Parse ("127.0.0.1"), 5963, true);
+
+      //var httpsv = new HttpServer (System.Net.IPAddress.Any, 4649);
+      //var httpsv = new HttpServer (System.Net.IPAddress.Any, 5963, true);
+
+      //var httpsv = new HttpServer (System.Net.IPAddress.IPv6Any, 4649);
+      //var httpsv = new HttpServer (System.Net.IPAddress.IPv6Any, 5963, true);
+
+      //var httpsv = new HttpServer ("http://0.0.0.0:4649");
+      //var httpsv = new HttpServer ("https://0.0.0.0:5963");
+
+      //var httpsv = new HttpServer ("http://[::0]:4649");
+      //var httpsv = new HttpServer ("https://[::0]:5963");
+
+      //var httpsv = new HttpServer (System.Net.IPAddress.Loopback, 4649);
+      //var httpsv = new HttpServer (System.Net.IPAddress.Loopback, 5963, true);
+
+      //var httpsv = new HttpServer (System.Net.IPAddress.IPv6Loopback, 4649);
+      //var httpsv = new HttpServer (System.Net.IPAddress.IPv6Loopback, 5963, true);
+
       //var httpsv = new HttpServer ("http://localhost:4649");
       //var httpsv = new HttpServer ("https://localhost:5963");
+
+      //var httpsv = new HttpServer ("http://127.0.0.1:4649");
+      //var httpsv = new HttpServer ("https://127.0.0.1:5963");
+
+      //var httpsv = new HttpServer ("http://[::1]:4649");
+      //var httpsv = new HttpServer ("https://[::1]:5963");
 #if DEBUG
       // To change the logging level.
       httpsv.Log.Level = LogLevel.Trace;
