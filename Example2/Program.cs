@@ -18,10 +18,33 @@ namespace Example2
 
       var wssv = new WebSocketServer (4649);
       //var wssv = new WebSocketServer (5963, true);
-      //var wssv = new WebSocketServer (System.Net.IPAddress.Parse ("127.0.0.1"), 4649);
-      //var wssv = new WebSocketServer (System.Net.IPAddress.Parse ("127.0.0.1"), 5963, true);
+
+      //var wssv = new WebSocketServer (System.Net.IPAddress.Any, 4649);
+      //var wssv = new WebSocketServer (System.Net.IPAddress.Any, 5963, true);
+
+      //var wssv = new WebSocketServer (System.Net.IPAddress.IPv6Any, 4649);
+      //var wssv = new WebSocketServer (System.Net.IPAddress.IPv6Any, 5963, true);
+
+      //var wssv = new WebSocketServer ("ws://0.0.0.0:4649");
+      //var wssv = new WebSocketServer ("wss://0.0.0.0:5963");
+
+      //var wssv = new WebSocketServer ("ws://[::0]:4649");
+      //var wssv = new WebSocketServer ("wss://[::0]:5963");
+
+      //var wssv = new WebSocketServer (System.Net.IPAddress.Loopback, 4649);
+      //var wssv = new WebSocketServer (System.Net.IPAddress.Loopback, 5963, true);
+
+      //var wssv = new WebSocketServer (System.Net.IPAddress.IPv6Loopback, 4649);
+      //var wssv = new WebSocketServer (System.Net.IPAddress.IPv6Loopback, 5963, true);
+
       //var wssv = new WebSocketServer ("ws://localhost:4649");
       //var wssv = new WebSocketServer ("wss://localhost:5963");
+
+      //var wssv = new WebSocketServer ("ws://127.0.0.1:4649");
+      //var wssv = new WebSocketServer ("wss://127.0.0.1:5963");
+
+      //var wssv = new WebSocketServer ("ws://[::1]:4649");
+      //var wssv = new WebSocketServer ("wss://[::1]:5963");
 #if DEBUG
       // To change the logging level.
       wssv.Log.Level = LogLevel.Trace;
