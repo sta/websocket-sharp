@@ -157,7 +157,7 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var host = uri.DnsSafeHost;
+      var host = getHost (uri);
       var addr = host.ToIPAddress ();
       if (!addr.IsLocal ())
         throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
@@ -636,6 +636,11 @@ namespace WebSocketSharp.Server
       return address.AddressFamily == AddressFamily.InterNetworkV6
              ? String.Format ("[{0}]", str)
              : str;
+    }
+
+    private static string getHost (Uri uri)
+    {
+      return uri.HostNameType == UriHostNameType.IPv6 ? uri.Host : uri.DnsSafeHost;
     }
 
     private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
