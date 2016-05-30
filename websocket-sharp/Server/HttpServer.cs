@@ -632,10 +632,9 @@ namespace WebSocketSharp.Server
 
     private static string convertToString (System.Net.IPAddress address)
     {
-      var str = address.ToString ();
       return address.AddressFamily == AddressFamily.InterNetworkV6
-             ? String.Format ("[{0}]", str)
-             : str;
+             ? String.Format ("[{0}]", address.ToString ())
+             : address.ToString ();
     }
 
     private static string getHost (Uri uri)
