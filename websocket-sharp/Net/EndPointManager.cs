@@ -83,6 +83,10 @@ namespace WebSocketSharp.Net
     {
       var pref = new HttpListenerPrefix (uriPrefix);
 
+      var addr = convertToIPAddress (pref.Host);
+
+      var port = pref.Port;
+
       var path = pref.Path;
       if (path.IndexOf ('%') != -1)
         throw new HttpListenerException (87, "Includes an invalid path.");
@@ -91,7 +95,7 @@ namespace WebSocketSharp.Net
         throw new HttpListenerException (87, "Includes an invalid path.");
 
       // Listens on all the interfaces if host name cannot be parsed by IPAddress.
-      getEndPointListener (pref, listener).AddPrefix (pref, listener);
+      getEndPointListener (addr, port, pref.IsSecure, listener).AddPrefix (pref, listener);
     }
 
     private static IPAddress convertToIPAddress (string hostname)
