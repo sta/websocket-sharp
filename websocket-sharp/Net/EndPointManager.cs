@@ -150,6 +150,40 @@ namespace WebSocketSharp.Net
       return lsnr;
     }
 
+    private static EndPointListener getEndPointListener (
+      IPAddress address, int port, bool secure, HttpListener listener
+    )
+    {
+      Dictionary<int, EndPointListener> endpoints = null;
+      if (_addressToEndpoints.ContainsKey (address)) {
+        endpoints = _addressToEndpoints[address];
+      }
+      else {
+        endpoints = new Dictionary<int, EndPointListener> ();
+        _addressToEndpoints[address] = endpoints;
+      }
+
+      EndPointListener lsnr = null;
+      if (endpoints.ContainsKey (port)) {
+        lsnr = endpoints[port];
+      }
+      else {
+        lsnr =
+          new EndPointListener (
+            address,
+            port,
+            listener.ReuseAddress,
+            secure,
+            listener.CertificateFolderPath,
+            listener.SslConfiguration
+          );
+
+        endpoints[port] = lsnr;
+      }
+
+      return lsnr;
+    }
+
     private static void removePrefix (string uriPrefix, HttpListener listener)
     {
       var pref = new HttpListenerPrefix (uriPrefix);
