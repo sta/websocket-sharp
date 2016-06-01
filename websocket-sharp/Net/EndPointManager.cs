@@ -84,6 +84,8 @@ namespace WebSocketSharp.Net
       var pref = new HttpListenerPrefix (uriPrefix);
 
       var addr = convertToIPAddress (pref.Host);
+      if (!addr.IsLocal ())
+        throw new HttpListenerException (87, "Includes an invalid host.");
 
       var port = pref.Port;
 
@@ -94,26 +96,12 @@ namespace WebSocketSharp.Net
       if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         throw new HttpListenerException (87, "Includes an invalid path.");
 
-      // Listens on all the interfaces if host name cannot be parsed by IPAddress.
       getEndPointListener (addr, port, pref.IsSecure, listener).AddPrefix (pref, listener);
     }
 
     private static IPAddress convertToIPAddress (string hostname)
     {
-      if (hostname == "*" || hostname == "+")
-        return IPAddress.Any;
-
-      IPAddress addr;
-      if (IPAddress.TryParse (hostname, out addr))
-        return addr;
-
-      try {
-        var host = Dns.GetHostEntry (hostname);
-        return host != null ? host.AddressList[0] : IPAddress.Any;
-      }
-      catch {
-        return IPAddress.Any;
-      }
+      return hostname == "*" || hostname == "+" ? IPAddress.Any : hostname.ToIPAddress ();
     }
 
     private static EndPointListener getEndPointListener (
