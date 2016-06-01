@@ -105,44 +105,6 @@ namespace WebSocketSharp.Net
     }
 
     private static EndPointListener getEndPointListener (
-      HttpListenerPrefix prefix, HttpListener listener
-    )
-    {
-      var addr = convertToIPAddress (prefix.Host);
-
-      Dictionary<int, EndPointListener> eps = null;
-      if (_addressToEndpoints.ContainsKey (addr)) {
-        eps = _addressToEndpoints[addr];
-      }
-      else {
-        eps = new Dictionary<int, EndPointListener> ();
-        _addressToEndpoints[addr] = eps;
-      }
-
-      var port = prefix.Port;
-
-      EndPointListener lsnr = null;
-      if (eps.ContainsKey (port)) {
-        lsnr = eps[port];
-      }
-      else {
-        lsnr =
-          new EndPointListener (
-            addr,
-            port,
-            listener.ReuseAddress,
-            prefix.IsSecure,
-            listener.CertificateFolderPath,
-            listener.SslConfiguration
-          );
-
-        eps[port] = lsnr;
-      }
-
-      return lsnr;
-    }
-
-    private static EndPointListener getEndPointListener (
       IPAddress address, int port, bool secure, HttpListener listener
     )
     {
@@ -180,6 +142,12 @@ namespace WebSocketSharp.Net
     {
       var pref = new HttpListenerPrefix (uriPrefix);
 
+      var addr = convertToIPAddress (pref.Host);
+      if (!addr.IsLocal ())
+        return;
+
+      var port = pref.Port;
+
       var path = pref.Path;
       if (path.IndexOf ('%') != -1)
         return;
@@ -187,7 +155,7 @@ namespace WebSocketSharp.Net
       if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         return;
 
-      getEndPointListener (pref, listener).RemovePrefix (pref, listener);
+      getEndPointListener (addr, port, pref.IsSecure, listener).RemovePrefix (pref, listener);
     }
 
     #endregion
