@@ -87,7 +87,12 @@ namespace WebSocketSharp.Net
       if (!addr.IsLocal ())
         throw new HttpListenerException (87, "Includes an invalid host.");
 
-      var port = pref.Port;
+      int port;
+      if (!Int32.TryParse (pref.Port, out port))
+        throw new HttpListenerException (87, "Includes an invalid port.");
+
+      if (!port.IsPortNumber ())
+        throw new HttpListenerException (87, "Includes an invalid port.");
 
       var path = pref.Path;
       if (path.IndexOf ('%') != -1)
@@ -146,7 +151,12 @@ namespace WebSocketSharp.Net
       if (!addr.IsLocal ())
         return;
 
-      var port = pref.Port;
+      int port;
+      if (!Int32.TryParse (pref.Port, out port))
+        return;
+
+      if (!port.IsPortNumber ())
+        return;
 
       var path = pref.Path;
       if (path.IndexOf ('%') != -1)

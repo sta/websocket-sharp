@@ -309,7 +309,7 @@ namespace WebSocketSharp.Net
 
       var host = uri.Host;
       var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
-      var port = uri.Port;
+      var port = uri.Port.ToString ();
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
       var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
 
