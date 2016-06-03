@@ -216,21 +216,26 @@ namespace WebSocketSharp.Net
     }
 
     private static HttpListener matchFromList (
-      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix)
+      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix
+    )
     {
       prefix = null;
+
       if (list == null)
         return null;
 
       HttpListener bestMatch = null;
+
       var bestLen = -1;
       foreach (var pref in list) {
-        var ppath = pref.Path;
-        if (ppath.Length < bestLen)
+        var prefPath = pref.Path;
+
+        var len = prefPath.Length;
+        if (len < bestLen)
           continue;
 
-        if (path.StartsWith (ppath)) {
-          bestLen = ppath.Length;
+        if (path.StartsWith (prefPath)) {
+          bestLen = len;
           bestMatch = pref.Listener;
           prefix = pref;
         }
