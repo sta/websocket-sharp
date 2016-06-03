@@ -156,7 +156,7 @@ namespace WebSocketSharp.Net
       var path = prefix.Path;
       foreach (var pref in prefixes)
         if (pref.Path == path)
-          throw new HttpListenerException (400, "The prefix is already in use."); // TODO: Code?
+          throw new HttpListenerException (87, "The prefix is already in use.");
 
       prefixes.Add (prefix);
     }
