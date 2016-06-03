@@ -89,10 +89,11 @@ namespace WebSocketSharp.Net
     internal EndPointListener (
       IPAddress address,
       int port,
-      bool reuseAddress,
       bool secure,
       string certificateFolderPath,
-      ServerSslConfiguration sslConfig)
+      ServerSslConfiguration sslConfig,
+      bool reuseAddress
+    )
     {
       if (secure) {
         var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
