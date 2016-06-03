@@ -154,9 +154,10 @@ namespace WebSocketSharp.Net
     private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
       var path = prefix.Path;
-      foreach (var pref in prefixes)
+      foreach (var pref in prefixes) {
         if (pref.Path == path)
           throw new HttpListenerException (87, "The prefix is already in use.");
+      }
 
       prefixes.Add (prefix);
     }
