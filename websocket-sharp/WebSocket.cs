@@ -295,6 +295,9 @@ namespace WebSocketSharp
 
     #region Public Properties
 
+    
+    public IEnumerable<KeyValuePair<string,string>> CustomHeaders { get; set; }
+
     /// <summary>
     /// Gets or sets the compression method used to compress a message on the WebSocket connection.
     /// </summary>
@@ -954,6 +957,12 @@ namespace WebSocketSharp
 
       if (authRes != null)
         headers["Authorization"] = authRes.ToString ();
+
+            if (CustomHeaders != null) {
+                foreach (var header in CustomHeaders) {
+                    headers[header.Key] = header.Value;
+                }
+            }
 
       if (_cookies.Count > 0)
         ret.SetCookies (_cookies);
