@@ -312,6 +312,7 @@ namespace WebSocketSharp.Net
     private HttpListener searchListener (Uri uri, out HttpListenerPrefix prefix)
     {
       prefix = null;
+
       if (uri == null)
         return null;
 
@@ -319,27 +320,30 @@ namespace WebSocketSharp.Net
       var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
       var port = uri.Port.ToString ();
       var path = HttpUtility.UrlDecode (uri.AbsolutePath);
-      var pathSlash = path[path.Length - 1] == '/' ? path : path + "/";
+      var pathSlash = path[path.Length - 1] != '/' ? path + "/" : path;
 
       HttpListener bestMatch = null;
-      var bestLen = -1;
+
       if (host != null && host.Length > 0) {
+        var bestLen = -1;
         foreach (var pref in _prefixes.Keys) {
-          var ppath = pref.Path;
-          if (ppath.Length < bestLen)
-            continue;
+          if (dns) {
+            var prefHost = pref.Host;
+            if (Uri.CheckHostName (prefHost) == UriHostNameType.Dns && prefHost != host)
+              continue;
+          }
 
           if (pref.Port != port)
             continue;
 
-          if (dns) {
-            var phost = pref.Host;
-            if (Uri.CheckHostName (phost) == UriHostNameType.Dns && phost != host)
-              continue;
-          }
+          var prefPath = pref.Path;
 
-          if (path.StartsWith (ppath) || pathSlash.StartsWith (ppath)) {
-            bestLen = ppath.Length;
+          var len = prefPath.Length;
+          if (len < bestLen)
+            continue;
+
+          if (path.StartsWith (prefPath) || pathSlash.StartsWith (prefPath)) {
+            bestLen = len;
             bestMatch = _prefixes[pref];
             prefix = pref;
           }
@@ -362,10 +366,7 @@ namespace WebSocketSharp.Net
       if (path != pathSlash && bestMatch == null)
         bestMatch = matchFromList (host, pathSlash, list, out prefix);
 
-      if (bestMatch != null)
-        return bestMatch;
-
-      return null;
+      return bestMatch;
     }
 
     #endregion
