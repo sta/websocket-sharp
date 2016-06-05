@@ -137,9 +137,7 @@ namespace WebSocketSharp.Net
         _port = _secure ? "443" : "80";
       }
 
-      var path = uriPrefix.Substring (root);
-      var pathLen = path.Length;
-      _path = pathLen > 1 ? path.Substring (0, pathLen - 1) : path;
+      _path = uriPrefix.Substring (root);
     }
 
     #endregion
