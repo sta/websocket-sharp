@@ -286,7 +286,7 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          if (!conn._listener.BindContext (conn._context)) {
+          if (!conn._listener.BindHttpListenerTo (conn._context)) {
             conn.SendError ("Invalid host", 400);
             return;
           }

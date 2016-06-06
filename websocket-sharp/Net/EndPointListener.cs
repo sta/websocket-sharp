@@ -459,19 +459,6 @@ namespace WebSocketSharp.Net
       while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
     }
 
-    public bool BindContext (HttpListenerContext context)
-    {
-      HttpListenerPrefix pref;
-      var lsnr = searchListener (context.Request.Url, out pref);
-      if (lsnr == null)
-        return false;
-
-      context.Listener = lsnr;
-      context.Connection.Prefix = pref;
-
-      return true;
-    }
-
     public void Close ()
     {
       _socket.Close ();
