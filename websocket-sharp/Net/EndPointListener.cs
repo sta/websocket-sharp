@@ -309,7 +309,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private HttpListener searchListener (Uri uri, out HttpListenerPrefix prefix)
+    private HttpListener searchHttpListener (Uri uri, out HttpListenerPrefix prefix)
     {
       prefix = null;
 
@@ -376,7 +376,7 @@ namespace WebSocketSharp.Net
     internal bool BindHttpListenerTo (HttpListenerContext context)
     {
       HttpListenerPrefix pref;
-      var lsnr = searchListener (context.Request.Url, out pref);
+      var lsnr = searchHttpListener (context.Request.Url, out pref);
       if (lsnr == null)
         return false;
 
