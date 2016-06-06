@@ -373,6 +373,19 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    internal bool BindHttpListenerTo (HttpListenerContext context)
+    {
+      HttpListenerPrefix pref;
+      var lsnr = searchListener (context.Request.Url, out pref);
+      if (lsnr == null)
+        return false;
+
+      context.Listener = lsnr;
+      context.Connection.Prefix = pref;
+
+      return true;
+    }
+
     internal static bool CertificateExists (int port, string certificateFolderPath)
     {
       if (certificateFolderPath == null || certificateFolderPath.Length == 0)
