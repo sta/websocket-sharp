@@ -215,35 +215,6 @@ namespace WebSocketSharp.Net
       return defaultCertificate;
     }
 
-    private static HttpListener matchFromList (
-      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix
-    )
-    {
-      prefix = null;
-
-      if (list == null)
-        return null;
-
-      HttpListener bestMatch = null;
-
-      var bestLen = -1;
-      foreach (var pref in list) {
-        var prefPath = pref.Path;
-
-        var len = prefPath.Length;
-        if (len < bestLen)
-          continue;
-
-        if (path.StartsWith (prefPath)) {
-          bestLen = len;
-          bestMatch = pref.Listener;
-          prefix = pref;
-        }
-      }
-
-      return bestMatch;
-    }
-
     private static void onAccept (IAsyncResult asyncResult)
     {
       var lsnr = (EndPointListener) asyncResult.AsyncState;
@@ -354,17 +325,17 @@ namespace WebSocketSharp.Net
       }
 
       var list = _unhandled;
-      bestMatch = matchFromList (host, path, list, out prefix);
+      bestMatch = searchHttpListenerFromSpecial (path, list, out prefix);
       if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, list, out prefix);
 
       if (bestMatch != null)
         return bestMatch;
 
       list = _all;
-      bestMatch = matchFromList (host, path, list, out prefix);
+      bestMatch = searchHttpListenerFromSpecial (path, list, out prefix);
       if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, list, out prefix);
 
       return bestMatch;
     }
