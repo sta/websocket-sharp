@@ -193,15 +193,15 @@ namespace WebSocketSharp.Net
     }
 
     private static X509Certificate2 getCertificate (
-      int port, string certificateFolderPath, X509Certificate2 defaultCertificate
+      int port, string folderPath, X509Certificate2 defaultCertificate
     )
     {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
+      if (folderPath == null || folderPath.Length == 0)
+        folderPath = _defaultCertFolderPath;
 
       try {
-        var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-        var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
+        var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+        var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
         if (File.Exists (cer) && File.Exists (key)) {
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
