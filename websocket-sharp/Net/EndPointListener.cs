@@ -386,13 +386,13 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    internal static bool CertificateExists (int port, string certificateFolderPath)
+    internal static bool CertificateExists (int port, string folderPath)
     {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
+      if (folderPath == null || folderPath.Length == 0)
+        folderPath = _defaultCertFolderPath;
 
-      var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-      var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
+      var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+      var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
 
       return File.Exists (cer) && File.Exists (key);
     }
