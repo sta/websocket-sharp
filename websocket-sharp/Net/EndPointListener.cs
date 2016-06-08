@@ -324,18 +324,18 @@ namespace WebSocketSharp.Net
           return bestMatch;
       }
 
-      var list = _unhandled;
-      bestMatch = searchHttpListenerFromSpecial (path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = searchHttpListenerFromSpecial (pathSlash, list, out prefix);
+      var prefs = _unhandled;
+      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
+      if (bestMatch == null && pathSlash != path)
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
 
       if (bestMatch != null)
         return bestMatch;
 
-      list = _all;
-      bestMatch = searchHttpListenerFromSpecial (path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = searchHttpListenerFromSpecial (pathSlash, list, out prefix);
+      prefs = _all;
+      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
+      if (bestMatch == null && pathSlash != path)
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
 
       return bestMatch;
     }
