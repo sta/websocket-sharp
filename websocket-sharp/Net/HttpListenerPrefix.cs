@@ -53,6 +53,7 @@ namespace WebSocketSharp.Net
     private string       _original;
     private string       _path;
     private string       _port;
+    private string       _prefix;
     private bool         _secure;
 
     #endregion
@@ -102,6 +103,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public string Original {
+      get {
+        return _original;
+      }
+    }
+
     public string Path {
       get {
         return _path;
@@ -138,6 +145,9 @@ namespace WebSocketSharp.Net
       }
 
       _path = uriPrefix.Substring (root);
+
+      _prefix =
+        String.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
     }
 
     #endregion
@@ -181,17 +191,17 @@ namespace WebSocketSharp.Net
     public override bool Equals (Object obj)
     {
       var pref = obj as HttpListenerPrefix;
-      return pref != null && pref._original == _original;
+      return pref != null && pref._prefix == _prefix;
     }
 
     public override int GetHashCode ()
     {
-      return _original.GetHashCode ();
+      return _prefix.GetHashCode ();
     }
 
     public override string ToString ()
     {
-      return _original;
+      return _prefix;
     }
 
     #endregion
