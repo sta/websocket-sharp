@@ -167,12 +167,12 @@ namespace WebSocketSharp.Net
       if (_prefixes.Count > 0)
         return;
 
-      var list = _unhandled;
-      if (list != null && list.Count > 0)
+      var prefs = _unhandled;
+      if (prefs != null && prefs.Count > 0)
         return;
 
-      list = _all;
-      if (list != null && list.Count > 0)
+      prefs = _all;
+      if (prefs != null && prefs.Count > 0)
         return;
 
       EndPointManager.RemoveEndPoint (this);
