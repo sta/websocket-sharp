@@ -47,7 +47,6 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private IPAddress[]  _addresses;
     private string       _host;
     private HttpListener _listener;
     private string       _original;
@@ -70,16 +69,6 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Properties
-
-    public IPAddress[] Addresses {
-      get {
-        return _addresses;
-      }
-
-      set {
-        _addresses = value;
-      }
-    }
 
     public string Host {
       get {
