@@ -487,12 +487,12 @@ namespace WebSocketSharp.Net
         disposeRequestBuffer ();
         if (chunked) {
           _context.Response.SendChunked = true;
-          _inputStream = new ChunkedRequestStream (
-            _stream, buff, _position, len - _position, _context);
+          _inputStream =
+            new ChunkedRequestStream (_stream, buff, _position, len - _position, _context);
         }
         else {
-          _inputStream = new RequestStream (
-            _stream, buff, _position, len - _position, contentLength);
+          _inputStream =
+            new RequestStream (_stream, buff, _position, len - _position, contentLength);
         }
 
         return _inputStream;
