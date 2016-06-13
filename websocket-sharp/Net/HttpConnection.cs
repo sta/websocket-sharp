@@ -99,7 +99,8 @@ namespace WebSocketSharp.Net
           conf.ServerCertificate,
           conf.ClientCertificateRequired,
           conf.EnabledSslProtocols,
-          conf.CheckCertificateRevocation);
+          conf.CheckCertificateRevocation
+        );
 
         _stream = sslStream;
       }
