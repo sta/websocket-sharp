@@ -47,19 +47,28 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private IPAddress[]  _addresses;
     private string       _host;
     private HttpListener _listener;
     private string       _original;
     private string       _path;
     private string       _port;
+    private string       _prefix;
     private bool         _secure;
 
     #endregion
 
     #region Internal Constructors
 
-    // Must be called after calling the CheckPrefix method.
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpListenerPrefix"/> class with
+    /// the specified <paramref name="uriPrefix"/>.
+    /// </summary>
+    /// <remarks>
+    /// This constructor must be called after calling the CheckPrefix method.
+    /// </remarks>
+    /// <param name="uriPrefix">
+    /// A <see cref="string"/> that represents the URI prefix.
+    /// </param>
     internal HttpListenerPrefix (string uriPrefix)
     {
       _original = uriPrefix;
@@ -69,16 +78,6 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Properties
-
-    public IPAddress[] Addresses {
-      get {
-        return _addresses;
-      }
-
-      set {
-        _addresses = value;
-      }
-    }
 
     public string Host {
       get {
@@ -99,6 +98,12 @@ namespace WebSocketSharp.Net
 
       set {
         _listener = value;
+      }
+    }
+
+    public string Original {
+      get {
+        return _original;
       }
     }
 
@@ -138,6 +143,9 @@ namespace WebSocketSharp.Net
       }
 
       _path = uriPrefix.Substring (root);
+
+      _prefix =
+        String.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
     }
 
     #endregion
@@ -177,21 +185,42 @@ namespace WebSocketSharp.Net
         throw new ArgumentException ("No path is specified.", "uriPrefix");
     }
 
-    // The Equals and GetHashCode methods are required to detect duplicates in any collection.
+    /// <summary>
+    /// Determines whether this instance and the specified <see cref="Object"/> have the same value.
+    /// </summary>
+    /// <remarks>
+    /// This method will be required to detect duplicates in any collection.
+    /// </remarks>
+    /// <param name="obj">
+    /// An <see cref="Object"/> to compare to this instance.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if <paramref name="obj"/> is a <see cref="HttpListenerPrefix"/> and
+    /// its value is the same as this instance; otherwise, <c>false</c>.
+    /// </returns>
     public override bool Equals (Object obj)
     {
       var pref = obj as HttpListenerPrefix;
-      return pref != null && pref._original == _original;
+      return pref != null && pref._prefix == _prefix;
     }
 
+    /// <summary>
+    /// Gets the hash code for this instance.
+    /// </summary>
+    /// <remarks>
+    /// This method will be required to detect duplicates in any collection.
+    /// </remarks>
+    /// <returns>
+    /// An <see cref="int"/> that represents the hash code.
+    /// </returns>
     public override int GetHashCode ()
     {
-      return _original.GetHashCode ();
+      return _prefix.GetHashCode ();
     }
 
     public override string ToString ()
     {
-      return _original;
+      return _prefix;
     }
 
     #endregion

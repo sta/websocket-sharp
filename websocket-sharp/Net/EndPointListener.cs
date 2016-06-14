@@ -167,12 +167,12 @@ namespace WebSocketSharp.Net
       if (_prefixes.Count > 0)
         return;
 
-      var list = _unhandled;
-      if (list != null && list.Count > 0)
+      var prefs = _unhandled;
+      if (prefs != null && prefs.Count > 0)
         return;
 
-      list = _all;
-      if (list != null && list.Count > 0)
+      prefs = _all;
+      if (prefs != null && prefs.Count > 0)
         return;
 
       EndPointManager.RemoveEndPoint (this);
@@ -193,15 +193,15 @@ namespace WebSocketSharp.Net
     }
 
     private static X509Certificate2 getCertificate (
-      int port, string certificateFolderPath, X509Certificate2 defaultCertificate
+      int port, string folderPath, X509Certificate2 defaultCertificate
     )
     {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
+      if (folderPath == null || folderPath.Length == 0)
+        folderPath = _defaultCertFolderPath;
 
       try {
-        var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-        var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
+        var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+        var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
         if (File.Exists (cer) && File.Exists (key)) {
           var cert = new X509Certificate2 (cer);
           cert.PrivateKey = createRSAFromFile (key);
@@ -213,35 +213,6 @@ namespace WebSocketSharp.Net
       }
 
       return defaultCertificate;
-    }
-
-    private static HttpListener matchFromList (
-      string host, string path, List<HttpListenerPrefix> list, out HttpListenerPrefix prefix
-    )
-    {
-      prefix = null;
-
-      if (list == null)
-        return null;
-
-      HttpListener bestMatch = null;
-
-      var bestLen = -1;
-      foreach (var pref in list) {
-        var prefPath = pref.Path;
-
-        var len = prefPath.Length;
-        if (len < bestLen)
-          continue;
-
-        if (path.StartsWith (prefPath)) {
-          bestLen = len;
-          bestMatch = pref.Listener;
-          prefix = pref;
-        }
-      }
-
-      return bestMatch;
     }
 
     private static void onAccept (IAsyncResult asyncResult)
@@ -309,7 +280,7 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private HttpListener searchListener (Uri uri, out HttpListenerPrefix prefix)
+    private HttpListener searchHttpListener (Uri uri, out HttpListenerPrefix prefix)
     {
       prefix = null;
 
@@ -353,18 +324,47 @@ namespace WebSocketSharp.Net
           return bestMatch;
       }
 
-      var list = _unhandled;
-      bestMatch = matchFromList (host, path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+      var prefs = _unhandled;
+      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
+      if (bestMatch == null && pathSlash != path)
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
 
       if (bestMatch != null)
         return bestMatch;
 
-      list = _all;
-      bestMatch = matchFromList (host, path, list, out prefix);
-      if (path != pathSlash && bestMatch == null)
-        bestMatch = matchFromList (host, pathSlash, list, out prefix);
+      prefs = _all;
+      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
+      if (bestMatch == null && pathSlash != path)
+        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
+
+      return bestMatch;
+    }
+
+    private static HttpListener searchHttpListenerFromSpecial (
+      string path, List<HttpListenerPrefix> prefixes, out HttpListenerPrefix prefix
+    )
+    {
+      prefix = null;
+
+      if (prefixes == null)
+        return null;
+
+      HttpListener bestMatch = null;
+
+      var bestLen = -1;
+      foreach (var pref in prefixes) {
+        var prefPath = pref.Path;
+
+        var len = prefPath.Length;
+        if (len < bestLen)
+          continue;
+
+        if (path.StartsWith (prefPath)) {
+          bestLen = len;
+          bestMatch = pref.Listener;
+          prefix = pref;
+        }
+      }
 
       return bestMatch;
     }
@@ -376,7 +376,7 @@ namespace WebSocketSharp.Net
     internal bool BindHttpListenerTo (HttpListenerContext context)
     {
       HttpListenerPrefix pref;
-      var lsnr = searchListener (context.Request.Url, out pref);
+      var lsnr = searchHttpListener (context.Request.Url, out pref);
       if (lsnr == null)
         return false;
 
@@ -386,13 +386,13 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    internal static bool CertificateExists (int port, string certificateFolderPath)
+    internal static bool CertificateExists (int port, string folderPath)
     {
-      if (certificateFolderPath == null || certificateFolderPath.Length == 0)
-        certificateFolderPath = _defaultCertFolderPath;
+      if (folderPath == null || folderPath.Length == 0)
+        folderPath = _defaultCertFolderPath;
 
-      var cer = Path.Combine (certificateFolderPath, String.Format ("{0}.cer", port));
-      var key = Path.Combine (certificateFolderPath, String.Format ("{0}.key", port));
+      var cer = Path.Combine (folderPath, String.Format ("{0}.cer", port));
+      var key = Path.Combine (folderPath, String.Format ("{0}.key", port));
 
       return File.Exists (cer) && File.Exists (key);
     }
