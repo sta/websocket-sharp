@@ -428,6 +428,63 @@ namespace WebSocketSharp.Net
         _unregistered.Remove (connection);
     }
 
+    internal bool TrySearchHttpListener (Uri uri, out HttpListener listener)
+    {
+      listener = null;
+
+      if (uri == null)
+        return false;
+
+      var host = uri.Host;
+      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
+      var port = uri.Port.ToString ();
+      var path = HttpUtility.UrlDecode (uri.AbsolutePath);
+      var pathSlash = path[path.Length - 1] != '/' ? path + "/" : path;
+
+      if (host != null && host.Length > 0) {
+        var bestLen = -1;
+        foreach (var pref in _prefixes.Keys) {
+          if (dns) {
+            var prefHost = pref.Host;
+            if (Uri.CheckHostName (prefHost) == UriHostNameType.Dns && prefHost != host)
+              continue;
+          }
+
+          if (pref.Port != port)
+            continue;
+
+          var prefPath = pref.Path;
+
+          var len = prefPath.Length;
+          if (len < bestLen)
+            continue;
+
+          if (path.StartsWith (prefPath) || pathSlash.StartsWith (prefPath)) {
+            bestLen = len;
+            listener = _prefixes[pref];
+          }
+        }
+
+        if (bestLen != -1)
+          return true;
+      }
+
+      var prefs = _unhandled;
+      listener = searchHttpListenerFromSpecial (path, prefs);
+      if (listener == null && pathSlash != path)
+        listener = searchHttpListenerFromSpecial (pathSlash, prefs);
+
+      if (listener != null)
+        return true;
+
+      prefs = _all;
+      listener = searchHttpListenerFromSpecial (path, prefs);
+      if (listener == null && pathSlash != path)
+        listener = searchHttpListenerFromSpecial (pathSlash, prefs);
+
+      return listener != null;
+    }
+
     #endregion
 
     #region Public Methods
