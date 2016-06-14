@@ -71,7 +71,6 @@ namespace WebSocketSharp.Net
     private EndPointListener    _listener;
     private ResponseStream      _outputStream;
     private int                 _position;
-    private HttpListenerPrefix  _prefix;
     private MemoryStream        _requestBuffer;
     private int                 _reuses;
     private bool                _secure;
@@ -134,16 +133,6 @@ namespace WebSocketSharp.Net
     public IPEndPoint LocalEndPoint {
       get {
         return (IPEndPoint) _socket.LocalEndPoint;
-      }
-    }
-
-    public HttpListenerPrefix Prefix {
-      get {
-        return _prefix;
-      }
-
-      set {
-        _prefix = value;
       }
     }
 
@@ -241,7 +230,6 @@ namespace WebSocketSharp.Net
       _lineState = LineState.None;
       _outputStream = null;
       _position = 0;
-      _prefix = null;
       _requestBuffer = new MemoryStream ();
     }
 

@@ -381,7 +381,6 @@ namespace WebSocketSharp.Net
         return false;
 
       context.Listener = lsnr;
-      context.Connection.Prefix = pref;
 
       return true;
     }
