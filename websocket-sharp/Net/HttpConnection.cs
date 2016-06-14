@@ -374,8 +374,10 @@ namespace WebSocketSharp.Net
     private string readLineFrom (byte[] buffer, int offset, int length, out int read)
     {
       read = 0;
+
       for (var i = offset; i < length && _lineState != LineState.Lf; i++) {
         read++;
+
         var b = buffer[i];
         if (b == 13)
           _lineState = LineState.Cr;
@@ -385,15 +387,15 @@ namespace WebSocketSharp.Net
           _currentLine.Append ((char) b);
       }
 
-      if (_lineState == LineState.Lf) {
-        _lineState = LineState.None;
-        var line = _currentLine.ToString ();
-        _currentLine.Length = 0;
+      if (_lineState != LineState.Lf)
+        return null;
 
-        return line;
-      }
+      var line = _currentLine.ToString ();
 
-      return null;
+      _currentLine.Length = 0;
+      _lineState = LineState.None;
+
+      return line;
     }
 
     private void removeConnection ()
