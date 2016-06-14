@@ -341,6 +341,32 @@ namespace WebSocketSharp.Net
     }
 
     private static HttpListener searchHttpListenerFromSpecial (
+      string path, List<HttpListenerPrefix> prefixes
+    )
+    {
+      if (prefixes == null)
+        return null;
+
+      HttpListener bestMatch = null;
+
+      var bestLen = -1;
+      foreach (var pref in prefixes) {
+        var prefPath = pref.Path;
+
+        var len = prefPath.Length;
+        if (len < bestLen)
+          continue;
+
+        if (path.StartsWith (prefPath)) {
+          bestLen = len;
+          bestMatch = pref.Listener;
+        }
+      }
+
+      return bestMatch;
+    }
+
+    private static HttpListener searchHttpListenerFromSpecial (
       string path, List<HttpListenerPrefix> prefixes, out HttpListenerPrefix prefix
     )
     {
