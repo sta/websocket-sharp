@@ -275,12 +275,12 @@ namespace WebSocketSharp.Net
             return;
           }
 
-          if (!conn._listener.BindHttpListenerTo (conn._context)) {
+          HttpListener lsnr;
+          if (!conn._listener.TrySearchHttpListener (conn._context.Request.Url, out lsnr)) {
             conn.SendError (null, 404);
             return;
           }
 
-          var lsnr = conn._context.Listener;
           if (conn._lastListener != lsnr) {
             conn.removeConnection ();
             if (!lsnr.AddConnection (conn)) {
@@ -291,6 +291,7 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
+          conn._context.Listener = lsnr;
           if (!conn._context.Authenticate ())
             return;
 

@@ -280,66 +280,6 @@ namespace WebSocketSharp.Net
       return false;
     }
 
-    private HttpListener searchHttpListener (Uri uri, out HttpListenerPrefix prefix)
-    {
-      prefix = null;
-
-      if (uri == null)
-        return null;
-
-      var host = uri.Host;
-      var dns = Uri.CheckHostName (host) == UriHostNameType.Dns;
-      var port = uri.Port.ToString ();
-      var path = HttpUtility.UrlDecode (uri.AbsolutePath);
-      var pathSlash = path[path.Length - 1] != '/' ? path + "/" : path;
-
-      HttpListener bestMatch = null;
-
-      if (host != null && host.Length > 0) {
-        var bestLen = -1;
-        foreach (var pref in _prefixes.Keys) {
-          if (dns) {
-            var prefHost = pref.Host;
-            if (Uri.CheckHostName (prefHost) == UriHostNameType.Dns && prefHost != host)
-              continue;
-          }
-
-          if (pref.Port != port)
-            continue;
-
-          var prefPath = pref.Path;
-
-          var len = prefPath.Length;
-          if (len < bestLen)
-            continue;
-
-          if (path.StartsWith (prefPath) || pathSlash.StartsWith (prefPath)) {
-            bestLen = len;
-            bestMatch = _prefixes[pref];
-            prefix = pref;
-          }
-        }
-
-        if (bestLen != -1)
-          return bestMatch;
-      }
-
-      var prefs = _unhandled;
-      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
-      if (bestMatch == null && pathSlash != path)
-        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
-
-      if (bestMatch != null)
-        return bestMatch;
-
-      prefs = _all;
-      bestMatch = searchHttpListenerFromSpecial (path, prefs, out prefix);
-      if (bestMatch == null && pathSlash != path)
-        bestMatch = searchHttpListenerFromSpecial (pathSlash, prefs, out prefix);
-
-      return bestMatch;
-    }
-
     private static HttpListener searchHttpListenerFromSpecial (
       string path, List<HttpListenerPrefix> prefixes
     )
@@ -366,50 +306,9 @@ namespace WebSocketSharp.Net
       return bestMatch;
     }
 
-    private static HttpListener searchHttpListenerFromSpecial (
-      string path, List<HttpListenerPrefix> prefixes, out HttpListenerPrefix prefix
-    )
-    {
-      prefix = null;
-
-      if (prefixes == null)
-        return null;
-
-      HttpListener bestMatch = null;
-
-      var bestLen = -1;
-      foreach (var pref in prefixes) {
-        var prefPath = pref.Path;
-
-        var len = prefPath.Length;
-        if (len < bestLen)
-          continue;
-
-        if (path.StartsWith (prefPath)) {
-          bestLen = len;
-          bestMatch = pref.Listener;
-          prefix = pref;
-        }
-      }
-
-      return bestMatch;
-    }
-
     #endregion
 
     #region Internal Methods
-
-    internal bool BindHttpListenerTo (HttpListenerContext context)
-    {
-      HttpListenerPrefix pref;
-      var lsnr = searchHttpListener (context.Request.Url, out pref);
-      if (lsnr == null)
-        return false;
-
-      context.Listener = lsnr;
-
-      return true;
-    }
 
     internal static bool CertificateExists (int port, string folderPath)
     {
