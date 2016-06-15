@@ -168,6 +168,19 @@ namespace WebSocketSharp.Net
       getEndPointListener (addr, port, pref.IsSecure, listener).RemovePrefix (pref, listener);
     }
 
+    private static void setEndPointListener (EndPointListener listener)
+    {
+      var addr = listener.Address;
+
+      Dictionary<int, EndPointListener> endpoints;
+      if (!_addressToEndpoints.TryGetValue (addr, out endpoints)) {
+        endpoints = new Dictionary<int, EndPointListener> ();
+        _addressToEndpoints[addr] = endpoints;
+      }
+
+      endpoints[listener.Port] = listener;
+    }
+
     private static bool tryGetEndPointListener (
       IPAddress address, int port, out EndPointListener listener
     )
