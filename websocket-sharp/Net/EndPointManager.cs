@@ -168,6 +168,17 @@ namespace WebSocketSharp.Net
       getEndPointListener (addr, port, pref.IsSecure, listener).RemovePrefix (pref, listener);
     }
 
+    private static bool tryGetEndPointListener (
+      IPAddress address, int port, out EndPointListener listener
+    )
+    {
+      listener = null;
+
+      Dictionary<int, EndPointListener> endpoints;
+      return _addressToEndpoints.TryGetValue (address, out endpoints)
+             && endpoints.TryGetValue (port, out listener);
+    }
+
     #endregion
 
     #region Internal Methods
