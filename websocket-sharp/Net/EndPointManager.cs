@@ -101,7 +101,24 @@ namespace WebSocketSharp.Net
       if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         throw new HttpListenerException (87, "Includes an invalid path.");
 
-      getEndPointListener (addr, port, pref.IsSecure, listener).AddPrefix (pref, listener);
+      EndPointListener lsnr;
+      if (tryGetEndPointListener (addr, port, out lsnr)) {
+      }
+      else {
+        lsnr =
+          new EndPointListener (
+            addr,
+            port,
+            pref.IsSecure,
+            listener.CertificateFolderPath,
+            listener.SslConfiguration,
+            listener.ReuseAddress
+          );
+
+        setEndPointListener (lsnr);
+      }
+
+      lsnr.AddPrefix (pref, listener);
     }
 
     private static IPAddress convertToIPAddress (string hostname)
@@ -165,7 +182,11 @@ namespace WebSocketSharp.Net
       if (path.IndexOf ("//", StringComparison.Ordinal) != -1)
         return;
 
-      getEndPointListener (addr, port, pref.IsSecure, listener).RemovePrefix (pref, listener);
+      EndPointListener lsnr;
+      if (!tryGetEndPointListener (addr, port, out lsnr))
+        return;
+
+      lsnr.RemovePrefix (pref, listener);
     }
 
     private static void setEndPointListener (EndPointListener listener)
