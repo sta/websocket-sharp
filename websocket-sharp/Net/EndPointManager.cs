@@ -103,6 +103,8 @@ namespace WebSocketSharp.Net
 
       EndPointListener lsnr;
       if (tryGetEndPointListener (addr, port, out lsnr)) {
+        if (lsnr.IsSecure ^ pref.IsSecure)
+          throw new HttpListenerException (87, "Includes an invalid scheme.");
       }
       else {
         lsnr =
@@ -184,6 +186,9 @@ namespace WebSocketSharp.Net
 
       EndPointListener lsnr;
       if (!tryGetEndPointListener (addr, port, out lsnr))
+        return;
+
+      if (lsnr.IsSecure ^ pref.IsSecure)
         return;
 
       lsnr.RemovePrefix (pref, listener);
