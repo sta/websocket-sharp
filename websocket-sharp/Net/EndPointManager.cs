@@ -192,9 +192,9 @@ namespace WebSocketSharp.Net
     {
       lock (((ICollection) _addressToEndpoints).SyncRoot) {
         var addr = listener.Address;
-        var eps = _addressToEndpoints[addr];
-        eps.Remove (listener.Port);
-        if (eps.Count == 0)
+        var endpoints = _addressToEndpoints[addr];
+        endpoints.Remove (listener.Port);
+        if (endpoints.Count == 0)
           _addressToEndpoints.Remove (addr);
 
         listener.Close ();
