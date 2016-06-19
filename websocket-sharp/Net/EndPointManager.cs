@@ -173,6 +173,17 @@ namespace WebSocketSharp.Net
       endpoints[listener.Port] = listener;
     }
 
+    private static void setEndPointListener (IPAddress address, int port, EndPointListener listener)
+    {
+      Dictionary<int, EndPointListener> endpoints;
+      if (!_addressToEndpoints.TryGetValue (address, out endpoints)) {
+        endpoints = new Dictionary<int, EndPointListener> ();
+        _addressToEndpoints[address] = endpoints;
+      }
+
+      endpoints[port] = listener;
+    }
+
     private static bool tryGetEndPointListener (
       IPAddress address, int port, out EndPointListener listener
     )
