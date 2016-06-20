@@ -117,7 +117,7 @@ namespace WebSocketSharp.Net
             listener.ReuseAddress
           );
 
-        setEndPointListener (lsnr);
+        setEndPointListener (addr, port, lsnr);
       }
 
       lsnr.AddPrefix (pref, listener);
@@ -158,19 +158,6 @@ namespace WebSocketSharp.Net
         return;
 
       lsnr.RemovePrefix (pref, listener);
-    }
-
-    private static void setEndPointListener (EndPointListener listener)
-    {
-      var addr = listener.Address;
-
-      Dictionary<int, EndPointListener> endpoints;
-      if (!_addressToEndpoints.TryGetValue (addr, out endpoints)) {
-        endpoints = new Dictionary<int, EndPointListener> ();
-        _addressToEndpoints[addr] = endpoints;
-      }
-
-      endpoints[listener.Port] = listener;
     }
 
     private static void setEndPointListener (IPAddress address, int port, EndPointListener listener)
