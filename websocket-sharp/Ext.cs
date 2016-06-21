@@ -67,6 +67,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private static readonly byte[] _last = new byte[] { 0x00 };
+    private static readonly int    _retry = 5;
     private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
     #endregion
@@ -653,16 +654,23 @@ namespace WebSocketSharp
     {
       var buff = new byte[length];
       var offset = 0;
+      var retry = 0;
 
       AsyncCallback callback = null;
       callback = ar => {
         try {
           var nread = stream.EndRead (ar);
-          if (nread == 0 || nread == length) {
+          if (nread == 0 && retry < _retry) {
+            retry++;
+          }
+          else if (nread == 0 || nread == length) {
             if (completed != null)
               completed (buff.SubArray (0, offset + nread));
 
             return;
+          }
+          else {
+            retry = 0;
           }
 
           offset += nread;
