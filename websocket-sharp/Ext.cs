@@ -702,6 +702,7 @@ namespace WebSocketSharp
     {
       var dest = new MemoryStream ();
       var buff = new byte[bufferLength];
+      var retry = 0;
 
       Action<long> read = null;
       read = len => {
@@ -718,7 +719,10 @@ namespace WebSocketSharp
               if (nread > 0)
                 dest.Write (buff, 0, nread);
 
-              if (nread == 0 || nread == len) {
+              if (nread == 0 && retry < _retry) {
+                retry++;
+              }
+              else if (nread == 0 || nread == len) {
                 if (completed != null) {
                   dest.Close ();
                   completed (dest.ToArray ());
@@ -726,6 +730,9 @@ namespace WebSocketSharp
 
                 dest.Dispose ();
                 return;
+              }
+              else {
+                retry = 0;
               }
 
               read (len - nread);
