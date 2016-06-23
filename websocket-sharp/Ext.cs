@@ -703,53 +703,58 @@ namespace WebSocketSharp
       long length,
       int bufferLength,
       Action<byte[]> completed,
-      Action<Exception> error)
+      Action<Exception> error
+    )
     {
       var dest = new MemoryStream ();
       var buff = new byte[bufferLength];
       var retry = 0;
 
       Action<long> read = null;
-      read = len => {
-        if (len < bufferLength)
-          bufferLength = (int) len;
+      read =
+        len => {
+          if (len < bufferLength)
+            bufferLength = (int) len;
 
-        stream.BeginRead (
-          buff,
-          0,
-          bufferLength,
-          ar => {
-            try {
-              var nread = stream.EndRead (ar);
-              if (nread > 0)
-                dest.Write (buff, 0, nread);
+          stream.BeginRead (
+            buff,
+            0,
+            bufferLength,
+            ar => {
+              try {
+                var nread = stream.EndRead (ar);
+                if (nread > 0)
+                  dest.Write (buff, 0, nread);
 
-              if (nread == 0 && retry < _retry) {
-                retry++;
-              }
-              else if (nread == 0 || nread == len) {
-                if (completed != null) {
-                  dest.Close ();
-                  completed (dest.ToArray ());
+                if (nread == 0 && retry < _retry) {
+                  retry++;
+                  read (len);
+
+                  return;
                 }
 
-                dest.Dispose ();
-                return;
-              }
-              else {
-                retry = 0;
-              }
+                if (nread == 0 || nread == len) {
+                  if (completed != null) {
+                    dest.Close ();
+                    completed (dest.ToArray ());
+                  }
 
-              read (len - nread);
-            }
-            catch (Exception ex) {
-              dest.Dispose ();
-              if (error != null)
-                error (ex);
-            }
-          },
-          null);
-      };
+                  dest.Dispose ();
+                  return;
+                }
+
+                retry = 0;
+                read (len - nread);
+              }
+              catch (Exception ex) {
+                dest.Dispose ();
+                if (error != null)
+                  error (ex);
+              }
+            },
+            null
+          );
+        };
 
       try {
         read (length);
