@@ -257,23 +257,22 @@ namespace WebSocketSharp.Net
 
     private static void processAccepted (Socket socket, EndPointListener listener)
     {
-        HttpConnection.CreateAsync(socket, listener, conn =>
-        {
+            HttpConnection conn = null;
             try {
-                lock (listener._unregisteredSync)
+                conn = new HttpConnection(socket, listener);
+                lock(listener._unregisteredSync)
                     listener._unregistered[conn] = conn;
 
-                conn.BeginReadRequest ();
-            } catch(Exception e) {
-                if (conn != null) {
-                    conn.Close (true);
+                conn.BeginReadRequest();
+            } catch {
+                if(conn != null) {
+                    conn.Close(true);
                     return;
                 }
 
-                socket.Close ();
+                socket.Close();
             }
-        });
-    }
+        }
 
     private static bool removeSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
