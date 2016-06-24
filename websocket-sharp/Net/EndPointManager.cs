@@ -165,10 +165,10 @@ namespace WebSocketSharp.Net
       Dictionary<int, EndPointListener> endpoints;
       if (!_addressToEndpoints.TryGetValue (address, out endpoints)) {
         endpoints = new Dictionary<int, EndPointListener> ();
-        _addressToEndpoints[address] = endpoints;
+        _addressToEndpoints.Add (address, endpoints);
       }
 
-      endpoints[port] = listener;
+      endpoints.Add (port, listener);
     }
 
     private static bool tryGetEndPointListener (
