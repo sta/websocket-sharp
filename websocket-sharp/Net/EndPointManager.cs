@@ -79,6 +79,17 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private static void addEndPointListener (IPAddress address, int port, EndPointListener listener)
+    {
+      Dictionary<int, EndPointListener> endpoints;
+      if (!_addressToEndpoints.TryGetValue (address, out endpoints)) {
+        endpoints = new Dictionary<int, EndPointListener> ();
+        _addressToEndpoints.Add (address, endpoints);
+      }
+
+      endpoints.Add (port, listener);
+    }
+
     private static void addPrefix (string uriPrefix, HttpListener listener)
     {
       var pref = new HttpListenerPrefix (uriPrefix);
@@ -117,7 +128,7 @@ namespace WebSocketSharp.Net
             listener.ReuseAddress
           );
 
-        setEndPointListener (addr, port, lsnr);
+        addEndPointListener (addr, port, lsnr);
       }
 
       lsnr.AddPrefix (pref, listener);
@@ -158,17 +169,6 @@ namespace WebSocketSharp.Net
         return;
 
       lsnr.RemovePrefix (pref, listener);
-    }
-
-    private static void setEndPointListener (IPAddress address, int port, EndPointListener listener)
-    {
-      Dictionary<int, EndPointListener> endpoints;
-      if (!_addressToEndpoints.TryGetValue (address, out endpoints)) {
-        endpoints = new Dictionary<int, EndPointListener> ();
-        _addressToEndpoints.Add (address, endpoints);
-      }
-
-      endpoints.Add (port, listener);
     }
 
     private static bool tryGetEndPointListener (
