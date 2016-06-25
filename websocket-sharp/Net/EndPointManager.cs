@@ -203,6 +203,26 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal static bool RemoveEndPoint (IPAddress address, int port)
+    {
+      lock (((ICollection) _addressToEndpoints).SyncRoot) {
+        Dictionary<int, EndPointListener> endpoints;
+        if (!_addressToEndpoints.TryGetValue (address, out endpoints))
+          return false;
+
+        EndPointListener lsnr;
+        if (!endpoints.TryGetValue (port, out lsnr))
+          return false;
+
+        endpoints.Remove (port);
+        if (endpoints.Count == 0)
+          _addressToEndpoints.Remove (address);
+
+        lsnr.Close ();
+        return true;
+      }
+    }
+
     #endregion
 
     #region Public Methods
