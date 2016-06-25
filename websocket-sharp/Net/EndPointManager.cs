@@ -190,7 +190,11 @@ namespace WebSocketSharp.Net
     {
       lock (((ICollection) _addressToEndpoints).SyncRoot) {
         var addr = listener.Address;
-        var endpoints = _addressToEndpoints[addr];
+
+        Dictionary<int, EndPointListener> endpoints;
+        if (!_addressToEndpoints.TryGetValue (addr, out endpoints))
+          return;
+
         endpoints.Remove (listener.Port);
         if (endpoints.Count == 0)
           _addressToEndpoints.Remove (addr);
