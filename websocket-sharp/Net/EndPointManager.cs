@@ -58,6 +58,8 @@ namespace WebSocketSharp.Net
     private static readonly Dictionary<IPAddress, Dictionary<int, EndPointListener>>
       _addressToEndpoints;
 
+    private static readonly Dictionary<IPEndPoint, EndPointListener> _endpoints;
+
     #endregion
 
     #region Static Constructor
@@ -65,6 +67,7 @@ namespace WebSocketSharp.Net
     static EndPointManager ()
     {
       _addressToEndpoints = new Dictionary<IPAddress, Dictionary<int, EndPointListener>> ();
+      _endpoints = new Dictionary<IPEndPoint, EndPointListener> ();
     }
 
     #endregion
@@ -185,6 +188,20 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Internal Methods
+
+    internal static bool RemoveEndPoint (IPEndPoint endpoint)
+    {
+      lock (((ICollection) _endpoints).SyncRoot) {
+        EndPointListener lsnr;
+        if (!_endpoints.TryGetValue (endpoint, out lsnr))
+          return false;
+
+        _endpoints.Remove (endpoint);
+        lsnr.Close ();
+
+        return true;
+      }
+    }
 
     internal static bool RemoveEndPoint (IPAddress address, int port)
     {
