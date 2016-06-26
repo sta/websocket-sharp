@@ -87,6 +87,41 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal EndPointListener (
+      IPEndPoint endpoint,
+      bool secure,
+      string certificateFolderPath,
+      ServerSslConfiguration sslConfig,
+      bool reuseAddress
+    )
+    {
+      if (secure) {
+        var cert =
+          getCertificate (endpoint.Port, certificateFolderPath, sslConfig.ServerCertificate);
+
+        if (cert == null)
+          throw new ArgumentException ("No server certificate could be found.");
+
+        _secure = secure;
+        _sslConfig = sslConfig;
+        _sslConfig.ServerCertificate = cert;
+      }
+
+      _endpoint = endpoint;
+      _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
+      _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
+      _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
+      _socket =
+        new Socket (endpoint.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+      if (reuseAddress)
+        _socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+      _socket.Bind (endpoint);
+      _socket.Listen (500);
+      _socket.BeginAccept (onAccept, this);
+    }
+
+    internal EndPointListener (
       IPAddress address,
       int port,
       bool secure,
