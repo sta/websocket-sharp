@@ -186,23 +186,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal static void RemoveEndPoint (EndPointListener listener)
-    {
-      lock (((ICollection) _addressToEndpoints).SyncRoot) {
-        var addr = listener.Address;
-
-        Dictionary<int, EndPointListener> endpoints;
-        if (!_addressToEndpoints.TryGetValue (addr, out endpoints))
-          return;
-
-        endpoints.Remove (listener.Port);
-        if (endpoints.Count == 0)
-          _addressToEndpoints.Remove (addr);
-
-        listener.Close ();
-      }
-    }
-
     internal static bool RemoveEndPoint (IPAddress address, int port)
     {
       lock (((ICollection) _addressToEndpoints).SyncRoot) {
