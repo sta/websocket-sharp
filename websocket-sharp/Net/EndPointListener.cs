@@ -210,7 +210,7 @@ namespace WebSocketSharp.Net
       if (prefs != null && prefs.Count > 0)
         return;
 
-      EndPointManager.RemoveEndPoint (_endpoint.Address, _endpoint.Port);
+      EndPointManager.RemoveEndPoint (_endpoint);
     }
 
     private static RSACryptoServiceProvider createRSAFromFile (string filename)
