@@ -121,39 +121,6 @@ namespace WebSocketSharp.Net
       _socket.BeginAccept (onAccept, this);
     }
 
-    internal EndPointListener (
-      IPAddress address,
-      int port,
-      bool secure,
-      string certificateFolderPath,
-      ServerSslConfiguration sslConfig,
-      bool reuseAddress
-    )
-    {
-      if (secure) {
-        var cert = getCertificate (port, certificateFolderPath, sslConfig.ServerCertificate);
-        if (cert == null)
-          throw new ArgumentException ("No server certificate could be found.");
-
-        _secure = secure;
-        _sslConfig = sslConfig;
-        _sslConfig.ServerCertificate = cert;
-      }
-
-      _prefixes = new Dictionary<HttpListenerPrefix, HttpListener> ();
-      _unregistered = new Dictionary<HttpConnection, HttpConnection> ();
-      _unregisteredSync = ((ICollection) _unregistered).SyncRoot;
-
-      _socket = new Socket (address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-      if (reuseAddress)
-        _socket.SetSocketOption (SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-
-      _endpoint = new IPEndPoint (address, port);
-      _socket.Bind (_endpoint);
-      _socket.Listen (500);
-      _socket.BeginAccept (onAccept, this);
-    }
-
     #endregion
 
     #region Public Properties
