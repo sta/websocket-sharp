@@ -164,22 +164,6 @@ namespace WebSocketSharp.Net
       prefixes.Add (prefix);
     }
 
-    private void checkIfRemove ()
-    {
-      if (_prefixes.Count > 0)
-        return;
-
-      var prefs = _unhandled;
-      if (prefs != null && prefs.Count > 0)
-        return;
-
-      prefs = _all;
-      if (prefs != null && prefs.Count > 0)
-        return;
-
-      EndPointManager.RemoveEndPoint (_endpoint);
-    }
-
     private static RSACryptoServiceProvider createRSAFromFile (string filename)
     {
       byte[] pvk = null;
@@ -215,6 +199,22 @@ namespace WebSocketSharp.Net
       }
 
       return defaultCertificate;
+    }
+
+    private void leaveIfNoPrefix ()
+    {
+      if (_prefixes.Count > 0)
+        return;
+
+      var prefs = _unhandled;
+      if (prefs != null && prefs.Count > 0)
+        return;
+
+      prefs = _all;
+      if (prefs != null && prefs.Count > 0)
+        return;
+
+      EndPointManager.RemoveEndPoint (_endpoint);
     }
 
     private static void onAccept (IAsyncResult asyncResult)
@@ -476,7 +476,7 @@ namespace WebSocketSharp.Net
         }
         while (Interlocked.CompareExchange (ref _unhandled, future, current) != current);
 
-        checkIfRemove ();
+        leaveIfNoPrefix ();
         return;
       }
 
@@ -492,7 +492,7 @@ namespace WebSocketSharp.Net
         }
         while (Interlocked.CompareExchange (ref _all, future, current) != current);
 
-        checkIfRemove ();
+        leaveIfNoPrefix ();
         return;
       }
 
@@ -507,7 +507,7 @@ namespace WebSocketSharp.Net
       }
       while (Interlocked.CompareExchange (ref _prefixes, prefs2, prefs) != prefs);
 
-      checkIfRemove ();
+      leaveIfNoPrefix ();
     }
 
     #endregion
