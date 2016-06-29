@@ -34,10 +34,10 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Exposes the properties used to access the information in a WebSocket connection request.
+  /// Exposes the properties used to access the information in a WebSocket handshake request.
   /// </summary>
   /// <remarks>
-  /// The WebSocketContext class is an abstract class.
+  /// This class is an abstract class.
   /// </remarks>
   public abstract class WebSocketContext
   {
