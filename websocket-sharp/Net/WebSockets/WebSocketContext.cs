@@ -138,8 +138,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Sec-WebSocket-Key header included in the request.
     /// </summary>
     /// <remarks>
-    /// This property provides a part of the information used by the server to prove that it
-    /// received a valid WebSocket connection request.
+    /// This property provides a part of the information used by the server to prove that
+    /// it received a valid WebSocket handshake request.
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
