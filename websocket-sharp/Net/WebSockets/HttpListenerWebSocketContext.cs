@@ -314,12 +314,12 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Methods
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerWebSocketContext"/>.
+    /// Returns a <see cref="string"/> that represents
+    /// the current <see cref="HttpListenerWebSocketContext"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerWebSocketContext"/>.
+    /// A <see cref="string"/> that represents
+    /// the current <see cref="HttpListenerWebSocketContext"/>.
     /// </returns>
     public override string ToString ()
     {
