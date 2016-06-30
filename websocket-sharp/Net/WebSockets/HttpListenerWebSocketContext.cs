@@ -283,8 +283,8 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication
-    /// between client and server.
+    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
+    /// two-way communication between client and server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
