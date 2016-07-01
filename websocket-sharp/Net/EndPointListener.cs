@@ -238,22 +238,39 @@ namespace WebSocketSharp.Net
 
     private static void onAccept (IAsyncResult asyncResult)
     {
-      var lsnr = (EndPointListener) asyncResult.AsyncState;
+            var lsnr = (EndPointListener)asyncResult.AsyncState;
 
-      Socket sock = null;
-      try {
-        sock = lsnr._socket.EndAccept (asyncResult);
-        lsnr._socket.BeginAccept (onAccept, lsnr);
-      }
-      catch {
-        if (sock != null)
-          sock.Close ();
+            Socket sock = null;
+            try
+            {
+                sock = lsnr._socket.EndAccept(asyncResult);
+            }
+            catch (SocketException)
+            {
+                // TODO: Should log the error code when this class has a logging.
+            }
+            catch (ObjectDisposedException)
+            {
+                return;
+            }
 
-        return;
-      }
+            try
+            {
+                lsnr._socket.BeginAccept(onAccept, lsnr);
+            }
+            catch
+            {
+                if (sock != null)
+                    sock.Close();
 
-      processAccepted (sock, lsnr);
-    }
+                return;
+            }
+
+            if (sock == null)
+                return;
+
+            processAccepted(sock, lsnr);
+        }
 
     private static void processAccepted (Socket socket, EndPointListener listener)
     {
