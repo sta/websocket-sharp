@@ -101,7 +101,7 @@ namespace WebSocketSharp.Net
         if (cert == null)
           throw new ArgumentException ("No server certificate could be found.");
 
-        _secure = secure;
+        _secure = true;
         _sslConfig =
           new ServerSslConfiguration (
             cert,
