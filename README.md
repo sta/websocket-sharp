@@ -120,8 +120,8 @@ A `WebSocket.OnOpen` event occurs when the WebSocket connection has been establi
 
 ```csharp
 ws.OnOpen += (sender, e) => {
-  ...
-};
+    ...
+  };
 ```
 
 `e` has passed as the `System.EventArgs.Empty`, so you don't need to use it.
