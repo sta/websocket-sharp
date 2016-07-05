@@ -132,8 +132,8 @@ A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a message.
 
 ```csharp
 ws.OnMessage += (sender, e) => {
-  ...
-};
+    ...
+  };
 ```
 
 `e` has passed as a `WebSocketSharp.MessageEventArgs`.
@@ -167,13 +167,13 @@ And if you would like to notify that a **ping** has been received, via this even
 ```csharp
 ws.EmitOnPing = true;
 ws.OnMessage += (sender, e) => {
-  if (e.IsPing) {
-    // Do something to notify that a ping has been received.
-    ...
+    if (e.IsPing) {
+      // Do something to notify that a ping has been received.
+      ...
 
-    return;
-  }
-};
+      return;
+    }
+  };
 ```
 
 ##### WebSocket.OnError Event #####
