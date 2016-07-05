@@ -182,8 +182,8 @@ A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
 
 ```csharp
 ws.OnError += (sender, e) => {
-  ...
-};
+    ...
+  };
 ```
 
 `e` has passed as a `WebSocketSharp.ErrorEventArgs`.
