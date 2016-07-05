@@ -198,8 +198,8 @@ A `WebSocket.OnClose` event occurs when the WebSocket connection has been closed
 
 ```csharp
 ws.OnClose += (sender, e) => {
-  ...
-};
+    ...
+  };
 ```
 
 `e` has passed as a `WebSocketSharp.CloseEventArgs`.
