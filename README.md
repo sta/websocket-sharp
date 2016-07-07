@@ -567,25 +567,27 @@ And if you would like to validate the **Origin** header, **Cookies**, or both in
 ```csharp
 wssv.AddWebSocketService<Chat> (
   "/Chat",
-  () => new Chat () {
-    OriginValidator = val => {
-      // Check the value of the Origin header, and return true if valid.
-      Uri origin;
-      return !val.IsNullOrEmpty () &&
-             Uri.TryCreate (val, UriKind.Absolute, out origin) &&
-             origin.Host == "example.com";
-    },
-    CookiesValidator = (req, res) => {
-      // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
-      // if necessary.
-      foreach (Cookie cookie in req) {
-        cookie.Expired = true;
-        res.Add (cookie);
-      }
+  () =>
+    new Chat () {
+      OriginValidator = val => {
+          // Check the value of the Origin header, and return true if valid.
+          Uri origin;
+          return !val.IsNullOrEmpty ()
+                 && Uri.TryCreate (val, UriKind.Absolute, out origin)
+                 && origin.Host == "example.com";
+        },
+      CookiesValidator = (req, res) => {
+          // Check the cookies in 'req', and set the cookies to send to
+          // the client with 'res' if necessary.
+          foreach (Cookie cookie in req) {
+            cookie.Expired = true;
+            res.Add (cookie);
+          }
 
-      return true; // If valid.
+          return true; // If valid.
+        }
     }
-  });
+);
 ```
 
 And also if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
