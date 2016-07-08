@@ -204,7 +204,7 @@ ws.OnClose += (sender, e) => {
 
 `e` has passed as a `WebSocketSharp.CloseEventArgs`.
 
-`e.Code` property returns a `ushort` that represents the status code indicating the reason for the close, and `e.Reason` property returns a `string` that represents the reason for the close.
+`e.Code` property returns a `ushort` that represents the status code for the close, and `e.Reason` property returns a `string` that represents the reason for the close.
 
 #### Step 4 ####
 
