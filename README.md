@@ -402,7 +402,7 @@ You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that allows to accept the WebSocket connection requests.
+I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that allows to accept the WebSocket handshake requests.
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
@@ -429,7 +429,7 @@ As a WebSocket client, if you would like to enable this extension, you should se
 ws.Compression = CompressionMethod.Deflate;
 ```
 
-And then your client will send the following header in the connection request to the server.
+And then your client will send the following header in the handshake request to the server.
 
     Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
@@ -498,9 +498,9 @@ As a **WebSocket Client**, you should set a pair of user name and password for t
 ws.SetCredentials ("nobita", "password", preAuth);
 ```
 
-If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first connection request to the server.
+If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first handshake request to the server.
 
-Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (determined by the unauthorized response to the first connection request) authentication credentials with the second connection request to the server.
+Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication credentials with the second handshake request to the server.
 
 As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.
 
@@ -525,7 +525,7 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 ### Query String, Origin header and Cookies ###
 
-As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket connection request to the server, you should create a new instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
+As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket handshake request to the server, you should create a new instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
 
 ```csharp
 using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
@@ -533,19 +533,19 @@ using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
 }
 ```
 
-And if you would like to send the **Origin** header with the WebSocket connection request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
+And if you would like to send the **Origin** header with the WebSocket handshake request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
 
 ```csharp
 ws.Origin = "http://example.com";
 ```
 
-And also if you would like to send the **Cookies** with the WebSocket connection request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
+And also if you would like to send the **Cookies** with the WebSocket handshake request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in a WebSocket connection request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in a WebSocket handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -562,7 +562,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin** header, **Cookies**, or both included in a WebSocket connection request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the **Origin** header, **Cookies**, or both included in a WebSocket handshake request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
@@ -652,7 +652,7 @@ And Example1 uses **[Json.NET]**.
 
 ### Example3 ###
 
-**[Example3]** starts an HTTP server that allows to accept the WebSocket connection requests.
+**[Example3]** starts an HTTP server that allows to accept the WebSocket handshake requests.
 
 Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser while Example3 is running?
 
