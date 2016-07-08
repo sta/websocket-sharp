@@ -525,7 +525,7 @@ wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 
 ### Query String, Origin header and Cookies ###
 
-As a **WebSocket Client**, if you would like to send the **Query String** with the WebSocket handshake request to the server, you should create a new instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
+As a **WebSocket Client**, if you would like to send the **Query String** with the handshake request to the server, you should create a new instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
 
 ```csharp
 using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
@@ -533,19 +533,19 @@ using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
 }
 ```
 
-And if you would like to send the **Origin** header with the WebSocket handshake request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
+And if you would like to send the **Origin** header with the handshake request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
 
 ```csharp
 ws.Origin = "http://example.com";
 ```
 
-And also if you would like to send the **Cookies** with the WebSocket handshake request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
+And also if you would like to send the **Cookies** with the handshake request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in a WebSocket handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a **WebSocket Server**, if you would like to get the **Query String** included in a handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -562,7 +562,7 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin** header, **Cookies**, or both included in a WebSocket handshake request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to validate the **Origin** header, **Cookies**, or both included in a handshake request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
