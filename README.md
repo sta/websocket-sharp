@@ -347,15 +347,15 @@ public class Chat : WebSocketBehavior
 
 You can define the behavior of any WebSocket service by creating the class that inherits the `WebSocketBehavior` class.
 
-If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it's called when the `WebSocket` used in a session in the service receives a message.
+If you override the `WebSocketBehavior.OnMessage (MessageEventArgs)` method, it will be called when the `WebSocket` used in a session in the service receives a message.
 
-And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnError (ErrorEventArgs)`, and `WebSocketBehavior.OnClose (CloseEventArgs)` methods, each of them is called when each event of the `WebSocket` (the `OnOpen`, `OnError`, and `OnClose` events) occurs.
+And if you override the `WebSocketBehavior.OnOpen ()`, `WebSocketBehavior.OnError (ErrorEventArgs)`, and `WebSocketBehavior.OnClose (CloseEventArgs)` methods, each of them will be called when each of the `WebSocket` events (`OnOpen`, `OnError`, and `OnClose`) occurs.
 
-The `WebSocketBehavior.Send` method sends data to the client on a session in the service.
+The `WebSocketBehavior.Send` method can send data to the client on a session in the service.
 
 If you would like to get the sessions in the service, you should access the `WebSocketBehavior.Sessions` property (returns a `WebSocketSharp.Server.WebSocketSessionManager`).
 
-The `WebSocketBehavior.Sessions.Broadcast` method sends data to every client in the service.
+The `WebSocketBehavior.Sessions.Broadcast` method can send data to every client in the service.
 
 #### Step 3 ####
 
