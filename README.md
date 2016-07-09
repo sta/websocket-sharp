@@ -603,7 +603,7 @@ var ws = new WebSocket ("ws://example.com");
 ws.SetProxy ("http://localhost:3128", "nobita", "password");
 ```
 
-I tested this with the [Squid]. And it's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
+I have tested this with the [Squid]. And it's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
 
 ```
 # Deny CONNECT to other than SSL ports
