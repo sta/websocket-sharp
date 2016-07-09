@@ -402,7 +402,7 @@ You can use the `WebSocketServer.Stop ()`, `WebSocketServer.Stop (ushort, string
 
 ### HTTP Server with the WebSocket ###
 
-I modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes of **[Mono]** to create the HTTP server that allows to accept the WebSocket handshake requests.
+I have modified the `System.Net.HttpListener`, `System.Net.HttpListenerContext`, and some other classes from **[Mono]** to create an HTTP server that allows to accept the WebSocket handshake requests.
 
 So websocket-sharp provides the `WebSocketSharp.Server.HttpServer` class.
 
