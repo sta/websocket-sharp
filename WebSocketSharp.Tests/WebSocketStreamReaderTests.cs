@@ -93,7 +93,7 @@ namespace WebSocketSharp.Tests
                 WebSocketMessage message = null;
                 while ((message = await _sut.Read(default(CancellationToken)).ConfigureAwait(false)) != null)
                 {
-                    message.Consume();
+                    await message.Consume().ConfigureAwait(false);
                     count++;
                 }
 
@@ -106,7 +106,7 @@ namespace WebSocketSharp.Tests
                 WebSocketMessage message;
                 while ((message = await _sut.Read(CancellationToken.None).ConfigureAwait(false)) != null)
                 {
-                    message.Consume();
+                    await message.Consume().ConfigureAwait(false);
                 }
 
                 var second = await _sut.Read(default(CancellationToken)).ConfigureAwait(false);
