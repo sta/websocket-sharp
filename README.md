@@ -612,7 +612,7 @@ I have tested this with the [Squid]. And it's necessary to disable the following
 
 ### Logging ###
 
-The `WebSocket` class includes the own logging function.
+The `WebSocket` class has the own logging function.
 
 You can use it with the `WebSocket.Log` property (returns a `WebSocketSharp.Logger`).
 
@@ -630,7 +630,7 @@ And if you would like to output a log, you should use any of the output methods.
 ws.Log.Debug ("This is a debug message.");
 ```
 
-The `WebSocketServer` and `HttpServer` classes include the same logging function.
+The `WebSocketServer` and `HttpServer` classes have the same logging function.
 
 ## Examples ##
 
