@@ -11,7 +11,7 @@
 - **[HTTP Authentication](#http-authentication)**
 - **[Query String, Origin header and Cookies](#query-string-origin-header-and-cookies)**
 - **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
-- .NET **3.5** or later (includes compatible)
+- .NET Framework **3.5** or later (includes compatible)
 
 ## Branches ##
 
