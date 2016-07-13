@@ -640,12 +640,6 @@ Examples using websocket-sharp.
 
 **[Example]** connects to the **[Echo server]** with the WebSocket.
 
-### Example1 ###
-
-**[Example1]** connects to the **[Audio Data delivery server]** with the WebSocket. (But it's only implemented the chat feature, still unfinished.)
-
-And Example1 uses **[Json.NET]**.
-
 ### Example2 ###
 
 **[Example2]** starts a WebSocket server.
@@ -674,13 +668,10 @@ Thanks for translating to japanese.
 websocket-sharp is provided under **[The MIT License]**.
 
 
-[Audio Data delivery server]: http://agektmr.node-ninja.com:3000
 [Echo server]: http://www.websocket.org/echo.html
 [Example]: https://github.com/sta/websocket-sharp/tree/master/Example
-[Example1]: https://github.com/sta/websocket-sharp/tree/master/Example1
 [Example2]: https://github.com/sta/websocket-sharp/tree/master/Example2
 [Example3]: https://github.com/sta/websocket-sharp/tree/master/Example3
-[Json.NET]: http://james.newtonking.com/projects/json-net.aspx
 [Mono]: http://www.mono-project.com
 [MonoDevelop]: http://monodevelop.com
 [NuGet Gallery]: http://www.nuget.org
