@@ -53,11 +53,12 @@ It works with **Unity Free**, but there are some limitations:
 
 - **[Security Sandbox of the Webplayer]** (The server isn't available in Web Player)
 - **[WebGL Networking]** (Not available in WebGL)
-- **Weak Support for the System.IO.Compression** (The compression extension isn't available on Windows)
+- **Incompatible platform** (Not available for such UWP)
+- **Limited support for the System.IO.Compression** (The compression extension isn't available on Windows)
 - **.NET Socket Support for iOS/Android** (It requires iOS/Android Pro if your Unity is earlier than Unity 5)
 - **.NET API 2.0 compatibility level for iOS/Android**
 
-**.NET API 2.0 compatibility level for iOS/Android** may require to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i've fixed it in the asset package).
+**.NET API 2.0 compatibility level for iOS/Android** may require to fix lack of some features for later than .NET 2.0, such as the `System.Func<...>` delegates (so i have added them in that asset package).
 
 And it's priced at **US$15**. I think your $15 makes this project more better and accelerated, **Thank you!**
 
