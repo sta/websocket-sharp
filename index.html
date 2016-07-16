@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h2>
-<a id="welcome-to-websocket-sharp" class="anchor" href="#welcome-to-websocket-sharp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to websocket-sharp!</h2>
+<a id="welcome-to-websocket-sharp" class="anchor" href="#welcome-to-websocket-sharp" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to websocket-sharp!</h2>
 
 <p><strong>websocket-sharp</strong> supports:</p>
 
@@ -35,28 +35,28 @@
 <li><strong><a href="#http-authentication">HTTP Authentication</a></strong></li>
 <li><strong><a href="#query-string-origin-header-and-cookies">Query String, Origin header and Cookies</a></strong></li>
 <li><strong><a href="#connecting-through-the-http-proxy-server">Connecting through the HTTP Proxy server</a></strong></li>
-<li>.NET <strong>3.5</strong> or later (includes compatible)</li>
+<li>.NET Framework <strong>3.5</strong> or later (includes compatible environment such as <strong><a href="http://www.mono-project.com">Mono</a></strong>)</li>
 </ul>
 
 <h2>
-<a id="build" class="anchor" href="#build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build</h2>
+<a id="build" class="anchor" href="#build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Build</h2>
 
 <p>websocket-sharp is built as a single assembly, <strong>websocket-sharp.dll</strong>.</p>
 
 <p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So the simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for <strong>websocket-sharp project</strong> with any of the build configurations (e.g. <code>Debug</code>) in MonoDevelop.</p>
 
 <h2>
-<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
 
 <h3>
-<a id="self-build" class="anchor" href="#self-build" aria-hidden="true"><span class="octicon octicon-link"></span></a>Self Build</h3>
+<a id="self-build" class="anchor" href="#self-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Self Build</h3>
 
 <p>You should add your <strong>websocket-sharp.dll</strong> (e.g. <code>/path/to/websocket-sharp/bin/Debug/websocket-sharp.dll</code>) to the library references of your project.</p>
 
 <p>If you would like to use that dll in your <strong><a href="http://unity3d.com">Unity</a></strong> project, you should add it to any folder of your project (e.g. <code>Assets/Plugins</code>) in <strong>Unity Editor</strong>.</p>
 
 <h3>
-<a id="nuget-gallery" class="anchor" href="#nuget-gallery" aria-hidden="true"><span class="octicon octicon-link"></span></a>NuGet Gallery</h3>
+<a id="nuget-gallery" class="anchor" href="#nuget-gallery" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NuGet Gallery</h3>
 
 <p>websocket-sharp is available on the <strong><a href="http://www.nuget.org">NuGet Gallery</a></strong>, as still a <strong>prerelease</strong> version.</p>
 
@@ -70,7 +70,7 @@
 </code></pre>
 
 <h3>
-<a id="unity-asset-store" class="anchor" href="#unity-asset-store" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unity Asset Store</h3>
+<a id="unity-asset-store" class="anchor" href="#unity-asset-store" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Unity Asset Store</h3>
 
 <p>websocket-sharp is available on the <strong>Unity Asset Store</strong>.</p>
 
@@ -86,21 +86,23 @@
 <li>
 <strong><a href="http://docs.unity3d.com/Manual/webgl-networking.html">WebGL Networking</a></strong> (Not available in WebGL)</li>
 <li>
-<strong>Weak Support for the System.IO.Compression</strong> (The compression extension isn't available on Windows)</li>
+<strong>Incompatible platform</strong> (Not available for such UWP)</li>
+<li>
+<strong>Limited support for the System.IO.Compression</strong> (The compression extension isn't available on Windows)</li>
 <li>
 <strong>.NET Socket Support for iOS/Android</strong> (It requires iOS/Android Pro if your Unity is earlier than Unity 5)</li>
 <li><strong>.NET API 2.0 compatibility level for iOS/Android</strong></li>
 </ul>
 
-<p><strong>.NET API 2.0 compatibility level for iOS/Android</strong> may require to fix lack of some features for later than .NET 2.0, such as the <code>System.Func&lt;...&gt;</code> delegates (so i've fixed it in the asset package).</p>
+<p><strong>.NET API 2.0 compatibility level for iOS/Android</strong> may require to fix lack of some features for later than .NET 2.0, such as the <code>System.Func&lt;...&gt;</code> delegates (so i have added them in that asset package).</p>
 
 <p>And it's priced at <strong>US$15</strong>. I think your $15 makes this project more better and accelerated, <strong>Thank you!</strong></p>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <h3>
-<a id="websocket-client" class="anchor" href="#websocket-client" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket Client</h3>
+<a id="websocket-client" class="anchor" href="#websocket-client" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket Client</h3>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> System<span class="pl-k">;</span>
 <span class="pl-k">using</span> WebSocketSharp<span class="pl-k">;</span>
@@ -113,7 +115,7 @@
     {
       <span class="pl-k">using</span> (<span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://dragonsnest.far/Laputa<span class="pl-pds">"</span></span>)) {
         ws.OnMessage += (sender, e) =&gt;
-          Console.WriteLine (<span class="pl-s"><span class="pl-pds">"</span>Laputa says: <span class="pl-pds">"</span></span> + e.Data);
+            Console.WriteLine (<span class="pl-s"><span class="pl-pds">"</span>Laputa says: <span class="pl-pds">"</span></span> + e.Data);
 
         ws.Connect ();
         ws.Send (<span class="pl-s"><span class="pl-pds">"</span>BALUS<span class="pl-pds">"</span></span>);
@@ -124,7 +126,7 @@
 }</pre></div>
 
 <h4>
-<a id="step-1" class="anchor" href="#step-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1</h4>
+<a id="step-1" class="anchor" href="#step-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1</h4>
 
 <p>Required namespace.</p>
 
@@ -133,7 +135,7 @@
 <p>The <code>WebSocket</code> class exists in the <code>WebSocketSharp</code> namespace.</p>
 
 <h4>
-<a id="step-2" class="anchor" href="#step-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2</h4>
+<a id="step-2" class="anchor" href="#step-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2</h4>
 
 <p>Creating a new instance of the <code>WebSocket</code> class with the WebSocket URL to connect.</p>
 
@@ -144,29 +146,29 @@
 <p>The <code>WebSocket</code> class inherits the <code>System.IDisposable</code> interface, so you can use the <code>using</code> statement. And the WebSocket connection will be closed with close status <code>1001</code> (going away) when the control leaves the <code>using</code> block.</p>
 
 <h4>
-<a id="step-3" class="anchor" href="#step-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3</h4>
+<a id="step-3" class="anchor" href="#step-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3</h4>
 
 <p>Setting the <code>WebSocket</code> events.</p>
 
 <h5>
-<a id="websocketonopen-event" class="anchor" href="#websocketonopen-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnOpen Event</h5>
+<a id="websocketonopen-event" class="anchor" href="#websocketonopen-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket.OnOpen Event</h5>
 
 <p>A <code>WebSocket.OnOpen</code> event occurs when the WebSocket connection has been established.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.OnOpen += (sender, e) =&gt; {
-  ...
-};</pre></div>
+    ...
+  };</pre></div>
 
 <p><code>e</code> has passed as the <code>System.EventArgs.Empty</code>, so you don't need to use it.</p>
 
 <h5>
-<a id="websocketonmessage-event" class="anchor" href="#websocketonmessage-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnMessage Event</h5>
+<a id="websocketonmessage-event" class="anchor" href="#websocketonmessage-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket.OnMessage Event</h5>
 
 <p>A <code>WebSocket.OnMessage</code> event occurs when the <code>WebSocket</code> receives a message.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.OnMessage += (sender, e) =&gt; {
-  ...
-};</pre></div>
+    ...
+  };</pre></div>
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.MessageEventArgs</code>.</p>
 
@@ -196,22 +198,22 @@
 
 <div class="highlight highlight-source-cs"><pre>ws.EmitOnPing = <span class="pl-c1">true</span>;
 ws.OnMessage += (sender, e) =&gt; {
-  <span class="pl-k">if</span> (e.IsPing) {
-    <span class="pl-c">// Do something to notify that a ping has been received.</span>
-    ...
+    <span class="pl-k">if</span> (e.IsPing) {
+      <span class="pl-c">// Do something to notify that a ping has been received.</span>
+      ...
 
-    <span class="pl-k">return</span>;
-  }
-};</pre></div>
+      <span class="pl-k">return</span>;
+    }
+  };</pre></div>
 
 <h5>
-<a id="websocketonerror-event" class="anchor" href="#websocketonerror-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnError Event</h5>
+<a id="websocketonerror-event" class="anchor" href="#websocketonerror-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket.OnError Event</h5>
 
 <p>A <code>WebSocket.OnError</code> event occurs when the <code>WebSocket</code> gets an error.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.OnError += (sender, e) =&gt; {
-  ...
-};</pre></div>
+    ...
+  };</pre></div>
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.ErrorEventArgs</code>.</p>
 
@@ -220,20 +222,20 @@ ws.OnMessage += (sender, e) =&gt; {
 <p>If the error is due to an exception, <code>e.Exception</code> property returns a <code>System.Exception</code> instance that caused the error.</p>
 
 <h5>
-<a id="websocketonclose-event" class="anchor" href="#websocketonclose-event" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket.OnClose Event</h5>
+<a id="websocketonclose-event" class="anchor" href="#websocketonclose-event" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket.OnClose Event</h5>
 
 <p>A <code>WebSocket.OnClose</code> event occurs when the WebSocket connection has been closed.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.OnClose += (sender, e) =&gt; {
-  ...
-};</pre></div>
+    ...
+  };</pre></div>
 
 <p><code>e</code> has passed as a <code>WebSocketSharp.CloseEventArgs</code>.</p>
 
-<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code indicating the reason for the close, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for the close.</p>
+<p><code>e.Code</code> property returns a <code>ushort</code> that represents the status code for the close, and <code>e.Reason</code> property returns a <code>string</code> that represents the reason for the close.</p>
 
 <h4>
-<a id="step-4" class="anchor" href="#step-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 4</h4>
+<a id="step-4" class="anchor" href="#step-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4</h4>
 
 <p>Connecting to the WebSocket server.</p>
 
@@ -242,7 +244,7 @@ ws.OnMessage += (sender, e) =&gt; {
 <p>If you would like to connect to the server asynchronously, you should use the <code>WebSocket.ConnectAsync ()</code> method.</p>
 
 <h4>
-<a id="step-5" class="anchor" href="#step-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 5</h4>
+<a id="step-5" class="anchor" href="#step-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5</h4>
 
 <p>Sending data to the WebSocket server.</p>
 
@@ -259,7 +261,7 @@ ws.OnMessage += (sender, e) =&gt; {
 <p>And also if you would like to do something when the send is complete, you should set <code>completed</code> to any <code>Action&lt;bool&gt;</code> delegate.</p>
 
 <h4>
-<a id="step-6" class="anchor" href="#step-6" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 6</h4>
+<a id="step-6" class="anchor" href="#step-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 6</h4>
 
 <p>Closing the WebSocket connection.</p>
 
@@ -274,7 +276,7 @@ ws.OnMessage += (sender, e) =&gt; {
 <p>If you would like to close the connection asynchronously, you should use the <code>WebSocket.CloseAsync</code> method.</p>
 
 <h3>
-<a id="websocket-server" class="anchor" href="#websocket-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket Server</h3>
+<a id="websocket-server" class="anchor" href="#websocket-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket Server</h3>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> System<span class="pl-k">;</span>
 <span class="pl-k">using</span> WebSocketSharp<span class="pl-k">;</span>
@@ -308,7 +310,7 @@ ws.OnMessage += (sender, e) =&gt; {
 }</pre></div>
 
 <h4>
-<a id="step-1-1" class="anchor" href="#step-1-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1</h4>
+<a id="step-1-1" class="anchor" href="#step-1-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1</h4>
 
 <p>Required namespace.</p>
 
@@ -317,7 +319,7 @@ ws.OnMessage += (sender, e) =&gt; {
 <p>The <code>WebSocketBehavior</code> and <code>WebSocketServer</code> classes exist in the <code>WebSocketSharp.Server</code> namespace.</p>
 
 <h4>
-<a id="step-2-1" class="anchor" href="#step-2-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2</h4>
+<a id="step-2-1" class="anchor" href="#step-2-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2</h4>
 
 <p>Creating the class that inherits the <code>WebSocketBehavior</code> class.</p>
 
@@ -363,18 +365,18 @@ ws.OnMessage += (sender, e) =&gt; {
 
 <p>You can define the behavior of any WebSocket service by creating the class that inherits the <code>WebSocketBehavior</code> class.</p>
 
-<p>If you override the <code>WebSocketBehavior.OnMessage (MessageEventArgs)</code> method, it's called when the <code>WebSocket</code> used in a session in the service receives a message.</p>
+<p>If you override the <code>WebSocketBehavior.OnMessage (MessageEventArgs)</code> method, it will be called when the <code>WebSocket</code> used in a session in the service receives a message.</p>
 
-<p>And if you override the <code>WebSocketBehavior.OnOpen ()</code>, <code>WebSocketBehavior.OnError (ErrorEventArgs)</code>, and <code>WebSocketBehavior.OnClose (CloseEventArgs)</code> methods, each of them is called when each event of the <code>WebSocket</code> (the <code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code> events) occurs.</p>
+<p>And if you override the <code>WebSocketBehavior.OnOpen ()</code>, <code>WebSocketBehavior.OnError (ErrorEventArgs)</code>, and <code>WebSocketBehavior.OnClose (CloseEventArgs)</code> methods, each of them will be called when each of the <code>WebSocket</code> events (<code>OnOpen</code>, <code>OnError</code>, and <code>OnClose</code>) occurs.</p>
 
-<p>The <code>WebSocketBehavior.Send</code> method sends data to the client on a session in the service.</p>
+<p>The <code>WebSocketBehavior.Send</code> method can send data to the client on a session in the service.</p>
 
 <p>If you would like to get the sessions in the service, you should access the <code>WebSocketBehavior.Sessions</code> property (returns a <code>WebSocketSharp.Server.WebSocketSessionManager</code>).</p>
 
-<p>The <code>WebSocketBehavior.Sessions.Broadcast</code> method sends data to every client in the service.</p>
+<p>The <code>WebSocketBehavior.Sessions.Broadcast</code> method can send data to every client in the service.</p>
 
 <h4>
-<a id="step-3-1" class="anchor" href="#step-3-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 3</h4>
+<a id="step-3-1" class="anchor" href="#step-3-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3</h4>
 
 <p>Creating a new instance of the <code>WebSocketServer</code> class.</p>
 
@@ -397,14 +399,14 @@ wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"<
 </code></pre>
 
 <h4>
-<a id="step-4-1" class="anchor" href="#step-4-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 4</h4>
+<a id="step-4-1" class="anchor" href="#step-4-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4</h4>
 
 <p>Starting the WebSocket server.</p>
 
 <div class="highlight highlight-source-cs"><pre>wssv.Start ();</pre></div>
 
 <h4>
-<a id="step-5-1" class="anchor" href="#step-5-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 5</h4>
+<a id="step-5-1" class="anchor" href="#step-5-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5</h4>
 
 <p>Stopping the WebSocket server.</p>
 
@@ -415,9 +417,9 @@ wssv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">"<
 <p>You can use the <code>WebSocketServer.Stop ()</code>, <code>WebSocketServer.Stop (ushort, string)</code>, or <code>WebSocketServer.Stop (WebSocketSharp.CloseStatusCode, string)</code> method to stop the server.</p>
 
 <h3>
-<a id="http-server-with-the-websocket" class="anchor" href="#http-server-with-the-websocket" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTTP Server with the WebSocket</h3>
+<a id="http-server-with-the-websocket" class="anchor" href="#http-server-with-the-websocket" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Server with the WebSocket</h3>
 
-<p>I modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code>, and some other classes of <strong><a href="http://www.mono-project.com">Mono</a></strong> to create the HTTP server that allows to accept the WebSocket connection requests.</p>
+<p>I have modified the <code>System.Net.HttpListener</code>, <code>System.Net.HttpListenerContext</code>, and some other classes from <strong><a href="http://www.mono-project.com">Mono</a></strong> to create an HTTP server that allows to accept the WebSocket handshake requests.</p>
 
 <p>So websocket-sharp provides the <code>WebSocketSharp.Server.HttpServer</code> class.</p>
 
@@ -431,10 +433,10 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">
 <p>For more information, would you see <strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a></strong>?</p>
 
 <h3>
-<a id="websocket-extensions" class="anchor" href="#websocket-extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>WebSocket Extensions</h3>
+<a id="websocket-extensions" class="anchor" href="#websocket-extensions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>WebSocket Extensions</h3>
 
 <h4>
-<a id="per-message-compression" class="anchor" href="#per-message-compression" aria-hidden="true"><span class="octicon octicon-link"></span></a>Per-message Compression</h4>
+<a id="per-message-compression" class="anchor" href="#per-message-compression" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Per-message Compression</h4>
 
 <p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19">Per-message Compression</a></strong> extension (but doesn't support this extension with the <a href="http://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19#section-8.1.1">context take over</a>).</p>
 
@@ -442,7 +444,7 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">
 
 <div class="highlight highlight-source-cs"><pre>ws.Compression = CompressionMethod.Deflate;</pre></div>
 
-<p>And then your client will send the following header in the connection request to the server.</p>
+<p>And then your client will send the following header in the handshake request to the server.</p>
 
 <pre><code>Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 </code></pre>
@@ -450,23 +452,25 @@ httpsv.AddWebSocketService&lt;Chat&gt; (<span class="pl-s"><span class="pl-pds">
 <p>If the server accepts this extension, it will return the same header which has the corresponding value. And when your client receives it, this extension will be available.</p>
 
 <h4>
-<a id="ignoring-the-extensions" class="anchor" href="#ignoring-the-extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ignoring the extensions</h4>
+<a id="ignoring-the-extensions" class="anchor" href="#ignoring-the-extensions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ignoring the extensions</h4>
 
 <p>As a WebSocket server, if you would like to ignore the extensions requested from a client, you should set the <code>WebSocketBehavior.IgnoreExtensions</code> property to <code>true</code> in your <code>WebSocketBehavior</code> constructor or initializing it, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>wssv.AddWebSocketService&lt;Chat&gt; (
   <span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>,
-  () =&gt; <span class="pl-k">new</span> Chat () {
-    <span class="pl-c">// To ignore the extensions requested from a client.</span>
-    IgnoreExtensions = <span class="pl-c1">true</span>
-  });</pre></div>
+  () =&gt;
+    <span class="pl-k">new</span> Chat () {
+      <span class="pl-c">// To ignore the extensions requested from a client.</span>
+      IgnoreExtensions = <span class="pl-c1">true</span>
+    }
+);</pre></div>
 
-<p>If it's set to <code>true</code>, the server doesn't return the <strong>Sec-WebSocket-Extensions header</strong> in the connection response.</p>
+<p>If it's set to <code>true</code>, the service will not return the <strong>Sec-WebSocket-Extensions</strong> header in its handshake response.</p>
 
 <p>I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.</p>
 
 <h3>
-<a id="secure-connection" class="anchor" href="#secure-connection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Secure Connection</h3>
+<a id="secure-connection" class="anchor" href="#secure-connection" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Secure Connection</h3>
 
 <p>websocket-sharp supports the <strong>Secure Connection</strong> with <strong>SSL/TLS</strong>.</p>
 
@@ -495,7 +499,7 @@ wssv.SslConfiguration.ServerCertificate =
   <span class="pl-k">new</span> X509Certificate2 (<span class="pl-s"><span class="pl-pds">"</span>/path/to/cert.pfx<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password for cert.pfx<span class="pl-pds">"</span></span>);</pre></div>
 
 <h3>
-<a id="http-authentication" class="anchor" href="#http-authentication" aria-hidden="true"><span class="octicon octicon-link"></span></a>HTTP Authentication</h3>
+<a id="http-authentication" class="anchor" href="#http-authentication" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>HTTP Authentication</h3>
 
 <p>websocket-sharp supports the <strong><a href="http://tools.ietf.org/html/rfc2617">HTTP Authentication (Basic/Digest)</a></strong>.</p>
 
@@ -503,45 +507,45 @@ wssv.SslConfiguration.ServerCertificate =
 
 <div class="highlight highlight-source-cs"><pre>ws.SetCredentials (<span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, preAuth);</pre></div>
 
-<p>If <code>preAuth</code> is <code>true</code>, the <code>WebSocket</code> sends the Basic authentication credentials with the first connection request to the server.</p>
+<p>If <code>preAuth</code> is <code>true</code>, the <code>WebSocket</code> sends the Basic authentication credentials with the first handshake request to the server.</p>
 
-<p>Or if <code>preAuth</code> is <code>false</code>, the <code>WebSocket</code> sends either the Basic or Digest (determined by the unauthorized response to the first connection request) authentication credentials with the second connection request to the server.</p>
+<p>Or if <code>preAuth</code> is <code>false</code>, the <code>WebSocket</code> sends either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication credentials with the second handshake request to the server.</p>
 
 <p>As a <strong>WebSocket Server</strong>, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
 wssv.Realm = <span class="pl-s"><span class="pl-pds">"</span>WebSocket Test<span class="pl-pds">"</span></span>;
 wssv.UserCredentialsFinder = id =&gt; {
-  <span class="pl-k">var</span> name = id.Name;
+    <span class="pl-k">var</span> name = id.Name;
 
-  <span class="pl-c">// Return user name, password, and roles.</span>
-  <span class="pl-k">return</span> name == <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>
-         ? <span class="pl-k">new</span> NetworkCredential (name, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>gunfighter<span class="pl-pds">"</span></span>)
-         : <span class="pl-c1">null</span>; <span class="pl-c">// If the user credentials aren't found.</span>
-};</pre></div>
+    <span class="pl-c">// Return user name, password, and roles.</span>
+    <span class="pl-k">return</span> name == <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>
+           ? <span class="pl-k">new</span> NetworkCredential (name, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>gunfighter<span class="pl-pds">"</span></span>)
+           : <span class="pl-c1">null</span>; <span class="pl-c">// If the user credentials aren't found.</span>
+  };</pre></div>
 
 <p>If you would like to provide the Digest authentication, you should set such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;</pre></div>
 
 <h3>
-<a id="query-string-origin-header-and-cookies" class="anchor" href="#query-string-origin-header-and-cookies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Query String, Origin header and Cookies</h3>
+<a id="query-string-origin-header-and-cookies" class="anchor" href="#query-string-origin-header-and-cookies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Query String, Origin header and Cookies</h3>
 
-<p>As a <strong>WebSocket Client</strong>, if you would like to send the <strong>Query String</strong> with the WebSocket connection request to the server, you should create a new instance of the <code>WebSocket</code> class with the WebSocket URL that includes the <a href="http://tools.ietf.org/html/rfc3986#section-3.4">Query</a> string parameters.</p>
+<p>As a <strong>WebSocket Client</strong>, if you would like to send the <strong>Query String</strong> with the handshake request to the server, you should create a new instance of the <code>WebSocket</code> class with the WebSocket URL that includes the <a href="http://tools.ietf.org/html/rfc3986#section-3.4">Query</a> string parameters.</p>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
   ...
 }</pre></div>
 
-<p>And if you would like to send the <strong>Origin header</strong> with the WebSocket connection request to the server, you should set the <code>WebSocket.Origin</code> property to an allowable value as the <a href="http://tools.ietf.org/html/rfc6454#section-7">Origin header</a> before connecting, such as the following.</p>
+<p>And if you would like to send the <strong>Origin</strong> header with the handshake request to the server, you should set the <code>WebSocket.Origin</code> property to an allowable value as the <a href="http://tools.ietf.org/html/rfc6454#section-7">Origin</a> header before connecting, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.Origin = <span class="pl-s"><span class="pl-pds">"</span>http://example.com<span class="pl-pds">"</span></span>;</pre></div>
 
-<p>And also if you would like to send the <strong>Cookies</strong> with the WebSocket connection request to the server, you should set any cookie by using the <code>WebSocket.SetCookie (WebSocketSharp.Net.Cookie)</code> method before connecting, such as the following.</p>
+<p>And also if you would like to send the <strong>Cookies</strong> with the handshake request to the server, you should set any cookie by using the <code>WebSocket.SetCookie (WebSocketSharp.Net.Cookie)</code> method before connecting, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>ws.SetCookie (<span class="pl-k">new</span> Cookie (<span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>));</pre></div>
 
-<p>As a <strong>WebSocket Server</strong>, if you would like to get the <strong>Query String</strong> included in a WebSocket connection request, you should access the <code>WebSocketBehavior.Context.QueryString</code> property, such as the following.</p>
+<p>As a <strong>WebSocket Server</strong>, if you would like to get the <strong>Query String</strong> included in a handshake request, you should access the <code>WebSocketBehavior.Context.QueryString</code> property, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Chat</span> : <span class="pl-k">WebSocketBehavior</span>
 {
@@ -556,34 +560,36 @@ wssv.UserCredentialsFinder = id =&gt; {
   ...
 }</pre></div>
 
-<p>And if you would like to validate the <strong>Origin header</strong>, <strong>Cookies</strong>, or both included in a WebSocket connection request, you should set each validation with your <code>WebSocketBehavior</code>, for example, by using the <code>AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method with initializing, such as the following.</p>
+<p>And if you would like to validate the <strong>Origin</strong> header, <strong>Cookies</strong>, or both included in a handshake request, you should set each validation with your <code>WebSocketBehavior</code>, for example, by using the <code>AddWebSocketService&lt;TBehavior&gt; (string, Func&lt;TBehavior&gt;)</code> method with initializing, such as the following.</p>
 
 <div class="highlight highlight-source-cs"><pre>wssv.AddWebSocketService&lt;Chat&gt; (
   <span class="pl-s"><span class="pl-pds">"</span>/Chat<span class="pl-pds">"</span></span>,
-  () =&gt; <span class="pl-k">new</span> Chat () {
-    OriginValidator = val =&gt; {
-      <span class="pl-c">// Check the value of the Origin header, and return true if valid.</span>
-      Uri origin;
-      <span class="pl-k">return</span> !val.IsNullOrEmpty () &amp;&amp;
-             Uri.TryCreate (val, UriKind.Absolute, out origin) &amp;&amp;
-             origin.Host == <span class="pl-s"><span class="pl-pds">"</span>example.com<span class="pl-pds">"</span></span>;
-    },
-    CookiesValidator = (req, res) =&gt; {
-      <span class="pl-c">// Check the Cookies in 'req', and set the Cookies to send to the client with 'res'</span>
-      <span class="pl-c">// if necessary.</span>
-      <span class="pl-k">foreach</span> (Cookie cookie <span class="pl-k">in</span> req) {
-        cookie.Expired = <span class="pl-c1">true</span>;
-        res.Add (cookie);
-      }
+  () =&gt;
+    <span class="pl-k">new</span> Chat () {
+      OriginValidator = val =&gt; {
+          <span class="pl-c">// Check the value of the Origin header, and return true if valid.</span>
+          Uri origin;
+          <span class="pl-k">return</span> !val.IsNullOrEmpty ()
+                 &amp;&amp; Uri.TryCreate (val, UriKind.Absolute, out origin)
+                 &amp;&amp; origin.Host == <span class="pl-s"><span class="pl-pds">"</span>example.com<span class="pl-pds">"</span></span>;
+        },
+      CookiesValidator = (req, res) =&gt; {
+          <span class="pl-c">// Check the cookies in 'req', and set the cookies to send to</span>
+          <span class="pl-c">// the client with 'res' if necessary.</span>
+          <span class="pl-k">foreach</span> (Cookie cookie <span class="pl-k">in</span> req) {
+            cookie.Expired = <span class="pl-c1">true</span>;
+            res.Add (cookie);
+          }
 
-      <span class="pl-k">return</span> <span class="pl-c1">true</span>; <span class="pl-c">// If valid.</span>
+          <span class="pl-k">return</span> <span class="pl-c1">true</span>; <span class="pl-c">// If valid.</span>
+        }
     }
-  });</pre></div>
+);</pre></div>
 
 <p>And also if you would like to get each value of the Origin header and cookies, you should access each of the <code>WebSocketBehavior.Context.Origin</code> and <code>WebSocketBehavior.Context.CookieCollection</code> properties.</p>
 
 <h3>
-<a id="connecting-through-the-http-proxy-server" class="anchor" href="#connecting-through-the-http-proxy-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>Connecting through the HTTP Proxy server</h3>
+<a id="connecting-through-the-http-proxy-server" class="anchor" href="#connecting-through-the-http-proxy-server" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Connecting through the HTTP Proxy server</h3>
 
 <p>websocket-sharp supports to connect through the <strong>HTTP Proxy</strong> server.</p>
 
@@ -592,16 +598,16 @@ wssv.UserCredentialsFinder = id =&gt; {
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>);
 ws.SetProxy (<span class="pl-s"><span class="pl-pds">"</span>http://localhost:3128<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>);</pre></div>
 
-<p>I tested this with the <a href="http://www.squid-cache.org">Squid</a>. And it's necessary to disable the following configuration option in <strong>squid.conf</strong> (e.g. <code>/etc/squid/squid.conf</code>).</p>
+<p>I have tested this with the <a href="http://www.squid-cache.org">Squid</a>. And it's necessary to disable the following configuration option in <strong>squid.conf</strong> (e.g. <code>/etc/squid/squid.conf</code>).</p>
 
 <pre><code># Deny CONNECT to other than SSL ports
 #http_access deny CONNECT !SSL_ports
 </code></pre>
 
 <h3>
-<a id="logging" class="anchor" href="#logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Logging</h3>
+<a id="logging" class="anchor" href="#logging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging</h3>
 
-<p>The <code>WebSocket</code> class includes the own logging function.</p>
+<p>The <code>WebSocket</code> class has the own logging function.</p>
 
 <p>You can use it with the <code>WebSocket.Log</code> property (returns a <code>WebSocketSharp.Logger</code>).</p>
 
@@ -615,39 +621,32 @@ ws.SetProxy (<span class="pl-s"><span class="pl-pds">"</span>http://localhost:31
 
 <div class="highlight highlight-source-cs"><pre>ws.Log.Debug (<span class="pl-s"><span class="pl-pds">"</span>This is a debug message.<span class="pl-pds">"</span></span>);</pre></div>
 
-<p>The <code>WebSocketServer</code> and <code>HttpServer</code> classes include the same logging function.</p>
+<p>The <code>WebSocketServer</code> and <code>HttpServer</code> classes have the same logging function.</p>
 
 <h2>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h2>
 
 <p>Examples using websocket-sharp.</p>
 
 <h3>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h3>
 
 <p><strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example">Example</a></strong> connects to the <strong><a href="http://www.websocket.org/echo.html">Echo server</a></strong> with the WebSocket.</p>
 
 <h3>
-<a id="example1" class="anchor" href="#example1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example1</h3>
-
-<p><strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example1">Example1</a></strong> connects to the <strong><a href="http://agektmr.node-ninja.com:3000">Audio Data delivery server</a></strong> with the WebSocket. (But it's only implemented the chat feature, still unfinished.)</p>
-
-<p>And Example1 uses <strong><a href="http://james.newtonking.com/projects/json-net.aspx">Json.NET</a></strong>.</p>
-
-<h3>
-<a id="example2" class="anchor" href="#example2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example2</h3>
+<a id="example2" class="anchor" href="#example2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example2</h3>
 
 <p><strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example2">Example2</a></strong> starts a WebSocket server.</p>
 
 <h3>
-<a id="example3" class="anchor" href="#example3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example3</h3>
+<a id="example3" class="anchor" href="#example3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example3</h3>
 
-<p><strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a></strong> starts an HTTP server that allows to accept the WebSocket connection requests.</p>
+<p><strong><a href="https://github.com/sta/websocket-sharp/tree/master/Example3">Example3</a></strong> starts an HTTP server that allows to accept the WebSocket handshake requests.</p>
 
 <p>Would you access to <a href="http://localhost:4649">http://localhost:4649</a> to do <strong>WebSocket Echo Test</strong> with your web browser while Example3 is running?</p>
 
 <h2>
-<a id="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
+<a id="supported-websocket-specifications" class="anchor" href="#supported-websocket-specifications" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported WebSocket Specifications</h2>
 
 <p>websocket-sharp supports <strong><a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></strong>, and it's based on the following WebSocket references:</p>
 
@@ -665,7 +664,7 @@ ws.SetProxy (<span class="pl-s"><span class="pl-pds">"</span>http://localhost:31
 </ul>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>websocket-sharp is provided under <strong><a href="https://raw.github.com/sta/websocket-sharp/master/LICENSE.txt">The MIT License</a></strong>.</p>
 
