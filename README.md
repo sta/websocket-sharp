@@ -23,7 +23,7 @@
 
 websocket-sharp is built as a single assembly, **websocket-sharp.dll**.
 
-websocket-sharp is developed with **[MonoDevelop]**. So the simple way to build is to open **websocket-sharp.sln** and run build for **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in MonoDevelop.
+websocket-sharp is developed with **[MonoDevelop]**. So a simple way to build is to open **websocket-sharp.sln** and run build for **websocket-sharp project** with any of the build configurations (e.g. `Debug`) in MonoDevelop.
 
 ## Install ##
 
