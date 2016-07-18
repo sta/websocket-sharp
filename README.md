@@ -597,14 +597,14 @@ And also if you would like to get each value of the Origin header and cookies, y
 
 websocket-sharp supports to connect through the **HTTP Proxy** server.
 
-If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the `WebSocket.SetProxy (string, string, string)` method before connecting.
+If you would like to connect to a WebSocket server through the HTTP proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the `WebSocket.SetProxy (string, string, string)` method before connecting.
 
 ```csharp
 var ws = new WebSocket ("ws://example.com");
 ws.SetProxy ("http://localhost:3128", "nobita", "password");
 ```
 
-I have tested this with the [Squid]. And it's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
+I have tested this with **[Squid]**. It's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
 
 ```
 # Deny CONNECT to other than SSL ports
