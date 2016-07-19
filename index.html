@@ -43,7 +43,7 @@
 
 <p>websocket-sharp is built as a single assembly, <strong>websocket-sharp.dll</strong>.</p>
 
-<p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So the simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for <strong>websocket-sharp project</strong> with any of the build configurations (e.g. <code>Debug</code>) in MonoDevelop.</p>
+<p>websocket-sharp is developed with <strong><a href="http://monodevelop.com">MonoDevelop</a></strong>. So a simple way to build is to open <strong>websocket-sharp.sln</strong> and run build for <strong>websocket-sharp project</strong> with any of the build configurations (e.g. <code>Debug</code>) in MonoDevelop.</p>
 
 <h2>
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Install</h2>
@@ -593,12 +593,12 @@ wssv.UserCredentialsFinder = id =&gt; {
 
 <p>websocket-sharp supports to connect through the <strong>HTTP Proxy</strong> server.</p>
 
-<p>If you would like to connect to a WebSocket server through the HTTP Proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the <code>WebSocket.SetProxy (string, string, string)</code> method before connecting.</p>
+<p>If you would like to connect to a WebSocket server through the HTTP proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the <code>WebSocket.SetProxy (string, string, string)</code> method before connecting.</p>
 
 <div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> ws = <span class="pl-k">new</span> WebSocket (<span class="pl-s"><span class="pl-pds">"</span>ws://example.com<span class="pl-pds">"</span></span>);
 ws.SetProxy (<span class="pl-s"><span class="pl-pds">"</span>http://localhost:3128<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>nobita<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>);</pre></div>
 
-<p>I have tested this with the <a href="http://www.squid-cache.org">Squid</a>. And it's necessary to disable the following configuration option in <strong>squid.conf</strong> (e.g. <code>/etc/squid/squid.conf</code>).</p>
+<p>I have tested this with <strong><a href="http://www.squid-cache.org">Squid</a></strong>. It's necessary to disable the following configuration option in <strong>squid.conf</strong> (e.g. <code>/etc/squid/squid.conf</code>).</p>
 
 <pre><code># Deny CONNECT to other than SSL ports
 #http_access deny CONNECT !SSL_ports
