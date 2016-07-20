@@ -61,11 +61,13 @@ namespace WebSocketSharp.Net
 
     private byte[]              _buffer;
     private const int           _bufferLength = 8192;
+    private volatile bool       _cancelTimeout;
     private HttpListenerContext _context;
     private bool                _contextRegistered;
     private StringBuilder       _currentLine;
     private InputState          _inputState;
     private RequestStream       _inputStream;
+    private volatile bool       _inTimeout;
     private HttpListener        _lastListener;
     private LineState           _lineState;
     private EndPointListener    _listener;
@@ -291,6 +293,9 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
+          if (conn._inTimeout)
+            conn._cancelTimeout = true;
+
           conn._context.Listener = lsnr;
           if (!conn._context.Authenticate ())
             return;
@@ -301,6 +306,9 @@ namespace WebSocketSharp.Net
           return;
         }
 
+        if (conn._inTimeout)
+          conn._cancelTimeout = true;
+
         conn._stream.BeginRead (conn._buffer, 0, _bufferLength, onRead, conn);
       }
     }
@@ -308,7 +316,29 @@ namespace WebSocketSharp.Net
     private static void onTimeout (object state)
     {
       var conn = (HttpConnection) state;
-      conn.close ();
+
+      conn._inTimeout = true;
+      if (conn._socket == null) {
+        conn._inTimeout = false;
+        return;
+      }
+
+      lock (conn._sync) {
+        if (conn._socket == null) {
+          conn._inTimeout = false;
+          return;
+        }
+
+        if (conn._cancelTimeout) {
+          conn._cancelTimeout = false;
+          conn._inTimeout = false;
+
+          return;
+        }
+
+        conn.SendError (null, 408);
+        conn._inTimeout = false;
+      }
     }
 
     // true -> Done processing.
