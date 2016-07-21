@@ -14,8 +14,8 @@ namespace Example3
     {
       // Create a new instance of the HttpServer class.
       //
-      // If you would like to provide the secure connection, you should create the instance with
-      // the 'secure' parameter set to true, or the https scheme HTTP URL.
+      // If you would like to provide the secure connection, you should create a new instance with
+      // the 'secure' parameter set to true, or an https scheme HTTP URL.
 
       var httpsv = new HttpServer (4649);
       //var httpsv = new HttpServer (5963, true);
@@ -51,7 +51,13 @@ namespace Example3
       httpsv.Log.Level = LogLevel.Trace;
 
       // To change the wait time for the response to the WebSocket Ping or Close.
-      httpsv.WaitTime = TimeSpan.FromSeconds (2);
+      //httpsv.WaitTime = TimeSpan.FromSeconds (2);
+
+      // Not to remove the inactive WebSocket sessions periodically.
+      //httpsv.KeepClean = false;
+
+      // To resolve to wait for socket in TIME_WAIT state.
+      //httpsv.ReuseAddress = true;
 #endif
       /* To provide the secure connection.
       var cert = ConfigurationManager.AppSettings["ServerCertFile"];
@@ -63,13 +69,13 @@ namespace Example3
       httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       httpsv.Realm = "WebSocket Test";
       httpsv.UserCredentialsFinder = id => {
-        var name = id.Name;
+          var name = id.Name;
 
-        // Return user name, password, and roles.
-        return name == "nobita"
-               ? new NetworkCredential (name, "password", "gunfighter")
-               : null; // If the user credentials aren't found.
-      };
+          // Return user name, password, and roles.
+          return name == "nobita"
+                 ? new NetworkCredential (name, "password", "gunfighter")
+                 : null; // If the user credentials aren't found.
+        };
        */
 
       // Set the document root path.
@@ -77,36 +83,30 @@ namespace Example3
 
       // Set the HTTP GET request event.
       httpsv.OnGet += (sender, e) => {
-        var req = e.Request;
-        var res = e.Response;
+          var req = e.Request;
+          var res = e.Response;
 
-        var path = req.RawUrl;
-        if (path == "/")
-          path += "index.html";
+          var path = req.RawUrl;
+          if (path == "/")
+            path += "index.html";
 
-        var content = httpsv.GetFile (path);
-        if (content == null) {
-          res.StatusCode = (int) HttpStatusCode.NotFound;
-          return;
-        }
+          var content = httpsv.GetFile (path);
+          if (content == null) {
+            res.StatusCode = (int) HttpStatusCode.NotFound;
+            return;
+          }
 
-        if (path.EndsWith (".html")) {
-          res.ContentType = "text/html";
-          res.ContentEncoding = Encoding.UTF8;
-        }
-        else if (path.EndsWith (".js")) {
-          res.ContentType = "application/javascript";
-          res.ContentEncoding = Encoding.UTF8;
-        }
+          if (path.EndsWith (".html")) {
+            res.ContentType = "text/html";
+            res.ContentEncoding = Encoding.UTF8;
+          }
+          else if (path.EndsWith (".js")) {
+            res.ContentType = "application/javascript";
+            res.ContentEncoding = Encoding.UTF8;
+          }
 
-        res.WriteContent (content);
-      };
-
-      // Not to remove the inactive WebSocket sessions periodically.
-      //httpsv.KeepClean = false;
-
-      // To resolve to wait for socket in TIME_WAIT state.
-      //httpsv.ReuseAddress = true;
+          res.WriteContent (content);
+        };
 
       // Add the WebSocket services.
       httpsv.AddWebSocketService<Echo> ("/Echo");
@@ -115,33 +115,35 @@ namespace Example3
       /* Add the WebSocket service with initializing.
       httpsv.AddWebSocketService<Chat> (
         "/Chat",
-        () => new Chat ("Anon#") {
-          // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
-          Protocol = "chat",
-          // To emit a WebSocket.OnMessage event when receives a ping.
-          EmitOnPing = true,
-          // To ignore the Sec-WebSocket-Extensions header.
-          IgnoreExtensions = true,
-          // To validate the Origin header.
-          OriginValidator = val => {
-            // Check the value of the Origin header, and return true if valid.
-            Uri origin;
-            return !val.IsNullOrEmpty () &&
-                   Uri.TryCreate (val, UriKind.Absolute, out origin) &&
-                   origin.Host == "localhost";
-          },
-          // To validate the Cookies.
-          CookiesValidator = (req, res) => {
-            // Check the Cookies in 'req', and set the Cookies to send to the client with 'res'
-            // if necessary.
-            foreach (Cookie cookie in req) {
-              cookie.Expired = true;
-              res.Add (cookie);
-            }
+        () =>
+          new Chat ("Anon#") {
+            // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
+            Protocol = "chat",
+            // To emit a WebSocket.OnMessage event when receives a ping.
+            EmitOnPing = true,
+            // To ignore the Sec-WebSocket-Extensions header.
+            IgnoreExtensions = true,
+            // To validate the Origin header.
+            OriginValidator = val => {
+                // Check the value of the Origin header, and return true if valid.
+                Uri origin;
+                return !val.IsNullOrEmpty ()
+                       && Uri.TryCreate (val, UriKind.Absolute, out origin)
+                       && origin.Host == "localhost";
+              },
+            // To validate the cookies.
+            CookiesValidator = (req, res) => {
+                // Check the cookies in 'req', and set the cookies to send to
+                // the client with 'res' if necessary.
+                foreach (Cookie cookie in req) {
+                  cookie.Expired = true;
+                  res.Add (cookie);
+                }
 
-            return true; // If valid.
+                return true; // If valid.
+              }
           }
-        });
+      );
        */
 
       httpsv.Start ();
