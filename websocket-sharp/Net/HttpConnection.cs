@@ -46,6 +46,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Security;
@@ -59,28 +60,27 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private byte[]              _buffer;
-    private const int           _bufferLength = 8192;
-    private volatile bool       _cancelTimeout;
-    private HttpListenerContext _context;
-    private bool                _contextRegistered;
-    private StringBuilder       _currentLine;
-    private InputState          _inputState;
-    private RequestStream       _inputStream;
-    private volatile bool       _inTimeout;
-    private HttpListener        _lastListener;
-    private LineState           _lineState;
-    private EndPointListener    _listener;
-    private ResponseStream      _outputStream;
-    private int                 _position;
-    private MemoryStream        _requestBuffer;
-    private int                 _reuses;
-    private bool                _secure;
-    private Socket              _socket;
-    private Stream              _stream;
-    private object              _sync;
-    private int                 _timeout;
-    private Timer               _timer;
+    private byte[]                _buffer;
+    private const int             _bufferLength = 8192;
+    private HttpListenerContext   _context;
+    private bool                  _contextRegistered;
+    private StringBuilder         _currentLine;
+    private InputState            _inputState;
+    private RequestStream         _inputStream;
+    private HttpListener          _lastListener;
+    private LineState             _lineState;
+    private EndPointListener      _listener;
+    private ResponseStream        _outputStream;
+    private int                   _position;
+    private MemoryStream          _requestBuffer;
+    private int                   _reuses;
+    private bool                  _secure;
+    private Socket                _socket;
+    private Stream                _stream;
+    private object                _sync;
+    private int                   _timeout;
+    private Dictionary<int, bool> _timeoutCanceled;
+    private Timer                 _timer;
 
     #endregion
 
@@ -111,6 +111,7 @@ namespace WebSocketSharp.Net
 
       _sync = new object ();
       _timeout = 90000; // 90k ms for first request, 15k ms from then on.
+      _timeoutCanceled = new Dictionary<int, bool> ();
       _timer = new Timer (onTimeout, this, Timeout.Infinite, Timeout.Infinite);
 
       init ();
@@ -248,7 +249,12 @@ namespace WebSocketSharp.Net
         var nread = -1;
         var len = 0;
         try {
-          conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
+          var current = conn._reuses;
+          if (!conn._timeoutCanceled[current]) {
+            conn._timer.Change (Timeout.Infinite, Timeout.Infinite);
+            conn._timeoutCanceled[current] = true;
+          }
+
           nread = conn._stream.EndRead (asyncResult);
           conn._requestBuffer.Write (conn._buffer, 0, nread);
           len = (int) conn._requestBuffer.Length;
@@ -293,9 +299,6 @@ namespace WebSocketSharp.Net
             conn._lastListener = lsnr;
           }
 
-          if (conn._inTimeout)
-            conn._cancelTimeout = true;
-
           conn._context.Listener = lsnr;
           if (!conn._context.Authenticate ())
             return;
@@ -306,9 +309,6 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (conn._inTimeout)
-          conn._cancelTimeout = true;
-
         conn._stream.BeginRead (conn._buffer, 0, _bufferLength, onRead, conn);
       }
     }
@@ -316,28 +316,18 @@ namespace WebSocketSharp.Net
     private static void onTimeout (object state)
     {
       var conn = (HttpConnection) state;
-
-      conn._inTimeout = true;
-      if (conn._socket == null) {
-        conn._inTimeout = false;
+      var current = conn._reuses;
+      if (conn._socket == null)
         return;
-      }
 
       lock (conn._sync) {
-        if (conn._socket == null) {
-          conn._inTimeout = false;
+        if (conn._socket == null)
           return;
-        }
 
-        if (conn._cancelTimeout) {
-          conn._cancelTimeout = false;
-          conn._inTimeout = false;
-
+        if (conn._timeoutCanceled[current])
           return;
-        }
 
         conn.SendError (null, 408);
-        conn._inTimeout = false;
       }
     }
 
@@ -481,6 +471,7 @@ namespace WebSocketSharp.Net
         _timeout = 15000;
 
       try {
+        _timeoutCanceled.Add (_reuses, false);
         _timer.Change (_timeout, Timeout.Infinite);
         _stream.BeginRead (_buffer, 0, _bufferLength, onRead, this);
       }
