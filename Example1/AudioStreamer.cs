@@ -12,10 +12,10 @@ namespace Example1
   internal class AudioStreamer : IDisposable
   {
     private Dictionary<uint, Queue> _audioBox;
-    private Timer                   _heartbeatTimer;
     private uint?                   _id;
     private string                  _name;
     private Notifier                _notifier;
+    private Timer                   _timer;
     private WebSocket               _websocket;
 
     public AudioStreamer (string url)
@@ -23,9 +23,9 @@ namespace Example1
       _websocket = new WebSocket (url);
 
       _audioBox = new Dictionary<uint, Queue> ();
-      _heartbeatTimer = new Timer (sendHeartbeat, null, -1, -1);
       _id = null;
       _notifier = new Notifier ();
+      _timer = new Timer (sendHeartbeat, null, -1, -1);
 
       configure ();
     }
@@ -36,71 +36,80 @@ namespace Example1
       _websocket.Log.Level = LogLevel.Trace;
 #endif
       _websocket.OnOpen += (sender, e) =>
-        _websocket.Send (createTextMessage ("connection", String.Empty));
+          _websocket.Send (createTextMessage ("connection", String.Empty));
 
       _websocket.OnMessage += (sender, e) => {
-        if (e.IsText) {
-          _notifier.Notify (convertTextMessage (e.Data));
-        }
-        else {
-          var msg = convertBinaryMessage (e.RawData);
-          if (msg.user_id == _id)
-            return;
-
-          if (_audioBox.ContainsKey (msg.user_id)) {
-            _audioBox[msg.user_id].Enqueue (msg.buffer_array);
+          if (e.IsText) {
+            _notifier.Notify (convertToNotificationMessage (e.Data));
             return;
           }
 
-          var queue = Queue.Synchronized (new Queue ());
-          queue.Enqueue (msg.buffer_array);
-          _audioBox.Add (msg.user_id, queue);
-        }
-      };
+          if (e.IsBinary) {
+            var msg = convertToAudioMessage (e.RawData);
+            if (msg.user_id == _id)
+              return;
+
+            if (_audioBox.ContainsKey (msg.user_id)) {
+              _audioBox[msg.user_id].Enqueue (msg.buffer_array);
+              return;
+            }
+
+            var queue = Queue.Synchronized (new Queue ());
+            queue.Enqueue (msg.buffer_array);
+            _audioBox.Add (msg.user_id, queue);
+
+            return;
+          }
+        };
 
       _websocket.OnError += (sender, e) =>
-        _notifier.Notify (
-          new NotificationMessage {
-            Summary = "AudioStreamer (error)",
-            Body = e.Message,
-            Icon = "notification-message-im"
-          });
+          _notifier.Notify (
+            new NotificationMessage {
+              Summary = "AudioStreamer (error)",
+              Body = e.Message,
+              Icon = "notification-message-im"
+            }
+          );
 
       _websocket.OnClose += (sender, e) =>
-        _notifier.Notify (
-          new NotificationMessage {
-            Summary = "AudioStreamer (disconnect)",
-            Body = String.Format ("code: {0} reason: {1}", e.Code, e.Reason),
-            Icon = "notification-message-im"
-          });
+          _notifier.Notify (
+            new NotificationMessage {
+              Summary = "AudioStreamer (disconnect)",
+              Body = String.Format ("code: {0} reason: {1}", e.Code, e.Reason),
+              Icon = "notification-message-im"
+            }
+          );
     }
 
-    private AudioMessage convertBinaryMessage (byte[] data)
+    private AudioMessage convertToAudioMessage (byte[] binaryMessage)
     {
-      var id = data.SubArray (0, 4).To<uint> (ByteOrder.Big);
-      var chNum = data.SubArray (4, 1)[0];
-      var buffLen = data.SubArray (5, 4).To<uint> (ByteOrder.Big);
+      var id = binaryMessage.SubArray (0, 4).To<uint> (ByteOrder.Big);
+      var chNum = binaryMessage.SubArray (4, 1)[0];
+      var buffLen = binaryMessage.SubArray (5, 4).To<uint> (ByteOrder.Big);
       var buffArr = new float[chNum, buffLen];
 
       var offset = 9;
       ((int) chNum).Times (
-        i => buffLen.Times (
-          j => {
-            buffArr[i, j] = data.SubArray (offset, 4).To<float> (ByteOrder.Big);
-            offset += 4;
-          }));
+        i =>
+          buffLen.Times (
+            j => {
+              buffArr[i, j] = binaryMessage.SubArray (offset, 4).To<float> (ByteOrder.Big);
+              offset += 4;
+            }
+          )
+      );
 
       return new AudioMessage {
-        user_id = id,
-        ch_num = chNum,
-        buffer_length = buffLen,
-        buffer_array = buffArr
-      };
+               user_id = id,
+               ch_num = chNum,
+               buffer_length = buffLen,
+               buffer_array = buffArr
+             };
     }
 
-    private NotificationMessage convertTextMessage (string data)
+    private NotificationMessage convertToNotificationMessage (string textMessage)
     {
-      var json = JObject.Parse (data);
+      var json = JObject.Parse (textMessage);
       var id = (uint) json["user_id"];
       var name = (string) json["name"];
       var type = (string) json["type"];
@@ -115,15 +124,17 @@ namespace Example1
       else if (type == "connection") {
         var users = (JArray) json["message"];
         var buff = new StringBuilder ("Now keeping connections:");
-        foreach (JToken user in users)
+        foreach (JToken user in users) {
           buff.AppendFormat (
-            "\n- user_id: {0} name: {1}", (uint) user["user_id"], (string) user["name"]);
+            "\n- user_id: {0} name: {1}", (uint) user["user_id"], (string) user["name"]
+          );
+        }
 
         body = buff.ToString ();
       }
       else if (type == "connected") {
         _id = id;
-        _heartbeatTimer.Change (30000, 30000);
+        _timer.Change (30000, 30000);
         body = String.Format ("user_id: {0} name: {1}", id, name);
       }
       else {
@@ -131,10 +142,10 @@ namespace Example1
       }
 
       return new NotificationMessage {
-        Summary = String.Format ("AudioStreamer ({0})", type),
-        Body = body,
-        Icon = "notification-message-im"
-      };
+               Summary = String.Format ("AudioStreamer ({0})", type),
+               Body = body,
+               Icon = "notification-message-im"
+             };
     }
 
     private byte[] createBinaryMessage (float[,] bufferArray)
@@ -150,8 +161,11 @@ namespace Example1
       msg.AddRange (((uint) buffLen).ToByteArray (ByteOrder.Big));
 
       chNum.Times (
-        i => buffLen.Times (
-          j => msg.AddRange (bufferArray[i, j].ToByteArray (ByteOrder.Big))));
+        i =>
+          buffLen.Times (
+            j => msg.AddRange (bufferArray[i, j].ToByteArray (ByteOrder.Big))
+          )
+      );
 
       return msg.ToArray ();
     }
@@ -159,12 +173,13 @@ namespace Example1
     private string createTextMessage (string type, string message)
     {
       return JsonConvert.SerializeObject (
-        new TextMessage {
-          user_id = _id,
-          name = _name,
-          type = type,
-          message = message
-        });
+               new TextMessage {
+                 user_id = _id,
+                 name = _name,
+                 type = type,
+                 message = message
+               }
+             );
     }
 
     private void sendHeartbeat (object state)
@@ -180,7 +195,7 @@ namespace Example1
 
     public void Disconnect ()
     {
-      _heartbeatTimer.Change (-1, -1);
+      _timer.Change (-1, -1);
       _websocket.Close (CloseStatusCode.Away);
       _audioBox.Clear ();
       _id = null;
@@ -195,8 +210,7 @@ namespace Example1
     void IDisposable.Dispose ()
     {
       Disconnect ();
-
-      _heartbeatTimer.Dispose ();
+      _timer.Dispose ();
       _notifier.Close ();
     }
   }
