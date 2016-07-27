@@ -49,12 +49,13 @@ namespace Example1
             if (msg.user_id == _id)
               return;
 
-            if (_audioBox.ContainsKey (msg.user_id)) {
-              _audioBox[msg.user_id].Enqueue (msg.buffer_array);
+            Queue queue;
+            if (_audioBox.TryGetValue (msg.user_id, out queue)) {
+              queue.Enqueue (msg.buffer_array);
               return;
             }
 
-            var queue = Queue.Synchronized (new Queue ());
+            queue = Queue.Synchronized (new Queue ());
             queue.Enqueue (msg.buffer_array);
             _audioBox.Add (msg.user_id, queue);
 
