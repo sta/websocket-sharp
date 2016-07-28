@@ -40,7 +40,7 @@ namespace Example1
 
       _websocket.OnMessage += (sender, e) => {
           if (e.IsText) {
-            _notifier.Notify (convertToNotificationMessage (e.Data));
+            _notifier.Notify (processTextMessage (e.Data));
             return;
           }
 
@@ -108,47 +108,6 @@ namespace Example1
              };
     }
 
-    private NotificationMessage convertToNotificationMessage (string textMessage)
-    {
-      var json = JObject.Parse (textMessage);
-      var id = (uint) json["user_id"];
-      var name = (string) json["name"];
-      var type = (string) json["type"];
-
-      string body;
-      if (type == "message") {
-        body = String.Format ("{0}: {1}", name, (string) json["message"]);
-      }
-      else if (type == "start_music") {
-        body = String.Format ("{0}: Started playing music!", name);
-      }
-      else if (type == "connection") {
-        var users = (JArray) json["message"];
-        var buff = new StringBuilder ("Now keeping connections:");
-        foreach (JToken user in users) {
-          buff.AppendFormat (
-            "\n- user_id: {0} name: {1}", (uint) user["user_id"], (string) user["name"]
-          );
-        }
-
-        body = buff.ToString ();
-      }
-      else if (type == "connected") {
-        _id = id;
-        _timer.Change (30000, 30000);
-        body = String.Format ("user_id: {0} name: {1}", id, name);
-      }
-      else {
-        body = "Received unknown type message.";
-      }
-
-      return new NotificationMessage {
-               Summary = String.Format ("AudioStreamer ({0})", type),
-               Body = body,
-               Icon = "notification-message-im"
-             };
-    }
-
     private byte[] createBinaryMessage (float[,] bufferArray)
     {
       var msg = new List<byte> ();
@@ -181,6 +140,48 @@ namespace Example1
                  message = message
                }
              );
+    }
+
+    private NotificationMessage processTextMessage (string data)
+    {
+      var json = JObject.Parse (data);
+      var id = (uint) json["user_id"];
+      var name = (string) json["name"];
+      var type = (string) json["type"];
+
+      string body;
+      if (type == "message") {
+        body = String.Format ("{0}: {1}", name, (string) json["message"]);
+      }
+      else if (type == "start_music") {
+        body = String.Format ("{0}: Started playing music!", name);
+      }
+      else if (type == "connection") {
+        var users = (JArray) json["message"];
+        var buff = new StringBuilder ("Now keeping connections:");
+        foreach (JToken user in users) {
+          buff.AppendFormat (
+            "\n- user_id: {0} name: {1}", (uint) user["user_id"], (string) user["name"]
+          );
+        }
+
+        body = buff.ToString ();
+      }
+      else if (type == "connected") {
+        _id = id;
+        _timer.Change (30000, 30000);
+
+        body = String.Format ("user_id: {0} name: {1}", id, name);
+      }
+      else {
+        body = "Received unknown type message.";
+      }
+
+      return new NotificationMessage {
+               Summary = String.Format ("AudioStreamer ({0})", type),
+               Body = body,
+               Icon = "notification-message-im"
+             };
     }
 
     private void sendHeartbeat (object state)
