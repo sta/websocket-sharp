@@ -45,20 +45,7 @@ namespace Example1
           }
 
           if (e.IsBinary) {
-            var msg = convertToAudioMessage (e.RawData);
-            if (msg.user_id == _id)
-              return;
-
-            Queue queue;
-            if (_audioBox.TryGetValue (msg.user_id, out queue)) {
-              queue.Enqueue (msg.buffer_array);
-              return;
-            }
-
-            queue = Queue.Synchronized (new Queue ());
-            queue.Enqueue (msg.buffer_array);
-            _audioBox.Add (msg.user_id, queue);
-
+            processBinaryMessage (e.RawData);
             return;
           }
         };
@@ -140,6 +127,23 @@ namespace Example1
                  message = message
                }
              );
+    }
+
+    private void processBinaryMessage (byte[] data)
+    {
+      var msg = convertToAudioMessage (data);
+      if (msg.user_id == _id)
+        return;
+
+      Queue queue;
+      if (_audioBox.TryGetValue (msg.user_id, out queue)) {
+        queue.Enqueue (msg.buffer_array);
+        return;
+      }
+
+      queue = Queue.Synchronized (new Queue ());
+      queue.Enqueue (msg.buffer_array);
+      _audioBox.Add (msg.user_id, queue);
     }
 
     private NotificationMessage processTextMessage (string data)
