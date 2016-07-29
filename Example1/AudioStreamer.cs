@@ -69,7 +69,7 @@ namespace Example1
           );
     }
 
-    private AudioMessage convertToAudioMessage (byte[] binaryMessage)
+    private static AudioMessage convertToAudioMessage (byte[] binaryMessage)
     {
       var id = binaryMessage.SubArray (0, 4).To<uint> (ByteOrder.Big);
       var chNum = binaryMessage.SubArray (4, 1)[0];
