@@ -193,6 +193,13 @@ namespace Example1
       _websocket.Send (createTextMessage ("heartbeat", String.Empty));
     }
 
+    public void Close ()
+    {
+      Disconnect ();
+      _timer.Dispose ();
+      _notifier.Close ();
+    }
+
     public void Connect (string username)
     {
       _name = username;
@@ -215,9 +222,7 @@ namespace Example1
 
     void IDisposable.Dispose ()
     {
-      Disconnect ();
-      _timer.Dispose ();
-      _notifier.Close ();
+      Close ();
     }
   }
 }
