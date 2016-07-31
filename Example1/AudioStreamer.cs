@@ -119,14 +119,13 @@ namespace Example1
 
     private string createTextMessage (string type, string message)
     {
-      return JsonConvert.SerializeObject (
-               new TextMessage {
-                 user_id = _id,
-                 name = _name,
-                 type = type,
-                 message = message
-               }
-             );
+      return new TextMessage {
+               UserID = _id,
+               Name = _name,
+               Type = type,
+               Message = message
+             }
+             .ToString ();
     }
 
     private void processBinaryMessage (byte[] data)
