@@ -62,7 +62,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AudioStreamer.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="AudioMessage.cs" />
     <Compile Include="TextMessage.cs" />
     <Compile Include="NotificationMessage.cs" />
     <Compile Include="Notifier.cs" />
