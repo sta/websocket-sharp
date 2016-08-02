@@ -97,24 +97,13 @@ namespace Example1
 
     private byte[] createBinaryMessage (float[,] bufferArray)
     {
-      var msg = new List<byte> ();
-
-      var id = (uint) _id;
-      var chNum = bufferArray.GetLength (0);
-      var buffLen = bufferArray.GetLength (1);
-
-      msg.AddRange (id.ToByteArray (ByteOrder.Big));
-      msg.Add ((byte) chNum);
-      msg.AddRange (((uint) buffLen).ToByteArray (ByteOrder.Big));
-
-      chNum.Times (
-        i =>
-          buffLen.Times (
-            j => msg.AddRange (bufferArray[i, j].ToByteArray (ByteOrder.Big))
-          )
-      );
-
-      return msg.ToArray ();
+      return new BinaryMessage {
+               UserID = (uint) _id,
+               ChannelNumber = (byte) bufferArray.GetLength (0),
+               BufferLength = (uint) bufferArray.GetLength (1),
+               BufferArray = bufferArray
+             }
+             .ToArray ();
     }
 
     private string createTextMessage (string type, string message)
@@ -130,19 +119,21 @@ namespace Example1
 
     private void processBinaryMessage (byte[] data)
     {
-      var msg = convertToAudioMessage (data);
-      if (msg.user_id == _id)
+      var msg = BinaryMessage.Parse (data);
+
+      var id = msg.UserID;
+      if (id == _id)
         return;
 
       Queue queue;
-      if (_audioBox.TryGetValue (msg.user_id, out queue)) {
-        queue.Enqueue (msg.buffer_array);
+      if (_audioBox.TryGetValue (id, out queue)) {
+        queue.Enqueue (msg.BufferArray);
         return;
       }
 
       queue = Queue.Synchronized (new Queue ());
-      queue.Enqueue (msg.buffer_array);
-      _audioBox.Add (msg.user_id, queue);
+      queue.Enqueue (msg.BufferArray);
+      _audioBox.Add (id, queue);
     }
 
     private NotificationMessage processTextMessage (string data)
