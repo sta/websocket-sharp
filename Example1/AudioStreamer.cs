@@ -69,32 +69,6 @@ namespace Example1
           );
     }
 
-    private static AudioMessage convertToAudioMessage (byte[] binaryMessage)
-    {
-      var id = binaryMessage.SubArray (0, 4).To<uint> (ByteOrder.Big);
-      var chNum = binaryMessage.SubArray (4, 1)[0];
-      var buffLen = binaryMessage.SubArray (5, 4).To<uint> (ByteOrder.Big);
-      var buffArr = new float[chNum, buffLen];
-
-      var offset = 9;
-      ((int) chNum).Times (
-        i =>
-          buffLen.Times (
-            j => {
-              buffArr[i, j] = binaryMessage.SubArray (offset, 4).To<float> (ByteOrder.Big);
-              offset += 4;
-            }
-          )
-      );
-
-      return new AudioMessage {
-               user_id = id,
-               ch_num = chNum,
-               buffer_length = buffLen,
-               buffer_array = buffArr
-             };
-    }
-
     private byte[] createBinaryMessage (float[,] bufferArray)
     {
       return new BinaryMessage {
