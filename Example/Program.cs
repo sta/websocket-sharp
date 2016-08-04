@@ -15,7 +15,7 @@ namespace Example
       // use the using statement. And the WebSocket connection will be closed with
       // close status 1001 (going away) when the control leaves the using block.
       //
-      // If you would like to connect to a server with the secure connection,
+      // If you would like to connect to the server with the secure connection,
       // you should create a new instance with a wss scheme WebSocket URL.
 
       using (var nf = new Notifier ())
