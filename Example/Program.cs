@@ -69,9 +69,6 @@ namespace Example
 
         // To emit a WebSocket.OnMessage event when receives a ping.
         //ws.EmitOnPing = true;
-
-        // To enable the redirection.
-        //ws.EnableRedirection = true;
 #endif
         // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
@@ -103,6 +100,9 @@ namespace Example
 
         // To connect through the HTTP Proxy server.
         //ws.SetProxy ("http://localhost:3128", "nobita", "password");
+
+        // To enable the redirection.
+        //ws.EnableRedirection = true;
 
         // Connect to the server.
         ws.Connect ();
