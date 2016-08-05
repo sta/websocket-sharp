@@ -73,7 +73,8 @@ namespace Example
         // To enable the Per-message Compression extension.
         //ws.Compression = CompressionMethod.Deflate;
 
-        /* To validate the server certificate.
+        // To validate the server certificate.
+        /*
         ws.SslConfiguration.ServerCertificateValidationCallback =
           (sender, certificate, chain, sslPolicyErrors) => {
             ws.Log.Debug (
