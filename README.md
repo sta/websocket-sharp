@@ -459,7 +459,7 @@ I think this is useful when you get something error in connecting the server and
 
 websocket-sharp supports the **Secure Connection** with **SSL/TLS**.
 
-As a **WebSocket Client**, you should create a new instance of the `WebSocket` class with the **wss** scheme WebSocket URL.
+As a **WebSocket Client**, you should create a new instance of the `WebSocket` class with a **wss** scheme WebSocket URL.
 
 ```csharp
 using (var ws = new WebSocket ("wss://example.com")) {
