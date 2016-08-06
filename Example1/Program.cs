@@ -7,7 +7,9 @@ namespace Example1
   {
     public static void Main (string[] args)
     {
-      //using (var streamer = new AudioStreamer ("ws://agektmr.node-ninja.com:3000/socket"))
+      // The AudioStreamer class provides a client (chat) for AudioStreamer
+      // (https://github.com/agektmr/AudioStreamer).
+
       using (var streamer = new AudioStreamer ("ws://localhost:3000/socket"))
       {
         string name;
