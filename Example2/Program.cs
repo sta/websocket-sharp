@@ -13,8 +13,9 @@ namespace Example2
     {
       // Create a new instance of the WebSocketServer class.
       //
-      // If you would like to provide the secure connection, you should create a new instance with
-      // the 'secure' parameter set to true, or a wss scheme WebSocket URL.
+      // If you would like to provide the secure connection, you should
+      // create a new instance with the 'secure' parameter set to true,
+      // or a wss scheme WebSocket URL.
 
       var wssv = new WebSocketServer (4649);
       //var wssv = new WebSocketServer (5963, true);
@@ -54,17 +55,16 @@ namespace Example2
 
       // Not to remove the inactive sessions periodically.
       //wssv.KeepClean = false;
-
-      // To resolve to wait for socket in TIME_WAIT state.
-      //wssv.ReuseAddress = true;
 #endif
-      /* To provide the secure connection.
+      // To provide the secure connection.
+      /*
       var cert = ConfigurationManager.AppSettings["ServerCertFile"];
       var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
       wssv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
        */
 
-      /* To provide the HTTP Authentication (Basic/Digest).
+      // To provide the HTTP Authentication (Basic/Digest).
+      /*
       wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       wssv.Realm = "WebSocket Test";
       wssv.UserCredentialsFinder = id => {
@@ -77,21 +77,25 @@ namespace Example2
         };
        */
 
+      // To resolve to wait for socket in TIME_WAIT state.
+      //wssv.ReuseAddress = true;
+
       // Add the WebSocket services.
       wssv.AddWebSocketService<Echo> ("/Echo");
       wssv.AddWebSocketService<Chat> ("/Chat");
 
-      /* Add the WebSocket service with initializing.
+      // Add the WebSocket service with initializing.
+      /*
       wssv.AddWebSocketService<Chat> (
         "/Chat",
         () =>
           new Chat ("Anon#") {
             // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
             Protocol = "chat",
-            // To emit a WebSocket.OnMessage event when receives a ping.
-            EmitOnPing = true,
             // To ignore the Sec-WebSocket-Extensions header.
             IgnoreExtensions = true,
+            // To emit a WebSocket.OnMessage event when receives a ping.
+            EmitOnPing = true,
             // To validate the Origin header.
             OriginValidator = val => {
                 // Check the value of the Origin header, and return true if valid.
