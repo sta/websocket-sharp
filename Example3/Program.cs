@@ -14,8 +14,9 @@ namespace Example3
     {
       // Create a new instance of the HttpServer class.
       //
-      // If you would like to provide the secure connection, you should create a new instance with
-      // the 'secure' parameter set to true, or an https scheme HTTP URL.
+      // If you would like to provide the secure connection, you should
+      // create a new instance with the 'secure' parameter set to true,
+      // or an https scheme HTTP URL.
 
       var httpsv = new HttpServer (4649);
       //var httpsv = new HttpServer (5963, true);
@@ -55,17 +56,16 @@ namespace Example3
 
       // Not to remove the inactive WebSocket sessions periodically.
       //httpsv.KeepClean = false;
-
-      // To resolve to wait for socket in TIME_WAIT state.
-      //httpsv.ReuseAddress = true;
 #endif
-      /* To provide the secure connection.
+      // To provide the secure connection.
+      /*
       var cert = ConfigurationManager.AppSettings["ServerCertFile"];
       var passwd = ConfigurationManager.AppSettings["CertFilePassword"];
       httpsv.SslConfiguration.ServerCertificate = new X509Certificate2 (cert, passwd);
        */
 
-      /* To provide the HTTP Authentication (Basic/Digest).
+      // To provide the HTTP Authentication (Basic/Digest).
+      /*
       httpsv.AuthenticationSchemes = AuthenticationSchemes.Basic;
       httpsv.Realm = "WebSocket Test";
       httpsv.UserCredentialsFinder = id => {
@@ -77,6 +77,9 @@ namespace Example3
                  : null; // If the user credentials aren't found.
         };
        */
+
+      // To resolve to wait for socket in TIME_WAIT state.
+      //httpsv.ReuseAddress = true;
 
       // Set the document root path.
       httpsv.RootPath = ConfigurationManager.AppSettings["RootPath"];
@@ -112,17 +115,18 @@ namespace Example3
       httpsv.AddWebSocketService<Echo> ("/Echo");
       httpsv.AddWebSocketService<Chat> ("/Chat");
 
-      /* Add the WebSocket service with initializing.
+      // Add the WebSocket service with initializing.
+      /*
       httpsv.AddWebSocketService<Chat> (
         "/Chat",
         () =>
           new Chat ("Anon#") {
             // To send the Sec-WebSocket-Protocol header that has a subprotocol name.
             Protocol = "chat",
-            // To emit a WebSocket.OnMessage event when receives a ping.
-            EmitOnPing = true,
             // To ignore the Sec-WebSocket-Extensions header.
             IgnoreExtensions = true,
+            // To emit a WebSocket.OnMessage event when receives a ping.
+            EmitOnPing = true,
             // To validate the Origin header.
             OriginValidator = val => {
                 // Check the value of the Origin header, and return true if valid.
