@@ -2773,16 +2773,16 @@ namespace WebSocketSharp
         return;
       }
 
+      if (cookie == null) {
+        _logger.Error ("'cookie' is null.");
+        error ("An error has occurred in setting a cookie.", null);
+
+        return;
+      }
+
       lock (_forConn) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
-          error ("An error has occurred in setting a cookie.", null);
-
-          return;
-        }
-
-        if (cookie == null) {
-          _logger.Error ("'cookie' is null.");
           error ("An error has occurred in setting a cookie.", null);
 
           return;
