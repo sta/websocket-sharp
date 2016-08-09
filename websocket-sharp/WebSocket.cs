@@ -2761,7 +2761,7 @@ namespace WebSocketSharp
     /// the WebSocket handshake request to the server.
     /// </summary>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> that represents the cookie to send.
+    /// A <see cref="Cookie"/> that represents a cookie to send.
     /// </param>
     public void SetCookie (Cookie cookie)
     {
