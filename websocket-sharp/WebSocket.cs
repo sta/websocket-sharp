@@ -81,9 +81,9 @@ namespace WebSocketSharp
     private AutoResetEvent                 _exitReceiving;
     private string                         _extensions;
     private bool                           _extensionsRequested;
-    private object                         _forConn;
     private object                         _forMessageEventQueue;
     private object                         _forSend;
+    private object                         _forState;
     private MemoryStream                   _fragmentsBuffer;
     private bool                           _fragmentsCompressed;
     private Opcode                         _fragmentsOpcode;
@@ -310,7 +310,7 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConn) {
+        lock (_forState) {
           string msg;
           if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
@@ -385,7 +385,7 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConn) {
+        lock (_forState) {
           string msg;
           if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
@@ -481,7 +481,7 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConn) {
+        lock (_forState) {
           string msg;
           if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
@@ -555,7 +555,7 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConn) {
+        lock (_forState) {
           string msg;
           if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
             _logger.Error (msg);
@@ -594,7 +594,7 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forConn) {
+        lock (_forState) {
           string msg;
           if (!checkIfAvailable (true, true, true, false, false, true, out msg)
               || !value.CheckWaitTime (out msg)
@@ -641,7 +641,7 @@ namespace WebSocketSharp
     // As server
     private bool accept ()
     {
-      lock (_forConn) {
+      lock (_forState) {
         string msg;
         if (!checkIfAvailable (true, false, false, false, out msg)) {
           _logger.Error (msg);
@@ -881,7 +881,7 @@ namespace WebSocketSharp
 
     private void close (CloseEventArgs e, bool send, bool receive, bool received)
     {
-      lock (_forConn) {
+      lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
           _logger.Info ("The closing is already in progress.");
           return;
@@ -938,7 +938,7 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
-      lock (_forConn) {
+      lock (_forState) {
         string msg;
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
@@ -1127,8 +1127,8 @@ namespace WebSocketSharp
     {
       _compression = CompressionMethod.None;
       _cookies = new CookieCollection ();
-      _forConn = new object ();
       _forSend = new object ();
+      _forState = new object ();
       _messageEventQueue = new Queue<MessageEventArgs> ();
       _forMessageEventQueue = ((ICollection) _messageEventQueue).SyncRoot;
       _readyState = WebSocketState.Connecting;
@@ -1431,7 +1431,7 @@ namespace WebSocketSharp
 
     private bool send (byte[] frameAsBytes)
     {
-      lock (_forConn) {
+      lock (_forState) {
         if (_readyState != WebSocketState.Open) {
           _logger.Error ("The sending has been interrupted.");
           return false;
@@ -1520,7 +1520,7 @@ namespace WebSocketSharp
 
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
     {
-      lock (_forConn) {
+      lock (_forState) {
         if (_readyState != WebSocketState.Open) {
           _logger.Error ("The sending has been interrupted.");
           return false;
@@ -1938,7 +1938,7 @@ namespace WebSocketSharp
     // As server
     internal void Close (CloseEventArgs e, byte[] frameAsBytes, bool receive)
     {
-      lock (_forConn) {
+      lock (_forState) {
         if (_readyState == WebSocketState.Closing) {
           _logger.Info ("The closing is already in progress.");
           return;
@@ -2022,7 +2022,7 @@ namespace WebSocketSharp
     internal void Send (Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
     {
       lock (_forSend) {
-        lock (_forConn) {
+        lock (_forState) {
           if (_readyState != WebSocketState.Open) {
             _logger.Error ("The sending has been interrupted.");
             return;
@@ -2780,7 +2780,7 @@ namespace WebSocketSharp
         return;
       }
 
-      lock (_forConn) {
+      lock (_forState) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting a cookie.", null);
@@ -2818,7 +2818,7 @@ namespace WebSocketSharp
         return;
       }
 
-      lock (_forConn) {
+      lock (_forState) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the credentials.", null);
@@ -2878,7 +2878,7 @@ namespace WebSocketSharp
         return;
       }
 
-      lock (_forConn) {
+      lock (_forState) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           error ("An error has occurred in setting the proxy.", null);
