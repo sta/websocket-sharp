@@ -2818,6 +2818,22 @@ namespace WebSocketSharp
         return;
       }
 
+      if (!username.IsNullOrEmpty ()) {
+        if (username.Contains (':') || !username.IsText ()) {
+          _logger.Error ("'username' contains an invalid character.");
+          error ("An error has occurred in setting the credentials.", null);
+
+          return;
+        }
+
+        if (!password.IsNullOrEmpty () && !password.IsText ()) {
+          _logger.Error ("'password' contains an invalid character.");
+          error ("An error has occurred in setting the credentials.", null);
+
+          return;
+        }
+      }
+
       lock (_forState) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
@@ -2830,20 +2846,6 @@ namespace WebSocketSharp
           _logger.Warn ("The credentials are set back to the default.");
           _credentials = null;
           _preAuth = false;
-
-          return;
-        }
-
-        if (username.Contains (':') || !username.IsText ()) {
-          _logger.Error ("'username' contains an invalid character.");
-          error ("An error has occurred in setting the credentials.", null);
-
-          return;
-        }
-
-        if (!password.IsNullOrEmpty () && !password.IsText ()) {
-          _logger.Error ("'password' contains an invalid character.");
-          error ("An error has occurred in setting the credentials.", null);
 
           return;
         }
