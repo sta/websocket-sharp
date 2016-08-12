@@ -2843,20 +2843,11 @@ namespace WebSocketSharp
         return;
       }
 
-      if (!username.IsNullOrEmpty ()) {
-        if (username.Contains (':') || !username.IsText ()) {
-          _logger.Error ("'username' contains an invalid character.");
-          error ("An error has occurred in setting the credentials.", null);
+      if (!checkParametersForSetCredentials (username, password, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the credentials.", null);
 
-          return;
-        }
-
-        if (!password.IsNullOrEmpty () && !password.IsText ()) {
-          _logger.Error ("'password' contains an invalid character.");
-          error ("An error has occurred in setting the credentials.", null);
-
-          return;
-        }
+        return;
       }
 
       lock (_forState) {
