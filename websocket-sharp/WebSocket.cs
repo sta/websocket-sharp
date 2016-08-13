@@ -2823,15 +2823,22 @@ namespace WebSocketSharp
     /// the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the user name used to authenticate.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the user name used to authenticate.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="username"/> is <see langword="null"/> or empty,
+    ///   the credentials will be initialized and not be sent.
+    ///   </para>
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
-    /// used to authenticate.
+    /// A <see cref="string"/> that represents the password for
+    /// <paramref name="username"/> used to authenticate.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends the Basic authentication credentials with
-    /// the first handshake request to the server; otherwise, <c>false</c>.
+    /// <c>true</c> if the <see cref="WebSocket"/> sends the credentials for
+    /// the Basic authentication with the first handshake request to the server;
+    /// otherwise, <c>false</c>.
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
