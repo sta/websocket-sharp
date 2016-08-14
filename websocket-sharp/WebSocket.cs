@@ -2866,7 +2866,7 @@ namespace WebSocketSharp
         }
 
         if (username.IsNullOrEmpty ()) {
-          _logger.Warn ("The credentials are set back to the default.");
+          _logger.Warn ("The credentials are initialized.");
           _credentials = null;
           _preAuth = false;
 
