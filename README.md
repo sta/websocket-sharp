@@ -499,9 +499,9 @@ As a **WebSocket Client**, you should set a pair of user name and password for t
 ws.SetCredentials ("nobita", "password", preAuth);
 ```
 
-If `preAuth` is `true`, the `WebSocket` sends the Basic authentication credentials with the first handshake request to the server.
+If `preAuth` is `true`, the `WebSocket` will send the credentials for the Basic authentication with the first handshake request to the server.
 
-Or if `preAuth` is `false`, the `WebSocket` sends either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication credentials with the second handshake request to the server.
+Otherwise, the `WebSocket` will send the credentials for either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication with the second handshake request to the server.
 
 As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.
 
