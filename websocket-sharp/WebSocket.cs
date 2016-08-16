@@ -866,6 +866,43 @@ namespace WebSocketSharp
       return true;
     }
 
+    private static bool checkParametersForSetProxy (
+      string url, string username, string password, out string message
+    )
+    {
+      message = null;
+
+      if (url.IsNullOrEmpty ())
+        return true;
+
+      Uri uri;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out uri)
+          || uri.Scheme != "http"
+          || uri.Segments.Length > 1
+      ) {
+        message = "The syntax of a proxy url must be 'http://<host>[:<port>]'.";
+        return false;
+      }
+
+      if (username.IsNullOrEmpty ())
+        return true;
+
+      if (username.Contains (':') || !username.IsText ()) {
+        message = "'username' contains an invalid character.";
+        return false;
+      }
+
+      if (password.IsNullOrEmpty ())
+        return true;
+
+      if (!password.IsText ()) {
+        message = "'password' contains an invalid character.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
