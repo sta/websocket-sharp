@@ -2940,6 +2940,13 @@ namespace WebSocketSharp
         return;
       }
 
+      if (!checkParametersForSetProxy (url, username, password, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in setting the proxy.", null);
+
+        return;
+      }
+
       lock (_forState) {
         if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
@@ -2949,47 +2956,22 @@ namespace WebSocketSharp
         }
 
         if (url.IsNullOrEmpty ()) {
-          _logger.Warn ("The proxy url and credentials are set back to the default.");
+          _logger.Warn ("The url and credentials for the proxy are initialized.");
           _proxyUri = null;
           _proxyCredentials = null;
 
           return;
         }
 
-        Uri uri;
-        if (!Uri.TryCreate (url, UriKind.Absolute, out uri)
-            || uri.Scheme != "http"
-            || uri.Segments.Length > 1
-        ) {
-          _logger.Error ("The syntax of a proxy url must be 'http://<host>[:<port>]'.");
-          error ("An error has occurred in setting the proxy.", null);
-
-          return;
-        }
+        _proxyUri = new Uri (url);
 
         if (username.IsNullOrEmpty ()) {
-          _logger.Warn ("The proxy credentials are set back to the default.");
-          _proxyUri = uri;
+          _logger.Warn ("The credentials for the proxy are initialized.");
           _proxyCredentials = null;
 
           return;
         }
 
-        if (username.Contains (':') || !username.IsText ()) {
-          _logger.Error ("'username' contains an invalid character.");
-          error ("An error has occurred in setting the proxy.", null);
-
-          return;
-        }
-
-        if (!password.IsNullOrEmpty () && !password.IsText ()) {
-          _logger.Error ("'password' contains an invalid character.");
-          error ("An error has occurred in setting the proxy.", null);
-
-          return;
-        }
-
-        _proxyUri = uri;
         _proxyCredentials =
           new NetworkCredential (
             username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
