@@ -2921,14 +2921,28 @@ namespace WebSocketSharp
     /// the proxy server authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the proxy server URL to connect through.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the proxy server URL to connect through.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="url"/> is <see langword="null"/> or empty,
+    ///   the url and credentials for the proxy will be initialized,
+    ///   and the <see cref="WebSocket"/> will not use the proxy to
+    ///   connect through.
+    ///   </para>
     /// </param>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the user name used to authenticate.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the user name used to authenticate.
+    ///   </para>
+    ///   <para>
+    ///   If <paramref name="username"/> is <see langword="null"/> or empty,
+    ///   the credentials for the proxy will be initialized and not be sent.
+    ///   </para>
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for <paramref name="username"/>
-    /// used to authenticate.
+    /// A <see cref="string"/> that represents the password for
+    /// <paramref name="username"/> used to authenticate.
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
