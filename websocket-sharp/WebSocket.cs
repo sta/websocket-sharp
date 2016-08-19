@@ -2916,13 +2916,14 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets an HTTP proxy server URL to connect through, and if necessary,
+    /// Sets the HTTP proxy server URL to connect through, and if necessary,
     /// a pair of <paramref name="username"/> and <paramref name="password"/> for
     /// the proxy server authentication (Basic/Digest).
     /// </summary>
     /// <param name="url">
     ///   <para>
-    ///   A <see cref="string"/> that represents the proxy server URL to connect through.
+    ///   A <see cref="string"/> that represents the HTTP proxy server URL to
+    ///   connect through.
     ///   </para>
     ///   <para>
     ///   If <paramref name="url"/> is <see langword="null"/> or empty,
