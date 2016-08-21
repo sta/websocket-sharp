@@ -1948,6 +1948,40 @@ namespace WebSocketSharp
                    : null;
     }
 
+    internal static bool CheckParametersForClose (
+      ushort code, string reason, bool client, out string message
+    )
+    {
+      message = null;
+
+      if (!code.IsCloseStatusCode ()) {
+        message = "'code' is an invalid close status code.";
+        return false;
+      }
+
+      if (code == (ushort) CloseStatusCode.NoStatus && !reason.IsNullOrEmpty ()) {
+        message = "'code' cannot have a reason.";
+        return false;
+      }
+
+      if (code == (ushort) CloseStatusCode.MandatoryExtension && !client) {
+        message = "'code' cannot be used by a server.";
+        return false;
+      }
+
+      if (code == (ushort) CloseStatusCode.ServerError && client) {
+        message = "'code' cannot be used by a client.";
+        return false;
+      }
+
+      if (!reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123) {
+        message = "'reason' has greater than the allowable max size.";
+        return false;
+      }
+
+      return true;
+    }
+
     internal static string CheckPingParameter (string message, out byte[] bytes)
     {
       bytes = message.UTF8Encode ();
