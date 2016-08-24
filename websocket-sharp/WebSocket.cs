@@ -610,6 +610,15 @@ namespace WebSocketSharp
       }
     }
 
+    /// <summary>
+    /// Gets the TcpClient used for the WebSocket.
+    /// </summary>
+    public TcpClient TcpClient {
+      get {
+        return _tcpClient;
+      }
+    }
+
     #endregion
 
     #region Public Events
