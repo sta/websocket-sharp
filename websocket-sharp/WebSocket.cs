@@ -1955,7 +1955,7 @@ namespace WebSocketSharp
       message = null;
 
       if (!code.IsCloseStatusCode ()) {
-        message = "'code' is an invalid close status code.";
+        message = "'code' is an invalid status code.";
         return false;
       }
 
@@ -1975,7 +1975,7 @@ namespace WebSocketSharp
       }
 
       if (!reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123) {
-        message = "'reason' has greater than the allowable max size.";
+        message = "The size of 'reason' is greater than the allowable max size.";
         return false;
       }
 
