@@ -2997,7 +2997,7 @@ namespace WebSocketSharp
     /// <param name="url">
     ///   <para>
     ///   A <see cref="string"/> that represents the HTTP proxy server URL to
-    ///   connect through.
+    ///   connect through. The syntax must be http://&lt;host&gt;[:&lt;port&gt;].
     ///   </para>
     ///   <para>
     ///   If <paramref name="url"/> is <see langword="null"/> or empty,
