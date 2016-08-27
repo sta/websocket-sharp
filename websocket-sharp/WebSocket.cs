@@ -880,7 +880,7 @@ namespace WebSocketSharp
           || uri.Scheme != "http"
           || uri.Segments.Length > 1
       ) {
-        message = "The syntax of 'url' must be 'http://<host>[:<port>]'.";
+        message = "'url' is an invalid URL.";
         return false;
       }
 
