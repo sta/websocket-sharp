@@ -2435,20 +2435,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection asynchronously with the specified <see cref="ushort"/>,
-    /// and releases all associated resources.
+    /// Closes the WebSocket connection asynchronously with the specified
+    /// <paramref name="code"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   This method doesn't wait for the close to be complete.
-    ///   </para>
-    ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if <paramref name="code"/> isn't in
-    ///   the allowable range of the close status code.
-    ///   </para>
+    /// This method does not wait for the close to be complete.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for the close.
+    /// A <see cref="ushort"/> that represents the status code indicating
+    /// the reason for the close.
     /// </param>
     public void CloseAsync (ushort code)
     {
