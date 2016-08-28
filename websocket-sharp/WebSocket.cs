@@ -2416,10 +2416,11 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection asynchronously, and releases all associated resources.
+    /// Closes the WebSocket connection asynchronously, and releases
+    /// all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the close to be complete.
+    /// This method does not wait for the close to be complete.
     /// </remarks>
     public void CloseAsync ()
     {
