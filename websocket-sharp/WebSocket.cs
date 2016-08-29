@@ -2474,14 +2474,14 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Closes the WebSocket connection asynchronously with the specified
-    /// <see cref="CloseStatusCode"/>, and releases all associated resources.
+    /// <paramref name="code"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the close to be complete.
+    /// This method does not wait for the close to be complete.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
-    /// the reason for the close.
+    /// One of the <see cref="CloseStatusCode"/> enum values that represents
+    /// the status code indicating the reason for the close.
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
