@@ -2531,10 +2531,15 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code, string reason)
     {
-      var msg = _readyState.CheckIfAvailable (true, true, false, false) ??
-                CheckCloseParameters (code, reason, _client);
+      string msg;
+      if (!checkIfAvailable (true, true, false, false, out msg)) {
+        _logger.Error (msg);
+        error ("An error has occurred in closing the connection.", null);
 
-      if (msg != null) {
+        return;
+      }
+
+      if (!CheckParametersForClose (code, reason, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
 
