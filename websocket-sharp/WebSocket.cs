@@ -2553,24 +2553,19 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Closes the WebSocket connection asynchronously with the specified
-    /// <see cref="CloseStatusCode"/> and <see cref="string"/>, and releases
+    /// <paramref name="code"/> and <paramref name="reason"/>, and releases
     /// all associated resources.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   This method doesn't wait for the close to be complete.
-    ///   </para>
-    ///   <para>
-    ///   This method emits a <see cref="OnError"/> event if the size of
-    ///   <paramref name="reason"/> is greater than 123 bytes.
-    ///   </para>
+    /// This method does not wait for the close to be complete.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
-    /// the reason for the close.
+    /// One of the <see cref="CloseStatusCode"/> enum values that represents
+    /// the status code indicating the reason for the close.
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for the close.
+    /// The size must be 123 bytes or less.
     /// </param>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
