@@ -817,7 +817,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket connection requests.
+    /// Stops receiving the WebSocket handshake requests.
     /// </summary>
     public void Stop ()
     {
