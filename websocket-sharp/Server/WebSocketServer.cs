@@ -821,9 +821,14 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Stop ()
     {
+      string msg;
+      if (!checkIfAvailable (false, true, false, false, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
+
       lock (_sync) {
-        var msg = _state.CheckIfAvailable (false, true, false);
-        if (msg != null) {
+        if (!checkIfAvailable (false, true, false, false, out msg)) {
           _logger.Error (msg);
           return;
         }
