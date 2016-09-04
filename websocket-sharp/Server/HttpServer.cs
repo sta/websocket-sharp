@@ -951,7 +951,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the HTTP requests.
+    /// Stops receiving the incoming requests, and closes the connections.
     /// </summary>
     public void Stop ()
     {
