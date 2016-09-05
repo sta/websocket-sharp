@@ -988,11 +988,19 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      lock (_sync) {
-        var msg = _state.CheckIfAvailable (false, true, false) ??
-                  WebSocket.CheckCloseParameters (code, reason, false);
+      string msg;
+      if (!checkIfAvailable (false, true, false, false, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
 
-        if (msg != null) {
+      if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
+
+      lock (_sync) {
+        if (!checkIfAvailable (false, true, false, false, out msg)) {
           _logger.Error (msg);
           return;
         }
