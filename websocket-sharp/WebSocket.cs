@@ -112,6 +112,7 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+    private TimeSpan                       _httpTimeout;
 
     #endregion
 
@@ -244,6 +245,7 @@ namespace WebSocketSharp
       _message = messagec;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
+      _httpTimeout = TimeSpan.FromSeconds (90);
 
       init ();
     }
@@ -607,6 +609,23 @@ namespace WebSocketSharp
 
           _waitTime = value;
         }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the timeout for the http request made when initially connecting to a server.
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the timeout. The default value is the same as
+    /// 90 seconds, this value is not used if <see cref="WebSocket"/> is used in a server.
+    /// </value>
+    public TimeSpan HttpTimeout {
+      get {
+        return _httpTimeout;
+      }
+
+      set {
+      	_httpTimeout = value;
       }
     }
 
@@ -1628,7 +1647,7 @@ namespace WebSocketSharp
     private HttpResponse sendHandshakeRequest ()
     {
       var req = createHandshakeRequest ();
-      var res = sendHttpRequest (req, 90000);
+      var res = sendHttpRequest (req, (int)_httpTimeout.TotalMilliseconds);
       if (res.IsUnauthorized) {
         var chal = res.Headers["WWW-Authenticate"];
         _logger.Warn (String.Format ("Received an authentication requirement for '{0}'.", chal));
