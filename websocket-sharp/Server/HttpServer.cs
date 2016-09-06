@@ -977,14 +977,19 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the HTTP requests with the specified <see cref="ushort"/> and
-    /// <see cref="string"/> used to stop the WebSocket services.
+    /// Stops receiving the incoming requests, and closes the connections with
+    /// the specified <paramref name="code"/> and <paramref name="reason"/> for
+    /// the WebSocket connection close.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating the reason for the stop.
+    /// A <see cref="ushort"/> that represents the status code indicating
+    /// the reason for the WebSocket connection close. The status codes are
+    /// defined in <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
+    /// Section 7.4</see> of RFC 6455.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the stop.
+    /// A <see cref="string"/> that represents the reason for the WebSocket
+    /// connection close. The size must be 123 bytes or less.
     /// </param>
     public void Stop (ushort code, string reason)
     {
