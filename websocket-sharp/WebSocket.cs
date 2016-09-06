@@ -1726,7 +1726,7 @@ namespace WebSocketSharp
     private void sendProxyConnectRequest ()
     {
       var req = HttpRequest.CreateConnectRequest (_uri);
-      var res = sendHttpRequest (req, 90000);
+      var res = sendHttpRequest (req, (int)_httpTimeout.TotalMilliseconds);
       if (res.IsProxyAuthenticationRequired) {
         var chal = res.Headers["Proxy-Authenticate"];
         _logger.Warn (
