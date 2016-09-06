@@ -1920,21 +1920,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static string CheckCloseParameters (ushort code, string reason, bool client)
-    {
-      return !code.IsCloseStatusCode ()
-             ? "An invalid close status code."
-             : code == (ushort) CloseStatusCode.NoStatus
-               ? (!reason.IsNullOrEmpty () ? "NoStatus cannot have a reason." : null)
-               : code == (ushort) CloseStatusCode.MandatoryExtension && !client
-                 ? "MandatoryExtension cannot be used by a server."
-                 : code == (ushort) CloseStatusCode.ServerError && client
-                   ? "ServerError cannot be used by a client."
-                   : !reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123
-                     ? "A reason has greater than the allowable max size."
-                     : null;
-    }
-
     internal static string CheckCloseParameters (CloseStatusCode code, string reason, bool client)
     {
       return code == CloseStatusCode.NoStatus
