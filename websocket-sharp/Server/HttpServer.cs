@@ -1027,15 +1027,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the HTTP requests with the specified <see cref="CloseStatusCode"/> and
-    /// <see cref="string"/> used to stop the WebSocket services.
+    /// Stops receiving the incoming requests, and closes the connections with
+    /// the specified <paramref name="code"/> and <paramref name="reason"/> for
+    /// the WebSocket connection close.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
-    /// the reason for the stop.
+    /// One of the <see cref="CloseStatusCode"/> enum values that represents
+    /// the status code indicating the reason for the WebSocket connection close.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the stop.
+    /// A <see cref="string"/> that represents the reason for the WebSocket
+    /// connection close. The size must be 123 bytes or less.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
