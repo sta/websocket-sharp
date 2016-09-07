@@ -112,6 +112,7 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
+    private TimeSpan                       _tcpTimeout;
 
     #endregion
 
@@ -244,6 +245,7 @@ namespace WebSocketSharp
       _message = messagec;
       _secure = _uri.Scheme == "wss";
       _waitTime = TimeSpan.FromSeconds (5);
+      _tcpTimeout = TimeSpan.FromSeconds (30);
 
       init ();
     }
@@ -607,6 +609,23 @@ namespace WebSocketSharp
 
           _waitTime = value;
         }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the timout for connecting using new <see cref="TcpClient"/>
+    /// </summary>
+    /// <value>
+    /// A <see cref="TimeSpan"/> that represents the timeout. The default value is the same as
+    /// 30 seconds.
+    /// </value>
+    public TimeSpan TcpTimeout {
+      get {
+        return _tcpTimeout;
+      }
+
+      set {
+        _tcpTimeout = value;
       }
     }
 
@@ -1723,7 +1742,7 @@ namespace WebSocketSharp
         if (_proxyCredentials != null) {
           if (res.HasConnectionClose) {
             releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+            _tcpClient = tcpClientWithTimeout (_proxyUri.DnsSafeHost, _proxyUri.Port);
             _stream = _tcpClient.GetStream ();
           }
 
@@ -1745,12 +1764,12 @@ namespace WebSocketSharp
     private void setClientStream ()
     {
       if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
+        _tcpClient = tcpClientWithTimeout (_proxyUri.DnsSafeHost, _proxyUri.Port);
         _stream = _tcpClient.GetStream ();
         sendProxyConnectRequest ();
       }
       else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
+        _tcpClient = tcpClientWithTimeout (_uri.DnsSafeHost, _uri.Port);
         _stream = _tcpClient.GetStream ();
       }
 
@@ -1780,6 +1799,19 @@ namespace WebSocketSharp
           throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
         }
       }
+    }
+
+    // As client
+    private TcpClient tcpClientWithTimeout (string hostname, int port)
+    {
+      TcpClient client = new TcpClient ();
+      var result = client.BeginConnect (hostname, port, null, null);
+      var success = result.AsyncWaitHandle.WaitOne (_tcpTimeout);
+      if (!success) {
+        throw new WebSocketException ("The connection timed out");
+      }
+      client.EndConnect (result);
+      return client;
     }
 
     private void startReceiving ()
