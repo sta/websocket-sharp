@@ -2420,7 +2420,9 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
-    /// the reason for the close.
+    /// the reason for the close. The status codes are defined in
+    /// <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
+    /// Section 7.4</see> of RFC 6455.
     /// </param>
     public void CloseAsync (ushort code)
     {
