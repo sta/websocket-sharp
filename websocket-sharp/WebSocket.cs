@@ -3063,7 +3063,7 @@ namespace WebSocketSharp
     /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method closes the connection with <see cref="CloseStatusCode.Away"/>.
+    /// This method closes the connection with status code 1001 (going away).
     /// </remarks>
     void IDisposable.Dispose ()
     {
