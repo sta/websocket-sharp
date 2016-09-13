@@ -2598,10 +2598,10 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method doesn't wait for the connect to be complete.
+    ///   This method does not wait for the connect to be complete.
     ///   </para>
     ///   <para>
-    ///   This method isn't available in a server.
+    ///   This method is not available in a server.
     ///   </para>
     /// </remarks>
     public void ConnectAsync ()
