@@ -2577,7 +2577,7 @@ namespace WebSocketSharp
     /// Establishes a WebSocket connection.
     /// </summary>
     /// <remarks>
-    /// This method isn't available in a server.
+    /// This method is not available in a server.
     /// </remarks>
     public void Connect ()
     {
