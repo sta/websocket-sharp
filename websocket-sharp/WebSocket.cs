@@ -2201,10 +2201,10 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method doesn't wait for the accept to be complete.
+    ///   This method does not wait for the accept to be complete.
     ///   </para>
     ///   <para>
-    ///   This method isn't available in a client.
+    ///   This method is not available in a client.
     ///   </para>
     /// </remarks>
     public void AcceptAsync ()
