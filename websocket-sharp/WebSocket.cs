@@ -3067,7 +3067,7 @@ namespace WebSocketSharp
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      close (new CloseEventArgs (CloseStatusCode.Away), true, true, false);
+      close (new CloseEventArgs (1001), true, true, false);
     }
 
     #endregion
