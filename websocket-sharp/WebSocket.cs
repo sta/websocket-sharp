@@ -2180,7 +2180,7 @@ namespace WebSocketSharp
     /// Accepts the WebSocket handshake request.
     /// </summary>
     /// <remarks>
-    /// This method isn't available in a client.
+    /// This method is not available in a client.
     /// </remarks>
     public void Accept ()
     {
