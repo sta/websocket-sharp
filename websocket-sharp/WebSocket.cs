@@ -914,7 +914,7 @@ namespace WebSocketSharp
       }
 
       if (!_client && !masked) {
-        message = "A frame from a client isn't masked.";
+        message = "A frame from a client is not masked.";
         return false;
       }
 
