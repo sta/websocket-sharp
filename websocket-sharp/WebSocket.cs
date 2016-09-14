@@ -829,12 +829,12 @@ namespace WebSocketSharp
       message = null;
 
       if (!client && _client) {
-        message = "This operation isn't available in: client";
+        message = "This operation is not available in: client";
         return false;
       }
 
       if (!server && !_client) {
-        message = "This operation isn't available in: server";
+        message = "This operation is not available in: server";
         return false;
       }
 
