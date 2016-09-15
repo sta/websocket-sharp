@@ -2923,6 +2923,9 @@ namespace WebSocketSharp
     /// Sets a pair of <paramref name="username"/> and <paramref name="password"/> for
     /// the HTTP authentication (Basic/Digest).
     /// </summary>
+    /// <remarks>
+    /// This method is not available in a server.
+    /// </remarks>
     /// <param name="username">
     ///   <para>
     ///   A <see cref="string"/> that represents the user name used to authenticate.
