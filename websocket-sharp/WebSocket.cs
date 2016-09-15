@@ -2987,6 +2987,9 @@ namespace WebSocketSharp
     /// a pair of <paramref name="username"/> and <paramref name="password"/> for
     /// the proxy server authentication (Basic/Digest).
     /// </summary>
+    /// <remarks>
+    /// This method is not available in a server.
+    /// </remarks>
     /// <param name="url">
     ///   <para>
     ///   A <see cref="string"/> that represents the HTTP proxy server URL to
