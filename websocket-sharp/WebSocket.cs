@@ -2883,6 +2883,9 @@ namespace WebSocketSharp
     /// Sets an HTTP <paramref name="cookie"/> to send with
     /// the WebSocket handshake request to the server.
     /// </summary>
+    /// <remarks>
+    /// This method is not available in a server.
+    /// </remarks>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> that represents a cookie to send.
     /// </param>
