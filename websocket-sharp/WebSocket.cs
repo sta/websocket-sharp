@@ -2309,13 +2309,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code == CloseStatusCode.NoStatus) {
-        close (new CloseEventArgs (), true, true, false);
-        return;
-      }
-
-      var send = !code.IsReserved ();
-      close (new CloseEventArgs (code), send, send, false);
+      close ((ushort) code, null);
     }
 
     /// <summary>
