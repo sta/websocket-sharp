@@ -989,6 +989,17 @@ namespace WebSocketSharp
       }
     }
 
+    private void closeAsync (ushort code, string reason)
+    {
+      if (code == 1005) { // == no status
+        closeAsync (new CloseEventArgs (), true, true, false);
+        return;
+      }
+
+      var send = !code.IsReserved ();
+      closeAsync (new CloseEventArgs (code, reason), send, send, false);
+    }
+
     private void closeAsync (CloseEventArgs e, bool send, bool receive, bool received)
     {
       Action<CloseEventArgs, bool, bool, bool> closer = close;
