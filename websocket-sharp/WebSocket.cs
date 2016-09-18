@@ -2717,7 +2717,7 @@ namespace WebSocketSharp
         return;
       }
       
-      if(data.Length <= index + count){
+      if(data.Length < index + count){
         _logger.Error (msg);
         error ("An error has occurred in sending data.", null);
 
