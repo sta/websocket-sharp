@@ -96,12 +96,12 @@ namespace WebSocketSharp.Net
       if (_secure) {
         var conf = listener.SslConfiguration;
         var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
-        sslStream.AuthenticateAsServer (
+        sslStream.AuthenticateAsServerAsync (
           conf.ServerCertificate,
           conf.ClientCertificateRequired,
           conf.EnabledSslProtocols,
           conf.CheckCertificateRevocation
-        );
+        ).RunSynchronously();
 
         _stream = sslStream;
       }
@@ -185,7 +185,7 @@ namespace WebSocketSharp.Net
       catch {
       }
 
-      _socket.Close ();
+      _socket.Dispose();
       _socket = null;
     }
 
@@ -559,7 +559,7 @@ namespace WebSocketSharp.Net
           var enc = Encoding.UTF8;
           var entity = enc.GetBytes (content.ToString ());
           res.ContentEncoding = enc;
-          res.ContentLength64 = entity.LongLength;
+          res.ContentLength64 = entity.Length;
 
           res.Close (entity, true);
         }

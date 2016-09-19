@@ -174,7 +174,7 @@ namespace WebSocketSharp.Net
     {
       _listener.CheckDisposed ();
       if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+        throw new ArgumentNullException (nameof(uriPrefix));
 
       return _prefixes.Contains (uriPrefix);
     }
@@ -249,7 +249,7 @@ namespace WebSocketSharp.Net
     {
       _listener.CheckDisposed ();
       if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+        throw new ArgumentNullException (nameof(uriPrefix));
 
       var ret = _prefixes.Remove (uriPrefix);
       if (ret && _listener.IsListening)

@@ -241,10 +241,10 @@ namespace WebSocketSharp.Net
 
       if (protocol != null) {
         if (protocol.Length == 0)
-          throw new ArgumentException ("An empty string.", "protocol");
+          throw new ArgumentException ("An empty string.", nameof(protocol));
 
         if (!protocol.IsToken ())
-          throw new ArgumentException ("Contains an invalid character.", "protocol");
+          throw new ArgumentException ("Contains an invalid character.", nameof(protocol));
       }
 
       _websocketContext = new HttpListenerWebSocketContext (this, protocol);

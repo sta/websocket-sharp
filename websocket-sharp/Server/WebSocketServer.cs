@@ -162,20 +162,20 @@ namespace WebSocketSharp.Server
     public WebSocketServer (string url)
     {
       if (url == null)
-        throw new ArgumentNullException ("url");
+        throw new ArgumentNullException (nameof(url));
 
       if (url.Length == 0)
-        throw new ArgumentException ("An empty string.", "url");
+        throw new ArgumentException ("An empty string.", nameof(url));
 
       Uri uri;
       string msg;
       if (!tryCreateUri (url, out uri, out msg))
-        throw new ArgumentException (msg, "url");
+        throw new ArgumentException (msg, nameof(url));
 
       var host = uri.DnsSafeHost;
       var addr = host.ToIPAddress ();
       if (!addr.IsLocal ())
-        throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
+        throw new ArgumentException ("The host part isn't a local host name: " + url, nameof(url));
 
       init (host, addr, uri.Port, uri.Scheme == "wss");
     }
@@ -202,7 +202,7 @@ namespace WebSocketSharp.Server
     {
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException (
-          "port", "Not between 1 and 65535 inclusive: " + port);
+          nameof(port), "Not between 1 and 65535 inclusive: " + port);
 
       init (null, System.Net.IPAddress.Any, port, secure);
     }
@@ -271,14 +271,14 @@ namespace WebSocketSharp.Server
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
     {
       if (address == null)
-        throw new ArgumentNullException ("address");
+        throw new ArgumentNullException (nameof(address));
 
       if (!address.IsLocal ())
-        throw new ArgumentException ("Not a local IP address: " + address, "address");
+        throw new ArgumentException ("Not a local IP address: " + address, nameof(address));
 
       if (!port.IsPortNumber ())
         throw new ArgumentOutOfRangeException (
-          "port", "Not between 1 and 65535 inclusive: " + port);
+          nameof(port), "Not between 1 and 65535 inclusive: " + port);
 
       init (null, address, port, secure);
     }
@@ -558,35 +558,6 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
-    private bool checkIfAvailable (
-      bool ready, bool start, bool shutting, bool stop, out string message
-    )
-    {
-      message = null;
-
-      if (!ready && _state == ServerState.Ready) {
-        message = "This operation is not available in: ready";
-        return false;
-      }
-
-      if (!start && _state == ServerState.Start) {
-        message = "This operation is not available in: start";
-        return false;
-      }
-
-      if (!shutting && _state == ServerState.ShuttingDown) {
-        message = "This operation is not available in: shutting down";
-        return false;
-      }
-
-      if (!stop && _state == ServerState.Stop) {
-        message = "This operation is not available in: stop";
-        return false;
-      }
-
-      return true;
-    }
-
     private string checkIfCertificateExists ()
     {
       return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
@@ -640,11 +611,11 @@ namespace WebSocketSharp.Server
       host.StartSession (context);
     }
 
-    private void receiveRequest ()
+    private async void receiveRequest ()
     {
       while (true) {
         try {
-          var cl = _listener.AcceptTcpClient ();
+          var cl = await _listener.AcceptTcpClientAsync();
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
@@ -656,7 +627,7 @@ namespace WebSocketSharp.Server
               }
               catch (Exception ex) {
                 _logger.Fatal (ex.ToString ());
-                cl.Close ();
+                cl.Dispose();
               }
             }
           );
@@ -817,19 +788,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests, and closes
-    /// the WebSocket connections.
+    /// Stops receiving the WebSocket connection requests.
     /// </summary>
     public void Stop ()
     {
-      string msg;
-      if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
       lock (_sync) {
-        if (!checkIfAvailable (false, true, false, false, out msg)) {
+        var msg = _state.CheckIfAvailable (false, true, false);
+        if (msg != null) {
           _logger.Error (msg);
           return;
         }
@@ -844,35 +809,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests, and closes
-    /// the WebSocket connections with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Stops receiving the WebSocket connection requests with
+    /// the specified <see cref="ushort"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating
-    /// the reason for the close. The status codes are defined in
-    /// <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
-    /// Section 7.4</see> of RFC 6455.
+    /// A <see cref="ushort"/> that represents the status code indicating the reason for the stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less.
+    /// A <see cref="string"/> that represents the reason for the stop.
     /// </param>
     public void Stop (ushort code, string reason)
     {
-      string msg;
-      if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
-      if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
       lock (_sync) {
-        if (!checkIfAvailable (false, true, false, false, out msg)) {
+        var msg = _state.CheckIfAvailable (false, true, false) ??
+                  WebSocket.CheckCloseParameters (code, reason, false);
+
+        if (msg != null) {
           _logger.Error (msg);
           return;
         }
@@ -881,7 +833,6 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-
       if (code == (ushort) CloseStatusCode.NoStatus) {
         _services.Stop (new CloseEventArgs (), true, true);
       }
@@ -894,33 +845,23 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests, and closes
-    /// the WebSocket connections with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Stops receiving the WebSocket connection requests with
+    /// the specified <see cref="CloseStatusCode"/> and <see cref="string"/>.
     /// </summary>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values that represents
-    /// the status code indicating the reason for the close.
+    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code indicating
+    /// the reason for the stop.
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less.
+    /// A <see cref="string"/> that represents the reason for the stop.
     /// </param>
     public void Stop (CloseStatusCode code, string reason)
     {
-      string msg;
-      if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
-      if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
       lock (_sync) {
-        if (!checkIfAvailable (false, true, false, false, out msg)) {
+        var msg = _state.CheckIfAvailable (false, true, false) ??
+                  WebSocket.CheckCloseParameters (code, reason, false);
+
+        if (msg != null) {
           _logger.Error (msg);
           return;
         }
@@ -929,7 +870,6 @@ namespace WebSocketSharp.Server
       }
 
       stopReceiving (5000);
-
       if (code == CloseStatusCode.NoStatus) {
         _services.Stop (new CloseEventArgs (), true, true);
       }

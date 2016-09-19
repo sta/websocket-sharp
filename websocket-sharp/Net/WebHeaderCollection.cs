@@ -46,7 +46,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
+//using System.Security.Permissions;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -71,7 +71,7 @@ namespace WebSocketSharp.Net
     static WebHeaderCollection ()
     {
       _headers =
-        new Dictionary<string, HttpHeaderInfo> (StringComparer.InvariantCultureIgnoreCase) {
+        new Dictionary<string, HttpHeaderInfo> (StringComparer.OrdinalIgnoreCase) {
           {
             "Accept",
             new HttpHeaderInfo (
@@ -481,7 +481,7 @@ namespace WebSocketSharp.Net
       SerializationInfo serializationInfo, StreamingContext streamingContext)
     {
       if (serializationInfo == null)
-        throw new ArgumentNullException ("serializationInfo");
+        throw new ArgumentNullException (nameof(serializationInfo));
 
       try {
         _internallyUsed = serializationInfo.GetBoolean ("InternallyUsed");
@@ -495,7 +495,7 @@ namespace WebSocketSharp.Net
         }
       }
       catch (SerializationException ex) {
-        throw new ArgumentException (ex.Message, "serializationInfo", ex);
+        throw new ArgumentException (ex.Message, nameof(serializationInfo), ex);
       }
     }
 
@@ -664,7 +664,7 @@ namespace WebSocketSharp.Net
     {
       var idx = header.IndexOf (':');
       if (idx == -1)
-        throw new ArgumentException ("No colon could be found.", "header");
+        throw new ArgumentException ("No colon could be found.", nameof(header));
 
       return idx;
     }
@@ -684,11 +684,11 @@ namespace WebSocketSharp.Net
     private static string checkName (string name)
     {
       if (name == null || name.Length == 0)
-        throw new ArgumentNullException ("name");
+        throw new ArgumentNullException (nameof(name));
 
       name = name.Trim ();
       if (!IsHeaderName (name))
-        throw new ArgumentException ("Contains invalid characters.", "name");
+        throw new ArgumentException ("Contains invalid characters.", nameof(name));
 
       return name;
     }
@@ -720,10 +720,10 @@ namespace WebSocketSharp.Net
 
       value = value.Trim ();
       if (value.Length > 65535)
-        throw new ArgumentOutOfRangeException ("value", "Greater than 65,535 characters.");
+        throw new ArgumentOutOfRangeException (nameof(value), "Greater than 65,535 characters.");
 
       if (!IsHeaderValue (value))
-        throw new ArgumentException ("Contains invalid characters.", "value");
+        throw new ArgumentException ("Contains invalid characters.", nameof(value));
 
       return value;
     }
@@ -764,7 +764,7 @@ namespace WebSocketSharp.Net
     private static HttpHeaderInfo getHeaderInfo (string name)
     {
       foreach (var info in _headers.Values)
-        if (info.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
+        if (info.Name.Equals (name, StringComparison.OrdinalIgnoreCase))
           return info;
 
       return null;
@@ -930,7 +930,7 @@ namespace WebSocketSharp.Net
     public void Add (string header)
     {
       if (header == null || header.Length == 0)
-        throw new ArgumentNullException ("header");
+        throw new ArgumentNullException (nameof(header));
 
       var pos = checkColonSeparated (header);
       add (header.Substring (0, pos), header.Substring (pos + 1), false);
@@ -1158,13 +1158,11 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
-    [SecurityPermission (
-      SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-    public override void GetObjectData (
+    public void GetObjectData (
       SerializationInfo serializationInfo, StreamingContext streamingContext)
     {
       if (serializationInfo == null)
-        throw new ArgumentNullException ("serializationInfo");
+        throw new ArgumentNullException (nameof(serializationInfo));
 
       serializationInfo.AddValue ("InternallyUsed", _internallyUsed);
       serializationInfo.AddValue ("State", (int) _state);
@@ -1228,7 +1226,7 @@ namespace WebSocketSharp.Net
     /// <param name="sender">
     /// An <see cref="object"/> that represents the source of the deserialization event.
     /// </param>
-    public override void OnDeserialization (object sender)
+    public void OnDeserialization (object sender)
     {
     }
 
@@ -1444,10 +1442,7 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="serializationInfo"/> is <see langword="null"/>.
     /// </exception>
-    [SecurityPermission (
-      SecurityAction.LinkDemand,
-      Flags = SecurityPermissionFlag.SerializationFormatter,
-      SerializationFormatter = true)]
+    
     void ISerializable.GetObjectData (
       SerializationInfo serializationInfo, StreamingContext streamingContext)
     {

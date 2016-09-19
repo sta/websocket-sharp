@@ -192,7 +192,7 @@ namespace WebSocketSharp.Net
       set {
         checkDisposed ();
         if (value != null && value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
+          throw new ArgumentException ("An empty string.", nameof(value));
 
         _contentType = value;
       }
@@ -304,10 +304,10 @@ namespace WebSocketSharp.Net
       set {
         checkDisposedOrHeadersSent ();
         if (value == null)
-          throw new ArgumentNullException ("value");
+          throw new ArgumentNullException (nameof(value));
 
         if (value.Major != 1 || (value.Minor != 0 && value.Minor != 1))
-          throw new ArgumentException ("Not 1.0 or 1.1.", "value");
+          throw new ArgumentException ("Not 1.0 or 1.1.", nameof(value));
 
         _version = value;
       }
@@ -340,7 +340,7 @@ namespace WebSocketSharp.Net
 
         Uri uri = null;
         if (!value.MaybeUri () || !Uri.TryCreate (value, UriKind.Absolute, out uri))
-          throw new ArgumentException ("Not an absolute URL.", "value");
+          throw new ArgumentException ("Not an absolute URL.", nameof(value));
 
         _location = value;
       }
@@ -434,7 +434,7 @@ namespace WebSocketSharp.Net
         }
 
         if (!value.IsText () || value.IndexOfAny (new[] { '\r', '\n' }) > -1)
-          throw new ArgumentException ("Contains invalid characters.", "value");
+          throw new ArgumentException ("Contains invalid characters.", nameof(value));
 
         _statusDescription = value;
       }
@@ -565,7 +565,7 @@ namespace WebSocketSharp.Net
         foreach (Cookie cookie in _cookies)
           headers.InternalSet ("Set-Cookie", cookie.ToResponseString (), true);
 
-      var enc = _contentEncoding ?? Encoding.Default;
+      var enc = _contentEncoding ?? Encoding.UTF8;
       var writer = new StreamWriter (destination, enc, 256);
       writer.Write ("HTTP/{0} {1} {2}\r\n", _version, _statusCode, _statusDescription);
       writer.Write (headers.ToStringMultiValue (true));
@@ -709,7 +709,7 @@ namespace WebSocketSharp.Net
     {
       checkDisposed ();
       if (responseEntity == null)
-        throw new ArgumentNullException ("responseEntity");
+        throw new ArgumentNullException (nameof(responseEntity));
 
       var len = responseEntity.Length;
       var output = OutputStream;
@@ -744,7 +744,7 @@ namespace WebSocketSharp.Net
     public void CopyFrom (HttpListenerResponse templateResponse)
     {
       if (templateResponse == null)
-        throw new ArgumentNullException ("templateResponse");
+        throw new ArgumentNullException (nameof(templateResponse));
 
       if (templateResponse._headers != null) {
         if (_headers != null)
@@ -792,11 +792,11 @@ namespace WebSocketSharp.Net
     {
       checkDisposedOrHeadersSent ();
       if (url == null)
-        throw new ArgumentNullException ("url");
+        throw new ArgumentNullException (nameof(url));
 
       Uri uri = null;
       if (!url.MaybeUri () || !Uri.TryCreate (url, UriKind.Absolute, out uri))
-        throw new ArgumentException ("Not an absolute URL.", "url");
+        throw new ArgumentException ("Not an absolute URL.", nameof(url));
 
       _location = url;
       _statusCode = 302;
@@ -818,10 +818,10 @@ namespace WebSocketSharp.Net
     public void SetCookie (Cookie cookie)
     {
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException (nameof(cookie));
 
       if (!canAddOrUpdate (cookie))
-        throw new ArgumentException ("Cannot be replaced.", "cookie");
+        throw new ArgumentException ("Cannot be replaced.", nameof(cookie));
 
       Cookies.Add (cookie);
     }

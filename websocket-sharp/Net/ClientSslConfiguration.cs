@@ -63,7 +63,7 @@ namespace WebSocketSharp.Net
     /// a secure connection.
     /// </param>
     public ClientSslConfiguration (string targetHost)
-      : this (targetHost, null, SslProtocols.Default, false)
+      : this (targetHost, null, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false)
     {
     }
 

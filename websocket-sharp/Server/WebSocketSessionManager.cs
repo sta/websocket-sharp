@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using System.Timers;
+//using System.Timers;
 
 namespace WebSocketSharp.Server
 {
@@ -49,9 +49,10 @@ namespace WebSocketSharp.Server
     private Dictionary<string, IWebSocketSession> _sessions;
     private volatile ServerState                  _state;
     private volatile bool                         _sweeping;
-    private System.Timers.Timer                   _sweepTimer;
+    private Timer                                 _sweepTimer;
     private object                                _sync;
     private TimeSpan                              _waitTime;
+    private const int                             _sweepTime = 60000;
 
     #endregion
 
@@ -73,7 +74,7 @@ namespace WebSocketSharp.Server
       _sync = ((ICollection) _sessions).SyncRoot;
       _waitTime = TimeSpan.FromSeconds (1);
 
-      setSweepTimer (60000);
+      setSweepTimer (_sweepTime, false);
     }
 
     #endregion
@@ -188,7 +189,7 @@ namespace WebSocketSharp.Server
 
         _clean = value;
         if (_state == ServerState.Start)
-          _sweepTimer.Enabled = value;
+          setSweepTimer(_sweepTime, true);
       }
     }
 
@@ -284,10 +285,21 @@ namespace WebSocketSharp.Server
       return Guid.NewGuid ().ToString ("N");
     }
 
-    private void setSweepTimer (double interval)
+    private void setSweepTimer (int interval, bool start)
     {
-      _sweepTimer = new System.Timers.Timer (interval);
-      _sweepTimer.Elapsed += (sender, e) => Sweep ();
+      if(_sweepTimer == null)
+        _sweepTimer = new Timer ((sender) => Sweep(), null, Timeout.Infinite, interval);
+
+      if(start)
+      {
+        _sweepTimer.Change(0, interval);
+      }
+      else
+      {
+        _sweepTimer.Change(Timeout.Infinite, interval);
+      }
+      
+      //_sweepTimer.Elapsed += (sender, e) => Sweep ();
     }
 
     private bool tryGetSession (string id, out IWebSocketSession session)
@@ -363,7 +375,8 @@ namespace WebSocketSharp.Server
     internal void Start ()
     {
       lock (_sync) {
-        _sweepTimer.Enabled = _clean;
+        setSweepTimer(_sweepTime, _clean);
+        //_sweepTimer.Enabled = _clean;
         _state = ServerState.Start;
       }
     }
@@ -373,7 +386,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         _state = ServerState.ShuttingDown;
 
-        _sweepTimer.Enabled = false;
+        setSweepTimer(_sweepTime, false);
         foreach (var session in _sessions.Values.ToList ())
           session.Context.WebSocket.Close (e, frameAsBytes, receive);
 
@@ -401,7 +414,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (data.LongLength <= WebSocket.FragmentLength)
+      if (data.Length <= WebSocket.FragmentLength)
         broadcast (Opcode.Binary, data, null);
       else
         broadcast (Opcode.Binary, new MemoryStream (data), null);
@@ -424,7 +437,7 @@ namespace WebSocketSharp.Server
       }
 
       var bytes = data.UTF8Encode ();
-      if (bytes.LongLength <= WebSocket.FragmentLength)
+      if (bytes.Length <= WebSocket.FragmentLength)
         broadcast (Opcode.Text, bytes, null);
       else
         broadcast (Opcode.Text, new MemoryStream (bytes), null);
@@ -454,7 +467,7 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (data.LongLength <= WebSocket.FragmentLength)
+      if (data.Length <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Binary, data, completed);
       else
         broadcastAsync (Opcode.Binary, new MemoryStream (data), completed);
@@ -485,7 +498,7 @@ namespace WebSocketSharp.Server
       }
 
       var bytes = data.UTF8Encode ();
-      if (bytes.LongLength <= WebSocket.FragmentLength)
+      if (bytes.Length <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Text, bytes, completed);
       else
         broadcastAsync (Opcode.Text, new MemoryStream (bytes), completed);

@@ -141,7 +141,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Encoding ContentEncoding {
       get {
-        return _contentEncoding ?? (_contentEncoding = Encoding.Default);
+        return _contentEncoding ?? (_contentEncoding = Encoding.UTF8);
       }
     }
 
@@ -491,7 +491,7 @@ namespace WebSocketSharp.Net
       var val = header.Substring (colon + 1).Trim ();
       _headers.InternalSet (name, val, false);
 
-      var lower = name.ToLower (CultureInfo.InvariantCulture);
+      var lower = name.ToLowerInvariant();
       if (lower == "accept") {
         _acceptTypes = new List<string> (val.SplitHeaderValue (',')).ToArray ();
         return;
