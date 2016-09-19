@@ -2550,13 +2550,7 @@ namespace WebSocketSharp
         return;
       }
 
-      if (code == CloseStatusCode.NoStatus) {
-        closeAsync (new CloseEventArgs (), true, true, false);
-        return;
-      }
-
-      var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code, reason), send, send, false);
+      closeAsync ((ushort) code, reason);
     }
 
     /// <summary>
