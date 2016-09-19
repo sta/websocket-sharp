@@ -97,10 +97,10 @@ namespace WebSocketSharp.Net
       string userName, string password, string domain, params string[] roles)
     {
       if (userName == null)
-        throw new ArgumentNullException ("userName");
+        throw new ArgumentNullException (nameof(userName));
 
       if (userName.Length == 0)
-        throw new ArgumentException ("An empty string.", "userName");
+        throw new ArgumentException ("An empty string.", nameof(userName));
 
       _userName = userName;
       _password = password;

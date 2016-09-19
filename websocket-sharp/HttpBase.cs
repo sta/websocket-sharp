@@ -72,7 +72,7 @@ namespace WebSocketSharp
 
     public string EntityBody {
       get {
-        if (EntityBodyData == null || EntityBodyData.LongLength == 0)
+        if (EntityBodyData == null || EntityBodyData.Length == 0)
           return String.Empty;
 
         Encoding enc = null;
@@ -105,10 +105,10 @@ namespace WebSocketSharp
     {
       long len;
       if (!Int64.TryParse (length, out len))
-        throw new ArgumentException ("Cannot be parsed.", "length");
+        throw new ArgumentException ("Cannot be parsed.", nameof(length));
 
       if (len < 0)
-        throw new ArgumentOutOfRangeException ("length", "Less than zero.");
+        throw new ArgumentOutOfRangeException (nameof(length), "Less than zero.");
 
       return len > 1024
              ? stream.ReadBytes (len, 1024)
@@ -160,7 +160,7 @@ namespace WebSocketSharp
       var timer = new Timer (
         state => {
           timeout = true;
-          stream.Close ();
+          stream.Dispose();
         },
         null,
         millisecondsTimeout,

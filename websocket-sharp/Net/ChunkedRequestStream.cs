@@ -121,13 +121,13 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (GetType ().ToString ());
 
       if (buffer == null)
-        throw new ArgumentNullException ("buffer");
+        throw new ArgumentNullException (nameof(buffer));
 
       if (offset < 0)
-        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
+        throw new ArgumentOutOfRangeException (nameof(offset), "A negative value.");
 
       if (count < 0)
-        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+        throw new ArgumentOutOfRangeException (nameof(count), "A negative value.");
 
       var len = buffer.Length;
       if (offset + count > len)
@@ -185,11 +185,11 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (GetType ().ToString ());
 
       if (asyncResult == null)
-        throw new ArgumentNullException ("asyncResult");
+        throw new ArgumentNullException (nameof(asyncResult));
 
       var ares = asyncResult as HttpStreamAsyncResult;
       if (ares == null)
-        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
+        throw new ArgumentException ("A wrong IAsyncResult.", nameof(asyncResult));
 
       if (!ares.IsCompleted)
         ares.AsyncWaitHandle.WaitOne ();

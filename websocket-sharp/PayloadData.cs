@@ -84,7 +84,7 @@ namespace WebSocketSharp
     }
 
     internal PayloadData (byte[] data)
-      : this (data, data.LongLength)
+      : this (data, data.Length)
     {
     }
 
@@ -118,29 +118,17 @@ namespace WebSocketSharp
 
     #region Public Properties
 
-    public byte[] ApplicationData {
-      get {
-        return _extDataLength > 0
-               ? _data.SubArray (_extDataLength, _length - _extDataLength)
-               : _data;
-      }
-    }
+    public byte[] ApplicationData => _extDataLength > 0
+        ? _data.SubArray ((int)_extDataLength, (int)_length - (int)_extDataLength)
+        : _data;
 
-    public byte[] ExtensionData {
-      get {
-        return _extDataLength > 0
-               ? _data.SubArray (0, _extDataLength)
-               : WebSocket.EmptyBytes;
-      }
-    }
+      public byte[] ExtensionData => _extDataLength > 0
+          ? _data.SubArray (0, (int)_extDataLength)
+          : WebSocket.EmptyBytes;
 
-    public ulong Length {
-      get {
-        return (ulong) _length;
-      }
-    }
+      public ulong Length => (ulong) _length;
 
-    #endregion
+      #endregion
 
     #region Internal Methods
 

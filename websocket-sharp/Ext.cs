@@ -76,7 +76,7 @@ namespace WebSocketSharp
 
     private static byte[] compress (this byte[] data)
     {
-      if (data.LongLength == 0)
+      if (data.Length == 0)
         //return new byte[] { 0x00, 0x00, 0x00, 0xff, 0xff };
         return data;
 
@@ -93,7 +93,7 @@ namespace WebSocketSharp
       stream.Position = 0;
       using (var ds = new DeflateStream (output, CompressionMode.Compress, true)) {
         stream.CopyTo (ds, 1024);
-        ds.Close (); // BFINAL set to 1.
+        ds.Dispose (); // BFINAL set to 1.
         output.Write (_last, 0, 1);
         output.Position = 0;
 
@@ -104,14 +104,14 @@ namespace WebSocketSharp
     private static byte[] compressToArray (this Stream stream)
     {
       using (var output = stream.compress ()) {
-        output.Close ();
+        output.Dispose ();
         return output.ToArray ();
       }
     }
 
     private static byte[] decompress (this byte[] data)
     {
-      if (data.LongLength == 0)
+      if (data.Length == 0)
         return data;
 
       using (var input = new MemoryStream (data))
@@ -136,7 +136,7 @@ namespace WebSocketSharp
     private static byte[] decompressToArray (this Stream stream)
     {
       using (var output = stream.decompress ()) {
-        output.Close ();
+        output.Dispose ();
         return output.ToArray ();
       }
     }
@@ -230,7 +230,7 @@ namespace WebSocketSharp
     internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
     {
       response.StatusCode = (int) code;
-      response.OutputStream.Close ();
+      response.OutputStream.Dispose ();
     }
 
     internal static void CloseWithAuthChallenge (
@@ -290,7 +290,7 @@ namespace WebSocketSharp
       return contains (0);
     }
 
-    internal static T[] Copy<T> (this T[] source, long length)
+    internal static T[] Copy<T> (this T[] source, int length)
     {
       var dest = new T[length];
       Array.Copy (source, 0, dest, 0, length);
@@ -318,7 +318,7 @@ namespace WebSocketSharp
       AsyncCallback callback = null;
       callback = ar => {
         try {
-          var nread = source.EndRead (ar);
+          var nread = TaskToApm.End<int> (ar);
           if (nread <= 0) {
             if (completed != null)
               completed ();
@@ -644,9 +644,29 @@ namespace WebSocketSharp
         catch {
         }
 
-        dest.Close ();
+        dest.Dispose ();
         return dest.ToArray ();
       }
+    }
+
+    internal static int EndWrite(this Stream stream, IAsyncResult ar)
+    {
+      return TaskToApm.End<int>(ar);
+    }
+
+    internal static int EndRead(this Stream stream, IAsyncResult ar)
+    {
+      return TaskToApm.End<int>(ar);
+    }
+
+    internal static IAsyncResult BeginWrite(this Stream stream, byte[] buffer, int offset, int length, AsyncCallback callback, object state)
+    {
+      return TaskToApm.Begin(stream.WriteAsync(buffer, offset, length), callback, state);
+    }
+
+    internal static IAsyncResult BeginRead(this Stream stream, byte[] buffer, int offset, int length, AsyncCallback callback, object state)
+    {
+      return TaskToApm.Begin(stream.ReadAsync(buffer, offset, length), callback, state);
     }
 
     internal static void ReadBytesAsync (
@@ -735,7 +755,7 @@ namespace WebSocketSharp
 
                 if (nread == 0 || nread == len) {
                   if (completed != null) {
-                    dest.Close ();
+                    dest.Dispose ();
                     completed (dest.ToArray ());
                   }
 
@@ -836,7 +856,7 @@ namespace WebSocketSharp
       using (var output = new MemoryStream ()) {
         stream.Position = 0;
         stream.CopyTo (output, 1024);
-        output.Close ();
+        output.Dispose ();
 
         return output.ToArray ();
       }
@@ -871,7 +891,7 @@ namespace WebSocketSharp
         return addr;
 
       try {
-        return System.Net.Dns.GetHostAddresses (hostnameOrAddress)[0];
+        return System.Net.Dns.GetHostAddressesAsync (hostnameOrAddress).Result[0];
       }
       catch {
         return null;
@@ -1344,7 +1364,7 @@ namespace WebSocketSharp
       }
 
       var host = System.Net.Dns.GetHostName ();
-      var addrs = System.Net.Dns.GetHostAddresses (host);
+      var addrs = System.Net.Dns.GetHostAddressesAsync (host).Result;
       foreach (var addr in addrs) {
         if (address.Equals (addr))
           return true;
@@ -1433,13 +1453,13 @@ namespace WebSocketSharp
     public static bool IsUpgradeTo (this HttpListenerRequest request, string protocol)
     {
       if (request == null)
-        throw new ArgumentNullException ("request");
+        throw new ArgumentNullException (nameof(request));
 
       if (protocol == null)
-        throw new ArgumentNullException ("protocol");
+        throw new ArgumentNullException (nameof(protocol));
 
       if (protocol.Length == 0)
-        throw new ArgumentException ("An empty string.", "protocol");
+        throw new ArgumentException ("An empty string.", nameof(protocol));
 
       return request.Headers.Contains ("Upgrade", protocol) &&
              request.Headers.Contains ("Connection", "Upgrade");
@@ -1490,23 +1510,34 @@ namespace WebSocketSharp
     /// <typeparam name="T">
     /// The type of elements in <paramref name="array"/>.
     /// </typeparam>
-    public static T[] SubArray<T> (this T[] array, int startIndex, int length)
+    // public static T[] SubArray<T> (this T[] array, int startIndex, int length)
+    // {
+    //   int len;
+    //   if (array == null || (len = array.Length) == 0)
+    //     return new T[0];
+
+    //   if (startIndex < 0 || length <= 0 || startIndex + length > len)
+    //     return new T[0];
+
+    //   if (startIndex == 0 && length == len)
+    //     return array;
+
+    //   var subArray = new T[length];
+    //   Array.Copy (array, startIndex, subArray, 0, length);
+
+    //   return subArray;
+    // }
+
+    public static byte[] GetBuffer(this MemoryStream stream)
     {
-      int len;
-      if (array == null || (len = array.Length) == 0)
-        return new T[0];
-
-      if (startIndex < 0 || length <= 0 || startIndex + length > len)
-        return new T[0];
-
-      if (startIndex == 0 && length == len)
-        return array;
-
-      var subArray = new T[length];
-      Array.Copy (array, startIndex, subArray, 0, length);
-
-      return subArray;
+        ArraySegment<byte> buffer;
+        if(stream.TryGetBuffer(out buffer))
+        {
+            return buffer.Array;
+        }
+        throw new Exception("Could not get buffer");
     }
+
 
     /// <summary>
     /// Retrieves a sub-array from the specified <paramref name="array"/>. A sub-array starts at
@@ -1529,10 +1560,10 @@ namespace WebSocketSharp
     /// <typeparam name="T">
     /// The type of elements in <paramref name="array"/>.
     /// </typeparam>
-    public static T[] SubArray<T> (this T[] array, long startIndex, long length)
+    public static T[] SubArray<T> (this T[] array, int startIndex, int length)
     {
-      long len;
-      if (array == null || (len = array.LongLength) == 0)
+      int len;
+      if (array == null || (len = array.Length) == 0)
         return new T[0];
 
       if (startIndex < 0 || length <= 0 || startIndex + length > len)
@@ -1706,7 +1737,7 @@ namespace WebSocketSharp
       where T : struct
     {
       if (source == null)
-        throw new ArgumentNullException ("source");
+        throw new ArgumentNullException (nameof(source));
 
       if (source.Length == 0)
         return default (T);
@@ -1805,7 +1836,7 @@ namespace WebSocketSharp
     public static byte[] ToHostOrder (this byte[] source, ByteOrder sourceOrder)
     {
       if (source == null)
-        throw new ArgumentNullException ("source");
+        throw new ArgumentNullException (nameof(source));
 
       return source.Length > 1 && !sourceOrder.IsHostOrder () ? source.Reverse () : source;
     }
@@ -1834,7 +1865,7 @@ namespace WebSocketSharp
     public static string ToString<T> (this T[] array, string separator)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException (nameof(array));
 
       var len = array.Length;
       if (len == 0)
@@ -1924,12 +1955,12 @@ namespace WebSocketSharp
     public static void WriteContent (this HttpListenerResponse response, byte[] content)
     {
       if (response == null)
-        throw new ArgumentNullException ("response");
+        throw new ArgumentNullException (nameof(response));
 
       if (content == null)
-        throw new ArgumentNullException ("content");
+        throw new ArgumentNullException (nameof(content));
 
-      var len = content.LongLength;
+      var len = content.Length;
       if (len == 0) {
         response.Close ();
         return;
@@ -1942,7 +1973,7 @@ namespace WebSocketSharp
       else
         output.WriteBytes (content, 1024);
 
-      output.Close ();
+      output.Dispose();
     }
 
     #endregion

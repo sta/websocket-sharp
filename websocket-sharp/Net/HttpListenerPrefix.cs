@@ -155,34 +155,34 @@ namespace WebSocketSharp.Net
     public static void CheckPrefix (string uriPrefix)
     {
       if (uriPrefix == null)
-        throw new ArgumentNullException ("uriPrefix");
+        throw new ArgumentNullException (nameof(uriPrefix));
 
       var len = uriPrefix.Length;
       if (len == 0)
-        throw new ArgumentException ("An empty string.", "uriPrefix");
+        throw new ArgumentException ("An empty string.", nameof(uriPrefix));
 
       if (!(uriPrefix.StartsWith ("http://") || uriPrefix.StartsWith ("https://")))
-        throw new ArgumentException ("The scheme isn't 'http' or 'https'.", "uriPrefix");
+        throw new ArgumentException ("The scheme isn't 'http' or 'https'.", nameof(uriPrefix));
 
       var startHost = uriPrefix.IndexOf (':') + 3;
       if (startHost >= len)
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
+        throw new ArgumentException ("No host is specified.", nameof(uriPrefix));
 
       if (uriPrefix[startHost] == ':')
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
+        throw new ArgumentException ("No host is specified.", nameof(uriPrefix));
 
       var root = uriPrefix.IndexOf ('/', startHost, len - startHost);
       if (root == startHost)
-        throw new ArgumentException ("No host is specified.", "uriPrefix");
+        throw new ArgumentException ("No host is specified.", nameof(uriPrefix));
 
       if (root == -1 || uriPrefix[len - 1] != '/')
-        throw new ArgumentException ("Ends without '/'.", "uriPrefix");
+        throw new ArgumentException ("Ends without '/'.", nameof(uriPrefix));
 
       if (uriPrefix[root - 1] == ':')
-        throw new ArgumentException ("No port is specified.", "uriPrefix");
+        throw new ArgumentException ("No port is specified.", nameof(uriPrefix));
 
       if (root == len - 2)
-        throw new ArgumentException ("No path is specified.", "uriPrefix");
+        throw new ArgumentException ("No path is specified.", nameof(uriPrefix));
     }
 
     /// <summary>

@@ -62,11 +62,7 @@ namespace WebSocketSharp.Net
     /// <param name="streamingContext">
     /// A <see cref="StreamingContext"/> that specifies the source for the deserialization.
     /// </param>
-    protected HttpListenerException (
-      SerializationInfo serializationInfo, StreamingContext streamingContext)
-      : base (serializationInfo, streamingContext)
-    {
-    }
+    
 
     #endregion
 
@@ -116,7 +112,7 @@ namespace WebSocketSharp.Net
     /// <value>
     /// An <see cref="int"/> that identifies the error.
     /// </value>
-    public override int ErrorCode {
+    public int ErrorCode {
       get {
         return NativeErrorCode;
       }

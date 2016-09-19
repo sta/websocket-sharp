@@ -176,7 +176,10 @@ namespace WebSocketSharp.Net
         if (!_response.SendChunked && _response.ContentLength64 != _body.Length)
           return false;
 
-        _write (buff.GetBuffer (), (int) start, (int) len);
+        
+        _write (buff.GetBuffer(), (int) start, (int) len);
+        
+        
         _response.CloseConnection = headers["Connection"] == "close";
         _response.HeadersSent = true;
       }
@@ -253,22 +256,24 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
-    public override IAsyncResult BeginRead (
+    public virtual IAsyncResult BeginRead (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       throw new NotSupportedException ();
     }
 
-    public override IAsyncResult BeginWrite (
+    public virtual IAsyncResult BeginWrite (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      return _body.BeginWrite (buffer, offset, count, callback, state);
+      return TaskToApm.Begin(_body.WriteAsync(buffer, offset, count), callback, state);
+
+      //return _body.BeginWrite (buffer, offset, count, callback, state);
     }
 
-    public override void Close ()
+    public virtual void Close ()
     {
       Close (false);
     }
@@ -278,17 +283,18 @@ namespace WebSocketSharp.Net
       Close (!disposing);
     }
 
-    public override int EndRead (IAsyncResult asyncResult)
+    public virtual int EndRead (IAsyncResult asyncResult)
     {
       throw new NotSupportedException ();
     }
 
-    public override void EndWrite (IAsyncResult asyncResult)
+    public virtual void EndWrite (IAsyncResult asyncResult)
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
-      _body.EndWrite (asyncResult);
+      TaskToApm.End(asyncResult);
+      //_body.EndWrite (asyncResult);
     }
 
     public override void Flush ()

@@ -570,7 +570,7 @@ namespace WebSocketSharp.Net
 
       set {
         if (value < 0 || value > 1)
-          throw new ArgumentOutOfRangeException ("value", "Not 0 or 1.");
+          throw new ArgumentOutOfRangeException (nameof(value), "Not 0 or 1.");
 
         _version = value;
       }
@@ -631,7 +631,7 @@ namespace WebSocketSharp.Net
           "; Expires={0}",
           _expires.ToUniversalTime ().ToString (
             "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
-            CultureInfo.CreateSpecificCulture ("en-US")));
+            CultureInfo.InvariantCulture));
 
       if (!_path.IsNullOrEmpty ())
         output.AppendFormat ("; Path={0}", _path);
@@ -776,10 +776,10 @@ namespace WebSocketSharp.Net
     {
       var cookie = comparand as Cookie;
       return cookie != null &&
-             _name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
-             _value.Equals (cookie.Value, StringComparison.InvariantCulture) &&
-             _path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
-             _domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
+             _name.Equals (cookie.Name, StringComparison.OrdinalIgnoreCase) &&
+             _value.Equals (cookie.Value, StringComparison.Ordinal) &&
+             _path.Equals (cookie.Path, StringComparison.Ordinal) &&
+             _domain.Equals (cookie.Domain, StringComparison.OrdinalIgnoreCase) &&
              _version == cookie.Version;
     }
 
@@ -792,10 +792,10 @@ namespace WebSocketSharp.Net
     public override int GetHashCode ()
     {
       return hash (
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
+        StringComparer.OrdinalIgnoreCase.GetHashCode (_name),
         _value.GetHashCode (),
         _path.GetHashCode (),
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
+        StringComparer.OrdinalIgnoreCase.GetHashCode (_domain),
         _version);
     }
 

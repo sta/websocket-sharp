@@ -723,11 +723,11 @@ namespace WebSocketSharp.Net
     {
       CheckDisposed ();
       if (asyncResult == null)
-        throw new ArgumentNullException ("asyncResult");
+        throw new ArgumentNullException (nameof(asyncResult));
 
       var ares = asyncResult as HttpListenerAsyncResult;
       if (ares == null)
-        throw new ArgumentException ("A wrong IAsyncResult.", "asyncResult");
+        throw new ArgumentException ("A wrong IAsyncResult.", nameof(asyncResult));
 
       if (ares.EndCalled)
         throw new InvalidOperationException ("This IAsyncResult cannot be reused.");

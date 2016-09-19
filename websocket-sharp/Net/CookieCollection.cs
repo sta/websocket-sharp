@@ -43,6 +43,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -151,7 +152,7 @@ namespace WebSocketSharp.Net
     public Cookie this[int index] {
       get {
         if (index < 0 || index >= _list.Count)
-          throw new ArgumentOutOfRangeException ("index");
+          throw new ArgumentOutOfRangeException (nameof(index));
 
         return _list[index];
       }
@@ -173,10 +174,10 @@ namespace WebSocketSharp.Net
     public Cookie this[string name] {
       get {
         if (name == null)
-          throw new ArgumentNullException ("name");
+          throw new ArgumentNullException (nameof(name));
 
         foreach (var cookie in Sorted)
-          if (cookie.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
+          if (cookie.Name.Equals (name, StringComparison.OrdinalIgnoreCase))
             return cookie;
 
         return null;
@@ -226,19 +227,19 @@ namespace WebSocketSharp.Net
         if (pair.Length == 0)
           continue;
 
-        if (pair.StartsWith ("$version", StringComparison.InvariantCultureIgnoreCase)) {
+        if (pair.StartsWith ("$version", StringComparison.OrdinalIgnoreCase)) {
           ver = Int32.Parse (pair.GetValue ('=', true));
         }
-        else if (pair.StartsWith ("$path", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("$path", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Path = pair.GetValue ('=');
         }
-        else if (pair.StartsWith ("$domain", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("$domain", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Domain = pair.GetValue ('=');
         }
-        else if (pair.StartsWith ("$port", StringComparison.InvariantCultureIgnoreCase)) {
-          var port = pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase)
+        else if (pair.StartsWith ("$port", StringComparison.OrdinalIgnoreCase)) {
+          var port = pair.Equals ("$port", StringComparison.OrdinalIgnoreCase)
                      ? "\"\""
                      : pair.GetValue ('=');
 
@@ -287,11 +288,11 @@ namespace WebSocketSharp.Net
         if (pair.Length == 0)
           continue;
 
-        if (pair.StartsWith ("version", StringComparison.InvariantCultureIgnoreCase)) {
+        if (pair.StartsWith ("version", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Version = Int32.Parse (pair.GetValue ('=', true));
         }
-        else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("expires", StringComparison.OrdinalIgnoreCase)) {
           var buff = new StringBuilder (pair.GetValue ('='), 32);
           if (i < pairs.Length - 1)
             buff.AppendFormat (", {0}", pairs[++i].Trim ());
@@ -300,7 +301,7 @@ namespace WebSocketSharp.Net
           if (!DateTime.TryParseExact (
             buff.ToString (),
             new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
-            CultureInfo.CreateSpecificCulture ("en-US"),
+            CultureInfo.InvariantCulture,
             DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
             out expires))
             expires = DateTime.Now;
@@ -308,45 +309,45 @@ namespace WebSocketSharp.Net
           if (cookie != null && cookie.Expires == DateTime.MinValue)
             cookie.Expires = expires.ToLocalTime ();
         }
-        else if (pair.StartsWith ("max-age", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("max-age", StringComparison.OrdinalIgnoreCase)) {
           var max = Int32.Parse (pair.GetValue ('=', true));
           var expires = DateTime.Now.AddSeconds ((double) max);
           if (cookie != null)
             cookie.Expires = expires;
         }
-        else if (pair.StartsWith ("path", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("path", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Path = pair.GetValue ('=');
         }
-        else if (pair.StartsWith ("domain", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("domain", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Domain = pair.GetValue ('=');
         }
-        else if (pair.StartsWith ("port", StringComparison.InvariantCultureIgnoreCase)) {
-          var port = pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase)
+        else if (pair.StartsWith ("port", StringComparison.OrdinalIgnoreCase)) {
+          var port = pair.Equals ("port", StringComparison.OrdinalIgnoreCase)
                      ? "\"\""
                      : pair.GetValue ('=');
 
           if (cookie != null)
             cookie.Port = port;
         }
-        else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("comment", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Comment = pair.GetValue ('=').UrlDecode ();
         }
-        else if (pair.StartsWith ("commenturl", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("commenturl", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.CommentUri = pair.GetValue ('=', true).ToUri ();
         }
-        else if (pair.StartsWith ("discard", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("discard", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Discard = true;
         }
-        else if (pair.StartsWith ("secure", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("secure", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.Secure = true;
         }
-        else if (pair.StartsWith ("httponly", StringComparison.InvariantCultureIgnoreCase)) {
+        else if (pair.StartsWith ("httponly", StringComparison.OrdinalIgnoreCase)) {
           if (cookie != null)
             cookie.HttpOnly = true;
         }
@@ -388,9 +389,9 @@ namespace WebSocketSharp.Net
 
       for (var i = _list.Count - 1; i >= 0; i--) {
         var c = _list[i];
-        if (c.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase) &&
-            c.Path.Equals (path, StringComparison.InvariantCulture) &&
-            c.Domain.Equals (domain, StringComparison.InvariantCultureIgnoreCase) &&
+        if (c.Name.Equals (name, StringComparison.OrdinalIgnoreCase) &&
+            c.Path.Equals (path, StringComparison.Ordinal) &&
+            c.Domain.Equals (domain, StringComparison.OrdinalIgnoreCase) &&
             c.Version == ver)
           return i;
       }
@@ -460,7 +461,7 @@ namespace WebSocketSharp.Net
     public void Add (Cookie cookie) 
     {
       if (cookie == null)
-        throw new ArgumentNullException ("cookie");
+        throw new ArgumentNullException (nameof(cookie));
 
       var pos = searchCookie (cookie);
       if (pos == -1) {
@@ -483,7 +484,7 @@ namespace WebSocketSharp.Net
     public void Add (CookieCollection cookies) 
     {
       if (cookies == null)
-        throw new ArgumentNullException ("cookies");
+        throw new ArgumentNullException (nameof(cookies));
 
       foreach (Cookie cookie in cookies)
         Add (cookie);
@@ -526,19 +527,19 @@ namespace WebSocketSharp.Net
     public void CopyTo (Array array, int index)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException (nameof(array));
 
       if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
+        throw new ArgumentOutOfRangeException (nameof(index), "Less than zero.");
 
       if (array.Rank > 1)
-        throw new ArgumentException ("Multidimensional.", "array");
+        throw new ArgumentException ("Multidimensional.", nameof(array));
 
       if (array.Length - index < _list.Count)
         throw new ArgumentException (
           "The number of elements in this collection is greater than the available space of the destination array.");
 
-      if (!array.GetType ().GetElementType ().IsAssignableFrom (typeof (Cookie)))
+      if (!array.GetType ().GetElementType ().GetTypeInfo().IsAssignableFrom(typeof (Cookie)))
         throw new InvalidCastException (
           "The elements in this collection cannot be cast automatically to the type of the destination array.");
 
@@ -570,10 +571,10 @@ namespace WebSocketSharp.Net
     public void CopyTo (Cookie[] array, int index)
     {
       if (array == null)
-        throw new ArgumentNullException ("array");
+        throw new ArgumentNullException (nameof(array));
 
       if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
+        throw new ArgumentOutOfRangeException (nameof(index), "Less than zero.");
 
       if (array.Length - index < _list.Count)
         throw new ArgumentException (

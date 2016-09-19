@@ -29,6 +29,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace WebSocketSharp
 {
@@ -197,6 +198,7 @@ namespace WebSocketSharp
 
     private void output (string message, LogLevel level)
     {
+      #if NET40
       lock (_sync) {
         if (_level > level)
           return;
@@ -205,19 +207,20 @@ namespace WebSocketSharp
         try {
           data = new LogData (level, new StackFrame (2, true), message);
           _output (data, _file);
+          
         }
         catch (Exception ex) {
           data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
           Console.WriteLine (data.ToString ());
         }
       }
+      #endif
     }
 
     private static void writeToFile (string value, string path)
     {
-      using (var writer = new StreamWriter (path, true))
-      using (var syncWriter = TextWriter.Synchronized (writer))
-        syncWriter.WriteLine (value);
+      using (var writer = new StreamWriter (System.IO.File.OpenWrite(path), Encoding.UTF8))
+        writer.WriteLine(value);
     }
 
     #endregion

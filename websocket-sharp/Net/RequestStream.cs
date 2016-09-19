@@ -120,13 +120,13 @@ namespace WebSocketSharp.Net
     private int fillFromBuffer (byte[] buffer, int offset, int count)
     {
       if (buffer == null)
-        throw new ArgumentNullException ("buffer");
+        throw new ArgumentNullException (nameof(buffer));
 
       if (offset < 0)
-        throw new ArgumentOutOfRangeException ("offset", "A negative value.");
+        throw new ArgumentOutOfRangeException (nameof(offset), "A negative value.");
 
       if (count < 0)
-        throw new ArgumentOutOfRangeException ("count", "A negative value.");
+        throw new ArgumentOutOfRangeException (nameof(count), "A negative value.");
 
       var len = buffer.Length;
       if (offset + count > len)
@@ -158,7 +158,7 @@ namespace WebSocketSharp.Net
 
     #region Public Methods
 
-    public override IAsyncResult BeginRead (
+    public virtual IAsyncResult BeginRead (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       if (_disposed)
@@ -180,27 +180,30 @@ namespace WebSocketSharp.Net
       if (_bodyLeft >= 0 && count > _bodyLeft)
         count = (int) _bodyLeft;
 
-      return _stream.BeginRead (buffer, offset, count, callback, state);
+      return TaskToApm.Begin(_stream.ReadAsync(buffer, offset, count), callback, state);
+
+      //return _stream.BeginRead (buffer, offset, count, callback, state);
     }
 
-    public override IAsyncResult BeginWrite (
+    public IAsyncResult BeginWrite (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
     {
       throw new NotSupportedException ();
     }
 
-    public override void Close ()
+    public virtual void Close ()
     {
+      Dispose();
       _disposed = true;
     }
 
-    public override int EndRead (IAsyncResult asyncResult)
+    public virtual int EndRead (IAsyncResult asyncResult)
     {
       if (_disposed)
         throw new ObjectDisposedException (GetType ().ToString ());
 
       if (asyncResult == null)
-        throw new ArgumentNullException ("asyncResult");
+        throw new ArgumentNullException (nameof(asyncResult));
 
       if (asyncResult is HttpStreamAsyncResult) {
         var ares = (HttpStreamAsyncResult) asyncResult;
@@ -211,14 +214,15 @@ namespace WebSocketSharp.Net
       }
 
       // Close on exception?
-      var nread = _stream.EndRead (asyncResult);
+      var nread = TaskToApm.End<int>(asyncResult);
+      //var nread = _stream.EndRead (asyncResult);
       if (nread > 0 && _bodyLeft > 0)
         _bodyLeft -= nread;
 
       return nread;
     }
 
-    public override void EndWrite (IAsyncResult asyncResult)
+    public void EndWrite (IAsyncResult asyncResult)
     {
       throw new NotSupportedException ();
     }

@@ -84,12 +84,12 @@ namespace WebSocketSharp.Net.WebSockets
         var sslStream =
           new SslStream (netStream, false, sslConfig.ClientCertificateValidationCallback);
 
-        sslStream.AuthenticateAsServer (
+        sslStream.AuthenticateAsServerAsync (
           sslConfig.ServerCertificate,
           sslConfig.ClientCertificateRequired,
           sslConfig.EnabledSslProtocols,
           sslConfig.CheckCertificateRevocation
-        );
+        ).RunSynchronously();
 
         _stream = sslStream;
       }
@@ -406,8 +406,8 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void Close ()
     {
-      _stream.Close ();
-      _tcpClient.Close ();
+      _stream.Dispose();
+      _tcpClient.Dispose();
     }
 
     internal void Close (HttpStatusCode code)
