@@ -142,7 +142,7 @@ namespace WebSocketSharp
       }
     }
 
-    internal bool IncludesReservedCloseStatusCode {
+    internal bool HasReservedCode {
       get {
         return _length > 1 && Code.IsReserved ();
       }
