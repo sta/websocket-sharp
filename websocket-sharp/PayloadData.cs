@@ -85,6 +85,8 @@ namespace WebSocketSharp
     internal PayloadData ()
     {
       _code = 1005;
+      _reason = String.Empty;
+
       _data = WebSocket.EmptyBytes;
 
       _codeSet = true;
@@ -105,7 +107,7 @@ namespace WebSocketSharp
     internal PayloadData (ushort code, string reason)
     {
       _code = code;
-      _reason = reason;
+      _reason = reason ?? String.Empty;
 
       _data = code.Append (reason);
       _length = _data.LongLength;
@@ -153,7 +155,7 @@ namespace WebSocketSharp
         if (!_reasonSet) {
           _reason = _length > 2
                     ? _data.SubArray (2, _length - 2).UTF8Decode ()
-                    : null;
+                    : String.Empty;
 
           _reasonSet = true;
         }
