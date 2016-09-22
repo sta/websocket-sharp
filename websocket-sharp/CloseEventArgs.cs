@@ -48,9 +48,7 @@ namespace WebSocketSharp
     #region Private Fields
 
     private bool        _clean;
-    private ushort      _code;
     private PayloadData _payloadData;
-    private string      _reason;
 
     #endregion
 
@@ -58,39 +56,27 @@ namespace WebSocketSharp
 
     internal CloseEventArgs ()
     {
-      _code = (ushort) CloseStatusCode.NoStatus;
       _payloadData = PayloadData.Empty;
     }
 
     internal CloseEventArgs (ushort code)
+      : this (code, null)
     {
-      _code = code;
     }
 
     internal CloseEventArgs (CloseStatusCode code)
-      : this ((ushort) code)
+      : this ((ushort) code, null)
     {
     }
 
     internal CloseEventArgs (PayloadData payloadData)
     {
       _payloadData = payloadData;
-
-      var data = payloadData.ApplicationData;
-      var len = data.Length;
-      _code = len > 1
-              ? data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
-              : (ushort) CloseStatusCode.NoStatus;
-
-      _reason = len > 2
-                ? data.SubArray (2, len - 2).UTF8Decode ()
-                : String.Empty;
     }
 
     internal CloseEventArgs (ushort code, string reason)
     {
-      _code = code;
-      _reason = reason;
+      _payloadData = new PayloadData (code, reason);
     }
 
     internal CloseEventArgs (CloseStatusCode code, string reason)
@@ -104,7 +90,7 @@ namespace WebSocketSharp
 
     internal PayloadData PayloadData {
       get {
-        return _payloadData ?? (_payloadData = new PayloadData (_code.Append (_reason)));
+        return _payloadData;
       }
     }
 
@@ -120,7 +106,7 @@ namespace WebSocketSharp
     /// </value>
     public ushort Code {
       get {
-        return _code;
+        return _payloadData.Code;
       }
     }
 
@@ -132,7 +118,7 @@ namespace WebSocketSharp
     /// </value>
     public string Reason {
       get {
-        return _reason ?? String.Empty;
+        return _payloadData.Reason ?? String.Empty;
       }
     }
 
