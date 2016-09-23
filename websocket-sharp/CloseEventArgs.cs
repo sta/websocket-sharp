@@ -35,8 +35,7 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   A <see cref="WebSocket.OnClose"/> event occurs when the WebSocket connection
-  ///   has been closed.
+  ///   That event occurs when the WebSocket connection has been closed.
   ///   </para>
   ///   <para>
   ///   If you would like to get the reason for the close, you should access
