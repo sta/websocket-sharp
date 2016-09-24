@@ -35,13 +35,13 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  ///   a text or binary message, or a ping if the <see cref="WebSocket.EmitOnPing"/> property is
-  ///   set to <c>true</c>.
+  ///   That event occurs when the <see cref="WebSocket"/> receives a text or
+  ///   binary message, or a ping if the <see cref="WebSocket.EmitOnPing"/>
+  ///   property is set to <c>true</c>.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the message data, you should access the <see cref="Data"/> or
-  ///   <see cref="RawData"/> property.
+  ///   If you would like to get the message data, you should access
+  ///   the <see cref="Data"/> or <see cref="RawData"/> property.
   ///   </para>
   /// </remarks>
   public class MessageEventArgs : EventArgs
@@ -81,7 +81,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the message data,
-    /// or <see langword="null"/> if the message data cannot be decoded to a string.
+    /// or <see langword="null"/> if it cannot be decoded to a string.
     /// </value>
     public string Data {
       get {
