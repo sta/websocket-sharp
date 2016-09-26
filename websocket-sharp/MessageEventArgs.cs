@@ -35,9 +35,8 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   That event occurs when the <see cref="WebSocket"/> receives a text or
-  ///   binary message, or a ping if the <see cref="WebSocket.EmitOnPing"/>
-  ///   property is set to <c>true</c>.
+  ///   That event occurs when the <see cref="WebSocket"/> receives a message or
+  ///   a ping if the <see cref="WebSocket.EmitOnPing"/> property is set to <c>true</c>.
   ///   </para>
   ///   <para>
   ///   If you would like to get the message data, you should access
