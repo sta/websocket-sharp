@@ -201,7 +201,7 @@ If the error is due to an exception, `e.Exception` property returns a `System.Ex
 
 ##### WebSocket.OnClose Event #####
 
-A `WebSocket.OnClose` event occurs when the WebSocket connection has been closed.
+This event occurs when the WebSocket connection has been closed.
 
 ```csharp
 ws.OnClose += (sender, e) => {
@@ -209,9 +209,13 @@ ws.OnClose += (sender, e) => {
   };
 ```
 
-`e` has passed as a `WebSocketSharp.CloseEventArgs`.
+`e` is passed as a `WebSocketSharp.CloseEventArgs` instance.
 
-`e.Code` property returns a `ushort` that represents the status code for the close, and `e.Reason` property returns a `string` that represents the reason for the close.
+If you would like to get the reason for the close, you should access `e.Code` or `e.Reason` property.
+
+`e.Code` property returns a `ushort` that represents the status code for the close.
+
+`e.Reason` property returns a `string` that represents the reason for the close.
 
 #### Step 4 ####
 
