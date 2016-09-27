@@ -185,7 +185,7 @@ ws.OnMessage += (sender, e) => {
 
 ##### WebSocket.OnError Event #####
 
-A `WebSocket.OnError` event occurs when the `WebSocket` gets an error.
+This event occurs when the `WebSocket` gets an error.
 
 ```csharp
 ws.OnError += (sender, e) => {
@@ -193,11 +193,13 @@ ws.OnError += (sender, e) => {
   };
 ```
 
-`e` has passed as a `WebSocketSharp.ErrorEventArgs`.
+`e` is passed as a `WebSocketSharp.ErrorEventArgs` instance.
+
+If you would like to get the error message, you should access `e.Message` property.
 
 `e.Message` property returns a `string` that represents the error message.
 
-If the error is due to an exception, `e.Exception` property returns a `System.Exception` instance that caused the error.
+And `e.Exception` property returns a `System.Exception` instance that represents the cause of the error if it is due to an exception.
 
 ##### WebSocket.OnClose Event #####
 
