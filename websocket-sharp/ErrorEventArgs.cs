@@ -84,7 +84,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// An <see cref="System.Exception"/> instance that represents the cause of
-    /// the error, or <see langword="null"/> if it is not due to an exception.
+    /// the error if it is due to an exception; otherwise, <see langword="null"/>.
     /// </value>
     public Exception Exception {
       get {
