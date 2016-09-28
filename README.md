@@ -123,7 +123,7 @@ Setting the `WebSocket` events.
 
 ##### WebSocket.OnOpen Event #####
 
-A `WebSocket.OnOpen` event occurs when the WebSocket connection has been established.
+This event occurs when the WebSocket connection has been established.
 
 ```csharp
 ws.OnOpen += (sender, e) => {
@@ -131,7 +131,7 @@ ws.OnOpen += (sender, e) => {
   };
 ```
 
-`e` has passed as the `System.EventArgs.Empty`, so you don't need to use it.
+`System.EventArgs.Empty` is passed as `e`, so you do not need to use it.
 
 ##### WebSocket.OnMessage Event #####
 
