@@ -193,7 +193,7 @@ ws.OnError += (sender, e) => {
   };
 ```
 
-`e` is passed as a `WebSocketSharp.ErrorEventArgs` instance.
+A `WebSocketSharp.ErrorEventArgs` instance is passed as `e`.
 
 If you would like to get the error message, you should access `e.Message` property.
 
