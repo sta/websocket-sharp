@@ -211,7 +211,7 @@ ws.OnClose += (sender, e) => {
   };
 ```
 
-`e` is passed as a `WebSocketSharp.CloseEventArgs` instance.
+A `WebSocketSharp.CloseEventArgs` instance is passed as `e`.
 
 If you would like to get the reason for the close, you should access `e.Code` or `e.Reason` property.
 
