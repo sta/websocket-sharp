@@ -135,7 +135,7 @@ ws.OnOpen += (sender, e) => {
 
 ##### WebSocket.OnMessage Event #####
 
-A `WebSocket.OnMessage` event occurs when the `WebSocket` receives a message.
+This event occurs when the `WebSocket` receives a message.
 
 ```csharp
 ws.OnMessage += (sender, e) => {
@@ -143,15 +143,13 @@ ws.OnMessage += (sender, e) => {
   };
 ```
 
-`e` has passed as a `WebSocketSharp.MessageEventArgs`.
+A `WebSocketSharp.MessageEventArgs` instance is passed as `e`.
 
 If you would like to get the message data, you should access `e.Data` or `e.RawData` property.
 
-And you can determine which property you should access by checking `e.IsText` or `e.IsBinary` property.
+`e.Data` property returns a `string`, so it is mainly used to get the **text** message data.
 
-If `e.IsText` is `true`, you should access `e.Data` that returns a `string` (represents a **text** message).
-
-Or if `e.IsBinary` is `true`, you should access `e.RawData` that returns a `byte[]` (represents a **binary** message).
+`e.RawData` property returns a `byte[]`, so it is mainly used to get the **binary** message data.
 
 ```csharp
 if (e.IsText) {
@@ -169,7 +167,7 @@ if (e.IsBinary) {
 }
 ```
 
-And if you would like to notify that a **ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`, such as the following.
+And if you would like to notify that a **ping** has been received, via this event, you should set the `WebSocket.EmitOnPing` property to `true`.
 
 ```csharp
 ws.EmitOnPing = true;
