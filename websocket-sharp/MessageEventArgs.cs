@@ -73,6 +73,23 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    /// <summary>
+    /// Gets the opcode for the message.
+    /// </summary>
+    /// <value>
+    /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>,
+    /// or <see cref="Opcode.Ping"/>.
+    /// </value>
+    internal Opcode Opcode {
+      get {
+        return _opcode;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
@@ -141,19 +158,6 @@ namespace WebSocketSharp
     public byte[] RawData {
       get {
         return _rawData;
-      }
-    }
-
-    /// <summary>
-    /// Gets the message type.
-    /// </summary>
-    /// <value>
-    /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>, or <see cref="Opcode.Ping"/>.
-    /// </value>
-    [Obsolete ("This property will be removed. Use any of the Is properties instead.")]
-    public Opcode Type {
-      get {
-        return _opcode;
       }
     }
 
