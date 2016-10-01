@@ -37,7 +37,7 @@ namespace WebSocketSharp
   /// The values of this enumeration are defined in
   /// <see href="http://tools.ietf.org/html/rfc6455#section-5.2">Section 5.2</see> of RFC 6455.
   /// </remarks>
-  public enum Opcode : byte
+  internal enum Opcode : byte
   {
     /// <summary>
     /// Equivalent to numeric value 0. Indicates continuation frame.
