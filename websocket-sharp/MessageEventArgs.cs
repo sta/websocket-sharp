@@ -101,14 +101,7 @@ namespace WebSocketSharp
     /// </value>
     public string Data {
       get {
-        if (!_dataSet) {
-          _data = _opcode != Opcode.Binary
-                  ? _rawData.UTF8Decode ()
-                  : BitConverter.ToString (_rawData);
-
-          _dataSet = true;
-        }
-
+        setData ();
         return _data;
       }
     }
@@ -157,6 +150,7 @@ namespace WebSocketSharp
     /// </value>
     public byte[] RawData {
       get {
+        setData ();
         return _rawData;
       }
     }
