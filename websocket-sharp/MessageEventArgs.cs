@@ -162,5 +162,23 @@ namespace WebSocketSharp
     }
 
     #endregion
+
+    #region Private Methods
+
+    private void setData ()
+    {
+      if (_dataSet)
+        return;
+
+      if (_opcode == Opcode.Binary) {
+        _dataSet = true;
+        return;
+      }
+
+      _data = _rawData.UTF8Decode ();
+      _dataSet = true;
+    }
+
+    #endregion
   }
 }
