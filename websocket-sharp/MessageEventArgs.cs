@@ -96,8 +96,9 @@ namespace WebSocketSharp
     /// Gets the message data as a <see cref="string"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the message data
-    /// if it can be decoded to a string; otherwise, <see langword="null"/>.
+    /// A <see cref="string"/> that represents the message data if its type is
+    /// text or ping and if decoding it to a string has successfully done;
+    /// otherwise, <see langword="null"/>.
     /// </value>
     public string Data {
       get {
