@@ -558,6 +558,13 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool checkHostName (string name)
+    {
+      return !_dnsStyle
+             || Uri.CheckHostName (name) != UriHostNameType.Dns
+             || name == _hostname;
+    }
+
     private bool checkIfAvailable (
       bool ready, bool start, bool shutting, bool stop, out string message
     )
