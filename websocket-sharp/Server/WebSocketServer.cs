@@ -630,12 +630,9 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (_dnsStyle) {
-        var hostname = uri.DnsSafeHost;
-        if (Uri.CheckHostName (hostname) == UriHostNameType.Dns && hostname != _hostname) {
-          context.Close (HttpStatusCode.NotFound);
-          return;
-        }
+      if (!checkHostName (uri.DnsSafeHost)) {
+        context.Close (HttpStatusCode.NotFound);
+        return;
       }
 
       WebSocketServiceHost host;
