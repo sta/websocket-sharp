@@ -625,7 +625,12 @@ namespace WebSocketSharp.Server
     private void processRequest (TcpListenerWebSocketContext context)
     {
       var uri = context.RequestUri;
-      if (uri == null || uri.Port != _port) {
+      if (uri == null) {
+        context.Close (HttpStatusCode.BadRequest);
+        return;
+      }
+
+      if (uri.Port != _port) {
         context.Close (HttpStatusCode.BadRequest);
         return;
       }
