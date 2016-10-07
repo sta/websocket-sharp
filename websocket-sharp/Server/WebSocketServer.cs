@@ -61,6 +61,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private System.Net.IPAddress               _address;
+    private bool                               _allowForwardedRequest;
     private AuthenticationSchemes              _authSchemes;
     private static readonly string             _defaultRealm;
     private bool                               _dnsStyle;
@@ -630,14 +631,16 @@ namespace WebSocketSharp.Server
         return;
       }
 
-      if (uri.Port != _port) {
-        context.Close (HttpStatusCode.BadRequest);
-        return;
-      }
+      if (!_allowForwardedRequest) {
+        if (uri.Port != _port) {
+          context.Close (HttpStatusCode.BadRequest);
+          return;
+        }
 
-      if (!checkHostName (uri.DnsSafeHost)) {
-        context.Close (HttpStatusCode.NotFound);
-        return;
+        if (!checkHostName (uri.DnsSafeHost)) {
+          context.Close (HttpStatusCode.NotFound);
+          return;
+        }
       }
 
       WebSocketServiceHost host;
