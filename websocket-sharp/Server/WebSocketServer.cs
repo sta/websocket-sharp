@@ -301,6 +301,37 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the server accepts
+    /// a forwarded request.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the server accepts a forwarded request;
+    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// </value>
+    public bool AllowForwardedRequest {
+      get {
+        return _allowForwardedRequest;
+      }
+
+      set {
+        string msg;
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
+          _logger.Error (msg);
+          return;
+        }
+
+        lock (_sync) {
+          if (!checkIfAvailable (true, false, false, true, out msg)) {
+            _logger.Error (msg);
+            return;
+          }
+
+          _allowForwardedRequest = value;
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <value>
