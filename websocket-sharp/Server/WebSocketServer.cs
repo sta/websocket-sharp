@@ -346,13 +346,20 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfAvailable (true, false, false);
-        if (msg != null) {
+        string msg;
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           return;
         }
 
-        _authSchemes = value;
+        lock (_sync) {
+          if (!checkIfAvailable (true, false, false, true, out msg)) {
+            _logger.Error (msg);
+            return;
+          }
+
+          _authSchemes = value;
+        }
       }
     }
 
