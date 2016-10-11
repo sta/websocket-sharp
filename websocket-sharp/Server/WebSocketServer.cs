@@ -393,8 +393,8 @@ namespace WebSocketSharp.Server
     /// the inactive sessions periodically.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server cleans up the inactive sessions every 60 seconds;
-    /// otherwise, <c>false</c>. The default value is <c>true</c>.
+    /// <c>true</c> if the server cleans up the inactive sessions every 60
+    /// seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
     /// </value>
     public bool KeepClean {
       get {
