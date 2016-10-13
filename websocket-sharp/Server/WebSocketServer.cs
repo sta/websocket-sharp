@@ -438,7 +438,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the port on which to listen for incoming connection requests.
+    /// Gets the port on which to listen for incoming handshake requests.
     /// </summary>
     /// <value>
     /// An <see cref="int"/> that represents the port number on which to listen.
