@@ -484,16 +484,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server is allowed to be bound to
-    /// an address that is already in use.
+    /// Gets or sets a value indicating whether the server is allowed to
+    /// be bound to an address that is already in use.
     /// </summary>
     /// <remarks>
-    /// If you would like to resolve to wait for socket in <c>TIME_WAIT</c> state,
+    /// If you would like to resolve to wait for socket in TIME_WAIT state,
     /// you should set this property to <c>true</c>.
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the server is allowed to be bound to an address that is already in use;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the server is allowed to be bound to an address that
+    /// is already in use; otherwise, <c>false</c>. The default value is
+    /// <c>false</c>.
     /// </value>
     public bool ReuseAddress {
       get {
