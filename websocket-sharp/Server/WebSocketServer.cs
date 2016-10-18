@@ -615,7 +615,8 @@ namespace WebSocketSharp.Server
     /// Gets the access to the WebSocket services provided by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketServiceManager"/> that manages the WebSocket services.
+    /// A <see cref="WebSocketServiceManager"/> that manages
+    /// the WebSocket services provided by the server.
     /// </value>
     public WebSocketServiceManager WebSocketServices {
       get {
