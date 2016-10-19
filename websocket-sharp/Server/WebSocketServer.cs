@@ -643,7 +643,7 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
-    private bool checkHostName (string name)
+    private bool checkHostNameForRequest (string name)
     {
       return !_dnsStyle
              || Uri.CheckHostName (name) != UriHostNameType.Dns
@@ -721,7 +721,7 @@ namespace WebSocketSharp.Server
           return;
         }
 
-        if (!checkHostName (uri.DnsSafeHost)) {
+        if (!checkHostNameForRequest (uri.DnsSafeHost)) {
           context.Close (HttpStatusCode.NotFound);
           return;
         }
