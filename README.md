@@ -467,17 +467,15 @@ I think this is useful when you get something error in connecting the server and
 
 ### Secure Connection ###
 
-websocket-sharp supports the **Secure Connection** with **SSL/TLS**.
+websocket-sharp supports the secure connection with **SSL/TLS**.
 
-As a **WebSocket Client**, you should create a new instance of the `WebSocket` class with a **wss** scheme WebSocket URL.
+As a WebSocket client, you should create a new instance of the `WebSocket` class with a **wss** scheme WebSocket URL.
 
 ```csharp
-using (var ws = new WebSocket ("wss://example.com")) {
-  ...
-}
+var ws = new WebSocket ("wss://example.com");
 ```
 
-And if you would like to use the custom validation for the server certificate, you should set the `WebSocket.SslConfiguration.ServerCertificateValidationCallback` property.
+If you would like to set a custom validation for the server certificate, you should set the `WebSocket.SslConfiguration.ServerCertificateValidationCallback` property to a callback for it.
 
 ```csharp
 ws.SslConfiguration.ServerCertificateValidationCallback =
@@ -489,9 +487,9 @@ ws.SslConfiguration.ServerCertificateValidationCallback =
   };
 ```
 
-If you set this property to nothing, the validation does nothing with the server certificate, and returns `true`.
+The default callback always returns `true`.
 
-As a **WebSocket Server**, you should create a new instance of the `WebSocketServer` or `HttpServer` class with some settings for secure connection, such as the following.
+As a WebSocket server, you should create a new instance of the `WebSocketServer` or `HttpServer` class with some settings for the secure connection, such as the following.
 
 ```csharp
 var wssv = new WebSocketServer (5963, true);
