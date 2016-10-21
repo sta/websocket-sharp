@@ -9,7 +9,7 @@
 - **[Per-message Compression](#per-message-compression)** extension
 - **[Secure Connection](#secure-connection)**
 - **[HTTP Authentication](#http-authentication)**
-- **[Query String, Origin header and Cookies](#query-string-origin-header-and-cookies)**
+- **[Query String, Origin header, and Cookies](#query-string-origin-header-and-cookies)**
 - **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
 - .NET Framework **3.5** or later (includes compatible environment such as **[Mono]**)
 
@@ -532,29 +532,27 @@ If you would like to provide the Digest authentication, you should set such as t
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
-### Query String, Origin header and Cookies ###
+### Query String, Origin header, and Cookies ###
 
-As a **WebSocket Client**, if you would like to send the **Query String** with the handshake request to the server, you should create a new instance of the `WebSocket` class with the WebSocket URL that includes the [Query] string parameters.
+As a WebSocket client, if you would like to send the query string in the handshake request, you should create a new instance of the `WebSocket` class with a WebSocket URL that includes the [Query] string parameters.
 
 ```csharp
-using (var ws = new WebSocket ("ws://example.com/?name=nobita")) {
-  ...
-}
+var ws = new WebSocket ("ws://example.com/?name=nobita");
 ```
 
-And if you would like to send the **Origin** header with the handshake request to the server, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before connecting, such as the following.
+And if you would like to send the Origin header in the handshake request, you should set the `WebSocket.Origin` property to an allowable value as the [Origin] header before calling the connect method.
 
 ```csharp
 ws.Origin = "http://example.com";
 ```
 
-And also if you would like to send the **Cookies** with the handshake request to the server, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before connecting, such as the following.
+And also if you would like to send the cookies in the handshake request, you should set any cookie by using the `WebSocket.SetCookie (WebSocketSharp.Net.Cookie)` method before calling the connect method.
 
 ```csharp
 ws.SetCookie (new Cookie ("name", "nobita"));
 ```
 
-As a **WebSocket Server**, if you would like to get the **Query String** included in a handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
+As a WebSocket server, if you would like to get the query string included in a handshake request, you should access the `WebSocketBehavior.Context.QueryString` property, such as the following.
 
 ```csharp
 public class Chat : WebSocketBehavior
@@ -571,7 +569,9 @@ public class Chat : WebSocketBehavior
 }
 ```
 
-And if you would like to validate the **Origin** header, **Cookies**, or both included in a handshake request, you should set each validation with your `WebSocketBehavior`, for example, by using the `AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
+And if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
+
+And also if you would like to validate the Origin header, cookies, or both included in a handshake request, you should set each validation with your `WebSocketBehavior`, for example, by using the `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method with initializing, such as the following.
 
 ```csharp
 wssv.AddWebSocketService<Chat> (
@@ -598,8 +598,6 @@ wssv.AddWebSocketService<Chat> (
     }
 );
 ```
-
-And also if you would like to get each value of the Origin header and cookies, you should access each of the `WebSocketBehavior.Context.Origin` and `WebSocketBehavior.Context.CookieCollection` properties.
 
 ### Connecting through the HTTP Proxy server ###
 
