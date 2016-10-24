@@ -108,8 +108,9 @@ namespace WebSocketSharp
       _rsv2 = Rsv.Off;
       _rsv3 = Rsv.Off;
       _opcode = opcode;
+      _payloadData = new PayloadData(payloadData);
 
-      var len = payloadData.Length;
+      var len = _payloadData.Length;
       if (len < 126) {
         _payloadLength = (byte) len;
         _extPayloadLength = WebSocket.EmptyBytes;
@@ -126,14 +127,13 @@ namespace WebSocketSharp
       if (mask) {
         _mask = Mask.On;
         _maskingKey = createMaskingKey ();
-        payloadData.Mask (_maskingKey);
+        _payloadData.Mask (_maskingKey);
       }
       else {
         _mask = Mask.Off;
         _maskingKey = WebSocket.EmptyBytes;
       }
 
-      _payloadData = payloadData;
     }
 
     #endregion
