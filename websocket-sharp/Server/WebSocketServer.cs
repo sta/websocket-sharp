@@ -686,6 +686,28 @@ namespace WebSocketSharp.Server
              : null;
     }
 
+    private bool checkSslConfiguration (
+      ServerSslConfiguration configuration, out string message
+    )
+    {
+      message = null;
+
+      if (!_secure)
+        return true;
+
+      if (configuration == null) {
+        message = "There is no configuration for the secure connection.";
+        return false;
+      }
+
+      if (configuration.ServerCertificate == null) {
+        message = "There is no server certificate for the secure connection.";
+        return false;
+      }
+
+      return true;
+    }
+
     private string getRealm ()
     {
       var realm = _realm;
