@@ -60,7 +60,7 @@ It works with **Unity Free**, but there are some limitations:
 
 .NET API 2.0 compatibility level for iOS/Android may require to fix lack of some features for later than .NET Framework 2.0, such as the `System.Func<...>` delegates (so i have added them in the asset package).
 
-And it is priced at **US$15**. I believe your $15 makes this project more better and accelerated, **Thank you!**
+And it is priced at **US$15**. I believe your $15 makes this project more better, **Thank you!**
 
 ## Usage ##
 
