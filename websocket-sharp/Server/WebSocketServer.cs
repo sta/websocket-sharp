@@ -714,6 +714,26 @@ namespace WebSocketSharp.Server
       return realm != null && realm.Length > 0 ? realm : _defaultRealm;
     }
 
+    private ServerSslConfiguration getSslConfiguration ()
+    {
+      var sslConfig = _sslConfig;
+      if (sslConfig == null)
+        return null;
+
+      var ret =
+        new ServerSslConfiguration (
+          sslConfig.ServerCertificate,
+          sslConfig.ClientCertificateRequired,
+          sslConfig.EnabledSslProtocols,
+          sslConfig.CheckCertificateRevocation
+        );
+
+      ret.ClientCertificateValidationCallback =
+        sslConfig.ClientCertificateValidationCallback;
+
+      return ret;
+    }
+
     private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
     {
       _hostname = hostname ?? address.ToString ();
