@@ -35,7 +35,7 @@ If you would like to use that dll in your **[Unity]** project, you should add it
 
 ### NuGet Gallery ###
 
-websocket-sharp is available on the **[NuGet Gallery]**, as still a **prerelease** version.
+websocket-sharp is available on the [NuGet Gallery], as still a **prerelease** version.
 
 - **[NuGet Gallery: websocket-sharp]**
 
