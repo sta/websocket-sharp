@@ -70,11 +70,13 @@ namespace WebSocketSharp.Server
     private Logger                             _logger;
     private int                                _port;
     private string                             _realm;
+    private string                             _realmInUse;
     private Thread                             _receiveThread;
     private bool                               _reuseAddress;
     private bool                               _secure;
     private WebSocketServiceManager            _services;
     private ServerSslConfiguration             _sslConfig;
+    private ServerSslConfiguration             _sslConfigInUse;
     private volatile ServerState               _state;
     private object                             _sync;
     private Func<IIdentity, NetworkCredential> _userCredFinder;
@@ -786,8 +788,8 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx = cl.GetWebSocketContext (null, _secure, _sslConfig, _logger);
-                if (!ctx.Authenticate (_authSchemes, getRealm (), _userCredFinder))
+                var ctx = cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _logger);
+                if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
                   return;
 
                 processRequest (ctx);
@@ -940,12 +942,26 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Start ()
     {
+      string msg;
+      if (!checkIfAvailable (true, false, false, true, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
+
+      var sslConfig = getSslConfiguration ();
+      if (!checkSslConfiguration (sslConfig, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
+
       lock (_sync) {
-        var msg = _state.CheckIfAvailable (true, false, false) ?? checkIfCertificateExists ();
-        if (msg != null) {
+        if (!checkIfAvailable (true, false, false, true, out msg)) {
           _logger.Error (msg);
           return;
         }
+
+        _realmInUse = getRealm ();
+        _sslConfigInUse = sslConfig;
 
         _services.Start ();
         startReceiving ();
