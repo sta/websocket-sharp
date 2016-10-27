@@ -931,7 +931,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Starts receiving the WebSocket connection requests.
+    /// Starts receiving the WebSocket handshake requests.
     /// </summary>
     public void Start ()
     {
