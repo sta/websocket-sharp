@@ -681,13 +681,6 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    private string checkIfCertificateExists ()
-    {
-      return _secure && (_sslConfig == null || _sslConfig.ServerCertificate == null)
-             ? "The secure connection requires a server certificate."
-             : null;
-    }
-
     private bool checkSslConfiguration (
       ServerSslConfiguration configuration, out string message
     )
