@@ -533,16 +533,6 @@ namespace WebSocketSharp.Server
       get {
         return _sslConfig ?? (_sslConfig = new ServerSslConfiguration (null));
       }
-
-      set {
-        var msg = _state.CheckIfAvailable (true, false, false);
-        if (msg != null) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _sslConfig = value;
-      }
     }
 
     /// <summary>
