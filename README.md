@@ -444,7 +444,9 @@ And then the client will send the following header in the handshake request to t
 
     Sec-WebSocket-Extensions: permessage-deflate; server_no_context_takeover; client_no_context_takeover
 
-If the server accepts this header, it returns the same header which has the corresponding value. And this extension will be available when the client receives it.
+If the server supports this extension, it will return the same header which has the corresponding value.
+
+So eventually this extension will be available when the client receives the header in the handshake response.
 
 #### Ignoring the extensions ####
 
