@@ -463,7 +463,7 @@ wssv.AddWebSocketService<Chat> (
 );
 ```
 
-If it's set to `true`, the service will not return the **Sec-WebSocket-Extensions** header in its handshake response.
+If it is set to `true`, the service will not return the Sec-WebSocket-Extensions header in its handshake response.
 
 I think this is useful when you get something error in connecting the server and exclude the extensions as a cause of the error.
 
