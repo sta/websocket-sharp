@@ -310,9 +310,16 @@ namespace WebSocketSharp
       }
 
       set {
+        string msg;
+        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+          _logger.Error (msg);
+          error ("An error has occurred in setting the compression.", null);
+
+          return;
+        }
+
         lock (_forState) {
-          string msg;
-          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
+          if (!checkIfAvailable (true, false, false, true, out msg)) {
             _logger.Error (msg);
             error ("An error has occurred in setting the compression.", null);
 
