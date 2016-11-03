@@ -675,6 +675,28 @@ namespace WebSocketSharp.Server
       return true;
     }
 
+    private bool checkServicePath (string path, out string message)
+    {
+      message = null;
+
+      if (path.IsNullOrEmpty ()) {
+        message = "'path' is null or empty.";
+        return false;
+      }
+
+      if (path[0] != '/') {
+        message = "'path' is not an absolute path.";
+        return false;
+      }
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        message = "'path' includes either or both query and fragment components.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkSslConfiguration (
       ServerSslConfiguration configuration, out string message
     )
