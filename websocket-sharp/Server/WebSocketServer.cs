@@ -919,7 +919,13 @@ namespace WebSocketSharp.Server
     public void AddWebSocketService<TBehaviorWithNew> (string path)
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
-      AddWebSocketService<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
+      string msg;
+      if (!checkServicePath (path, out msg)) {
+        _logger.Error (msg);
+        return;
+      }
+
+      _services.Add<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
     }
 
     /// <summary>
