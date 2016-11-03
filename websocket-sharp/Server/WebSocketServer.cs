@@ -937,8 +937,8 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool RemoveWebSocketService (string path)
     {
-      var msg = path.CheckIfValidServicePath ();
-      if (msg != null) {
+      string msg;
+      if (!checkServicePath (path, out msg)) {
         _logger.Error (msg);
         return false;
       }
