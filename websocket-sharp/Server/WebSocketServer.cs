@@ -887,14 +887,19 @@ namespace WebSocketSharp.Server
     /// The type of the behavior of the service to add. The TBehavior must inherit
     /// the <see cref="WebSocketBehavior"/> class.
     /// </typeparam>
-    public void AddWebSocketService<TBehavior> (string path, Func<TBehavior> initializer)
+    public void AddWebSocketService<TBehavior> (
+      string path, Func<TBehavior> initializer
+    )
       where TBehavior : WebSocketBehavior
     {
-      var msg = path.CheckIfValidServicePath () ??
-                (initializer == null ? "'initializer' is null." : null);
-
-      if (msg != null) {
+      string msg;
+      if (!checkServicePath (path, out msg)) {
         _logger.Error (msg);
+        return;
+      }
+
+      if (initializer == null) {
+        _logger.Error ("'initializer' is null.");
         return;
       }
 
