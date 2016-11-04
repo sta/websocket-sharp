@@ -930,16 +930,14 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Removes a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
-    /// <remarks>
-    /// This method converts <paramref name="path"/> to a URL-decoded string,
-    /// and removes <c>'/'</c> from tail end of <paramref name="path"/>.
-    /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to the service.
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service. It will be converted to a URL-decoded string,
+    /// and will be removed <c>'/'</c> from tail end if any.
     /// </param>
     public bool RemoveWebSocketService (string path)
     {
