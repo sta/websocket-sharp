@@ -862,29 +862,22 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior, <paramref name="path"/>,
-    /// and <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior,
+    /// <paramref name="path"/>, and <paramref name="initializer"/>.
     /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   This method converts <paramref name="path"/> to URL-decoded string,
-    ///   and removes <c>'/'</c> from tail end of <paramref name="path"/>.
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="initializer"/> returns an initialized specified typed
-    ///   <see cref="WebSocketBehavior"/> instance.
-    ///   </para>
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service to add.
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service. It will be converted to a URL-decoded string,
+    /// and will be removed <c>'/'</c> from tail end if any.
     /// </param>
     /// <param name="initializer">
-    /// A <c>Func&lt;T&gt;</c> delegate that references the method used to initialize
-    /// a new specified typed <see cref="WebSocketBehavior"/> instance (a new
-    /// <see cref="IWebSocketSession"/> instance).
+    /// A <c>Func&lt;TBehavior&gt;</c> delegate that invokes
+    /// the method used to create a new session instance for
+    /// the service. The method must create a new instance of
+    /// the specified behavior class and return it.
     /// </param>
     /// <typeparam name="TBehavior">
-    /// The type of the behavior of the service to add. The TBehavior must inherit
+    /// The type of the behavior for the service. It must inherit
     /// the <see cref="WebSocketBehavior"/> class.
     /// </typeparam>
     public void AddWebSocketService<TBehavior> (
