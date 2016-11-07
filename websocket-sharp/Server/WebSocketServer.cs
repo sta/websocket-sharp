@@ -305,11 +305,12 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets a value indicating whether the server accepts
-    /// a forwarded request.
+    /// a handshake request without checking the request URI.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the server accepts a forwarded request;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    /// <c>true</c> if the server accepts a handshake request without
+    /// checking the request URI; otherwise, <c>false</c>. The default
+    /// value is <c>false</c>.
     /// </value>
     public bool AllowForwardedRequest {
       get {
