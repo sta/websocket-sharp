@@ -379,15 +379,15 @@ wssv.AddWebSocketService<Chat> ("/Chat");
 wssv.AddWebSocketService<Chat> ("/ChatWithNyan", () => new Chat (" Nyan!"));
 ```
 
-You can add any WebSocket service to your `WebSocketServer` with the specified behavior and path to the service, by using the `WebSocketServer.AddWebSocketService<TBehaviorWithNew> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
+You can add any WebSocket service to your `WebSocketServer` with the specified behavior and absolute path to the service, by using the `WebSocketServer.AddWebSocketService<TBehaviorWithNew> (string)` or `WebSocketServer.AddWebSocketService<TBehavior> (string, Func<TBehavior>)` method.
 
 The type of `TBehaviorWithNew` must inherit the `WebSocketBehavior` class, and must have a public parameterless constructor.
 
-And also the type of `TBehavior` must inherit the `WebSocketBehavior` class.
+The type of `TBehavior` must inherit the `WebSocketBehavior` class.
 
-So you can use the classes created in **Step 2** to add the service.
+So you can use a class in the above Step 2 to add the service.
 
-If you create a instance of the `WebSocketServer` class without a port number, the `WebSocketServer` class set the port number to **80** automatically. So it's necessary to run with root permission.
+If you create a new instance of the `WebSocketServer` class without a port number, it sets the port number to **80**. So it is necessary to run with root permission.
 
     $ sudo mono example2.exe
 
