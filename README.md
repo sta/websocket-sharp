@@ -501,19 +501,19 @@ wssv.SslConfiguration.ServerCertificate =
 
 ### HTTP Authentication ###
 
-websocket-sharp supports the **[HTTP Authentication (Basic/Digest)][rfc2617]**.
+websocket-sharp supports the [HTTP Authentication (Basic/Digest)][rfc2617].
 
-As a **WebSocket Client**, you should set a pair of user name and password for the HTTP authentication, by using the `WebSocket.SetCredentials (string, string, bool)` method before connecting.
+As a WebSocket client, you should set a pair of user name and password for the HTTP authentication, by using the `WebSocket.SetCredentials (string, string, bool)` method before calling the connect method.
 
 ```csharp
 ws.SetCredentials ("nobita", "password", preAuth);
 ```
 
-If `preAuth` is `true`, the `WebSocket` will send the credentials for the Basic authentication with the first handshake request to the server.
+If `preAuth` is `true`, the client will send the credentials for the Basic authentication in the first handshake request to the server.
 
-Otherwise, the `WebSocket` will send the credentials for either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication with the second handshake request to the server.
+Otherwise, it will send the credentials for either the Basic or Digest (determined by the unauthorized response to the first handshake request) authentication in the second handshake request to the server.
 
-As a **WebSocket Server**, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before starting, such as the following.
+As a WebSocket server, you should set an HTTP authentication scheme, a realm, and any function to find the user credentials before calling the start method, such as the following.
 
 ```csharp
 wssv.AuthenticationSchemes = AuthenticationSchemes.Basic;
@@ -524,7 +524,7 @@ wssv.UserCredentialsFinder = id => {
     // Return user name, password, and roles.
     return name == "nobita"
            ? new NetworkCredential (name, "password", "gunfighter")
-           : null; // If the user credentials aren't found.
+           : null; // If the user credentials are not found.
   };
 ```
 
