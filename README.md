@@ -603,18 +603,18 @@ wssv.AddWebSocketService<Chat> (
 );
 ```
 
-### Connecting through the HTTP Proxy server ###
+### Connecting through the HTTP proxy server ###
 
-websocket-sharp supports to connect through the **HTTP Proxy** server.
+websocket-sharp supports to connect through the HTTP proxy server.
 
-If you would like to connect to a WebSocket server through the HTTP proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the `WebSocket.SetProxy (string, string, string)` method before connecting.
+If you would like to connect to a WebSocket server through the HTTP proxy server, you should set the proxy server URL, and if necessary, a pair of user name and password for the proxy server authentication (Basic/Digest), by using the `WebSocket.SetProxy (string, string, string)` method before calling the connect method.
 
 ```csharp
 var ws = new WebSocket ("ws://example.com");
 ws.SetProxy ("http://localhost:3128", "nobita", "password");
 ```
 
-I have tested this with **[Squid]**. It's necessary to disable the following configuration option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
+I have tested this with **[Squid]**. It is necessary to disable the following option in **squid.conf** (e.g. `/etc/squid/squid.conf`).
 
 ```
 # Deny CONNECT to other than SSL ports
