@@ -93,6 +93,7 @@ namespace WebSocketSharp
     private bool                           _inContinuation;
     private volatile bool                  _inMessage;
     private volatile Logger                _logger;
+    private static readonly int            _maxRetryCountForConnect;
     private Action<MessageEventArgs>       _message;
     private Queue<MessageEventArgs>        _messageEventQueue;
     private uint                           _nonceCount;
@@ -105,6 +106,7 @@ namespace WebSocketSharp
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
     private AutoResetEvent                 _receivePong;
+    private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
     private Stream                         _stream;
@@ -147,6 +149,7 @@ namespace WebSocketSharp
 
     static WebSocket ()
     {
+      _maxRetryCountForConnect = 10;
       EmptyBytes = new byte[0];
       FragmentLength = 1016;
       RandomNumber = new RNGCryptoServiceProvider ();
@@ -1040,14 +1043,23 @@ namespace WebSocketSharp
           return false;
         }
 
+        if (_retryCountForConnect > _maxRetryCountForConnect) {
+          _retryCountForConnect = 0;
+          _logger.Fatal ("A series of reconnecting has failed.");
+
+          return false;
+        }
+
         try {
           _readyState = WebSocketState.Connecting;
           if (!doHandshake ())
             return false;
 
+          _retryCountForConnect = 1;
           _readyState = WebSocketState.Open;
         }
         catch (Exception ex) {
+          _retryCountForConnect++;
           _logger.Fatal (ex.ToString ());
           fatal ("An exception has occurred while connecting.", ex);
 
@@ -1169,6 +1181,7 @@ namespace WebSocketSharp
 
       string msg;
       if (!checkHandshakeResponse (res, out msg)) {
+        _retryCountForConnect++;
         _logger.Fatal (msg);
         fatal ("An error has occurred while connecting.", CloseStatusCode.ProtocolError);
 
