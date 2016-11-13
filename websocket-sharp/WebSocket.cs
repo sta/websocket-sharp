@@ -1050,13 +1050,10 @@ namespace WebSocketSharp
           return false;
         }
 
-        try {
-          _readyState = WebSocketState.Connecting;
-          if (!doHandshake ())
-            return false;
+        _readyState = WebSocketState.Connecting;
 
-          _retryCountForConnect = 1;
-          _readyState = WebSocketState.Open;
+        try {
+          doHandshake ();
         }
         catch (Exception ex) {
           _retryCountForConnect++;
@@ -1065,6 +1062,9 @@ namespace WebSocketSharp
 
           return false;
         }
+
+        _retryCountForConnect = 1;
+        _readyState = WebSocketState.Open;
 
         return true;
       }
@@ -1174,19 +1174,14 @@ namespace WebSocketSharp
     }
 
     // As client
-    private bool doHandshake ()
+    private void doHandshake ()
     {
       setClientStream ();
       var res = sendHandshakeRequest ();
 
       string msg;
-      if (!checkHandshakeResponse (res, out msg)) {
-        _retryCountForConnect++;
-        _logger.Fatal (msg);
-        fatal ("An error has occurred while connecting.", CloseStatusCode.ProtocolError);
-
-        return false;
-      }
+      if (!checkHandshakeResponse (res, out msg))
+        throw new WebSocketException (CloseStatusCode.ProtocolError, msg);
 
       if (_protocolsRequested)
         _protocol = res.Headers["Sec-WebSocket-Protocol"];
@@ -1195,8 +1190,6 @@ namespace WebSocketSharp
         processSecWebSocketExtensionsServerHeader (res.Headers["Sec-WebSocket-Extensions"]);
 
       processCookies (res.Cookies);
-
-      return true;
     }
 
     private void enqueueToMessageEventQueue (MessageEventArgs e)
