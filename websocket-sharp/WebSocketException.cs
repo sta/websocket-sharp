@@ -94,8 +94,8 @@ namespace WebSocketSharp
     /// Gets the status code indicating the cause of the exception.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CloseStatusCode"/> enum values, represents the status code
-    /// indicating the cause of the exception.
+    /// One of the <see cref="CloseStatusCode"/> enum values that represents
+    /// the status code indicating the cause of the exception.
     /// </value>
     public CloseStatusCode Code {
       get {
