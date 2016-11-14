@@ -78,7 +78,9 @@ namespace WebSocketSharp
     {
     }
 
-    internal WebSocketException (CloseStatusCode code, string message, Exception innerException)
+    internal WebSocketException (
+      CloseStatusCode code, string message, Exception innerException
+    )
       : base (message ?? code.GetMessage (), innerException)
     {
       _code = code;
