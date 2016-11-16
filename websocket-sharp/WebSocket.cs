@@ -2682,11 +2682,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as binary data using the WebSocket connection.
+    /// Sends the specified <paramref name="file"/> as the binary data using
+    /// the WebSocket connection.
     /// </summary>
     /// <param name="file">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="file"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
     public void Send (FileInfo file)
     {
       if (file == null)
