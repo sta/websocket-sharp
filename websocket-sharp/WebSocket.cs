@@ -2657,11 +2657,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> using the WebSocket connection.
+    /// Sends the specified <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
     public void Send (byte[] data)
     {
       if (data == null)
