@@ -2688,11 +2688,14 @@ namespace WebSocketSharp
     /// <param name="file">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="file"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the connection is not Open.
+    /// <exception cref="ArgumentException">
+    /// <paramref name="file"/> cannot be opened to read.
     /// </exception>
     public void Send (FileInfo file)
     {
