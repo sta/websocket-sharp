@@ -2670,13 +2670,13 @@ namespace WebSocketSharp
     /// </exception>
     public void Send (byte[] data)
     {
-      if (data == null)
-        throw new ArgumentNullException ("data");
-
       if (_readyState != WebSocketState.Open) {
         var msg = "The current state of the connection is not Open.";
         throw new InvalidOperationException (msg);
       }
+
+      if (data == null)
+        throw new ArgumentNullException ("data");
 
       send (Opcode.Binary, new MemoryStream (data));
     }
