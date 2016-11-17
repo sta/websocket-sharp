@@ -2696,15 +2696,19 @@ namespace WebSocketSharp
     /// </exception>
     public void Send (FileInfo file)
     {
-      if (file == null)
-        throw new ArgumentNullException ("file");
-
       if (_readyState != WebSocketState.Open) {
         var msg = "The current state of the connection is not Open.";
         throw new InvalidOperationException (msg);
       }
 
-      send (Opcode.Binary, file.OpenRead ());
+      if (file == null)
+        throw new ArgumentNullException ("file");
+
+      FileStream stream;
+      if (!file.TryOpenRead (out stream))
+        throw new ArgumentException ("Cannot be opened to read.", "file");
+
+      send (Opcode.Binary, stream);
     }
 
     /// <summary>
