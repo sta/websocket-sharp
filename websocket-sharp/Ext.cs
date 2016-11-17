@@ -964,6 +964,22 @@ namespace WebSocketSharp
       return true;
     }
 
+    internal static bool TryOpenRead (
+      this FileInfo fileInfo, out FileStream fileStream
+    )
+    {
+      fileStream = null;
+
+      try {
+        fileStream = fileInfo.OpenRead ();
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     internal static string Unquote (this string value)
     {
       var start = value.IndexOf ('"');
