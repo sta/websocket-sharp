@@ -2722,17 +2722,19 @@ namespace WebSocketSharp
     /// </param>
     public void Send (string data)
     {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameter (data);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
+      if (_readyState != WebSocketState.Open) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
       }
 
-      send (Opcode.Text, new MemoryStream (data.UTF8Encode ()));
+      if (data == null)
+        throw new ArgumentNullException ("data");
+
+      byte[] bytes;
+      if (!data.TryGetUTF8EncodedBytes (out bytes))
+        throw new ArgumentException ("Cannot be UTF8 encoded.", "data");
+
+      send (Opcode.Text, new MemoryStream (bytes));
     }
 
     /// <summary>
