@@ -2715,11 +2715,20 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends text <paramref name="data"/> using the WebSocket connection.
+    /// Sends the specified <paramref name="data"/> using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> cannot be UTF8 encoded.
+    /// </exception>
     public void Send (string data)
     {
       if (_readyState != WebSocketState.Open) {
