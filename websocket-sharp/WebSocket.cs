@@ -541,8 +541,9 @@ namespace WebSocketSharp
     /// Gets the state of the WebSocket connection.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of the connection.
-    /// The default value is <see cref="WebSocketState.Connecting"/>.
+    /// One of the <see cref="WebSocketState"/> enum values that indicates
+    /// the current state of the connection. The default value is
+    /// <see cref="WebSocketState.Connecting"/>.
     /// </value>
     public WebSocketState ReadyState {
       get {
