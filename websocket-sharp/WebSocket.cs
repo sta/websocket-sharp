@@ -1575,9 +1575,6 @@ namespace WebSocketSharp
     private bool send (Opcode opcode, Stream stream, bool compressed)
     {
       var len = stream.Length;
-
-      /* Not fragmented */
-
       if (len == 0)
         return send (Fin.Final, opcode, EmptyBytes, compressed);
 
@@ -1587,27 +1584,34 @@ namespace WebSocketSharp
       byte[] buff = null;
       if (quo == 0) {
         buff = new byte[rem];
-        return stream.Read (buff, 0, rem) == rem &&
-               send (Fin.Final, opcode, buff, compressed);
+        return stream.Read (buff, 0, rem) == rem
+               && send (Fin.Final, opcode, buff, compressed);
       }
 
-      buff = new byte[FragmentLength];
-      if (quo == 1 && rem == 0)
-        return stream.Read (buff, 0, FragmentLength) == FragmentLength &&
-               send (Fin.Final, opcode, buff, compressed);
+      if (quo == 1 && rem == 0) {
+        buff = new byte[FragmentLength];
+        return stream.Read (buff, 0, FragmentLength) == FragmentLength
+               && send (Fin.Final, opcode, buff, compressed);
+      }
 
-      /* Send fragmented */
+      /* Send fragments */
 
       // Begin
-      if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-          !send (Fin.More, opcode, buff, compressed))
+      buff = new byte[FragmentLength];
+      var sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
+                 && send (Fin.More, opcode, buff, compressed);
+
+      if (!sent)
         return false;
 
       var n = rem == 0 ? quo - 2 : quo - 1;
-      for (long i = 0; i < n; i++)
-        if (stream.Read (buff, 0, FragmentLength) != FragmentLength ||
-            !send (Fin.More, Opcode.Cont, buff, compressed))
+      for (long i = 0; i < n; i++) {
+        sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
+               && send (Fin.More, Opcode.Cont, buff, compressed);
+
+        if (!sent)
           return false;
+      }
 
       // End
       if (rem == 0)
@@ -1615,7 +1619,8 @@ namespace WebSocketSharp
       else
         buff = new byte[rem];
 
-      return stream.Read (buff, 0, rem) == rem && send (Fin.Final, Opcode.Cont, buff, compressed);
+      return stream.Read (buff, 0, rem) == rem
+             && send (Fin.Final, Opcode.Cont, buff, compressed);
     }
 
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
