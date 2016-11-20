@@ -1631,7 +1631,8 @@ namespace WebSocketSharp
           return false;
         }
 
-        return sendBytes (new WebSocketFrame (fin, opcode, data, compressed, _client).ToArray ());
+        var frame = new WebSocketFrame (fin, opcode, data, compressed, _client);
+        return sendBytes (frame.ToArray ());
       }
     }
 
