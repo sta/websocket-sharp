@@ -45,7 +45,7 @@ You can add websocket-sharp to your project with the **NuGet Package Manager**, 
 
 ### Unity Asset Store ###
 
-websocket-sharp is available on the Unity Asset Store.
+websocket-sharp is available on the Unity Asset Store (Sorry, Not available now).
 
 - **[WebSocket-Sharp for Unity]**
 
