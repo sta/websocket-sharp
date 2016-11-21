@@ -1650,10 +1650,14 @@ namespace WebSocketSharp
           }
           catch (Exception ex) {
             _logger.Error (ex.ToString ());
-            error ("An exception has occurred during a send callback.", ex);
+            error (
+              "An exception has occurred during the callback for an async send.",
+              ex
+            );
           }
         },
-        null);
+        null
+      );
     }
 
     private bool sendBytes (byte[] bytes)
