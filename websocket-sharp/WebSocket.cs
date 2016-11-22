@@ -2772,6 +2772,12 @@ namespace WebSocketSharp
     /// the send is complete. A <see cref="bool"/> passed to this delegate will be
     /// <c>true</c> if the send has done with no error.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
       if (_readyState != WebSocketState.Open) {
