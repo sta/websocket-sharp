@@ -2848,17 +2848,19 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (string data, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameter (data);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
+      if (_readyState != WebSocketState.Open) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
       }
 
-      sendAsync (Opcode.Text, new MemoryStream (data.UTF8Encode ()), completed);
+      if (data == null)
+        throw new ArgumentNullException ("data");
+
+      byte[] bytes;
+      if (!data.TryGetUTF8EncodedBytes (out bytes))
+        throw new ArgumentException ("Cannot be UTF8 encoded.", "data");
+
+      sendAsync (Opcode.Text, new MemoryStream (bytes), completed);
     }
 
     /// <summary>
