@@ -2893,15 +2893,19 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameters (stream, length);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
+      if (_readyState != WebSocketState.Open) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
       }
+
+      if (stream == null)
+        throw new ArgumentNullException ("stream");
+
+      if (!stream.CanRead)
+        throw new ArgumentException ("Cannot be read.", "stream");
+
+      if (length < 1)
+        throw new ArgumentException ("Less than 1.", "length");
 
       stream.ReadBytesAsync (
         length,
