@@ -2758,18 +2758,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> asynchronously using the WebSocket connection.
+    /// Sends the specified <paramref name="data"/> asynchronously using
+    /// the WebSocket connection.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that invokes the method called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate will be
+    /// <c>true</c> if the send has done with no error.
     /// </param>
     public void SendAsync (byte[] data, Action<bool> completed)
     {
