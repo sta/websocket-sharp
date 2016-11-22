@@ -2808,17 +2808,19 @@ namespace WebSocketSharp
     /// </param>
     public void SendAsync (FileInfo file, Action<bool> completed)
     {
-      var msg = _readyState.CheckIfAvailable (false, true, false, false) ??
-                CheckSendParameter (file);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending data.", null);
-
-        return;
+      if (_readyState != WebSocketState.Open) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
       }
 
-      sendAsync (Opcode.Binary, file.OpenRead (), completed);
+      if (file == null)
+        throw new ArgumentNullException ("file");
+
+      FileStream stream;
+      if (!file.TryOpenRead (out stream))
+        throw new ArgumentException ("Cannot be opened to read.", "file");
+
+      sendAsync (Opcode.Binary, stream, completed);
     }
 
     /// <summary>
