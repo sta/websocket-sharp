@@ -2907,35 +2907,22 @@ namespace WebSocketSharp
       if (length < 1)
         throw new ArgumentException ("Less than 1.", "length");
 
-      stream.ReadBytesAsync (
-        length,
-        data => {
-          var len = data.Length;
-          if (len == 0) {
-            _logger.Error ("The data cannot be read from 'stream'.");
-            error ("An error has occurred in sending data.", null);
+      var bytes = stream.ReadBytes (length);
 
-            return;
-          }
+      var len = bytes.Length;
+      if (len == 0)
+        throw new ArgumentException ("No data could be read.", "stream");
 
-          if (len < length)
-            _logger.Warn (
-              String.Format (
-                "The length of the data is less than 'length':\n  expected: {0}\n  actual: {1}",
-                length,
-                len
-              )
-            );
+      if (len < length) {
+        _logger.Warn (
+          String.Format (
+            "Only {0} byte(s) of data could be read from the specified stream.",
+            len
+          )
+        );
+      }
 
-          var sent = send (Opcode.Binary, new MemoryStream (data));
-          if (completed != null)
-            completed (sent);
-        },
-        ex => {
-          _logger.Error (ex.ToString ());
-          error ("An exception has occurred while sending data.", ex);
-        }
-      );
+      sendAsync (Opcode.Binary, new MemoryStream (bytes), completed);
     }
 
     /// <summary>
