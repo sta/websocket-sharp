@@ -2693,11 +2693,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="fileInfo"/> as the binary data using
-    /// the WebSocket connection.
+    /// Sends the specified file as the binary data using the WebSocket connection.
     /// </summary>
     /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that represents the file to send.
+    /// A <see cref="FileInfo"/> that specifies the file to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
@@ -2706,7 +2705,15 @@ namespace WebSocketSharp
     /// <paramref name="fileInfo"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="fileInfo"/> cannot be opened to read.
+    ///   <para>
+    ///   The file does not exist.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The file could not be opened.
+    ///   </para>
     /// </exception>
     public void Send (FileInfo fileInfo)
     {
