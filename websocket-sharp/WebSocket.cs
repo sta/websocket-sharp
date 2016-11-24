@@ -2693,37 +2693,37 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as the binary data using
+    /// Sends the specified <paramref name="fileInfo"/> as the binary data using
     /// the WebSocket connection.
     /// </summary>
-    /// <param name="file">
+    /// <param name="fileInfo">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
     /// </exception>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="file"/> is <see langword="null"/>.
+    /// <paramref name="fileInfo"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="file"/> cannot be opened to read.
+    /// <paramref name="fileInfo"/> cannot be opened to read.
     /// </exception>
-    public void Send (FileInfo file)
+    public void Send (FileInfo fileInfo)
     {
       if (_readyState != WebSocketState.Open) {
         var msg = "The current state of the connection is not Open.";
         throw new InvalidOperationException (msg);
       }
 
-      if (file == null)
-        throw new ArgumentNullException ("file");
+      if (fileInfo == null)
+        throw new ArgumentNullException ("fileInfo");
 
-      if (!file.Exists)
-        throw new ArgumentException ("The file does not exist.", "file");
+      if (!fileInfo.Exists)
+        throw new ArgumentException ("The file does not exist.", "fileInfo");
 
       FileStream stream;
-      if (!file.TryOpenRead (out stream))
-        throw new ArgumentException ("Cannot be opened to read.", "file");
+      if (!fileInfo.TryOpenRead (out stream))
+        throw new ArgumentException ("The file could not be opened.", "fileInfo");
 
       send (Opcode.Binary, stream);
     }
