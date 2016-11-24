@@ -2874,22 +2874,23 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends binary data from the specified <see cref="Stream"/> asynchronously using
+    /// Sends the specified <paramref name="length"/> of data from
+    /// the specified <paramref name="stream"/> asynchronously using
     /// the WebSocket connection.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which contains the binary data to send.
+    /// A <see cref="Stream"/> from which reads the binary data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that represents the number of bytes to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
+    /// An <c>Action&lt;bool&gt;</c> delegate that invokes the method called when
+    /// the send is complete. A <see cref="bool"/> passed to this delegate will be
+    /// <c>true</c> if the send has done with no error.
     /// </param>
     public void SendAsync (Stream stream, int length, Action<bool> completed)
     {
