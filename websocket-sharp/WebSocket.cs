@@ -2802,14 +2802,14 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="fileInfo"/> as the binary data
-    /// asynchronously using the WebSocket connection.
+    /// Sends the specified file as the binary data asynchronously using
+    /// the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that represents the file to send.
+    /// A <see cref="FileInfo"/> that specifies a file to send.
     /// </param>
     /// <param name="completed">
     /// An <c>Action&lt;bool&gt;</c> delegate that invokes the method called when
@@ -2823,7 +2823,15 @@ namespace WebSocketSharp
     /// <paramref name="fileInfo"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="fileInfo"/> cannot be opened to read.
+    ///   <para>
+    ///   The file does not exist.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The file could not be opened.
+    ///   </para>
     /// </exception>
     public void SendAsync (FileInfo fileInfo, Action<bool> completed)
     {
