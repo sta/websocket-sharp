@@ -2835,6 +2835,9 @@ namespace WebSocketSharp
       if (file == null)
         throw new ArgumentNullException ("file");
 
+      if (!file.Exists)
+        throw new ArgumentException ("The file does not exist.", "file");
+
       FileStream stream;
       if (!file.TryOpenRead (out stream))
         throw new ArgumentException ("Cannot be opened to read.", "file");
