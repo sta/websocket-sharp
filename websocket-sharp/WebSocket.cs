@@ -2696,7 +2696,7 @@ namespace WebSocketSharp
     /// Sends the specified file as the binary data using the WebSocket connection.
     /// </summary>
     /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies the file to send.
+    /// A <see cref="FileInfo"/> that specifies a file to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
