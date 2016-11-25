@@ -2889,7 +2889,7 @@ namespace WebSocketSharp
 
       byte[] bytes;
       if (!data.TryGetUTF8EncodedBytes (out bytes))
-        throw new ArgumentException ("Cannot be UTF8 encoded.", "data");
+        throw new ArgumentException ("It could not be UTF8 encoded.", "data");
 
       sendAsync (Opcode.Text, new MemoryStream (bytes), completed);
     }
