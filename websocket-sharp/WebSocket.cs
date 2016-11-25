@@ -2875,7 +2875,7 @@ namespace WebSocketSharp
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="data"/> cannot be UTF8 encoded.
+    /// <paramref name="data"/> could not be UTF8 encoded.
     /// </exception>
     public void SendAsync (string data, Action<bool> completed)
     {
