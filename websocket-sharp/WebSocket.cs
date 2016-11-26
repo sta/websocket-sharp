@@ -2906,7 +2906,7 @@ namespace WebSocketSharp
     /// A <see cref="Stream"/> from which reads the binary data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that represents the number of bytes to send.
+    /// An <see cref="int"/> that specifies the number of bytes to read and send.
     /// </param>
     /// <param name="completed">
     /// An <c>Action&lt;bool&gt;</c> delegate that invokes the method called when
