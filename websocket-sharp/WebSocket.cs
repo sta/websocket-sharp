@@ -2768,6 +2768,74 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Sends the specified <paramref name="length"/> of data from
+    /// the specified <paramref name="stream"/> using the WebSocket
+    /// connection.
+    /// </summary>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> from which reads the binary data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that specifies the number of bytes to read and send.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="stream"/> cannot be read.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    public void Send (Stream stream, int length)
+    {
+      if (_readyState != WebSocketState.Open) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (stream == null)
+        throw new ArgumentNullException ("stream");
+
+      if (!stream.CanRead)
+        throw new ArgumentException ("It cannot be read.", "stream");
+
+      if (length < 1)
+        throw new ArgumentException ("It is less than 1.", "length");
+
+      var bytes = stream.ReadBytes (length);
+
+      var len = bytes.Length;
+      if (len == 0)
+        throw new ArgumentException ("No data could be read from it.", "stream");
+
+      if (len < length) {
+        _logger.Warn (
+          String.Format (
+            "Only {0} byte(s) of data could be read from the specified stream.",
+            len
+          )
+        );
+      }
+
+      send (Opcode.Binary, new MemoryStream (bytes));
+    }
+
+    /// <summary>
     /// Sends the specified <paramref name="data"/> asynchronously using
     /// the WebSocket connection.
     /// </summary>
