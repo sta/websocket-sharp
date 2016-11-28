@@ -1576,7 +1576,7 @@ namespace WebSocketSharp
     {
       var len = stream.Length;
       if (len == 0)
-        return send (Fin.Final, opcode, EmptyBytes, compressed);
+        return send (Fin.Final, opcode, EmptyBytes, false);
 
       var quo = len / FragmentLength;
       var rem = (int) (len % FragmentLength);
@@ -1607,7 +1607,7 @@ namespace WebSocketSharp
       var n = rem == 0 ? quo - 2 : quo - 1;
       for (long i = 0; i < n; i++) {
         sent = stream.Read (buff, 0, FragmentLength) == FragmentLength
-               && send (Fin.More, Opcode.Cont, buff, compressed);
+               && send (Fin.More, Opcode.Cont, buff, false);
 
         if (!sent)
           return false;
@@ -1620,7 +1620,7 @@ namespace WebSocketSharp
         buff = new byte[rem];
 
       return stream.Read (buff, 0, rem) == rem
-             && send (Fin.Final, Opcode.Cont, buff, compressed);
+             && send (Fin.Final, Opcode.Cont, buff, false);
     }
 
     private bool send (Fin fin, Opcode opcode, byte[] data, bool compressed)
