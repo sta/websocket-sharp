@@ -1555,11 +1555,11 @@ namespace WebSocketSharp
 
           sent = send (opcode, stream, compressed);
           if (!sent)
-            error ("The sending has been interrupted.", null);
+            error ("A send has been interrupted.", null);
         }
         catch (Exception ex) {
           _logger.Error (ex.ToString ());
-          error ("An exception has occurred while sending.", ex);
+          error ("An exception has occurred during a send.", ex);
         }
         finally {
           if (compressed)
