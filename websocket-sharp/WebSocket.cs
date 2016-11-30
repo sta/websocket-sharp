@@ -2201,7 +2201,9 @@ namespace WebSocketSharp
     }
 
     // As server, used to broadcast
-    internal void Send (Opcode opcode, Stream stream, Dictionary <CompressionMethod, Stream> cache)
+    internal void Send (
+      Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache
+    )
     {
       lock (_forSend) {
         try {
