@@ -1302,7 +1302,7 @@ namespace WebSocketSharp
       }
       catch (Exception ex) {
         _logger.Error (ex.ToString ());
-        error ("An exception has occurred during the OnOpen event.", ex);
+        error ("An error has occurred during the OnOpen event.", ex);
       }
 
       MessageEventArgs e = null;
