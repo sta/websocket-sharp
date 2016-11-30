@@ -1559,7 +1559,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Error (ex.ToString ());
-          error ("An exception has occurred during a send.", ex);
+          error ("An error has occurred during a send.", ex);
         }
         finally {
           if (compressed)
