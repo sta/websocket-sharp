@@ -1256,7 +1256,7 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _logger.Error (ex.ToString ());
-          error ("An exception has occurred during an OnMessage event.", ex);
+          error ("An error has occurred during an OnMessage event.", ex);
         }
 
         lock (_forMessageEventQueue) {
