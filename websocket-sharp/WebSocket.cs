@@ -2164,12 +2164,14 @@ namespace WebSocketSharp
     }
 
     // As server, used to broadcast
-    internal void Send (Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
+    internal void Send (
+      Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
+    )
     {
       lock (_forSend) {
         lock (_forState) {
           if (_readyState != WebSocketState.Open) {
-            _logger.Error ("The sending has been interrupted.");
+            _logger.Error ("The state of the connection has been changed.");
             return;
           }
 
