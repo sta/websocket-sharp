@@ -964,6 +964,20 @@ namespace WebSocketSharp
       return true;
     }
 
+    internal static bool TryGetUTF8DecodedString (this byte[] bytes, out string s)
+    {
+      s = null;
+
+      try {
+        s = Encoding.UTF8.GetString (bytes);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     internal static bool TryGetUTF8EncodedBytes (this string s, out byte[] bytes)
     {
       bytes = null;
