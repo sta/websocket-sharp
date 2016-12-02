@@ -1318,6 +1318,23 @@ namespace WebSocketSharp
       _message.BeginInvoke (e, ar => _message.EndInvoke (ar), null);
     }
 
+    private bool ping (byte[] data)
+    {
+      if (_readyState != WebSocketState.Open)
+        return false;
+
+      var receivePong = _receivePong;
+      if (receivePong == null)
+        return false;
+
+      receivePong.Reset ();
+
+      if (!send (Fin.Final, Opcode.Ping, data, false))
+        return false;
+
+      return receivePong.WaitOne (_waitTime);
+    }
+
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
