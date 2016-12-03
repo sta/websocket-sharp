@@ -1327,12 +1327,16 @@ namespace WebSocketSharp
       if (receivePong == null)
         return false;
 
-      receivePong.Reset ();
+      try {
+        receivePong.Reset ();
+        if (!send (Fin.Final, Opcode.Ping, data, false))
+          return false;
 
-      if (!send (Fin.Final, Opcode.Ping, data, false))
+        return receivePong.WaitOne (_waitTime);
+      }
+      catch (ObjectDisposedException) {
         return false;
-
-      return receivePong.WaitOne (_waitTime);
+      }
     }
 
     private bool processCloseFrame (WebSocketFrame frame)
