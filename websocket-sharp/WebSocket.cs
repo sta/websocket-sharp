@@ -82,6 +82,7 @@ namespace WebSocketSharp
     private string                         _extensions;
     private bool                           _extensionsRequested;
     private object                         _forMessageEventQueue;
+    private object                         _forPing;
     private object                         _forSend;
     private object                         _forState;
     private MemoryStream                   _fragmentsBuffer;
@@ -1227,6 +1228,7 @@ namespace WebSocketSharp
     {
       _compression = CompressionMethod.None;
       _cookies = new CookieCollection ();
+      _forPing = new object ();
       _forSend = new object ();
       _forState = new object ();
       _messageEventQueue = new Queue<MessageEventArgs> ();
@@ -1327,15 +1329,17 @@ namespace WebSocketSharp
       if (receivePong == null)
         return false;
 
-      try {
-        receivePong.Reset ();
-        if (!send (Fin.Final, Opcode.Ping, data, false))
-          return false;
+      lock (_forPing) {
+        try {
+          receivePong.Reset ();
+          if (!send (Fin.Final, Opcode.Ping, data, false))
+            return false;
 
-        return receivePong.WaitOne (_waitTime);
-      }
-      catch (ObjectDisposedException) {
-        return false;
+          return receivePong.WaitOne (_waitTime);
+        }
+        catch (ObjectDisposedException) {
+          return false;
+        }
       }
     }
 
