@@ -1415,7 +1415,7 @@ namespace WebSocketSharp
     private bool processPongFrame (WebSocketFrame frame)
     {
       _receivePong.Set ();
-      _logger.Trace ("Received a pong.");
+      _logger.Trace ("A pong frame was received.");
 
       return true;
     }
