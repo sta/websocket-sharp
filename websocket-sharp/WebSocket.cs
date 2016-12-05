@@ -1403,8 +1403,11 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      if (send (new WebSocketFrame (Opcode.Pong, frame.PayloadData, _client).ToArray ()))
-        _logger.Trace ("Returned a pong.");
+      var data = frame.PayloadData.ApplicationData;
+      if (!send (Fin.Final, Opcode.Pong, data, false))
+        return false;
+
+      _logger.Debug ("A pong has been sent to respond to this ping.");
 
       if (_emitOnPing)
         enqueueToMessageEventQueue (new MessageEventArgs (frame));
