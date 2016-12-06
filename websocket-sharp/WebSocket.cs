@@ -1417,8 +1417,17 @@ namespace WebSocketSharp
 
     private bool processPongFrame (WebSocketFrame frame)
     {
-      _receivePong.Set ();
-      _logger.Trace ("A pong frame was received.");
+      try {
+        _receivePong.Set ();
+      }
+      catch (NullReferenceException) {
+        return false;
+      }
+      catch (ObjectDisposedException) {
+        return false;
+      }
+
+      _logger.Trace ("It has been signaled that a pong was received.");
 
       return true;
     }
