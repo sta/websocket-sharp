@@ -1407,7 +1407,7 @@ namespace WebSocketSharp
       if (!send (Fin.Final, Opcode.Pong, data, false))
         return false;
 
-      _logger.Debug ("A pong has been sent to respond to this ping.");
+      _logger.Trace ("A pong has been sent to respond to this ping.");
 
       if (_emitOnPing)
         enqueueToMessageEventQueue (new MessageEventArgs (frame));
