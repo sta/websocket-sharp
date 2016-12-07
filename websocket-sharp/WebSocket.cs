@@ -2190,14 +2190,30 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      if (!send (frameAsBytes))
-        return false;
-
       var receivePong = _receivePong;
       if (receivePong == null)
         return false;
 
-      return receivePong.WaitOne (timeout);
+      lock (_forPing) {
+        try {
+          receivePong.Reset ();
+
+          lock (_forState) {
+            if (_readyState != WebSocketState.Open) {
+              _logger.Error ("The state of the connection has been changed.");
+              return false;
+            }
+
+            if (!sendBytes (frameAsBytes))
+              return false;
+          }
+
+          return receivePong.WaitOne (timeout);
+        }
+        catch (ObjectDisposedException) {
+          return false;
+        }
+      }
     }
 
     // As server, used to broadcast
