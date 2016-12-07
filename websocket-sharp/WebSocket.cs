@@ -78,7 +78,7 @@ namespace WebSocketSharp
     private NetworkCredential              _credentials;
     private bool                           _emitOnPing;
     private bool                           _enableRedirection;
-    private AutoResetEvent                 _exitReceiving;
+    private ManualResetEvent               _exitReceiving;
     private string                         _extensions;
     private bool                           _extensionsRequested;
     private object                         _forMessageEventQueue;
@@ -106,7 +106,7 @@ namespace WebSocketSharp
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
-    private AutoResetEvent                 _receivePong;
+    private ManualResetEvent               _receivePong;
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
@@ -1872,8 +1872,8 @@ namespace WebSocketSharp
       if (_messageEventQueue.Count > 0)
         _messageEventQueue.Clear ();
 
-      _exitReceiving = new AutoResetEvent (false);
-      _receivePong = new AutoResetEvent (false);
+      _exitReceiving = new ManualResetEvent (false);
+      _receivePong = new ManualResetEvent (false);
 
       Action receive = null;
       receive =
