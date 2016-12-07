@@ -99,6 +99,7 @@ namespace WebSocketSharp
     private Queue<MessageEventArgs>        _messageEventQueue;
     private uint                           _nonceCount;
     private string                         _origin;
+    private ManualResetEvent               _pongReceived;
     private bool                           _preAuth;
     private string                         _protocol;
     private string[]                       _protocols;
@@ -106,7 +107,6 @@ namespace WebSocketSharp
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
-    private ManualResetEvent               _receivePong;
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
@@ -1325,17 +1325,17 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var receivePong = _receivePong;
-      if (receivePong == null)
+      var pongReceived = _pongReceived;
+      if (pongReceived == null)
         return false;
 
       lock (_forPing) {
         try {
-          receivePong.Reset ();
+          pongReceived.Reset ();
           if (!send (Fin.Final, Opcode.Ping, data, false))
             return false;
 
-          return receivePong.WaitOne (_waitTime);
+          return pongReceived.WaitOne (_waitTime);
         }
         catch (ObjectDisposedException) {
           return false;
@@ -1418,7 +1418,7 @@ namespace WebSocketSharp
     private bool processPongFrame (WebSocketFrame frame)
     {
       try {
-        _receivePong.Set ();
+        _pongReceived.Set ();
       }
       catch (NullReferenceException) {
         return false;
@@ -1533,9 +1533,9 @@ namespace WebSocketSharp
         _inContinuation = false;
       }
 
-      if (_receivePong != null) {
-        _receivePong.Close ();
-        _receivePong = null;
+      if (_pongReceived != null) {
+        _pongReceived.Close ();
+        _pongReceived = null;
       }
 
       if (_exitReceiving != null) {
@@ -1873,7 +1873,7 @@ namespace WebSocketSharp
         _messageEventQueue.Clear ();
 
       _exitReceiving = new ManualResetEvent (false);
-      _receivePong = new ManualResetEvent (false);
+      _pongReceived = new ManualResetEvent (false);
 
       Action receive = null;
       receive =
@@ -2190,13 +2190,13 @@ namespace WebSocketSharp
       if (_readyState != WebSocketState.Open)
         return false;
 
-      var receivePong = _receivePong;
-      if (receivePong == null)
+      var pongReceived = _pongReceived;
+      if (pongReceived == null)
         return false;
 
       lock (_forPing) {
         try {
-          receivePong.Reset ();
+          pongReceived.Reset ();
 
           lock (_forState) {
             if (_readyState != WebSocketState.Open) {
@@ -2208,7 +2208,7 @@ namespace WebSocketSharp
               return false;
           }
 
-          return receivePong.WaitOne (timeout);
+          return pongReceived.WaitOne (timeout);
         }
         catch (ObjectDisposedException) {
           return false;
