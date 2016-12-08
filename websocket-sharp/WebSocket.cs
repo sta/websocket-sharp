@@ -2699,19 +2699,19 @@ namespace WebSocketSharp
     /// </param>
     public bool Ping (string message)
     {
-      if (message == null || message.Length == 0)
-        return Ping ();
+      if (message == null)
+        throw new ArgumentNullException ("message");
 
-      byte[] data;
-      var msg = CheckPingParameter (message, out data);
-      if (msg != null) {
-        _logger.Error (msg);
-        error ("An error has occurred in sending a ping.", null);
+      byte[] bytes;
+      if (!message.TryGetUTF8EncodedBytes (out bytes))
+        throw new ArgumentException ("It could not be UTF8 encoded.", "message");
 
-        return false;
+      if (bytes.Length > 125) {
+        var msg = "Its size is greater than 125 bytes.";
+        throw new ArgumentOutOfRangeException ("message", msg);
       }
 
-      return Ping (WebSocketFrame.CreatePingFrame (data, _client).ToArray (), _waitTime);
+      return ping (bytes);
     }
 
     /// <summary>
