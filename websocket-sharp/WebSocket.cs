@@ -2684,11 +2684,7 @@ namespace WebSocketSharp
     /// </returns>
     public bool Ping ()
     {
-      var bytes = _client
-                  ? WebSocketFrame.CreatePingFrame (true).ToArray ()
-                  : WebSocketFrame.EmptyPingBytes;
-
-      return Ping (bytes, _waitTime);
+      return ping (EmptyBytes);
     }
 
     /// <summary>
