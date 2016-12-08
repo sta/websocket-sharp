@@ -78,7 +78,6 @@ namespace WebSocketSharp
     private NetworkCredential              _credentials;
     private bool                           _emitOnPing;
     private bool                           _enableRedirection;
-    private ManualResetEvent               _exitReceiving;
     private string                         _extensions;
     private bool                           _extensionsRequested;
     private object                         _forMessageEventQueue;
@@ -107,6 +106,7 @@ namespace WebSocketSharp
     private NetworkCredential              _proxyCredentials;
     private Uri                            _proxyUri;
     private volatile WebSocketState        _readyState;
+    private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
     private bool                           _secure;
     private ClientSslConfiguration         _sslConfig;
@@ -1024,7 +1024,7 @@ namespace WebSocketSharp
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
       received = received ||
-                 (receive && sent && _exitReceiving != null && _exitReceiving.WaitOne (_waitTime));
+                 (receive && sent && _receivingExited != null && _receivingExited.WaitOne (_waitTime));
 
       var ret = sent && received;
       _logger.Debug (
@@ -1538,9 +1538,9 @@ namespace WebSocketSharp
         _pongReceived = null;
       }
 
-      if (_exitReceiving != null) {
-        _exitReceiving.Close ();
-        _exitReceiving = null;
+      if (_receivingExited != null) {
+        _receivingExited.Close ();
+        _receivingExited = null;
       }
     }
 
@@ -1872,8 +1872,8 @@ namespace WebSocketSharp
       if (_messageEventQueue.Count > 0)
         _messageEventQueue.Clear ();
 
-      _exitReceiving = new ManualResetEvent (false);
       _pongReceived = new ManualResetEvent (false);
+      _receivingExited = new ManualResetEvent (false);
 
       Action receive = null;
       receive =
@@ -1883,9 +1883,9 @@ namespace WebSocketSharp
             false,
             frame => {
               if (!processReceivedFrame (frame) || _readyState == WebSocketState.Closed) {
-                var exit = _exitReceiving;
-                if (exit != null)
-                  exit.Set ();
+                var exited = _receivingExited;
+                if (exited != null)
+                  exited.Set ();
 
                 return;
               }
