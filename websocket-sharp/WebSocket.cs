@@ -1023,12 +1023,18 @@ namespace WebSocketSharp
     private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
-      received = received ||
-                 (receive && sent && _receivingExited != null && _receivingExited.WaitOne (_waitTime));
+
+      var wait = !received && sent && receive && _receivingExited != null;
+      if (wait)
+        received = _receivingExited.WaitOne (_waitTime);
 
       var ret = sent && received;
+
       _logger.Debug (
-        String.Format ("Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received));
+        String.Format (
+          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
+        )
+      );
 
       return ret;
     }
