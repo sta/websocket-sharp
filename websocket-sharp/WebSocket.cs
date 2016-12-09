@@ -2679,8 +2679,8 @@ namespace WebSocketSharp
     /// Sends a ping using the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if a pong has been received within a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the ping has been sent and then a pong has been
+    /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     public bool Ping ()
     {
