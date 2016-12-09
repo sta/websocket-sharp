@@ -2688,15 +2688,25 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a ping with the specified <paramref name="message"/> using the WebSocket connection.
+    /// Sends a ping with the specified <paramref name="message"/> using
+    /// the WebSocket connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="WebSocket"/> receives a pong to this ping in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the ping has been sent and then a pong has been
+    /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="message"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="message"/> could not be UTF8 encoded.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
     public bool Ping (string message)
     {
       if (message == null)
