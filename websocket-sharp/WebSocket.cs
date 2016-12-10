@@ -433,7 +433,7 @@ namespace WebSocketSharp
     /// </value>
     public bool IsAlive {
       get {
-        return Ping ();
+        return ping (EmptyBytes);
       }
     }
 
