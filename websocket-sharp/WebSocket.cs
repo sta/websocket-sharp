@@ -2715,7 +2715,7 @@ namespace WebSocketSharp
 
       byte[] bytes;
       if (!message.TryGetUTF8EncodedBytes (out bytes))
-        throw new ArgumentException ("It could not be UTF8 encoded.", "message");
+        throw new ArgumentException ("It could not be UTF-8-encoded.", "message");
 
       if (bytes.Length > 125) {
         var msg = "Its size is greater than 125 bytes.";
