@@ -957,6 +957,16 @@ namespace WebSocketSharp
 
     private void close (ushort code, string reason)
     {
+      if (_readyState == WebSocketState.Closing) {
+        _logger.Info ("The closing is already in progress.");
+        return;
+      }
+
+      if (_readyState == WebSocketState.Closed) {
+        _logger.Info ("The connection has already been closed.");
+        return;
+      }
+
       if (code == 1005) { // == no status
         close (new CloseEventArgs (), true, true, false);
         return;
@@ -975,7 +985,7 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has been closed.");
+          _logger.Info ("The connection has already been closed.");
           return;
         }
 
@@ -1005,6 +1015,16 @@ namespace WebSocketSharp
 
     private void closeAsync (ushort code, string reason)
     {
+      if (_readyState == WebSocketState.Closing) {
+        _logger.Info ("The closing is already in progress.");
+        return;
+      }
+
+      if (_readyState == WebSocketState.Closed) {
+        _logger.Info ("The connection has already been closed.");
+        return;
+      }
+
       if (code == 1005) { // == no status
         closeAsync (new CloseEventArgs (), true, true, false);
         return;
@@ -2121,7 +2141,7 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has been closed.");
+          _logger.Info ("The connection has already been closed.");
           return;
         }
 
@@ -2329,23 +2349,23 @@ namespace WebSocketSharp
     /// <summary>
     /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
     public void Close ()
     {
-      string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
-      close (new CloseEventArgs (), true, true, false);
+      close (1005, String.Empty);
     }
 
     /// <summary>
     /// Closes the WebSocket connection with the specified <paramref name="code"/>,
     /// and releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
     /// the reason for the close. The status codes are defined in
@@ -2355,13 +2375,6 @@ namespace WebSocketSharp
     public void Close (ushort code)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, null, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2369,13 +2382,17 @@ namespace WebSocketSharp
         return;
       }
 
-      close (code, null);
+      close (code, String.Empty);
     }
 
     /// <summary>
     /// Closes the WebSocket connection with the specified <paramref name="code"/>,
     /// and releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values that represents
     /// the status code indicating the reason for the close.
@@ -2383,13 +2400,6 @@ namespace WebSocketSharp
     public void Close (CloseStatusCode code)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, null, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2397,13 +2407,17 @@ namespace WebSocketSharp
         return;
       }
 
-      close ((ushort) code, null);
+      close ((ushort) code, String.Empty);
     }
 
     /// <summary>
     /// Closes the WebSocket connection with the specified <paramref name="code"/> and
     /// <paramref name="reason"/>, and releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
     /// the reason for the close. The status codes are defined in
@@ -2417,13 +2431,6 @@ namespace WebSocketSharp
     public void Close (ushort code, string reason)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, reason, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2438,6 +2445,10 @@ namespace WebSocketSharp
     /// Closes the WebSocket connection with the specified <paramref name="code"/> and
     /// <paramref name="reason"/>, and releases all associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values that represents
     /// the status code indicating the reason for the close.
@@ -2449,13 +2460,6 @@ namespace WebSocketSharp
     public void Close (CloseStatusCode code, string reason)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, reason, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2471,19 +2475,17 @@ namespace WebSocketSharp
     /// all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the close to be complete.
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
     /// </remarks>
     public void CloseAsync ()
     {
-      string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
-      closeAsync (new CloseEventArgs (), true, true, false);
+      closeAsync (1005, String.Empty);
     }
 
     /// <summary>
@@ -2491,7 +2493,13 @@ namespace WebSocketSharp
     /// <paramref name="code"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the close to be complete.
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
@@ -2502,13 +2510,6 @@ namespace WebSocketSharp
     public void CloseAsync (ushort code)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, null, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2516,7 +2517,7 @@ namespace WebSocketSharp
         return;
       }
 
-      closeAsync (code, null);
+      closeAsync (code, String.Empty);
     }
 
     /// <summary>
@@ -2524,7 +2525,13 @@ namespace WebSocketSharp
     /// <paramref name="code"/>, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the close to be complete.
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values that represents
@@ -2533,13 +2540,6 @@ namespace WebSocketSharp
     public void CloseAsync (CloseStatusCode code)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, null, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2547,7 +2547,7 @@ namespace WebSocketSharp
         return;
       }
 
-      closeAsync ((ushort) code, null);
+      closeAsync ((ushort) code, String.Empty);
     }
 
     /// <summary>
@@ -2556,7 +2556,13 @@ namespace WebSocketSharp
     /// all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the close to be complete.
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
@@ -2571,13 +2577,6 @@ namespace WebSocketSharp
     public void CloseAsync (ushort code, string reason)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, reason, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -2594,7 +2593,13 @@ namespace WebSocketSharp
     /// all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the close to be complete.
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="code">
     /// One of the <see cref="CloseStatusCode"/> enum values that represents
@@ -2607,13 +2612,6 @@ namespace WebSocketSharp
     public void CloseAsync (CloseStatusCode code, string reason)
     {
       string msg;
-      if (!checkIfAvailable (true, true, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
-
-        return;
-      }
-
       if (!CheckParametersForClose (code, reason, _client, out msg)) {
         _logger.Error (msg);
         error ("An error has occurred in closing the connection.", null);
@@ -3289,11 +3287,17 @@ namespace WebSocketSharp
     /// Closes the WebSocket connection, and releases all associated resources.
     /// </summary>
     /// <remarks>
-    /// This method closes the connection with status code 1001 (going away).
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    ///   <para>
+    ///   This method closes the connection with status code 1001 (going away).
+    ///   </para>
     /// </remarks>
     void IDisposable.Dispose ()
     {
-      close (new CloseEventArgs (1001), true, true, false);
+      close (1001, String.Empty);
     }
 
     #endregion
