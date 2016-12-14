@@ -1059,6 +1059,31 @@ namespace WebSocketSharp
       return ret;
     }
 
+    private bool closeHandshake (
+      PayloadData payloadData, bool send, bool receive, bool received
+    )
+    {
+      var sent = false;
+      if (send) {
+        var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
+        sent = sendBytes (frame.ToArray ());
+      }
+
+      var wait = !received && sent && receive && _receivingExited != null;
+      if (wait)
+        received = _receivingExited.WaitOne (_waitTime);
+
+      var ret = sent && received;
+
+      _logger.Debug (
+        String.Format (
+          "Was clean?: {0}\n  sent: {1}\n  received: {2}", ret, sent, received
+        )
+      );
+
+      return ret;
+    }
+
     // As client
     private bool connect ()
     {
