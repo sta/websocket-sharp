@@ -2695,7 +2695,7 @@ namespace WebSocketSharp
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
-    /// Its size must be 125 bytes or less in UTF-8.
+    /// The size must be 125 bytes or less in UTF-8.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="message"/> is <see langword="null"/>.
