@@ -1109,6 +1109,9 @@ namespace WebSocketSharp
       if (send) {
         var frame = WebSocketFrame.CreateCloseFrame (payloadData, _client);
         sent = sendBytes (frame.ToArray ());
+
+        if (_client)
+          frame.Unmask ();
       }
 
       var wait = !received && sent && receive && _receivingExited != null;
