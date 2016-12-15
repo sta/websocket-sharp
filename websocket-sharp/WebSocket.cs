@@ -1013,6 +1013,48 @@ namespace WebSocketSharp
       }
     }
 
+    private void close (
+      PayloadData payloadData, bool send, bool receive, bool received
+    )
+    {
+      lock (_forState) {
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Info ("The closing is already in progress.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closed) {
+          _logger.Info ("The connection has already been closed.");
+          return;
+        }
+
+        send = send && _readyState == WebSocketState.Open;
+        receive = send && receive;
+
+        _readyState = WebSocketState.Closing;
+      }
+
+      _logger.Trace ("Begin closing the connection.");
+
+      var res = closeHandshake (payloadData, send, receive, received);
+      releaseResources ();
+
+      _logger.Trace ("End closing the connection.");
+
+      _readyState = WebSocketState.Closed;
+
+      var e = new CloseEventArgs (payloadData);
+      e.WasClean = res;
+
+      try {
+        OnClose.Emit (this, e);
+      }
+      catch (Exception ex) {
+        _logger.Error (ex.ToString ());
+        error ("An error has occurred during the OnClose event.", ex);
+      }
+    }
+
     private void closeAsync (ushort code, string reason)
     {
       if (_readyState == WebSocketState.Closing) {
