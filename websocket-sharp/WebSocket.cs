@@ -1068,12 +1068,12 @@ namespace WebSocketSharp
       }
 
       if (code == 1005) { // == no status
-        closeAsync (new CloseEventArgs (), true, true, false);
+        closeAsync (PayloadData.Empty, true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      closeAsync (new CloseEventArgs (code, reason), send, send, false);
+      closeAsync (new PayloadData (code, reason), send, send, false);
     }
 
     private void closeAsync (CloseEventArgs e, bool send, bool receive, bool received)
