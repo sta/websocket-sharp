@@ -1442,7 +1442,7 @@ namespace WebSocketSharp
     private bool processCloseFrame (WebSocketFrame frame)
     {
       var payload = frame.PayloadData;
-      close (new CloseEventArgs (payload), !payload.HasReservedCode, false, true);
+      close (payload, !payload.HasReservedCode, false, true);
 
       return false;
     }
