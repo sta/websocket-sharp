@@ -968,12 +968,12 @@ namespace WebSocketSharp
       }
 
       if (code == 1005) { // == no status
-        close (new CloseEventArgs (), true, true, false);
+        close (PayloadData.Empty, true, true, false);
         return;
       }
 
       var send = !code.IsReserved ();
-      close (new CloseEventArgs (code, reason), send, send, false);
+      close (new PayloadData (code, reason), send, send, false);
     }
 
     private void close (CloseEventArgs e, bool send, bool receive, bool received)
