@@ -1082,6 +1082,16 @@ namespace WebSocketSharp
       closer.BeginInvoke (e, send, receive, received, ar => closer.EndInvoke (ar), null);
     }
 
+    private void closeAsync (
+      PayloadData payloadData, bool send, bool receive, bool received
+    )
+    {
+      Action<PayloadData, bool, bool, bool> closer = close;
+      closer.BeginInvoke (
+        payloadData, send, receive, received, ar => closer.EndInvoke (ar), null
+      );
+    }
+
     private bool closeHandshake (byte[] frameAsBytes, bool receive, bool received)
     {
       var sent = frameAsBytes != null && sendBytes (frameAsBytes);
