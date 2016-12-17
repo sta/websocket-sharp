@@ -976,43 +976,6 @@ namespace WebSocketSharp
       close (new PayloadData (code, reason), send, send, false);
     }
 
-    private void close (CloseEventArgs e, bool send, bool receive, bool received)
-    {
-      lock (_forState) {
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
-          return;
-        }
-
-        if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
-          return;
-        }
-
-        send = send && _readyState == WebSocketState.Open;
-        receive = receive && send;
-
-        _readyState = WebSocketState.Closing;
-      }
-
-      _logger.Trace ("Begin closing the connection.");
-
-      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, _client).ToArray () : null;
-      e.WasClean = closeHandshake (bytes, receive, received);
-      releaseResources ();
-
-      _logger.Trace ("End closing the connection.");
-
-      _readyState = WebSocketState.Closed;
-      try {
-        OnClose.Emit (this, e);
-      }
-      catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-        error ("An error has occurred during the OnClose event.", ex);
-      }
-    }
-
     private void close (
       PayloadData payloadData, bool send, bool receive, bool received
     )
