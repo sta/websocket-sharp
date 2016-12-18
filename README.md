@@ -2,16 +2,16 @@
 
 ## Welcome to websocket-sharp! ##
 
-**websocket-sharp** supports:
+websocket-sharp supports:
 
-- **[RFC 6455](#supported-websocket-specifications)**
-- **[WebSocket Client](#websocket-client)** and **[Server](#websocket-server)**
-- **[Per-message Compression](#per-message-compression)** extension
-- **[Secure Connection](#secure-connection)**
-- **[HTTP Authentication](#http-authentication)**
-- **[Query String, Origin header, and Cookies](#query-string-origin-header-and-cookies)**
-- **[Connecting through the HTTP Proxy server](#connecting-through-the-http-proxy-server)**
-- .NET Framework **3.5** or later (includes compatible environment such as **[Mono]**)
+- [RFC 6455](#supported-websocket-specifications)
+- [WebSocket Client](#websocket-client) and [Server](#websocket-server)
+- [Per-message Compression](#per-message-compression) extension
+- [Secure Connection](#secure-connection)
+- [HTTP Authentication](#http-authentication)
+- [Query string, Origin header, and Cookies](#query-string-origin-header-and-cookies)
+- [Connecting through the HTTP proxy server](#connecting-through-the-http-proxy-server)
+- .NET Framework **3.5** or later (includes compatible environment such as [Mono])
 
 ## Branches ##
 
