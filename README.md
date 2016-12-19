@@ -15,9 +15,9 @@ websocket-sharp supports:
 
 ## Branches ##
 
-- **[master]** for production releases.
-- **[hybi-00]** for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
-- **[draft75]** for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
+- [master] for production releases.
+- [hybi-00] for older [draft-ietf-hybi-thewebsocketprotocol-00]. No longer maintained.
+- [draft75] for even more old [draft-hixie-thewebsocketprotocol-75]. No longer maintained.
 
 ## Build ##
 
