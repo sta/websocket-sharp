@@ -37,9 +37,9 @@ If you would like to use that dll in your [Unity] project, you should add it to 
 
 websocket-sharp is available on the [NuGet Gallery], as still a **prerelease** version.
 
-- **[NuGet Gallery: websocket-sharp]**
+- [NuGet Gallery: websocket-sharp]
 
-You can add websocket-sharp to your project with the **NuGet Package Manager**, by using the following command in the **Package Manager Console**.
+You can add websocket-sharp to your project with the NuGet Package Manager, by using the following command in the Package Manager Console.
 
     PM> Install-Package WebSocketSharp -Pre
 
