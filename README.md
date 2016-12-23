@@ -47,16 +47,16 @@ You can add websocket-sharp to your project with the NuGet Package Manager, by u
 
 websocket-sharp is available on the Unity Asset Store (Sorry, Not available now).
 
-- **[WebSocket-Sharp for Unity]**
+- [WebSocket-Sharp for Unity]
 
 It works with **Unity Free**, but there are some limitations:
 
-- **[Security Sandbox of the Webplayer]** (The server is not available in Web Player)
-- **[WebGL Networking]** (Not available in WebGL)
-- **Incompatible platform** (Not available for such UWP)
-- **Limited support for the System.IO.Compression** (The compression extension is not available on Windows)
-- **.NET Socket Support for iOS/Android** (That requires iOS/Android Pro if your Unity is earlier than Unity 5)
-- **.NET API 2.0 compatibility level for iOS/Android**
+- [Security Sandbox of the Webplayer] (The server is not available in Web Player)
+- [WebGL Networking] (Not available in WebGL)
+- Incompatible platform (Not available for such UWP)
+- Lack of dll for the System.IO.Compression (The compression extension is not available on Windows)
+- .NET Socket Support for iOS/Android (iOS/Android Pro is required if your Unity is earlier than Unity 5)
+- .NET API 2.0 compatibility level for iOS/Android
 
 .NET API 2.0 compatibility level for iOS/Android may require to fix lack of some features for later than .NET Framework 2.0, such as the `System.Func<...>` delegates (so i have added them in the asset package).
 
