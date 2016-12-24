@@ -1285,11 +1285,11 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="ushort"/> is in the allowable range of
-    /// the WebSocket close status code.
+    /// Determines whether the specified <see cref="ushort"/> is in
+    /// the allowable range of the WebSocket close status code.
     /// </summary>
     /// <remarks>
-    /// Not allowable ranges are the following:
+    /// Unallowable ranges are the following:
     ///   <list type="bullet">
     ///     <item>
     ///       <term>
@@ -1298,14 +1298,15 @@ namespace WebSocketSharp
     ///     </item>
     ///     <item>
     ///       <term>
-    ///       Numbers greater than 4999 are out of the reserved close status code ranges.
+    ///       Numbers greater than 4999 are out of the reserved
+    ///       close status code ranges.
     ///       </term>
     ///     </item>
     ///   </list>
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is in the allowable range of the WebSocket
-    /// close status code; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is in the allowable
+    /// range of the close status code; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="ushort"/> to test.
