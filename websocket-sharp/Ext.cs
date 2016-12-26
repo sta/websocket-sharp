@@ -1317,18 +1317,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is enclosed in the specified
-    /// <see cref="char"/>.
+    /// Determines whether the specified <see cref="string"/> is
+    /// enclosed in the specified <see cref="char"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is enclosed in <paramref name="c"/>;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is enclosed in
+    /// <paramref name="c"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
     /// </param>
     /// <param name="c">
-    /// A <see cref="char"/> that represents the character to find.
+    /// A <see cref="char"/> to find.
     /// </param>
     public static bool IsEnclosedIn (this string value, char c)
     {
