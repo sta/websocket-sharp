@@ -1290,8 +1290,7 @@ namespace WebSocketSharp
 
     private void fatal (string message, CloseStatusCode code)
     {
-      var payload = new PayloadData ((ushort) code, message);
-      close (payload, !code.IsReserved (), false, false);
+      fatal (message, (ushort) code);
     }
 
     private void init ()
