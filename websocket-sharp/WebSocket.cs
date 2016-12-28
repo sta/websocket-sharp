@@ -1279,7 +1279,7 @@ namespace WebSocketSharp
                  ? ((WebSocketException) exception).Code
                  : CloseStatusCode.Abnormal;
 
-      fatal (message, code);
+      fatal (message, (ushort) code);
     }
 
     private void fatal (string message, ushort code)
