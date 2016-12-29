@@ -548,10 +548,10 @@ namespace WebSocketSharp
 
     internal static bool IsReserved (this ushort code)
     {
-      return code == (ushort) CloseStatusCode.Undefined ||
-             code == (ushort) CloseStatusCode.NoStatus ||
-             code == (ushort) CloseStatusCode.Abnormal ||
-             code == (ushort) CloseStatusCode.TlsHandshakeFailure;
+      return code == 1004
+             || code == 1005
+             || code == 1006
+             || code == 1015;
     }
 
     internal static bool IsReserved (this CloseStatusCode code)
