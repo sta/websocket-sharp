@@ -534,7 +534,7 @@ If you would like to provide the Digest authentication, you should set such as t
 wssv.AuthenticationSchemes = AuthenticationSchemes.Digest;
 ```
 
-### Query String, Origin header, and Cookies ###
+### Query string, Origin header, and Cookies ###
 
 As a WebSocket client, if you would like to send the query string in the handshake request, you should create a new instance of the `WebSocket` class with a WebSocket URL that includes the [Query] string parameters.
 
