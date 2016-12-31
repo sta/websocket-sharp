@@ -1,0 +1,8 @@
+title: websocket-sharp
+description: A C# implementation of the WebSocket protocol client and server
+google_analytics: UA-9752433-2
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
