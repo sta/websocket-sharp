@@ -676,7 +676,7 @@ Thanks for translating to japanese.
 
 ## License ##
 
-websocket-sharp is provided under **[The MIT License]**.
+websocket-sharp is provided under [The MIT License].
 
 
 [Echo server]: http://www.websocket.org/echo.html
