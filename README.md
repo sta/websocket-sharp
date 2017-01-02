@@ -663,16 +663,16 @@ Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSo
 
 ## Supported WebSocket Specifications ##
 
-websocket-sharp supports **RFC 6455**, and it is based on the following WebSocket references:
+websocket-sharp supports **RFC 6455**, and it is based on the following references:
 
-- **[The WebSocket Protocol][rfc6455]**
-- **[The WebSocket API][api]**
-- **[Compression Extensions for WebSocket][compression]**
+- [The WebSocket Protocol][rfc6455]
+- [The WebSocket API][api]
+- [Compression Extensions for WebSocket][compression]
 
 Thanks for translating to japanese.
 
-- **[The WebSocket Protocol 日本語訳][rfc6455_ja]**
-- **[The WebSocket API 日本語訳][api_ja]**
+- [The WebSocket Protocol 日本語訳][rfc6455_ja]
+- [The WebSocket API 日本語訳][api_ja]
 
 ## License ##
 
