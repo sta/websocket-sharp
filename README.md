@@ -649,15 +649,15 @@ Examples using websocket-sharp.
 
 ### Example ###
 
-**[Example]** connects to the **[Echo server]** with the WebSocket.
+[Example] connects to the [Echo server].
 
 ### Example2 ###
 
-**[Example2]** starts a WebSocket server.
+[Example2] starts a WebSocket server.
 
 ### Example3 ###
 
-**[Example3]** starts an HTTP server that allows to accept the WebSocket handshake requests.
+[Example3] starts an HTTP server that allows to accept the WebSocket handshake requests.
 
 Would you access to [http://localhost:4649](http://localhost:4649) to do **WebSocket Echo Test** with your web browser while Example3 is running?
 
