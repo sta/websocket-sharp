@@ -290,6 +290,14 @@ namespace WebSocketSharp
       return contains (0);
     }
 
+    internal static T[] Copy<T> (this T[] source, int length)
+    {
+      var dest = new T[length];
+      Array.Copy (source, 0, dest, 0, length);
+
+      return dest;
+    }
+
     internal static T[] Copy<T> (this T[] source, long length)
     {
       var dest = new T[length];
