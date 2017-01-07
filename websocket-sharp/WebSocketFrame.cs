@@ -635,9 +635,13 @@ Extended Payload Length: {7}
 
     #region Internal Methods
 
-    internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
+    internal static WebSocketFrame CreateCloseFrame (
+      PayloadData payloadData, bool mask
+    )
     {
-      return new WebSocketFrame (Fin.Final, Opcode.Close, payloadData, false, mask);
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Close, payloadData, false, mask
+             );
     }
 
     internal static WebSocketFrame CreatePingFrame (bool mask)
