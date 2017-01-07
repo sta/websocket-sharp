@@ -665,6 +665,15 @@ Extended Payload Length: {7}
              );
     }
 
+    internal static WebSocketFrame CreatePongFrame (
+      PayloadData payloadData, bool mask
+    )
+    {
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Pong, payloadData, false, mask
+             );
+    }
+
     internal static WebSocketFrame ReadFrame (Stream stream, bool unmask)
     {
       var frame = readHeader (stream);
