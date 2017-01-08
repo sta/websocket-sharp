@@ -1477,7 +1477,7 @@ namespace WebSocketSharp
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
           _logger.Error ("The state of the connection has been changed.");
-          return false;
+          return true;
         }
 
         if (!sendBytes (pong.ToArray ()))
