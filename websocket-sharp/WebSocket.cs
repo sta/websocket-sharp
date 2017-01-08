@@ -1472,8 +1472,7 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
-      var data = frame.PayloadData.ApplicationData;
-      var pong = WebSocketFrame.CreatePongFrame (data, _client);
+      var pong = WebSocketFrame.CreatePongFrame (frame.PayloadData, _client);
 
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
