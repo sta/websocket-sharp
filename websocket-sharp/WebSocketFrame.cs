@@ -658,13 +658,6 @@ Extended Payload Length: {7}
              );
     }
 
-    internal static WebSocketFrame CreatePongFrame (byte[] data, bool mask)
-    {
-      return new WebSocketFrame (
-               Fin.Final, Opcode.Pong, new PayloadData (data), false, mask
-             );
-    }
-
     internal static WebSocketFrame CreatePongFrame (
       PayloadData payloadData, bool mask
     )
