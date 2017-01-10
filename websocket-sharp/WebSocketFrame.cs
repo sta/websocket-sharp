@@ -681,7 +681,11 @@ Extended Payload Length: {7}
     }
 
     internal static void ReadFrameAsync (
-      Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
+      Stream stream,
+      bool unmask,
+      Action<WebSocketFrame> completed,
+      Action<Exception> error
+    )
     {
       readHeaderAsync (
         stream,
@@ -703,10 +707,14 @@ Extended Payload Length: {7}
 
                       completed (frame3);
                     },
-                    error),
-                error),
-            error),
-        error);
+                    error
+                  ),
+                error
+              ),
+            error
+          ),
+        error
+      );
     }
 
     internal void Unmask ()
