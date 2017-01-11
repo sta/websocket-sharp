@@ -2187,6 +2187,56 @@ namespace WebSocketSharp
     }
 
     // As server
+    internal void Close (PayloadData payloadData, byte[] frameAsBytes)
+    {
+      lock (_forState) {
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Info ("The closing is already in progress.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closed) {
+          _logger.Info ("The connection has already been closed.");
+          return;
+        }
+
+        _readyState = WebSocketState.Closing;
+      }
+
+      _logger.Trace ("Begin closing the connection.");
+
+      var sent = frameAsBytes != null && sendBytes (frameAsBytes);
+      var received = sent && _receivingExited != null
+                     ? _receivingExited.WaitOne (_waitTime)
+                     : false;
+
+      var res = sent && received;
+
+      _logger.Debug (
+        String.Format (
+          "Was clean?: {0}\n  sent: {1}\n  received: {2}", res, sent, received
+        )
+      );
+
+      releaseServerResources ();
+      releaseCommonResources ();
+
+      _logger.Trace ("End closing the connection.");
+
+      _readyState = WebSocketState.Closed;
+
+      var e = new CloseEventArgs (payloadData);
+      e.WasClean = res;
+
+      try {
+        OnClose.Emit (this, e);
+      }
+      catch (Exception ex) {
+        _logger.Error (ex.ToString ());
+      }
+    }
+
+    // As server
     internal void Close (CloseEventArgs e, byte[] frameAsBytes, bool receive)
     {
       lock (_forState) {
