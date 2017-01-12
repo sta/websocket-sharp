@@ -129,10 +129,7 @@ namespace WebSocketSharp.Server
 
     internal void Stop (ushort code, string reason)
     {
-      var e = new CloseEventArgs (code, reason);
-      var send = !code.IsReserved ();
-      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray () : null;
-      Sessions.Stop (e, bytes, send);
+      Sessions.Stop (code, reason);
     }
 
     #endregion
