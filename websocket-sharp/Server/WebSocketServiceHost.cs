@@ -111,8 +111,7 @@ namespace WebSocketSharp.Server
     /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
     /// </summary>
     /// <value>
-    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
-    /// the same as 1 second.
+    /// A <see cref="TimeSpan"/> that represents the wait time for the response.
     /// </value>
     public abstract TimeSpan WaitTime { get; set; }
 
