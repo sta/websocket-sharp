@@ -139,7 +139,7 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Creates a new session in the service.
+    /// Creates a new session for the service.
     /// </summary>
     /// <returns>
     /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
