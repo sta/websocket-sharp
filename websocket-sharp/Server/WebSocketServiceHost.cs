@@ -99,10 +99,11 @@ namespace WebSocketSharp.Server
     public abstract WebSocketSessionManager Sessions { get; }
 
     /// <summary>
-    /// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
+    /// Gets the <see cref="System.Type"/> of the behavior of the service.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
+    /// A <see cref="System.Type"/> that represents the type of the behavior of
+    /// the service.
     /// </value>
     public abstract Type Type { get; }
 
