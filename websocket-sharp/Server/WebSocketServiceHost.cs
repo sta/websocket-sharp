@@ -90,10 +90,11 @@ namespace WebSocketSharp.Server
     public abstract string Path { get; }
 
     /// <summary>
-    /// Gets the access to the sessions in the WebSocket service.
+    /// Gets the access to the sessions in the service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in
+    /// the service.
     /// </value>
     public abstract WebSocketSessionManager Sessions { get; }
 
