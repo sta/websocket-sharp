@@ -72,7 +72,7 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service cleans up
+    /// Gets or sets a value indicating whether the service cleans up
     /// the inactive sessions periodically.
     /// </summary>
     /// <value>
