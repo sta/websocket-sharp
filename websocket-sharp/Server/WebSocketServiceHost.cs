@@ -82,7 +82,7 @@ namespace WebSocketSharp.Server
     public abstract bool KeepClean { get; set; }
 
     /// <summary>
-    /// Gets the path to the WebSocket service.
+    /// Gets the path to the service.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the absolute path to the service.
