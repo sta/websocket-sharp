@@ -39,11 +39,12 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties used to access the information in a WebSocket service
-  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// Exposes the methods and properties used to access the information in
+  /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
+  /// <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServiceHost class is an abstract class.
+  /// This class is an abstract class.
   /// </remarks>
   public abstract class WebSocketServiceHost
   {
