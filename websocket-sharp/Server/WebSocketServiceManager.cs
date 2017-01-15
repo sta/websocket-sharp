@@ -356,6 +356,19 @@ namespace WebSocketSharp.Server
       }
     }
 
+    internal void Stop (ushort code, string reason)
+    {
+      lock (_sync) {
+        _state = ServerState.ShuttingDown;
+
+        foreach (var host in _hosts.Values)
+          host.Stop (code, reason);
+
+        _hosts.Clear ();
+        _state = ServerState.Stop;
+      }
+    }
+
     internal void Stop (CloseEventArgs e, bool send, bool receive)
     {
       lock (_sync) {
