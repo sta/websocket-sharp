@@ -837,6 +837,43 @@ namespace WebSocketSharp.Server
       _receiveThread.Start ();
     }
 
+    private void stop (ushort code, string reason)
+    {
+      if (_state == ServerState.Ready) {
+        _logger.Info ("The server is not started.");
+        return;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        _logger.Info ("The server is shutting down.");
+        return;
+      }
+
+      if (_state == ServerState.Stop) {
+        _logger.Info ("The server has already stopped.");
+        return;
+      }
+
+      lock (_sync) {
+        if (_state == ServerState.ShuttingDown) {
+          _logger.Info ("The server is shutting down.");
+          return;
+        }
+
+        if (_state == ServerState.Stop) {
+          _logger.Info ("The server has already stopped.");
+          return;
+        }
+
+        _state = ServerState.ShuttingDown;
+      }
+
+      stopReceiving (5000);
+      _services.Stop (code, reason);
+
+      _state = ServerState.Stop;
+    }
+
     private void stopReceiving (int millisecondsTimeout)
     {
       _listener.Stop ();
