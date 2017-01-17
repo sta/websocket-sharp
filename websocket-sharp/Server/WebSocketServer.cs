@@ -1050,36 +1050,12 @@ namespace WebSocketSharp.Server
     public void Stop (ushort code, string reason)
     {
       string msg;
-      if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
         _logger.Error (msg);
         return;
       }
 
-      lock (_sync) {
-        if (!checkIfAvailable (false, true, false, false, out msg)) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _state = ServerState.ShuttingDown;
-      }
-
-      stopReceiving (5000);
-
-      if (code == (ushort) CloseStatusCode.NoStatus) {
-        _services.Stop (new CloseEventArgs (), true, true);
-      }
-      else {
-        var send = !code.IsReserved ();
-        _services.Stop (new CloseEventArgs (code, reason), send, send);
-      }
-
-      _state = ServerState.Stop;
+      stop (code, reason);
     }
 
     /// <summary>
