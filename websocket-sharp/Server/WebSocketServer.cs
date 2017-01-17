@@ -1025,25 +1025,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Stop ()
     {
-      string msg;
-      if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
-      lock (_sync) {
-        if (!checkIfAvailable (false, true, false, false, out msg)) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _state = ServerState.ShuttingDown;
-      }
-
-      stopReceiving (5000);
-      _services.Stop (new CloseEventArgs (), true, true);
-
-      _state = ServerState.Stop;
+      stop (1005, String.Empty);
     }
 
     /// <summary>
