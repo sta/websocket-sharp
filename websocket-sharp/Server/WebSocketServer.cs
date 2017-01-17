@@ -1020,9 +1020,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests, and closes
-    /// the WebSocket connections.
+    /// Stops receiving the WebSocket handshake requests,
+    /// and closes the WebSocket connections.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     public void Stop ()
     {
       stop (1005, String.Empty);
