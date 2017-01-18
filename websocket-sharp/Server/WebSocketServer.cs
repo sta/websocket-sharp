@@ -1033,10 +1033,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests, and closes
-    /// the WebSocket connections with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Stops receiving the WebSocket handshake requests,
+    /// and closes the WebSocket connections with the specified
+    /// <paramref name="code"/> and <paramref name="reason"/>.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     /// <param name="code">
     /// A <see cref="ushort"/> that represents the status code indicating
     /// the reason for the close. The status codes are defined in
@@ -1045,7 +1049,7 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less.
+    /// The size must be 123 bytes or less in UTF-8.
     /// </param>
     public void Stop (ushort code, string reason)
     {
