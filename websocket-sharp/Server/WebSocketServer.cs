@@ -1042,14 +1042,19 @@ namespace WebSocketSharp.Server
     /// it is shutting down, or it has already stopped.
     /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating
-    /// the reason for the close. The status codes are defined in
-    /// <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
-    /// Section 7.4</see> of RFC 6455.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code
+    ///   indicating the reason for the close.
+    ///   </para>
+    ///   <para>
+    ///   The status codes are defined in
+    ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
+    ///   Section 7.4</see> of RFC 6455.
+    ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less in UTF-8.
+    /// A <see cref="string"/> that represents the reason for
+    /// the close. The size must be 123 bytes or less in UTF-8.
     /// </param>
     public void Stop (ushort code, string reason)
     {
