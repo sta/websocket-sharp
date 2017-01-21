@@ -628,15 +628,19 @@ namespace WebSocketSharp.Server
     private void abort ()
     {
       lock (_sync) {
-        if (!IsListening)
+        if (_state != ServerState.Start)
           return;
 
         _state = ServerState.ShuttingDown;
       }
 
-      _listener.Stop ();
-      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true, false);
+      try {
+        _listener.Stop ();
+      }
+      catch {
+      }
 
+      _services.Stop (1006, String.Empty);
       _state = ServerState.Stop;
     }
 
