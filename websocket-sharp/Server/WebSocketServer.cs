@@ -797,12 +797,15 @@ namespace WebSocketSharp.Server
     private void receiveRequest ()
     {
       while (true) {
+        TcpClient cl = null;
         try {
-          var cl = _listener.AcceptTcpClient ();
+          cl = _listener.AcceptTcpClient ();
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx = cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _logger);
+                var ctx =
+                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _logger);
+
                 if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
                   return;
 
@@ -816,16 +819,24 @@ namespace WebSocketSharp.Server
           );
         }
         catch (SocketException ex) {
-          _logger.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
+          if (_state == ServerState.ShuttingDown) {
+            _logger.Info ("The receiving is stopped.");
+            break;
+          }
+
+          _logger.Fatal (ex.ToString ());
           break;
         }
         catch (Exception ex) {
           _logger.Fatal (ex.ToString ());
+          if (cl != null)
+            cl.Close ();
+
           break;
         }
       }
 
-      if (IsListening)
+      if (_state == ServerState.Start)
         abort ();
     }
 
