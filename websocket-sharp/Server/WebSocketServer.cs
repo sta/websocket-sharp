@@ -842,9 +842,11 @@ namespace WebSocketSharp.Server
 
     private void startReceiving ()
     {
-      if (_reuseAddress)
+      if (_reuseAddress) {
         _listener.Server.SetSocketOption (
-          SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+          SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true
+        );
+      }
 
       _listener.Start ();
       _receiveThread = new Thread (new ThreadStart (receiveRequest));
