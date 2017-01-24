@@ -897,14 +897,16 @@ namespace WebSocketSharp.Server
       _receiveThread.Join (millisecondsTimeout);
     }
 
-    private static bool tryCreateUri (string uriString, out Uri result, out string message)
+    private static bool tryCreateUri (
+      string uriString, out Uri result, out string message
+    )
     {
       if (!uriString.TryCreateWebSocketUri (out result, out message))
         return false;
 
       if (result.PathAndQuery != "/") {
         result = null;
-        message = "Includes the path or query component: " + uriString;
+        message = "It includes the path or query component.";
 
         return false;
       }
