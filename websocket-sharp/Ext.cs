@@ -926,35 +926,37 @@ namespace WebSocketSharp
     /// or <see cref="String.Empty"/> if <paramref name="uriString"/> is valid.
     /// </param>
     internal static bool TryCreateWebSocketUri (
-      this string uriString, out Uri result, out string message)
+      this string uriString, out Uri result, out string message
+    )
     {
       result = null;
+      message = null;
 
       var uri = uriString.ToUri ();
       if (uri == null) {
-        message = "An invalid URI string: " + uriString;
+        message = "An invalid URI string.";
         return false;
       }
 
       if (!uri.IsAbsoluteUri) {
-        message = "Not an absolute URI: " + uriString;
+        message = "Not an absolute URI.";
         return false;
       }
 
       var schm = uri.Scheme;
       if (!(schm == "ws" || schm == "wss")) {
-        message = "The scheme part isn't 'ws' or 'wss': " + uriString;
+        message = "The scheme part is not 'ws' or 'wss'.";
         return false;
       }
 
       if (uri.Fragment.Length > 0) {
-        message = "Includes the fragment component: " + uriString;
+        message = "It includes the fragment component.";
         return false;
       }
 
       var port = uri.Port;
       if (port == 0) {
-        message = "The port part is zero: " + uriString;
+        message = "The port part is zero.";
         return false;
       }
 
@@ -966,9 +968,10 @@ namespace WebSocketSharp
                      schm,
                      uri.Host,
                      schm == "ws" ? 80 : 443,
-                     uri.PathAndQuery));
+                     uri.PathAndQuery
+                   )
+                 );
 
-      message = String.Empty;
       return true;
     }
 
