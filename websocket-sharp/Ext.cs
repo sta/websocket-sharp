@@ -1913,8 +1913,8 @@ namespace WebSocketSharp
     /// Converts the specified <see cref="string"/> to a <see cref="Uri"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="Uri"/> converted from <paramref name="uriString"/>,
-    /// or <see langword="null"/> if <paramref name="uriString"/> isn't successfully converted.
+    /// A <see cref="Uri"/> converted from <paramref name="uriString"/> or
+    /// <see langword="null"/> if the convert has failed.
     /// </returns>
     /// <param name="uriString">
     /// A <see cref="string"/> to convert.
