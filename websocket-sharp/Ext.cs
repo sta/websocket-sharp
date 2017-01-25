@@ -1923,7 +1923,10 @@ namespace WebSocketSharp
     {
       Uri ret;
       Uri.TryCreate (
-        uriString, uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out ret);
+        uriString,
+        uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative,
+        out ret
+      );
 
       return ret;
     }
