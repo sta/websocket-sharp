@@ -942,7 +942,7 @@ namespace WebSocketSharp
       }
 
       if (!uri.IsAbsoluteUri) {
-        message = "Not an absolute URI.";
+        message = "A relative URI.";
         return false;
       }
 
@@ -952,14 +952,14 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (uri.Fragment.Length > 0) {
-        message = "It includes the fragment component.";
-        return false;
-      }
-
       var port = uri.Port;
       if (port == 0) {
         message = "The port part is zero.";
+        return false;
+      }
+
+      if (uri.Fragment.Length > 0) {
+        message = "It includes the fragment component.";
         return false;
       }
 
