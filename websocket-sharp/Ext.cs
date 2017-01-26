@@ -1508,7 +1508,8 @@ namespace WebSocketSharp
     /// Determines whether the specified <see cref="string"/> is a URI string.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> may be a URI string; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> may be a URI string;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
