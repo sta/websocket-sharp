@@ -1428,10 +1428,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is a predefined scheme.
+    /// Determines whether the specified <see cref="string"/> is
+    /// a predefined scheme.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is a predefined scheme; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is a predefined scheme;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
