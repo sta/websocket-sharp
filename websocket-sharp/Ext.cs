@@ -1525,7 +1525,8 @@ namespace WebSocketSharp
       if (idx >= 10)
         return false;
 
-      return value.Substring (0, idx).IsPredefinedScheme ();
+      var schm = value.Substring (0, idx);
+      return schm.IsPredefinedScheme ();
     }
 
     /// <summary>
