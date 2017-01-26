@@ -1453,6 +1453,12 @@ namespace WebSocketSharp
       if (c == 'f')
         return value == "file" || value == "ftp";
 
+      if (c == 'g')
+        return value == "gopher";
+
+      if (c == 'm')
+        return value == "mailto";
+
       if (c == 'n') {
         c = value[1];
         return c == 'e'
@@ -1460,7 +1466,7 @@ namespace WebSocketSharp
                : value == "nntp";
       }
 
-      return (c == 'g' && value == "gopher") || (c == 'm' && value == "mailto");
+      return false;
     }
 
     /// <summary>
