@@ -1913,19 +1913,17 @@ namespace WebSocketSharp
     /// Converts the specified <see cref="string"/> to a <see cref="Uri"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="Uri"/> converted from <paramref name="uriString"/> or
+    /// A <see cref="Uri"/> converted from <paramref name="value"/> or
     /// <see langword="null"/> if the convert has failed.
     /// </returns>
-    /// <param name="uriString">
+    /// <param name="value">
     /// A <see cref="string"/> to convert.
     /// </param>
-    public static Uri ToUri (this string uriString)
+    public static Uri ToUri (this string value)
     {
       Uri ret;
       Uri.TryCreate (
-        uriString,
-        uriString.MaybeUri () ? UriKind.Absolute : UriKind.Relative,
-        out ret
+        value, value.MaybeUri () ? UriKind.Absolute : UriKind.Relative, out ret
       );
 
       return ret;
