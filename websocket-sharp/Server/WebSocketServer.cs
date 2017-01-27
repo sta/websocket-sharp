@@ -176,9 +176,17 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "url");
 
       var host = uri.DnsSafeHost;
+
       var addr = host.ToIPAddress ();
-      if (!addr.IsLocal ())
-        throw new ArgumentException ("The host part isn't a local host name: " + url, "url");
+      if (addr == null) {
+        msg = "It could not be converted to an IP address.";
+        throw new ArgumentException (msg, "url");
+      }
+
+      if (!addr.IsLocal ()) {
+        msg = "The IP address is not a local IP address.";
+        throw new ArgumentException (msg, "url");
+      }
 
       init (host, addr, uri.Port, uri.Scheme == "wss");
     }
