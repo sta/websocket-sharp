@@ -872,14 +872,18 @@ namespace WebSocketSharp
       return String.Format ("{0}; {1}", m, parameters.ToString ("; "));
     }
 
-    internal static System.Net.IPAddress ToIPAddress (this string hostnameOrAddress)
+    internal static System.Net.IPAddress ToIPAddress (this string value)
     {
+      if (value == null || value.Length == 0)
+        return null;
+
       System.Net.IPAddress addr;
-      if (System.Net.IPAddress.TryParse (hostnameOrAddress, out addr))
+      if (System.Net.IPAddress.TryParse (value, out addr))
         return addr;
 
       try {
-        return System.Net.Dns.GetHostAddresses (hostnameOrAddress)[0];
+        var addrs = System.Net.Dns.GetHostAddresses (value);
+        return addrs[0];
       }
       catch {
         return null;
