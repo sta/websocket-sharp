@@ -1374,8 +1374,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="System.Net.IPAddress"/> represents
-    /// a local IP address.
+    /// Determines whether the specified <see cref="System.Net.IPAddress"/>
+    /// represents a local IP address.
     /// </summary>
     /// <remarks>
     /// This local means NOT REMOTE for the current host.
