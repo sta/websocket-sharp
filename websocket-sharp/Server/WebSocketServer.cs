@@ -54,7 +54,7 @@ namespace WebSocketSharp.Server
   /// Provides a WebSocket protocol server.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServer class can provide multiple WebSocket services.
+  /// This class can provide multiple WebSocket services.
   /// </remarks>
   public class WebSocketServer
   {
