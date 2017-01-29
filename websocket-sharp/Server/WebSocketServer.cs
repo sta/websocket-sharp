@@ -98,8 +98,7 @@ namespace WebSocketSharp.Server
     /// Initializes a new instance of the <see cref="WebSocketServer"/> class.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests on
-    /// port 80.
+    /// The new instance listens for the incoming handshake requests on port 80.
     /// </remarks>
     public WebSocketServer ()
     {
