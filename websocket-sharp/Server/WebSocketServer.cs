@@ -131,22 +131,22 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified WebSocket URL.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
+    /// with the specified WebSocket URL.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming connection requests
-    ///   on the host name and port in <paramref name="url"/>.
+    ///   The new instance listens for the incoming handshake requests on
+    ///   the host name and port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on
-    ///   which to listen. It's determined by the scheme (ws or wss) in <paramref name="url"/>.
-    ///   (Port 80 if the scheme is ws.)
+    ///   If <paramref name="url"/> includes no port, either port 80 or 443 is
+    ///   used on which to listen. It is determined by the scheme (ws or wss) of
+    ///   <paramref name="url"/>.
     ///   </para>
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the WebSocket URL of the server.
+    /// A <see cref="string"/> that represents the WebSocket URL for the server.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
