@@ -106,23 +106,23 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
+    /// with the specified <paramref name="port"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming connection requests
-    ///   on <paramref name="port"/>.
+    ///   The new instance listens for the incoming handshake requests on
+    ///   <paramref name="port"/>.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="port"/> is 443, that instance provides a secure connection.
+    ///   It provides secure connections if <paramref name="port"/> is 443.
     ///   </para>
     /// </remarks>
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
+    /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
     public WebSocketServer (int port)
       : this (port, port == 443)
