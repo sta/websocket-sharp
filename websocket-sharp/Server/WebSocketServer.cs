@@ -210,9 +210,10 @@ namespace WebSocketSharp.Server
     /// </exception>
     public WebSocketServer (int port, bool secure)
     {
-      if (!port.IsPortNumber ())
-        throw new ArgumentOutOfRangeException (
-          "port", "Not between 1 and 65535 inclusive: " + port);
+      if (!port.IsPortNumber ()) {
+        var msg = "It is less than 1 or greater than 65535.";
+        throw new ArgumentOutOfRangeException ("port", msg);
+      }
 
       init (null, System.Net.IPAddress.Any, port, secure);
     }
