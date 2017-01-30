@@ -252,32 +252,33 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified <paramref name="address"/>, <paramref name="port"/>,
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
+    /// with the specified <paramref name="address"/>, <paramref name="port"/>,
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming connection requests on
+    /// The new instance listens for the incoming handshake requests on
     /// <paramref name="address"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address
+    /// for the server.
     /// </param>
     /// <param name="port">
     /// An <see cref="int"/> that represents the port number on which to listen.
     /// </param>
     /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not.
-    /// (<c>true</c> indicates providing a secure connection.)
+    /// A <see cref="bool"/> that specifies providing secure connections or not.
+    /// <c>true</c> specifies providing secure connections.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="address"/> isn't a local IP address.
+    /// <paramref name="address"/> is not a local IP address.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
+    /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
     public WebSocketServer (System.Net.IPAddress address, int port, bool secure)
     {
