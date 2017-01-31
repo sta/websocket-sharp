@@ -139,9 +139,13 @@ namespace WebSocketSharp.Server
     ///   the host name and port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
+    ///   It provides secure connections if the scheme of <paramref name="url"/>
+    ///   is wss.
+    ///   </para>
+    ///   <para>
     ///   If <paramref name="url"/> includes no port, either port 80 or 443 is
-    ///   used on which to listen. It is determined by the scheme (ws or wss) of
-    ///   <paramref name="url"/>.
+    ///   used on which to listen. It is determined by the scheme (ws or wss)
+    ///   of <paramref name="url"/>.
     ///   </para>
     /// </remarks>
     /// <param name="url">
