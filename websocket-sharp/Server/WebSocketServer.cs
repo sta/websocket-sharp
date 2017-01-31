@@ -182,7 +182,7 @@ namespace WebSocketSharp.Server
 
       var addr = host.ToIPAddress ();
       if (addr == null) {
-        msg = "It could not be converted to an IP address.";
+        msg = "The host part could not be converted to an IP address.";
         throw new ArgumentException (msg, "url");
       }
 
