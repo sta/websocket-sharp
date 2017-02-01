@@ -102,7 +102,8 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public WebSocketServer ()
     {
-      init (null, System.Net.IPAddress.Any, 80, false);
+      var addr = System.Net.IPAddress.Any;
+      init (addr.ToString (), addr, 80, false);
     }
 
     /// <summary>
@@ -219,7 +220,8 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
-      init (null, System.Net.IPAddress.Any, port, secure);
+      var addr = System.Net.IPAddress.Any;
+      init (addr.ToString (), addr, port, secure);
     }
 
     /// <summary>
@@ -298,7 +300,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
-      init (null, address, port, secure);
+      init (address.ToString (), address, port, secure);
     }
 
     #endregion
@@ -765,9 +767,11 @@ namespace WebSocketSharp.Server
       return ret;
     }
 
-    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
+    private void init (
+      string hostname, System.Net.IPAddress address, int port, bool secure
+    )
     {
-      _hostname = hostname ?? address.ToString ();
+      _hostname = hostname;
       _address = address;
       _port = port;
       _secure = secure;
