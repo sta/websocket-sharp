@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,13 +35,13 @@ namespace WebSocketSharp
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   A <see cref="WebSocket.OnMessage"/> event occurs when the <see cref="WebSocket"/> receives
-  ///   a text or binary message, or a ping if the <see cref="WebSocket.EmitOnPing"/> property is
-  ///   set to <c>true</c>.
+  ///   That event occurs when the <see cref="WebSocket"/> receives
+  ///   a message or a ping if the <see cref="WebSocket.EmitOnPing"/>
+  ///   property is set to <c>true</c>.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the message data, you should access the <see cref="Data"/> or
-  ///   <see cref="RawData"/> property.
+  ///   If you would like to get the message data, you should access
+  ///   the <see cref="Data"/> or <see cref="RawData"/> property.
   ///   </para>
   /// </remarks>
   public class MessageEventArgs : EventArgs
@@ -74,25 +74,36 @@ namespace WebSocketSharp
 
     #endregion
 
+    #region Internal Properties
+
+    /// <summary>
+    /// Gets the opcode for the message.
+    /// </summary>
+    /// <value>
+    /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>,
+    /// or <see cref="Opcode.Ping"/>.
+    /// </value>
+    internal Opcode Opcode {
+      get {
+        return _opcode;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
     /// Gets the message data as a <see cref="string"/>.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the message data,
-    /// or <see langword="null"/> if the message data cannot be decoded to a string.
+    /// A <see cref="string"/> that represents the message data if its type is
+    /// text or ping and if decoding it to a string has successfully done;
+    /// otherwise, <see langword="null"/>.
     /// </value>
     public string Data {
       get {
-        if (!_dataSet) {
-          _data = _opcode != Opcode.Binary
-                  ? _rawData.UTF8Decode ()
-                  : BitConverter.ToString (_rawData);
-
-          _dataSet = true;
-        }
-
+        setData ();
         return _data;
       }
     }
@@ -141,21 +152,27 @@ namespace WebSocketSharp
     /// </value>
     public byte[] RawData {
       get {
+        setData ();
         return _rawData;
       }
     }
 
-    /// <summary>
-    /// Gets the message type.
-    /// </summary>
-    /// <value>
-    /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>, or <see cref="Opcode.Ping"/>.
-    /// </value>
-    [Obsolete ("This property will be removed. Use any of the Is properties instead.")]
-    public Opcode Type {
-      get {
-        return _opcode;
+    #endregion
+
+    #region Private Methods
+
+    private void setData ()
+    {
+      if (_dataSet)
+        return;
+
+      if (_opcode == Opcode.Binary) {
+        _dataSet = true;
+        return;
       }
+
+      _data = _rawData.UTF8Decode ();
+      _dataSet = true;
     }
 
     #endregion

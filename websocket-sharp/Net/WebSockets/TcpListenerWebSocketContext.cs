@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,15 +39,14 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
 
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the properties used to access the information in a WebSocket connection request
-  /// received by the <see cref="TcpListener"/>.
+  /// Provides the properties used to access the information in
+  /// a WebSocket handshake request received by the <see cref="TcpListener"/>.
   /// </summary>
   internal class TcpListenerWebSocketContext : WebSocketContext
   {
@@ -73,7 +72,8 @@ namespace WebSocketSharp.Net.WebSockets
       string protocol,
       bool secure,
       ServerSslConfiguration sslConfig,
-      Logger logger)
+      Logger logger
+    )
     {
       _tcpClient = tcpClient;
       _secure = secure;
@@ -81,14 +81,15 @@ namespace WebSocketSharp.Net.WebSockets
 
       var netStream = tcpClient.GetStream ();
       if (secure) {
-        var sslStream = new SslStream (
-          netStream, false, sslConfig.ClientCertificateValidationCallback);
+        var sslStream =
+          new SslStream (netStream, false, sslConfig.ClientCertificateValidationCallback);
 
         sslStream.AuthenticateAsServer (
           sslConfig.ServerCertificate,
           sslConfig.ClientCertificateRequired,
           sslConfig.EnabledSslProtocols,
-          sslConfig.CheckCertificateRevocation);
+          sslConfig.CheckCertificateRevocation
+        );
 
         _stream = sslStream;
       }
@@ -97,8 +98,10 @@ namespace WebSocketSharp.Net.WebSockets
       }
 
       _request = HttpRequest.Read (_stream, 90000);
-      _uri = HttpUtility.CreateRequestUrl (
-        _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure);
+      _uri =
+        HttpUtility.CreateRequestUrl (
+          _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure
+        );
 
       _websocket = new WebSocket (this, protocol);
     }
@@ -106,12 +109,6 @@ namespace WebSocketSharp.Net.WebSockets
     #endregion
 
     #region Internal Properties
-
-    internal string HttpMethod {
-      get {
-        return _request.HttpMethod;
-      }
-    }
 
     internal Logger Log {
       get {
@@ -202,10 +199,10 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket connection request.
+    /// Gets a value indicating whether the request is a WebSocket handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise, <c>false</c>.
     /// </value>
     public override bool IsWebSocketRequest {
       get {
@@ -233,9 +230,13 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override NameValueCollection QueryString {
       get {
-        return _queryString ??
-               (_queryString = HttpUtility.InternalParseQueryString (
-                 _uri != null ? _uri.Query : null, Encoding.UTF8));
+        return _queryString
+               ?? (
+                 _queryString =
+                   HttpUtility.InternalParseQueryString (
+                     _uri != null ? _uri.Query : null, Encoding.UTF8
+                   )
+               );
       }
     }
 
@@ -255,8 +256,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Sec-WebSocket-Key header included in the request.
     /// </summary>
     /// <remarks>
-    /// This property provides a part of the information used by the server to prove that it
-    /// received a valid WebSocket connection request.
+    /// This property provides a part of the information used by the server to prove that
+    /// it received a valid WebSocket handshake request.
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
@@ -281,9 +282,10 @@ namespace WebSocketSharp.Net.WebSockets
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
         var protocols = _request.Headers["Sec-WebSocket-Protocol"];
-        if (protocols != null)
+        if (protocols != null) {
           foreach (var protocol in protocols.Split (','))
             yield return protocol.Trim ();
+        }
       }
     }
 
@@ -339,8 +341,8 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication
-    /// between client and server.
+    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
+    /// two-way communication between client and server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
@@ -354,6 +356,53 @@ namespace WebSocketSharp.Net.WebSockets
     #endregion
 
     #region Internal Methods
+
+    internal bool Authenticate (
+      AuthenticationSchemes scheme,
+      string realm,
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
+    {
+      if (scheme == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (scheme == AuthenticationSchemes.None) {
+        Close (HttpStatusCode.Forbidden);
+        return false;
+      }
+
+      var chal = new AuthenticationChallenge (scheme, realm).ToString ();
+
+      var retry = -1;
+      Func<bool> auth = null;
+      auth =
+        () => {
+          retry++;
+          if (retry > 99) {
+            Close (HttpStatusCode.Forbidden);
+            return false;
+          }
+
+          var user =
+            HttpUtility.CreateUser (
+              _request.Headers["Authorization"],
+              scheme,
+              realm,
+              _request.HttpMethod,
+              credentialsFinder
+            );
+
+          if (user == null || !user.Identity.IsAuthenticated) {
+            SendAuthenticationChallenge (chal);
+            return auth ();
+          }
+
+          _user = user;
+          return true;
+        };
+
+      return auth ();
+    }
 
     internal void Close ()
     {
@@ -373,22 +422,17 @@ namespace WebSocketSharp.Net.WebSockets
       _request = HttpRequest.Read (_stream, 15000);
     }
 
-    internal void SetUser (IPrincipal value)
-    {
-      _user = value;
-    }
-
     #endregion
 
     #region Public Methods
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current
-    /// <see cref="TcpListenerWebSocketContext"/>.
+    /// Returns a <see cref="string"/> that represents
+    /// the current <see cref="TcpListenerWebSocketContext"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current
-    /// <see cref="TcpListenerWebSocketContext"/>.
+    /// A <see cref="string"/> that represents
+    /// the current <see cref="TcpListenerWebSocketContext"/>.
     /// </returns>
     public override string ToString ()
     {

@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,17 +70,28 @@ namespace WebSocketSharp.Net
     private object                                               _ctxQueueSync;
     private Dictionary<HttpListenerContext, HttpListenerContext> _ctxRegistry;
     private object                                               _ctxRegistrySync;
-    private Func<IIdentity, NetworkCredential>                   _credFinder;
+    private static readonly string                               _defaultRealm;
     private bool                                                 _disposed;
     private bool                                                 _ignoreWriteExceptions;
-    private bool                                                 _listening;
+    private volatile bool                                        _listening;
     private Logger                                               _logger;
     private HttpListenerPrefixCollection                         _prefixes;
     private string                                               _realm;
     private bool                                                 _reuseAddress;
     private ServerSslConfiguration                               _sslConfig;
+    private Func<IIdentity, NetworkCredential>                   _userCredFinder;
     private List<HttpListenerAsyncResult>                        _waitQueue;
     private object                                               _waitQueueSync;
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpListener ()
+    {
+      _defaultRealm = "SECRET AREA";
+            DefaultServerString = "websocket-sharp/1.0";
+    }
 
     #endregion
 
@@ -108,11 +119,6 @@ namespace WebSocketSharp.Net
 
       _waitQueue = new List<HttpListenerAsyncResult> ();
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
-    }
-
-    static HttpListener()
-    {
-        DefaultServerString = "websocket-sharp/1.0";
     }
 
     #endregion
@@ -317,9 +323,13 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Gets or sets the name of the realm associated with the listener.
     /// </summary>
+    /// <remarks>
+    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
+    /// the name of the realm.
+    /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <c>"SECRET AREA"</c>.
+    /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -327,7 +337,7 @@ namespace WebSocketSharp.Net
     public string Realm {
       get {
         CheckDisposed ();
-        return _realm != null && _realm.Length > 0 ? _realm : (_realm = "SECRET AREA");
+        return _realm;
       }
 
       set {
@@ -390,9 +400,9 @@ namespace WebSocketSharp.Net
     /// authenticate a client.
     /// </summary>
     /// <value>
-    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate that
-    /// references the method used to find the credentials. The default value is a function that
-    /// only returns <see langword="null"/>.
+    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
+    /// that references the method used to find the credentials. The default value is
+    /// <see langword="null"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.
@@ -400,12 +410,12 @@ namespace WebSocketSharp.Net
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
         CheckDisposed ();
-        return _credFinder ?? (_credFinder = id => null);
+        return _userCredFinder;
       }
 
       set {
         CheckDisposed ();
-        _credFinder = value;
+        _userCredFinder = value;
       }
     }
 
@@ -413,29 +423,9 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool HasFlag(Enum enumRef, Enum flag)
-    {
-      long value = Convert.ToInt64(enumRef);
-      long flagVal = Convert.ToInt64(flag);
-
-      return (value & flagVal) == flagVal;
-    }
-
-    private void cleanup (bool force)
-    {
-      lock (_ctxRegistrySync) {
-        if (!force)
-          sendServiceUnavailable ();
-
-        cleanupContextRegistry ();
-        cleanupConnections ();
-        cleanupWaitQueue ();
-      }
-    }
-
     private void cleanupConnections ()
     {
-      var conns = default(HttpConnection[]);
+      HttpConnection[] conns = null;
       lock (_connectionsSync) {
         if (_connections.Count == 0)
           return;
@@ -451,43 +441,88 @@ namespace WebSocketSharp.Net
         conns[i].Close (true);
     }
 
+    private void cleanupContextQueue (bool sendServiceUnavailable)
+    {
+      HttpListenerContext[] ctxs = null;
+      lock (_ctxQueueSync) {
+        if (_ctxQueue.Count == 0)
+          return;
+
+        ctxs = _ctxQueue.ToArray ();
+        _ctxQueue.Clear ();
+      }
+
+      if (!sendServiceUnavailable)
+        return;
+
+      foreach (var ctx in ctxs) {
+        var res = ctx.Response;
+        res.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
+        res.Close ();
+      }
+    }
+
     private void cleanupContextRegistry ()
     {
+      HttpListenerContext[] ctxs = null;
       lock (_ctxRegistrySync) {
         if (_ctxRegistry.Count == 0)
           return;
 
         // Need to copy this since closing will call the UnregisterContext method.
         var keys = _ctxRegistry.Keys;
-        var ctxs = new HttpListenerContext[keys.Count];
+        ctxs = new HttpListenerContext[keys.Count];
         keys.CopyTo (ctxs, 0);
         _ctxRegistry.Clear ();
-        for (var i = ctxs.Length - 1; i >= 0; i--)
-          ctxs[i].Connection.Close (true);
       }
+
+      for (var i = ctxs.Length - 1; i >= 0; i--)
+        ctxs[i].Connection.Close (true);
     }
 
-    private void cleanupWaitQueue ()
+    private void cleanupWaitQueue (Exception exception)
     {
+      HttpListenerAsyncResult[] aress = null;
       lock (_waitQueueSync) {
         if (_waitQueue.Count == 0)
           return;
 
-        var ex = new ObjectDisposedException (GetType ().ToString ());
-        foreach (var ares in _waitQueue)
-          ares.Complete (ex);
-
+        aress = _waitQueue.ToArray ();
         _waitQueue.Clear ();
       }
+
+      foreach (var ares in aress)
+        ares.Complete (exception);
     }
 
     private void close (bool force)
     {
-      EndPointManager.RemoveListener (this);
-      cleanup (force);
+      if (_listening) {
+        _listening = false;
+        EndPointManager.RemoveListener (this);
+      }
+
+      lock (_ctxRegistrySync)
+        cleanupContextQueue (!force);
+
+      cleanupContextRegistry ();
+      cleanupConnections ();
+      cleanupWaitQueue (new ObjectDisposedException (GetType ().ToString ()));
+
+      _disposed = true;
     }
 
-    // Must be called with a lock on _ctxQueue.
+    private HttpListenerAsyncResult getAsyncResultFromQueue ()
+    {
+      if (_waitQueue.Count == 0)
+        return null;
+
+      var ares = _waitQueue[0];
+      _waitQueue.RemoveAt (0);
+
+      return ares;
+    }
+
     private HttpListenerContext getContextFromQueue ()
     {
       if (_ctxQueue.Count == 0)
@@ -499,101 +534,38 @@ namespace WebSocketSharp.Net
       return ctx;
     }
 
-    private void sendServiceUnavailable ()
-    {
-      lock (_ctxQueueSync) {
-        if (_ctxQueue.Count == 0)
-          return;
-
-        var ctxs = _ctxQueue.ToArray ();
-        _ctxQueue.Clear ();
-        foreach (var ctx in ctxs) {
-          var res = ctx.Response;
-          res.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
-          res.Close ();
-        }
-      }
-    }
-
     #endregion
 
     #region Internal Methods
 
-    internal void AddConnection (HttpConnection connection)
+    internal bool AddConnection (HttpConnection connection)
     {
-      lock (_connectionsSync)
-        _connections[connection] = connection;
-    }
-
-    internal bool Authenticate (HttpListenerContext context)
-    {
-      var schm = SelectAuthenticationScheme (context);
-      if (schm == AuthenticationSchemes.Anonymous)
-        return true;
-
-      var basicAllowed = HasFlag(schm, AuthenticationSchemes.Basic);
-      var digestAllowed = HasFlag(schm, AuthenticationSchemes.Digest);
-      if (!basicAllowed && !digestAllowed) {
-        context.Response.Close (HttpStatusCode.Forbidden);
+      if (!_listening)
         return false;
+
+      lock (_connectionsSync) {
+        if (!_listening)
+          return false;
+
+        _connections[connection] = connection;
+        return true;
       }
-
-      var realm = Realm;
-      var req = context.Request;
-      if (basicAllowed) {
-        var user = HttpUtility.CreateUser(
-          req.Headers["Authorization"], AuthenticationSchemes.Basic, realm, req.HttpMethod, UserCredentialsFinder);
-
-        if (user != null && user.Identity.IsAuthenticated) {
-          context.User = user;
-          return true;
-        }
-      }
-
-      if (digestAllowed) {
-        var user = HttpUtility.CreateUser(
-          req.Headers["Authorization"], AuthenticationSchemes.Digest, realm, req.HttpMethod, UserCredentialsFinder);
-
-        if (user != null && user.Identity.IsAuthenticated) {
-          context.User = user;
-          return true;
-        }
-      }
-
-      if (!digestAllowed)
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateBasicChallenge (realm).ToBasicString ());
-
-      else
-        context.Response.CloseWithAuthChallenge (
-          AuthenticationChallenge.CreateDigestChallenge (realm).ToDigestString ());
-
-      return false;
     }
 
     internal HttpListenerAsyncResult BeginGetContext (HttpListenerAsyncResult asyncResult)
     {
-      CheckDisposed ();
-      if (_prefixes.Count == 0)
-        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
+      lock (_ctxRegistrySync) {
+        if (!_listening)
+          throw new HttpListenerException (995);
 
-      if (!_listening)
-        throw new InvalidOperationException ("The listener hasn't been started.");
+        var ctx = getContextFromQueue ();
+        if (ctx == null)
+          _waitQueue.Add (asyncResult);
+        else
+          asyncResult.Complete (ctx, true);
 
-      // Lock _waitQueue early to avoid race conditions.
-      lock (_waitQueueSync) {
-        lock (_ctxQueueSync) {
-          var ctx = getContextFromQueue ();
-          if (ctx != null) {
-            asyncResult.Complete (ctx, true);
-            return asyncResult;
-          }
-        }
-
-        _waitQueue.Add (asyncResult);
+        return asyncResult;
       }
-
-      return asyncResult;
     }
 
     internal void CheckDisposed ()
@@ -602,25 +574,36 @@ namespace WebSocketSharp.Net
         throw new ObjectDisposedException (GetType ().ToString ());
     }
 
-    internal void RegisterContext (HttpListenerContext context)
+    internal string GetRealm ()
     {
-      lock (_ctxRegistrySync)
+      var realm = _realm;
+      return realm != null && realm.Length > 0 ? realm : _defaultRealm;
+    }
+
+    internal Func<IIdentity, NetworkCredential> GetUserCredentialsFinder ()
+    {
+      return _userCredFinder;
+    }
+
+    internal bool RegisterContext (HttpListenerContext context)
+    {
+      if (!_listening)
+        return false;
+
+      lock (_ctxRegistrySync) {
+        if (!_listening)
+          return false;
+
         _ctxRegistry[context] = context;
 
-      HttpListenerAsyncResult ares = null;
-      lock (_waitQueueSync) {
-        if (_waitQueue.Count == 0) {
-          lock (_ctxQueueSync)
-            _ctxQueue.Add (context);
-        }
-        else {
-          ares = _waitQueue[0];
-          _waitQueue.RemoveAt (0);
-        }
-      }
+        var ares = getAsyncResultFromQueue ();
+        if (ares == null)
+          _ctxQueue.Add (context);
+        else
+          ares.Complete (context);
 
-      if (ares != null)
-        ares.Complete (context);
+        return true;
+      }
     }
 
     internal void RemoveConnection (HttpConnection connection)
@@ -629,23 +612,24 @@ namespace WebSocketSharp.Net
         _connections.Remove (connection);
     }
 
-    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerContext context)
+    internal AuthenticationSchemes SelectAuthenticationScheme (HttpListenerRequest request)
     {
-      return AuthenticationSchemeSelector != null
-             ? AuthenticationSchemeSelector (context.Request)
-             : _authSchemes;
+      var selector = _authSchemeSelector;
+      if (selector == null)
+        return _authSchemes;
+
+      try {
+        return selector (request);
+      }
+      catch {
+        return AuthenticationSchemes.None;
+      }
     }
 
     internal void UnregisterContext (HttpListenerContext context)
     {
       lock (_ctxRegistrySync)
         _ctxRegistry.Remove (context);
-
-      lock (_ctxQueueSync) {
-        var idx = _ctxQueue.IndexOf (context);
-        if (idx >= 0)
-          _ctxQueue.RemoveAt (idx);
-      }
     }
 
     #endregion
@@ -661,7 +645,6 @@ namespace WebSocketSharp.Net
         return;
 
       close (true);
-      _disposed = true;
     }
 
     /// <summary>
@@ -698,6 +681,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     public IAsyncResult BeginGetContext (AsyncCallback callback, Object state)
     {
+      CheckDisposed ();
+      if (_prefixes.Count == 0)
+        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
+
+      if (!_listening)
+        throw new InvalidOperationException ("The listener hasn't been started.");
+
       return BeginGetContext (new HttpListenerAsyncResult (callback, state));
     }
 
@@ -710,7 +700,6 @@ namespace WebSocketSharp.Net
         return;
 
       close (false);
-      _disposed = true;
     }
 
     /// <summary>
@@ -783,6 +772,13 @@ namespace WebSocketSharp.Net
     /// </exception>
     public HttpListenerContext GetContext ()
     {
+      CheckDisposed ();
+      if (_prefixes.Count == 0)
+        throw new InvalidOperationException ("The listener has no URI prefix on which listens.");
+
+      if (!_listening)
+        throw new InvalidOperationException ("The listener hasn't been started.");
+
       var ares = BeginGetContext (new HttpListenerAsyncResult (null, null));
       ares.InGet = true;
 
@@ -819,8 +815,13 @@ namespace WebSocketSharp.Net
 
       _listening = false;
       EndPointManager.RemoveListener (this);
-      sendServiceUnavailable ();
-            cleanupConnections();
+
+      lock (_ctxRegistrySync)
+        cleanupContextQueue (true);
+
+      cleanupContextRegistry ();
+      cleanupConnections ();
+      cleanupWaitQueue (new HttpListenerException (995, "The listener is stopped."));
     }
 
     #endregion
@@ -836,7 +837,6 @@ namespace WebSocketSharp.Net
         return;
 
       close (true);
-      _disposed = true;
     }
 
     #endregion

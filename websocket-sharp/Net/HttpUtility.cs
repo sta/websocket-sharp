@@ -8,7 +8,7 @@
  * The MIT License
  *
  * Copyright (c) 2005-2009 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -554,10 +554,27 @@ namespace WebSocketSharp.Net
       AuthenticationSchemes scheme,
       string realm,
       string method,
-      Func<IIdentity, NetworkCredential> credentialsFinder)
+      Func<IIdentity, NetworkCredential> credentialsFinder
+    )
     {
-      if (response == null ||
-          !response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+      if (response == null || response.Length == 0)
+        return null;
+
+      if (credentialsFinder == null)
+        return null;
+
+      if (!(scheme == AuthenticationSchemes.Basic || scheme == AuthenticationSchemes.Digest))
+        return null;
+
+      if (scheme == AuthenticationSchemes.Digest) {
+        if (realm == null || realm.Length == 0)
+          return null;
+
+        if (method == null || method.Length == 0)
+          return null;
+      }
+
+      if (!response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
         return null;
 
       var res = AuthenticationResponse.Parse (response);
@@ -578,15 +595,19 @@ namespace WebSocketSharp.Net
       if (cred == null)
         return null;
 
-      var valid = scheme == AuthenticationSchemes.Basic
-                  ? ((HttpBasicIdentity) id).Password == cred.Password
-                  : scheme == AuthenticationSchemes.Digest
-                    ? ((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
-                    : false;
+      if (scheme == AuthenticationSchemes.Basic
+          && ((HttpBasicIdentity) id).Password != cred.Password
+      ) {
+        return null;
+      }
 
-      return valid
-             ? new GenericPrincipal (id, cred.Roles)
-             : null;
+      if (scheme == AuthenticationSchemes.Digest
+          && !((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
+      ) {
+        return null;
+      }
+
+      return new GenericPrincipal (id, cred.Roles);
     }
 
     internal static Encoding GetEncoding (string contentType)

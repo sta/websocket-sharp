@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2017 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,11 +39,12 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties used to access the information in a WebSocket service
-  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// Exposes the methods and properties used to access the information in
+  /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
+  /// <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
-  /// The WebSocketServiceHost class is an abstract class.
+  /// This class is an abstract class.
   /// </remarks>
   public abstract class WebSocketServiceHost
   {
@@ -71,7 +72,7 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the WebSocket service cleans up
+    /// Gets or sets a value indicating whether the service cleans up
     /// the inactive sessions periodically.
     /// </summary>
     /// <value>
@@ -81,7 +82,7 @@ namespace WebSocketSharp.Server
     public abstract bool KeepClean { get; set; }
 
     /// <summary>
-    /// Gets the path to the WebSocket service.
+    /// Gets the path to the service.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the absolute path to the service.
@@ -89,18 +90,20 @@ namespace WebSocketSharp.Server
     public abstract string Path { get; }
 
     /// <summary>
-    /// Gets the access to the sessions in the WebSocket service.
+    /// Gets the access to the sessions in the service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in the service.
+    /// A <see cref="WebSocketSessionManager"/> that manages the sessions in
+    /// the service.
     /// </value>
     public abstract WebSocketSessionManager Sessions { get; }
 
     /// <summary>
-    /// Gets the <see cref="System.Type"/> of the behavior of the WebSocket service.
+    /// Gets the <see cref="System.Type"/> of the behavior of the service.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Type"/> that represents the type of the behavior of the service.
+    /// A <see cref="System.Type"/> that represents the type of the behavior of
+    /// the service.
     /// </value>
     public abstract Type Type { get; }
 
@@ -108,8 +111,7 @@ namespace WebSocketSharp.Server
     /// Gets or sets the wait time for the response to the WebSocket Ping or Close.
     /// </summary>
     /// <value>
-    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
-    /// the same as 1 second.
+    /// A <see cref="TimeSpan"/> that represents the wait time for the response.
     /// </value>
     public abstract TimeSpan WaitTime { get; set; }
 
@@ -129,10 +131,7 @@ namespace WebSocketSharp.Server
 
     internal void Stop (ushort code, string reason)
     {
-      var e = new CloseEventArgs (code, reason);
-      var send = !code.IsReserved ();
-      var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray () : null;
-      Sessions.Stop (e, bytes, send);
+      Sessions.Stop (code, reason);
     }
 
     #endregion
@@ -140,7 +139,7 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
-    /// Creates a new session in the WebSocket service.
+    /// Creates a new session for the service.
     /// </summary>
     /// <returns>
     /// A <see cref="WebSocketBehavior"/> instance that represents a new session.

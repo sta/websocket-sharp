@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,9 +36,13 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
+    private ushort _code;
+    private bool   _codeSet;
     private byte[] _data;
     private long   _extDataLength;
     private long   _length;
+    private string _reason;
+    private bool   _reasonSet;
 
     #endregion
 
@@ -80,7 +84,13 @@ namespace WebSocketSharp
 
     internal PayloadData ()
     {
+      _code = 1005;
+      _reason = String.Empty;
+
       _data = WebSocket.EmptyBytes;
+
+      _codeSet = true;
+      _reasonSet = true;
     }
 
     internal PayloadData (byte[] data)
@@ -94,9 +104,35 @@ namespace WebSocketSharp
       _length = length;
     }
 
+    internal PayloadData (ushort code, string reason)
+    {
+      _code = code;
+      _reason = reason ?? String.Empty;
+
+      _data = code.Append (reason);
+      _length = _data.LongLength;
+
+      _codeSet = true;
+      _reasonSet = true;
+    }
+
     #endregion
 
     #region Internal Properties
+
+    internal ushort Code {
+      get {
+        if (!_codeSet) {
+          _code = _length > 1
+                  ? _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big)
+                  : (ushort) 1005;
+
+          _codeSet = true;
+        }
+
+        return _code;
+      }
+    }
 
     internal long ExtensionDataLength {
       get {
@@ -108,9 +144,23 @@ namespace WebSocketSharp
       }
     }
 
-    internal bool IncludesReservedCloseStatusCode {
+    internal bool HasReservedCode {
       get {
-        return _length > 1 && _data.SubArray (0, 2).ToUInt16 (ByteOrder.Big).IsReserved ();
+        return _length > 1 && Code.IsReserved ();
+      }
+    }
+
+    internal string Reason {
+      get {
+        if (!_reasonSet) {
+          _reason = _length > 2
+                    ? _data.SubArray (2, _length - 2).UTF8Decode ()
+                    : String.Empty;
+
+          _reasonSet = true;
+        }
+
+        return _reason;
       }
     }
 

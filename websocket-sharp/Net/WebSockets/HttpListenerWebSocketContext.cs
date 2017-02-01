@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the properties used to access the information in a WebSocket connection request
-  /// received by the <see cref="HttpListener"/>.
+  /// Provides the properties used to access the information in
+  /// a WebSocket handshake request received by the <see cref="HttpListener"/>.
   /// </summary>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
@@ -148,10 +148,10 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket connection request.
+    /// Gets a value indicating whether the request is a WebSocket handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise, <c>false</c>.
     /// </value>
     public override bool IsWebSocketRequest {
       get {
@@ -199,8 +199,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Sec-WebSocket-Key header included in the request.
     /// </summary>
     /// <remarks>
-    /// This property provides a part of the information used by the server to prove that it
-    /// received a valid WebSocket connection request.
+    /// This property provides a part of the information used by the server to prove that
+    /// it received a valid WebSocket handshake request.
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
@@ -225,9 +225,10 @@ namespace WebSocketSharp.Net.WebSockets
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
         var protocols = _context.Request.Headers["Sec-WebSocket-Protocol"];
-        if (protocols != null)
+        if (protocols != null) {
           foreach (var protocol in protocols.Split (','))
             yield return protocol.Trim ();
+        }
       }
     }
 
@@ -283,8 +284,8 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication
-    /// between client and server.
+    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
+    /// two-way communication between client and server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.
@@ -314,12 +315,12 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Methods
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerWebSocketContext"/>.
+    /// Returns a <see cref="string"/> that represents
+    /// the current <see cref="HttpListenerWebSocketContext"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the current
-    /// <see cref="HttpListenerWebSocketContext"/>.
+    /// A <see cref="string"/> that represents
+    /// the current <see cref="HttpListenerWebSocketContext"/>.
     /// </returns>
     public override string ToString ()
     {

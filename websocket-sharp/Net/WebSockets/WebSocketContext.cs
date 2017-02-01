@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2014 sta.blockhead
+ * Copyright (c) 2012-2016 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,10 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Exposes the properties used to access the information in a WebSocket connection request.
+  /// Exposes the properties used to access the information in a WebSocket handshake request.
   /// </summary>
   /// <remarks>
-  /// The WebSocketContext class is an abstract class.
+  /// This class is an abstract class.
   /// </remarks>
   public abstract class WebSocketContext
   {
@@ -103,10 +103,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract bool IsSecureConnection { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket connection request.
+    /// Gets a value indicating whether the request is a WebSocket handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise, <c>false</c>.
     /// </value>
     public abstract bool IsWebSocketRequest { get; }
 
@@ -138,8 +138,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Sec-WebSocket-Key header included in the request.
     /// </summary>
     /// <remarks>
-    /// This property provides a part of the information used by the server to prove that it
-    /// received a valid WebSocket connection request.
+    /// This property provides a part of the information used by the server to prove that
+    /// it received a valid WebSocket handshake request.
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
@@ -195,8 +195,8 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract System.Net.IPEndPoint UserEndPoint { get; }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for two-way communication
-    /// between client and server.
+    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
+    /// two-way communication between client and server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.

@@ -635,19 +635,36 @@ Extended Payload Length: {7}
 
     #region Internal Methods
 
-    internal static WebSocketFrame CreateCloseFrame (PayloadData payloadData, bool mask)
+    internal static WebSocketFrame CreateCloseFrame (
+      PayloadData payloadData, bool mask
+    )
     {
-      return new WebSocketFrame (Fin.Final, Opcode.Close, payloadData, false, mask);
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Close, payloadData, false, mask
+             );
     }
 
     internal static WebSocketFrame CreatePingFrame (bool mask)
     {
-      return new WebSocketFrame (Fin.Final, Opcode.Ping, PayloadData.Empty, false, mask);
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Ping, PayloadData.Empty, false, mask
+             );
     }
 
     internal static WebSocketFrame CreatePingFrame (byte[] data, bool mask)
     {
-      return new WebSocketFrame (Fin.Final, Opcode.Ping, new PayloadData (data), false, mask);
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Ping, new PayloadData (data), false, mask
+             );
+    }
+
+    internal static WebSocketFrame CreatePongFrame (
+      PayloadData payloadData, bool mask
+    )
+    {
+      return new WebSocketFrame (
+               Fin.Final, Opcode.Pong, payloadData, false, mask
+             );
     }
 
     internal static WebSocketFrame ReadFrame (Stream stream, bool unmask)
@@ -664,7 +681,11 @@ Extended Payload Length: {7}
     }
 
     internal static void ReadFrameAsync (
-      Stream stream, bool unmask, Action<WebSocketFrame> completed, Action<Exception> error)
+      Stream stream,
+      bool unmask,
+      Action<WebSocketFrame> completed,
+      Action<Exception> error
+    )
     {
       readHeaderAsync (
         stream,
@@ -686,10 +707,14 @@ Extended Payload Length: {7}
 
                       completed (frame3);
                     },
-                    error),
-                error),
-            error),
-        error);
+                    error
+                  ),
+                error
+              ),
+            error
+          ),
+        error
+      );
     }
 
     internal void Unmask ()
