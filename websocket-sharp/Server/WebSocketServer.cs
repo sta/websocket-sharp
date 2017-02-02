@@ -904,10 +904,17 @@ namespace WebSocketSharp.Server
         _state = ServerState.ShuttingDown;
       }
 
-      stopReceiving (5000);
-      _services.Stop (code, reason);
-
-      _state = ServerState.Stop;
+      try {
+        try {
+          stopReceiving (5000);
+        }
+        finally {
+          _services.Stop (code, reason);
+        }
+      }
+      finally {
+        _state = ServerState.Stop;
+      }
     }
 
     private void stopReceiving (int millisecondsTimeout)
