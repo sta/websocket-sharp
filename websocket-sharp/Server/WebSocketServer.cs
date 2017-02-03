@@ -652,12 +652,16 @@ namespace WebSocketSharp.Server
       }
 
       try {
-        _listener.Stop ();
+        try {
+          _listener.Stop ();
+        }
+        finally {
+          _services.Stop (1006, String.Empty);
+        }
       }
       catch {
       }
 
-      _services.Stop (1006, String.Empty);
       _state = ServerState.Stop;
     }
 
