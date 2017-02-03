@@ -691,6 +691,10 @@ namespace WebSocketSharp
 
             stream.BeginRead (buff, offset, length, callback, null);
           }
+          catch(ObjectDisposedException) {
+            var hack = new WebSocketFrame(Opcode.Close, PayloadData.Empty, false);
+            completed(hack.ToArray());
+          }
           catch (Exception ex) {
             if (error != null)
               error (ex);
