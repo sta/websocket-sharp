@@ -165,34 +165,53 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    private static bool HasFlag(Enum enumRef, Enum flag)
+    {
+        long value = Convert.ToInt64(enumRef);
+        long flagVal = Convert.ToInt64(flag);
+
+        return (value & flagVal) == flagVal;
+    }
+
     internal bool Authenticate ()
     {
       var schm = _listener.SelectAuthenticationScheme (_request);
       if (schm == AuthenticationSchemes.Anonymous)
         return true;
 
-      if (schm == AuthenticationSchemes.None) {
-        _response.Close (HttpStatusCode.Forbidden);
-        return false;
+      var basicAllowed = HasFlag(schm, AuthenticationSchemes.Basic);
+      var digestAllowed = HasFlag(schm, AuthenticationSchemes.Digest);
+      if(!basicAllowed && !digestAllowed) {
+         _response.Close(HttpStatusCode.Forbidden);
+         return false;
       }
 
-      var realm = _listener.GetRealm ();
-      var user =
-        HttpUtility.CreateUser (
-          _request.Headers["Authorization"],
-          schm,
-          realm,
-          _request.HttpMethod,
-          _listener.GetUserCredentialsFinder ()
-        );
-
-      if (user == null || !user.Identity.IsAuthenticated) {
-        _response.CloseWithAuthChallenge (new AuthenticationChallenge (schm, realm).ToString ());
-        return false;
+      var realm = _listener.GetRealm();
+      if(basicAllowed) {
+        var user = HttpUtility.CreateUser(_request.Headers["Authorization"], AuthenticationSchemes.Basic, realm, 
+                                          _request.HttpMethod, _listener.GetUserCredentialsFinder());
+        if(user?.Identity?.IsAuthenticated == true) {
+            _user = user;
+            return true;
+        }
       }
 
-      _user = user;
-      return true;
+      if(digestAllowed) {
+        var user = HttpUtility.CreateUser(_request.Headers["Authorization"], AuthenticationSchemes.Digest, realm,
+                                          _request.HttpMethod, _listener.GetUserCredentialsFinder());
+        if(user?.Identity?.IsAuthenticated == true) {
+            _user = user;
+            return true;
+        }
+      }
+
+      if(!digestAllowed) {
+        _response.CloseWithAuthChallenge(AuthenticationChallenge.CreateBasicChallenge(realm).ToBasicString());
+      } else {
+        _response.CloseWithAuthChallenge(AuthenticationChallenge.CreateDigestChallenge(realm).ToDigestString());
+      }
+
+      return false;
     }
 
     internal bool Register ()
