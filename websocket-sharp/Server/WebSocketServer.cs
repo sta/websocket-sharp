@@ -909,11 +909,22 @@ namespace WebSocketSharp.Server
       }
 
       try {
+        var threw = false;
         try {
           stopReceiving (5000);
         }
+        catch {
+          threw = true;
+          throw;
+        }
         finally {
-          _services.Stop (code, reason);
+          try {
+            _services.Stop (code, reason);
+          }
+          catch {
+            if (!threw)
+              throw;
+          }
         }
       }
       finally {
