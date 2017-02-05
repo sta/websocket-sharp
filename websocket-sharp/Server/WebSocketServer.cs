@@ -863,6 +863,45 @@ namespace WebSocketSharp.Server
         abort ();
     }
 
+    private void start (ServerSslConfiguration sslConfig)
+    {
+      if (_state == ServerState.Start) {
+        _logger.Info ("The server has already started.");
+        return;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        _logger.Warn ("The server is shutting down.");
+        return;
+      }
+
+      lock (_sync) {
+        if (_state == ServerState.Start) {
+          _logger.Info ("The server has already started.");
+          return;
+        }
+
+        if (_state == ServerState.ShuttingDown) {
+          _logger.Warn ("The server is shutting down.");
+          return;
+        }
+
+        _sslConfigInUse = sslConfig;
+        _realmInUse = getRealm ();
+
+        _services.Start ();
+        try {
+          startReceiving ();
+        }
+        catch {
+          _services.Stop (1011, String.Empty);
+          throw;
+        }
+
+        _state = ServerState.Start;
+      }
+    }
+
     private void startReceiving ()
     {
       if (_reuseAddress) {
