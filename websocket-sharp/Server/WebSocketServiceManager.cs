@@ -364,7 +364,6 @@ namespace WebSocketSharp.Server
         foreach (var host in _hosts.Values)
           host.Stop (code, reason);
 
-        _hosts.Clear ();
         _state = ServerState.Stop;
       }
     }
