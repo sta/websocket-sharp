@@ -311,19 +311,14 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal bool InternalTryGetServiceHost (string path, out WebSocketServiceHost host)
+    internal bool InternalTryGetServiceHost (
+      string path, out WebSocketServiceHost host
+    )
     {
-      bool ret;
       lock (_sync) {
         path = HttpUtility.UrlDecode (path).TrimEndSlash ();
-        ret = _hosts.TryGetValue (path, out host);
+        return _hosts.TryGetValue (path, out host);
       }
-
-      if (!ret)
-        _logger.Error (
-          "A WebSocket service with the specified path isn't found:\n  path: " + path);
-
-      return ret;
     }
 
     internal bool Remove (string path)
