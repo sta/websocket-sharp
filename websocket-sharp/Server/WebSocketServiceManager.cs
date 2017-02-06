@@ -291,7 +291,8 @@ namespace WebSocketSharp.Server
         WebSocketServiceHost host;
         if (_hosts.TryGetValue (path, out host)) {
           _logger.Error (
-            "A WebSocket service with the specified path already exists:\n  path: " + path);
+            "A WebSocket service with the specified path has already existed."
+          );
 
           return;
         }
