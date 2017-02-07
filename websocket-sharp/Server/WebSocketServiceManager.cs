@@ -315,10 +315,10 @@ namespace WebSocketSharp.Server
       string path, out WebSocketServiceHost host
     )
     {
-      lock (_sync) {
-        path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+
+      lock (_sync)
         return _hosts.TryGetValue (path, out host);
-      }
     }
 
     internal bool Remove (string path)
