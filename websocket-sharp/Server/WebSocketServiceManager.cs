@@ -285,9 +285,9 @@ namespace WebSocketSharp.Server
     internal void Add<TBehavior> (string path, Func<TBehavior> initializer)
       where TBehavior : WebSocketBehavior
     {
-      lock (_sync) {
-        path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
 
+      lock (_sync) {
         WebSocketServiceHost host;
         if (_hosts.TryGetValue (path, out host)) {
           _logger.Error (
