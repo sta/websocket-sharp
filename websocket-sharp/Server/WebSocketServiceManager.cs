@@ -323,12 +323,14 @@ namespace WebSocketSharp.Server
 
     internal bool Remove (string path)
     {
+      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+
       WebSocketServiceHost host;
       lock (_sync) {
-        path = HttpUtility.UrlDecode (path).TrimEndSlash ();
         if (!_hosts.TryGetValue (path, out host)) {
           _logger.Error (
-            "A WebSocket service with the specified path isn't found:\n  path: " + path);
+            "A WebSocket service with the specified path could not be found."
+          );
 
           return false;
         }
@@ -337,7 +339,7 @@ namespace WebSocketSharp.Server
       }
 
       if (host.State == ServerState.Start)
-        host.Stop ((ushort) CloseStatusCode.Away, null);
+        host.Stop (1001, String.Empty);
 
       return true;
     }
