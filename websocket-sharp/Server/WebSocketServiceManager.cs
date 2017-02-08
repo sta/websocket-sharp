@@ -608,13 +608,16 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? path.CheckIfValidServicePath ();
-      if (msg != null) {
-        _logger.Error (msg);
-        host = null;
+      host = null;
 
+      if (path == null || path.Length == 0)
         return false;
-      }
+
+      if (path[0] != '/')
+        return false;
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1)
+        return false;
 
       return InternalTryGetServiceHost (path, out host);
     }
