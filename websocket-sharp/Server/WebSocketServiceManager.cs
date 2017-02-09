@@ -593,18 +593,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the WebSocket service host with the specified <paramref name="path"/>.
+    /// Tries to get the WebSocket service host with
+    /// the specified <paramref name="path"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the service is successfully found; otherwise, <c>false</c>.
+    /// <c>true</c> if the service is successfully found;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service to find.
+    /// A <see cref="string"/> that represents the absolute path to
+    /// the service to find.
     /// </param>
     /// <param name="host">
-    /// When this method returns, a <see cref="WebSocketServiceHost"/> instance that
-    /// provides the access to the information in the service, or <see langword="null"/>
-    /// if it's not found. This parameter is passed uninitialized.
+    /// When this method returns, a <see cref="WebSocketServiceHost"/>
+    /// instance that provides the access to the information in
+    /// the service or <see langword="null"/> if it is not found.
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
