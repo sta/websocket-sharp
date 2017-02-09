@@ -1090,32 +1090,15 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Start ()
     {
-      string msg;
-      if (!checkIfAvailable (true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
-
       var sslConfig = getSslConfiguration ();
+
+      string msg;
       if (!checkSslConfiguration (sslConfig, out msg)) {
         _logger.Error (msg);
         return;
       }
 
-      lock (_sync) {
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          return;
-        }
-
-        _realmInUse = getRealm ();
-        _sslConfigInUse = sslConfig;
-
-        _services.Start ();
-        startReceiving ();
-
-        _state = ServerState.Start;
-      }
+      start (sslConfig);
     }
 
     /// <summary>
