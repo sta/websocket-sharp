@@ -1088,6 +1088,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Starts receiving the WebSocket handshake requests.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     public void Start ()
     {
       var sslConfig = getSslConfiguration ();
