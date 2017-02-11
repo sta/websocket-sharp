@@ -1097,10 +1097,8 @@ namespace WebSocketSharp.Server
       var sslConfig = getSslConfiguration ();
 
       string msg;
-      if (!checkSslConfiguration (sslConfig, out msg)) {
-        _logger.Error (msg);
-        return;
-      }
+      if (!checkSslConfiguration (sslConfig, out msg))
+        throw new InvalidOperationException (msg);
 
       start (sslConfig);
     }
