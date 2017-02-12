@@ -1092,6 +1092,13 @@ namespace WebSocketSharp.Server
     /// This method does nothing if the server has already started or
     /// it is shutting down.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// There is no configuration or server certificate used to provide
+    /// secure connections.
+    /// </exception>
+    /// <exception cref="SocketException">
+    /// The underlying <see cref="TcpListener"/> has failed to start.
+    /// </exception>
     public void Start ()
     {
       var sslConfig = getSslConfiguration ();
