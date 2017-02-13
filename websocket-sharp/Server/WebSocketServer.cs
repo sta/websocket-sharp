@@ -859,7 +859,7 @@ namespace WebSocketSharp.Server
         }
       }
 
-      if (_state == ServerState.Ready || _state == ServerState.Start)
+      if (_state != ServerState.ShuttingDown)
         abort ();
     }
 
