@@ -540,8 +540,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the configuration used to authenticate the server and
-    /// optionally the client for the secure connection.
+    /// Gets the configuration used to provide secure connections.
     /// </summary>
     /// <remarks>
     /// The configuration will be referenced when the server starts.
@@ -549,7 +548,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     /// A <see cref="ServerSslConfiguration"/> that represents
-    /// the configuration for the secure connection.
+    /// the configuration used to provide secure connections.
     /// </value>
     public ServerSslConfiguration SslConfiguration {
       get {
