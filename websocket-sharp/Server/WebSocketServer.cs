@@ -1184,6 +1184,9 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the reason for
     /// the close. The size must be 123 bytes or less in UTF-8.
     /// </param>
+    /// <exception cref="SocketException">
+    /// The underlying <see cref="TcpListener"/> has failed to stop.
+    /// </exception>
     public void Stop (CloseStatusCode code, string reason)
     {
       string msg;
