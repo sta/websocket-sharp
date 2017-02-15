@@ -1095,8 +1095,8 @@ namespace WebSocketSharp.Server
     /// it is shutting down.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// There is no configuration or server certificate used to provide
-    /// secure connections.
+    /// There is no configuration used to provide secure connections or
+    /// the configuration has no server certificate.
     /// </exception>
     /// <exception cref="SocketException">
     /// The underlying <see cref="TcpListener"/> has failed to start.
