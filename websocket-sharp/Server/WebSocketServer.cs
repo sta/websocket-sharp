@@ -421,6 +421,10 @@ namespace WebSocketSharp.Server
     /// Gets or sets a value indicating whether the server cleans up
     /// the inactive sessions periodically.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive sessions every 60
     /// seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
