@@ -475,10 +475,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the port on which to listen for incoming handshake requests.
+    /// Gets the port number of the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the port number on which to
+    /// listen for the incoming handshake requests.
     /// </value>
     public int Port {
       get {
