@@ -490,8 +490,14 @@ namespace WebSocketSharp.Server
     /// Gets or sets the name of the realm for the server.
     /// </summary>
     /// <remarks>
-    /// If this property is <see langword="null"/> or empty,
-    /// <c>"SECRET AREA"</c> will be used as the name.
+    ///   <para>
+    ///   The set operation does nothing if the server has
+    ///   already started or it is shutting down.
+    ///   </para>
+    ///   <para>
+    ///   If this property is <see langword="null"/> or empty,
+    ///   SECRET AREA will be used as the name.
+    ///   </para>
     /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the name of the realm.
