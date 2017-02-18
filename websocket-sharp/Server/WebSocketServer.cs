@@ -532,8 +532,14 @@ namespace WebSocketSharp.Server
     /// be bound to an address that is already in use.
     /// </summary>
     /// <remarks>
-    /// If you would like to resolve to wait for socket in TIME_WAIT state,
-    /// you should set this property to <c>true</c>.
+    ///   <para>
+    ///   The set operation does nothing if the server has already started or
+    ///   it is shutting down.
+    ///   </para>
+    ///   <para>
+    ///   If you would like to resolve to wait for socket in TIME_WAIT state,
+    ///   you should set this property to <c>true</c>.
+    ///   </para>
     /// </remarks>
     /// <value>
     /// <c>true</c> if the server is allowed to be bound to an address that
