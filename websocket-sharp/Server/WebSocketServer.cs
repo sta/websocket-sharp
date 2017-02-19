@@ -640,10 +640,8 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!value.CheckWaitTime (out msg)) {
-          _logger.Error (msg);
-          return;
-        }
+        if (!value.CheckWaitTime (out msg))
+          throw new ArgumentException (msg, "value");
 
         if (!canSet (out msg)) {
           _logger.Warn (msg);
