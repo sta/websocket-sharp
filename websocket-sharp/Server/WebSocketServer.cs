@@ -640,19 +640,19 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          return;
-        }
-
         if (!value.CheckWaitTime (out msg)) {
           _logger.Error (msg);
           return;
         }
 
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
+          return;
+        }
+
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _logger.Warn (msg);
             return;
           }
 
