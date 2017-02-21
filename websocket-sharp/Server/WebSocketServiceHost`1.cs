@@ -36,7 +36,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private Func<TBehavior>         _creator;
-    private Logger                  _logger;
+    private Logger                  _log;
     private string                  _path;
     private WebSocketSessionManager _sessions;
 
@@ -44,12 +44,12 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (string path, Func<TBehavior> creator, Logger logger)
+    internal WebSocketServiceHost (string path, Func<TBehavior> creator, Logger log)
     {
       _path = path;
       _creator = creator;
-      _logger = logger;
-      _sessions = new WebSocketSessionManager (logger);
+      _log = log;
+      _sessions = new WebSocketSessionManager (log);
     }
 
     #endregion
@@ -64,7 +64,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _sessions.State.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -100,7 +100,7 @@ namespace WebSocketSharp.Server
                   value.CheckIfValidWaitTime ();
 
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
