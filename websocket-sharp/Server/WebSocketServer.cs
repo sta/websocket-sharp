@@ -731,35 +731,6 @@ namespace WebSocketSharp.Server
              || name == _hostname;
     }
 
-    private bool checkIfAvailable (
-      bool ready, bool start, bool shutting, bool stop, out string message
-    )
-    {
-      message = null;
-
-      if (!ready && _state == ServerState.Ready) {
-        message = "This operation is not available in: ready";
-        return false;
-      }
-
-      if (!start && _state == ServerState.Start) {
-        message = "This operation is not available in: start";
-        return false;
-      }
-
-      if (!shutting && _state == ServerState.ShuttingDown) {
-        message = "This operation is not available in: shutting down";
-        return false;
-      }
-
-      if (!stop && _state == ServerState.Stop) {
-        message = "This operation is not available in: stop";
-        return false;
-      }
-
-      return true;
-    }
-
     private bool checkServicePath (string path, out string message)
     {
       message = null;
