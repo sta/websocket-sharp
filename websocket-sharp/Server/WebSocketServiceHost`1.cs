@@ -45,12 +45,11 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceHost (string path, Func<TBehavior> creator, Logger log)
+    internal WebSocketServiceHost (
+      string path, Func<TBehavior> creator, Logger log
+    )
+      : this (path, creator, null, log)
     {
-      _path = path;
-      _creator = creator;
-      _log = log;
-      _sessions = new WebSocketSessionManager (log);
     }
 
     internal WebSocketServiceHost (
