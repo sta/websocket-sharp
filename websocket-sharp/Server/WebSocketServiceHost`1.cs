@@ -36,6 +36,7 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private Func<TBehavior>         _creator;
+    private Action<TBehavior>       _initializer;
     private Logger                  _log;
     private string                  _path;
     private WebSocketSessionManager _sessions;
@@ -49,6 +50,21 @@ namespace WebSocketSharp.Server
       _path = path;
       _creator = creator;
       _log = log;
+      _sessions = new WebSocketSessionManager (log);
+    }
+
+    internal WebSocketServiceHost (
+      string path,
+      Func<TBehavior> creator,
+      Action<TBehavior> initializer,
+      Logger log
+    )
+    {
+      _path = path;
+      _creator = creator;
+      _initializer = initializer;
+      _log = log;
+
       _sessions = new WebSocketSessionManager (log);
     }
 
