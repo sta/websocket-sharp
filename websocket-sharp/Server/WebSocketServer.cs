@@ -67,7 +67,7 @@ namespace WebSocketSharp.Server
     private bool                               _dnsStyle;
     private string                             _hostname;
     private TcpListener                        _listener;
-    private Logger                             _logger;
+    private Logger                             _log;
     private int                                _port;
     private string                             _realm;
     private string                             _realmInUse;
@@ -341,13 +341,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -377,13 +377,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -437,13 +437,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -470,7 +470,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public Logger Log {
       get {
-        return _logger;
+        return _log;
       }
     }
 
@@ -512,13 +512,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -554,13 +554,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -610,13 +610,13 @@ namespace WebSocketSharp.Server
       set {
         string msg;
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -651,13 +651,13 @@ namespace WebSocketSharp.Server
           throw new ArgumentException (msg, "value");
 
         if (!canSet (out msg)) {
-          _logger.Warn (msg);
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
           if (!canSet (out msg)) {
-            _logger.Warn (msg);
+            _log.Warn (msg);
             return;
           }
 
@@ -813,8 +813,8 @@ namespace WebSocketSharp.Server
       _authSchemes = AuthenticationSchemes.Anonymous;
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
-      _logger = new Logger ();
-      _services = new WebSocketServiceManager (_logger);
+      _log = new Logger ();
+      _services = new WebSocketServiceManager (_log);
       _sync = new object ();
     }
 
@@ -857,7 +857,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx =
-                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _logger);
+                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _log);
 
                 if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
                   return;
@@ -865,7 +865,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _logger.Fatal (ex.ToString ());
+                _log.Fatal (ex.ToString ());
                 cl.Close ();
               }
             }
@@ -873,15 +873,15 @@ namespace WebSocketSharp.Server
         }
         catch (SocketException ex) {
           if (_state == ServerState.ShuttingDown) {
-            _logger.Info ("The receiving is stopped.");
+            _log.Info ("The receiving is stopped.");
             break;
           }
 
-          _logger.Fatal (ex.ToString ());
+          _log.Fatal (ex.ToString ());
           break;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
+          _log.Fatal (ex.ToString ());
           if (cl != null)
             cl.Close ();
 
@@ -896,23 +896,23 @@ namespace WebSocketSharp.Server
     private void start (ServerSslConfiguration sslConfig)
     {
       if (_state == ServerState.Start) {
-        _logger.Info ("The server has already started.");
+        _log.Info ("The server has already started.");
         return;
       }
 
       if (_state == ServerState.ShuttingDown) {
-        _logger.Warn ("The server is shutting down.");
+        _log.Warn ("The server is shutting down.");
         return;
       }
 
       lock (_sync) {
         if (_state == ServerState.Start) {
-          _logger.Info ("The server has already started.");
+          _log.Info ("The server has already started.");
           return;
         }
 
         if (_state == ServerState.ShuttingDown) {
-          _logger.Warn ("The server is shutting down.");
+          _log.Warn ("The server is shutting down.");
           return;
         }
 
@@ -949,28 +949,28 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       if (_state == ServerState.Ready) {
-        _logger.Info ("The server is not started.");
+        _log.Info ("The server is not started.");
         return;
       }
 
       if (_state == ServerState.ShuttingDown) {
-        _logger.Info ("The server is shutting down.");
+        _log.Info ("The server is shutting down.");
         return;
       }
 
       if (_state == ServerState.Stop) {
-        _logger.Info ("The server has already stopped.");
+        _log.Info ("The server has already stopped.");
         return;
       }
 
       lock (_sync) {
         if (_state == ServerState.ShuttingDown) {
-          _logger.Info ("The server is shutting down.");
+          _log.Info ("The server is shutting down.");
           return;
         }
 
         if (_state == ServerState.Stop) {
-          _logger.Info ("The server has already stopped.");
+          _log.Info ("The server has already stopped.");
           return;
         }
 
@@ -1054,12 +1054,12 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       if (initializer == null) {
-        _logger.Error ("'initializer' is null.");
+        _log.Error ("'initializer' is null.");
         return;
       }
 
@@ -1085,7 +1085,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
@@ -1108,7 +1108,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return false;
       }
 
@@ -1187,7 +1187,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
@@ -1219,7 +1219,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
