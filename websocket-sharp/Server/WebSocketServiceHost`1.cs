@@ -125,6 +125,25 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Private Methods
+
+    private Func<TBehavior> createCreator (
+      Func<TBehavior> creator, Action<TBehavior> initializer
+    )
+    {
+      if (initializer == null)
+        return creator;
+
+      return () => {
+               var ret = creator ();
+               initializer (ret);
+
+               return ret;
+             };
+    }
+
+    #endregion
+
     #region Protected Methods
 
     protected override WebSocketBehavior CreateSession ()
