@@ -129,7 +129,12 @@ namespace WebSocketSharp.Server
 
     protected override WebSocketBehavior CreateSession ()
     {
-      return _creator ();
+      var ret = _creator ();
+
+      if (_initializer != null)
+        _initializer (ret);
+
+      return ret;
     }
 
     #endregion
