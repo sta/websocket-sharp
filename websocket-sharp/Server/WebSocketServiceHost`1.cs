@@ -125,6 +125,24 @@ namespace WebSocketSharp.Server
 
     #region Private Methods
 
+    private bool canSet (out string message)
+    {
+      message = null;
+
+      var state = _sessions.State;
+      if (state == ServerState.Start) {
+        message = "The service has already started.";
+        return false;
+      }
+
+      if (state == ServerState.ShuttingDown) {
+        message = "The service is shutting down.";
+        return false;
+      }
+
+      return true;
+    }
+
     private Func<TBehavior> createCreator (
       Func<TBehavior> creator, Action<TBehavior> initializer
     )
