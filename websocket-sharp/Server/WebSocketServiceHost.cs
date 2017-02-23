@@ -48,13 +48,32 @@ namespace WebSocketSharp.Server
   /// </remarks>
   public abstract class WebSocketServiceHost
   {
+    #region Private Fields
+
+    private Logger                  _log;
+    private string                  _path;
+    private WebSocketSessionManager _sessions;
+
+    #endregion
+
     #region Protected Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class.
+    /// Initializes a new instance of the <see cref="WebSocketServiceHost"/> class
+    /// with the specified <paramref name="path"/> and <paramref name="log"/>.
     /// </summary>
-    protected WebSocketServiceHost ()
+    /// <param name="path">
+    /// A <see cref="string"/> that represents the absolute path to the service.
+    /// </param>
+    /// <param name="log">
+    /// A <see cref="Logger"/> that represents the logging function for the service.
+    /// </param>
+    protected WebSocketServiceHost (string path, Logger log)
     {
+      _path = path;
+      _log = log;
+
+      _sessions = new WebSocketSessionManager (log);
     }
 
     #endregion
@@ -63,7 +82,7 @@ namespace WebSocketSharp.Server
 
     internal ServerState State {
       get {
-        return Sessions.State;
+        return _sessions.State;
       }
     }
 
@@ -79,7 +98,21 @@ namespace WebSocketSharp.Server
     /// <c>true</c> if the service cleans up the inactive sessions periodically;
     /// otherwise, <c>false</c>.
     /// </value>
-    public abstract bool KeepClean { get; set; }
+    public bool KeepClean {
+      get {
+        return _sessions.KeepClean;
+      }
+
+      set {
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
+        _sessions.KeepClean = value;
+      }
+    }
 
     /// <summary>
     /// Gets the path to the service.
@@ -87,7 +120,11 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="string"/> that represents the absolute path to the service.
     /// </value>
-    public abstract string Path { get; }
+    public string Path {
+      get {
+        return _path;
+      }
+    }
 
     /// <summary>
     /// Gets the access to the sessions in the service.
@@ -96,7 +133,11 @@ namespace WebSocketSharp.Server
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions in
     /// the service.
     /// </value>
-    public abstract WebSocketSessionManager Sessions { get; }
+    public WebSocketSessionManager Sessions {
+      get {
+        return _sessions;
+      }
+    }
 
     /// <summary>
     /// Gets the <see cref="System.Type"/> of the behavior of the service.
@@ -113,7 +154,46 @@ namespace WebSocketSharp.Server
     /// <value>
     /// A <see cref="TimeSpan"/> that represents the wait time for the response.
     /// </value>
-    public abstract TimeSpan WaitTime { get; set; }
+    public TimeSpan WaitTime {
+      get {
+        return _sessions.WaitTime;
+      }
+
+      set {
+        string msg;
+        if (!value.CheckWaitTime (out msg))
+          throw new ArgumentException (msg, "value");
+
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
+        _sessions.WaitTime = value;
+      }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private bool canSet (out string message)
+    {
+      message = null;
+
+      var state = _sessions.State;
+      if (state == ServerState.Start) {
+        message = "The service has already started.";
+        return false;
+      }
+
+      if (state == ServerState.ShuttingDown) {
+        message = "The service is shutting down.";
+        return false;
+      }
+
+      return true;
+    }
 
     #endregion
 
@@ -121,17 +201,17 @@ namespace WebSocketSharp.Server
 
     internal void Start ()
     {
-      Sessions.Start ();
+      _sessions.Start ();
     }
 
     internal void StartSession (WebSocketContext context)
     {
-      CreateSession ().Start (context, Sessions);
+      CreateSession ().Start (context, _sessions);
     }
 
     internal void Stop (ushort code, string reason)
     {
-      Sessions.Stop (code, reason);
+      _sessions.Stop (code, reason);
     }
 
     #endregion

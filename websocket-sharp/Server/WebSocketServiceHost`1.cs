@@ -35,10 +35,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private Func<TBehavior>         _creator;
-    private Logger                  _log;
-    private string                  _path;
-    private WebSocketSessionManager _sessions;
+    private Func<TBehavior> _creator;
 
     #endregion
 
@@ -57,45 +54,14 @@ namespace WebSocketSharp.Server
       Action<TBehavior> initializer,
       Logger log
     )
+      : base (path, log)
     {
-      _path = path;
       _creator = createCreator (creator, initializer);
-      _log = log;
-
-      _sessions = new WebSocketSessionManager (log);
     }
 
     #endregion
 
     #region Public Properties
-
-    public override bool KeepClean {
-      get {
-        return _sessions.KeepClean;
-      }
-
-      set {
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
-        _sessions.KeepClean = value;
-      }
-    }
-
-    public override string Path {
-      get {
-        return _path;
-      }
-    }
-
-    public override WebSocketSessionManager Sessions {
-      get {
-        return _sessions;
-      }
-    }
 
     public override Type Type {
       get {
@@ -103,46 +69,9 @@ namespace WebSocketSharp.Server
       }
     }
 
-    public override TimeSpan WaitTime {
-      get {
-        return _sessions.WaitTime;
-      }
-
-      set {
-        string msg;
-        if (!value.CheckWaitTime (out msg))
-          throw new ArgumentException (msg, "value");
-
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
-        _sessions.WaitTime = value;
-      }
-    }
-
     #endregion
 
     #region Private Methods
-
-    private bool canSet (out string message)
-    {
-      message = null;
-
-      var state = _sessions.State;
-      if (state == ServerState.Start) {
-        message = "The service has already started.";
-        return false;
-      }
-
-      if (state == ServerState.ShuttingDown) {
-        message = "The service is shutting down.";
-        return false;
-      }
-
-      return true;
-    }
 
     private Func<TBehavior> createCreator (
       Func<TBehavior> creator, Action<TBehavior> initializer
