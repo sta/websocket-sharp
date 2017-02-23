@@ -36,7 +36,6 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private Func<TBehavior>         _creator;
-    private Action<TBehavior>       _initializer;
     private Logger                  _log;
     private string                  _path;
     private WebSocketSessionManager _sessions;
@@ -60,8 +59,7 @@ namespace WebSocketSharp.Server
     )
     {
       _path = path;
-      _creator = creator;
-      _initializer = initializer;
+      _creator = createCreator (creator, initializer);
       _log = log;
 
       _sessions = new WebSocketSessionManager (log);
@@ -148,12 +146,7 @@ namespace WebSocketSharp.Server
 
     protected override WebSocketBehavior CreateSession ()
     {
-      var ret = _creator ();
-
-      if (_initializer != null)
-        _initializer (ret);
-
-      return ret;
+      return _creator ();
     }
 
     #endregion
