@@ -109,11 +109,12 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _sessions.State.CheckIfAvailable (true, false, false) ??
-                  value.CheckIfValidWaitTime ();
+        string msg;
+        if (!value.CheckWaitTime (out msg))
+          throw new ArgumentException (msg, "value");
 
-        if (msg != null) {
-          _log.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
