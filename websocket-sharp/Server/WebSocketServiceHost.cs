@@ -150,7 +150,7 @@ namespace WebSocketSharp.Server
     /// A <see cref="System.Type"/> that represents the type of the behavior of
     /// the service.
     /// </value>
-    public abstract Type Type { get; }
+    public abstract Type BehaviorType { get; }
 
     /// <summary>
     /// Gets or sets the wait time for the response to the WebSocket Ping or Close.

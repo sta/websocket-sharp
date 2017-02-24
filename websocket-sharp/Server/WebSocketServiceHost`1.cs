@@ -63,7 +63,7 @@ namespace WebSocketSharp.Server
 
     #region Public Properties
 
-    public override Type Type {
+    public override Type BehaviorType {
       get {
         return typeof (TBehavior);
       }
