@@ -144,10 +144,10 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the <see cref="System.Type"/> of the behavior of the service.
+    /// Gets the <see cref="Type"/> of the behavior of the service.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Type"/> that represents the type of the behavior of
+    /// A <see cref="Type"/> that represents the type of the behavior of
     /// the service.
     /// </value>
     public abstract Type BehaviorType { get; }
