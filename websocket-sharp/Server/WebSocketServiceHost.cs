@@ -94,9 +94,13 @@ namespace WebSocketSharp.Server
     /// Gets or sets a value indicating whether the service cleans up
     /// the inactive sessions periodically.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the service has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
-    /// <c>true</c> if the service cleans up the inactive sessions periodically;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the service cleans up the inactive sessions every 60
+    /// seconds; otherwise, <c>false</c>.
     /// </value>
     public bool KeepClean {
       get {
