@@ -131,7 +131,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the access to the sessions in the service.
+    /// Gets the management function for the sessions in the service.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSessionManager"/> that manages the sessions in
