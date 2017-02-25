@@ -233,7 +233,8 @@ namespace WebSocketSharp.Server
     /// Creates a new session for the service.
     /// </summary>
     /// <returns>
-    /// A <see cref="WebSocketBehavior"/> instance that represents a new session.
+    /// A <see cref="WebSocketBehavior"/> instance that represents
+    /// the new session.
     /// </returns>
     protected abstract WebSocketBehavior CreateSession ();
 
