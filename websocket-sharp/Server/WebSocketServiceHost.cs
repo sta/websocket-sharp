@@ -122,7 +122,8 @@ namespace WebSocketSharp.Server
     /// Gets the path to the service.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the absolute path to the service.
+    /// A <see cref="string"/> that represents the absolute path to
+    /// the service.
     /// </value>
     public string Path {
       get {
