@@ -88,6 +88,22 @@ namespace WebSocketSharp.Server
 
     #endregion
 
+    #region Protected Properties
+
+    /// <summary>
+    /// Gets the logging function for the service.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Logger"/> that provides the logging function.
+    /// </value>
+    protected Logger Log {
+      get {
+        return _log;
+      }
+    }
+
+    #endregion
+
     #region Public Properties
 
     /// <summary>
