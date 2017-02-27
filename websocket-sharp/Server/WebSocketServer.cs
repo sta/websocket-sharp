@@ -754,6 +754,7 @@ namespace WebSocketSharp.Server
     private ServerSslConfiguration getSslConfiguration ()
     {
       var sslConfig = _sslConfig;
+
       if (sslConfig == null)
         return null;
 
@@ -783,6 +784,7 @@ namespace WebSocketSharp.Server
       _authSchemes = AuthenticationSchemes.Anonymous;
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
+      _listener.Server.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName)27, 0);
       _logger = new Logger ();
       _services = new WebSocketServiceManager (_logger);
       _sync = new object ();
