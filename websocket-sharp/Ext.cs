@@ -1947,8 +1947,8 @@ namespace WebSocketSharp
     /// URL-decodes the specified <see cref="string"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the decoded string,
-    /// or the <paramref name="value"/> if it's <see langword="null"/> or empty.
+    /// A <see cref="string"/> that receives the decoded string or
+    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to decode.
