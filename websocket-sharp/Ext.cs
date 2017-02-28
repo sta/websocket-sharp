@@ -1955,7 +1955,9 @@ namespace WebSocketSharp
     /// </param>
     public static string UrlDecode (this string value)
     {
-      return value != null && value.Length > 0 ? HttpUtility.UrlDecode (value) : value;
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlDecode (value)
+             : value;
     }
 
     /// <summary>
