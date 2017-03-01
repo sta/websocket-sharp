@@ -1972,7 +1972,9 @@ namespace WebSocketSharp
     /// </param>
     public static string UrlEncode (this string value)
     {
-      return value != null && value.Length > 0 ? HttpUtility.UrlEncode (value) : value;
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlEncode (value)
+             : value;
     }
 
     /// <summary>
