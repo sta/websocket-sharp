@@ -907,8 +907,8 @@ namespace WebSocketSharp
 
     internal static string TrimEndSlash (this string value)
     {
-      value = value.TrimEnd ('/');
-      return value.Length > 0 ? value : "/";
+      var ret = value.TrimEnd ('/');
+      return ret.Length > 0 ? ret : "/";
     }
 
     /// <summary>
