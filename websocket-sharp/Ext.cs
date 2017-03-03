@@ -905,7 +905,7 @@ namespace WebSocketSharp
       return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
     }
 
-    internal static string TrimEndSlash (this string value)
+    internal static string TrimSlashFromEnd (this string value)
     {
       var ret = value.TrimEnd ('/');
       return ret.Length > 0 ? ret : "/";

@@ -285,7 +285,7 @@ namespace WebSocketSharp.Server
     internal void Add<TBehavior> (string path, Func<TBehavior> initializer)
       where TBehavior : WebSocketBehavior
     {
-      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
 
       lock (_sync) {
         WebSocketServiceHost host;
@@ -315,7 +315,7 @@ namespace WebSocketSharp.Server
       string path, out WebSocketServiceHost host
     )
     {
-      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
 
       lock (_sync)
         return _hosts.TryGetValue (path, out host);
@@ -323,7 +323,7 @@ namespace WebSocketSharp.Server
 
     internal bool Remove (string path)
     {
-      path = HttpUtility.UrlDecode (path).TrimEndSlash ();
+      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
 
       WebSocketServiceHost host;
       lock (_sync) {
