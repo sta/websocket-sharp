@@ -593,6 +593,67 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Removes a WebSocket service with the specified <paramref name="path"/>.
+    /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
+    /// <returns>
+    /// <c>true</c> if the service is successfully found and removed;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to remove.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is invalid.
+    ///   </para>
+    /// </exception>
+    public bool RemoveService (string path)
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path[0] != '/')
+        throw new ArgumentException ("Not an absolute path.", "path");
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
+      }
+
+      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+
+      WebSocketServiceHost host;
+      lock (_sync) {
+        if (!_hosts.TryGetValue (path, out host))
+          return false;
+
+        _hosts.Remove (path);
+      }
+
+      if (host.State == ServerState.Start)
+        host.Stop (1001, String.Empty);
+
+      return true;
+    }
+
+    /// <summary>
     /// Tries to get the WebSocket service host with
     /// the specified <paramref name="path"/>.
     /// </summary>
