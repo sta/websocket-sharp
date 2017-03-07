@@ -385,6 +385,98 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
+    /// Adds a WebSocket service with the specified behavior,
+    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to add.
+    /// </param>
+    /// <param name="initializer">
+    /// An <c>Action&lt;TBehavior&gt;</c> delegate that invokes
+    /// the method used to initialize a new session instance for
+    /// the service or <see langword="null"/> if not needed.
+    /// </param>
+    /// <typeparam name="TBehavior">
+    /// The type of the behavior for the service. It must inherit
+    /// the <see cref="WebSocketBehavior"/> class and it must have
+    /// a public parameterless constructor.
+    /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
+    public void AddService<TBehavior> (
+      string path, Action<TBehavior> initializer
+    )
+      where TBehavior : WebSocketBehavior, new ()
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path[0] != '/')
+        throw new ArgumentException ("Not an absolute path.", "path");
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
+      }
+
+      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+
+      lock (_sync) {
+        WebSocketServiceHost host;
+        if (_hosts.TryGetValue (path, out host))
+          throw new ArgumentException ("Already in use.", "path");
+
+        host = new WebSocketServiceHost<TBehavior> (
+                 path, () => new TBehavior (), initializer, _logger
+               );
+
+        if (!_clean)
+          host.KeepClean = false;
+
+        if (_waitTime != host.WaitTime)
+          host.WaitTime = _waitTime;
+
+        if (_state == ServerState.Start)
+          host.Start ();
+
+        _hosts.Add (path, host);
+      }
+    }
+
+    /// <summary>
     /// Sends binary <paramref name="data"/> to every client in the WebSocket services.
     /// </summary>
     /// <param name="data">
