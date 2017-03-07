@@ -1106,13 +1106,7 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool RemoveWebSocketService (string path)
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return false;
-      }
-
-      return _services.Remove (path);
+      return _services.RemoveService (path);
     }
 
     /// <summary>
