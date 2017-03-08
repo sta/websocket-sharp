@@ -289,15 +289,11 @@ namespace WebSocketSharp.Server
 
       lock (_sync) {
         WebSocketServiceHost host;
-        if (_hosts.TryGetValue (path, out host)) {
-          _logger.Error (
-            "A WebSocket service with the specified path has already existed."
-          );
-
-          return;
-        }
+        if (_hosts.TryGetValue (path, out host))
+          throw new ArgumentException ("Already in use.", "path");
 
         host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
+
         if (!_clean)
           host.KeepClean = false;
 
