@@ -1070,16 +1070,46 @@ namespace WebSocketSharp.Server
     /// Adds a WebSocket service with the specified behavior and
     /// <paramref name="path"/>.
     /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
-    /// the service. It will be converted to a URL-decoded string,
-    /// and will be removed <c>'/'</c> from tail end if any.
+    /// the service to add.
     /// </param>
     /// <typeparam name="TBehaviorWithNew">
     /// The type of the behavior for the service. It must inherit
-    /// the <see cref="WebSocketBehavior"/> class, and must have
+    /// the <see cref="WebSocketBehavior"/> class and it must have
     /// a public parameterless constructor.
     /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
     public void AddWebSocketService<TBehaviorWithNew> (string path)
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
