@@ -1083,13 +1083,7 @@ namespace WebSocketSharp.Server
     public void AddWebSocketService<TBehaviorWithNew> (string path)
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return;
-      }
-
-      _services.Add<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
+      _services.AddService<TBehaviorWithNew> (path, null);
     }
 
     /// <summary>
