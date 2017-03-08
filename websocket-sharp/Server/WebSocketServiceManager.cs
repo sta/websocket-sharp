@@ -282,7 +282,7 @@ namespace WebSocketSharp.Server
 
     #region Internal Methods
 
-    internal void Add<TBehavior> (string path, Func<TBehavior> initializer)
+    internal void Add<TBehavior> (string path, Func<TBehavior> creator)
       where TBehavior : WebSocketBehavior
     {
       path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
@@ -292,7 +292,9 @@ namespace WebSocketSharp.Server
         if (_hosts.TryGetValue (path, out host))
           throw new ArgumentException ("Already in use.", "path");
 
-        host = new WebSocketServiceHost<TBehavior> (path, initializer, _logger);
+        host = new WebSocketServiceHost<TBehavior> (
+                 path, creator, null, _logger
+               );
 
         if (!_clean)
           host.KeepClean = false;
