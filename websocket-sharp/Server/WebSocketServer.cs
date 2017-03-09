@@ -1052,15 +1052,21 @@ namespace WebSocketSharp.Server
     )
       where TBehavior : WebSocketBehavior
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return;
-      }
+      if (path == null)
+        throw new ArgumentNullException ("path");
 
-      if (initializer == null) {
-        _log.Error ("'initializer' is null.");
-        return;
+      if (initializer == null)
+        throw new ArgumentNullException ("initializer");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path[0] != '/')
+        throw new ArgumentException ("Not an absolute path.", "path");
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
       }
 
       _services.Add<TBehavior> (path, initializer);
