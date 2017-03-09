@@ -325,13 +325,8 @@ namespace WebSocketSharp.Server
 
       WebSocketServiceHost host;
       lock (_sync) {
-        if (!_hosts.TryGetValue (path, out host)) {
-          _logger.Error (
-            "A WebSocket service with the specified path could not be found."
-          );
-
+        if (!_hosts.TryGetValue (path, out host))
           return false;
-        }
 
         _hosts.Remove (path);
       }
