@@ -1030,14 +1030,14 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// <paramref name="path"/>, and <paramref name="creator"/>.
     /// </summary>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
     /// the service. It will be converted to a URL-decoded string,
     /// and will be removed <c>'/'</c> from tail end if any.
     /// </param>
-    /// <param name="initializer">
+    /// <param name="creator">
     /// A <c>Func&lt;TBehavior&gt;</c> delegate that invokes
     /// the method used to create a new session instance for
     /// the service. The method must create a new instance of
@@ -1048,15 +1048,15 @@ namespace WebSocketSharp.Server
     /// the <see cref="WebSocketBehavior"/> class.
     /// </typeparam>
     public void AddWebSocketService<TBehavior> (
-      string path, Func<TBehavior> initializer
+      string path, Func<TBehavior> creator
     )
       where TBehavior : WebSocketBehavior
     {
       if (path == null)
         throw new ArgumentNullException ("path");
 
-      if (initializer == null)
-        throw new ArgumentNullException ("initializer");
+      if (creator == null)
+        throw new ArgumentNullException ("creator");
 
       if (path.Length == 0)
         throw new ArgumentException ("An empty string.", "path");
@@ -1069,7 +1069,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "path");
       }
 
-      _services.Add<TBehavior> (path, initializer);
+      _services.Add<TBehavior> (path, creator);
     }
 
     /// <summary>
