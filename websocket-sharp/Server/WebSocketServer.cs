@@ -67,7 +67,7 @@ namespace WebSocketSharp.Server
     private bool                               _dnsStyle;
     private string                             _hostname;
     private TcpListener                        _listener;
-    private Logger                             _logger;
+    private Logger                             _log;
     private int                                _port;
     private string                             _realm;
     private string                             _realmInUse;
@@ -324,6 +324,10 @@ namespace WebSocketSharp.Server
     /// Gets or sets a value indicating whether the server accepts
     /// a handshake request without checking the request URI.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
     /// <c>true</c> if the server accepts a handshake request without
     /// checking the request URI; otherwise, <c>false</c>. The default
@@ -336,14 +340,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -355,9 +359,13 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
     /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum
-    /// values that represents the scheme used to authenticate the clients.
+    /// values. It specifies the scheme used to authenticate the clients.
     /// The default value is
     /// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
     /// </value>
@@ -368,14 +376,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -413,6 +421,10 @@ namespace WebSocketSharp.Server
     /// Gets or sets a value indicating whether the server cleans up
     /// the inactive sessions periodically.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
     /// <c>true</c> if the server cleans up the inactive sessions every 60
     /// seconds; otherwise, <c>false</c>. The default value is <c>true</c>.
@@ -424,14 +436,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -444,24 +456,30 @@ namespace WebSocketSharp.Server
     /// Gets the logging function for the server.
     /// </summary>
     /// <remarks>
-    /// The default logging level is <see cref="LogLevel.Error"/>. If you would
-    /// like to change the logging level, you should set this <c>Log.Level</c>
-    /// property to any of the <see cref="LogLevel"/> enum values.
+    ///   <para>
+    ///   The default logging level is <see cref="LogLevel.Error"/>.
+    ///   </para>
+    ///   <para>
+    ///   If you would like to change the logging level,
+    ///   you should set the <c>Log.Level</c> property to
+    ///   any of the <see cref="LogLevel"/> enum values.
+    ///   </para>
     /// </remarks>
     /// <value>
     /// A <see cref="Logger"/> that provides the logging function.
     /// </value>
     public Logger Log {
       get {
-        return _logger;
+        return _log;
       }
     }
 
     /// <summary>
-    /// Gets the port on which to listen for incoming handshake requests.
+    /// Gets the port number of the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the port number on which to
+    /// listen for the incoming handshake requests.
     /// </value>
     public int Port {
       get {
@@ -473,12 +491,18 @@ namespace WebSocketSharp.Server
     /// Gets or sets the name of the realm for the server.
     /// </summary>
     /// <remarks>
-    /// If this property is <see langword="null"/> or empty,
-    /// <c>"SECRET AREA"</c> will be used as the name.
+    ///   <para>
+    ///   The set operation does nothing if the server has
+    ///   already started or it is shutting down.
+    ///   </para>
+    ///   <para>
+    ///   If this property is <see langword="null"/> or empty,
+    ///   SECRET AREA will be used as the name.
+    ///   </para>
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the realm.
-    /// The default value is <see langword="null"/>.
+    /// A <see cref="string"/> that represents the name of
+    /// the realm or <see langword="null"/> by default.
     /// </value>
     public string Realm {
       get {
@@ -487,14 +511,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -508,8 +532,14 @@ namespace WebSocketSharp.Server
     /// be bound to an address that is already in use.
     /// </summary>
     /// <remarks>
-    /// If you would like to resolve to wait for socket in TIME_WAIT state,
-    /// you should set this property to <c>true</c>.
+    ///   <para>
+    ///   The set operation does nothing if the server has already started or
+    ///   it is shutting down.
+    ///   </para>
+    ///   <para>
+    ///   If you would like to resolve to wait for socket in TIME_WAIT state,
+    ///   you should set this property to <c>true</c>.
+    ///   </para>
     /// </remarks>
     /// <value>
     /// <c>true</c> if the server is allowed to be bound to an address that
@@ -523,14 +553,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -540,8 +570,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the configuration used to authenticate the server and
-    /// optionally the client for the secure connection.
+    /// Gets the configuration used to provide secure connections.
     /// </summary>
     /// <remarks>
     /// The configuration will be referenced when the server starts.
@@ -549,11 +578,14 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     /// A <see cref="ServerSslConfiguration"/> that represents
-    /// the configuration for the secure connection.
+    /// the configuration used to provide secure connections.
     /// </value>
     public ServerSslConfiguration SslConfiguration {
       get {
-        return _sslConfig ?? (_sslConfig = new ServerSslConfiguration (null));
+        if (_sslConfig == null)
+          _sslConfig = new ServerSslConfiguration (null);
+
+        return _sslConfig;
       }
     }
 
@@ -561,10 +593,14 @@ namespace WebSocketSharp.Server
     /// Gets or sets the delegate called to find the credentials for
     /// an identity used to authenticate a client.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
     /// <value>
-    /// A <c>Func&lt;IIdentity, NetworkCredential&gt;</c> delegate that
-    /// invokes the method used to find the credentials. The default value
-    /// is <see langword="null"/>.
+    /// A <c>Func&lt;IIdentity, NetworkCredential&gt;</c> delegate
+    /// that invokes the method used to find the credentials or
+    /// <see langword="null"/> by default.
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
@@ -573,14 +609,14 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -593,10 +629,17 @@ namespace WebSocketSharp.Server
     /// Gets or sets the wait time for the response to
     /// the WebSocket Ping or Close.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already
+    /// started or it is shutting down.
+    /// </remarks>
     /// <value>
     /// A <see cref="TimeSpan"/> that represents the wait time for
     /// the response. The default value is the same as 1 second.
     /// </value>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is zero or less.
+    /// </exception>
     public TimeSpan WaitTime {
       get {
         return _services.WaitTime;
@@ -604,19 +647,17 @@ namespace WebSocketSharp.Server
 
       set {
         string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          return;
-        }
+        if (!value.CheckWaitTime (out msg))
+          throw new ArgumentException (msg, "value");
 
-        if (!value.CheckWaitTime (out msg)) {
-          _logger.Error (msg);
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
         lock (_sync) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
             return;
           }
 
@@ -626,7 +667,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the access to the WebSocket services provided by the server.
+    /// Gets the management function for the WebSocket services
+    /// provided by the server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketServiceManager"/> that manages
@@ -665,40 +707,28 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool canSet (out string message)
+    {
+      message = null;
+
+      if (_state == ServerState.Start) {
+        message = "The server has already started.";
+        return false;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        message = "The server is shutting down.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkHostNameForRequest (string name)
     {
       return !_dnsStyle
              || Uri.CheckHostName (name) != UriHostNameType.Dns
              || name == _hostname;
-    }
-
-    private bool checkIfAvailable (
-      bool ready, bool start, bool shutting, bool stop, out string message
-    )
-    {
-      message = null;
-
-      if (!ready && _state == ServerState.Ready) {
-        message = "This operation is not available in: ready";
-        return false;
-      }
-
-      if (!start && _state == ServerState.Start) {
-        message = "This operation is not available in: start";
-        return false;
-      }
-
-      if (!shutting && _state == ServerState.ShuttingDown) {
-        message = "This operation is not available in: shutting down";
-        return false;
-      }
-
-      if (!stop && _state == ServerState.Stop) {
-        message = "This operation is not available in: stop";
-        return false;
-      }
-
-      return true;
     }
 
     private bool checkServicePath (string path, out string message)
@@ -738,7 +768,7 @@ namespace WebSocketSharp.Server
       }
 
       if (configuration.ServerCertificate == null) {
-        message = "There is no server certificate.";
+        message = "The configuration has no server certificate.";
         return false;
       }
 
@@ -785,8 +815,8 @@ namespace WebSocketSharp.Server
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
       _listener.Server.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName)27, 0);
-      _logger = new Logger ();
-      _services = new WebSocketServiceManager (_logger);
+      _log = new Logger ();
+      _services = new WebSocketServiceManager (_log);
       _sync = new object ();
     }
 
@@ -829,7 +859,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx =
-                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _logger);
+                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _log);
 
                 if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
                   return;
@@ -837,7 +867,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _logger.Fatal (ex.ToString ());
+                _log.Fatal (ex.ToString ());
                 cl.Close ();
               }
             }
@@ -845,15 +875,15 @@ namespace WebSocketSharp.Server
         }
         catch (SocketException ex) {
           if (_state == ServerState.ShuttingDown) {
-            _logger.Info ("The receiving is stopped.");
+            _log.Info ("The receiving is stopped.");
             break;
           }
 
-          _logger.Fatal (ex.ToString ());
+          _log.Fatal (ex.ToString ());
           break;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
+          _log.Fatal (ex.ToString ());
           if (cl != null)
             cl.Close ();
 
@@ -868,23 +898,23 @@ namespace WebSocketSharp.Server
     private void start (ServerSslConfiguration sslConfig)
     {
       if (_state == ServerState.Start) {
-        _logger.Info ("The server has already started.");
+        _log.Info ("The server has already started.");
         return;
       }
 
       if (_state == ServerState.ShuttingDown) {
-        _logger.Warn ("The server is shutting down.");
+        _log.Warn ("The server is shutting down.");
         return;
       }
 
       lock (_sync) {
         if (_state == ServerState.Start) {
-          _logger.Info ("The server has already started.");
+          _log.Info ("The server has already started.");
           return;
         }
 
         if (_state == ServerState.ShuttingDown) {
-          _logger.Warn ("The server is shutting down.");
+          _log.Warn ("The server is shutting down.");
           return;
         }
 
@@ -921,28 +951,28 @@ namespace WebSocketSharp.Server
     private void stop (ushort code, string reason)
     {
       if (_state == ServerState.Ready) {
-        _logger.Info ("The server is not started.");
+        _log.Info ("The server is not started.");
         return;
       }
 
       if (_state == ServerState.ShuttingDown) {
-        _logger.Info ("The server is shutting down.");
+        _log.Info ("The server is shutting down.");
         return;
       }
 
       if (_state == ServerState.Stop) {
-        _logger.Info ("The server has already stopped.");
+        _log.Info ("The server has already stopped.");
         return;
       }
 
       lock (_sync) {
         if (_state == ServerState.ShuttingDown) {
-          _logger.Info ("The server is shutting down.");
+          _log.Info ("The server is shutting down.");
           return;
         }
 
         if (_state == ServerState.Stop) {
-          _logger.Info ("The server has already stopped.");
+          _log.Info ("The server has already stopped.");
           return;
         }
 
@@ -1026,12 +1056,12 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       if (initializer == null) {
-        _logger.Error ("'initializer' is null.");
+        _log.Error ("'initializer' is null.");
         return;
       }
 
@@ -1057,7 +1087,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
@@ -1080,7 +1110,7 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkServicePath (path, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return false;
       }
 
@@ -1095,8 +1125,8 @@ namespace WebSocketSharp.Server
     /// it is shutting down.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// There is no configuration or server certificate used to provide
-    /// secure connections.
+    /// There is no configuration used to provide secure connections or
+    /// the configuration has no server certificate.
     /// </exception>
     /// <exception cref="SocketException">
     /// The underlying <see cref="TcpListener"/> has failed to start.
@@ -1120,6 +1150,9 @@ namespace WebSocketSharp.Server
     /// This method does nothing if the server is not started,
     /// it is shutting down, or it has already stopped.
     /// </remarks>
+    /// <exception cref="SocketException">
+    /// The underlying <see cref="TcpListener"/> has failed to stop.
+    /// </exception>
     public void Stop ()
     {
       stop (1005, String.Empty);
@@ -1149,11 +1182,14 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the reason for
     /// the close. The size must be 123 bytes or less in UTF-8.
     /// </param>
+    /// <exception cref="SocketException">
+    /// The underlying <see cref="TcpListener"/> has failed to stop.
+    /// </exception>
     public void Stop (ushort code, string reason)
     {
       string msg;
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
@@ -1178,11 +1214,14 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the reason for
     /// the close. The size must be 123 bytes or less in UTF-8.
     /// </param>
+    /// <exception cref="SocketException">
+    /// The underlying <see cref="TcpListener"/> has failed to stop.
+    /// </exception>
     public void Stop (CloseStatusCode code, string reason)
     {
       string msg;
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
