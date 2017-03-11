@@ -1085,6 +1085,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="path"/> is already in use.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed. Use added one instead.")]
     public void AddWebSocketService<TBehavior> (
       string path, Func<TBehavior> creator
     )
