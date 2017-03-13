@@ -843,7 +843,9 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.ToString ());
+                _log.Fatal (ex.Message);
+                _log.Debug (ex.ToString ());
+
                 cl.Close ();
               }
             }
