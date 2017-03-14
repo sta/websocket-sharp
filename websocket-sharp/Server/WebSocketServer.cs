@@ -857,7 +857,9 @@ namespace WebSocketSharp.Server
             break;
           }
 
-          _log.Fatal (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
           break;
         }
         catch (Exception ex) {
