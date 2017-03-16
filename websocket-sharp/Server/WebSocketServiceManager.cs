@@ -770,16 +770,19 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
-      host = null;
+      if (path == null)
+        throw new ArgumentNullException ("path");
 
-      if (path == null || path.Length == 0)
-        return false;
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
 
       if (path[0] != '/')
-        return false;
+        throw new ArgumentException ("Not an absolute path.", "path");
 
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1)
-        return false;
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
+      }
 
       return InternalTryGetServiceHost (path, out host);
     }
