@@ -752,22 +752,47 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the WebSocket service host with
-    /// the specified <paramref name="path"/>.
+    /// Tries to get the WebSocket service host with the specified
+    /// <paramref name="path"/>.
     /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to
+    /// A <see cref="string"/> that represents an absolute path to
     /// the service to find.
     /// </param>
     /// <param name="host">
     /// When this method returns, a <see cref="WebSocketServiceHost"/>
     /// instance that provides the access to the information in
-    /// the service or <see langword="null"/> if it is not found.
+    /// the service or <see langword="null"/> if not found.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    /// </exception>
     public bool TryGetServiceHost (string path, out WebSocketServiceHost host)
     {
       if (path == null)
