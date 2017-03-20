@@ -37,9 +37,12 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Manages the WebSocket services provided by the <see cref="HttpServer"/> or
-  /// <see cref="WebSocketServer"/>.
+  /// Provides the management function for the WebSocket services.
   /// </summary>
+  /// <remarks>
+  /// This class manages the WebSocket services provided by
+  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// </remarks>
   public class WebSocketServiceManager
   {
     #region Private Fields
