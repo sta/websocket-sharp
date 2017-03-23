@@ -92,7 +92,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the WebSocket service hosts.
+    /// Gets the host instances for the WebSocket services.
     /// </summary>
     /// <value>
     /// An <c>IEnumerable&lt;WebSocketServiceHost&gt;</c> instance that
