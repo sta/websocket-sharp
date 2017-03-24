@@ -107,7 +107,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the WebSocket service host with the specified <paramref name="path"/>.
+    /// Gets the host instance for the WebSocket service with the specified
+    /// <paramref name="path"/>.
     /// </summary>
     /// <remarks>
     /// <paramref name="path"/> is converted to a URL-decoded string and
