@@ -107,16 +107,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instance for the WebSocket service with the specified
-    /// <paramref name="path"/>.
+    /// Gets the host instance for a WebSocket service with
+    /// the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
     /// <paramref name="path"/> is converted to a URL-decoded string and
     /// / is trimmed from the end of the converted string if any.
     /// </remarks>
     /// <value>
-    /// A <see cref="WebSocketServiceHost"/> instance that provides the access to
-    /// the information in the service or <see langword="null"/> if not found.
+    /// A <see cref="WebSocketServiceHost"/> instance that provides
+    /// the access to the information in the service or
+    /// <see langword="null"/> if not found.
     /// </value>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
