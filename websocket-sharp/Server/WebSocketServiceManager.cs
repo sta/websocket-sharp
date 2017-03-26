@@ -119,9 +119,13 @@ namespace WebSocketSharp.Server
     /// / is trimmed from the end of the converted string if any.
     /// </remarks>
     /// <value>
-    /// A <see cref="WebSocketServiceHost"/> instance that provides
-    /// the access to the information in the service or
-    /// <see langword="null"/> if not found.
+    ///   <para>
+    ///   A <see cref="WebSocketServiceHost"/> instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides the access to the information in the service or
+    ///   <see langword="null"/> if not found.
+    ///   </para>
     /// </value>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
