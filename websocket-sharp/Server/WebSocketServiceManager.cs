@@ -204,8 +204,13 @@ namespace WebSocketSharp.Server
     /// Gets the paths for the WebSocket services.
     /// </summary>
     /// <value>
-    /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator
-    /// which supports the iteration over the collection of the paths.
+    ///   <para>
+    ///   An <c>IEnumerable&lt;string&gt;</c> instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the paths.
+    ///   </para>
     /// </value>
     public IEnumerable<string> Paths {
       get {
