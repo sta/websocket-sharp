@@ -95,9 +95,13 @@ namespace WebSocketSharp.Server
     /// Gets the host instances for the WebSocket services.
     /// </summary>
     /// <value>
-    /// An <c>IEnumerable&lt;WebSocketServiceHost&gt;</c> instance that
-    /// provides an enumerator which supports the iteration over
-    /// the collection of the <see cref="WebSocketServiceHost"/> instances.
+    ///   <para>
+    ///   An <c>IEnumerable&lt;WebSocketServiceHost&gt;</c> instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the host instances.
+    ///   </para>
     /// </value>
     public IEnumerable<WebSocketServiceHost> Hosts {
       get {
