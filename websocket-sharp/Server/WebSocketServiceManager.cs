@@ -120,11 +120,12 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="WebSocketServiceHost"/> instance.
+    ///   A <see cref="WebSocketServiceHost"/> instance or
+    ///   <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   It provides the access to the information in the service or
-    ///   <see langword="null"/> if not found.
+    ///   That host instance provides the function to access
+    ///   the information in the service.
     ///   </para>
     /// </value>
     /// <param name="path">
