@@ -828,9 +828,14 @@ namespace WebSocketSharp.Server
     /// the service to find.
     /// </param>
     /// <param name="host">
-    /// When this method returns, a <see cref="WebSocketServiceHost"/>
-    /// instance that provides the access to the information in
-    /// the service or <see langword="null"/> if not found.
+    ///   <para>
+    ///   When this method returns, a <see cref="WebSocketServiceHost"/>
+    ///   instance or <see langword="null"/> if not found.
+    ///   </para>
+    ///   <para>
+    ///   That host instance provides the function to access
+    ///   the information in the service.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
