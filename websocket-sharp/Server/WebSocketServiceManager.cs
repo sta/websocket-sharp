@@ -224,7 +224,8 @@ namespace WebSocketSharp.Server
     /// Gets the total number of the sessions in the WebSocket services.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the total number of the sessions in the services.
+    /// An <see cref="int"/> that represents the total number of
+    /// the sessions in the services.
     /// </value>
     public int SessionCount {
       get {
