@@ -227,6 +227,7 @@ namespace WebSocketSharp.Server
     /// An <see cref="int"/> that represents the total number of
     /// the sessions in the services.
     /// </value>
+    [Obsolete ("This property will be removed.")]
     public int SessionCount {
       get {
         var cnt = 0;
