@@ -191,10 +191,8 @@ namespace WebSocketSharp.Server
 
       internal set {
         lock (_sync) {
-          if (!(value ^ _clean))
-            return;
-
           _clean = value;
+
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
         }
