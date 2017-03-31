@@ -244,7 +244,7 @@ namespace WebSocketSharp.Server
     /// Gets the wait time for the response to the WebSocket Ping or Close.
     /// </summary>
     /// <value>
-    /// A <see cref="TimeSpan"/> that represents the wait time.
+    /// A <see cref="TimeSpan"/> that represents the wait time for the response.
     /// </value>
     public TimeSpan WaitTime {
       get {
