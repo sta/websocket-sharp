@@ -253,10 +253,8 @@ namespace WebSocketSharp.Server
 
       internal set {
         lock (_sync) {
-          if (value == _waitTime)
-            return;
-
           _waitTime = value;
+
           foreach (var host in _hosts.Values)
             host.WaitTime = value;
         }
