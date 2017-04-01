@@ -535,13 +535,13 @@ namespace WebSocketSharp.Server
     /// </param>
     public void Broadcast (byte[] data)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ??
-                WebSocket.CheckSendParameter (data);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        return;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
+
+      if (data == null)
+        throw new ArgumentNullException ("data");
 
       if (data.LongLength <= WebSocket.FragmentLength)
         broadcast (Opcode.Binary, data, null);
