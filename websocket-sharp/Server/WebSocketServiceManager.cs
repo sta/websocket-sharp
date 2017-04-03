@@ -637,19 +637,34 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends text <paramref name="data"/> asynchronously to every client in
-    /// the WebSocket services.
+    /// Sends the specified <paramref name="data"/> asynchronously to
+    /// every client in the WebSocket services.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the send is complete.
+    ///   <para>
+    ///   An <see cref="Action"/> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called when
+    ///   the send is complete.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// </exception>
     public void BroadcastAsync (string data, Action completed)
     {
       if (_state != ServerState.Start) {
