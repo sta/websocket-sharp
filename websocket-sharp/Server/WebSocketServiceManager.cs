@@ -652,15 +652,18 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (string data, Action completed)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ??
-                WebSocket.CheckSendParameter (data);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        return;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
 
-      var bytes = data.UTF8Encode ();
+      if (data == null)
+        throw new ArgumentNullException ("data");
+
+      byte[] bytes;
+      if (!data.TryGetUTF8EncodedBytes (out bytes))
+        throw new ArgumentException ("It could not be UTF-8-encoded.", "data");
+
       if (bytes.LongLength <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Text, bytes, completed);
       else
