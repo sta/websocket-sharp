@@ -686,22 +686,53 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends binary data from the specified <see cref="Stream"/> asynchronously to
+    /// Sends the specified <paramref name="length"/> of data from
+    /// the specified <paramref name="stream"/> asynchronously to
     /// every client in the WebSocket services.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which contains the binary data to send.
+    /// A <see cref="Stream"/> from which reads the binary data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that represents the number of bytes to send.
+    /// An <see cref="int"/> that specifies the number of bytes to
+    /// read and send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the send is complete.
+    ///   <para>
+    ///   An <see cref="Action"/> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called when
+    ///   the send is complete.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="stream"/> cannot be read.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
       if (_state != ServerState.Start) {
