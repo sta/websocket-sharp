@@ -783,10 +783,9 @@ namespace WebSocketSharp.Server
     /// </returns>
     public Dictionary<string, Dictionary<string, bool>> Broadping ()
     {
-      var msg = _state.CheckIfAvailable (false, true, false);
-      if (msg != null) {
-        _logger.Error (msg);
-        return null;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
 
       return broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
