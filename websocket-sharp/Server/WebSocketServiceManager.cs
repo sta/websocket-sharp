@@ -323,9 +323,11 @@ namespace WebSocketSharp.Server
     }
 
     private Dictionary<string, Dictionary<string, bool>> broadping (
-      byte[] frameAsBytes, TimeSpan timeout)
+      byte[] frameAsBytes, TimeSpan timeout
+    )
     {
       var ret = new Dictionary<string, Dictionary<string, bool>> ();
+
       foreach (var host in Hosts) {
         if (_state != ServerState.Start)
           break;
