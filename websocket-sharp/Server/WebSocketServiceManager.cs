@@ -800,19 +800,36 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to every client in
-    /// the WebSocket services.
+    /// Sends a ping with the specified <paramref name="message"/> to
+    /// every client in the WebSocket services.
     /// </summary>
     /// <returns>
-    /// A <c>Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt;</c> that contains
-    /// a collection of pairs of a service path and a collection of pairs of a session ID
-    /// and a value indicating whether the manager received a Pong from each client in a time,
-    /// or <see langword="null"/> if this method isn't available or <paramref name="message"/>
-    /// is invalid.
+    ///   <para>
+    ///   A <c>Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt;</c>.
+    ///   </para>
+    ///   <para>
+    ///   It contains a collection of pairs of a service path and
+    ///   another collection of pairs of a session ID and a value
+    ///   indicating whether a pong has been received within a time
+    ///   from a client.
+    ///   </para>
     /// </returns>
     /// <param name="message">
     /// A <see cref="string"/> that represents the message to send.
+    /// The size must be 125 bytes or less in UTF-8.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="message"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="message"/> could not be UTF-8-encoded.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
     public Dictionary<string, Dictionary<string, bool>> Broadping (string message)
     {
       if (_state != ServerState.Start) {
