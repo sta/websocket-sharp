@@ -280,7 +280,8 @@ namespace WebSocketSharp.Server
           completed ();
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
       }
       finally {
         cache.Clear ();
