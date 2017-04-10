@@ -632,6 +632,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentNullException">
     /// <paramref name="data"/> is <see langword="null"/>.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void BroadcastAsync (byte[] data, Action completed)
     {
       if (_state != ServerState.Start) {
