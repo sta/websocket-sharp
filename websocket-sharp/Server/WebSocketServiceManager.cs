@@ -582,6 +582,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentException">
     /// <paramref name="data"/> could not be UTF-8-encoded.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Broadcast (string data)
     {
       if (_state != ServerState.Start) {
