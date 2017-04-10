@@ -88,7 +88,6 @@
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
     <Compile Include="WebSocket.cs" />
-    <Compile Include="Server\WebSocketServer.cs" />
     <Compile Include="Net\AuthenticationSchemes.cs" />
     <Compile Include="Net\ChunkStream.cs" />
     <Compile Include="Net\Cookie.cs" />
@@ -108,10 +107,8 @@
     <Compile Include="Net\RequestStream.cs" />
     <Compile Include="Net\ResponseStream.cs" />
     <Compile Include="Net\WebHeaderCollection.cs" />
-    <Compile Include="Server\HttpServer.cs" />
     <Compile Include="Net\HttpVersion.cs" />
     <Compile Include="Net\HttpStatusCode.cs" />
-    <Compile Include="Server\WebSocketServiceHost.cs" />
     <Compile Include="CloseStatusCode.cs" />
     <Compile Include="Fin.cs" />
     <Compile Include="Mask.cs" />
@@ -121,7 +118,6 @@
     <Compile Include="Net\WebSockets\HttpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\TcpListenerWebSocketContext.cs" />
     <Compile Include="Net\WebSockets\WebSocketContext.cs" />
-    <Compile Include="Server\HttpRequestEventArgs.cs" />
     <Compile Include="Net\HttpHeaderType.cs" />
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
@@ -130,13 +126,9 @@
     <Compile Include="LogLevel.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="WebSocketState.cs" />
-    <Compile Include="Server\IWebSocketSession.cs" />
-    <Compile Include="Server\WebSocketSessionManager.cs" />
-    <Compile Include="Server\ServerState.cs" />
     <Compile Include="Net\HttpBasicIdentity.cs" />
     <Compile Include="Net\HttpDigestIdentity.cs" />
     <Compile Include="Net\NetworkCredential.cs" />
-    <Compile Include="Server\WebSocketServiceManager.cs" />
     <Compile Include="Net\InputState.cs" />
     <Compile Include="Net\LineState.cs" />
     <Compile Include="Net\ReadBufferState.cs" />
@@ -151,7 +143,6 @@
     <Compile Include="HttpBase.cs" />
     <Compile Include="HttpRequest.cs" />
     <Compile Include="HttpResponse.cs" />
-    <Compile Include="Server\WebSocketBehavior.cs" />
     <Compile Include="Net\HttpListenerPrefix.cs" />
     <Compile Include="Net\ClientSslConfiguration.cs" />
     <Compile Include="Net\ServerSslConfiguration.cs" />
@@ -159,7 +150,6 @@
     <Compile Include="Net\HttpListenerAsyncResult.cs" />
     <Compile Include="Net\HttpRequestHeader.cs" />
     <Compile Include="Net\HttpResponseHeader.cs" />
-    <Compile Include="Server\WebSocketServiceHost`1.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

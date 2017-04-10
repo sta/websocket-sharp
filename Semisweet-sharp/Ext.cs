@@ -15,6 +15,7 @@
  * Copyright (c) 2003, 2005, 2009 Novell, Inc. (http://www.novell.com)
  * Copyright (c) 2009 Stephane Delcroix
  * Copyright (c) 2010-2016 sta.blockhead
+ * Copyright (c) 2017 Ben Duran
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +39,10 @@
 
 #region Contributors
 /*
- * Contributors:
+ * Congtributors from Forked repository:
+ * - Benjamin Duran <stratodyne@gmail.com>
+ * 
+ * Contributors (from original repository):
  * - Liryna <liryna.stark@gmail.com>
  * - Nikola Kovacevic <nikolak@outlook.com>
  * - Chris Swiedler
@@ -51,11 +55,9 @@ using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Semisweet.Net;
 using Semisweet.Net.WebSockets;
-using Semisweet.Server;
 
 namespace Semisweet
 {
@@ -161,16 +163,6 @@ namespace Semisweet
       }
 
       return ret;
-    }
-
-    internal static string CheckIfAvailable (
-      this ServerState state, bool ready, bool start, bool shutting)
-    {
-      return (!ready && (state == ServerState.Ready || state == ServerState.Stop)) ||
-             (!start && state == ServerState.Start) ||
-             (!shutting && state == ServerState.ShuttingDown)
-             ? "This operation isn't available in: " + state.ToString ().ToLower ()
-             : null;
     }
 
     internal static string CheckIfAvailable (
