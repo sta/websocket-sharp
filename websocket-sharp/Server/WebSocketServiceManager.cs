@@ -689,8 +689,10 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("data");
 
       byte[] bytes;
-      if (!data.TryGetUTF8EncodedBytes (out bytes))
-        throw new ArgumentException ("It could not be UTF-8-encoded.", "data");
+      if (!data.TryGetUTF8EncodedBytes (out bytes)) {
+        var msg = "It could not be UTF-8-encoded.";
+        throw new ArgumentException (msg, "data");
+      }
 
       if (bytes.LongLength <= WebSocket.FragmentLength)
         broadcastAsync (Opcode.Text, bytes, completed);
