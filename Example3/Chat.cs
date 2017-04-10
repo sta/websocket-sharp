@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
-using WebSocketSharp;
-using WebSocketSharp.Server;
+using Semisweet;
+using Semisweet.Server;
 
 namespace Example3
 {

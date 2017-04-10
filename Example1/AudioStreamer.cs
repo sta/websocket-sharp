@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using WebSocketSharp;
+using Semisweet;
 
 namespace Example1
 {
@@ -16,11 +16,11 @@ namespace Example1
     private string                  _name;
     private Notifier                _notifier;
     private Timer                   _timer;
-    private WebSocket               _websocket;
+    private SemisweetSocket               _websocket;
 
     public AudioStreamer (string url)
     {
-      _websocket = new WebSocket (url);
+      _websocket = new SemisweetSocket (url);
 
       _audioBox = new Dictionary<uint, Queue> ();
       _id = null;

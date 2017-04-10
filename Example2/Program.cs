@@ -1,9 +1,9 @@
 using System;
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
-using WebSocketSharp;
-using WebSocketSharp.Net;
-using WebSocketSharp.Server;
+using Semisweet;
+using Semisweet.Net;
+using Semisweet.Server;
 
 namespace Example2
 {
