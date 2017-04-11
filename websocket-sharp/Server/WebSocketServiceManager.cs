@@ -710,7 +710,7 @@ namespace WebSocketSharp.Server
     /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which reads the binary data to send.
+    /// A <see cref="Stream"/> from which to read the binary data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to
