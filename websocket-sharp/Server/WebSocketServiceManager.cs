@@ -749,6 +749,7 @@ namespace WebSocketSharp.Server
     ///   No data could be read from <paramref name="stream"/>.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
       if (_state != ServerState.Start) {
