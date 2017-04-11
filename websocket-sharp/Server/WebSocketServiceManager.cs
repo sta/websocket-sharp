@@ -768,8 +768,10 @@ namespace WebSocketSharp.Server
       var bytes = stream.ReadBytes (length);
 
       var len = bytes.Length;
-      if (len == 0)
-        throw new ArgumentException ("No data could be read from it.", "stream");
+      if (len == 0) {
+        var msg = "No data could be read from it.";
+        throw new ArgumentException (msg, "stream");
+      }
 
       if (len < length) {
         _logger.Warn (
