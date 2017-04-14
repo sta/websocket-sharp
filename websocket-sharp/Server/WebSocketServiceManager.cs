@@ -49,7 +49,7 @@ namespace WebSocketSharp.Server
 
     private volatile bool                            _clean;
     private Dictionary<string, WebSocketServiceHost> _hosts;
-    private Logger                                   _logger;
+    private Logger                                   _log;
     private volatile ServerState                     _state;
     private object                                   _sync;
     private TimeSpan                                 _waitTime;
@@ -58,9 +58,9 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketServiceManager (Logger logger)
+    internal WebSocketServiceManager (Logger log)
     {
-      _logger = logger;
+      _log = log;
 
       _clean = true;
       _hosts = new Dictionary<string, WebSocketServiceHost> ();
@@ -275,8 +275,8 @@ namespace WebSocketSharp.Server
           completed ();
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
       finally {
         cache.Clear ();
@@ -298,8 +298,8 @@ namespace WebSocketSharp.Server
           completed ();
       }
       catch (Exception ex) {
-        _logger.Error (ex.Message);
-        _logger.Debug (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
       finally {
         foreach (var cached in cache.Values)
@@ -354,7 +354,7 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("Already in use.", "path");
 
         host = new WebSocketServiceHost<TBehavior> (
-                 path, creator, null, _logger
+                 path, creator, null, _log
                );
 
         if (!_clean)
@@ -514,7 +514,7 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("Already in use.", "path");
 
         host = new WebSocketServiceHost<TBehavior> (
-                 path, () => new TBehavior (), initializer, _logger
+                 path, () => new TBehavior (), initializer, _log
                );
 
         if (!_clean)
@@ -770,7 +770,7 @@ namespace WebSocketSharp.Server
       }
 
       if (len < length) {
-        _logger.Warn (
+        _log.Warn (
           String.Format (
             "Only {0} byte(s) of data could be read from the specified stream.",
             len
