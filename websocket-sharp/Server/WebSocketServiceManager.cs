@@ -870,6 +870,28 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Removes all WebSocket services managed by the manager.
+    /// </summary>
+    /// <remarks>
+    /// A service is stopped with close status 1001 (going away)
+    /// if it has already started.
+    /// </remarks>
+    public void Clear ()
+    {
+      List<WebSocketServiceHost> hosts = null;
+
+      lock (_sync) {
+        hosts = _hosts.Values.ToList ();
+        _hosts.Clear ();
+      }
+
+      foreach (var host in hosts) {
+        if (host.State == ServerState.Start)
+          host.Stop (1001, String.Empty);
+      }
+    }
+
+    /// <summary>
     /// Removes a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
