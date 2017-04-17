@@ -1025,10 +1025,17 @@ namespace WebSocketSharp.Server
     /// the service to add.
     /// </param>
     /// <param name="creator">
-    /// A <c>Func&lt;TBehavior&gt;</c> delegate that invokes
-    /// the method used to create a new session instance for
-    /// the service. The method must create a new instance of
-    /// the specified behavior class and return it.
+    ///   <para>
+    ///   A <c>Func&lt;TBehavior&gt;</c> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It invokes the method called for creating
+    ///   a new session instance for the service.
+    ///   </para>
+    ///   <para>
+    ///   The method must create a new instance of
+    ///   the specified behavior class and return it.
+    ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
     /// The type of the behavior for the service. It must inherit
