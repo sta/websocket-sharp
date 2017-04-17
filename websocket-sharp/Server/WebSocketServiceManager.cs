@@ -456,7 +456,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called when initializing
+    ///   That delegate invokes the method called for initializing
     ///   a new session instance for the service.
     ///   </para>
     /// </param>
