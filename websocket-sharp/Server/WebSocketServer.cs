@@ -1165,9 +1165,14 @@ namespace WebSocketSharp.Server
     /// the service to add.
     /// </param>
     /// <param name="initializer">
-    /// An <c>Action&lt;TBehaviorWithNew&gt;</c> delegate that invokes
-    /// the method used to initialize a new session instance for
-    /// the service or <see langword="null"/> if not needed.
+    ///   <para>
+    ///   An <c>Action&lt;TBehaviorWithNew&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called for initializing
+    ///   a new session instance for the service.
+    ///   </para>
     /// </param>
     /// <typeparam name="TBehaviorWithNew">
     /// The type of the behavior for the service. It must inherit
