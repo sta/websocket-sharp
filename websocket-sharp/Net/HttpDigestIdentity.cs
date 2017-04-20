@@ -129,7 +129,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the realm parameter from the HTTP Digest authentication credentials.
+    /// Gets the realm parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the realm parameter.
