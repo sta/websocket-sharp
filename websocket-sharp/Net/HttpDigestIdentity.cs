@@ -93,7 +93,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the nonce parameter from the HTTP Digest authentication credentials.
+    /// Gets the nonce parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the nonce parameter.
