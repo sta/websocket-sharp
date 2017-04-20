@@ -141,7 +141,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the response parameter from the HTTP Digest authentication credentials.
+    /// Gets the response parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the response parameter.
