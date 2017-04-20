@@ -69,7 +69,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the cnonce parameter from the HTTP Digest authentication credentials.
+    /// Gets the cnonce parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the cnonce parameter.
