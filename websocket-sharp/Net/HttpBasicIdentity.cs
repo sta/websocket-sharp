@@ -43,7 +43,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the user name and password from the HTTP Basic authentication credentials.
+  /// Holds the username and password from an HTTP Basic authentication attempt.
   /// </summary>
   public class HttpBasicIdentity : GenericIdentity
   {
