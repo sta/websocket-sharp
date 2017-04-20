@@ -2,8 +2,8 @@
 /*
  * HttpBasicIdentity.cs
  *
- * This code is derived from System.Net.HttpListenerBasicIdentity.cs of Mono
- * (http://www.mono-project.com).
+ * This code is derived from HttpListenerBasicIdentity.cs (System.Net) of
+ * Mono (http://www.mono-project.com).
  *
  * The MIT License
  *
