@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region internal Constructors
+    #region Internal Constructors
 
     internal HttpBasicIdentity (string username, string password)
       : base (username, "Basic")
