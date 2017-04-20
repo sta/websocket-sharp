@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the password from the HTTP Basic authentication credentials.
+    /// Gets the password from an HTTP Basic authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the password.
