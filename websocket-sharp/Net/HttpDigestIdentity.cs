@@ -57,7 +57,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the algorithm parameter from the HTTP Digest authentication credentials.
+    /// Gets the algorithm parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the algorithm parameter.
