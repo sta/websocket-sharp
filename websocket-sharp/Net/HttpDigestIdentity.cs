@@ -117,7 +117,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the qop parameter from the HTTP Digest authentication credentials.
+    /// Gets the qop parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the qop parameter.
