@@ -47,7 +47,7 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal HttpDigestIdentity (NameValueCollection parameters)
-      : base (parameters ["username"], "Digest")
+      : base (parameters["username"], "Digest")
     {
       _parameters = parameters;
     }
@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Algorithm {
       get {
-        return _parameters ["algorithm"];
+        return _parameters["algorithm"];
       }
     }
 
@@ -76,7 +76,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Cnonce {
       get {
-        return _parameters ["cnonce"];
+        return _parameters["cnonce"];
       }
     }
 
@@ -88,7 +88,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Nc {
       get {
-        return _parameters ["nc"];
+        return _parameters["nc"];
       }
     }
 
@@ -100,7 +100,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Nonce {
       get {
-        return _parameters ["nonce"];
+        return _parameters["nonce"];
       }
     }
 
@@ -112,7 +112,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Opaque {
       get {
-        return _parameters ["opaque"];
+        return _parameters["opaque"];
       }
     }
 
@@ -124,7 +124,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Qop {
       get {
-        return _parameters ["qop"];
+        return _parameters["qop"];
       }
     }
 
@@ -136,7 +136,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Realm {
       get {
-        return _parameters ["realm"];
+        return _parameters["realm"];
       }
     }
 
@@ -148,7 +148,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Response {
       get {
-        return _parameters ["response"];
+        return _parameters["response"];
       }
     }
 
@@ -160,7 +160,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Uri {
       get {
-        return _parameters ["uri"];
+        return _parameters["uri"];
       }
     }
 
@@ -171,12 +171,12 @@ namespace WebSocketSharp.Net
     internal bool IsValid (string password, string realm, string method, string entity)
     {
       var parameters = new NameValueCollection (_parameters);
-      parameters ["password"] = password;
-      parameters ["realm"] = realm;
-      parameters ["method"] = method;
-      parameters ["entity"] = entity;
+      parameters["password"] = password;
+      parameters["realm"] = realm;
+      parameters["method"] = method;
+      parameters["entity"] = entity;
 
-      return _parameters ["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
+      return _parameters["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
     }
 
     #endregion
