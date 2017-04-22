@@ -168,15 +168,18 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal bool IsValid (string password, string realm, string method, string entity)
+    internal bool IsValid (
+      string password, string realm, string method, string entity
+    )
     {
-      var parameters = new NameValueCollection (_parameters);
-      parameters["password"] = password;
-      parameters["realm"] = realm;
-      parameters["method"] = method;
-      parameters["entity"] = entity;
+      var copied = new NameValueCollection (_parameters);
+      copied["password"] = password;
+      copied["realm"] = realm;
+      copied["method"] = method;
+      copied["entity"] = entity;
 
-      return _parameters["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
+      var expected = AuthenticationResponse.CreateRequestDigest (copied);
+      return _parameters["response"] == expected;
     }
 
     #endregion
