@@ -94,7 +94,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="username"/> is empty.
     /// </exception>
     public NetworkCredential (
-      string username, string password, string domain, params string[] roles)
+      string username, string password, string domain, params string[] roles
+    )
     {
       if (username == null)
         throw new ArgumentNullException ("username");
