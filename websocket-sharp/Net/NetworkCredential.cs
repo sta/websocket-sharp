@@ -40,7 +40,7 @@ namespace WebSocketSharp.Net
     private string   _domain;
     private string   _password;
     private string[] _roles;
-    private string   _userName;
+    private string   _username;
 
     #endregion
 
@@ -50,7 +50,7 @@ namespace WebSocketSharp.Net
     /// Initializes a new instance of the <see cref="NetworkCredential"/> class with
     /// the specified user name and password.
     /// </summary>
-    /// <param name="userName">
+    /// <param name="username">
     /// A <see cref="string"/> that represents the user name associated with the credentials.
     /// </param>
     /// <param name="password">
@@ -58,13 +58,13 @@ namespace WebSocketSharp.Net
     /// the credentials.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="userName"/> is <see langword="null"/>.
+    /// <paramref name="username"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="userName"/> is empty.
+    /// <paramref name="username"/> is empty.
     /// </exception>
-    public NetworkCredential (string userName, string password)
-      : this (userName, password, null, null)
+    public NetworkCredential (string username, string password)
+      : this (username, password, null, null)
     {
     }
 
@@ -72,7 +72,7 @@ namespace WebSocketSharp.Net
     /// Initializes a new instance of the <see cref="NetworkCredential"/> class with
     /// the specified user name, password, domain, and roles.
     /// </summary>
-    /// <param name="userName">
+    /// <param name="username">
     /// A <see cref="string"/> that represents the user name associated with the credentials.
     /// </param>
     /// <param name="password">
@@ -88,21 +88,21 @@ namespace WebSocketSharp.Net
     /// the user associated with the credentials belongs if any.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="userName"/> is <see langword="null"/>.
+    /// <paramref name="username"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="userName"/> is empty.
+    /// <paramref name="username"/> is empty.
     /// </exception>
     public NetworkCredential (
-      string userName, string password, string domain, params string[] roles)
+      string username, string password, string domain, params string[] roles)
     {
-      if (userName == null)
-        throw new ArgumentNullException ("userName");
+      if (username == null)
+        throw new ArgumentNullException ("username");
 
-      if (userName.Length == 0)
-        throw new ArgumentException ("An empty string.", "userName");
+      if (username.Length == 0)
+        throw new ArgumentException ("An empty string.", "username");
 
-      _userName = userName;
+      _username = username;
       _password = password;
       _domain = domain;
       _roles = roles;
@@ -171,11 +171,11 @@ namespace WebSocketSharp.Net
     /// </value>
     public string UserName {
       get {
-        return _userName;
+        return _username;
       }
 
       internal set {
-        _userName = value;
+        _username = value;
       }
     }
 
