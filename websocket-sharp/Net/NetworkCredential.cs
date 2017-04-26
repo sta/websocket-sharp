@@ -31,7 +31,7 @@ using System;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides the credentials for the HTTP authentication (Basic/Digest).
+  /// Provides the credentials for the password-based authentication.
   /// </summary>
   public class NetworkCredential
   {
