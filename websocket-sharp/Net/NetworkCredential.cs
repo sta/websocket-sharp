@@ -133,11 +133,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the password for the user name associated with the credentials.
+    /// Gets the password for the username associated with the credentials.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the password for the user name associated with
-    /// the credentials.
+    /// A <see cref="string"/> that represents the password for the username.
     /// </value>
     public string Password {
       get {
