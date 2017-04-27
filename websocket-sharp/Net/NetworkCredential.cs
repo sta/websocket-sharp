@@ -71,22 +71,24 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NetworkCredential"/> class with
-    /// the specified user name, password, domain, and roles.
+    /// the specified <paramref name="username"/>, <paramref name="password"/>,
+    /// <paramref name="domain"/> and <paramref name="roles"/>.
     /// </summary>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the user name associated with the credentials.
-    /// </param>
-    /// <param name="password">
-    /// A <see cref="string"/> that represents the password for the user name associated with
+    /// A <see cref="string"/> that represents the username associated with
     /// the credentials.
     /// </param>
+    /// <param name="password">
+    /// A <see cref="string"/> that represents the password for the username
+    /// associated with the credentials.
+    /// </param>
     /// <param name="domain">
-    /// A <see cref="string"/> that represents the name of the user domain associated with
+    /// A <see cref="string"/> that represents the domain associated with
     /// the credentials.
     /// </param>
     /// <param name="roles">
-    /// An array of <see cref="string"/> that contains the role names to which
-    /// the user associated with the credentials belongs if any.
+    /// An array of <see cref="string"/> that represents the roles
+    /// associated with the credentials if any.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="username"/> is <see langword="null"/>.
