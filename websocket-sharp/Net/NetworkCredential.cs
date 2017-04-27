@@ -117,11 +117,10 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the name of the user domain associated with the credentials.
+    /// Gets the domain associated with the credentials.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the user domain associated with
-    /// the credentials.
+    /// A <see cref="string"/> that represents the domain name.
     /// </value>
     public string Domain {
       get {
