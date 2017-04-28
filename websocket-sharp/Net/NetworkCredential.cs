@@ -153,7 +153,8 @@ namespace WebSocketSharp.Net
     /// Gets the roles associated with the credentials.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that represents the role names.
+    /// An array of <see cref="string"/> that represents the role names
+    /// to which the username belongs.
     /// </value>
     public string[] Roles {
       get {
