@@ -120,7 +120,8 @@ namespace WebSocketSharp.Net
     /// Gets the domain associated with the credentials.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the domain name.
+    /// A <see cref="string"/> that represents the domain name
+    /// to which the username belongs.
     /// </value>
     public string Domain {
       get {
