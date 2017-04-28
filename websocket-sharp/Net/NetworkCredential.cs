@@ -165,10 +165,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the user name associated with the credentials.
+    /// Gets the username associated with the credentials.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the user name associated with the credentials.
+    /// A <see cref="string"/> that represents the username.
     /// </value>
     public string UserName {
       get {
