@@ -37,10 +37,20 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private string   _domain;
-    private string   _password;
-    private string[] _roles;
-    private string   _username;
+    private string                   _domain;
+    private static readonly string[] _noRoles;
+    private string                   _password;
+    private string[]                 _roles;
+    private string                   _username;
+
+    #endregion
+
+    #region Static Constructor
+
+    static NetworkCredential ()
+    {
+      _noRoles = new string[0];
+    }
 
     #endregion
 
@@ -158,7 +168,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string[] Roles {
       get {
-        return _roles ?? (_roles = new string[0]);
+        return _roles ?? _noRoles;
       }
 
       internal set {
