@@ -129,6 +129,10 @@ namespace WebSocketSharp.Net
     /// <summary>
     /// Gets the domain associated with the credentials.
     /// </summary>
+    /// <remarks>
+    /// This property returns an empty string if the domain was
+    /// initialized with <see langword="null"/>.
+    /// </remarks>
     /// <value>
     /// A <see cref="string"/> that represents the domain name
     /// to which the username belongs.
