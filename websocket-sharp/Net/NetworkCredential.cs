@@ -194,7 +194,7 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="string"/> that represents the username.
     /// </value>
-    public string UserName {
+    public string Username {
       get {
         return _username;
       }

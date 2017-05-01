@@ -75,7 +75,7 @@ namespace WebSocketSharp.Net
       uint nonceCount)
       : base (scheme, parameters)
     {
-      Parameters["username"] = credentials.UserName;
+      Parameters["username"] = credentials.Username;
       Parameters["password"] = credentials.Password;
       Parameters["uri"] = credentials.Domain;
       _nonceCount = nonceCount;
