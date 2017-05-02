@@ -41,7 +41,8 @@ using System.Security.Cryptography.X509Certificates;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Stores the parameters used to configure a <see cref="SslStream"/> instance as a server.
+  /// Stores the parameters used to configure the underlying <see cref="SslStream"/>
+  /// for servers.
   /// </summary>
   public class ServerSslConfiguration : SslConfiguration
   {
