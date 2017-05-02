@@ -94,7 +94,8 @@ namespace WebSocketSharp.Net
       X509Certificate2 serverCertificate,
       bool clientCertificateRequired,
       SslProtocols enabledSslProtocols,
-      bool checkCertificateRevocation)
+      bool checkCertificateRevocation
+    )
       : base (enabledSslProtocols, checkCertificateRevocation)
     {
       _cert = serverCertificate;
