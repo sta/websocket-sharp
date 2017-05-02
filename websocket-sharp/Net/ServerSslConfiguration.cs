@@ -56,12 +56,12 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
-    /// the specified <paramref name="serverCertificate"/>.
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class
+    /// with the specified <paramref name="serverCertificate"/>.
     /// </summary>
     /// <param name="serverCertificate">
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-    /// the server.
+    /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
+    /// used to authenticate the server.
     /// </param>
     public ServerSslConfiguration (X509Certificate2 serverCertificate)
       : this (serverCertificate, false, SslProtocols.Default, false)
