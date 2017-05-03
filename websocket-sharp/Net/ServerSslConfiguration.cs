@@ -108,11 +108,12 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets a value indicating whether the client must supply a certificate for
-    /// authentication.
+    /// Gets or sets a value indicating whether the client is asked for
+    /// a certificate for authentication.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client must supply a certificate; otherwise, <c>false</c>.
+    /// <c>true</c> if the client is asked for a certificate for authentication;
+    /// otherwise, <c>false</c>.
     /// </value>
     public bool ClientCertificateRequired {
       get {
