@@ -153,11 +153,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the certificate used to authenticate the server for secure connection.
+    /// Gets or sets the certificate used to authenticate the server.
     /// </summary>
     /// <value>
-    /// A <see cref="X509Certificate2"/> that represents the certificate used to authenticate
-    /// the server.
+    /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
+    /// used to authenticate the server.
     /// </value>
     public X509Certificate2 ServerCertificate {
       get {
