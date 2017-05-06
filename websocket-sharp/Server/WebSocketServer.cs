@@ -767,21 +767,7 @@ namespace WebSocketSharp.Server
     private ServerSslConfiguration getSslConfiguration ()
     {
       var sslConfig = _sslConfig;
-      if (sslConfig == null)
-        return null;
-
-      var ret =
-        new ServerSslConfiguration (
-          sslConfig.ServerCertificate,
-          sslConfig.ClientCertificateRequired,
-          sslConfig.EnabledSslProtocols,
-          sslConfig.CheckCertificateRevocation
-        );
-
-      ret.ClientCertificateValidationCallback =
-        sslConfig.ClientCertificateValidationCallback;
-
-      return ret;
+      return sslConfig != null ? new ServerSslConfiguration (sslConfig) : null;
     }
 
     private void init (
