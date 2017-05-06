@@ -80,6 +80,22 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
+    /// Copies the parameters from the specified <paramref name="configuration"/> to
+    /// a new instance of the <see cref="ServerSslConfiguration"/> class.
+    /// </summary>
+    /// <param name="configuration">
+    /// A <see cref="ServerSslConfiguration"/> from which to copy.
+    /// </param>
+    public ServerSslConfiguration (ServerSslConfiguration configuration)
+    {
+      _checkCertRevocation = configuration._checkCertRevocation;
+      _clientCertRequired = configuration._clientCertRequired;
+      _clientCertValidationCallback = configuration._clientCertValidationCallback;
+      _enabledSslProtocols = configuration._enabledSslProtocols;
+      _serverCert = configuration._serverCert;
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class
     /// with the specified <paramref name="serverCertificate"/>,
     /// <paramref name="clientCertificateRequired"/>,

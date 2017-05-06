@@ -583,7 +583,7 @@ namespace WebSocketSharp.Server
     public ServerSslConfiguration SslConfiguration {
       get {
         if (_sslConfig == null)
-          _sslConfig = new ServerSslConfiguration (null);
+          _sslConfig = new ServerSslConfiguration ();
 
         return _sslConfig;
       }
