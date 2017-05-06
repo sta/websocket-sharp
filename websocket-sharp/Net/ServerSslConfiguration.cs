@@ -59,6 +59,14 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class.
+    /// </summary>
+    public ServerSslConfiguration ()
+    {
+      _enabledSslProtocols = SslProtocols.Default;
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class
     /// with the specified <paramref name="serverCertificate"/>.
     /// </summary>
