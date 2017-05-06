@@ -44,12 +44,15 @@ namespace WebSocketSharp.Net
   /// Stores the parameters used to configure the underlying <see cref="SslStream"/>
   /// for servers.
   /// </summary>
-  public class ServerSslConfiguration : SslConfiguration
+  public class ServerSslConfiguration
   {
     #region Private Fields
 
-    private X509Certificate2 _serverCert;
-    private bool             _clientCertRequired;
+    private bool                                _checkCertRevocation;
+    private bool                                _clientCertRequired;
+    private RemoteCertificateValidationCallback _clientCertValidationCallback;
+    private SslProtocols                        _enabledSslProtocols;
+    private X509Certificate2                    _serverCert;
 
     #endregion
 
@@ -97,15 +100,34 @@ namespace WebSocketSharp.Net
       SslProtocols enabledSslProtocols,
       bool checkCertificateRevocation
     )
-      : base (enabledSslProtocols, checkCertificateRevocation)
     {
       _serverCert = serverCertificate;
       _clientCertRequired = clientCertificateRequired;
+      _enabledSslProtocols = enabledSslProtocols;
+      _checkCertRevocation = checkCertificateRevocation;
     }
 
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the certificate revocation
+    /// list is checked during authentication.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if the certificate revocation list is checked during
+    /// authentication; otherwise, <c>false</c>.
+    /// </value>
+    public bool CheckCertificateRevocation {
+      get {
+        return _checkCertRevocation;
+      }
+
+      set {
+        _checkCertRevocation = value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the client is asked for
@@ -144,11 +166,31 @@ namespace WebSocketSharp.Net
     /// </value>
     public RemoteCertificateValidationCallback ClientCertificateValidationCallback {
       get {
-        return CertificateValidationCallback;
+        if (_clientCertValidationCallback == null)
+          _clientCertValidationCallback = defaultValidateClientCertificate;
+
+        return _clientCertValidationCallback;
       }
 
       set {
-        CertificateValidationCallback = value;
+        _clientCertValidationCallback = value;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the protocols used for authentication.
+    /// </summary>
+    /// <value>
+    /// The <see cref="SslProtocols"/> enum values that represent the protocols
+    /// used for authentication.
+    /// </value>
+    public SslProtocols EnabledSslProtocols {
+      get {
+        return _enabledSslProtocols;
+      }
+
+      set {
+        _enabledSslProtocols = value;
       }
     }
 
@@ -167,6 +209,20 @@ namespace WebSocketSharp.Net
       set {
         _serverCert = value;
       }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private static bool defaultValidateClientCertificate (
+      object sender,
+      X509Certificate certificate,
+      X509Chain chain,
+      SslPolicyErrors sslPolicyErrors
+    )
+    {
+      return true;
     }
 
     #endregion
