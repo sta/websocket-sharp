@@ -34,6 +34,7 @@
  */
 #endregion
 
+using System;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -86,8 +87,14 @@ namespace WebSocketSharp.Net
     /// <param name="configuration">
     /// A <see cref="ServerSslConfiguration"/> from which to copy.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="configuration"/> is <see langword="null"/>.
+    /// </exception>
     public ServerSslConfiguration (ServerSslConfiguration configuration)
     {
+      if (configuration == null)
+        throw new ArgumentNullException ("configuration");
+
       _checkCertRevocation = configuration._checkCertRevocation;
       _clientCertRequired = configuration._clientCertRequired;
       _clientCertValidationCallback = configuration._clientCertValidationCallback;
