@@ -177,8 +177,13 @@ namespace WebSocketSharp.Net
     /// Gets or sets the protocols used for authentication.
     /// </summary>
     /// <value>
-    /// The <see cref="SslProtocols"/> enum values that represent the protocols
-    /// used for authentication.
+    ///   <para>
+    ///   The <see cref="SslProtocols"/> enum values that represent
+    ///   the protocols used for authentication.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see cref="SslProtocols.Default"/>.
+    ///   </para>
     /// </value>
     public SslProtocols EnabledSslProtocols {
       get {
