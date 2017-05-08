@@ -112,7 +112,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     /// <c>true</c> if the certificate revocation list is checked during
-    /// authentication; otherwise, <c>false</c>.
+    /// authentication; otherwise, <c>false</c>. The default value is
+    /// <c>false</c>.
     /// </value>
     public bool CheckCertificateRevocation {
       get {
