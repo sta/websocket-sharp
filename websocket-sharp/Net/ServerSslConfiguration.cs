@@ -76,8 +76,9 @@ namespace WebSocketSharp.Net
     /// used to authenticate the server.
     /// </param>
     public ServerSslConfiguration (X509Certificate2 serverCertificate)
-      : this (serverCertificate, false, SslProtocols.Default, false)
     {
+      _serverCert = serverCertificate;
+      _enabledSslProtocols = SslProtocols.Default;
     }
 
     /// <summary>
@@ -100,42 +101,6 @@ namespace WebSocketSharp.Net
       _clientCertValidationCallback = configuration._clientCertValidationCallback;
       _enabledSslProtocols = configuration._enabledSslProtocols;
       _serverCert = configuration._serverCert;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class
-    /// with the specified <paramref name="serverCertificate"/>,
-    /// <paramref name="clientCertificateRequired"/>,
-    /// <paramref name="enabledSslProtocols"/>,
-    /// and <paramref name="checkCertificateRevocation"/>.
-    /// </summary>
-    /// <param name="serverCertificate">
-    /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
-    /// used to authenticate the server.
-    /// </param>
-    /// <param name="clientCertificateRequired">
-    /// <c>true</c> if the client is asked for a certificate for authentication;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    /// <param name="enabledSslProtocols">
-    /// The <see cref="SslProtocols"/> enum values that represent the protocols
-    /// used for authentication.
-    /// </param>
-    /// <param name="checkCertificateRevocation">
-    /// <c>true</c> if the certificate revocation list is checked during
-    /// authentication; otherwise, <c>false</c>.
-    /// </param>
-    public ServerSslConfiguration (
-      X509Certificate2 serverCertificate,
-      bool clientCertificateRequired,
-      SslProtocols enabledSslProtocols,
-      bool checkCertificateRevocation
-    )
-    {
-      _serverCert = serverCertificate;
-      _clientCertRequired = clientCertificateRequired;
-      _enabledSslProtocols = enabledSslProtocols;
-      _checkCertRevocation = checkCertificateRevocation;
     }
 
     #endregion
