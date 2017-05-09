@@ -134,8 +134,13 @@ namespace WebSocketSharp.Net
     /// a certificate for authentication.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client is asked for a certificate for authentication;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the client is asked for a certificate for
+    ///   authentication; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool ClientCertificateRequired {
       get {
