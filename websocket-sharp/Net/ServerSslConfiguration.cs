@@ -111,9 +111,13 @@ namespace WebSocketSharp.Net
     /// list is checked during authentication.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the certificate revocation list is checked during
-    /// authentication; otherwise, <c>false</c>. The default value is
-    /// <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the certificate revocation list is checked during
+    ///   authentication; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool CheckCertificateRevocation {
       get {
