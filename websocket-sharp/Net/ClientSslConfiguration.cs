@@ -55,12 +55,12 @@ namespace WebSocketSharp.Net
     #region Public Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class with
-    /// the specified <paramref name="targetHost"/>.
+    /// Initializes a new instance of the <see cref="ClientSslConfiguration"/> class
+    /// with the specified <paramref name="targetHost"/>.
     /// </summary>
     /// <param name="targetHost">
-    /// A <see cref="string"/> that represents the name of the server that shares
-    /// a secure connection.
+    /// A <see cref="string"/> that represents the name of the server that
+    /// will share a secure connection.
     /// </param>
     public ClientSslConfiguration (string targetHost)
       : this (targetHost, null, SslProtocols.Default, false)
