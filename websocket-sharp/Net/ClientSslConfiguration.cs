@@ -91,7 +91,8 @@ namespace WebSocketSharp.Net
       string targetHost,
       X509CertificateCollection clientCertificates,
       SslProtocols enabledSslProtocols,
-      bool checkCertificateRevocation)
+      bool checkCertificateRevocation
+    )
       : base (enabledSslProtocols, checkCertificateRevocation)
     {
       _host = targetHost;
