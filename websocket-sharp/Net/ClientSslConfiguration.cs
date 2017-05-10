@@ -47,7 +47,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
-    private X509CertificateCollection _certs;
+    private X509CertificateCollection _clientCerts;
     private string                    _host;
 
     #endregion
@@ -98,7 +98,7 @@ namespace WebSocketSharp.Net
       : base (enabledSslProtocols, checkCertificateRevocation)
     {
       _host = targetHost;
-      _certs = clientCertificates;
+      _clientCerts = clientCertificates;
     }
 
     #endregion
@@ -113,11 +113,11 @@ namespace WebSocketSharp.Net
     /// </value>
     public X509CertificateCollection ClientCertificates {
       get {
-        return _certs;
+        return _clientCerts;
       }
 
       set {
-        _certs = value;
+        _clientCerts = value;
       }
     }
 
