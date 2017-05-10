@@ -177,11 +177,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the name of the server that shares a secure connection.
+    /// Gets or sets the target host server name.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the server that shares
-    /// a secure connection.
+    /// A <see cref="string"/> that represents the name of the server that
+    /// will share a secure connection.
     /// </value>
     public string TargetHost {
       get {
