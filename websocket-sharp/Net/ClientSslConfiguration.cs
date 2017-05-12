@@ -234,8 +234,14 @@ namespace WebSocketSharp.Net
     /// Gets or sets the target host server name.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the server that
-    /// will share a secure connection.
+    ///   <para>
+    ///   A <see cref="string"/> or <see langword="null"/>
+    ///   if not specified.
+    ///   </para>
+    ///   <para>
+    ///   That string represents the name of the server that
+    ///   will share a secure connection with a client.
+    ///   </para>
     /// </value>
     public string TargetHost {
       get {
