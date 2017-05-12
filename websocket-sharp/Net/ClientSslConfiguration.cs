@@ -132,10 +132,19 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the collection that contains client certificates.
+    /// Gets or sets the certificates from which to select one to
+    /// supply to the server.
     /// </summary>
     /// <value>
-    /// A <see cref="X509CertificateCollection"/> that contains client certificates.
+    ///   <para>
+    ///   A <see cref="X509CertificateCollection"/> or <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   That collection contains client certificates from which to select.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     public X509CertificateCollection ClientCertificates {
       get {
