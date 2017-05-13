@@ -72,8 +72,7 @@ namespace WebSocketSharp.Net
     /// with the specified <paramref name="targetHost"/>.
     /// </summary>
     /// <param name="targetHost">
-    /// A <see cref="string"/> that represents the name of the server that
-    /// will share a secure connection.
+    /// A <see cref="string"/> that represents the target host server name.
     /// </param>
     public ClientSslConfiguration (string targetHost)
     {
