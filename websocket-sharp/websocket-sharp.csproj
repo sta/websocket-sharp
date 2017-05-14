@@ -135,7 +135,6 @@
     <Compile Include="Net\HttpListenerPrefix.cs" />
     <Compile Include="Net\ClientSslConfiguration.cs" />
     <Compile Include="Net\ServerSslConfiguration.cs" />
-    <Compile Include="Net\SslConfiguration.cs" />
     <Compile Include="Net\HttpListenerAsyncResult.cs" />
     <Compile Include="Net\HttpRequestHeader.cs" />
     <Compile Include="Net\HttpResponseHeader.cs" />
