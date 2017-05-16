@@ -746,12 +746,12 @@ namespace WebSocketSharp.Server
         return true;
 
       if (configuration == null) {
-        message = "There is no configuration.";
+        message = "There is no configuration for secure connections.";
         return false;
       }
 
       if (configuration.ServerCertificate == null) {
-        message = "The configuration has no server certificate.";
+        message = "There is no server certificate.";
         return false;
       }
 
