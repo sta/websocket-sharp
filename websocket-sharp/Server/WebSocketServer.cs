@@ -360,14 +360,21 @@ namespace WebSocketSharp.Server
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation does nothing if the server has already
+    /// started or it is shutting down.
     /// </remarks>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum
-    /// values. It specifies the scheme used to authenticate the clients.
-    /// The default value is
-    /// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    ///   <para>
+    ///   One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/>
+    ///   enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the scheme used to authenticate the clients.
+    ///   </para>
+    ///   <para>
+    ///   The default value is
+    ///   <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    ///   </para>
     /// </value>
     public AuthenticationSchemes AuthenticationSchemes {
       get {
