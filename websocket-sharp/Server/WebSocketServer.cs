@@ -325,13 +325,17 @@ namespace WebSocketSharp.Server
     /// a handshake request without checking the request URI.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already started or
-    /// it is shutting down.
+    /// The set operation does nothing if the server has already
+    /// started or it is shutting down.
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the server accepts a handshake request without
-    /// checking the request URI; otherwise, <c>false</c>. The default
-    /// value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the server accepts a handshake request without
+    ///   checking the request URI; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool AllowForwardedRequest {
       get {
