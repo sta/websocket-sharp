@@ -405,7 +405,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets a value indicating whether the server provides secure connections.
+    /// Gets a value indicating whether the server provides
+    /// secure connections.
     /// </summary>
     /// <value>
     /// <c>true</c> if the server provides secure connections;
