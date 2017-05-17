@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2017 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the user name and other parameters from the HTTP Digest authentication credentials.
+  /// Holds the username and other parameters from
+  /// an HTTP Digest authentication attempt.
   /// </summary>
   public class HttpDigestIdentity : GenericIdentity
   {
@@ -46,7 +47,7 @@ namespace WebSocketSharp.Net
     #region Internal Constructors
 
     internal HttpDigestIdentity (NameValueCollection parameters)
-      : base (parameters ["username"], "Digest")
+      : base (parameters["username"], "Digest")
     {
       _parameters = parameters;
     }
@@ -56,110 +57,110 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the algorithm parameter from the HTTP Digest authentication credentials.
+    /// Gets the algorithm parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the algorithm parameter.
     /// </value>
     public string Algorithm {
       get {
-        return _parameters ["algorithm"];
+        return _parameters["algorithm"];
       }
     }
 
     /// <summary>
-    /// Gets the cnonce parameter from the HTTP Digest authentication credentials.
+    /// Gets the cnonce parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the cnonce parameter.
     /// </value>
     public string Cnonce {
       get {
-        return _parameters ["cnonce"];
+        return _parameters["cnonce"];
       }
     }
 
     /// <summary>
-    /// Gets the nc parameter from the HTTP Digest authentication credentials.
+    /// Gets the nc parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the nc parameter.
     /// </value>
     public string Nc {
       get {
-        return _parameters ["nc"];
+        return _parameters["nc"];
       }
     }
 
     /// <summary>
-    /// Gets the nonce parameter from the HTTP Digest authentication credentials.
+    /// Gets the nonce parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the nonce parameter.
     /// </value>
     public string Nonce {
       get {
-        return _parameters ["nonce"];
+        return _parameters["nonce"];
       }
     }
 
     /// <summary>
-    /// Gets the opaque parameter from the HTTP Digest authentication credentials.
+    /// Gets the opaque parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the opaque parameter.
     /// </value>
     public string Opaque {
       get {
-        return _parameters ["opaque"];
+        return _parameters["opaque"];
       }
     }
 
     /// <summary>
-    /// Gets the qop parameter from the HTTP Digest authentication credentials.
+    /// Gets the qop parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the qop parameter.
     /// </value>
     public string Qop {
       get {
-        return _parameters ["qop"];
+        return _parameters["qop"];
       }
     }
 
     /// <summary>
-    /// Gets the realm parameter from the HTTP Digest authentication credentials.
+    /// Gets the realm parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the realm parameter.
     /// </value>
     public string Realm {
       get {
-        return _parameters ["realm"];
+        return _parameters["realm"];
       }
     }
 
     /// <summary>
-    /// Gets the response parameter from the HTTP Digest authentication credentials.
+    /// Gets the response parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the response parameter.
     /// </value>
     public string Response {
       get {
-        return _parameters ["response"];
+        return _parameters["response"];
       }
     }
 
     /// <summary>
-    /// Gets the uri parameter from the HTTP Digest authentication credentials.
+    /// Gets the uri parameter from a digest authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the uri parameter.
     /// </value>
     public string Uri {
       get {
-        return _parameters ["uri"];
+        return _parameters["uri"];
       }
     }
 
@@ -167,15 +168,18 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal bool IsValid (string password, string realm, string method, string entity)
+    internal bool IsValid (
+      string password, string realm, string method, string entity
+    )
     {
-      var parameters = new NameValueCollection (_parameters);
-      parameters ["password"] = password;
-      parameters ["realm"] = realm;
-      parameters ["method"] = method;
-      parameters ["entity"] = entity;
+      var copied = new NameValueCollection (_parameters);
+      copied["password"] = password;
+      copied["realm"] = realm;
+      copied["method"] = method;
+      copied["entity"] = entity;
 
-      return _parameters ["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
+      var expected = AuthenticationResponse.CreateRequestDigest (copied);
+      return _parameters["response"] == expected;
     }
 
     #endregion

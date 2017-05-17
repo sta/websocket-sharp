@@ -352,7 +352,7 @@ namespace WebSocketSharp.Net
     public ServerSslConfiguration SslConfiguration {
       get {
         CheckDisposed ();
-        return _sslConfig ?? (_sslConfig = new ServerSslConfiguration (null));
+        return _sslConfig ?? (_sslConfig = new ServerSslConfiguration ());
       }
 
       set {

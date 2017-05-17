@@ -905,10 +905,10 @@ namespace WebSocketSharp
       return BitConverter.ToUInt64 (source.ToHostOrder (sourceOrder), 0);
     }
 
-    internal static string TrimEndSlash (this string value)
+    internal static string TrimSlashFromEnd (this string value)
     {
-      value = value.TrimEnd ('/');
-      return value.Length > 0 ? value : "/";
+      var ret = value.TrimEnd ('/');
+      return ret.Length > 0 ? ret : "/";
     }
 
     /// <summary>
@@ -1947,30 +1947,34 @@ namespace WebSocketSharp
     /// URL-decodes the specified <see cref="string"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the decoded string,
-    /// or the <paramref name="value"/> if it's <see langword="null"/> or empty.
+    /// A <see cref="string"/> that receives the decoded string or
+    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to decode.
     /// </param>
     public static string UrlDecode (this string value)
     {
-      return value != null && value.Length > 0 ? HttpUtility.UrlDecode (value) : value;
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlDecode (value)
+             : value;
     }
 
     /// <summary>
     /// URL-encodes the specified <see cref="string"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that receives the encoded string,
-    /// or <paramref name="value"/> if it's <see langword="null"/> or empty.
+    /// A <see cref="string"/> that receives the encoded string or
+    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to encode.
     /// </param>
     public static string UrlEncode (this string value)
     {
-      return value != null && value.Length > 0 ? HttpUtility.UrlEncode (value) : value;
+      return value != null && value.Length > 0
+             ? HttpUtility.UrlEncode (value)
+             : value;
     }
 
     /// <summary>

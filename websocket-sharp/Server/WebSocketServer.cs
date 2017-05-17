@@ -583,24 +583,29 @@ namespace WebSocketSharp.Server
     public ServerSslConfiguration SslConfiguration {
       get {
         if (_sslConfig == null)
-          _sslConfig = new ServerSslConfiguration (null);
+          _sslConfig = new ServerSslConfiguration ();
 
         return _sslConfig;
       }
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to find the credentials for
-    /// an identity used to authenticate a client.
+    /// Gets or sets the delegate used to find the credentials for an identity.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the server has already started or
     /// it is shutting down.
     /// </remarks>
     /// <value>
-    /// A <c>Func&lt;IIdentity, NetworkCredential&gt;</c> delegate
-    /// that invokes the method used to find the credentials or
-    /// <see langword="null"/> by default.
+    ///   <para>
+    ///   A <c>Func&lt;IIdentity, NetworkCredential&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed. The default value is
+    ///   <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called for finding
+    ///   the credentials used to authenticate a client.
+    ///   </para>
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
@@ -731,28 +736,6 @@ namespace WebSocketSharp.Server
              || name == _hostname;
     }
 
-    private bool checkServicePath (string path, out string message)
-    {
-      message = null;
-
-      if (path.IsNullOrEmpty ()) {
-        message = "'path' is null or empty.";
-        return false;
-      }
-
-      if (path[0] != '/') {
-        message = "'path' is not an absolute path.";
-        return false;
-      }
-
-      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
-        message = "'path' includes either or both query and fragment components.";
-        return false;
-      }
-
-      return true;
-    }
-
     private bool checkSslConfiguration (
       ServerSslConfiguration configuration, out string message
     )
@@ -867,7 +850,9 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.ToString ());
+                _log.Fatal (ex.Message);
+                _log.Debug (ex.ToString ());
+
                 cl.Close ();
               }
             }
@@ -879,11 +864,15 @@ namespace WebSocketSharp.Server
             break;
           }
 
-          _log.Fatal (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
           break;
         }
         catch (Exception ex) {
-          _log.Fatal (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
           if (cl != null)
             cl.Close ();
 
@@ -1032,89 +1021,251 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// <paramref name="path"/>, and <paramref name="creator"/>.
     /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
-    /// the service. It will be converted to a URL-decoded string,
-    /// and will be removed <c>'/'</c> from tail end if any.
+    /// the service to add.
     /// </param>
-    /// <param name="initializer">
-    /// A <c>Func&lt;TBehavior&gt;</c> delegate that invokes
-    /// the method used to create a new session instance for
-    /// the service. The method must create a new instance of
-    /// the specified behavior class and return it.
+    /// <param name="creator">
+    ///   <para>
+    ///   A <c>Func&lt;TBehavior&gt;</c> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It invokes the method called for creating
+    ///   a new session instance for the service.
+    ///   </para>
+    ///   <para>
+    ///   The method must create a new instance of
+    ///   the specified behavior class and return it.
+    ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
     /// The type of the behavior for the service. It must inherit
     /// the <see cref="WebSocketBehavior"/> class.
     /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="path"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="creator"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
+    [Obsolete ("This method will be removed. Use added one instead.")]
     public void AddWebSocketService<TBehavior> (
-      string path, Func<TBehavior> initializer
+      string path, Func<TBehavior> creator
     )
       where TBehavior : WebSocketBehavior
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return;
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (creator == null)
+        throw new ArgumentNullException ("creator");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path[0] != '/')
+        throw new ArgumentException ("Not an absolute path.", "path");
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
       }
 
-      if (initializer == null) {
-        _log.Error ("'initializer' is null.");
-        return;
-      }
-
-      _services.Add<TBehavior> (path, initializer);
+      _services.Add<TBehavior> (path, creator);
     }
 
     /// <summary>
     /// Adds a WebSocket service with the specified behavior and
     /// <paramref name="path"/>.
     /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
-    /// the service. It will be converted to a URL-decoded string,
-    /// and will be removed <c>'/'</c> from tail end if any.
+    /// the service to add.
     /// </param>
     /// <typeparam name="TBehaviorWithNew">
     /// The type of the behavior for the service. It must inherit
-    /// the <see cref="WebSocketBehavior"/> class, and must have
+    /// the <see cref="WebSocketBehavior"/> class and it must have
     /// a public parameterless constructor.
     /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
     public void AddWebSocketService<TBehaviorWithNew> (string path)
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return;
-      }
+      _services.AddService<TBehaviorWithNew> (path, null);
+    }
 
-      _services.Add<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
+    /// <summary>
+    /// Adds a WebSocket service with the specified behavior,
+    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// / is trimmed from the end of the converted string if any.
+    /// </remarks>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to add.
+    /// </param>
+    /// <param name="initializer">
+    ///   <para>
+    ///   An <c>Action&lt;TBehaviorWithNew&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called for initializing
+    ///   a new session instance for the service.
+    ///   </para>
+    /// </param>
+    /// <typeparam name="TBehaviorWithNew">
+    /// The type of the behavior for the service. It must inherit
+    /// the <see cref="WebSocketBehavior"/> class and it must have
+    /// a public parameterless constructor.
+    /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
+    public void AddWebSocketService<TBehaviorWithNew> (
+      string path, Action<TBehaviorWithNew> initializer
+    )
+      where TBehaviorWithNew : WebSocketBehavior, new ()
+    {
+      _services.AddService<TBehaviorWithNew> (path, initializer);
     }
 
     /// <summary>
     /// Removes a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   <paramref name="path"/> is converted to a URL-decoded string and
+    ///   / is trimmed from the end of the converted string if any.
+    ///   </para>
+    ///   <para>
+    ///   The service is stopped with close status 1001 (going away)
+    ///   if it has already started.
+    ///   </para>
+    /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
-    /// the service. It will be converted to a URL-decoded string,
-    /// and will be removed <c>'/'</c> from tail end if any.
+    /// the service to remove.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is empty.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    /// </exception>
     public bool RemoveWebSocketService (string path)
     {
-      string msg;
-      if (!checkServicePath (path, out msg)) {
-        _log.Error (msg);
-        return false;
-      }
-
-      return _services.Remove (path);
+      return _services.RemoveService (path);
     }
 
     /// <summary>

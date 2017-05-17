@@ -2,13 +2,13 @@
 /*
  * HttpBasicIdentity.cs
  *
- * This code is derived from System.Net.HttpListenerBasicIdentity.cs of Mono
- * (http://www.mono-project.com).
+ * This code is derived from HttpListenerBasicIdentity.cs (System.Net) of
+ * Mono (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2014-2017 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Holds the user name and password from the HTTP Basic authentication credentials.
+  /// Holds the username and password from an HTTP Basic authentication attempt.
   /// </summary>
   public class HttpBasicIdentity : GenericIdentity
   {
@@ -53,7 +53,7 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region internal Constructors
+    #region Internal Constructors
 
     internal HttpBasicIdentity (string username, string password)
       : base (username, "Basic")
@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the password from the HTTP Basic authentication credentials.
+    /// Gets the password from a basic authentication attempt.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the password.
