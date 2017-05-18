@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 
 namespace Semisweet
@@ -107,3 +108,4 @@ namespace Semisweet
     #endregion
   }
 }
+#endif

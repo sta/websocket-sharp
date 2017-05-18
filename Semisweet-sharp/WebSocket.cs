@@ -41,6 +41,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,7 +67,7 @@ namespace Semisweet
   /// </remarks>
   public class SemisweetSocket : IDisposable
   {
-    #region Private Fields
+#region Private Fields
 
     private AuthenticationChallenge        _authChallenge;
     private string                         _base64Key;
@@ -116,9 +117,9 @@ namespace Semisweet
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
 
-    #endregion
+#endregion
 
-    #region Internal Fields
+#region Internal Fields
 
     /// <summary>
     /// Represents the empty array of <see cref="byte"/> used internally.
@@ -144,9 +145,9 @@ namespace Semisweet
     /// </summary>
     internal static readonly RandomNumberGenerator RandomNumber;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static SemisweetSocket ()
     {
@@ -156,9 +157,9 @@ namespace Semisweet
       RandomNumber = new RNGCryptoServiceProvider ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     // As server
     internal SemisweetSocket (HttpListenerWebSocketContext context, string protocol)
@@ -192,9 +193,9 @@ namespace Semisweet
       init ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SemisweetSocket"/> class with
@@ -252,9 +253,9 @@ namespace Semisweet
       init ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal CookieCollection CookieCollection {
       get {
@@ -297,9 +298,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the compression method used to compress a message on
@@ -624,9 +625,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Events
+#region Public Events
 
     /// <summary>
     /// Occurs when the WebSocket connection has been closed.
@@ -648,9 +649,9 @@ namespace Semisweet
     /// </summary>
     public event EventHandler OnOpen;
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     // As server
     private bool accept ()
@@ -2070,9 +2071,9 @@ namespace Semisweet
       return value == null || value == _version;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static bool CheckParametersForClose (
       ushort code, string reason, bool client, out string message
@@ -2396,9 +2397,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Accepts the WebSocket handshake request.
@@ -3384,9 +3385,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Closes the WebSocket connection, and releases all associated resources.
@@ -3405,6 +3406,7 @@ namespace Semisweet
       close (1001, String.Empty);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

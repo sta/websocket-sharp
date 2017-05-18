@@ -26,6 +26,7 @@
  */
 #endregion
 
+ #if !UNITY_WSA
 using System;
 
 namespace Semisweet
@@ -44,14 +45,14 @@ namespace Semisweet
   /// </remarks>
   public class CloseEventArgs : EventArgs
   {
-    #region Private Fields
+#region Private Fields
 
     private bool        _clean;
     private PayloadData _payloadData;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal CloseEventArgs ()
     {
@@ -83,9 +84,9 @@ namespace Semisweet
     {
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal PayloadData PayloadData {
       get {
@@ -93,9 +94,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the status code for the close.
@@ -137,6 +138,7 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
   }
 }
+ #endif

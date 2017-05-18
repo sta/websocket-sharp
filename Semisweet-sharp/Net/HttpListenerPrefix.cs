@@ -38,6 +38,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Net;
 
@@ -45,7 +46,7 @@ namespace Semisweet.Net
 {
   internal sealed class HttpListenerPrefix
   {
-    #region Private Fields
+#region Private Fields
 
     private string       _host;
     private HttpListener _listener;
@@ -55,9 +56,9 @@ namespace Semisweet.Net
     private string       _prefix;
     private bool         _secure;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListenerPrefix"/> class with
@@ -75,9 +76,9 @@ namespace Semisweet.Net
       parse (uriPrefix);
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public string Host {
       get {
@@ -119,9 +120,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private void parse (string uriPrefix)
     {
@@ -148,9 +149,9 @@ namespace Semisweet.Net
         String.Format ("http{0}://{1}:{2}{3}", _secure ? "s" : "", _host, _port, _path);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public static void CheckPrefix (string uriPrefix)
     {
@@ -223,6 +224,7 @@ namespace Semisweet.Net
       return _prefix;
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

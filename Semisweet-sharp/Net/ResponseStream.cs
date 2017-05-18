@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.IO;
 using System.Text;
@@ -45,7 +46,7 @@ namespace Semisweet.Net
 {
   internal class ResponseStream : Stream
   {
-    #region Private Fields
+#region Private Fields
 
     private MemoryStream             _body;
     private static readonly byte[]   _crlf = new byte[] { 13, 10 };
@@ -57,9 +58,9 @@ namespace Semisweet.Net
     private Action<byte[], int, int> _writeBody;
     private Action<byte[], int, int> _writeChunked;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal ResponseStream (
       Stream stream, HttpListenerResponse response, bool ignoreWriteExceptions)
@@ -79,9 +80,9 @@ namespace Semisweet.Net
       _body = new MemoryStream ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public override bool CanRead {
       get {
@@ -117,9 +118,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private bool flush (bool closing)
     {
@@ -215,9 +216,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void Close (bool force)
     {
@@ -249,9 +250,9 @@ namespace Semisweet.Net
       _write (buffer, offset, count);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public override IAsyncResult BeginRead (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
@@ -320,6 +321,7 @@ namespace Semisweet.Net
       _body.Write (buffer, offset, count);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

@@ -40,6 +40,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Globalization;
 using System.Text;
@@ -63,7 +64,7 @@ namespace Semisweet.Net
   [Serializable]
   public sealed class Cookie
   {
-    #region Private Fields
+#region Private Fields
 
     private string                 _comment;
     private Uri                    _commentUri;
@@ -82,9 +83,9 @@ namespace Semisweet.Net
     private string                 _value;
     private int                    _version;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static Cookie ()
     {
@@ -92,9 +93,9 @@ namespace Semisweet.Net
       _reservedCharsForValue = new[] { ';', ',' };
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class.
@@ -244,9 +245,9 @@ namespace Semisweet.Net
       Domain = domain;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal bool ExactDomain {
       get; set;
@@ -274,9 +275,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the value of the Comment attribute of the cookie.
@@ -576,9 +577,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static bool canSetName (string name, out string message)
     {
@@ -712,9 +713,9 @@ namespace Semisweet.Net
       return true;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     // From client to server
     internal string ToRequestString (Uri uri)
@@ -757,9 +758,9 @@ namespace Semisweet.Net
              : String.Empty;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Determines whether the specified <see cref="Object"/> is equal to the current
@@ -817,6 +818,7 @@ namespace Semisweet.Net
       return ToRequestString (null);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

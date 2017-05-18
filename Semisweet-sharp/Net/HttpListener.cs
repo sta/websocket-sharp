@@ -44,6 +44,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace Semisweet.Net
   /// </summary>
   public sealed class HttpListener : IDisposable
   {
-    #region Private Fields
+#region Private Fields
 
     private AuthenticationSchemes                                _authSchemes;
     private Func<HttpListenerRequest, AuthenticationSchemes>     _authSchemeSelector;
@@ -83,18 +84,18 @@ namespace Semisweet.Net
     private List<HttpListenerAsyncResult>                        _waitQueue;
     private object                                               _waitQueueSync;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static HttpListener ()
     {
       _defaultRealm = "SECRET AREA";
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListener"/> class.
@@ -120,9 +121,9 @@ namespace Semisweet.Net
       _waitQueueSync = ((ICollection) _waitQueue).SyncRoot;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal bool IsDisposed {
       get {
@@ -140,9 +141,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
@@ -411,9 +412,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private void cleanupConnections ()
     {
@@ -526,9 +527,9 @@ namespace Semisweet.Net
       return ctx;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal bool AddConnection (HttpConnection connection)
     {
@@ -624,9 +625,9 @@ namespace Semisweet.Net
         _ctxRegistry.Remove (context);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Shuts down the listener immediately.
@@ -816,9 +817,9 @@ namespace Semisweet.Net
       cleanupWaitQueue (new HttpListenerException (995, "The listener is stopped."));
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Releases all resources used by the listener.
@@ -831,6 +832,8 @@ namespace Semisweet.Net
       close (true);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif
+    

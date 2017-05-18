@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Security.Principal;
 using Semisweet.Net.WebSockets;
@@ -254,3 +255,4 @@ namespace Semisweet.Net
     #endregion
   }
 }
+#endif

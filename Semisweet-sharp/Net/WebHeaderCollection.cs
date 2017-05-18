@@ -40,6 +40,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -58,15 +59,15 @@ namespace Semisweet.Net
   [ComVisible (true)]
   public class WebHeaderCollection : NameValueCollection, ISerializable
   {
-    #region Private Fields
+#region Private Fields
 
     private static readonly Dictionary<string, HttpHeaderInfo> _headers;
     private bool                                               _internallyUsed;
     private HttpHeaderType                                     _state;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static WebHeaderCollection ()
     {
@@ -447,9 +448,9 @@ namespace Semisweet.Net
         };
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal WebHeaderCollection (HttpHeaderType state, bool internallyUsed)
     {
@@ -457,9 +458,9 @@ namespace Semisweet.Net
       _internallyUsed = internallyUsed;
     }
 
-    #endregion
+#endregion
 
-    #region Protected Constructors
+#region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class from
@@ -499,9 +500,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebHeaderCollection"/> class.
@@ -510,9 +511,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal HttpHeaderType State {
       get {
@@ -520,9 +521,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets all header names in the collection.
@@ -637,9 +638,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private void add (string name, string value, bool ignoreRestricted)
     {
@@ -787,9 +788,9 @@ namespace Semisweet.Net
       doWithoutCheckingName (base.Set, name, value);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static string Convert (HttpRequestHeader header)
     {
@@ -856,9 +857,9 @@ namespace Semisweet.Net
       return buff.Append ("\r\n").ToString ();
     }
 
-    #endregion
+#endregion
 
-    #region Protected Methods
+#region Protected Methods
 
     /// <summary>
     /// Adds a header to the collection without checking if the header is on
@@ -888,9 +889,9 @@ namespace Semisweet.Net
       add (headerName, headerValue, true);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Adds the specified <paramref name="header"/> to the collection.
@@ -1427,9 +1428,9 @@ namespace Semisweet.Net
       return buff.Append ("\r\n").ToString ();
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
@@ -1454,6 +1455,7 @@ namespace Semisweet.Net
       GetObjectData (serializationInfo, streamingContext);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

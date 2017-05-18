@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 
 namespace Semisweet
@@ -46,16 +47,16 @@ namespace Semisweet
   /// </remarks>
   public class MessageEventArgs : EventArgs
   {
-    #region Private Fields
+#region Private Fields
 
     private string _data;
     private bool   _dataSet;
     private Opcode _opcode;
     private byte[] _rawData;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal MessageEventArgs (WebSocketFrame frame)
     {
@@ -72,9 +73,9 @@ namespace Semisweet
       _rawData = rawData;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     /// <summary>
     /// Gets the opcode for the message.
@@ -89,9 +90,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the message data as a <see cref="string"/>.
@@ -157,9 +158,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private void setData ()
     {
@@ -175,6 +176,7 @@ namespace Semisweet
       _dataSet = true;
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

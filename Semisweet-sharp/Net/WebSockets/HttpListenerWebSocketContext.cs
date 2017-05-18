@@ -32,6 +32,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Security.Principal;
 
+#if !UNITY_WSA
 namespace Semisweet.Net.WebSockets
 {
   /// <summary>
@@ -40,14 +41,14 @@ namespace Semisweet.Net.WebSockets
   /// </summary>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
-    #region Private Fields
+#region Private Fields
 
     private HttpListenerContext _context;
     private SemisweetSocket           _websocket;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal HttpListenerWebSocketContext (HttpListenerContext context, string protocol)
     {
@@ -55,9 +56,9 @@ namespace Semisweet.Net.WebSockets
       _websocket = new SemisweetSocket (this, protocol);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal Logger Log {
       get {
@@ -71,9 +72,9 @@ namespace Semisweet.Net.WebSockets
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the HTTP cookies included in the request.
@@ -296,9 +297,9 @@ namespace Semisweet.Net.WebSockets
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void Close ()
     {
@@ -310,9 +311,9 @@ namespace Semisweet.Net.WebSockets
       _context.Response.Close (code);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Returns a <see cref="string"/> that represents
@@ -327,6 +328,7 @@ namespace Semisweet.Net.WebSockets
       return _context.Request.ToString ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

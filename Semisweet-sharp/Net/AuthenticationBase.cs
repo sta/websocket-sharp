@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Specialized;
 using System.Text;
@@ -34,19 +35,19 @@ namespace Semisweet.Net
 {
   internal abstract class AuthenticationBase
   {
-    #region Private Fields
+#region Private Fields
 
     private AuthenticationSchemes _scheme;
 
-    #endregion
+#endregion
 
-    #region Internal Fields
+#region Internal Fields
 
     internal NameValueCollection Parameters;
 
-    #endregion
+#endregion
 
-    #region Protected Constructors
+#region Protected Constructors
 
     protected AuthenticationBase (AuthenticationSchemes scheme, NameValueCollection parameters)
     {
@@ -54,9 +55,9 @@ namespace Semisweet.Net
       Parameters = parameters;
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public string Algorithm {
       get {
@@ -94,9 +95,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static string CreateNonceValue ()
     {
@@ -133,9 +134,9 @@ namespace Semisweet.Net
 
     internal abstract string ToDigestString ();
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public override string ToString ()
     {
@@ -146,6 +147,7 @@ namespace Semisweet.Net
                : String.Empty;
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

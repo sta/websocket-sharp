@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Specialized;
 using System.Security.Principal;
@@ -37,13 +38,13 @@ namespace Semisweet.Net
   /// </summary>
   public class HttpDigestIdentity : GenericIdentity
   {
-    #region Private Fields
+#region Private Fields
 
     private NameValueCollection _parameters;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal HttpDigestIdentity (NameValueCollection parameters)
       : base (parameters ["username"], "Digest")
@@ -51,9 +52,9 @@ namespace Semisweet.Net
       _parameters = parameters;
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the algorithm parameter from the HTTP Digest authentication credentials.
@@ -163,9 +164,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal bool IsValid (string password, string realm, string method, string entity)
     {
@@ -178,6 +179,7 @@ namespace Semisweet.Net
       return _parameters ["response"] == AuthenticationResponse.CreateRequestDigest (parameters);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

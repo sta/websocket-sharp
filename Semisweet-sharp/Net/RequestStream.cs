@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.IO;
 
@@ -44,7 +45,7 @@ namespace Semisweet.Net
 {
   internal class RequestStream : Stream
   {
-    #region Private Fields
+#region Private Fields
 
     private long    _bodyLeft;
     private byte[]  _buffer;
@@ -53,9 +54,9 @@ namespace Semisweet.Net
     private int     _offset;
     private Stream  _stream;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal RequestStream (Stream stream, byte[] buffer, int offset, int count)
       : this (stream, buffer, offset, count, -1)
@@ -72,9 +73,9 @@ namespace Semisweet.Net
       _bodyLeft = contentLength;
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public override bool CanRead {
       get {
@@ -110,9 +111,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     // Returns 0 if we can keep reading from the base stream,
     // > 0 if we read something from the buffer,
@@ -154,9 +155,9 @@ namespace Semisweet.Net
       return count;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public override IAsyncResult BeginRead (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
@@ -262,6 +263,7 @@ namespace Semisweet.Net
       throw new NotSupportedException ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

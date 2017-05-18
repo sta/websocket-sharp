@@ -34,6 +34,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -45,14 +46,14 @@ namespace Semisweet.Net
   /// </summary>
   public class ServerSslConfiguration : SslConfiguration
   {
-    #region Private Fields
+#region Private Fields
 
     private X509Certificate2 _cert;
     private bool             _clientCertRequired;
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ServerSslConfiguration"/> class with
@@ -100,9 +101,9 @@ namespace Semisweet.Net
       _clientCertRequired = clientCertificateRequired;
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets a value indicating whether the client must supply a certificate for
@@ -159,6 +160,7 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

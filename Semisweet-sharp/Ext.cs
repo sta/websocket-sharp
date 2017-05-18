@@ -49,6 +49,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -66,15 +67,15 @@ namespace Semisweet
   /// </summary>
   public static class Ext
   {
-    #region Private Fields
+#region Private Fields
 
     private static readonly byte[] _last = new byte[] { 0x00 };
     private static readonly int    _retry = 5;
     private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static byte[] compress (this byte[] data)
     {
@@ -149,9 +150,9 @@ namespace Semisweet
         action ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static byte[] Append (this ushort code, string reason)
     {
@@ -1075,9 +1076,9 @@ namespace Semisweet
         });
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Determines whether the specified <see cref="string"/> contains any of characters in
@@ -2015,6 +2016,7 @@ namespace Semisweet
       output.Close ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

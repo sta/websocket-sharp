@@ -45,6 +45,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace Semisweet.Net
 {
   internal sealed class EndPointListener
   {
-    #region Private Fields
+#region Private Fields
 
     private List<HttpListenerPrefix>                     _all; // host == '+'
     private static readonly string                       _defaultCertFolderPath;
@@ -72,9 +73,9 @@ namespace Semisweet.Net
     private Dictionary<HttpConnection, HttpConnection>   _unregistered;
     private object                                       _unregisteredSync;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static EndPointListener ()
     {
@@ -82,9 +83,9 @@ namespace Semisweet.Net
         Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal EndPointListener (
       IPEndPoint endpoint,
@@ -129,9 +130,9 @@ namespace Semisweet.Net
       _socket.BeginAccept (onAccept, this);
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public IPAddress Address {
       get {
@@ -157,9 +158,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static void addSpecial (List<HttpListenerPrefix> prefixes, HttpListenerPrefix prefix)
     {
@@ -316,9 +317,9 @@ namespace Semisweet.Net
       return bestMatch;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static bool CertificateExists (int port, string folderPath)
     {
@@ -394,9 +395,9 @@ namespace Semisweet.Net
       return listener != null;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public void AddPrefix (HttpListenerPrefix prefix, HttpListener listener)
     {
@@ -518,6 +519,7 @@ namespace Semisweet.Net
       leaveIfNoPrefix ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

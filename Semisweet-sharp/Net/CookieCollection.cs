@@ -39,6 +39,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,14 +54,14 @@ namespace Semisweet.Net
   [Serializable]
   public class CookieCollection : ICollection, IEnumerable
   {
-    #region Private Fields
+#region Private Fields
 
     private List<Cookie> _list;
     private object       _sync;
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieCollection"/> class.
@@ -70,9 +71,9 @@ namespace Semisweet.Net
       _list = new List<Cookie> ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal IList<Cookie> List {
       get {
@@ -90,9 +91,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the number of cookies in the collection.
@@ -195,9 +196,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static int compareCookieWithinSort (Cookie x, Cookie y)
     {
@@ -403,9 +404,9 @@ namespace Semisweet.Net
       return new List<string> (value.SplitHeaderValue (',', ';')).ToArray ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static CookieCollection Parse (string value, bool response)
     {
@@ -444,9 +445,9 @@ namespace Semisweet.Net
         _list.Sort (compareCookieWithinSort);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Adds the specified <paramref name="cookie"/> to the collection.
@@ -593,6 +594,7 @@ namespace Semisweet.Net
       return _list.GetEnumerator ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

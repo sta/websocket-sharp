@@ -34,31 +34,32 @@ using System.Text;
 using System.Threading;
 using Semisweet.Net;
 
+#if !UNITY_WSA
 namespace Semisweet
 {
   internal abstract class HttpBase
   {
-    #region Private Fields
+#region Private Fields
 
     private NameValueCollection _headers;
     private const int           _headersMaxLength = 8192;
     private Version             _version;
 
-    #endregion
+#endregion
 
-    #region Internal Fields
+#region Internal Fields
 
     internal byte[] EntityBodyData;
 
-    #endregion
+#endregion
 
-    #region Protected Fields
+#region Protected Fields
 
     protected const string CrLf = "\r\n";
 
-    #endregion
+#endregion
 
-    #region Protected Constructors
+#region Protected Constructors
 
     protected HttpBase (Version version, NameValueCollection headers)
     {
@@ -66,9 +67,9 @@ namespace Semisweet
       _headers = headers;
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public string EntityBody {
       get {
@@ -97,9 +98,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static byte[] readEntityBody (Stream stream, string length)
     {
@@ -149,9 +150,9 @@ namespace Semisweet
              .Split (new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    #endregion
+#endregion
 
-    #region Protected Methods
+#region Protected Methods
 
     protected static T Read<T> (Stream stream, Func<string[], T> parser, int millisecondsTimeout)
       where T : HttpBase
@@ -194,15 +195,16 @@ namespace Semisweet
       return http;
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public byte[] ToByteArray ()
     {
       return Encoding.UTF8.GetBytes (ToString ());
     }
     
-    #endregion
+#endregion
   }
 }
+#endif

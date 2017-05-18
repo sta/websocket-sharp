@@ -40,6 +40,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -53,15 +54,15 @@ namespace Semisweet.Net
 {
   internal sealed class HttpUtility
   {
-    #region Private Fields
+#region Private Fields
 
     private static Dictionary<string, char> _entities;
     private static char[]                   _hexChars = "0123456789abcdef".ToCharArray ();
     private static object                   _sync = new object ();
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static int getChar (byte[] bytes, int offset, int length)
     {
@@ -499,9 +500,9 @@ namespace Semisweet.Net
       buffer.Add ((byte) c);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static Uri CreateRequestUrl (
       string requestUri, string host, bool websocketRequest, bool secure)
@@ -750,9 +751,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public static string HtmlAttributeEncode (string s)
     {
@@ -1259,6 +1260,7 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

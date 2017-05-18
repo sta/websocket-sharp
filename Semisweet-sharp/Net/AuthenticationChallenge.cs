@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Specialized;
 using System.Text;
@@ -34,16 +35,16 @@ namespace Semisweet.Net
 {
   internal class AuthenticationChallenge : AuthenticationBase
   {
-    #region Private Constructors
+#region Private Constructors
 
     private AuthenticationChallenge (AuthenticationSchemes scheme, NameValueCollection parameters)
       : base (scheme, parameters)
     {
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal AuthenticationChallenge (AuthenticationSchemes scheme, string realm)
       : base (scheme, new NameValueCollection ())
@@ -56,9 +57,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public string Domain {
       get {
@@ -72,9 +73,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static AuthenticationChallenge CreateBasicChallenge (string realm)
     {
@@ -141,6 +142,7 @@ namespace Semisweet.Net
       return output.ToString ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

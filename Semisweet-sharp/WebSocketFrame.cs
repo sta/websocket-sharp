@@ -33,6 +33,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -795,3 +796,4 @@ Extended Payload Length: {7}
     #endregion
   }
 }
+#endif

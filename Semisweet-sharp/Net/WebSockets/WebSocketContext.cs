@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
+#if !UNITY_WSA
 namespace Semisweet.Net.WebSockets
 {
   /// <summary>
@@ -41,7 +42,7 @@ namespace Semisweet.Net.WebSockets
   /// </remarks>
   public abstract class WebSocketContext
   {
-    #region Protected Constructors
+#region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocketContext"/> class.
@@ -50,9 +51,9 @@ namespace Semisweet.Net.WebSockets
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the HTTP cookies included in the request.
@@ -203,6 +204,7 @@ namespace Semisweet.Net.WebSockets
     /// </value>
     public abstract SemisweetSocket WebSocket { get; }
 
-    #endregion
+#endregion
   }
 }
+#endif

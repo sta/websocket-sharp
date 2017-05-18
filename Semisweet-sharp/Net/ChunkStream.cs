@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -48,7 +49,7 @@ namespace Semisweet.Net
 {
   internal class ChunkStream
   {
-    #region Private Fields
+#region Private Fields
 
     private int                 _chunkRead;
     private int                 _chunkSize;
@@ -60,9 +61,9 @@ namespace Semisweet.Net
     private InputChunkState     _state;
     private int                 _trailerState;
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     public ChunkStream (WebHeaderCollection headers)
     {
@@ -78,9 +79,9 @@ namespace Semisweet.Net
       Write (buffer, offset, count);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal WebHeaderCollection Headers {
       get {
@@ -88,9 +89,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public int ChunkLeft {
       get {
@@ -104,9 +105,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private int read (byte[] buffer, int offset, int count)
     {
@@ -318,9 +319,9 @@ namespace Semisweet.Net
       return _chunkRead == _chunkSize ? InputChunkState.DataEnded : InputChunkState.Data;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void ResetBuffer ()
     {
@@ -335,9 +336,9 @@ namespace Semisweet.Net
       return Read (buffer, offset, readCount);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public int Read (byte[] buffer, int offset, int count)
     {
@@ -355,6 +356,7 @@ namespace Semisweet.Net
       write (buffer, ref offset, offset + count);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

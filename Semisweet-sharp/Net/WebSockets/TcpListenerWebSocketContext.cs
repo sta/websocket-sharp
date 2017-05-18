@@ -33,6 +33,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -50,7 +51,7 @@ namespace Semisweet.Net.WebSockets
   /// </summary>
   internal class TcpListenerWebSocketContext : WebSocketContext
   {
-    #region Private Fields
+#region Private Fields
 
     private CookieCollection    _cookies;
     private Logger              _logger;
@@ -63,9 +64,9 @@ namespace Semisweet.Net.WebSockets
     private IPrincipal          _user;
     private SemisweetSocket           _websocket;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal TcpListenerWebSocketContext (
       TcpClient tcpClient,
@@ -106,9 +107,9 @@ namespace Semisweet.Net.WebSockets
       _websocket = new SemisweetSocket (this, protocol);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal Logger Log {
       get {
@@ -122,9 +123,9 @@ namespace Semisweet.Net.WebSockets
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the HTTP cookies included in the request.
@@ -353,9 +354,9 @@ namespace Semisweet.Net.WebSockets
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal bool Authenticate (
       AuthenticationSchemes scheme,
@@ -422,9 +423,9 @@ namespace Semisweet.Net.WebSockets
       _request = HttpRequest.Read (_stream, 15000);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Returns a <see cref="string"/> that represents
@@ -439,6 +440,7 @@ namespace Semisweet.Net.WebSockets
       return _request.ToString ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

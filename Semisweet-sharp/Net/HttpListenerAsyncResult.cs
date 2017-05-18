@@ -44,6 +44,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Threading;
 
@@ -51,7 +52,7 @@ namespace Semisweet.Net
 {
   internal class HttpListenerAsyncResult : IAsyncResult
   {
-    #region Private Fields
+#region Private Fields
 
     private AsyncCallback       _callback;
     private bool                _completed;
@@ -64,9 +65,9 @@ namespace Semisweet.Net
     private bool                _syncCompleted;
     private ManualResetEvent    _waitHandle;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal HttpListenerAsyncResult (AsyncCallback callback, object state)
     {
@@ -75,9 +76,9 @@ namespace Semisweet.Net
       _sync = new object ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal bool EndCalled {
       get {
@@ -99,9 +100,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public object AsyncState {
       get {
@@ -129,9 +130,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static void complete (HttpListenerAsyncResult asyncResult)
     {
@@ -159,9 +160,9 @@ namespace Semisweet.Net
       );
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void Complete (Exception exception)
     {
@@ -193,6 +194,7 @@ namespace Semisweet.Net
       return _context;
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

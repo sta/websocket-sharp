@@ -26,6 +26,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -52,16 +53,16 @@ namespace Semisweet
   /// </remarks>
   public class Logger
   {
-    #region Private Fields
+#region Private Fields
 
     private volatile string         _file;
     private volatile LogLevel       _level;
     private Action<LogData, string> _output;
     private object                  _sync;
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Logger"/> class.
@@ -110,9 +111,9 @@ namespace Semisweet
       _sync = new object ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets the current path to the log file.
@@ -183,9 +184,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static void defaultOutput (LogData data, string path)
     {
@@ -220,9 +221,9 @@ namespace Semisweet
         syncWriter.WriteLine (value);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Outputs <paramref name="message"/> as a log with <see cref="LogLevel.Debug"/>.
@@ -325,6 +326,7 @@ namespace Semisweet
       output (message, LogLevel.Warn);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

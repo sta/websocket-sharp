@@ -36,6 +36,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System.Net.Security;
 using System.Security.Authentication;
 
@@ -49,16 +50,16 @@ namespace Semisweet.Net
   /// </remarks>
   public abstract class SslConfiguration
   {
-    #region Private Fields
+#region Private Fields
 
     private LocalCertificateSelectionCallback   _certSelectionCallback;
     private RemoteCertificateValidationCallback _certValidationCallback;
     private bool                                _checkCertRevocation;
     private SslProtocols                        _enabledProtocols;
 
-    #endregion
+#endregion
 
-    #region Protected Constructors
+#region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SslConfiguration"/> class with
@@ -79,9 +80,9 @@ namespace Semisweet.Net
       _checkCertRevocation = checkCertificateRevocation;
     }
 
-    #endregion
+#endregion
 
-    #region Protected Properties
+#region Protected Properties
 
     /// <summary>
     /// Gets or sets the callback used to select a certificate to supply to the remote party.
@@ -129,9 +130,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets or sets a value indicating whether the certificate revocation list is checked
@@ -167,6 +168,7 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

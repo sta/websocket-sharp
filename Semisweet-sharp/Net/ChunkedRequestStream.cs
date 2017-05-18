@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.IO;
 
@@ -44,7 +45,7 @@ namespace Semisweet.Net
 {
   internal class ChunkedRequestStream : RequestStream
   {
-    #region Private Fields
+#region Private Fields
 
     private const int           _bufferLength = 8192;
     private HttpListenerContext _context;
@@ -52,9 +53,9 @@ namespace Semisweet.Net
     private bool                _disposed;
     private bool                _noMoreData;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal ChunkedRequestStream (
       Stream stream, byte[] buffer, int offset, int count, HttpListenerContext context)
@@ -64,9 +65,9 @@ namespace Semisweet.Net
       _decoder = new ChunkStream ((WebHeaderCollection) context.Request.Headers);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal ChunkStream Decoder {
       get {
@@ -78,9 +79,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private void onRead (IAsyncResult asyncResult)
     {
@@ -110,9 +111,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public override IAsyncResult BeginRead (
       byte[] buffer, int offset, int count, AsyncCallback callback, object state)
@@ -206,6 +207,7 @@ namespace Semisweet.Net
       return EndRead (ares);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

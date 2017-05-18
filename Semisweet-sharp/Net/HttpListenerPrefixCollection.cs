@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,14 +53,14 @@ namespace Semisweet.Net
   /// </remarks>
   public class HttpListenerPrefixCollection : ICollection<string>, IEnumerable<string>, IEnumerable
   {
-    #region Private Fields
+#region Private Fields
 
     private HttpListener _listener;
     private List<string> _prefixes;
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal HttpListenerPrefixCollection (HttpListener listener)
     {
@@ -67,9 +68,9 @@ namespace Semisweet.Net
       _prefixes = new List<string> ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the number of prefixes in the collection.
@@ -107,9 +108,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Adds the specified <paramref name="uriPrefix"/> to the collection.
@@ -258,9 +259,9 @@ namespace Semisweet.Net
       return ret;
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     /// <summary>
     /// Gets the enumerator used to iterate through the <see cref="HttpListenerPrefixCollection"/>.
@@ -273,6 +274,7 @@ namespace Semisweet.Net
       return _prefixes.GetEnumerator ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

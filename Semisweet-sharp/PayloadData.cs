@@ -30,11 +30,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+#if !UNITY_WSA
 namespace Semisweet
 {
   internal class PayloadData : IEnumerable<byte>
   {
-    #region Private Fields
+#region Private Fields
 
     private ushort _code;
     private bool   _codeSet;
@@ -44,9 +45,9 @@ namespace Semisweet
     private string _reason;
     private bool   _reasonSet;
 
-    #endregion
+#endregion
 
-    #region Public Fields
+#region Public Fields
 
     /// <summary>
     /// Represents the empty payload data.
@@ -68,9 +69,9 @@ namespace Semisweet
     /// </remarks>
     public static readonly ulong MaxLength;
 
-    #endregion
+#endregion
 
-    #region Static Constructor
+#region Static Constructor
 
     static PayloadData ()
     {
@@ -78,9 +79,9 @@ namespace Semisweet
       MaxLength = Int64.MaxValue;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal PayloadData ()
     {
@@ -116,9 +117,9 @@ namespace Semisweet
       _reasonSet = true;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal ushort Code {
       get {
@@ -164,9 +165,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public byte[] ApplicationData {
       get {
@@ -190,9 +191,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal void Mask (byte[] key)
     {
@@ -200,9 +201,9 @@ namespace Semisweet
         _data[i] = (byte) (_data[i] ^ key[i % 4]);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public IEnumerator<byte> GetEnumerator ()
     {
@@ -220,15 +221,16 @@ namespace Semisweet
       return BitConverter.ToString (_data);
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementations
+#region Explicit Interface Implementations
 
     IEnumerator IEnumerable.GetEnumerator ()
     {
       return GetEnumerator ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

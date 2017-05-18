@@ -30,6 +30,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
@@ -40,22 +41,22 @@ namespace Semisweet.Net
 {
   internal class AuthenticationResponse : AuthenticationBase
   {
-    #region Private Fields
+#region Private Fields
 
     private uint _nonceCount;
 
-    #endregion
+#endregion
 
-    #region Private Constructors
+#region Private Constructors
 
     private AuthenticationResponse (AuthenticationSchemes scheme, NameValueCollection parameters)
       : base (scheme, parameters)
     {
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal AuthenticationResponse (NetworkCredential credentials)
       : this (AuthenticationSchemes.Basic, new NameValueCollection (), credentials, 0)
@@ -83,9 +84,9 @@ namespace Semisweet.Net
         initAsDigest ();
     }
 
-    #endregion
+#endregion
 
-    #region Internal Properties
+#region Internal Properties
 
     internal uint NonceCount {
       get {
@@ -95,9 +96,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public string Cnonce {
       get {
@@ -135,9 +136,9 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
 
-    #region Private Methods
+#region Private Methods
 
     private static string createA1 (string username, string password, string realm)
     {
@@ -192,9 +193,9 @@ namespace Semisweet.Net
       Parameters["response"] = CreateRequestDigest (Parameters);
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static string CreateRequestDigest (NameValueCollection parameters)
     {
@@ -304,9 +305,9 @@ namespace Semisweet.Net
       return output.ToString ();
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public IIdentity ToIdentity ()
     {
@@ -318,6 +319,7 @@ namespace Semisweet.Net
                : null;
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

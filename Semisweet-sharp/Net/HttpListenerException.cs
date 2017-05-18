@@ -37,6 +37,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
@@ -50,7 +51,7 @@ namespace Semisweet.Net
   [Serializable]
   public class HttpListenerException : Win32Exception
   {
-    #region Protected Constructors
+#region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListenerException"/> class from
@@ -68,9 +69,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpListenerException"/> class.
@@ -106,9 +107,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     /// <summary>
     /// Gets the error code that identifies the error that occurred.
@@ -122,6 +123,7 @@ namespace Semisweet.Net
       }
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

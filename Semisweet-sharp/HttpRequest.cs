@@ -33,6 +33,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -43,16 +44,16 @@ namespace Semisweet
 {
   internal class HttpRequest : HttpBase
   {
-    #region Private Fields
+#region Private Fields
 
     private string _method;
     private string _uri;
     private bool   _websocketRequest;
     private bool   _websocketRequestSet;
 
-    #endregion
+#endregion
 
-    #region Private Constructors
+#region Private Constructors
 
     private HttpRequest (string method, string uri, Version version, NameValueCollection headers)
       : base (version, headers)
@@ -61,9 +62,9 @@ namespace Semisweet
       _uri = uri;
     }
 
-    #endregion
+#endregion
 
-    #region Internal Constructors
+#region Internal Constructors
 
     internal HttpRequest (string method, string uri)
       : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
@@ -71,9 +72,9 @@ namespace Semisweet
       Headers["User-Agent"] = "websocket-sharp/1.0";
     }
 
-    #endregion
+#endregion
 
-    #region Public Properties
+#region Public Properties
 
     public AuthenticationResponse AuthenticationResponse {
       get {
@@ -118,9 +119,9 @@ namespace Semisweet
       }
     }
 
-    #endregion
+#endregion
 
-    #region Internal Methods
+#region Internal Methods
 
     internal static HttpRequest CreateConnectRequest (Uri uri)
     {
@@ -179,9 +180,9 @@ namespace Semisweet
       return Read<HttpRequest> (stream, Parse, millisecondsTimeout);
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     public void SetCookies (CookieCollection cookies)
     {
@@ -218,6 +219,7 @@ namespace Semisweet
       return output.ToString ();
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

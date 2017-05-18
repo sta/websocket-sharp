@@ -36,6 +36,7 @@
  */
 #endregion
 
+#if !UNITY_WSA
 using System;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
@@ -48,7 +49,7 @@ namespace Semisweet.Net
   [Serializable]
   public class CookieException : FormatException, ISerializable
   {
-    #region Internal Constructors
+#region Internal Constructors
 
     internal CookieException (string message)
       : base (message)
@@ -60,9 +61,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Protected Constructors
+#region Protected Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieException"/> class from
@@ -80,9 +81,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Constructors
+#region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CookieException"/> class.
@@ -92,9 +93,9 @@ namespace Semisweet.Net
     {
     }
 
-    #endregion
+#endregion
 
-    #region Public Methods
+#region Public Methods
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
@@ -114,9 +115,9 @@ namespace Semisweet.Net
       base.GetObjectData (serializationInfo, streamingContext);
     }
 
-    #endregion
+#endregion
 
-    #region Explicit Interface Implementation
+#region Explicit Interface Implementation
 
     /// <summary>
     /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
@@ -138,6 +139,7 @@ namespace Semisweet.Net
       base.GetObjectData (serializationInfo, streamingContext);
     }
 
-    #endregion
+#endregion
   }
 }
+#endif

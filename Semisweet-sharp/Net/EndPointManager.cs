@@ -44,6 +44,7 @@
  */
 #endregion
 
+ #if !UNITY_WSA
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -226,3 +227,4 @@ namespace Semisweet.Net
     #endregion
   }
 }
+ #endif
