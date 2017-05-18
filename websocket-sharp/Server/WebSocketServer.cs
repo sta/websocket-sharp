@@ -502,8 +502,8 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The set operation does nothing if the server has
-    ///   already started or it is shutting down.
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
     ///   </para>
     ///   <para>
     ///   SECRET AREA will be used as the name if the value is
