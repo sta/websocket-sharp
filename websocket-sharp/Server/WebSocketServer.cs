@@ -548,18 +548,22 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The set operation does nothing if the server has already started or
-    ///   it is shutting down.
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
     ///   </para>
     ///   <para>
-    ///   If you would like to resolve to wait for socket in TIME_WAIT state,
-    ///   you should set this property to <c>true</c>.
+    ///   You should set this property to <c>true</c> if you would
+    ///   like to resolve to wait for socket in TIME_WAIT state.
     ///   </para>
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the server is allowed to be bound to an address that
-    /// is already in use; otherwise, <c>false</c>. The default value is
-    /// <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the server is allowed to be bound to an address
+    ///   that is already in use; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool ReuseAddress {
       get {
