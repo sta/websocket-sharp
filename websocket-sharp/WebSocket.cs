@@ -2864,6 +2864,32 @@ namespace WebSocketSharp
     }
 
     /// <summary>
+    /// Sends the specified <paramref name="data"/> with Opcode.Text using the WebSocket connection.
+    /// </summary>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    public void SendByteArrayAsText(byte[] data)
+    {
+      if (_readyState != WebSocketState.Open)
+      {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (data == null)
+        throw new ArgumentNullException ("data");
+
+      send (Opcode.Text, new MemoryStream(data));
+    }
+
+    /// <summary>
     /// Sends the specified file as the binary data using the WebSocket connection.
     /// </summary>
     /// <param name="fileInfo">

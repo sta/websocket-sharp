@@ -458,6 +458,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends binary <paramref name="data"/> with Opcode.Text to the client on a session.
+    /// </summary>
+    /// <remarks>
+    /// This method is available after the WebSocket connection has been established.
+    /// </remarks>
+    /// <param name="data">
+    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// </param>
+    protected void SendByteArrayAsText(byte[] data)
+    {
+      if (_websocket != null)
+        _websocket.SendByteArrayAsText (data);
+    }
+
+    /// <summary>
     /// Sends the specified <paramref name="file"/> as binary data to the client on a session.
     /// </summary>
     /// <remarks>
