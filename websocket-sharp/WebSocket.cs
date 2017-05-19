@@ -582,6 +582,16 @@ namespace WebSocketSharp
         }
       }
     }
+    
+     /// <summary>
+     /// Gets the TcpClient used for the WebSocket.
+     /// </summary>
+    public TcpClient TcpClient
+    {
+      get {
+        return _tcpClient;
+      }
+    }
 
     /// <summary>
     /// Gets the WebSocket URL used to connect, or accepted.
