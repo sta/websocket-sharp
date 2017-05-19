@@ -782,6 +782,10 @@ namespace WebSocketSharp.Server
       _authSchemes = AuthenticationSchemes.Anonymous;
       _dnsStyle = Uri.CheckHostName (hostname) == UriHostNameType.Dns;
       _listener = new TcpListener (address, port);
+#if NET40
+      if (address == System.Net.IPAddress.IPv6Any)
+        _listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+#endif
       _log = new Logger ();
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
