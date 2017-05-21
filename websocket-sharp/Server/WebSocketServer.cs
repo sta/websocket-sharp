@@ -197,19 +197,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified <paramref name="port"/> and <paramref name="secure"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
+    /// with the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
     /// The new instance listens for the incoming handshake requests on
     /// <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the number of the port
+    /// on which to listen.
     /// </param>
     /// <param name="secure">
-    /// A <see cref="bool"/> that specifies providing secure connections or not.
-    /// <c>true</c> specifies providing secure connections.
+    /// A <see cref="bool"/>: <c>true</c> if the server provides
+    /// secure connections; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
