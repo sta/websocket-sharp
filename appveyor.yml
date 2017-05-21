@@ -1,0 +1,37 @@
+version: 1.0.4.{build}
+
+branches:
+  only:
+    - master
+
+image: Visual Studio 2017
+
+assembly_info:
+  patch: true
+  file: AssemblyInfo.*
+  assembly_version: "{version}"
+  assembly_file_version: "{version}"
+  assembly_informational_version: "{version}"
+
+configuration: Release
+
+before_build:
+  - nuget restore
+  
+build:
+  project: websocket-sharp.sln
+
+test: off
+
+artifacts:
+  - path: 'websocket-sharp\bin\Release\DotNetProjects.*.nupkg'
+
+#uncomment to publish to NuGet
+#deploy:
+#  provider: NuGet
+#  api_key:
+#    secure: OrhpK2cLXXcoWW+hU6xAv3eeKIbATEFbenteoFsi9EfM1yyDof6ZuNKAsA3Vy6vb
+#  artifact: /.*\.nupkg/
+  
+  
+  
