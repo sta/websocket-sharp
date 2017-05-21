@@ -227,8 +227,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="WebSocketServer"/> class with
-    /// the specified <paramref name="address"/> and <paramref name="port"/>.
+    /// Initializes a new instance of the <see cref="WebSocketServer"/> class
+    /// with the specified <paramref name="address"/> and <paramref name="port"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
@@ -240,11 +240,12 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address
-    /// for the server.
+    /// A <see cref="System.Net.IPAddress"/> that represents
+    /// a local IP address of the server.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the number of the port
+    /// on which to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
