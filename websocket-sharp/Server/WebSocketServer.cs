@@ -113,16 +113,16 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The new instance listens for the incoming handshake requests on
-    ///   <paramref name="port"/>.
+    ///   The new instance listens for incoming handshake requests on
+    ///   <see cref="System.Net.IPAddress.Any"/> and <paramref name="port"/>.
     ///   </para>
     ///   <para>
     ///   It provides secure connections if <paramref name="port"/> is 443.
     ///   </para>
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen.
+    /// An <see cref="int"/> that represents the number of
+    /// the port on which to listen.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="port"/> is less than 1 or greater than 65535.
