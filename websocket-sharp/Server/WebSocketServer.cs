@@ -267,19 +267,20 @@ namespace WebSocketSharp.Server
     /// and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// The new instance listens for the incoming handshake requests on
+    /// The new instance listens for incoming handshake requests on
     /// <paramref name="address"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="address">
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address
-    /// for the server.
+    /// A <see cref="System.Net.IPAddress"/> that represents
+    /// the local IP address on which to listen.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the number of
+    /// the port on which to listen.
     /// </param>
     /// <param name="secure">
-    /// A <see cref="bool"/> that specifies providing secure connections or not.
-    /// <c>true</c> specifies providing secure connections.
+    /// A <see cref="bool"/>: <c>true</c> if the new instance provides
+    /// secure connections; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
