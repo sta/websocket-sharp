@@ -303,7 +303,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException ("Not a local IP address.", "address");
 
       if (!port.IsPortNumber ()) {
-        var msg = "It is less than 1 or greater than 65535.";
+        var msg = "Less than 1 or greater than 65535.";
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
