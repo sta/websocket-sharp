@@ -192,7 +192,7 @@ namespace WebSocketSharp.Server
       }
 
       if (!addr.IsLocal ()) {
-        msg = "The IP address is not a local IP address.";
+        msg = "The IP address of the host is not a local IP address.";
         throw new ArgumentException (msg, "url");
       }
 
