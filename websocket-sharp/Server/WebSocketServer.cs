@@ -235,7 +235,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The new instance listens for the incoming handshake requests on
+    ///   The new instance listens for incoming handshake requests on
     ///   <paramref name="address"/> and <paramref name="port"/>.
     ///   </para>
     ///   <para>
@@ -244,11 +244,11 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <param name="address">
     /// A <see cref="System.Net.IPAddress"/> that represents
-    /// a local IP address of the server.
+    /// the local IP address on which to listen.
     /// </param>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen.
+    /// An <see cref="int"/> that represents the number of
+    /// the port on which to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="address"/> is <see langword="null"/>.
