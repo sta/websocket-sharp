@@ -138,8 +138,9 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The new instance listens for the incoming handshake requests on
-    ///   the host and port of <paramref name="url"/>.
+    ///   The new instance listens for incoming handshake requests on
+    ///   the local IP address of the host and the port included in
+    ///   <paramref name="url"/>.
     ///   </para>
     ///   <para>
     ///   It provides secure connections if the scheme of <paramref name="url"/>
@@ -152,7 +153,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </remarks>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the WebSocket URL of the server.
+    /// A <see cref="string"/> that represents the WebSocket URL
+    /// on which to listen.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
