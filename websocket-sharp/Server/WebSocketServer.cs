@@ -496,7 +496,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <value>
     /// An <see cref="int"/> that represents the number of the port
-    /// on which to listen for the incoming handshake requests.
+    /// on which to listen for incoming handshake requests.
     /// </value>
     public int Port {
       get {
