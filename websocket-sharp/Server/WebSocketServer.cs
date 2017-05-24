@@ -139,17 +139,17 @@ namespace WebSocketSharp.Server
     /// <remarks>
     ///   <para>
     ///   The new instance listens for incoming handshake requests on
-    ///   the local IP address of the host and the port included in
-    ///   <paramref name="url"/>.
-    ///   </para>
-    ///   <para>
-    ///   It provides secure connections if the scheme of <paramref name="url"/>
-    ///   is wss.
+    ///   the local IP address of the host of <paramref name="url"/> and
+    ///   the port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
     ///   Either port 80 or 443 is used if <paramref name="url"/> includes
     ///   no port. Port 443 is used if the scheme of <paramref name="url"/>
     ///   is wss; otherwise, port 80 is used.
+    ///   </para>
+    ///   <para>
+    ///   That instance provides secure connections if the scheme of
+    ///   <paramref name="url"/> is wss.
     ///   </para>
     /// </remarks>
     /// <param name="url">
