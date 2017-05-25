@@ -1431,22 +1431,25 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests,
-    /// and closes the WebSocket connections with the specified
-    /// <paramref name="code"/> and <paramref name="reason"/>.
+    /// Stops receiving incoming handshake requests and closes each
+    /// connection with the specified <paramref name="code"/> and
+    /// <paramref name="reason"/>.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the server is not started,
     /// it is shutting down, or it has already stopped.
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values.
-    /// It represents the status code indicating the reason for
-    /// the close.
+    ///   <para>
+    ///   One of the <see cref="CloseStatusCode"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the status code indicating the reason for the close.
+    ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for
-    /// the close. The size must be 123 bytes or less in UTF-8.
+    /// A <see cref="string"/> that represents the reason for the close.
+    /// The size must be 123 bytes or less in UTF-8.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
@@ -1460,7 +1463,8 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is <see cref="CloseStatusCode.NoStatus"/> and
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.NoStatus"/> and
     ///   there is <paramref name="reason"/>.
     ///   </para>
     ///   <para>
