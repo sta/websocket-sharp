@@ -1365,15 +1365,66 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the reason for
     /// the close. The size must be 123 bytes or less in UTF-8.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <para>
+    ///   <paramref name="code"/> is less than 1000 or greater than 4999.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The size of <paramref name="reason"/> is greater than 123 bytes.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="code"/> is 1010 (mandatory extension).
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is 1005 (no status) and
+    ///   there is <paramref name="reason"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="reason"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
     /// <exception cref="SocketException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
     public void Stop (ushort code, string reason)
     {
-      string msg;
-      if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _log.Error (msg);
-        return;
+      if (!code.IsCloseStatusCode ()) {
+        var msg = "Less than 1000 or greater than 4999.";
+        throw new ArgumentOutOfRangeException ("code", msg);
+      }
+
+      if (code == 1010) {
+        var msg = "1010 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!reason.IsNullOrEmpty ()) {
+        if (code == 1005) {
+          var msg = "1005 cannot be used.";
+          throw new ArgumentException (msg, "code");
+        }
+
+        byte[] bytes;
+        if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+          var msg = "It could not be UTF-8-encoded.";
+          throw new ArgumentException (msg, "reason");
+        }
+
+        if (bytes.Length > 123) {
+          var msg = "Its size is greater than 123 bytes.";
+          throw new ArgumentOutOfRangeException ("reason", msg);
+        }
       }
 
       stop (code, reason);
