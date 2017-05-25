@@ -1342,9 +1342,9 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests,
-    /// and closes the WebSocket connections with the specified
-    /// <paramref name="code"/> and <paramref name="reason"/>.
+    /// Stops receiving incoming handshake requests and closes each
+    /// connection with the specified <paramref name="code"/> and
+    /// <paramref name="reason"/>.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the server is not started,
@@ -1362,8 +1362,8 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for
-    /// the close. The size must be 123 bytes or less in UTF-8.
+    /// A <see cref="string"/> that represents the reason for the close.
+    /// The size must be 123 bytes or less in UTF-8.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     ///   <para>
