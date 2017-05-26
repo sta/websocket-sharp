@@ -1294,7 +1294,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Starts receiving the WebSocket handshake requests.
+    /// Starts receiving incoming handshake requests.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the server has already
@@ -1308,7 +1308,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   There is no server certificate.
+    ///   There is no certificate in the configuration.
     ///   </para>
     /// </exception>
     /// <exception cref="SocketException">
