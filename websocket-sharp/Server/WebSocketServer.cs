@@ -1326,8 +1326,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the WebSocket handshake requests,
-    /// and closes the WebSocket connections.
+    /// Stops receiving incoming handshake requests and
+    /// closes each connection.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the server is not started,
