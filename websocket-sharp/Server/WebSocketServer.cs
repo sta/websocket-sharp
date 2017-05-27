@@ -791,7 +791,7 @@ namespace WebSocketSharp.Server
       }
 
       if (configuration.ServerCertificate == null) {
-        message = "There is no server certificate.";
+        message = "There is no certificate in the configuration.";
         return false;
       }
 
