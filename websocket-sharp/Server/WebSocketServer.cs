@@ -1032,7 +1032,7 @@ namespace WebSocketSharp.Server
 
       if (result.PathAndQuery != "/") {
         result = null;
-        message = "It includes the path or query component.";
+        message = "It includes either or both path and query components.";
 
         return false;
       }
