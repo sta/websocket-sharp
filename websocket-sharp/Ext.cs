@@ -1417,11 +1417,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is <see langword="null"/> or empty.
+    /// Determines whether the specified <see cref="string"/> is
+    /// <see langword="null"/> or an empty string.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="value"/> is <see langword="null"/> or empty;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is <see langword="null"/> or
+    /// an empty string; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
