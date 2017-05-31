@@ -603,14 +603,22 @@ namespace WebSocketSharp.Server
     private void abort ()
     {
       lock (_sync) {
-        if (!IsListening)
+        if (_state != ServerState.Start)
           return;
 
         _state = ServerState.ShuttingDown;
       }
 
-      _services.Stop (new CloseEventArgs (CloseStatusCode.ServerError), true, false);
-      _listener.Abort ();
+      try {
+        try {
+          _services.Stop (1006, String.Empty);
+        }
+        finally {
+          _listener.Abort ();
+        }
+      }
+      catch {
+      }
 
       _state = ServerState.Stop;
     }
