@@ -63,7 +63,7 @@ namespace WebSocketSharp.Server
     private System.Net.IPAddress    _address;
     private string                  _hostname;
     private HttpListener            _listener;
-    private Logger                  _logger;
+    private Logger                  _log;
     private int                     _port;
     private Thread                  _receiveThread;
     private string                  _rootPath;
@@ -300,7 +300,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -348,7 +348,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -369,7 +369,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public Logger Log {
       get {
-        return _logger;
+        return _log;
       }
     }
 
@@ -404,7 +404,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -432,7 +432,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -455,7 +455,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -479,7 +479,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -504,7 +504,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false);
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -527,7 +527,7 @@ namespace WebSocketSharp.Server
       set {
         var msg = _state.CheckIfAvailable (true, false, false) ?? value.CheckIfValidWaitTime ();
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -652,7 +652,7 @@ namespace WebSocketSharp.Server
       var usr = _listener.SslConfiguration.ServerCertificate != null;
       var port = EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath);
       if (usr && port) {
-        _logger.Warn ("The server certificate associated with the port number already exists.");
+        _log.Warn ("The server certificate associated with the port number already exists.");
         return null;
       }
 
@@ -682,8 +682,8 @@ namespace WebSocketSharp.Server
       _listener.Prefixes.Add (
         String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
 
-      _logger = _listener.Log;
-      _services = new WebSocketServiceManager (_logger);
+      _log = _listener.Log;
+      _services = new WebSocketServiceManager (_log);
       _sync = new object ();
 
       var os = Environment.OSVersion;
@@ -748,17 +748,17 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _logger.Fatal (ex.ToString ());
+                _log.Fatal (ex.ToString ());
                 ctx.Connection.Close (true);
               }
             });
         }
         catch (HttpListenerException ex) {
-          _logger.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
+          _log.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
           break;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
+          _log.Fatal (ex.ToString ());
           break;
         }
       }
@@ -860,7 +860,7 @@ namespace WebSocketSharp.Server
                 (initializer == null ? "'initializer' is null." : null);
 
       if (msg != null) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
@@ -924,7 +924,7 @@ namespace WebSocketSharp.Server
     {
       var msg = path.CheckIfValidServicePath ();
       if (msg != null) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return false;
       }
 
@@ -939,7 +939,7 @@ namespace WebSocketSharp.Server
       lock (_sync) {
         var msg = _state.CheckIfAvailable (true, false, false) ?? checkIfCertificateExists ();
         if (msg != null) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -957,13 +957,13 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       lock (_sync) {
         if (!checkIfAvailable (false, true, false, false, out msg)) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -995,18 +995,18 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       lock (_sync) {
         if (!checkIfAvailable (false, true, false, false, out msg)) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
@@ -1043,18 +1043,18 @@ namespace WebSocketSharp.Server
     {
       string msg;
       if (!checkIfAvailable (false, true, false, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       if (!WebSocket.CheckParametersForClose (code, reason, false, out msg)) {
-        _logger.Error (msg);
+        _log.Error (msg);
         return;
       }
 
       lock (_sync) {
         if (!checkIfAvailable (false, true, false, false, out msg)) {
-          _logger.Error (msg);
+          _log.Error (msg);
           return;
         }
 
