@@ -1014,8 +1014,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the incoming requests, and closes the connections.
+    /// Stops receiving incoming requests and closes each connection.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     public void Stop ()
     {
       stop (1005, String.Empty);
