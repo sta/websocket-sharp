@@ -1308,7 +1308,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   The ranges for the status code for the close are the following:
+    ///   The ranges are the following:
     ///   </para>
     ///   <list type="bullet">
     ///     <item>
