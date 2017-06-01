@@ -1026,19 +1026,31 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving the incoming requests, and closes the connections with
-    /// the specified <paramref name="code"/> and <paramref name="reason"/> for
-    /// the WebSocket connection close.
+    /// Stops receiving incoming requests and closes each connection.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server is not started,
+    /// it is shutting down, or it has already stopped.
+    /// </remarks>
     /// <param name="code">
-    /// A <see cref="ushort"/> that represents the status code indicating
-    /// the reason for the WebSocket connection close. The status codes are
-    /// defined in <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
-    /// Section 7.4</see> of RFC 6455.
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code
+    ///   indicating the reason for the WebSocket connection close.
+    ///   </para>
+    ///   <para>
+    ///   The status codes are defined in
+    ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
+    ///   Section 7.4</see> of RFC 6455.
+    ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the WebSocket
-    /// connection close. The size must be 123 bytes or less.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for
+    ///   the WebSocket connection close.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 123 bytes or less in UTF-8.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     ///   <para>
