@@ -395,19 +395,6 @@ namespace WebSocketSharp.Server
       stop (new PayloadData (code, reason), !code.IsReserved ());
     }
 
-    internal void Stop (CloseEventArgs e, byte[] frameAsBytes, bool receive)
-    {
-      lock (_sync) {
-        _state = ServerState.ShuttingDown;
-
-        _sweepTimer.Enabled = false;
-        foreach (var session in _sessions.Values.ToList ())
-          session.Context.WebSocket.Close (e, frameAsBytes, receive);
-
-        _state = ServerState.Stop;
-      }
-    }
-
     #endregion
 
     #region Public Methods
