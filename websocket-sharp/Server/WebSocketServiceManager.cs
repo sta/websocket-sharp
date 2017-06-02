@@ -420,20 +420,6 @@ namespace WebSocketSharp.Server
       }
     }
 
-    internal void Stop (CloseEventArgs e, bool send, bool receive)
-    {
-      lock (_sync) {
-        _state = ServerState.ShuttingDown;
-
-        var bytes = send ? WebSocketFrame.CreateCloseFrame (e.PayloadData, false).ToArray () : null;
-        foreach (var host in _hosts.Values)
-          host.Sessions.Stop (e, bytes, receive);
-
-        _hosts.Clear ();
-        _state = ServerState.Stop;
-      }
-    }
-
     #endregion
 
     #region Public Methods
