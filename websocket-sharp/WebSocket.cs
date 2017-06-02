@@ -2236,36 +2236,6 @@ namespace WebSocketSharp
       }
     }
 
-    // As server
-    internal void Close (CloseEventArgs e, byte[] frameAsBytes, bool receive)
-    {
-      lock (_forState) {
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Info ("The closing is already in progress.");
-          return;
-        }
-
-        if (_readyState == WebSocketState.Closed) {
-          _logger.Info ("The connection has already been closed.");
-          return;
-        }
-
-        _readyState = WebSocketState.Closing;
-      }
-
-      e.WasClean = closeHandshake (frameAsBytes, receive, false);
-      releaseServerResources ();
-      releaseCommonResources ();
-
-      _readyState = WebSocketState.Closed;
-      try {
-        OnClose.Emit (this, e);
-      }
-      catch (Exception ex) {
-        _logger.Error (ex.ToString ());
-      }
-    }
-
     // As client
     internal static string CreateBase64Key ()
     {
