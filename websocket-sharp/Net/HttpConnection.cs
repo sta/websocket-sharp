@@ -274,6 +274,11 @@ namespace WebSocketSharp.Net
           return;
         }
 
+        if (nread == 1) {
+           conn._stream.BeginRead(conn._buffer, 0, _bufferLength, onRead, conn);
+           return;
+        }
+
         if (conn.processInput (conn._requestBuffer.GetBuffer (), len)) {
           if (!conn._context.HasError)
             conn._context.Request.FinishInitialization ();

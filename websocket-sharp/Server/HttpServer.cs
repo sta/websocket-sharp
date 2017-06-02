@@ -596,6 +596,9 @@ namespace WebSocketSharp.Server
     /// </summary>
     public event EventHandler<HttpRequestEventArgs> OnTrace;
 
+    public event EventHandler<HttpListenerEventArgs> OnSaveSession = delegate { };
+    public event EventHandler<HttpListenerEventArgs> OnLoadSession = delegate { };
+
     #endregion
 
     #region Private Methods
@@ -692,6 +695,7 @@ namespace WebSocketSharp.Server
 
     private void processRequest (HttpListenerContext context)
     {
+      OnLoadSession(this, new HttpListenerEventArgs(context));
       var method = context.Request.HttpMethod;
       var evt = method == "GET"
                 ? OnGet
@@ -718,6 +722,7 @@ namespace WebSocketSharp.Server
       else
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
 
+      OnSaveSession(this, new HttpListenerEventArgs(context));
       context.Response.Close ();
     }
 
