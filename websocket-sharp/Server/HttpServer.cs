@@ -1061,18 +1061,13 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Start ()
     {
-      lock (_sync) {
-        var msg = _state.CheckIfAvailable (true, false, false) ?? checkIfCertificateExists ();
-        if (msg != null) {
-          _log.Error (msg);
-          return;
-        }
-
-        _services.Start ();
-        startReceiving ();
-
-        _state = ServerState.Start;
+      var msg = checkIfCertificateExists ();
+      if (msg != null) {
+        _log.Error (msg);
+        return;
       }
+
+      start ();
     }
 
     /// <summary>
