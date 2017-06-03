@@ -43,6 +43,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.Text;
 
 namespace WebSocketSharp.Net
@@ -98,7 +99,7 @@ namespace WebSocketSharp.Net
       _context = context;
       _contentLength = -1;
       _headers = new WebHeaderCollection ();
-      _identifier = Guid.NewGuid ();
+      _identifier = Guid.NewGuid();
     }
 
     #endregion
@@ -243,6 +244,22 @@ namespace WebSocketSharp.Net
       get {
         return _context.User != null;
       }
+    }
+
+    /// <summary>
+    /// Gets a <see cref="IPrincipal"/> that is used to obtain identity, authentication and security roles of the requested client.   
+    /// </summary>
+    /// <value>
+    /// A <see cref="IPrincipal"/> object that describes the requesting client, or null if there is no authentication. 
+    /// </value>
+    /// <seealso cref="IPrincipal"/>
+    /// <seealso cref="IsAuthenticated"/>
+    public IPrincipal User
+    {
+        get
+        {
+            return _context.User;
+        }
     }
 
     /// <summary>
