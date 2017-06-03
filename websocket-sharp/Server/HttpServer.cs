@@ -623,6 +623,31 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool checkCertificate (out string message)
+    {
+      message = null;
+
+      if (!_secure)
+        return true;
+
+      var user = _listener.SslConfiguration.ServerCertificate != null;
+
+      var path = _listener.CertificateFolderPath;
+      var port = EndPointListener.CertificateExists (_port, path);
+
+      if (user && port) {
+        _log.Warn ("The certificate associated with the port will be used.");
+        return true;
+      }
+
+      if (!(user || port)) {
+        message = "There is no certificate.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkIfAvailable (
       bool ready, bool start, bool shutting, bool stop, out string message
     )
