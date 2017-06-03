@@ -1059,13 +1059,14 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Starts receiving the HTTP requests.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// There is no certificate.
+    /// </exception>
     public void Start ()
     {
-      var msg = checkIfCertificateExists ();
-      if (msg != null) {
-        _log.Error (msg);
-        return;
-      }
+      string msg;
+      if (!checkCertificate (out msg))
+        throw new InvalidOperationException (msg);
 
       start ();
     }
