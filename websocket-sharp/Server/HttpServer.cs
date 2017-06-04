@@ -677,21 +677,6 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    private string checkIfCertificateExists ()
-    {
-      if (!_secure)
-        return null;
-
-      var usr = _listener.SslConfiguration.ServerCertificate != null;
-      var port = EndPointListener.CertificateExists (_port, _listener.CertificateFolderPath);
-      if (usr && port) {
-        _log.Warn ("The server certificate associated with the port number already exists.");
-        return null;
-      }
-
-      return !(usr || port) ? "The secure connection requires a server certificate." : null;
-    }
-
     private static string convertToString (System.Net.IPAddress address)
     {
       return address.AddressFamily == AddressFamily.InterNetworkV6
