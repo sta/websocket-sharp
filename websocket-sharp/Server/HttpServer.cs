@@ -1057,10 +1057,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Starts receiving the HTTP requests.
+    /// Starts receiving incoming requests.
     /// </summary>
+    /// <remarks>
+    /// This method does nothing if the server has already
+    /// started or it is shutting down.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// There is no certificate.
+    /// There is no certificate used to authenticate the server.
     /// </exception>
     public void Start ()
     {
