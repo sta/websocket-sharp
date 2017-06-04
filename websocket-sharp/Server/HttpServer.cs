@@ -641,7 +641,7 @@ namespace WebSocketSharp.Server
       }
 
       if (!(user || port)) {
-        message = "There is no certificate.";
+        message = "There is no certificate used to authenticate the server.";
         return false;
       }
 
