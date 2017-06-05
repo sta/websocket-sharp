@@ -518,12 +518,24 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the document root path of the server.
     /// The default value is <c>"./Public"</c>.
     /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is an empty string.
+    /// </exception>
     public string RootPath {
       get {
         return _rootPath != null && _rootPath.Length > 0 ? _rootPath : (_rootPath = "./Public");
       }
 
       set {
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
+
         string msg;
         if (!canSet (out msg)) {
           _log.Warn (msg);
