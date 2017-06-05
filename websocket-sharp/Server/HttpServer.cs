@@ -421,15 +421,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the name of the realm associated with the server.
+    /// Gets or sets the realm used for authentication.
     /// </summary>
     /// <remarks>
-    /// If this property is <see langword="null"/> or empty, <c>"SECRET AREA"</c> will be used as
-    /// the name of the realm.
+    ///   <para>
+    ///   SECRET AREA will be used as the name if the value is
+    ///   <see langword="null"/> or an empty string.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
+    ///   </para>
     /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the name of the realm. The default value is
-    /// <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="string"/> or <see langword="null"/>
+    ///   by default.
+    ///   </para>
+    ///   <para>
+    ///   That string represents the name of the realm.
+    ///   </para>
     /// </value>
     public string Realm {
       get {
