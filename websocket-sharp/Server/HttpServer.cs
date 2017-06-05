@@ -623,6 +623,23 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool canSet (out string message)
+    {
+      message = null;
+
+      if (_state == ServerState.Start) {
+        message = "The server has already started.";
+        return false;
+      }
+
+      if (_state == ServerState.ShuttingDown) {
+        message = "The server is shutting down.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkCertificate (out string message)
     {
       message = null;
