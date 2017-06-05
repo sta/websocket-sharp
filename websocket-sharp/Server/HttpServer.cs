@@ -526,7 +526,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     public string RootPath {
       get {
-        return _rootPath != null && _rootPath.Length > 0 ? _rootPath : (_rootPath = "./Public");
+        return _rootPath;
       }
 
       set {
@@ -808,6 +808,7 @@ namespace WebSocketSharp.Server
         String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
 
       _log = _listener.Log;
+      _rootPath = "./Public";
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
 
