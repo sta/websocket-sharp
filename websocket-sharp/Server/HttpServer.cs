@@ -524,13 +524,20 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        var msg = _state.CheckIfAvailable (true, false, false);
-        if (msg != null) {
-          _log.Error (msg);
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
-        _rootPath = value;
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _rootPath = value;
+        }
       }
     }
 
