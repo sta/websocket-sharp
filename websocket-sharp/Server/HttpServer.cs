@@ -753,8 +753,9 @@ namespace WebSocketSharp.Server
     private void receiveRequest ()
     {
       while (true) {
+        HttpListenerContext ctx = null;
         try {
-          var ctx = _listener.GetContext ();
+          ctx = _listener.GetContext ();
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
@@ -766,22 +767,37 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.ToString ());
+                _log.Fatal (ex.Message);
+                _log.Debug (ex.ToString ());
+
                 ctx.Connection.Close (true);
               }
-            });
+            }
+          );
         }
         catch (HttpListenerException ex) {
-          _log.Warn ("Receiving has been stopped.\n  reason: " + ex.Message);
+          if (_state == ServerState.ShuttingDown) {
+            _log.Info ("The receiving is stopped.");
+            break;
+          }
+
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
           break;
         }
         catch (Exception ex) {
-          _log.Fatal (ex.ToString ());
+          _log.Fatal (ex.Message);
+          _log.Debug (ex.ToString ());
+
+          if (ctx != null)
+            ctx.Connection.Close (true);
+
           break;
         }
       }
 
-      if (IsListening)
+      if (_state != ServerState.ShuttingDown)
         abort ();
     }
 
