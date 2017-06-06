@@ -638,19 +638,32 @@ namespace WebSocketSharp.Server
     /// A <see cref="TimeSpan"/> that represents the wait time. The default value is
     /// the same as 1 second.
     /// </value>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is zero or less.
+    /// </exception>
     public TimeSpan WaitTime {
       get {
         return _services.WaitTime;
       }
 
       set {
-        var msg = _state.CheckIfAvailable (true, false, false) ?? value.CheckIfValidWaitTime ();
-        if (msg != null) {
-          _log.Error (msg);
+        string msg;
+        if (!value.CheckWaitTime (out msg))
+          throw new ArgumentException (msg, "value");
+
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
         }
 
-        _services.WaitTime = value;
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _services.WaitTime = value;
+        }
       }
     }
 
