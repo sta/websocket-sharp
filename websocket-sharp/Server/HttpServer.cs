@@ -1141,7 +1141,7 @@ namespace WebSocketSharp.Server
     public void AddWebSocketService<TBehaviorWithNew> (string path)
       where TBehaviorWithNew : WebSocketBehavior, new ()
     {
-      AddWebSocketService<TBehaviorWithNew> (path, () => new TBehaviorWithNew ());
+      _services.AddService<TBehaviorWithNew> (path, null);
     }
 
     /// <summary>
