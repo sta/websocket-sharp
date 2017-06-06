@@ -215,7 +215,7 @@ namespace WebSocketSharp
       message = null;
 
       if (time <= TimeSpan.Zero) {
-        message = "A wait time is zero or less.";
+        message = "Zero or less.";
         return false;
       }
 
