@@ -1164,18 +1164,47 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Removes the WebSocket service with the specified <paramref name="path"/>.
+    /// Removes a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
-    /// This method converts <paramref name="path"/> to URL-decoded string,
-    /// and removes <c>'/'</c> from tail end of <paramref name="path"/>.
+    ///   <para>
+    ///   <paramref name="path"/> is converted to a URL-decoded string and
+    ///   '/' is trimmed from the end of the converted string if any.
+    ///   </para>
+    ///   <para>
+    ///   The service is stopped with close status 1001 (going away)
+    ///   if it has already started.
+    ///   </para>
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the service is successfully found and removed; otherwise, <c>false</c>.
+    /// <c>true</c> if the service is successfully found and removed;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service to find.
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to remove.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    /// </exception>
     public bool RemoveWebSocketService (string path)
     {
       return _services.RemoveService (path);
