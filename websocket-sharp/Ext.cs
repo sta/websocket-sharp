@@ -210,11 +210,6 @@ namespace WebSocketSharp
       return id == null || id.Length == 0 ? "'id' is null or empty." : null;
     }
 
-    internal static string CheckIfValidWaitTime (this TimeSpan time)
-    {
-      return time <= TimeSpan.Zero ? "A wait time is zero or less." : null;
-    }
-
     internal static bool CheckWaitTime (this TimeSpan time, out string message)
     {
       message = null;
