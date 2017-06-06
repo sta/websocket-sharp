@@ -563,7 +563,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the SSL configuration used to authenticate the server and
+    /// Gets the SSL configuration used to authenticate the server and
     /// optionally the client for secure connection.
     /// </summary>
     /// <value>
@@ -573,16 +573,6 @@ namespace WebSocketSharp.Server
     public ServerSslConfiguration SslConfiguration {
       get {
         return _listener.SslConfiguration;
-      }
-
-      set {
-        var msg = _state.CheckIfAvailable (true, false, false);
-        if (msg != null) {
-          _log.Error (msg);
-          return;
-        }
-
-        _listener.SslConfiguration = value;
       }
     }
 
