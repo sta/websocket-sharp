@@ -1145,6 +1145,72 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Adds a WebSocket service with the specified behavior,
+    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// </summary>
+    /// <remarks>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// '/' is trimmed from the end of the converted string if any.
+    /// </remarks>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to add.
+    /// </param>
+    /// <param name="initializer">
+    ///   <para>
+    ///   An <c>Action&lt;TBehaviorWithNew&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called for initializing
+    ///   a new session instance for the service.
+    ///   </para>
+    /// </param>
+    /// <typeparam name="TBehaviorWithNew">
+    ///   <para>
+    ///   The type of the behavior for the service.
+    ///   </para>
+    ///   <para>
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class and
+    ///   must have a public parameterless constructor.
+    ///   </para>
+    /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
+    public void AddWebSocketService<TBehaviorWithNew> (
+      string path, Action<TBehaviorWithNew> initializer
+    )
+      where TBehaviorWithNew : WebSocketBehavior, new ()
+    {
+      _services.AddService<TBehaviorWithNew> (path, initializer);
+    }
+
+    /// <summary>
     /// Gets the contents of the file with the specified <paramref name="path"/>.
     /// </summary>
     /// <returns>
