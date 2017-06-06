@@ -580,13 +580,33 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to find the credentials for an identity used to
-    /// authenticate a client.
+    /// Gets or sets the delegate used to find the credentials
+    /// for an identity.
     /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   No credentials are found if the method invoked by
+    ///   the delegate returns <see langword="null"/> or
+    ///   the value is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the server has
+    ///   already started or it is shutting down.
+    ///   </para>
+    /// </remarks>
     /// <value>
-    /// A <c>Func&lt;<see cref="IIdentity"/>, <see cref="NetworkCredential"/>&gt;</c> delegate
-    /// that references the method(s) used to find the credentials. The default value is
-    /// <see langword="null"/>.
+    ///   <para>
+    ///   A <c>Func&lt;<see cref="IIdentity"/>,
+    ///   <see cref="NetworkCredential"/>&gt;</c> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called for finding
+    ///   the credentials used to authenticate a client.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     public Func<IIdentity, NetworkCredential> UserCredentialsFinder {
       get {
