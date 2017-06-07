@@ -410,10 +410,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the port on which to listen for incoming requests.
+    /// Gets the port of the server.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the number of the port
+    /// on which to listen for incoming requests.
     /// </value>
     public int Port {
       get {
