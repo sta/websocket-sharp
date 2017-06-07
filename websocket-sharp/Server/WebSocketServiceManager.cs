@@ -380,24 +380,6 @@ namespace WebSocketSharp.Server
         return _hosts.TryGetValue (path, out host);
     }
 
-    internal bool Remove (string path)
-    {
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
-
-      WebSocketServiceHost host;
-      lock (_sync) {
-        if (!_hosts.TryGetValue (path, out host))
-          return false;
-
-        _hosts.Remove (path);
-      }
-
-      if (host.State == ServerState.Start)
-        host.Stop (1001, String.Empty);
-
-      return true;
-    }
-
     internal void Start ()
     {
       lock (_sync) {
