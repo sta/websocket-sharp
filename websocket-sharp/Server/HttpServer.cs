@@ -273,10 +273,11 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the local IP address of the server.
+    /// Gets the IP address of the server.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPAddress"/> that represents the local IP address of the server.
+    /// A <see cref="System.Net.IPAddress"/> that represents the local
+    /// IP address on which to listen for incoming requests.
     /// </value>
     public System.Net.IPAddress Address {
       get {
