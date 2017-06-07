@@ -427,18 +427,17 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   SECRET AREA will be used as the name if the value is
+    ///   "SECRET AREA" will be used as the name if the value is
     ///   <see langword="null"/> or an empty string.
     ///   </para>
     ///   <para>
-    ///   The set operation does nothing if the server has already
-    ///   started or it is shutting down.
+    ///   The set operation does nothing if the server has
+    ///   already started or it is shutting down.
     ///   </para>
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> or <see langword="null"/>
-    ///   by default.
+    ///   A <see cref="string"/> or <see langword="null"/> by default.
     ///   </para>
     ///   <para>
     ///   That string represents the name of the realm.
