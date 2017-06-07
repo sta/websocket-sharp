@@ -395,15 +395,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the logging functions.
+    /// Gets the logging function for the server.
     /// </summary>
     /// <remarks>
-    /// The default logging level is <see cref="LogLevel.Error"/>. If you would like to change it,
-    /// you should set the <c>Log.Level</c> property to any of the <see cref="LogLevel"/> enum
-    /// values.
+    /// The default logging level is <see cref="LogLevel.Error"/>.
     /// </remarks>
     /// <value>
-    /// A <see cref="Logger"/> that provides the logging functions.
+    /// A <see cref="Logger"/> that provides the logging function.
     /// </value>
     public Logger Log {
       get {
