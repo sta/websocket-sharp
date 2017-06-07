@@ -1037,45 +1037,46 @@ namespace WebSocketSharp.Server
       _receiveThread.Join (millisecondsTimeout);
     }
 
-    private static bool tryCreateUri (string uriString, out Uri result, out string message)
+    private static bool tryCreateUri (
+      string uriString, out Uri result, out string message
+    )
     {
       result = null;
+      message = null;
 
       var uri = uriString.ToUri ();
       if (uri == null) {
-        message = "An invalid URI string: " + uriString;
+        message = "An invalid URI string.";
         return false;
       }
 
       if (!uri.IsAbsoluteUri) {
-        message = "Not an absolute URI: " + uriString;
+        message = "A relative URI.";
         return false;
       }
 
       var schm = uri.Scheme;
       if (!(schm == "http" || schm == "https")) {
-        message = "The scheme part isn't 'http' or 'https': " + uriString;
+        message = "The scheme part is not 'http' or 'https'.";
         return false;
       }
 
       if (uri.PathAndQuery != "/") {
-        message = "Includes the path or query component: " + uriString;
+        message = "It includes either or both path and query components.";
         return false;
       }
 
       if (uri.Fragment.Length > 0) {
-        message = "Includes the fragment component: " + uriString;
+        message = "It includes the fragment component.";
         return false;
       }
 
       if (uri.Port == 0) {
-        message = "The port part is zero: " + uriString;
+        message = "The port part is zero.";
         return false;
       }
 
       result = uri;
-      message = String.Empty;
-
       return true;
     }
 
