@@ -1084,43 +1084,96 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds the WebSocket service with the specified behavior, <paramref name="path"/>,
-    /// and <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior,
+    /// <paramref name="path"/>, and <paramref name="creator"/>.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   This method converts <paramref name="path"/> to URL-decoded string,
-    ///   and removes <c>'/'</c> from tail end of <paramref name="path"/>.
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="initializer"/> returns an initialized specified typed
-    ///   <see cref="WebSocketBehavior"/> instance.
-    ///   </para>
+    /// <paramref name="path"/> is converted to a URL-decoded string and
+    /// '/' is trimmed from the end of the converted string if any.
     /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the absolute path to the service to add.
+    /// A <see cref="string"/> that represents an absolute path to
+    /// the service to add.
     /// </param>
-    /// <param name="initializer">
-    /// A <c>Func&lt;T&gt;</c> delegate that references the method used to initialize
-    /// a new specified typed <see cref="WebSocketBehavior"/> instance (a new
-    /// <see cref="IWebSocketSession"/> instance).
+    /// <param name="creator">
+    ///   <para>
+    ///   A <c>Func&lt;TBehavior&gt;</c> delegate.
+    ///   </para>
+    ///   <para>
+    ///   It invokes the method called for creating
+    ///   a new session instance for the service.
+    ///   </para>
+    ///   <para>
+    ///   The method must create a new instance of
+    ///   the specified behavior class and return it.
+    ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
-    /// The type of the behavior of the service to add. The TBehavior must inherit
-    /// the <see cref="WebSocketBehavior"/> class.
+    ///   <para>
+    ///   The type of the behavior for the service.
+    ///   </para>
+    ///   <para>
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class.
+    ///   </para>
     /// </typeparam>
-    public void AddWebSocketService<TBehavior> (string path, Func<TBehavior> initializer)
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="path"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="creator"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is not an absolute path.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> includes either or both
+    ///   query and fragment components.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is already in use.
+    ///   </para>
+    /// </exception>
+    public void AddWebSocketService<TBehavior> (
+      string path, Func<TBehavior> creator
+    )
       where TBehavior : WebSocketBehavior
     {
-      var msg = path.CheckIfValidServicePath () ??
-                (initializer == null ? "'initializer' is null." : null);
+      if (path == null)
+        throw new ArgumentNullException ("path");
 
-      if (msg != null) {
-        _log.Error (msg);
-        return;
+      if (creator == null)
+        throw new ArgumentNullException ("creator");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path[0] != '/')
+        throw new ArgumentException ("Not an absolute path.", "path");
+
+      if (path.IndexOfAny (new[] { '?', '#' }) > -1) {
+        var msg = "It includes either or both query and fragment components.";
+        throw new ArgumentException (msg, "path");
       }
 
-      _services.Add<TBehavior> (path, initializer);
+      _services.Add<TBehavior> (path, creator);
     }
 
     /// <summary>
