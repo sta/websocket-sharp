@@ -194,17 +194,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfValidServicePath (this string path)
-    {
-      return path == null || path.Length == 0
-             ? "'path' is null or empty."
-             : path[0] != '/'
-               ? "'path' isn't an absolute path."
-               : path.IndexOfAny (new[] { '?', '#' }) > -1
-                 ? "'path' includes either or both query and fragment components."
-                 : null;
-    }
-
     internal static string CheckIfValidSessionID (this string id)
     {
       return id == null || id.Length == 0 ? "'id' is null or empty." : null;
