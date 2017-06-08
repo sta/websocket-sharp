@@ -427,7 +427,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   "SECRET AREA" will be used as the name if the value is
+    ///   "SECRET AREA" is used as the realm if the value is
     ///   <see langword="null"/> or an empty string.
     ///   </para>
     ///   <para>
