@@ -657,10 +657,10 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        string msg;
-        if (!value.CheckWaitTime (out msg))
-          throw new ArgumentException (msg, "value");
+        if (value <= TimeSpan.Zero)
+          throw new ArgumentException ("Zero or less.", "value");
 
+        string msg;
         if (!canSet (out msg)) {
           _log.Warn (msg);
           return;
