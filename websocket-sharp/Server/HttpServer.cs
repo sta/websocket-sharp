@@ -1311,8 +1311,20 @@ namespace WebSocketSharp.Server
     /// <param name="path">
     /// A <see cref="string"/> that represents the virtual path to the file to find.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="path"/> is an empty string.
+    /// </exception>
     public byte[] GetFile (string path)
     {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
       path = RootPath + path;
       if (_windows)
         path = path.Replace ("/", "\\");
