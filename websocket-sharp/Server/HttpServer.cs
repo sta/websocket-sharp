@@ -513,7 +513,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the document root path of the server.
+    /// Gets or sets the path to the document folder of the server.
     /// </summary>
     /// <remarks>
     /// The set operation does nothing if the server has already
@@ -521,8 +521,8 @@ namespace WebSocketSharp.Server
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents a path to
-    ///   the folder from which to find the requested file.
+    ///   A <see cref="string"/> that represents a path to the folder
+    ///   from which to find the requested file.
     ///   </para>
     ///   <para>
     ///   The default value is "./Public".
