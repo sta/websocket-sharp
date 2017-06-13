@@ -516,8 +516,13 @@ namespace WebSocketSharp.Server
     /// Gets or sets the path to the document folder of the server.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already
-    /// started or it is shutting down.
+    ///   <para>
+    ///   '/' or '\' is trimmed from the end of the value if any.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
+    ///   </para>
     /// </remarks>
     /// <value>
     ///   <para>
@@ -558,7 +563,7 @@ namespace WebSocketSharp.Server
             return;
           }
 
-          _rootPath = value;
+          _rootPath = value.TrimSlashOrBackslashFromEnd ();
         }
       }
     }
