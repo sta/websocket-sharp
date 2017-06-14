@@ -44,6 +44,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
@@ -819,6 +820,20 @@ namespace WebSocketSharp.Server
       return address.AddressFamily == AddressFamily.InterNetworkV6
              ? String.Format ("[{0}]", address.ToString ())
              : address.ToString ();
+    }
+
+    private string createFilePath (string path)
+    {
+      var parent = _rootPath;
+      var child = path.TrimStart ('/', '\\');
+
+      var buff = new StringBuilder (parent, 32);
+      if (parent == "/" || parent == "\\")
+        buff.Append (child);
+      else
+        buff.AppendFormat ("/{0}", child);
+
+      return buff.ToString ().Replace ('\\', '/');
     }
 
     private static string getHost (Uri uri)
