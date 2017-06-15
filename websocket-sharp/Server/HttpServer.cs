@@ -1352,10 +1352,7 @@ namespace WebSocketSharp.Server
       if (path.Length == 0)
         throw new ArgumentException ("An empty string.", "path");
 
-      path = RootPath + path;
-      if (_windows)
-        path = path.Replace ("/", "\\");
-
+      path = createFilePath (path);
       return File.Exists (path) ? File.ReadAllBytes (path) : null;
     }
 
