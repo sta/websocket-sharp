@@ -72,7 +72,6 @@ namespace WebSocketSharp.Server
     private WebSocketServiceManager _services;
     private volatile ServerState    _state;
     private object                  _sync;
-    private bool                    _windows;
 
     #endregion
 
@@ -856,9 +855,6 @@ namespace WebSocketSharp.Server
       _rootPath = "./Public";
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
-
-      var os = Environment.OSVersion;
-      _windows = os.Platform != PlatformID.Unix && os.Platform != PlatformID.MacOSX;
     }
 
     private void processRequest (HttpListenerContext context)
