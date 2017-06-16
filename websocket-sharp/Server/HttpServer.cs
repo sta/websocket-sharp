@@ -1338,7 +1338,15 @@ namespace WebSocketSharp.Server
     /// <paramref name="path"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="path"/> is an empty string.
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is an invalid path.
+    ///   </para>
     /// </exception>
     public byte[] GetFile (string path)
     {
@@ -1347,6 +1355,18 @@ namespace WebSocketSharp.Server
 
       if (path.Length == 0)
         throw new ArgumentException ("An empty string.", "path");
+
+      if (path.IndexOf (':') > -1)
+        throw new ArgumentException ("It contains ':'.", "path");
+
+      if (path.IndexOf ("..") > -1)
+        throw new ArgumentException ("It contains '..'.", "path");
+
+      if (path.IndexOf ("//") > -1)
+        throw new ArgumentException ("It contains '//'.", "path");
+
+      if (path.IndexOf ("\\\\") > -1)
+        throw new ArgumentException ("It contains '\\\\'.", "path");
 
       path = createFilePath (path);
       return File.Exists (path) ? File.ReadAllBytes (path) : null;
