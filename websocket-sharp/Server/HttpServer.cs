@@ -840,16 +840,22 @@ namespace WebSocketSharp.Server
       return uri.HostNameType == UriHostNameType.IPv6 ? uri.Host : uri.DnsSafeHost;
     }
 
-    private void init (string hostname, System.Net.IPAddress address, int port, bool secure)
+    private void init (
+      string hostname, System.Net.IPAddress address, int port, bool secure
+    )
     {
       _hostname = hostname ?? convertToString (address);
       _address = address;
       _port = port;
       _secure = secure;
 
-      _listener = new HttpListener ();
-      _listener.Prefixes.Add (
-        String.Format ("http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port));
+      var lsnr = new HttpListener ();
+      var pref = String.Format (
+                   "http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port
+                 );
+
+      lsnr.Prefixes.Add (pref);
+      _listener = lsnr;
 
       _log = _listener.Log;
       _rootPath = "./Public";
