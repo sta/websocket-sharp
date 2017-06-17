@@ -51,8 +51,7 @@ namespace WebSocketSharp.Server
   {
     #region Private Fields
 
-    private HttpListenerRequest  _request;
-    private HttpListenerResponse _response;
+    private HttpListenerContext _context;
 
     #endregion
 
@@ -60,8 +59,7 @@ namespace WebSocketSharp.Server
 
     internal HttpRequestEventArgs (HttpListenerContext context)
     {
-      _request = context.Request;
-      _response = context.Response;
+      _context = context;
     }
 
     #endregion
@@ -76,7 +74,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public HttpListenerRequest Request {
       get {
-        return _request;
+        return _context.Request;
       }
     }
 
@@ -88,7 +86,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public HttpListenerResponse Response {
       get {
-        return _response;
+        return _context.Response;
       }
     }
 
