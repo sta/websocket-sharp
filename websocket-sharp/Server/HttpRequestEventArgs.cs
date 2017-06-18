@@ -81,7 +81,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the HTTP response data used to return a response to the client.
+    /// Gets the HTTP response data to return to the client.
     /// </summary>
     /// <value>
     /// A <see cref="HttpListenerResponse"/> that represents the response data.
