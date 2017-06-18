@@ -32,19 +32,21 @@ using WebSocketSharp.Net;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Represents the event data for the HTTP request event that the <see cref="HttpServer"/> emits.
+  /// Represents the event data for the HTTP request events of
+  /// the <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   An HTTP request event occurs when the <see cref="HttpServer"/> receives an HTTP request.
+  ///   An HTTP request event occurs when the <see cref="HttpServer"/>
+  ///   receives an HTTP request.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the request data sent from a client,
-  ///   you should access the <see cref="Request"/> property.
+  ///   You should access the <see cref="Request"/> property if you would
+  ///   like to get the request data sent from a client.
   ///   </para>
   ///   <para>
-  ///   And if you would like to get the response data used to return a response,
-  ///   you should access the <see cref="Response"/> property.
+  ///   And you should access the <see cref="Response"/> property if you would
+  ///   like to get the response data to return to the client.
   ///   </para>
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
