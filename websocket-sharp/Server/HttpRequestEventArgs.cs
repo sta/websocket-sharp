@@ -27,6 +27,8 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Text;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
@@ -54,14 +56,16 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private HttpListenerContext _context;
+    private string              _rootPath;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpRequestEventArgs (HttpListenerContext context)
+    internal HttpRequestEventArgs (HttpListenerContext context, string rootPath)
     {
       _context = context;
+      _rootPath = rootPath;
     }
 
     #endregion
@@ -90,6 +94,82 @@ namespace WebSocketSharp.Server
       get {
         return _context.Response;
       }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private string createFilePath (string childPath)
+    {
+      childPath = childPath.TrimStart ('/', '\\');
+
+      var buff = new StringBuilder (_rootPath, 32);
+      if (_rootPath == "/" || _rootPath == "\\")
+        buff.Append (childPath);
+      else
+        buff.AppendFormat ("/{0}", childPath);
+
+      return buff.ToString ().Replace ('\\', '/');
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Reads the file with the specified <paramref name="path"/> from
+    /// the document folder of the <see cref="HttpServer"/>.
+    /// </summary>
+    /// <returns>
+    ///   <para>
+    ///   An array of <see cref="byte"/> or <see langword="null"/>
+    ///   if not found.
+    ///   </para>
+    ///   <para>
+    ///   That array receives the contents of the file.
+    ///   </para>
+    /// </returns>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents a virtual path to
+    /// the file to find from the document folder.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is an invalid path.
+    ///   </para>
+    /// </exception>
+    public byte[] ReadFile (string path)
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path.IndexOf (':') > -1)
+        throw new ArgumentException ("It contains ':'.", "path");
+
+      if (path.IndexOf ("..") > -1)
+        throw new ArgumentException ("It contains '..'.", "path");
+
+      if (path.IndexOf ("//") > -1)
+        throw new ArgumentException ("It contains '//'.", "path");
+
+      if (path.IndexOf ("\\\\") > -1)
+        throw new ArgumentException ("It contains '\\\\'.", "path");
+
+      path = createFilePath (path);
+      return File.Exists (path) ? File.ReadAllBytes (path) : null;
     }
 
     #endregion

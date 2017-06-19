@@ -887,7 +887,7 @@ namespace WebSocketSharp.Server
                                 : null;
 
       if (evt != null)
-        evt (this, new HttpRequestEventArgs (context));
+        evt (this, new HttpRequestEventArgs (context, _rootPath));
       else
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
 
@@ -1354,6 +1354,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="path"/> is an invalid path.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public byte[] GetFile (string path)
     {
       if (path == null)
