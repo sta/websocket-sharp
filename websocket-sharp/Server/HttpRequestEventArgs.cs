@@ -113,6 +113,23 @@ namespace WebSocketSharp.Server
       return buff.ToString ().Replace ('\\', '/');
     }
 
+    private static bool tryReadFile (string path, out byte[] contents)
+    {
+      contents = null;
+
+      if (!File.Exists (path))
+        return false;
+
+      try {
+        contents = File.ReadAllBytes (path);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Public Methods
