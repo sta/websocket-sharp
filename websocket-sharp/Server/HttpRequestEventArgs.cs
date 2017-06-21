@@ -189,6 +189,64 @@ namespace WebSocketSharp.Server
       return File.Exists (path) ? File.ReadAllBytes (path) : null;
     }
 
+    /// <summary>
+    /// Tries to read a file with the specified <paramref name="path"/>
+    /// from the document folder of the <see cref="HttpServer"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the file could successfully be read;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents a virtual path to
+    /// the file to read.
+    /// </param>
+    /// <param name="contents">
+    ///   <para>
+    ///   When this method returns, an array of <see cref="byte"/> or
+    ///   <see langword="null"/> if the file could not be read.
+    ///   </para>
+    ///   <para>
+    ///   That array receives the contents of the file.
+    ///   </para>
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> is an invalid path.
+    ///   </para>
+    /// </exception>
+    public bool TryReadFile (string path, out byte[] contents)
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path.IndexOf (':') > -1)
+        throw new ArgumentException ("It contains ':'.", "path");
+
+      if (path.IndexOf ("..") > -1)
+        throw new ArgumentException ("It contains '..'.", "path");
+
+      if (path.IndexOf ("//") > -1)
+        throw new ArgumentException ("It contains '//'.", "path");
+
+      if (path.IndexOf ("\\\\") > -1)
+        throw new ArgumentException ("It contains '\\\\'.", "path");
+
+      return tryReadFile (createFilePath (path), out contents);
+    }
+
     #endregion
   }
 }
