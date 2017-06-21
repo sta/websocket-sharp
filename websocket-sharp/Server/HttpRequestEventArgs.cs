@@ -185,8 +185,10 @@ namespace WebSocketSharp.Server
       if (path.IndexOf ("\\\\") > -1)
         throw new ArgumentException ("It contains '\\\\'.", "path");
 
-      path = createFilePath (path);
-      return File.Exists (path) ? File.ReadAllBytes (path) : null;
+      byte[] contents;
+      tryReadFile (createFilePath (path), out contents);
+
+      return contents;
     }
 
     /// <summary>
