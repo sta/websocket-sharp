@@ -135,13 +135,13 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Reads the file with the specified <paramref name="path"/> from
+    /// Reads a file with the specified <paramref name="path"/> from
     /// the document folder of the <see cref="HttpServer"/>.
     /// </summary>
     /// <returns>
     ///   <para>
     ///   An array of <see cref="byte"/> or <see langword="null"/>
-    ///   if not found.
+    ///   if the file could not be read.
     ///   </para>
     ///   <para>
     ///   That array receives the contents of the file.
@@ -149,7 +149,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents a virtual path to
-    /// the file to find from the document folder.
+    /// find the file from the document folder.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
