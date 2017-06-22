@@ -56,16 +56,18 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private HttpListenerContext _context;
-    private string              _rootPath;
+    private string              _docRootPath;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpRequestEventArgs (HttpListenerContext context, string rootPath)
+    internal HttpRequestEventArgs (
+      HttpListenerContext context, string documentRootPath
+    )
     {
       _context = context;
-      _rootPath = rootPath;
+      _docRootPath = documentRootPath;
     }
 
     #endregion
@@ -104,8 +106,8 @@ namespace WebSocketSharp.Server
     {
       childPath = childPath.TrimStart ('/', '\\');
 
-      var buff = new StringBuilder (_rootPath, 32);
-      if (_rootPath == "/" || _rootPath == "\\")
+      var buff = new StringBuilder (_docRootPath, 32);
+      if (_docRootPath == "/" || _docRootPath == "\\")
         buff.Append (childPath);
       else
         buff.AppendFormat ("/{0}", childPath);
