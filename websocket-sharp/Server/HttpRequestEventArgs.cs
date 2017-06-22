@@ -201,7 +201,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents a virtual path to
-    /// the file to read.
+    /// find the file from the document folder.
     /// </param>
     /// <param name="contents">
     ///   <para>
