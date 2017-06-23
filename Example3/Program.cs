@@ -93,8 +93,8 @@ namespace Example3
           if (path == "/")
             path += "index.html";
 
-          var content = httpsv.GetFile (path);
-          if (content == null) {
+          byte[] contents;
+          if (!e.TryReadFile (path, out contents)) {
             res.StatusCode = (int) HttpStatusCode.NotFound;
             return;
           }
@@ -108,7 +108,7 @@ namespace Example3
             res.ContentEncoding = Encoding.UTF8;
           }
 
-          res.WriteContent (content);
+          res.WriteContent (contents);
         };
 
       // Add the WebSocket services.
