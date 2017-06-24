@@ -28,6 +28,7 @@
 
 using System;
 using System.IO;
+using System.Security.Principal;
 using System.Text;
 using WebSocketSharp.Net;
 
@@ -95,6 +96,25 @@ namespace WebSocketSharp.Server
     public HttpListenerResponse Response {
       get {
         return _context.Response;
+      }
+    }
+
+    /// <summary>
+    /// Gets the information for the client.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
+    ///   if not authenticated.
+    ///   </para>
+    ///   <para>
+    ///   That instance describes the identity, authentication scheme,
+    ///   and security roles for the client.
+    ///   </para>
+    /// </value>
+    public IPrincipal User {
+      get {
+        return _context.User;
       }
     }
 
