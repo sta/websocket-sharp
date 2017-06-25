@@ -76,10 +76,11 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP request data sent from a client.
+    /// Gets the request data sent from a client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerRequest"/> that represents the request data.
+    /// A <see cref="HttpListenerRequest"/> that provides the methods and
+    /// properties for the request data.
     /// </value>
     public HttpListenerRequest Request {
       get {
