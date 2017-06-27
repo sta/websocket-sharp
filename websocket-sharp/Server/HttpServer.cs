@@ -537,7 +537,15 @@ namespace WebSocketSharp.Server
     /// The value specified for a set operation is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// The value specified for a set operation is an empty string.
+    ///   <para>
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation is an absolute root.
+    ///   </para>
     /// </exception>
     public string RootPath {
       get {
@@ -551,6 +559,16 @@ namespace WebSocketSharp.Server
         if (value.Length == 0)
           throw new ArgumentException ("An empty string.", "value");
 
+        value = value.TrimSlashOrBackslashFromEnd ();
+        if (value == "/")
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (value == "\\")
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (value.Length == 2 && value[1] == ':')
+          throw new ArgumentException ("An absolute root.", "value");
+
         string msg;
         if (!canSet (out msg)) {
           _log.Warn (msg);
@@ -563,7 +581,7 @@ namespace WebSocketSharp.Server
             return;
           }
 
-          _rootPath = value.TrimSlashOrBackslashFromEnd ();
+          _rootPath = value;
         }
       }
     }
