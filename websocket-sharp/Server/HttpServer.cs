@@ -1337,13 +1337,13 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the file with the specified <paramref name="path"/> from
-    /// the document folder of the server.
+    /// Gets the contents of the specified file from the document
+    /// folder of the server.
     /// </summary>
     /// <returns>
     ///   <para>
     ///   An array of <see cref="byte"/> or <see langword="null"/>
-    ///   if not found.
+    ///   if it fails.
     ///   </para>
     ///   <para>
     ///   That array represents the contents of the file.
@@ -1351,7 +1351,7 @@ namespace WebSocketSharp.Server
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents a virtual path to
-    /// the file to find from the document folder.
+    /// find the file from the document folder.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
@@ -1364,7 +1364,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="path"/> is an invalid path.
+    ///   <paramref name="path"/> contains "..".
     ///   </para>
     /// </exception>
     [Obsolete ("This method will be removed.")]
