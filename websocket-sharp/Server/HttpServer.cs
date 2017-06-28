@@ -839,18 +839,13 @@ namespace WebSocketSharp.Server
              : address.ToString ();
     }
 
-    private string createFilePath (string path)
+    private string createFilePath (string childPath)
     {
-      var parent = _rootPath;
-      var child = path.TrimStart ('/', '\\');
-
-      var buff = new StringBuilder (parent, 32);
-      if (parent == "/" || parent == "\\")
-        buff.Append (child);
-      else
-        buff.AppendFormat ("/{0}", child);
-
-      return buff.ToString ().Replace ('\\', '/');
+      childPath = childPath.TrimStart ('/', '\\');
+      return new StringBuilder (_rootPath, 32)
+             .AppendFormat ("/{0}", childPath)
+             .ToString ()
+             .Replace ('\\', '/');
     }
 
     private static string getHost (Uri uri)
