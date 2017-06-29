@@ -127,14 +127,10 @@ namespace WebSocketSharp.Server
     private string createFilePath (string childPath)
     {
       childPath = childPath.TrimStart ('/', '\\');
-
-      var buff = new StringBuilder (_docRootPath, 32);
-      if (_docRootPath == "/" || _docRootPath == "\\")
-        buff.Append (childPath);
-      else
-        buff.AppendFormat ("/{0}", childPath);
-
-      return buff.ToString ().Replace ('\\', '/');
+      return new StringBuilder (_docRootPath, 32)
+             .AppendFormat ("/{0}", childPath)
+             .ToString ()
+             .Replace ('\\', '/');
     }
 
     private static bool tryReadFile (string path, out byte[] contents)
