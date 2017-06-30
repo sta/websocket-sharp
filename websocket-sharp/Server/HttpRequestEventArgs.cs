@@ -203,12 +203,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to read a file with the specified <paramref name="path"/>
-    /// from the document folder of the <see cref="HttpServer"/>.
+    /// Tries to read the specified file from the document folder of
+    /// the <see cref="HttpServer"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the file could successfully be read;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
     /// A <see cref="string"/> that represents a virtual path to
@@ -217,7 +216,7 @@ namespace WebSocketSharp.Server
     /// <param name="contents">
     ///   <para>
     ///   When this method returns, an array of <see cref="byte"/> or
-    ///   <see langword="null"/> if the file could not be read.
+    ///   <see langword="null"/> if it fails.
     ///   </para>
     ///   <para>
     ///   That array receives the contents of the file.
@@ -234,7 +233,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="path"/> is an invalid path.
+    ///   <paramref name="path"/> contains "..".
     ///   </para>
     /// </exception>
     public bool TryReadFile (string path, out byte[] contents)
