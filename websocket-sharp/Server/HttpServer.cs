@@ -62,12 +62,12 @@ namespace WebSocketSharp.Server
     #region Private Fields
 
     private System.Net.IPAddress    _address;
+    private string                  _docRootPath;
     private string                  _hostname;
     private HttpListener            _listener;
     private Logger                  _log;
     private int                     _port;
     private Thread                  _receiveThread;
-    private string                  _rootPath;
     private bool                    _secure;
     private WebSocketServiceManager _services;
     private volatile ServerState    _state;
@@ -329,6 +329,80 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets the path to the document folder of the server.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   '/' or '\' is trimmed from the end of the value if any.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the server has already
+    ///   started or it is shutting down.
+    ///   </para>
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="string"/> that represents a path to the folder
+    ///   from which to find the requested file.
+    ///   </para>
+    ///   <para>
+    ///   The default value is "./Public".
+    ///   </para>
+    /// </value>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation is an absolute root.
+    ///   </para>
+    /// </exception>
+    public string DocumentRootPath {
+      get {
+        return _docRootPath;
+      }
+
+      set {
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
+
+        value = value.TrimSlashOrBackslashFromEnd ();
+        if (value == "/")
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (value == "\\")
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (value.Length == 2 && value[1] == ':')
+          throw new ArgumentException ("An absolute root.", "value");
+
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _docRootPath = value;
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether the server has started.
     /// </summary>
     /// <value>
@@ -508,80 +582,6 @@ namespace WebSocketSharp.Server
           }
 
           _listener.ReuseAddress = value;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Gets or sets the path to the document folder of the server.
-    /// </summary>
-    /// <remarks>
-    ///   <para>
-    ///   '/' or '\' is trimmed from the end of the value if any.
-    ///   </para>
-    ///   <para>
-    ///   The set operation does nothing if the server has already
-    ///   started or it is shutting down.
-    ///   </para>
-    /// </remarks>
-    /// <value>
-    ///   <para>
-    ///   A <see cref="string"/> that represents a path to the folder
-    ///   from which to find the requested file.
-    ///   </para>
-    ///   <para>
-    ///   The default value is "./Public".
-    ///   </para>
-    /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The value specified for a set operation is an empty string.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The value specified for a set operation is an absolute root.
-    ///   </para>
-    /// </exception>
-    public string RootPath {
-      get {
-        return _rootPath;
-      }
-
-      set {
-        if (value == null)
-          throw new ArgumentNullException ("value");
-
-        if (value.Length == 0)
-          throw new ArgumentException ("An empty string.", "value");
-
-        value = value.TrimSlashOrBackslashFromEnd ();
-        if (value == "/")
-          throw new ArgumentException ("An absolute root.", "value");
-
-        if (value == "\\")
-          throw new ArgumentException ("An absolute root.", "value");
-
-        if (value.Length == 2 && value[1] == ':')
-          throw new ArgumentException ("An absolute root.", "value");
-
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
-        lock (_sync) {
-          if (!canSet (out msg)) {
-            _log.Warn (msg);
-            return;
-          }
-
-          _rootPath = value;
         }
       }
     }
@@ -842,7 +842,7 @@ namespace WebSocketSharp.Server
     private string createFilePath (string childPath)
     {
       childPath = childPath.TrimStart ('/', '\\');
-      return new StringBuilder (_rootPath, 32)
+      return new StringBuilder (_docRootPath, 32)
              .AppendFormat ("/{0}", childPath)
              .ToString ()
              .Replace ('\\', '/');
@@ -862,6 +862,8 @@ namespace WebSocketSharp.Server
       _port = port;
       _secure = secure;
 
+      _docRootPath = "./Public";
+
       var lsnr = new HttpListener ();
       var pref = String.Format (
                    "http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port
@@ -871,7 +873,6 @@ namespace WebSocketSharp.Server
       _listener = lsnr;
 
       _log = _listener.Log;
-      _rootPath = "./Public";
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
     }
@@ -900,7 +901,7 @@ namespace WebSocketSharp.Server
                                 : null;
 
       if (evt != null)
-        evt (this, new HttpRequestEventArgs (context, _rootPath));
+        evt (this, new HttpRequestEventArgs (context, _docRootPath));
       else
         context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
 

@@ -82,7 +82,7 @@ namespace Example3
       //httpsv.ReuseAddress = true;
 
       // Set the document root path.
-      httpsv.RootPath = ConfigurationManager.AppSettings["RootPath"];
+      httpsv.DocumentRootPath = ConfigurationManager.AppSettings["DocumentRootPath"];
 
       // Set the HTTP GET request event.
       httpsv.OnGet += (sender, e) => {
