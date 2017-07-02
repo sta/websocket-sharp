@@ -1009,7 +1009,14 @@ namespace WebSocketSharp.Server
 
     private void startReceiving ()
     {
-      _listener.Start ();
+      try {
+        _listener.Start ();
+      }
+      catch (Exception ex) {
+        var msg = "The underlying HttpListener has failed to start.";
+        throw new InvalidOperationException (msg, ex);
+      }
+
       _receiveThread = new Thread (new ThreadStart (receiveRequest));
       _receiveThread.IsBackground = true;
       _receiveThread.Start ();
@@ -1439,7 +1446,15 @@ namespace WebSocketSharp.Server
     /// started or it is shutting down.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// There is no certificate used to authenticate the server.
+    ///   <para>
+    ///   There is no certificate used to authenticate the server.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The underlying <see cref="HttpListener"/> has failed to start.
+    ///   </para>
     /// </exception>
     public void Start ()
     {
