@@ -1079,7 +1079,7 @@ namespace WebSocketSharp.Server
 
     private void stopReceiving (int millisecondsTimeout)
     {
-      _listener.Close ();
+      _listener.Stop ();
       _receiveThread.Join (millisecondsTimeout);
     }
 
