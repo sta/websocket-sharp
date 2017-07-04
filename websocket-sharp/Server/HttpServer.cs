@@ -82,7 +82,8 @@ namespace WebSocketSharp.Server
     /// Initializes a new instance of the <see cref="HttpServer"/> class.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming requests on port 80.
+    /// The new instance listens for incoming requests on
+    /// <see cref="System.Net.IPAddress.Any"/> and port 80.
     /// </remarks>
     public HttpServer ()
     {
