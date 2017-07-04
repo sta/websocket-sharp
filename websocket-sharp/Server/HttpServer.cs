@@ -2,7 +2,7 @@
 /*
  * HttpServer.cs
  *
- * A simple HTTP server that allows to accept the WebSocket connection requests.
+ * A simple HTTP server that allows to accept WebSocket handshake requests.
  *
  * The MIT License
  *
@@ -52,10 +52,11 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Provides a simple HTTP server that allows to accept the WebSocket connection requests.
+  /// Provides a simple HTTP server that allows to accept
+  /// WebSocket handshake requests.
   /// </summary>
   /// <remarks>
-  /// The HttpServer class can provide multiple WebSocket services.
+  /// This class can provide multiple WebSocket services.
   /// </remarks>
   public class HttpServer
   {
