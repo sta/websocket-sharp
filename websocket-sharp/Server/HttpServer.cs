@@ -172,18 +172,19 @@ namespace WebSocketSharp.Server
     /// the specified <paramref name="port"/> and <paramref name="secure"/>.
     /// </summary>
     /// <remarks>
-    /// An instance initialized by this constructor listens for the incoming requests on
-    /// <paramref name="port"/>.
+    /// The new instance listens for incoming requests on
+    /// <see cref="System.Net.IPAddress.Any"/> and <paramref name="port"/>.
     /// </remarks>
     /// <param name="port">
-    /// An <see cref="int"/> that represents the port number on which to listen.
+    /// An <see cref="int"/> that represents the number of the port
+    /// on which to listen.
     /// </param>
     /// <param name="secure">
-    /// A <see cref="bool"/> that indicates providing a secure connection or not.
-    /// (<c>true</c> indicates providing a secure connection.)
+    /// A <see cref="bool"/>: <c>true</c> if the new instance provides
+    /// secure connections; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="port"/> isn't between 1 and 65535 inclusive.
+    /// <paramref name="port"/> is less than 1 or greater than 65535.
     /// </exception>
     public HttpServer (int port, bool secure)
     {
