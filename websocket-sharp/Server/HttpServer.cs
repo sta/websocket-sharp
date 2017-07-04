@@ -944,15 +944,12 @@ namespace WebSocketSharp.Server
             }
           );
         }
-        catch (HttpListenerException ex) {
-          if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The receiving is stopped.");
-            break;
-          }
-
-          _log.Fatal (ex.Message);
-          _log.Debug (ex.ToString ());
-
+        catch (HttpListenerException) {
+          _log.Info ("The underlying listener is stopped.");
+          break;
+        }
+        catch (InvalidOperationException) {
+          _log.Info ("The underlying listener is stopped.");
           break;
         }
         catch (Exception ex) {
