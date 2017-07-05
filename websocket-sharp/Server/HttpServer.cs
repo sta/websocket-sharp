@@ -880,7 +880,7 @@ namespace WebSocketSharp.Server
       string hostname, System.Net.IPAddress address, int port, bool secure
     )
     {
-      _hostname = hostname ?? convertToString (address);
+      _hostname = hostname;
       _address = address;
       _port = port;
       _secure = secure;
@@ -889,7 +889,7 @@ namespace WebSocketSharp.Server
 
       var lsnr = new HttpListener ();
       var pref = String.Format (
-                   "http{0}://{1}:{2}/", secure ? "s" : "", _hostname, port
+                   "http{0}://{1}:{2}/", secure ? "s" : "", hostname, port
                  );
 
       lsnr.Prefixes.Add (pref);
