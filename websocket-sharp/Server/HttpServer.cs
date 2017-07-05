@@ -276,13 +276,15 @@ namespace WebSocketSharp.Server
         throw new ArgumentNullException ("address");
 
       if (!address.IsLocal ())
-        throw new ArgumentException ("Not a local IP address: " + address, "address");
+        throw new ArgumentException ("Not a local IP address.", "address");
 
-      if (!port.IsPortNumber ())
-        throw new ArgumentOutOfRangeException (
-          "port", "Not between 1 and 65535 inclusive: " + port);
+      if (!port.IsPortNumber ()) {
+        var msg = "Less than 1 or greater than 65535.";
+        throw new ArgumentOutOfRangeException ("port", msg);
+      }
 
-      init (null, address, port, secure);
+      var host = convertToString (address);
+      init (host, address, port, secure);
     }
 
     #endregion
