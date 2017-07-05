@@ -117,17 +117,21 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpServer"/> class with
-    /// the specified HTTP URL.
+    /// the specified <paramref name="url"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   An instance initialized by this constructor listens for the incoming requests on
-    ///   the host name and port in <paramref name="url"/>.
+    ///   The new instance listens for incoming requests on the IP address of the
+    ///   host of <paramref name="url"/> and the port of <paramref name="url"/>.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="url"/> doesn't include a port, either port 80 or 443 is used on
-    ///   which to listen. It's determined by the scheme (http or https) in <paramref name="url"/>.
-    ///   (Port 80 if the scheme is http.)
+    ///   Either port 80 or 443 is used if <paramref name="url"/> includes
+    ///   no port. Port 443 is used if the scheme of <paramref name="url"/>
+    ///   is https; otherwise, port 80 is used.
+    ///   </para>
+    ///   <para>
+    ///   The new instance provides secure connections if the scheme of
+    ///   <paramref name="url"/> is https.
     ///   </para>
     /// </remarks>
     /// <param name="url">
