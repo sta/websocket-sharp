@@ -287,8 +287,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentOutOfRangeException ("port", msg);
       }
 
-      var host = convertToString (address);
-      init (host, address, port, secure);
+      init (address.ToString (true), address, port, secure);
     }
 
     #endregion
