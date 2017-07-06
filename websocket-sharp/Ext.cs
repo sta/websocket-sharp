@@ -879,6 +879,15 @@ namespace WebSocketSharp
       return new List<TSource> (source);
     }
 
+    internal static string ToString (
+      this System.Net.IPAddress address, bool bracketIPv6
+    )
+    {
+      return bracketIPv6 && address.AddressFamily == AddressFamily.InterNetworkV6
+             ? String.Format ("[{0}]", address.ToString ())
+             : address.ToString ();
+    }
+
     internal static ushort ToUInt16 (this byte[] source, ByteOrder sourceOrder)
     {
       return BitConverter.ToUInt16 (source.ToHostOrder (sourceOrder), 0);
