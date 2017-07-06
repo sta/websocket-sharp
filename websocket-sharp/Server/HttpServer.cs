@@ -899,15 +899,7 @@ namespace WebSocketSharp.Server
       _secure = secure;
 
       _docRootPath = "./Public";
-
-      var lsnr = new HttpListener ();
-      var pref = String.Format (
-                   "http{0}://{1}:{2}/", secure ? "s" : "", hostname, port
-                 );
-
-      lsnr.Prefixes.Add (pref);
-      _listener = lsnr;
-
+      _listener = createListener (_hostname, _port, _secure);
       _log = _listener.Log;
       _services = new WebSocketServiceManager (_log);
       _sync = new object ();
