@@ -871,6 +871,19 @@ namespace WebSocketSharp.Server
              .Replace ('\\', '/');
     }
 
+    private static HttpListener createListener (
+      string hostname, int port, bool secure
+    )
+    {
+      var lsnr = new HttpListener ();
+
+      var schm = secure ? "https" : "http";
+      var pref = String.Format ("{0}://{1}:{2}/", schm, hostname, port);
+      lsnr.Prefixes.Add (pref);
+
+      return lsnr;
+    }
+
     private static string getHost (Uri uri)
     {
       return uri.HostNameType == UriHostNameType.IPv6 ? uri.Host : uri.DnsSafeHost;
