@@ -854,13 +854,6 @@ namespace WebSocketSharp.Server
       return true;
     }
 
-    private static string convertToString (System.Net.IPAddress address)
-    {
-      return address.AddressFamily == AddressFamily.InterNetworkV6
-             ? String.Format ("[{0}]", address.ToString ())
-             : address.ToString ();
-    }
-
     private string createFilePath (string childPath)
     {
       childPath = childPath.TrimStart ('/', '\\');
