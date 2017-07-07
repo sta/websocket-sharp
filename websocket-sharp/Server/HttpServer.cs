@@ -876,11 +876,6 @@ namespace WebSocketSharp.Server
       return lsnr;
     }
 
-    private static string getHost (Uri uri)
-    {
-      return uri.HostNameType == UriHostNameType.IPv6 ? uri.Host : uri.DnsSafeHost;
-    }
-
     private void init (
       string hostname, System.Net.IPAddress address, int port, bool secure
     )
