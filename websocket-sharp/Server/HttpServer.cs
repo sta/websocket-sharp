@@ -164,7 +164,7 @@ namespace WebSocketSharp.Server
       if (!tryCreateUri (url, out uri, out msg))
         throw new ArgumentException (msg, "url");
 
-      var host = getHost (uri);
+      var host = uri.GetDnsSafeHost (true);
 
       var addr = host.ToIPAddress ();
       if (addr == null) {
