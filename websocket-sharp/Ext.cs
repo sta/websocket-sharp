@@ -405,6 +405,13 @@ namespace WebSocketSharp
       return idx > 0 ? original.Substring (0, idx) : original;
     }
 
+    internal static string GetDnsSafeHost (this Uri uri, bool bracketIPv6)
+    {
+      return bracketIPv6 && uri.HostNameType == UriHostNameType.IPv6
+             ? uri.Host
+             : uri.DnsSafeHost;
+    }
+
     internal static string GetMessage (this CloseStatusCode code)
     {
       return code == CloseStatusCode.ProtocolError
