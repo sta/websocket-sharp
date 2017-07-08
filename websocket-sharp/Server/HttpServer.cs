@@ -920,7 +920,7 @@ namespace WebSocketSharp.Server
       if (evt != null)
         evt (this, new HttpRequestEventArgs (context, _docRootPath));
       else
-        context.Response.StatusCode = (int) HttpStatusCode.NotImplemented;
+        context.Response.StatusCode = 501; // Not Implemented
 
       context.Response.Close ();
     }
