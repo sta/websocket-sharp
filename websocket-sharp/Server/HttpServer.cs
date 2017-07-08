@@ -836,17 +836,19 @@ namespace WebSocketSharp.Server
       if (!_secure)
         return true;
 
-      var user = _listener.SslConfiguration.ServerCertificate != null;
+      var byUser = _listener.SslConfiguration.ServerCertificate != null;
 
       var path = _listener.CertificateFolderPath;
-      var port = EndPointListener.CertificateExists (_port, path);
+      var withPort = EndPointListener.CertificateExists (_port, path);
 
-      if (user && port) {
+      var both = byUser && withPort;
+      if (both) {
         _log.Warn ("The certificate associated with the port will be used.");
         return true;
       }
 
-      if (!(user || port)) {
+      var either = byUser || withPort;
+      if (!either) {
         message = "There is no certificate used to authenticate the server.";
         return false;
       }
