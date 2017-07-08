@@ -927,8 +927,10 @@ namespace WebSocketSharp.Server
 
     private void processRequest (HttpListenerWebSocketContext context)
     {
+      var path = context.RequestUri.AbsolutePath;
+
       WebSocketServiceHost host;
-      if (!_services.InternalTryGetServiceHost (context.RequestUri.AbsolutePath, out host)) {
+      if (!_services.InternalTryGetServiceHost (path, out host)) {
         context.Close (HttpStatusCode.NotImplemented);
         return;
       }
