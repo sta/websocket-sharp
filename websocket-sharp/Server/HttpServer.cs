@@ -1029,7 +1029,7 @@ namespace WebSocketSharp.Server
         _listener.Start ();
       }
       catch (Exception ex) {
-        var msg = "The underlying HttpListener has failed to start.";
+        var msg = "The underlying listener has failed to start.";
         throw new InvalidOperationException (msg, ex);
       }
 
