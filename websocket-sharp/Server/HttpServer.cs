@@ -398,6 +398,15 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An empty string.", "value");
 
         value = value.TrimSlashOrBackslashFromEnd ();
+
+        string full = null;
+        try {
+          full = Path.GetFullPath (value);
+        }
+        catch (Exception ex) {
+          throw new ArgumentException ("An invalid path string.", "value", ex);
+        }
+
         if (value == "/")
           throw new ArgumentException ("An absolute root.", "value");
 
@@ -405,6 +414,12 @@ namespace WebSocketSharp.Server
           throw new ArgumentException ("An absolute root.", "value");
 
         if (value.Length == 2 && value[1] == ':')
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (full == "/")
+          throw new ArgumentException ("An absolute root.", "value");
+
+        if (full.Length == 2 && full[1] == ':')
           throw new ArgumentException ("An absolute root.", "value");
 
         string msg;
