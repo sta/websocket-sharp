@@ -419,6 +419,7 @@ namespace WebSocketSharp.Server
         if (full == "/")
           throw new ArgumentException ("An absolute root.", "value");
 
+        full = full.TrimSlashOrBackslashFromEnd ();
         if (full.Length == 2 && full[1] == ':')
           throw new ArgumentException ("An absolute root.", "value");
 
