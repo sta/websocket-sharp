@@ -956,7 +956,14 @@ namespace WebSocketSharp.Server
         );
       }
 
-      _listener.Start ();
+      try {
+        _listener.Start ();
+      }
+      catch (Exception ex) {
+        var msg = "The underlying listener has failed to start.";
+        throw new InvalidOperationException (msg, ex);
+      }
+
       _receiveThread = new Thread (new ThreadStart (receiveRequest));
       _receiveThread.IsBackground = true;
       _receiveThread.Start ();
@@ -1310,9 +1317,12 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   There is no certificate in the configuration.
     ///   </para>
-    /// </exception>
-    /// <exception cref="SocketException">
-    /// The underlying <see cref="TcpListener"/> has failed to start.
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The underlying <see cref="TcpListener"/> has failed to start.
+    ///   </para>
     /// </exception>
     public void Start ()
     {
