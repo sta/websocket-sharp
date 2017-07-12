@@ -382,6 +382,12 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
+    ///   The value specified for a set operation is an invalid path string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
     ///   The value specified for a set operation is an absolute root.
     ///   </para>
     /// </exception>
