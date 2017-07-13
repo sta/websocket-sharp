@@ -1026,7 +1026,14 @@ namespace WebSocketSharp.Server
 
     private void stopReceiving (int millisecondsTimeout)
     {
-      _listener.Stop ();
+      try {
+        _listener.Stop ();
+      }
+      catch (Exception ex) {
+        var msg = "The underlying listener has failed to stop.";
+        throw new InvalidOperationException (msg, ex);
+      }
+
       _receiveThread.Join (millisecondsTimeout);
     }
 
@@ -1343,7 +1350,7 @@ namespace WebSocketSharp.Server
     /// This method does nothing if the server is not started,
     /// it is shutting down, or it has already stopped.
     /// </remarks>
-    /// <exception cref="SocketException">
+    /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
     public void Stop ()
@@ -1404,7 +1411,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    /// <exception cref="SocketException">
+    /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
     public void Stop (ushort code, string reason)
@@ -1484,7 +1491,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
-    /// <exception cref="SocketException">
+    /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
     public void Stop (CloseStatusCode code, string reason)
