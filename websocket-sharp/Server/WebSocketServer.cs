@@ -866,8 +866,9 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                var ctx =
-                  cl.GetWebSocketContext (null, _secure, _sslConfigInUse, _log);
+                var ctx = new TcpListenerWebSocketContext (
+                            cl, null, _secure, _sslConfigInUse, _log
+                          );
 
                 if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
                   return;
@@ -875,7 +876,7 @@ namespace WebSocketSharp.Server
                 processRequest (ctx);
               }
               catch (Exception ex) {
-                _log.Fatal (ex.Message);
+                _log.Error (ex.Message);
                 _log.Debug (ex.ToString ());
 
                 cl.Close ();
@@ -885,7 +886,7 @@ namespace WebSocketSharp.Server
         }
         catch (SocketException ex) {
           if (_state == ServerState.ShuttingDown) {
-            _log.Info ("The receiving is stopped.");
+            _log.Info ("The underlying listener is stopped.");
             break;
           }
 
