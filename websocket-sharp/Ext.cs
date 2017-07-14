@@ -487,16 +487,6 @@ namespace WebSocketSharp
       return unquote ? val.Unquote () : val;
     }
 
-    internal static TcpListenerWebSocketContext GetWebSocketContext (
-      this TcpClient tcpClient,
-      string protocol,
-      bool secure,
-      ServerSslConfiguration sslConfig,
-      Logger logger)
-    {
-      return new TcpListenerWebSocketContext (tcpClient, protocol, secure, sslConfig, logger);
-    }
-
     internal static byte[] InternalToByteArray (this ushort value, ByteOrder order)
     {
       var bytes = BitConverter.GetBytes (value);
