@@ -327,16 +327,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the server accepts
-    /// a handshake request without checking the request URI.
+    /// Gets or sets a value indicating whether the server accepts every
+    /// handshake request without checking the request URI.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already
-    /// started or it is shutting down.
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the server accepts a handshake request without
+    ///   <c>true</c> if the server accepts every handshake request without
     ///   checking the request URI; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
