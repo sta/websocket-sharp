@@ -1311,8 +1311,8 @@ namespace WebSocketSharp.Server
     /// Starts receiving incoming handshake requests.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server has already
-    /// started or it is shutting down.
+    /// This method does nothing if the server has already started or
+    /// it is shutting down.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
