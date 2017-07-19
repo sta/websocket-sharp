@@ -670,8 +670,8 @@ namespace WebSocketSharp.Server
     /// the WebSocket Ping or Close.
     /// </summary>
     /// <remarks>
-    /// The set operation does nothing if the server has already
-    /// started or it is shutting down.
+    /// The set operation does nothing if the server has
+    /// already started or it is shutting down.
     /// </remarks>
     /// <value>
     ///   <para>
