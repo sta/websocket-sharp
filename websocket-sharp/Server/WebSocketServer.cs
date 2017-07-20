@@ -1379,8 +1379,12 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less in UTF-8.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 123 bytes or less in UTF-8.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     ///   <para>
