@@ -1212,7 +1212,7 @@ namespace WebSocketSharp.Server
     /// </summary>
     /// <remarks>
     /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// / is trimmed from the end of the converted string if any.
+    /// '/' is trimmed from the end of the converted string if any.
     /// </remarks>
     /// <param name="path">
     /// A <see cref="string"/> that represents an absolute path to
@@ -1229,9 +1229,13 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </param>
     /// <typeparam name="TBehaviorWithNew">
-    /// The type of the behavior for the service. It must inherit
-    /// the <see cref="WebSocketBehavior"/> class and it must have
-    /// a public parameterless constructor.
+    ///   <para>
+    ///   The type of the behavior for the service.
+    ///   </para>
+    ///   <para>
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class and
+    ///   have a public parameterless constructor.
+    ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
