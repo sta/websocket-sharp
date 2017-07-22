@@ -160,7 +160,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="url"/> is empty.
+    ///   <paramref name="url"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
