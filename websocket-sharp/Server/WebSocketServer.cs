@@ -1278,7 +1278,7 @@ namespace WebSocketSharp.Server
     /// <remarks>
     ///   <para>
     ///   <paramref name="path"/> is converted to a URL-decoded string and
-    ///   / is trimmed from the end of the converted string if any.
+    ///   '/' is trimmed from the end of the converted string if any.
     ///   </para>
     ///   <para>
     ///   The service is stopped with close status 1001 (going away)
@@ -1298,7 +1298,7 @@ namespace WebSocketSharp.Server
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="path"/> is empty.
+    ///   <paramref name="path"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
