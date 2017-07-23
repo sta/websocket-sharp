@@ -2,8 +2,6 @@
 /*
  * WebSocketServer.cs
  *
- * A C# implementation of the WebSocket protocol server.
- *
  * The MIT License
  *
  * Copyright (c) 2012-2015 sta.blockhead
