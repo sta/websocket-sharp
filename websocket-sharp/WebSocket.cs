@@ -2422,7 +2422,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection, and releases all associated resources.
+    /// Closes the connection.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
