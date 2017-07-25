@@ -2456,15 +2456,15 @@ namespace WebSocketSharp
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="code"/> is 1011 (server error) and
-    ///   it cannot be used by clients.
+    ///   <paramref name="code"/> is 1011 (server error).
+    ///   It cannot be used by clients.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1010 (mandatory extension) and
-    ///   it cannot be used by servers.
+    ///   <paramref name="code"/> is 1010 (mandatory extension).
+    ///   It cannot be used by servers.
     ///   </para>
     /// </exception>
     public void Close (ushort code)
