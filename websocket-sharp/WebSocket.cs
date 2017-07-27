@@ -2613,22 +2613,25 @@ namespace WebSocketSharp
         throw new ArgumentException (msg, "code");
       }
 
-      if (!reason.IsNullOrEmpty ()) {
-        if (code == 1005) {
-          var msg = "1005 cannot be used.";
-          throw new ArgumentException (msg, "code");
-        }
+      if (reason.IsNullOrEmpty ()) {
+        close (code, String.Empty);
+        return;
+      }
 
-        byte[] bytes;
-        if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
-          var msg = "It could not be UTF-8-encoded.";
-          throw new ArgumentException (msg, "reason");
-        }
+      if (code == 1005) {
+        var msg = "1005 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
 
-        if (bytes.Length > 123) {
-          var msg = "Its size is greater than 123 bytes.";
-          throw new ArgumentOutOfRangeException ("reason", msg);
-        }
+      byte[] bytes;
+      if (!reason.TryGetUTF8EncodedBytes (out bytes)) {
+        var msg = "It could not be UTF-8-encoded.";
+        throw new ArgumentException (msg, "reason");
+      }
+
+      if (bytes.Length > 123) {
+        var msg = "Its size is greater than 123 bytes.";
+        throw new ArgumentOutOfRangeException ("reason", msg);
       }
 
       close (code, reason);
