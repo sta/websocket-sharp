@@ -2825,12 +2825,14 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (CloseStatusCode code)
     {
-      string msg;
-      if (!CheckParametersForClose (code, null, _client, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
+      if (_client && code == CloseStatusCode.ServerError) {
+        var msg = "ServerError cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
 
-        return;
+      if (!_client && code == CloseStatusCode.MandatoryExtension) {
+        var msg = "MandatoryExtension cannot be used.";
+        throw new ArgumentException (msg, "code");
       }
 
       closeAsync ((ushort) code, String.Empty);
