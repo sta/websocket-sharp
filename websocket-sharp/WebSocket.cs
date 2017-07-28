@@ -2730,16 +2730,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection asynchronously, and releases
-    /// all associated resources.
+    /// Closes the connection asynchronously.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Closing or Closed.
+    ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does not wait for the close to be complete.
+    ///   And this method does nothing if the current state of
+    ///   the connection is Closing or Closed.
     ///   </para>
     /// </remarks>
     public void CloseAsync ()
