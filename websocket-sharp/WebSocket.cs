@@ -2767,12 +2767,19 @@ namespace WebSocketSharp
     /// </param>
     public void CloseAsync (ushort code)
     {
-      string msg;
-      if (!CheckParametersForClose (code, null, _client, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in closing the connection.", null);
+      if (!code.IsCloseStatusCode ()) {
+        var msg = "Less than 1000 or greater than 4999.";
+        throw new ArgumentOutOfRangeException ("code", msg);
+      }
 
-        return;
+      if (_client && code == 1011) {
+        var msg = "1011 cannot be used.";
+        throw new ArgumentException (msg, "code");
+      }
+
+      if (!_client && code == 1010) {
+        var msg = "1010 cannot be used.";
+        throw new ArgumentException (msg, "code");
       }
 
       closeAsync (code, String.Empty);
