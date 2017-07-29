@@ -2807,22 +2807,41 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection asynchronously with the specified
-    /// <paramref name="code"/>, and releases all associated resources.
+    /// Closes the connection asynchronously with the specified
+    /// <paramref name="code"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Closing or Closed.
+    ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does not wait for the close to be complete.
+    ///   And this method does nothing if the current state of
+    ///   the connection is Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values that represents
-    /// the status code indicating the reason for the close.
+    ///   <para>
+    ///   One of the <see cref="CloseStatusCode"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the status code indicating the reason for the close.
+    ///   </para>
     /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
+    ///   </para>
+    /// </exception>
     public void CloseAsync (CloseStatusCode code)
     {
       if (_client && code == CloseStatusCode.ServerError) {
