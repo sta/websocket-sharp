@@ -2968,27 +2968,66 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the WebSocket connection asynchronously with the specified
-    /// <paramref name="code"/> and <paramref name="reason"/>, and releases
-    /// all associated resources.
+    /// Closes the connection asynchronously with the specified
+    /// <paramref name="code"/> and <paramref name="reason"/>.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Closing or Closed.
+    ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does not wait for the close to be complete.
+    ///   And this method does nothing if the current state of
+    ///   the connection is Closing or Closed.
     ///   </para>
     /// </remarks>
     /// <param name="code">
-    /// One of the <see cref="CloseStatusCode"/> enum values that represents
-    /// the status code indicating the reason for the close.
+    ///   <para>
+    ///   One of the <see cref="CloseStatusCode"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the status code indicating the reason for the close.
+    ///   </para>
     /// </param>
     /// <param name="reason">
-    /// A <see cref="string"/> that represents the reason for the close.
-    /// The size must be 123 bytes or less.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 123 bytes or less in UTF-8.
+    ///   </para>
     /// </param>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.ServerError"/>.
+    ///   It cannot be used by clients.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
+    ///   It cannot be used by servers.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is
+    ///   <see cref="CloseStatusCode.NoStatus"/> and
+    ///   there is <paramref name="reason"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="reason"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="reason"/> is greater than 123 bytes.
+    /// </exception>
     public void CloseAsync (CloseStatusCode code, string reason)
     {
       if (_client && code == CloseStatusCode.ServerError) {
