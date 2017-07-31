@@ -2074,35 +2074,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static bool CheckParametersForClose (
-      CloseStatusCode code, string reason, bool client, out string message
-    )
-    {
-      message = null;
-
-      if (code == CloseStatusCode.NoStatus && !reason.IsNullOrEmpty ()) {
-        message = "'code' cannot have a reason.";
-        return false;
-      }
-
-      if (code == CloseStatusCode.MandatoryExtension && !client) {
-        message = "'code' cannot be used by a server.";
-        return false;
-      }
-
-      if (code == CloseStatusCode.ServerError && client) {
-        message = "'code' cannot be used by a client.";
-        return false;
-      }
-
-      if (!reason.IsNullOrEmpty () && reason.UTF8Encode ().Length > 123) {
-        message = "The size of 'reason' is greater than the allowable max size.";
-        return false;
-      }
-
-      return true;
-    }
-
     internal static string CheckPingParameter (string message, out byte[] bytes)
     {
       bytes = message.UTF8Encode ();
