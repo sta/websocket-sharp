@@ -3726,15 +3726,15 @@ namespace WebSocketSharp
     #region Explicit Interface Implementations
 
     /// <summary>
-    /// Closes the WebSocket connection, and releases all associated resources.
+    /// Closes the connection and releases all associated resources.
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Closing or Closed.
+    ///   This method closes the connection with close status 1001 (going away).
     ///   </para>
     ///   <para>
-    ///   This method closes the connection with status code 1001 (going away).
+    ///   And this method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     void IDisposable.Dispose ()
