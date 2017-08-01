@@ -2085,11 +2085,6 @@ namespace WebSocketSharp
       return data == null ? "'data' is null." : null;
     }
 
-    internal static string CheckSendParameter (FileInfo file)
-    {
-      return file == null ? "'file' is null." : null;
-    }
-
     internal static string CheckSendParameter (string data)
     {
       return data == null ? "'data' is null." : null;
