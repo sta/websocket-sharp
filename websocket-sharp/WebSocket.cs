@@ -3082,12 +3082,14 @@ namespace WebSocketSharp
     /// </exception>
     public bool Ping (string message)
     {
-      if (message == null)
-        throw new ArgumentNullException ("message");
+      if (message.IsNullOrEmpty ())
+        return ping (EmptyBytes);
 
       byte[] bytes;
-      if (!message.TryGetUTF8EncodedBytes (out bytes))
-        throw new ArgumentException ("It could not be UTF-8-encoded.", "message");
+      if (!message.TryGetUTF8EncodedBytes (out bytes)) {
+        var msg = "It could not be UTF-8-encoded.";
+        throw new ArgumentException (msg, "message");
+      }
 
       if (bytes.Length > 125) {
         var msg = "Its size is greater than 125 bytes.";
