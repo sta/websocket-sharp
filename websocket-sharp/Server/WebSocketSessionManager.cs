@@ -557,13 +557,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping to every client in the WebSocket service.
+    /// Sends a ping to every client in the WebSocket service.
     /// </summary>
     /// <returns>
-    /// A <c>Dictionary&lt;string, bool&gt;</c> that contains a collection of pairs of
-    /// a session ID and a value indicating whether the manager received a Pong from
-    /// each client in a time.
+    ///   <para>
+    ///   A <c>Dictionary&lt;string, bool&gt;</c>.
+    ///   </para>
+    ///   <para>
+    ///   It represents a collection of pairs of a session ID and
+    ///   a value indicating whether a pong has been received from
+    ///   its client within a time.
+    ///   </para>
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
     public Dictionary<string, bool> Broadping ()
     {
       if (_state != ServerState.Start) {
