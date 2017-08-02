@@ -596,19 +596,27 @@ namespace WebSocketSharp.Server
     /// </param>
     public Dictionary<string, bool> Broadping (string message)
     {
-      if (message == null || message.Length == 0)
-        return Broadping ();
-
-      byte[] data = null;
-      var msg = _state.CheckIfAvailable (false, true, false) ??
-                WebSocket.CheckPingParameter (message, out data);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        return null;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
 
-      return Broadping (WebSocketFrame.CreatePingFrame (data, false).ToArray (), _waitTime);
+      if (message.IsNullOrEmpty ())
+        return Broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
+
+      byte[] bytes;
+      if (!message.TryGetUTF8EncodedBytes (out bytes)) {
+        var msg = "It could not be UTF-8-encoded.";
+        throw new ArgumentException (msg, "message");
+      }
+
+      if (bytes.Length > 125) {
+        var msg = "Its size is greater than 125 bytes.";
+        throw new ArgumentOutOfRangeException ("message", msg);
+      }
+
+      var frame = WebSocketFrame.CreatePingFrame (bytes, false);
+      return Broadping (frame.ToArray (), _waitTime);
     }
 
     /// <summary>
