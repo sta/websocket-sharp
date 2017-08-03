@@ -2074,12 +2074,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static string CheckPingParameter (string message, out byte[] bytes)
-    {
-      bytes = message.UTF8Encode ();
-      return bytes.Length > 125 ? "A message has greater than the allowable max size." : null;
-    }
-
     internal static string CheckSendParameter (byte[] data)
     {
       return data == null ? "'data' is null." : null;
