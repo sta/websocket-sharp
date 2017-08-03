@@ -614,6 +614,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public Dictionary<string, bool> Broadping (string message)
     {
       if (_state != ServerState.Start) {
