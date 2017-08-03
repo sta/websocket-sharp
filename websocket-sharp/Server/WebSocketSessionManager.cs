@@ -572,6 +572,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="InvalidOperationException">
     /// The current state of the manager is not Start.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public Dictionary<string, bool> Broadping ()
     {
       if (_state != ServerState.Start) {
