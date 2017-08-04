@@ -453,19 +453,32 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> asynchronously to every client in
-    /// the WebSocket service.
+    /// Sends the specified <paramref name="data"/> asynchronously to
+    /// every client in the WebSocket service.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that represents
+    /// the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <see cref="Action"/> delegate that references the method(s) called when
-    /// the send is complete.
+    ///   <para>
+    ///   An <see cref="Action"/> delegate or
+    ///   <see langword="null"/> if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called when
+    ///   the send is complete.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     public void BroadcastAsync (byte[] data, Action completed)
     {
       if (_state != ServerState.Start) {
