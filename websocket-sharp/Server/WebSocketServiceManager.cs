@@ -793,21 +793,21 @@ namespace WebSocketSharp.Server
     ///   A <c>Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt;</c>.
     ///   </para>
     ///   <para>
-    ///   It represents a collection of pairs of a service path and
-    ///   another collection of pairs of a session ID and a value
-    ///   indicating whether a pong has been received within a time
-    ///   from its client.
+    ///   It represents a collection of pairs of a service path and another
+    ///   collection of pairs of a session ID and a value indicating whether
+    ///   a pong has been received from its client within a time.
     ///   </para>
     /// </returns>
     /// <param name="message">
-    /// A <see cref="string"/> that represents a message to send.
-    /// The size must be 125 bytes or less in UTF-8.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the message to send.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 125 bytes or less in UTF-8.
+    ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the manager is not Start.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="message"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="message"/> could not be UTF-8-encoded.
