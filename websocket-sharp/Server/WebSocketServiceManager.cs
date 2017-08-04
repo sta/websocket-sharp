@@ -765,10 +765,9 @@ namespace WebSocketSharp.Server
     ///   A <c>Dictionary&lt;string, Dictionary&lt;string, bool&gt;&gt;</c>.
     ///   </para>
     ///   <para>
-    ///   It represents a collection of pairs of a service path and
-    ///   another collection of pairs of a session ID and a value
-    ///   indicating whether a pong has been received within a time
-    ///   from its client.
+    ///   It represents a collection of pairs of a service path and another
+    ///   collection of pairs of a session ID and a value indicating whether
+    ///   a pong has been received from its client within a time.
     ///   </para>
     /// </returns>
     /// <exception cref="InvalidOperationException">
