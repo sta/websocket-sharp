@@ -823,8 +823,8 @@ namespace WebSocketSharp.Server
         throw new InvalidOperationException (msg);
       }
 
-      if (message == null)
-        throw new ArgumentNullException ("message");
+      if (message.IsNullOrEmpty ())
+        return broadping (WebSocketFrame.EmptyPingBytes, _waitTime);
 
       byte[] bytes;
       if (!message.TryGetUTF8EncodedBytes (out bytes)) {
