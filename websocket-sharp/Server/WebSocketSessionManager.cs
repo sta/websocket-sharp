@@ -400,11 +400,19 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> to every client in the WebSocket service.
+    /// Sends the specified <paramref name="data"/> to
+    /// every client in the WebSocket service.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents the binary data to send.
+    /// An array of <see cref="byte"/> that represents
+    /// the binary data to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     public void Broadcast (byte[] data)
     {
       if (_state != ServerState.Start) {
