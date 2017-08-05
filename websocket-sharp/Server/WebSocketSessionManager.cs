@@ -430,11 +430,21 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends text <paramref name="data"/> to every client in the WebSocket service.
+    /// Sends the specified <paramref name="data"/> to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// </exception>
     public void Broadcast (string data)
     {
       if (_state != ServerState.Start) {
