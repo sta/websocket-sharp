@@ -579,36 +579,41 @@ namespace WebSocketSharp.Server
     /// </param>
     public void BroadcastAsync (Stream stream, int length, Action completed)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ??
-                WebSocket.CheckSendParameters (stream, length);
-
-      if (msg != null) {
-        _logger.Error (msg);
-        return;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
 
-      stream.ReadBytesAsync (
-        length,
-        data => {
-          var len = data.Length;
-          if (len == 0) {
-            _logger.Error ("The data cannot be read from 'stream'.");
-            return;
-          }
+      if (stream == null)
+        throw new ArgumentNullException ("stream");
 
-          if (len < length)
-            _logger.Warn (
-              String.Format (
-                "The data with 'length' cannot be read from 'stream':\n  expected: {0}\n  actual: {1}",
-                length,
-                len));
+      if (!stream.CanRead)
+        throw new ArgumentException ("It cannot be read.", "stream");
 
-          if (len <= WebSocket.FragmentLength)
-            broadcast (Opcode.Binary, data, completed);
-          else
-            broadcast (Opcode.Binary, new MemoryStream (data), completed);
-        },
-        ex => _logger.Fatal (ex.ToString ()));
+      if (length < 1)
+        throw new ArgumentException ("Less than 1.", "length");
+
+      var bytes = stream.ReadBytes (length);
+
+      var len = bytes.Length;
+      if (len == 0) {
+        var msg = "No data could be read from it.";
+        throw new ArgumentException (msg, "stream");
+      }
+
+      if (len < length) {
+        _logger.Warn (
+          String.Format (
+            "Only {0} byte(s) of data could be read from the specified stream.",
+            len
+          )
+        );
+      }
+
+      if (len <= WebSocket.FragmentLength)
+        broadcastAsync (Opcode.Binary, bytes, completed);
+      else
+        broadcastAsync (Opcode.Binary, new MemoryStream (bytes), completed);
     }
 
     /// <summary>
