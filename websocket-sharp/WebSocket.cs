@@ -2074,11 +2074,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static string CheckSendParameter (string data)
-    {
-      return data == null ? "'data' is null." : null;
-    }
-
     internal static string CheckSendParameters (Stream stream, int length)
     {
       return stream == null
