@@ -2074,17 +2074,6 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static string CheckSendParameters (Stream stream, int length)
-    {
-      return stream == null
-             ? "'stream' is null."
-             : !stream.CanRead
-               ? "'stream' cannot be read."
-               : length < 1
-                 ? "'length' is less than 1."
-                 : null;
-    }
-
     // As server
     internal void Close (HttpResponse response)
     {
