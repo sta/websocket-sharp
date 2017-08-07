@@ -1052,13 +1052,16 @@ namespace WebSocketSharp.Server
     /// </param>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
-      var msg = _state.CheckIfAvailable (false, true, false) ?? id.CheckIfValidSessionID ();
-      if (msg != null) {
-        _logger.Error (msg);
-        session = null;
-
-        return false;
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
       }
+
+      if (id == null)
+        throw new ArgumentNullException ("id");
+
+      if (id.Length == 0)
+        throw new ArgumentException ("An empty string.", "id");
 
       return tryGetSession (id, out session);
     }
