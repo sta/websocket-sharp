@@ -468,6 +468,79 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends the specified <paramref name="length"/> of data from
+    /// the specified <paramref name="stream"/> to every client in
+    /// the WebSocket service.
+    /// </summary>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> from which to read the binary data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that specifies the number of bytes to send.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="stream"/> cannot be read.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    public void Broadcast (Stream stream, int length)
+    {
+      if (_state != ServerState.Start) {
+        var msg = "The current state of the manager is not Start.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (stream == null)
+        throw new ArgumentNullException ("stream");
+
+      if (!stream.CanRead)
+        throw new ArgumentException ("It cannot be read.", "stream");
+
+      if (length < 1)
+        throw new ArgumentException ("Less than 1.", "length");
+
+      var bytes = stream.ReadBytes (length);
+
+      var len = bytes.Length;
+      if (len == 0) {
+        var msg = "No data could be read from it.";
+        throw new ArgumentException (msg, "stream");
+      }
+
+      if (len < length) {
+        _logger.Warn (
+          String.Format (
+            "Only {0} byte(s) of data could be read from the specified stream.",
+            len
+          )
+        );
+      }
+
+      if (len <= WebSocket.FragmentLength)
+        broadcast (Opcode.Binary, bytes, null);
+      else
+        broadcast (Opcode.Binary, new MemoryStream (bytes), null);
+    }
+
+    /// <summary>
     /// Sends the specified <paramref name="data"/> asynchronously to
     /// every client in the WebSocket service.
     /// </summary>
