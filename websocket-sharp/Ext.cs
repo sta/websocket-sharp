@@ -163,17 +163,6 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static string CheckIfAvailable (
-      this WebSocketState state, bool connecting, bool open, bool closing, bool closed)
-    {
-      return (!connecting && state == WebSocketState.Connecting) ||
-             (!open && state == WebSocketState.Open) ||
-             (!closing && state == WebSocketState.Closing) ||
-             (!closed && state == WebSocketState.Closed)
-             ? "This operation isn't available in: " + state.ToString ().ToLower ()
-             : null;
-    }
-
     internal static string CheckIfValidProtocols (this string[] protocols)
     {
       return protocols.Contains (
