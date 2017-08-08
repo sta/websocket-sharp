@@ -1037,19 +1037,36 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the session with the specified <paramref name="id"/>.
+    /// Tries to get the session instance with the specified
+    /// <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the session is successfully found; otherwise, <c>false</c>.
+    /// <c>true</c> if the session is successfully found;
+    /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that represents the ID of
+    /// the session to find.
     /// </param>
     /// <param name="session">
-    /// When this method returns, a <see cref="IWebSocketSession"/> instance that
-    /// provides the access to the information in the session, or <see langword="null"/>
-    /// if it's not found. This parameter is passed uninitialized.
+    ///   <para>
+    ///   When this method returns, a <see cref="IWebSocketSession"/>
+    ///   instance or <see langword="null"/> if not found.
+    ///   </para>
+    ///   <para>
+    ///   That session instance provides the function to access
+    ///   the information in the session.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the manager is not Start.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="id"/> is an empty string.
+    /// </exception>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
       if (_state != ServerState.Start) {
