@@ -164,16 +164,6 @@ namespace WebSocketSharp
     }
 
     internal static string CheckIfAvailable (
-      this ServerState state, bool ready, bool start, bool shutting)
-    {
-      return (!ready && (state == ServerState.Ready || state == ServerState.Stop)) ||
-             (!start && state == ServerState.Start) ||
-             (!shutting && state == ServerState.ShuttingDown)
-             ? "This operation isn't available in: " + state.ToString ().ToLower ()
-             : null;
-    }
-
-    internal static string CheckIfAvailable (
       this WebSocketState state, bool connecting, bool open, bool closing, bool closed)
     {
       return (!connecting && state == WebSocketState.Connecting) ||
