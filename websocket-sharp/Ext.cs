@@ -184,11 +184,6 @@ namespace WebSocketSharp
                : null;
     }
 
-    internal static string CheckIfValidSessionID (this string id)
-    {
-      return id == null || id.Length == 0 ? "'id' is null or empty." : null;
-    }
-
     internal static bool CheckWaitTime (this TimeSpan time, out string message)
     {
       message = null;
