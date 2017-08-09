@@ -309,14 +309,8 @@ namespace WebSocketSharp.Server
 
     private bool tryGetSession (string id, out IWebSocketSession session)
     {
-      bool ret;
       lock (_sync)
-        ret = _sessions.TryGetValue (id, out session);
-
-      if (!ret)
-        _logger.Error ("A session with the specified ID isn't found:\n  ID: " + id);
-
-      return ret;
+        return _sessions.TryGetValue (id, out session);
     }
 
     #endregion
