@@ -162,8 +162,19 @@ namespace WebSocketSharp.Server
     /// </param>
     public IWebSocketSession this[string id] {
       get {
+        if (_state != ServerState.Start) {
+          var msg = "The current state of the manager is not Start.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (id == null)
+          throw new ArgumentNullException ("id");
+
+        if (id.Length == 0)
+          throw new ArgumentException ("An empty string.", "id");
+
         IWebSocketSession session;
-        TryGetSession (id, out session);
+        tryGetSession (id, out session);
 
         return session;
       }
