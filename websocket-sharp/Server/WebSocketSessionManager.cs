@@ -1076,8 +1076,8 @@ namespace WebSocketSharp.Server
     ///   instance or <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   That session instance provides the function to access
-    ///   the information in the session.
+    ///   That session instance provides the function to
+    ///   access the information in the session.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
