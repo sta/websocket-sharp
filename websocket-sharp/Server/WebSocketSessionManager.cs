@@ -167,9 +167,6 @@ namespace WebSocketSharp.Server
     /// A <see cref="string"/> that represents the ID of
     /// the session to find.
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
@@ -178,11 +175,6 @@ namespace WebSocketSharp.Server
     /// </exception>
     public IWebSocketSession this[string id] {
       get {
-        if (_state != ServerState.Start) {
-          var msg = "The current state of the manager is not Start.";
-          throw new InvalidOperationException (msg);
-        }
-
         if (id == null)
           throw new ArgumentNullException ("id");
 
@@ -336,8 +328,17 @@ namespace WebSocketSharp.Server
 
     private bool tryGetSession (string id, out IWebSocketSession session)
     {
-      lock (_sync)
+      session = null;
+
+      if (_state != ServerState.Start)
+        return false;
+
+      lock (_sync) {
+        if (_state != ServerState.Start)
+          return false;
+
         return _sessions.TryGetValue (id, out session);
+      }
     }
 
     #endregion
@@ -1079,9 +1080,6 @@ namespace WebSocketSharp.Server
     ///   the information in the session.
     ///   </para>
     /// </param>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the manager is not Start.
-    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
@@ -1090,11 +1088,6 @@ namespace WebSocketSharp.Server
     /// </exception>
     public bool TryGetSession (string id, out IWebSocketSession session)
     {
-      if (_state != ServerState.Start) {
-        var msg = "The current state of the manager is not Start.";
-        throw new InvalidOperationException (msg);
-      }
-
       if (id == null)
         throw new ArgumentNullException ("id");
 
