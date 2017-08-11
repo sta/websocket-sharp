@@ -879,15 +879,31 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping to the client on the session with the specified <paramref name="id"/>.
+    /// Sends a ping to the client using the specified session.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the manager receives a Pong from the client in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the send has done with no error and
+    /// a pong from the client has been received within
+    /// a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that represents the ID of
+    /// the session to find.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    /// </exception>
     public bool PingTo (string id)
     {
       IWebSocketSession session;
