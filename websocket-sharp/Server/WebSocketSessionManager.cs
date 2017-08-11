@@ -891,7 +891,12 @@ namespace WebSocketSharp.Server
     public bool PingTo (string id)
     {
       IWebSocketSession session;
-      return TryGetSession (id, out session) && session.Context.WebSocket.Ping ();
+      if (!TryGetSession (id, out session)) {
+        var msg = "The session could not be found.";
+        throw new ArgumentException (msg, "id");
+      }
+
+      return session.Context.WebSocket.Ping ();
     }
 
     /// <summary>
