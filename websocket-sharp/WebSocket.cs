@@ -3033,12 +3033,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends a ping with the specified <paramref name="message"/> using
-    /// the WebSocket connection.
+    /// Sends a ping with <paramref name="message"/> using the WebSocket
+    /// connection.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the sending a ping has done with no error and
-    /// a pong has been received within a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
     ///   <para>
