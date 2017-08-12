@@ -882,13 +882,11 @@ namespace WebSocketSharp.Server
     /// Sends a ping to the client using the specified session.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the send has done with no error and
-    /// a pong from the client has been received within
-    /// a time; otherwise, <c>false</c>.
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received from the client within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of
-    /// the session to find.
+    /// A <see cref="string"/> that represents the ID of the session to find.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
