@@ -916,19 +916,47 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a Ping with the specified <paramref name="message"/> to the client on
-    /// the session with the specified <paramref name="id"/>.
+    /// Sends a ping with <paramref name="message"/> to the client using
+    /// the specified session.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the manager receives a Pong from the client in a time;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the send has done with no error and a pong has been
+    /// received from the client within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="message">
-    /// A <see cref="string"/> that represents the message to send.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the message to send.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 125 bytes or less in UTF-8.
+    ///   </para>
     /// </param>
     /// <param name="id">
     /// A <see cref="string"/> that represents the ID of the session to find.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="message"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The size of <paramref name="message"/> is greater than 125 bytes.
+    /// </exception>
     public bool PingTo (string message, string id)
     {
       IWebSocketSession session;
