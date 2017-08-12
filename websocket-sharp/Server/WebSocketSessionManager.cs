@@ -768,8 +768,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends a ping with the specified <paramref name="message"/> to
-    /// every client in the WebSocket service.
+    /// Sends a ping with <paramref name="message"/> to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <returns>
     ///   <para>
