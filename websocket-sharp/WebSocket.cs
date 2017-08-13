@@ -3131,12 +3131,16 @@ namespace WebSocketSharp
       if (fileInfo == null)
         throw new ArgumentNullException ("fileInfo");
 
-      if (!fileInfo.Exists)
-        throw new ArgumentException ("The file does not exist.", "fileInfo");
+      if (!fileInfo.Exists) {
+        var msg = "The file does not exist.";
+        throw new ArgumentException (msg, "fileInfo");
+      }
 
       FileStream stream;
-      if (!fileInfo.TryOpenRead (out stream))
-        throw new ArgumentException ("The file could not be opened.", "fileInfo");
+      if (!fileInfo.TryOpenRead (out stream)) {
+        var msg = "The file could not be opened.";
+        throw new ArgumentException (msg, "fileInfo");
+      }
 
       send (Opcode.Binary, stream);
     }
