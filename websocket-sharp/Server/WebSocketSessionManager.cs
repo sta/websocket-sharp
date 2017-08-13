@@ -1012,15 +1012,45 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends text <paramref name="data"/> to the client on the session with
-    /// the specified <paramref name="id"/>.
+    /// Sends <paramref name="data"/> to the client using the specified session.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that represents the ID of the session.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="id"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="data"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="data"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the WebSocket connection is not Open.
+    /// </exception>
     public void SendTo (string data, string id)
     {
       IWebSocketSession session;
