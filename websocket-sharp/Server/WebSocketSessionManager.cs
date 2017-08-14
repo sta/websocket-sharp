@@ -487,12 +487,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="length"/> of data from
-    /// the specified <paramref name="stream"/> to every client in
+    /// Sends the data from <paramref name="stream"/> to every client in
     /// the WebSocket service.
     /// </summary>
+    /// <remarks>
+    /// The data is sent as the binary data.
+    /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which to read the binary data to send.
+    /// A <see cref="Stream"/> instance from which to read the data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
