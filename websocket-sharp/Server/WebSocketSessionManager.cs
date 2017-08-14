@@ -422,12 +422,10 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Sends the specified <paramref name="data"/> to
-    /// every client in the WebSocket service.
+    /// Sends <paramref name="data"/> to every client in the WebSocket service.
     /// </summary>
     /// <param name="data">
-    /// An array of <see cref="byte"/> that represents
-    /// the binary data to send.
+    /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the manager is not Start.
