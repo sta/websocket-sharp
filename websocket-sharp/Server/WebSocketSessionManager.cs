@@ -450,8 +450,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="data"/> to every client in
-    /// the WebSocket service.
+    /// Sends <paramref name="data"/> to every client in the WebSocket service.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
