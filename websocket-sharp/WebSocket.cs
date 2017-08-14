@@ -3183,15 +3183,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="length"/> of data from
-    /// the specified <paramref name="stream"/> using the WebSocket
+    /// Sends the data from <paramref name="stream"/> using the WebSocket
     /// connection.
     /// </summary>
+    /// <remarks>
+    /// The data is sent as the binary data.
+    /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which reads the binary data to send.
+    /// A <see cref="Stream"/> instance from which to read the data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that specifies the number of bytes to read and send.
+    /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
