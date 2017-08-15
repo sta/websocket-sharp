@@ -1086,8 +1086,12 @@ namespace WebSocketSharp.Server
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
-      if (TryGetSession (id, out session))
-        session.Context.WebSocket.SendAsync (data, completed);
+      if (!TryGetSession (id, out session)) {
+        var msg = "The session could not be found.";
+        throw new ArgumentException (msg, "id");
+      }
+
+      session.Context.WebSocket.SendAsync (data, completed);
     }
 
     /// <summary>
