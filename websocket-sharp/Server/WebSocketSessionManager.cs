@@ -889,7 +889,7 @@ namespace WebSocketSharp.Server
     /// received from the client within a time; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that represents the ID of the session.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
