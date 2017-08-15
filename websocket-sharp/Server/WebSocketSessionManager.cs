@@ -1066,23 +1066,56 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> asynchronously to the client on
-    /// the session with the specified <paramref name="id"/>.
+    /// Sends <paramref name="data"/> asynchronously to the client using
+    /// the specified session.
     /// </summary>
     /// <remarks>
-    /// This method doesn't wait for the send to be complete.
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of the session to find.
+    /// A <see cref="string"/> that represents the ID of the session.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
+    ///   <para>
+    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
+    ///   if not needed.
+    ///   </para>
+    ///   <para>
+    ///   That delegate invokes the method called when the send is complete.
+    ///   </para>
+    ///   <para>
+    ///   <c>true</c> is passed to the method if the send has done with
+    ///   no error; otherwise, <c>false</c>.
+    ///   </para>
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="id"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="data"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the WebSocket connection is not Open.
+    /// </exception>
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
