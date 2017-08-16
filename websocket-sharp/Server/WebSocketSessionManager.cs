@@ -1160,7 +1160,7 @@ namespace WebSocketSharp.Server
     ///   if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called when the send is complete.
+    ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     ///   <para>
     ///   <c>true</c> is passed to the method if the send has done with
