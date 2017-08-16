@@ -607,8 +607,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="data"/> asynchronously to
-    /// every client in the WebSocket service.
+    /// Sends <paramref name="data"/> asynchronously to every client in
+    /// the WebSocket service.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
@@ -622,7 +622,7 @@ namespace WebSocketSharp.Server
     ///   if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called when the send is complete.
+    ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
