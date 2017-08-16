@@ -1216,11 +1216,17 @@ namespace WebSocketSharp.Server
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    public void SendToAsync (Stream stream, int length, string id, Action<bool> completed)
+    public void SendToAsync (
+      Stream stream, int length, string id, Action<bool> completed
+    )
     {
       IWebSocketSession session;
-      if (TryGetSession (id, out session))
-        session.Context.WebSocket.SendAsync (stream, length, completed);
+      if (!TryGetSession (id, out session)) {
+        var msg = "The session could not be found.";
+        throw new ArgumentException (msg, "id");
+      }
+
+      session.Context.WebSocket.SendAsync (stream, length, completed);
     }
 
     /// <summary>
