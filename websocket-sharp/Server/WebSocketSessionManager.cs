@@ -1066,6 +1066,76 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends the data from <paramref name="stream"/> to the client using
+    /// the specified session.
+    /// </summary>
+    /// <remarks>
+    /// The data is sent as the binary data.
+    /// </remarks>
+    /// <param name="stream">
+    /// A <see cref="Stream"/> instance from which to read the data to send.
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that specifies the number of bytes to send.
+    /// </param>
+    /// <param name="id">
+    /// A <see cref="string"/> that represents the ID of the session.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    ///   <para>
+    ///   <paramref name="id"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="stream"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="stream"/> cannot be read.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the WebSocket connection is not Open.
+    /// </exception>
+    public void SendTo (Stream stream, int length, string id)
+    {
+      IWebSocketSession session;
+      if (!TryGetSession (id, out session)) {
+        var msg = "The session could not be found.";
+        throw new ArgumentException (msg, "id");
+      }
+
+      session.Context.WebSocket.Send (stream, length);
+    }
+
+    /// <summary>
     /// Sends <paramref name="data"/> asynchronously to the client using
     /// the specified session.
     /// </summary>
