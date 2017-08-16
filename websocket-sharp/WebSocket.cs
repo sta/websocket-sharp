@@ -3471,22 +3471,28 @@ namespace WebSocketSharp
       if (stream == null)
         throw new ArgumentNullException ("stream");
 
-      if (!stream.CanRead)
-        throw new ArgumentException ("It cannot be read.", "stream");
+      if (!stream.CanRead) {
+        var msg = "It cannot be read.";
+        throw new ArgumentException (msg, "stream");
+      }
 
-      if (length < 1)
-        throw new ArgumentException ("It is less than 1.", "length");
+      if (length < 1) {
+        var msg = "Less than 1.";
+        throw new ArgumentException (msg, "length");
+      }
 
       var bytes = stream.ReadBytes (length);
 
       var len = bytes.Length;
-      if (len == 0)
-        throw new ArgumentException ("No data could be read from it.", "stream");
+      if (len == 0) {
+        var msg = "No data could be read from it.";
+        throw new ArgumentException (msg, "stream");
+      }
 
       if (len < length) {
         _logger.Warn (
           String.Format (
-            "Only {0} byte(s) of data could be read from the specified stream.",
+            "Only {0} byte(s) of data could be read from the stream.",
             len
           )
         );
