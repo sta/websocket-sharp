@@ -3301,19 +3301,31 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the specified file as the binary data asynchronously using
-    /// the WebSocket connection.
+    /// Sends the specified file asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    ///   <para>
+    ///   The file is sent as the binary data.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies a file to send.
+    /// A <see cref="FileInfo"/> that specifies the file to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that invokes the method called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate will be
-    /// <c>true</c> if the send has done with no error.
+    ///   <para>
+    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
+    ///   if not needed.
+    ///   </para>
+    ///   <para>
+    ///   The delegate invokes the method called when the send is complete.
+    ///   </para>
+    ///   <para>
+    ///   <c>true</c> is passed to the method if the send has done with
+    ///   no error; otherwise, <c>false</c>.
+    ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
