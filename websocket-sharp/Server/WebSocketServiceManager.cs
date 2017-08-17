@@ -795,7 +795,7 @@ namespace WebSocketSharp.Server
     ///   <para>
     ///   It represents a collection of pairs of a service path and another
     ///   collection of pairs of a session ID and a value indicating whether
-    ///   a pong has been received from its client within a time.
+    ///   a pong has been received from the client within a time.
     ///   </para>
     /// </returns>
     /// <param name="message">
