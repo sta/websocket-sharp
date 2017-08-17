@@ -664,28 +664,30 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="length"/> of data from
-    /// the specified <paramref name="stream"/> asynchronously to
+    /// Sends the data from <paramref name="stream"/> asynchronously to
     /// every client in the WebSocket services.
     /// </summary>
     /// <remarks>
-    /// This method does not wait for the send to be complete.
+    ///   <para>
+    ///   The data is sent as the binary data.
+    ///   </para>
+    ///   <para>
+    ///   This method does not wait for the send to be complete.
+    ///   </para>
     /// </remarks>
     /// <param name="stream">
-    /// A <see cref="Stream"/> from which to read the binary data to send.
+    /// A <see cref="Stream"/> instance from which to read the data to send.
     /// </param>
     /// <param name="length">
-    /// An <see cref="int"/> that specifies the number of bytes to
-    /// read and send.
+    /// An <see cref="int"/> that specifies the number of bytes to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
-    ///   An <see cref="Action"/> delegate or
-    ///   <see langword="null"/> if not needed.
+    ///   An <see cref="Action"/> delegate or <see langword="null"/>
+    ///   if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called when
-    ///   the send is complete.
+    ///   The delegate invokes the method called when the send is complete.
     ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
