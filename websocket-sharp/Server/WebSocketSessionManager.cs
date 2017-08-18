@@ -834,11 +834,25 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Closes the session with the specified <paramref name="id"/>.
+    /// Closes the specified session.
     /// </summary>
     /// <param name="id">
     /// A <see cref="string"/> that represents the ID of the session to close.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="id"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="id"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    /// </exception>
     public void CloseSession (string id)
     {
       IWebSocketSession session;
