@@ -1524,16 +1524,14 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Tries to get the session instance with the specified
-    /// <paramref name="id"/>.
+    /// Tries to get the session instance with <paramref name="id"/>.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the session is successfully found;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the session is successfully found; otherwise,
+    /// <c>false</c>.
     /// </returns>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of
-    /// the session to find.
+    /// A <see cref="string"/> that represents the ID of the session to find.
     /// </param>
     /// <param name="session">
     ///   <para>
@@ -1541,8 +1539,8 @@ namespace WebSocketSharp.Server
     ///   instance or <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   That session instance provides the function to
-    ///   access the information in the session.
+    ///   The session instance provides the function to access
+    ///   the information in the session.
     ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
