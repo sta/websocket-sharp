@@ -880,8 +880,12 @@ namespace WebSocketSharp.Server
     public void CloseSession (string id, ushort code, string reason)
     {
       IWebSocketSession session;
-      if (TryGetSession (id, out session))
-        session.Context.WebSocket.Close (code, reason);
+      if (!TryGetSession (id, out session)) {
+        var msg = "The session could not be found.";
+        throw new ArgumentException (msg, "id");
+      }
+
+      session.Context.WebSocket.Close (code, reason);
     }
 
     /// <summary>
