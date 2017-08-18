@@ -151,21 +151,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the session instance with the specified <paramref name="id"/>.
+    /// Gets the session instance with <paramref name="id"/>.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="IWebSocketSession"/> instance or
-    ///   <see langword="null"/> if not found.
+    ///   A <see cref="IWebSocketSession"/> instance or <see langword="null"/>
+    ///   if not found.
     ///   </para>
     ///   <para>
-    ///   That session instance provides the function to
-    ///   access the information in the session.
+    ///   The session instance provides the function to access the information
+    ///   in the session.
     ///   </para>
     /// </value>
     /// <param name="id">
-    /// A <see cref="string"/> that represents the ID of
-    /// the session to find.
+    /// A <see cref="string"/> that represents the ID of the session to find.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="id"/> is <see langword="null"/>.
