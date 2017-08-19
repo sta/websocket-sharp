@@ -1065,14 +1065,11 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The session could not be found.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
     ///   <paramref name="message"/> could not be UTF-8-encoded.
     ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session could not be found.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="message"/> is greater than 125 bytes.
@@ -1082,7 +1079,7 @@ namespace WebSocketSharp.Server
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       return session.Context.WebSocket.Ping (message);
