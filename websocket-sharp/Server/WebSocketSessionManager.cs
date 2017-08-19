@@ -1019,22 +1019,17 @@ namespace WebSocketSharp.Server
     /// <paramref name="id"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="id"/> is an empty string.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The session could not be found.
-    ///   </para>
+    /// <paramref name="id"/> is an empty string.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session could not be found.
     /// </exception>
     public bool PingTo (string id)
     {
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       return session.Context.WebSocket.Ping ();
