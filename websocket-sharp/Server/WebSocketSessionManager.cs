@@ -970,12 +970,6 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The session could not be found.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
     ///   <paramref name="code"/> is
     ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
     ///   </para>
@@ -994,6 +988,9 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// The session could not be found.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The size of <paramref name="reason"/> is greater than 123 bytes.
     /// </exception>
@@ -1002,7 +999,7 @@ namespace WebSocketSharp.Server
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       session.Context.WebSocket.Close (code, reason);
