@@ -1218,12 +1218,6 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The session could not be found.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
     ///   <paramref name="stream"/> cannot be read.
     ///   </para>
     ///   <para>
@@ -1240,14 +1234,22 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The current state of the WebSocket connection is not Open.
+    ///   <para>
+    ///   The session could not be found.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The current state of the WebSocket connection is not Open.
+    ///   </para>
     /// </exception>
     public void SendTo (Stream stream, int length, string id)
     {
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       session.Context.WebSocket.Send (stream, length);
