@@ -1293,25 +1293,25 @@ namespace WebSocketSharp.Server
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentException">
+    /// <paramref name="id"/> is an empty string.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   <paramref name="id"/> is an empty string.
+    ///   The session could not be found.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The session could not be found.
+    ///   The current state of the WebSocket connection is not Open.
     ///   </para>
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the WebSocket connection is not Open.
     /// </exception>
     public void SendToAsync (byte[] data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       session.Context.WebSocket.SendAsync (data, completed);
