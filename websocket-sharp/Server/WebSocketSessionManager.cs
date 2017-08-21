@@ -1362,24 +1362,26 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
+    ///   <paramref name="data"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
     ///   The session could not be found.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="data"/> could not be UTF-8-encoded.
+    ///   The current state of the WebSocket connection is not Open.
     ///   </para>
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The current state of the WebSocket connection is not Open.
     /// </exception>
     public void SendToAsync (string data, string id, Action<bool> completed)
     {
       IWebSocketSession session;
       if (!TryGetSession (id, out session)) {
         var msg = "The session could not be found.";
-        throw new ArgumentException (msg, "id");
+        throw new InvalidOperationException (msg);
       }
 
       session.Context.WebSocket.SendAsync (data, completed);
