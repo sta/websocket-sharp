@@ -57,11 +57,6 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketSessionManager ()
-      : this (new Logger ())
-    {
-    }
-
     internal WebSocketSessionManager (Logger logger)
     {
       _logger = logger;
