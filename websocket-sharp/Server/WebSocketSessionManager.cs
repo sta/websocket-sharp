@@ -45,7 +45,7 @@ namespace WebSocketSharp.Server
 
     private volatile bool                         _clean;
     private object                                _forSweep;
-    private Logger                                _logger;
+    private Logger                                _log;
     private Dictionary<string, IWebSocketSession> _sessions;
     private volatile ServerState                  _state;
     private volatile bool                         _sweeping;
@@ -57,9 +57,9 @@ namespace WebSocketSharp.Server
 
     #region Internal Constructors
 
-    internal WebSocketSessionManager (Logger logger)
+    internal WebSocketSessionManager (Logger log)
     {
-      _logger = logger;
+      _log = log;
 
       _clean = true;
       _forSweep = new object ();
@@ -256,7 +256,7 @@ namespace WebSocketSharp.Server
           completed ();
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _log.Fatal (ex.ToString ());
       }
       finally {
         cache.Clear ();
@@ -272,7 +272,7 @@ namespace WebSocketSharp.Server
           completed ();
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
+        _log.Fatal (ex.ToString ());
       }
       finally {
         foreach (var cached in cache.Values)
@@ -545,7 +545,7 @@ namespace WebSocketSharp.Server
       }
 
       if (len < length) {
-        _logger.Warn (
+        _log.Warn (
           String.Format (
             "Only {0} byte(s) of data could be read from the stream.",
             len
@@ -729,7 +729,7 @@ namespace WebSocketSharp.Server
       }
 
       if (len < length) {
-        _logger.Warn (
+        _log.Warn (
           String.Format (
             "Only {0} byte(s) of data could be read from the stream.",
             len
