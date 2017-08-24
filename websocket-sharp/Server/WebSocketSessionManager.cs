@@ -363,11 +363,14 @@ namespace WebSocketSharp.Server
     }
 
     internal void Broadcast (
-      Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache)
+      Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
+    )
     {
       foreach (var session in Sessions) {
-        if (_state != ServerState.Start)
+        if (_state != ServerState.Start) {
+          _log.Error ("The service is shutting down.");
           break;
+        }
 
         session.Context.WebSocket.Send (opcode, data, cache);
       }
