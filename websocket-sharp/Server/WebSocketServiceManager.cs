@@ -263,10 +263,13 @@ namespace WebSocketSharp.Server
     private void broadcast (Opcode opcode, byte[] data, Action completed)
     {
       var cache = new Dictionary<CompressionMethod, byte[]> ();
+
       try {
         foreach (var host in Hosts) {
-          if (_state != ServerState.Start)
+          if (_state != ServerState.Start) {
+            _log.Error ("The server is shutting down.");
             break;
+          }
 
           host.Sessions.Broadcast (opcode, data, cache);
         }
