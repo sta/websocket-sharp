@@ -276,13 +276,23 @@ namespace WebSocketSharp.Server
     private void broadcast (Opcode opcode, Stream stream, Action completed)
     {
       var cache = new Dictionary <CompressionMethod, Stream> ();
+
       try {
-        Broadcast (opcode, stream, cache);
+        foreach (var session in Sessions) {
+          if (_state != ServerState.Start) {
+            _log.Error ("The service is shutting down.");
+            break;
+          }
+
+          session.Context.WebSocket.Send (opcode, stream, cache);
+        }
+
         if (completed != null)
           completed ();
       }
       catch (Exception ex) {
-        _log.Fatal (ex.ToString ());
+        _log.Error (ex.Message);
+        _log.Debug (ex.ToString ());
       }
       finally {
         foreach (var cached in cache.Values)
