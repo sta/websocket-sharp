@@ -2213,7 +2213,7 @@ namespace WebSocketSharp
       }
     }
 
-    // As server, used to broadcast
+    // As server
     internal void Send (
       Opcode opcode, byte[] data, Dictionary<CompressionMethod, byte[]> cache
     )
@@ -2225,27 +2225,21 @@ namespace WebSocketSharp
             return;
           }
 
-          try {
-            byte[] found;
-            if (!cache.TryGetValue (_compression, out found)) {
-              found =
-                new WebSocketFrame (
-                  Fin.Final,
-                  opcode,
-                  data.Compress (_compression),
-                  _compression != CompressionMethod.None,
-                  false
-                )
-                .ToArray ();
+          byte[] found;
+          if (!cache.TryGetValue (_compression, out found)) {
+            found = new WebSocketFrame (
+                      Fin.Final,
+                      opcode,
+                      data.Compress (_compression),
+                      _compression != CompressionMethod.None,
+                      false
+                    )
+                    .ToArray ();
 
-              cache.Add (_compression, found);
-            }
+            cache.Add (_compression, found);
+          }
 
-            sendBytes (found);
-          }
-          catch (Exception ex) {
-            _logger.Error (ex.ToString ());
-          }
+          sendBytes (found);
         }
       }
     }
