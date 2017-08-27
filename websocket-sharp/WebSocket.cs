@@ -2244,27 +2244,22 @@ namespace WebSocketSharp
       }
     }
 
-    // As server, used to broadcast
+    // As server
     internal void Send (
       Opcode opcode, Stream stream, Dictionary<CompressionMethod, Stream> cache
     )
     {
       lock (_forSend) {
-        try {
-          Stream found;
-          if (!cache.TryGetValue (_compression, out found)) {
-            found = stream.Compress (_compression);
-            cache.Add (_compression, found);
-          }
-          else {
-            found.Position = 0;
-          }
+        Stream found;
+        if (!cache.TryGetValue (_compression, out found)) {
+          found = stream.Compress (_compression);
+          cache.Add (_compression, found);
+        }
+        else {
+          found.Position = 0;
+        }
 
-          send (opcode, found, _compression != CompressionMethod.None);
-        }
-        catch (Exception ex) {
-          _logger.Error (ex.ToString ());
-        }
+        send (opcode, found, _compression != CompressionMethod.None);
       }
     }
 
