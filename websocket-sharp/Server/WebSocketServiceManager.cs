@@ -336,10 +336,13 @@ namespace WebSocketSharp.Server
       var ret = new Dictionary<string, Dictionary<string, bool>> ();
 
       foreach (var host in Hosts) {
-        if (_state != ServerState.Start)
+        if (_state != ServerState.Start) {
+          _log.Error ("The server is shutting down.");
           break;
+        }
 
-        ret.Add (host.Path, host.Sessions.Broadping (frameAsBytes, timeout));
+        var res = host.Sessions.Broadping (frameAsBytes, timeout);
+        ret.Add (host.Path, res);
       }
 
       return ret;
