@@ -2182,6 +2182,7 @@ namespace WebSocketSharp
       open ();
     }
 
+    // As server
     internal bool Ping (byte[] frameAsBytes, TimeSpan timeout)
     {
       if (_readyState != WebSocketState.Open)
@@ -2196,10 +2197,8 @@ namespace WebSocketSharp
           pongReceived.Reset ();
 
           lock (_forState) {
-            if (_readyState != WebSocketState.Open) {
-              _logger.Error ("The state of the connection has been changed.");
+            if (_readyState != WebSocketState.Open)
               return false;
-            }
 
             if (!sendBytes (frameAsBytes))
               return false;
