@@ -37,8 +37,12 @@ using System.Timers;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Manages the sessions in a Websocket service.
+  /// Provides the management function for the sessions in a WebSocket service.
   /// </summary>
+  /// <remarks>
+  /// This class manages the sessions in a WebSocket service provided by
+  /// the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// </remarks>
   public class WebSocketSessionManager
   {
     #region Private Fields
