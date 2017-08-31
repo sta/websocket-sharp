@@ -1472,11 +1472,13 @@ namespace WebSocketSharp
 
     private bool processPingFrame (WebSocketFrame frame)
     {
+      _logger.Trace ("A ping was received.");
+
       var pong = WebSocketFrame.CreatePongFrame (frame.PayloadData, _client);
 
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The state of the connection has been changed.");
+          _logger.Error ("The connection is closing.");
           return true;
         }
 
