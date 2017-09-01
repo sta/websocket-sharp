@@ -1500,6 +1500,8 @@ namespace WebSocketSharp
 
     private bool processPongFrame (WebSocketFrame frame)
     {
+      _logger.Trace ("A pong was received.");
+
       try {
         _pongReceived.Set ();
       }
@@ -1510,7 +1512,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      _logger.Trace ("It has been signaled that a pong was received.");
+      _logger.Trace ("It has been signaled.");
 
       return true;
     }
