@@ -1486,7 +1486,7 @@ namespace WebSocketSharp
           return false;
       }
 
-      _logger.Trace ("A pong has been sent to respond to this ping.");
+      _logger.Trace ("A pong to this ping has been sent.");
 
       if (_emitOnPing) {
         if (_client)
