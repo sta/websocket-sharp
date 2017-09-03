@@ -1505,10 +1505,16 @@ namespace WebSocketSharp
       try {
         _pongReceived.Set ();
       }
-      catch (NullReferenceException) {
+      catch (NullReferenceException ex) {
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
+
         return false;
       }
-      catch (ObjectDisposedException) {
+      catch (ObjectDisposedException ex) {
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
+
         return false;
       }
 
