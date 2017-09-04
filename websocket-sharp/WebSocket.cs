@@ -1743,7 +1743,7 @@ namespace WebSocketSharp
     {
       lock (_forState) {
         if (_readyState != WebSocketState.Open) {
-          _logger.Error ("The state of the connection has been changed.");
+          _logger.Error ("The connection is closing.");
           return false;
         }
 
