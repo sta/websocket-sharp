@@ -432,6 +432,10 @@ namespace WebSocketSharp.Server
         return _secure;
       }
     }
+    /// <summary>
+    /// Determines if new connections have NoDelay TCPClient property set
+    /// </summary>
+    public bool NoDelay { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the server cleans up
@@ -809,8 +813,7 @@ namespace WebSocketSharp.Server
     }
 
     private void init (
-      string hostname, System.Net.IPAddress address, int port, bool secure
-    )
+      string hostname, System.Net.IPAddress address, int port, bool secure)
     {
       _hostname = hostname;
       _address = address;
@@ -864,7 +867,7 @@ namespace WebSocketSharp.Server
             state => {
               try {
                 var ctx = new TcpListenerWebSocketContext (
-                            cl, null, _secure, _sslConfigInUse, _log
+                            cl, null, _secure, NoDelay, _sslConfigInUse, _log
                           );
 
                 if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))

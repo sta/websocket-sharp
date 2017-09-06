@@ -622,16 +622,21 @@ namespace WebSocketSharp
           _waitTime = value;
         }
       }
-    }
+      }
 
-    #endregion
+      /// <summary>
+      /// Gets the TcpClient used for the WebSocket.
+      /// </summary>
+      public TcpClient TcpClient => _tcpClient;
 
-    #region Public Events
+      #endregion
 
-    /// <summary>
-    /// Occurs when the WebSocket connection has been closed.
-    /// </summary>
-    public event EventHandler<CloseEventArgs> OnClose;
+        #region Public Events
+
+        /// <summary>
+        /// Occurs when the WebSocket connection has been closed.
+        /// </summary>
+        public event EventHandler<CloseEventArgs> OnClose;
 
     /// <summary>
     /// Occurs when the <see cref="WebSocket"/> gets an error.

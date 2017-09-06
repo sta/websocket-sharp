@@ -71,11 +71,14 @@ namespace WebSocketSharp.Net.WebSockets
       TcpClient tcpClient,
       string protocol,
       bool secure,
+      bool noDelay,
       ServerSslConfiguration sslConfig,
       Logger logger
     )
     {
       _tcpClient = tcpClient;
+      _tcpClient.NoDelay = noDelay;
+            
       _secure = secure;
       _logger = logger;
 
