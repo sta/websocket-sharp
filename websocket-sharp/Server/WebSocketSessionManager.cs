@@ -316,6 +316,23 @@ namespace WebSocketSharp.Server
       ThreadPool.QueueUserWorkItem (state => broadcast (opcode, stream, completed));
     }
 
+    private Dictionary<string, bool> broadping (byte[] frameAsBytes)
+    {
+      var ret = new Dictionary<string, bool> ();
+
+      foreach (var session in Sessions) {
+        if (_state != ServerState.Start) {
+          _log.Error ("The service is shutting down.");
+          break;
+        }
+
+        var res = session.Context.WebSocket.Ping (frameAsBytes, _waitTime);
+        ret.Add (session.ID, res);
+      }
+
+      return ret;
+    }
+
     private static string createID ()
     {
       return Guid.NewGuid ().ToString ("N");
