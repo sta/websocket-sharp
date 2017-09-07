@@ -90,11 +90,16 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the IDs for the active sessions in the Websocket service.
+    /// Gets the IDs for the active sessions in the WebSocket service.
     /// </summary>
     /// <value>
-    /// An <c>IEnumerable&lt;string&gt;</c> instance that provides an enumerator which
-    /// supports the iteration over the collection of the IDs for the active sessions.
+    ///   <para>
+    ///   An <c>IEnumerable&lt;string&gt;</c> instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the IDs for the active sessions.
+    ///   </para>
     /// </value>
     public IEnumerable<string> ActiveIDs {
       get {
