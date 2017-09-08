@@ -149,9 +149,10 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> InactiveIDs {
       get {
-        foreach (var res in Broadping (WebSocketFrame.EmptyPingBytes, _waitTime))
+        foreach (var res in broadping (WebSocketFrame.EmptyPingBytes)) {
           if (!res.Value)
             yield return res.Key;
+        }
       }
     }
 
