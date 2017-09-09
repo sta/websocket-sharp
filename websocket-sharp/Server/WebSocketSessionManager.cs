@@ -30,6 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Timers;
@@ -132,11 +133,15 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<string> IDs {
       get {
-        if (_state == ServerState.ShuttingDown)
-          return new string[0];
+        if (_state != ServerState.Start)
+          return Enumerable.Empty<string> ();
 
-        lock (_sync)
+        lock (_sync) {
+          if (_state != ServerState.Start)
+            return Enumerable.Empty<string> ();
+
           return _sessions.Keys.ToList ();
+        }
       }
     }
 
