@@ -240,11 +240,15 @@ namespace WebSocketSharp.Server
     /// </value>
     public IEnumerable<IWebSocketSession> Sessions {
       get {
-        if (_state == ServerState.ShuttingDown)
-          return new IWebSocketSession[0];
+        if (_state != ServerState.Start)
+          return Enumerable.Empty<IWebSocketSession> ();
 
-        lock (_sync)
+        lock (_sync) {
+          if (_state != ServerState.Start)
+            return Enumerable.Empty<IWebSocketSession> ();
+
           return _sessions.Values.ToList ();
+        }
       }
     }
 
