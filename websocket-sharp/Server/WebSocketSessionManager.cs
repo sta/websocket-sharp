@@ -112,7 +112,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the number of the sessions in the Websocket service.
+    /// Gets the number of the sessions in the WebSocket service.
     /// </summary>
     /// <value>
     /// An <see cref="int"/> that represents the number of the sessions.
