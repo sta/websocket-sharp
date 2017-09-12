@@ -506,7 +506,7 @@ namespace WebSocketSharp
 
     internal static bool IsPortNumber (this int value)
     {
-      return value > 0 && value < 65536;
+      return value > -1 && value < 65536;
     }
 
     internal static bool IsReserved (this ushort code)
