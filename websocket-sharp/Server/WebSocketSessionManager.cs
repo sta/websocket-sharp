@@ -232,11 +232,16 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the sessions in the Websocket service.
+    /// Gets the session instances in the WebSocket service.
     /// </summary>
     /// <value>
-    /// An <c>IEnumerable&lt;IWebSocketSession&gt;</c> instance that provides an enumerator
-    /// which supports the iteration over the collection of the sessions in the service.
+    ///   <para>
+    ///   An <c>IEnumerable&lt;IWebSocketSession&gt;</c> instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the session instances.
+    ///   </para>
     /// </value>
     public IEnumerable<IWebSocketSession> Sessions {
       get {
