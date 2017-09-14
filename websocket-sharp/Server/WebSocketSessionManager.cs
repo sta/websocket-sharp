@@ -221,13 +221,21 @@ namespace WebSocketSharp.Server
         return _clean;
       }
 
-      internal set {
-        if (!(value ^ _clean))
+      set {
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
           return;
+        }
 
-        _clean = value;
-        if (_state == ServerState.Start)
-          _sweepTimer.Enabled = value;
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _clean = value;
+        }
       }
     }
 
