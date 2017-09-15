@@ -115,8 +115,8 @@ namespace WebSocketSharp.Server
     /// it is shutting down.
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the service cleans up the inactive sessions every 60
-    /// seconds; otherwise, <c>false</c>.
+    /// <c>true</c> if the service cleans up the inactive sessions every
+    /// 60 seconds; otherwise, <c>false</c>.
     /// </value>
     public bool KeepClean {
       get {
