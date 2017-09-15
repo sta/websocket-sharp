@@ -124,12 +124,6 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        string msg;
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
         _sessions.KeepClean = value;
       }
     }
