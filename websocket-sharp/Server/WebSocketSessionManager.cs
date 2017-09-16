@@ -280,13 +280,24 @@ namespace WebSocketSharp.Server
         return _waitTime;
       }
 
-      internal set {
-        if (value == _waitTime)
-          return;
+      set {
+        if (value <= TimeSpan.Zero)
+          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
-        _waitTime = value;
-        foreach (var session in Sessions)
-          session.Context.WebSocket.WaitTime = value;
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
+        lock (_sync) {
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
+
+          _waitTime = value;
+        }
       }
     }
 
