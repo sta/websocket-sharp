@@ -184,15 +184,6 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        string msg;
-        if (!value.CheckWaitTime (out msg))
-          throw new ArgumentException (msg, "value");
-
-        if (!canSet (out msg)) {
-          _log.Warn (msg);
-          return;
-        }
-
         _sessions.WaitTime = value;
       }
     }
