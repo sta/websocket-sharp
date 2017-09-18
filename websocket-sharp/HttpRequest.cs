@@ -65,10 +65,10 @@ namespace WebSocketSharp
 
     #region Internal Constructors
 
-    internal HttpRequest (string method, string uri)
+    internal HttpRequest (string method, string uri, string userAgent)
       : this (method, uri, HttpVersion.Version11, new NameValueCollection ())
     {
-      Headers["User-Agent"] = "websocket-sharp/1.0";
+      Headers["User-Agent"] = userAgent;
     }
 
     #endregion
@@ -122,20 +122,20 @@ namespace WebSocketSharp
 
     #region Internal Methods
 
-    internal static HttpRequest CreateConnectRequest (Uri uri)
+    internal static HttpRequest CreateConnectRequest (Uri uri, string userAgent)
     {
       var host = uri.DnsSafeHost;
       var port = uri.Port;
       var authority = String.Format ("{0}:{1}", host, port);
-      var req = new HttpRequest ("CONNECT", authority);
+      var req = new HttpRequest ("CONNECT", authority, userAgent);
       req.Headers["Host"] = port == 80 ? host : authority;
 
       return req;
     }
 
-    internal static HttpRequest CreateWebSocketRequest (Uri uri)
+    internal static HttpRequest CreateWebSocketRequest(Uri uri, string userAgent)
     {
-      var req = new HttpRequest ("GET", uri.PathAndQuery);
+      var req = new HttpRequest ("GET", uri.PathAndQuery, userAgent);
       var headers = req.Headers;
 
       // Only includes a port number in the Host header value if it's non-default.

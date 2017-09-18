@@ -113,6 +113,7 @@ namespace WebSocketSharp
     private Stream                         _stream;
     private TcpClient                      _tcpClient;
     private Uri                            _uri;
+    private string                         _userAgent = "websocket-sharp/1.0";
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
 
@@ -592,6 +593,20 @@ namespace WebSocketSharp
     public Uri Url {
       get {
         return _client ? _uri : _context.RequestUri;
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the WebSocket User-Agent string as send in the header of the requests.
+    /// </summary>
+    public string UserAgent
+    {
+      get {
+        return _userAgent;
+      }
+
+      set {
+        _userAgent = value;
       }
     }
 
@@ -1168,7 +1183,7 @@ namespace WebSocketSharp
     // As client
     private HttpRequest createHandshakeRequest ()
     {
-      var ret = HttpRequest.CreateWebSocketRequest (_uri);
+      var ret = HttpRequest.CreateWebSocketRequest (_uri, _userAgent);
 
       var headers = ret.Headers;
       if (!_origin.IsNullOrEmpty ())
@@ -1873,7 +1888,7 @@ namespace WebSocketSharp
     // As client
     private void sendProxyConnectRequest ()
     {
-      var req = HttpRequest.CreateConnectRequest (_uri);
+      var req = HttpRequest.CreateConnectRequest (_uri, _userAgent);
       var res = sendHttpRequest (req, 90000);
       if (res.IsProxyAuthenticationRequired) {
         var chal = res.Headers["Proxy-Authenticate"];
