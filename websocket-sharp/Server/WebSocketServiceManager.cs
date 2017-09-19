@@ -184,12 +184,23 @@ namespace WebSocketSharp.Server
         return _clean;
       }
 
-      internal set {
+      set {
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
         lock (_sync) {
-          _clean = value;
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
 
           foreach (var host in _hosts.Values)
             host.KeepClean = value;
+
+          _clean = value;
         }
       }
     }
