@@ -261,12 +261,26 @@ namespace WebSocketSharp.Server
         return _waitTime;
       }
 
-      internal set {
+      set {
+        if (value <= TimeSpan.Zero)
+          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
+
+        string msg;
+        if (!canSet (out msg)) {
+          _log.Warn (msg);
+          return;
+        }
+
         lock (_sync) {
-          _waitTime = value;
+          if (!canSet (out msg)) {
+            _log.Warn (msg);
+            return;
+          }
 
           foreach (var host in _hosts.Values)
             host.WaitTime = value;
+
+          _waitTime = value;
         }
       }
     }
