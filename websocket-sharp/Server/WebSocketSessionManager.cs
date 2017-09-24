@@ -1615,31 +1615,42 @@ namespace WebSocketSharp.Server
     /// </summary>
     public void Sweep ()
     {
-      if (_state != ServerState.Start || _sweeping || Count == 0)
+      if (_sweeping) {
+        _log.Info ("The sweeping is already in progress.");
         return;
+      }
 
       lock (_forSweep) {
+        if (_sweeping) {
+          _log.Info ("The sweeping is already in progress.");
+          return;
+        }
+
         _sweeping = true;
-        foreach (var id in InactiveIDs) {
+      }
+
+      foreach (var id in InactiveIDs) {
+        if (_state != ServerState.Start)
+          break;
+
+        lock (_sync) {
           if (_state != ServerState.Start)
             break;
 
-          lock (_sync) {
-            IWebSocketSession session;
-            if (_sessions.TryGetValue (id, out session)) {
-              var state = session.State;
-              if (state == WebSocketState.Open)
-                session.Context.WebSocket.Close (CloseStatusCode.ProtocolError);
-              else if (state == WebSocketState.Closing)
-                continue;
-              else
-                _sessions.Remove (id);
-            }
+          IWebSocketSession session;
+          if (_sessions.TryGetValue (id, out session)) {
+            var state = session.State;
+            if (state == WebSocketState.Open)
+              session.Context.WebSocket.Close (CloseStatusCode.Abnormal);
+            else if (state == WebSocketState.Closing)
+              continue;
+            else
+              _sessions.Remove (id);
           }
         }
-
-        _sweeping = false;
       }
+
+      _sweeping = false;
     }
 
     /// <summary>
