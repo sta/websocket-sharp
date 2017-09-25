@@ -608,14 +608,27 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forState) {
-          string msg;
-          if (!checkIfAvailable (true, true, true, false, false, true, out msg)
-              || !value.CheckWaitTime (out msg)
-          ) {
-            _logger.Error (msg);
-            error ("An error has occurred in setting the wait time.", null);
+        if (value <= TimeSpan.Zero)
+          throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
+        if (_readyState == WebSocketState.Open) {
+          _logger.Warn ("The connection has already been established.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Warn ("The connection is closing.");
+          return;
+        }
+
+        lock (_forState) {
+          if (_readyState == WebSocketState.Open) {
+            _logger.Warn ("The connection has already been established.");
+            return;
+          }
+
+          if (_readyState == WebSocketState.Closing) {
+            _logger.Warn ("The connection is closing.");
             return;
           }
 
