@@ -596,12 +596,24 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the wait time for the response to the Ping or Close.
+    /// Gets or sets the time to wait for the response to the ping or close.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
+    /// </remarks>
     /// <value>
-    /// A <see cref="TimeSpan"/> that represents the wait time. The default value is the same as
-    /// 5 seconds, or 1 second if the <see cref="WebSocket"/> is used in a server.
+    ///   <para>
+    ///   A <see cref="TimeSpan"/> to wait for the response.
+    ///   </para>
+    ///   <para>
+    ///   The default value is the same as 5 seconds if the instance is
+    ///   a client.
+    ///   </para>
     /// </value>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The value specified for a set operation is zero or less.
+    /// </exception>
     public TimeSpan WaitTime {
       get {
         return _waitTime;
