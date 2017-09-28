@@ -54,7 +54,7 @@ namespace WebSocketSharp
     {
     }
 
-    internal WebSocketException (string message)
+    public WebSocketException (string message)
       : this (CloseStatusCode.Abnormal, message, null)
     {
     }

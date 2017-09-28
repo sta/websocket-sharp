@@ -103,8 +103,7 @@ namespace WebSocketSharp
     private string                         _protocol;
     private string[]                       _protocols;
     private bool                           _protocolsRequested;
-    private NetworkCredential              _proxyCredentials;
-    private Uri                            _proxyUri;
+    private IProxy                         _proxyManager;
     private volatile WebSocketState        _readyState;
     private ManualResetEvent               _receivingExited;
     private int                            _retryCountForConnect;
@@ -885,43 +884,6 @@ namespace WebSocketSharp
     )
     {
       message = null;
-
-      if (username.IsNullOrEmpty ())
-        return true;
-
-      if (username.Contains (':') || !username.IsText ()) {
-        message = "'username' contains an invalid character.";
-        return false;
-      }
-
-      if (password.IsNullOrEmpty ())
-        return true;
-
-      if (!password.IsText ()) {
-        message = "'password' contains an invalid character.";
-        return false;
-      }
-
-      return true;
-    }
-
-    private static bool checkParametersForSetProxy (
-      string url, string username, string password, out string message
-    )
-    {
-      message = null;
-
-      if (url.IsNullOrEmpty ())
-        return true;
-
-      Uri uri;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out uri)
-          || uri.Scheme != "http"
-          || uri.Segments.Length > 1
-      ) {
-        message = "'url' is an invalid URL.";
-        return false;
-      }
 
       if (username.IsNullOrEmpty ())
         return true;
@@ -1896,82 +1858,48 @@ namespace WebSocketSharp
     }
 
     // As client
-    private void sendProxyConnectRequest ()
+    private void setClientStream()
     {
-      var req = HttpRequest.CreateConnectRequest (_uri);
-      var res = sendHttpRequest (req, 90000);
-      if (res.IsProxyAuthenticationRequired) {
-        var chal = res.Headers["Proxy-Authenticate"];
-        _logger.Warn (
-          String.Format ("Received a proxy authentication requirement for '{0}'.", chal));
-
-        if (chal.IsNullOrEmpty ())
-          throw new WebSocketException ("No proxy authentication challenge is specified.");
-
-        var authChal = AuthenticationChallenge.Parse (chal);
-        if (authChal == null)
-          throw new WebSocketException ("An invalid proxy authentication challenge is specified.");
-
-        if (_proxyCredentials != null) {
-          if (res.HasConnectionClose) {
-            releaseClientResources ();
-            _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-            _stream = _tcpClient.GetStream ();
-          }
-
-          var authRes = new AuthenticationResponse (authChal, _proxyCredentials, 0);
-          req.Headers["Proxy-Authorization"] = authRes.ToString ();
-          res = sendHttpRequest (req, 15000);
+        if (_proxyManager != null) {
+            _tcpClient = _proxyManager.ConnectThroughProxy(_uri);
+            if (_tcpClient == null) {
+                throw new WebSocketException("Proxy failed to create stream.");
+            }
+            _tcpClient.NoDelay = true;
+            _stream = _tcpClient.GetStream();
+        }
+        else {
+            _tcpClient = new TcpClient(_uri.DnsSafeHost, _uri.Port);
+            _tcpClient.NoDelay = true;
+            _stream = _tcpClient.GetStream();
         }
 
-        if (res.IsProxyAuthenticationRequired)
-          throw new WebSocketException ("A proxy authentication is required.");
-      }
+        if (_secure) {
+            var conf = SslConfiguration;
+            var host = conf.TargetHost;
+            if (host != _uri.DnsSafeHost)
+                throw new WebSocketException(
+                  CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
 
-      if (res.StatusCode[0] != '2')
-        throw new WebSocketException (
-          "The proxy has failed a connection to the requested host and port.");
-    }
+            try {
+                var sslStream = new SslStream(
+                  _stream,
+                  false,
+                  conf.ServerCertificateValidationCallback,
+                  conf.ClientCertificateSelectionCallback);
 
-    // As client
-    private void setClientStream ()
-    {
-      if (_proxyUri != null) {
-        _tcpClient = new TcpClient (_proxyUri.DnsSafeHost, _proxyUri.Port);
-        _stream = _tcpClient.GetStream ();
-        sendProxyConnectRequest ();
-      }
-      else {
-        _tcpClient = new TcpClient (_uri.DnsSafeHost, _uri.Port);
-        _stream = _tcpClient.GetStream ();
-      }
+                sslStream.AuthenticateAsClient(
+                  host,
+                  conf.ClientCertificates,
+                  conf.EnabledSslProtocols,
+                  conf.CheckCertificateRevocation);
 
-      if (_secure) {
-        var conf = SslConfiguration;
-        var host = conf.TargetHost;
-        if (host != _uri.DnsSafeHost)
-          throw new WebSocketException (
-            CloseStatusCode.TlsHandshakeFailure, "An invalid host name is specified.");
-
-        try {
-          var sslStream = new SslStream (
-            _stream,
-            false,
-            conf.ServerCertificateValidationCallback,
-            conf.ClientCertificateSelectionCallback);
-
-          sslStream.AuthenticateAsClient (
-            host,
-            conf.ClientCertificates,
-            conf.EnabledSslProtocols,
-            conf.CheckCertificateRevocation);
-
-          _stream = sslStream;
+                _stream = sslStream;
+            }
+            catch (Exception ex) {
+                throw new WebSocketException(CloseStatusCode.TlsHandshakeFailure, ex);
+            }
         }
-        catch (Exception ex) {
-          throw new WebSocketException (CloseStatusCode.TlsHandshakeFailure, ex);
-        }
-      }
     }
 
     private void startReceiving ()
@@ -3643,85 +3571,37 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP proxy server URL to connect through, and if necessary,
-    /// a pair of <paramref name="username"/> and <paramref name="password"/> for
-    /// the proxy server authentication (Basic/Digest).
+    /// Sets the proxy server to connect through, and all the necessary configurations will pass through the interface
     /// </summary>
     /// <remarks>
     /// This method is not available in a server.
     /// </remarks>
-    /// <param name="url">
+    /// <param name="proxy">
     ///   <para>
-    ///   A <see cref="string"/> that represents the HTTP proxy server URL to
-    ///   connect through. The syntax must be http://&lt;host&gt;[:&lt;port&gt;].
-    ///   </para>
-    ///   <para>
-    ///   If <paramref name="url"/> is <see langword="null"/> or empty,
-    ///   the url and credentials for the proxy will be initialized,
-    ///   and the <see cref="WebSocket"/> will not use the proxy to
+    ///   A <see cref="IProxy"/> that represents the proxy type to
     ///   connect through.
     ///   </para>
     /// </param>
-    /// <param name="username">
-    ///   <para>
-    ///   A <see cref="string"/> that represents the user name used to authenticate.
-    ///   </para>
-    ///   <para>
-    ///   If <paramref name="username"/> is <see langword="null"/> or empty,
-    ///   the credentials for the proxy will be initialized and not be sent.
-    ///   </para>
-    /// </param>
-    /// <param name="password">
-    /// A <see cref="string"/> that represents the password for
-    /// <paramref name="username"/> used to authenticate.
-    /// </param>
-    public void SetProxy (string url, string username, string password)
+    public void SetProxy(IProxy proxy)
     {
-      string msg;
-      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the proxy.", null);
+        string msg;
+        if (!checkIfAvailable(true, false, true, false, false, true, out msg)) {
+            _logger.Error(msg);
+            error("An error has occurred in setting the proxy.", null);
 
-        return;
-      }
-
-      if (!checkParametersForSetProxy (url, username, password, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the proxy.", null);
-
-        return;
-      }
-
-      lock (_forState) {
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in setting the proxy.", null);
-
-          return;
+            return;
         }
 
-        if (url.IsNullOrEmpty ()) {
-          _logger.Warn ("The url and credentials for the proxy are initialized.");
-          _proxyUri = null;
-          _proxyCredentials = null;
+        lock (_forState) {
+            if (checkIfAvailable(true, false, false, true, out msg) == false) {
+                _logger.Error(msg);
+                error("An error has occurred in setting the proxy.", null);
 
-          return;
+                return;
+            }
+
+            _proxyManager = proxy;
         }
-
-        _proxyUri = new Uri (url);
-
-        if (username.IsNullOrEmpty ()) {
-          _logger.Warn ("The credentials for the proxy are initialized.");
-          _proxyCredentials = null;
-
-          return;
-        }
-
-        _proxyCredentials =
-          new NetworkCredential (
-            username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
-          );
-      }
     }
 
     #endregion
