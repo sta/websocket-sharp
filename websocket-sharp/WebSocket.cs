@@ -942,6 +942,29 @@ namespace WebSocketSharp
       return true;
     }
 
+    private static bool checkProtocols (string[] protocols, out string message)
+    {
+      message = null;
+
+      var invalid = protocols.Contains (
+                      protocol => protocol == null
+                                  || protocol.Length == 0
+                                  || !protocol.IsToken ()
+                    );
+
+      if (invalid) {
+        message = "It contains an invalid value.";
+        return false;
+      }
+
+      if (protocols.ContainsTwice ()) {
+        message = "It contains a value twice.";
+        return false;
+      }
+
+      return true;
+    }
+
     private bool checkReceivedFrame (WebSocketFrame frame, out string message)
     {
       message = null;
