@@ -64,6 +64,8 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="MessageEventArgs.cs" />
+    <Compile Include="IProxy.cs" />
+    <Compile Include="ProxyHTTP.cs" />
     <Compile Include="CloseEventArgs.cs" />
     <Compile Include="ByteOrder.cs" />
     <Compile Include="ErrorEventArgs.cs" />
