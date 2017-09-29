@@ -163,16 +163,6 @@ namespace WebSocketSharp
       return ret;
     }
 
-    internal static string CheckIfValidProtocols (this string[] protocols)
-    {
-      return protocols.Contains (
-               protocol => protocol == null || protocol.Length == 0 || !protocol.IsToken ())
-             ? "Contains an invalid value."
-             : protocols.ContainsTwice ()
-               ? "Contains a value twice."
-               : null;
-    }
-
     internal static void Close (this HttpListenerResponse response, HttpStatusCode code)
     {
       response.StatusCode = (int) code;
