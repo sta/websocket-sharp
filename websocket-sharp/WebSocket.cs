@@ -235,8 +235,7 @@ namespace WebSocketSharp
         throw new ArgumentException (msg, "url");
 
       if (protocols != null && protocols.Length > 0) {
-        msg = protocols.CheckIfValidProtocols ();
-        if (msg != null)
+        if (!checkProtocols (protocols, out msg))
           throw new ArgumentException (msg, "protocols");
 
         _protocols = protocols;
