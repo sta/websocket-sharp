@@ -945,13 +945,11 @@ namespace WebSocketSharp
     {
       message = null;
 
-      var invalid = protocols.Contains (
-                      protocol => protocol == null
-                                  || protocol.Length == 0
-                                  || !protocol.IsToken ()
-                    );
+      Func<string, bool> cond = protocol => protocol == null
+                                            || protocol.Length == 0
+                                            || !protocol.IsToken ();
 
-      if (invalid) {
+      if (protocols.Contains (cond)) {
         message = "It contains an invalid value.";
         return false;
       }
