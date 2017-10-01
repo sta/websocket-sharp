@@ -212,21 +212,23 @@ namespace WebSocketSharp
     internal static bool ContainsTwice (this string[] values)
     {
       var len = values.Length;
+      var end = len - 1;
 
-      Func<int, bool> contains = null;
-      contains = idx => {
-        if (idx < len - 1) {
-          for (var i = idx + 1; i < len; i++)
-            if (values[i] == values[idx])
-              return true;
+      Func<int, bool> seek = null;
+      seek = idx => {
+               if (idx == end)
+                 return false;
 
-          return contains (++idx);
-        }
+               var val = values[idx];
+               for (var i = idx + 1; i < len; i++) {
+                 if (values[i] == val)
+                   return true;
+               }
 
-        return false;
-      };
+               return seek (++idx);
+             };
 
-      return contains (0);
+      return seek (0);
     }
 
     internal static T[] Copy<T> (this T[] source, int length)
