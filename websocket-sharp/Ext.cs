@@ -536,9 +536,16 @@ namespace WebSocketSharp
 
     internal static bool IsToken (this string value)
     {
-      foreach (var c in value)
-        if (c < 0x20 || c >= 0x7f || _tspecials.Contains (c))
+      foreach (var c in value) {
+        if (c < 0x20)
           return false;
+
+        if (c >= 0x7f)
+          return false;
+
+        if (_tspecials.Contains (c))
+          return false;
+      }
 
       return true;
     }
