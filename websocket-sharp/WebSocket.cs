@@ -945,8 +945,7 @@ namespace WebSocketSharp
     {
       message = null;
 
-      Func<string, bool> cond = protocol => protocol == null
-                                            || protocol.Length == 0
+      Func<string, bool> cond = protocol => protocol.IsNullOrEmpty ()
                                             || !protocol.IsToken ();
 
       if (protocols.Contains (cond)) {
