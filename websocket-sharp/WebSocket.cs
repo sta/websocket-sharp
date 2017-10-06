@@ -198,28 +198,47 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocket"/> class with
-    /// the specified WebSocket URL and subprotocols.
+    /// <paramref name="url"/> and <paramref name="protocols"/>.
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that represents the WebSocket URL to connect.
+    /// A <see cref="string"/> that specifies the URL of the WebSocket
+    /// server to connect.
     /// </param>
     /// <param name="protocols">
-    /// An array of <see cref="string"/> that contains the WebSocket subprotocols if any.
-    /// Each value of <paramref name="protocols"/> must be a token defined in
-    /// <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
+    ///   <para>
+    ///   An array of <see cref="string"/> that specifies the names of
+    ///   the subprotocols if necessary.
+    ///   </para>
+    ///   <para>
+    ///   Each value of the array must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
+    ///   RFC 2616</see>.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="url"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
-    ///   <paramref name="url"/> is invalid.
+    ///   <paramref name="url"/> is an empty string.
     ///   </para>
     ///   <para>
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="protocols"/> is invalid.
+    ///   <paramref name="url"/> is an invalid WebSocket URL string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocols"/> contains a value that is not a token.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="protocols"/> contains a value twice.
     ///   </para>
     /// </exception>
     public WebSocket (string url, params string[] protocols)
