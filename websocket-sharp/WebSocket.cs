@@ -968,7 +968,7 @@ namespace WebSocketSharp
                                             || !protocol.IsToken ();
 
       if (protocols.Contains (cond)) {
-        message = "It contains an invalid value.";
+        message = "It contains a value that is not a token.";
         return false;
       }
 
