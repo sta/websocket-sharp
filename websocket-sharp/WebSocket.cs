@@ -320,14 +320,26 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the compression method used to compress a message on
-    /// the WebSocket connection.
+    /// Gets or sets the compression method used to compress a message.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
+    /// </remarks>
     /// <value>
-    /// One of the <see cref="CompressionMethod"/> enum values that specifies
-    /// the compression method used to compress a message. The default value is
-    /// <see cref="CompressionMethod.None"/>.
+    ///   <para>
+    ///   One of the <see cref="CompressionMethod"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It represents the compression method used to compress a message.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see cref="CompressionMethod.None"/>.
+    ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation cannot be used by servers.
+    /// </exception>
     public CompressionMethod Compression {
       get {
         return _compression;
