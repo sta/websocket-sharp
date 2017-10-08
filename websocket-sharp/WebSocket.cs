@@ -334,19 +334,29 @@ namespace WebSocketSharp
       }
 
       set {
-        string msg;
-        if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in setting the compression.", null);
+        if (!_client) {
+          var msg = "The set operation cannot be used by servers.";
+          throw new InvalidOperationException (msg);
+        }
 
+        if (_readyState == WebSocketState.Open) {
+          _logger.Warn ("The connection has already been established.");
+          return;
+        }
+
+        if (_readyState == WebSocketState.Closing) {
+          _logger.Warn ("The connection is closing.");
           return;
         }
 
         lock (_forState) {
-          if (!checkIfAvailable (true, false, false, true, out msg)) {
-            _logger.Error (msg);
-            error ("An error has occurred in setting the compression.", null);
+          if (_readyState == WebSocketState.Open) {
+            _logger.Warn ("The connection has already been established.");
+            return;
+          }
 
+          if (_readyState == WebSocketState.Closing) {
+            _logger.Warn ("The connection is closing.");
             return;
           }
 
