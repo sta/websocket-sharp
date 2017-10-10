@@ -346,29 +346,21 @@ namespace WebSocketSharp
       }
 
       set {
+        string msg = null;
+
         if (!_client) {
-          var msg = "The set operation cannot be used by servers.";
+          msg = "The set operation cannot be used by servers.";
           throw new InvalidOperationException (msg);
         }
 
-        if (_readyState == WebSocketState.Open) {
-          _logger.Warn ("The connection has already been established.");
-          return;
-        }
-
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Warn ("The connection is closing.");
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
           return;
         }
 
         lock (_forState) {
-          if (_readyState == WebSocketState.Open) {
-            _logger.Warn ("The connection has already been established.");
-            return;
-          }
-
-          if (_readyState == WebSocketState.Closing) {
-            _logger.Warn ("The connection is closing.");
+          if (!canSet (out msg)) {
+            _logger.Warn (msg);
             return;
           }
 
