@@ -781,6 +781,23 @@ namespace WebSocketSharp
       return sendHttpResponse (createHandshakeResponse ());
     }
 
+    private bool canSet (out string message)
+    {
+      message = null;
+
+      if (_readyState == WebSocketState.Open) {
+        message = "The connection has already been established.";
+        return false;
+      }
+
+      if (_readyState == WebSocketState.Closing) {
+        message = "The connection is closing.";
+        return false;
+      }
+
+      return true;
+    }
+
     // As server
     private bool checkHandshakeRequest (WebSocketContext context, out string message)
     {
