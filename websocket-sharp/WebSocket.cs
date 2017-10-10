@@ -655,24 +655,15 @@ namespace WebSocketSharp
         if (value <= TimeSpan.Zero)
           throw new ArgumentOutOfRangeException ("value", "Zero or less.");
 
-        if (_readyState == WebSocketState.Open) {
-          _logger.Warn ("The connection has already been established.");
-          return;
-        }
-
-        if (_readyState == WebSocketState.Closing) {
-          _logger.Warn ("The connection is closing.");
+        string msg;
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
           return;
         }
 
         lock (_forState) {
-          if (_readyState == WebSocketState.Open) {
-            _logger.Warn ("The connection has already been established.");
-            return;
-          }
-
-          if (_readyState == WebSocketState.Closing) {
-            _logger.Warn ("The connection is closing.");
+          if (!canSet (out msg)) {
+            _logger.Warn (msg);
             return;
           }
 
