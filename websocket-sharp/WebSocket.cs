@@ -430,12 +430,21 @@ namespace WebSocketSharp
       }
 
       set {
-        lock (_forState) {
-          string msg;
-          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-            _logger.Error (msg);
-            error ("An error has occurred in setting the enable redirection.", null);
+        string msg = null;
 
+        if (!_client) {
+          msg = "The set operation cannot be used by servers.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
+          return;
+        }
+
+        lock (_forState) {
+          if (!canSet (out msg)) {
+            _logger.Warn (msg);
             return;
           }
 
