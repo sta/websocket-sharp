@@ -417,13 +417,25 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> redirects
-    /// the handshake request to the new URL located in the handshake response.
+    /// Gets or sets a value indicating whether the URL redirection for
+    /// the handshake request is allowed.
     /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the connection has already been
+    /// established or it is closing.
+    /// </remarks>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocket"/> redirects the handshake request to
-    /// the new URL; otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the URL redirection for the handshake request is
+    ///   allowed; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation cannot be used by servers.
+    /// </exception>
     public bool EnableRedirection {
       get {
         return _enableRedirection;
