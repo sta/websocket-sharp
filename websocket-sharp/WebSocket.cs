@@ -547,29 +547,38 @@ namespace WebSocketSharp
       }
 
       set {
+        string msg = null;
+
+        if (!_client) {
+          msg = "This instance is not a client.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (!value.IsNullOrEmpty ()) {
+          Uri uri;
+          if (!Uri.TryCreate (value, UriKind.Absolute, out uri)) {
+            msg = "Not an absolute URI string.";
+            throw new ArgumentException (msg, value);
+          }
+
+          if (uri.Segments.Length > 1) {
+            msg = "It includes the path segments.";
+            throw new ArgumentException (msg, value);
+          }
+        }
+
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
+          return;
+        }
+
         lock (_forState) {
-          string msg;
-          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-            _logger.Error (msg);
-            error ("An error has occurred in setting the origin.", null);
-
+          if (!canSet (out msg)) {
+            _logger.Warn (msg);
             return;
           }
 
-          if (value.IsNullOrEmpty ()) {
-            _origin = value;
-            return;
-          }
-
-          Uri origin;
-          if (!Uri.TryCreate (value, UriKind.Absolute, out origin) || origin.Segments.Length > 1) {
-            _logger.Error ("The syntax of an origin must be '<scheme>://<host>[:<port>]'.");
-            error ("An error has occurred in setting the origin.", null);
-
-            return;
-          }
-
-          _origin = value.TrimEnd ('/');
+          _origin = !value.IsNullOrEmpty () ? value.TrimEnd ('/') : value;
         }
       }
     }
