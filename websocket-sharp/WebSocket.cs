@@ -525,22 +525,48 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Gets or sets the value of the HTTP Origin header to send with
-    /// the WebSocket handshake request to the server.
+    /// the handshake request.
     /// </summary>
     /// <remarks>
-    /// The <see cref="WebSocket"/> sends the Origin header if this property has any.
+    ///   <para>
+    ///   The HTTP Origin header is defined in
+    ///   <see href="http://tools.ietf.org/html/rfc6454#section-7">
+    ///   Section 7 of RFC 6454</see>.
+    ///   </para>
+    ///   <para>
+    ///   This instance sends the Origin header if this property has any.
+    ///   </para>
+    ///   <para>
+    ///   The set operation does nothing if the connection has already been
+    ///   established or it is closing.
+    ///   </para>
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of
-    ///   the <see href="http://tools.ietf.org/html/rfc6454#section-7">Origin</see> header to send.
-    ///   The default value is <see langword="null"/>.
+    ///   A <see cref="string"/> that represents the value of the Origin
+    ///   header to send.
     ///   </para>
     ///   <para>
-    ///   The Origin header has the following syntax:
-    ///   <c>&lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;]</c>
+    ///   The syntax is &lt;scheme&gt;://&lt;host&gt;[:&lt;port&gt;].
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available if this instance is not a client.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   The value specified for a set operation is not an absolute URI string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation includes the path segments.
+    ///   </para>
+    /// </exception>
     public string Origin {
       get {
         return _origin;
