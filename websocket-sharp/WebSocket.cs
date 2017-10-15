@@ -651,23 +651,20 @@ namespace WebSocketSharp
     /// </value>
     public ClientSslConfiguration SslConfiguration {
       get {
-        return _client
-               ? (_sslConfig ?? (_sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost)))
-               : null;
-      }
-
-      set {
-        lock (_forState) {
-          string msg;
-          if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-            _logger.Error (msg);
-            error ("An error has occurred in setting the ssl configuration.", null);
-
-            return;
-          }
-
-          _sslConfig = value;
+        if (!_client) {
+          var msg = "This instance is not a client.";
+          throw new InvalidOperationException (msg);
         }
+
+        if (!_secure) {
+          var msg = "The connection is not secure.";
+          throw new InvalidOperationException (msg);
+        }
+
+        if (_sslConfig == null)
+          _sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost);
+
+        return _sslConfig;
       }
     }
 
