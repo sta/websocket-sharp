@@ -641,14 +641,26 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets or sets the SSL configuration used to authenticate the server and
-    /// optionally the client for secure connection.
+    /// Gets the configuration for secure connection.
     /// </summary>
+    /// <remarks>
+    /// This configuration will be referenced when a secure
+    /// connection is established, so you must configure it
+    /// before calling any connect method.
+    /// </remarks>
     /// <value>
-    /// A <see cref="ClientSslConfiguration"/> that represents the configuration used
-    /// to authenticate the server and optionally the client for secure connection,
-    /// or <see langword="null"/> if the <see cref="WebSocket"/> is used in a server.
+    /// A <see cref="ClientSslConfiguration"/> that represents
+    /// the configuration used to authenticate the server and
+    /// optionally the client for secure connection.
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   This instance is not a client.
+    ///   </para>
+    ///   <para>
+    ///   This instance does not use a secure connection.
+    ///   </para>
+    /// </exception>
     public ClientSslConfiguration SslConfiguration {
       get {
         if (!_client) {
