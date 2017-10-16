@@ -669,7 +669,7 @@ namespace WebSocketSharp
         }
 
         if (!_secure) {
-          var msg = "The connection is not secure.";
+          var msg = "This instance does not use a secure connection.";
           throw new InvalidOperationException (msg);
         }
 
