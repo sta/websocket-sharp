@@ -644,14 +644,12 @@ namespace WebSocketSharp
     /// Gets the configuration for secure connection.
     /// </summary>
     /// <remarks>
-    /// This configuration will be referenced when a secure
-    /// connection is established, so you must configure it
-    /// before calling any connect method.
+    /// This configuration will be referenced when attempts to connect,
+    /// so it must be configured before any connect method is called.
     /// </remarks>
     /// <value>
     /// A <see cref="ClientSslConfiguration"/> that represents
-    /// the configuration used to authenticate the server and
-    /// optionally the client for secure connection.
+    /// the configuration used to establish a secure connection.
     /// </value>
     /// <exception cref="InvalidOperationException">
     ///   <para>
