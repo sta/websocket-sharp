@@ -752,22 +752,14 @@ namespace WebSocketSharp.Server
              || name == _hostname;
     }
 
-    private bool checkSslConfiguration (
+    private static bool checkSslConfiguration (
       ServerSslConfiguration configuration, out string message
     )
     {
       message = null;
 
-      if (!_secure)
-        return true;
-
-      if (configuration == null) {
-        message = "There is no configuration for secure connections.";
-        return false;
-      }
-
       if (configuration.ServerCertificate == null) {
-        message = "There is no certificate in the configuration.";
+        message = "There is no server certificate for secure connections.";
         return false;
       }
 
@@ -782,9 +774,10 @@ namespace WebSocketSharp.Server
 
     private ServerSslConfiguration getSslConfiguration ()
     {
-      return _secure && _sslConfig != null
-             ? new ServerSslConfiguration (_sslConfig)
-             : null;
+      if (_sslConfig == null)
+        _sslConfig = new ServerSslConfiguration ();
+
+      return _sslConfig;
     }
 
     private void init (
@@ -1322,11 +1315,15 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Start ()
     {
-      var sslConfig = getSslConfiguration ();
+      ServerSslConfiguration sslConfig = null;
 
-      string msg;
-      if (!checkSslConfiguration (sslConfig, out msg))
-        throw new InvalidOperationException (msg);
+      if (_secure) {
+        sslConfig = new ServerSslConfiguration (getSslConfiguration ());
+
+        string msg;
+        if (!checkSslConfiguration (sslConfig, out msg))
+          throw new InvalidOperationException (msg);
+      }
 
       start (sslConfig);
     }
