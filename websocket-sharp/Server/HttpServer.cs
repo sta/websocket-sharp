@@ -834,9 +834,6 @@ namespace WebSocketSharp.Server
     {
       message = null;
 
-      if (!_secure)
-        return true;
-
       var byUser = _listener.SslConfiguration.ServerCertificate != null;
 
       var path = _listener.CertificateFolderPath;
@@ -844,13 +841,13 @@ namespace WebSocketSharp.Server
 
       var both = byUser && withPort;
       if (both) {
-        _log.Warn ("The certificate associated with the port will be used.");
+        _log.Warn ("A server certificate associated with the port is used.");
         return true;
       }
 
       var either = byUser || withPort;
       if (!either) {
-        message = "There is no certificate used to authenticate the server.";
+        message = "There is no server certificate for secure connections.";
         return false;
       }
 
@@ -1475,9 +1472,11 @@ namespace WebSocketSharp.Server
     /// </exception>
     public void Start ()
     {
-      string msg;
-      if (!checkCertificate (out msg))
-        throw new InvalidOperationException (msg);
+      if (_secure) {
+        string msg;
+        if (!checkCertificate (out msg))
+          throw new InvalidOperationException (msg);
+      }
 
       start ();
     }
