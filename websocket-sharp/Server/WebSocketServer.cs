@@ -599,10 +599,7 @@ namespace WebSocketSharp.Server
           throw new InvalidOperationException (msg);
         }
 
-        if (_sslConfig == null)
-          _sslConfig = new ServerSslConfiguration ();
-
-        return _sslConfig;
+        return getSslConfiguration ();
       }
     }
 
