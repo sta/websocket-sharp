@@ -1456,12 +1456,12 @@ namespace WebSocketSharp.Server
     /// Starts receiving incoming requests.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server has already
-    /// started or it is shutting down.
+    /// This method does nothing if the server has already started or
+    /// it is shutting down.
     /// </remarks>
     /// <exception cref="InvalidOperationException">
     ///   <para>
-    ///   There is no certificate used to authenticate the server.
+    ///   There is no server certificate for secure connections.
     ///   </para>
     ///   <para>
     ///   -or-
