@@ -349,7 +349,7 @@ namespace WebSocketSharp
         string msg = null;
 
         if (!_client) {
-          msg = "The set operation cannot be used by servers.";
+          msg = "This instance is not a client.";
           throw new InvalidOperationException (msg);
         }
 
