@@ -2078,7 +2078,7 @@ namespace WebSocketSharp
       }
 
       if (_secure) {
-        var conf = SslConfiguration;
+        var conf = getSslConfiguration ();
         var host = conf.TargetHost;
         if (host != _uri.DnsSafeHost)
           throw new WebSocketException (
