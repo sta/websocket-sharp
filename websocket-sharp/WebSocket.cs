@@ -434,7 +434,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </value>
     /// <exception cref="InvalidOperationException">
-    /// The set operation cannot be used by servers.
+    /// The set operation is not available if this instance is not a client.
     /// </exception>
     public bool EnableRedirection {
       get {
