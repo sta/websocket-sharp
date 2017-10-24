@@ -1441,6 +1441,14 @@ namespace WebSocketSharp
       fatal (message, (ushort) code);
     }
 
+    private ClientSslConfiguration getSslConfiguration ()
+    {
+      if (_sslConfig == null)
+        _sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost);
+
+      return _sslConfig;
+    }
+
     private void init ()
     {
       _compression = CompressionMethod.None;
