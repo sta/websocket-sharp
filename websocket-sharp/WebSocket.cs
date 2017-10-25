@@ -671,10 +671,7 @@ namespace WebSocketSharp
           throw new InvalidOperationException (msg);
         }
 
-        if (_sslConfig == null)
-          _sslConfig = new ClientSslConfiguration (_uri.DnsSafeHost);
-
-        return _sslConfig;
+        return getSslConfiguration ();
       }
     }
 
