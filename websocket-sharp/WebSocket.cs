@@ -494,7 +494,8 @@ namespace WebSocketSharp
     /// Gets a value indicating whether a secure connection is used.
     /// </summary>
     /// <value>
-    /// <c>true</c> if a secure connection is used; otherwise, <c>false</c>.
+    /// <c>true</c> if this instance uses a secure connection; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool IsSecure {
       get {
