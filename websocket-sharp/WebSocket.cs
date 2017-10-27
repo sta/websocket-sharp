@@ -198,11 +198,17 @@ namespace WebSocketSharp
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WebSocket"/> class with
-    /// <paramref name="url"/> and <paramref name="protocols"/>.
+    /// <paramref name="url"/> and optionally <paramref name="protocols"/>.
     /// </summary>
     /// <param name="url">
-    /// A <see cref="string"/> that specifies the URL of the WebSocket
-    /// server to connect.
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the URL of the WebSocket
+    ///   server to connect.
+    ///   </para>
+    ///   <para>
+    ///   The new instance uses a secure connection if the scheme of
+    ///   the URL is wss.
+    ///   </para>
     /// </param>
     /// <param name="protocols">
     ///   <para>
