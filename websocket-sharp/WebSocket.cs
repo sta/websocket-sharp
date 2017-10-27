@@ -2,8 +2,6 @@
 /*
  * WebSocket.cs
  *
- * A C# implementation of the WebSocket interface.
- *
  * This code is derived from WebSocket.java
  * (http://github.com/adamac/Java-WebSocket-client).
  *
