@@ -687,10 +687,10 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the WebSocket URL used to connect, or accepted.
+    /// Gets the URL to which to connect.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the URL used to connect, or accepted.
+    /// A <see cref="Uri"/> that represents the URL to which to connect.
     /// </value>
     public Uri Url {
       get {
