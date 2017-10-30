@@ -206,12 +206,13 @@ namespace WebSocketSharp
     /// </summary>
     /// <param name="url">
     ///   <para>
-    ///   A <see cref="string"/> that specifies the URL of the WebSocket
-    ///   server to connect.
+    ///   A <see cref="string"/> that specifies the URL to which to connect.
     ///   </para>
     ///   <para>
-    ///   The new instance uses a secure connection if the scheme of
-    ///   the URL is wss.
+    ///   The scheme of the URL must be ws or wss.
+    ///   </para>
+    ///   <para>
+    ///   The new instance uses a secure connection if the scheme is wss.
     ///   </para>
     /// </param>
     /// <param name="protocols">
