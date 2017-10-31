@@ -622,11 +622,11 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the WebSocket subprotocol selected by the server.
+    /// Gets the name of the subprotocol selected by server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the subprotocol if any.
-    /// The default value is <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that will be one of the names of the subprotocols
+    /// specified by client or an empty string if not specified or selected.
     /// </value>
     public string Protocol {
       get {
