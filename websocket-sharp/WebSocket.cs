@@ -491,8 +491,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection is alive.
+    /// Gets a value indicating whether the connection is alive.
     /// </summary>
+    /// <remarks>
+    /// The get operation returns the value by using a ping/pong
+    /// if the current state of the connection is Open.
+    /// </remarks>
     /// <value>
     /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
     /// </value>
