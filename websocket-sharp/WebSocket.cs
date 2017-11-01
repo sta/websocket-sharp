@@ -477,11 +477,12 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the WebSocket extensions selected by the server.
+    /// Gets the extensions selected by server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the extensions if any.
-    /// The default value is <see cref="String.Empty"/>.
+    /// A <see cref="string"/> that will be a list of the extensions
+    /// negotiated between client and server, or an empty string if
+    /// not specified or selected.
     /// </value>
     public string Extensions {
       get {
