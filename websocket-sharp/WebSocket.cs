@@ -400,8 +400,13 @@ namespace WebSocketSharp
     /// Gets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <value>
-    /// A <see cref="NetworkCredential"/> that represents the credentials for
-    /// the authentication. The default value is <see langword="null"/>.
+    ///   <para>
+    ///   A <see cref="NetworkCredential"/> that represents the credentials
+    ///   used to authenticate the client.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     public NetworkCredential Credentials {
       get {
