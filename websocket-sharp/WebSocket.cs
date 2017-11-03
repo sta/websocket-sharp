@@ -390,9 +390,10 @@ namespace WebSocketSharp
     /// </value>
     public IEnumerable<Cookie> Cookies {
       get {
-        lock (_cookies.SyncRoot)
+        lock (_cookies.SyncRoot) {
           foreach (Cookie cookie in _cookies)
             yield return cookie;
+        }
       }
     }
 
