@@ -453,8 +453,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <value>
     ///   <para>
-    ///   <c>true</c> if the URL redirection for the handshake request is
-    ///   allowed; otherwise, <c>false</c>.
+    ///   <c>true</c> if this instance allows the URL redirection for
+    ///   the handshake request; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
     ///   The default value is <c>false</c>.
