@@ -381,12 +381,17 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the HTTP cookies included in the WebSocket handshake request and response.
+    /// Gets the HTTP cookies included in the handshake request/response.
     /// </summary>
     /// <value>
-    /// An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
-    /// instance that provides an enumerator which supports the iteration over the collection of
-    /// the cookies.
+    ///   <para>
+    ///   An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
+    ///   instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the cookies.
+    ///   </para>
     /// </value>
     public IEnumerable<Cookie> Cookies {
       get {
