@@ -645,7 +645,7 @@ namespace WebSocketSharp
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that will be one of the names of the subprotocols
-    /// specified by client or an empty string if not specified or selected.
+    /// specified by client, or an empty string if not specified or selected.
     /// </value>
     public string Protocol {
       get {
