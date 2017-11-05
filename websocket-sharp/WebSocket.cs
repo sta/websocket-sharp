@@ -3716,26 +3716,24 @@ namespace WebSocketSharp
     /// </param>
     public void SetCookie (Cookie cookie)
     {
-      string msg;
-      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting a cookie.", null);
+      string msg = null;
 
-        return;
+      if (!_client) {
+        msg = "This instance is not a client.";
+        throw new InvalidOperationException (msg);
       }
 
-      if (cookie == null) {
-        _logger.Error ("'cookie' is null.");
-        error ("An error has occurred in setting a cookie.", null);
+      if (cookie == null)
+        throw new ArgumentNullException ("cookie");
 
+      if (!canSet (out msg)) {
+        _logger.Warn (msg);
         return;
       }
 
       lock (_forState) {
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in setting a cookie.", null);
-
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
           return;
         }
 
