@@ -3705,15 +3705,21 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets an HTTP <paramref name="cookie"/> to send with
-    /// the WebSocket handshake request to the server.
+    /// Sets an HTTP cookie to send with the handshake request.
     /// </summary>
     /// <remarks>
-    /// This method is not available in a server.
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="cookie">
-    /// A <see cref="Cookie"/> that represents a cookie to send.
+    /// A <see cref="Cookie"/> that represents the cookie to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// This instance is not a client.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="cookie"/> is <see langword="null"/>.
+    /// </exception>
     public void SetCookie (Cookie cookie)
     {
       string msg = null;
