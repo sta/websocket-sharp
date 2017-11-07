@@ -3775,38 +3775,52 @@ namespace WebSocketSharp
     /// </param>
     public void SetCredentials (string username, string password, bool preAuth)
     {
-      string msg;
-      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the credentials.", null);
+      string msg = null;
 
-        return;
+      if (!_client) {
+        msg = "This instance is not a client.";
+        throw new InvalidOperationException (msg);
       }
 
-      if (!checkParametersForSetCredentials (username, password, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the credentials.", null);
+      if (!username.IsNullOrEmpty ()) {
+        if (username.Contains (':') || !username.IsText ()) {
+          msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "username");
+        }
+      }
 
+      if (!password.IsNullOrEmpty ()) {
+        if (!password.IsText ()) {
+          msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "password");
+        }
+      }
+
+      if (!canSet (out msg)) {
+        _logger.Warn (msg);
         return;
       }
 
       lock (_forState) {
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in setting the credentials.", null);
-
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
           return;
         }
 
         if (username.IsNullOrEmpty ()) {
-          _logger.Warn ("The credentials are initialized.");
+          msg = "The credentials are initialized.";
+          _logger.Warn (msg);
+
           _credentials = null;
           _preAuth = false;
 
           return;
         }
 
-        _credentials = new NetworkCredential (username, password, _uri.PathAndQuery);
+        _credentials = new NetworkCredential (
+                         username, password, _uri.PathAndQuery
+                       );
+
         _preAuth = preAuth;
       }
     }
