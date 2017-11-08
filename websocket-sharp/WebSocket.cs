@@ -3749,30 +3749,45 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets a pair of <paramref name="username"/> and <paramref name="password"/> for
-    /// the HTTP authentication (Basic/Digest).
+    /// Sets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
-    /// This method is not available in a server.
+    ///   <para>
+    ///   The credentials are initialized if <paramref name="username"/> is
+    ///   <see langword="null"/> or an empty string.
+    ///   </para>
+    ///   <para>
+    ///   This method does nothing if the connection has already been
+    ///   established or it is closing.
+    ///   </para>
     /// </remarks>
     /// <param name="username">
-    ///   <para>
-    ///   A <see cref="string"/> that represents the user name used to authenticate.
-    ///   </para>
-    ///   <para>
-    ///   If <paramref name="username"/> is <see langword="null"/> or empty,
-    ///   the credentials will be initialized and not be sent.
-    ///   </para>
+    /// A <see cref="string"/> that represents the username associated with
+    /// the credentials.
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for
-    /// <paramref name="username"/> used to authenticate.
+    /// A <see cref="string"/> that represents the password for the username
+    /// associated with the credentials.
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if the <see cref="WebSocket"/> sends the credentials for
-    /// the Basic authentication with the first handshake request to the server;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if this instance sends the credentials for the Basic
+    /// authentication with the first handshake request before receiving
+    /// an authentication challenge; otherwise, <c>false</c>.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// This instance is not a client.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="username"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="password"/> contains an invalid character.
+    ///   </para>
+    /// </exception>
     public void SetCredentials (string username, string password, bool preAuth)
     {
       string msg = null;
