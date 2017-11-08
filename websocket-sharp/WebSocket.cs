@@ -1017,31 +1017,6 @@ namespace WebSocketSharp
       return checkIfAvailable (connecting, open, closing, closed, out message);
     }
 
-    private static bool checkParametersForSetCredentials (
-      string username, string password, out string message
-    )
-    {
-      message = null;
-
-      if (username.IsNullOrEmpty ())
-        return true;
-
-      if (username.Contains (':') || !username.IsText ()) {
-        message = "'username' contains an invalid character.";
-        return false;
-      }
-
-      if (password.IsNullOrEmpty ())
-        return true;
-
-      if (!password.IsText ()) {
-        message = "'password' contains an invalid character.";
-        return false;
-      }
-
-      return true;
-    }
-
     private static bool checkParametersForSetProxy (
       string url, string username, string password, out string message
     )
