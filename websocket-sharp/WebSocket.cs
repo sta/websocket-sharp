@@ -3850,50 +3850,70 @@ namespace WebSocketSharp
     /// </param>
     public void SetProxy (string url, string username, string password)
     {
-      string msg;
-      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the proxy.", null);
+      string msg = null;
 
-        return;
+      if (!_client) {
+        msg = "This instance is not a client.";
+        throw new InvalidOperationException (msg);
       }
 
-      if (!checkParametersForSetProxy (url, username, password, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in setting the proxy.", null);
+      if (url == null)
+        throw new ArgumentNullException ("url");
 
+      if (url.Length == 0)
+        throw new ArgumentException ("An empty string.", "url");
+
+      Uri uri;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
+        msg = "Not an absolute URI string.";
+        throw new ArgumentException (msg, "url");
+      }
+
+      if (uri.Scheme != "http") {
+        msg = "The scheme part is not http.";
+        throw new ArgumentException (msg, "url");
+      }
+
+      if (uri.Segments.Length > 1) {
+        msg = "It includes the path segments.";
+        throw new ArgumentException (msg, "url");
+      }
+
+      if (!username.IsNullOrEmpty ()) {
+        if (username.Contains (':') || !username.IsText ()) {
+          msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "username");
+        }
+      }
+
+      if (!password.IsNullOrEmpty ()) {
+        if (!password.IsText ()) {
+          msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "password");
+        }
+      }
+
+      if (!canSet (out msg)) {
+        _logger.Warn (msg);
         return;
       }
 
       lock (_forState) {
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in setting the proxy.", null);
-
+        if (!canSet (out msg)) {
+          _logger.Warn (msg);
           return;
         }
 
-        if (url.IsNullOrEmpty ()) {
-          _logger.Warn ("The url and credentials for the proxy are initialized.");
-          _proxyUri = null;
-          _proxyCredentials = null;
-
-          return;
-        }
-
-        _proxyUri = new Uri (url);
-
-        if (username.IsNullOrEmpty ()) {
-          _logger.Warn ("The credentials for the proxy are initialized.");
-          _proxyCredentials = null;
-
-          return;
-        }
-
-        _proxyCredentials =
-          new NetworkCredential (
-            username, password, String.Format ("{0}:{1}", _uri.DnsSafeHost, _uri.Port)
-          );
+        _proxyUri = uri;
+        _proxyCredentials = !username.IsNullOrEmpty ()
+                            ? new NetworkCredential (
+                                username,
+                                password,
+                                String.Format (
+                                  "{0}:{1}", _uri.DnsSafeHost, _uri.Port
+                                )
+                              )
+                            : null;
       }
     }
 
