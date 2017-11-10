@@ -3816,38 +3816,83 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP proxy server URL to connect through, and if necessary,
-    /// a pair of <paramref name="username"/> and <paramref name="password"/> for
-    /// the proxy server authentication (Basic/Digest).
+    /// Sets the HTTP proxy server URL through which to connect and
+    /// the credentials for the HTTP authentication (Basic/Digest) by
+    /// the proxy server.
     /// </summary>
     /// <remarks>
-    /// This method is not available in a server.
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="url">
     ///   <para>
-    ///   A <see cref="string"/> that represents the HTTP proxy server URL to
-    ///   connect through. The syntax must be http://&lt;host&gt;[:&lt;port&gt;].
+    ///   A <see cref="string"/> that represents the proxy server URL through
+    ///   which to connect.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="url"/> is <see langword="null"/> or empty,
-    ///   the url and credentials for the proxy will be initialized,
-    ///   and the <see cref="WebSocket"/> will not use the proxy to
-    ///   connect through.
+    ///   The syntax is http://&lt;host&gt;[:&lt;port&gt;].
     ///   </para>
     /// </param>
     /// <param name="username">
     ///   <para>
-    ///   A <see cref="string"/> that represents the user name used to authenticate.
+    ///   A <see cref="string"/> that represents the username associated with
+    ///   the credentials.
     ///   </para>
     ///   <para>
-    ///   If <paramref name="username"/> is <see langword="null"/> or empty,
-    ///   the credentials for the proxy will be initialized and not be sent.
+    ///   <see langword="null"/> or an empty string if the credentials are not
+    ///   necessary.
     ///   </para>
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for
-    /// <paramref name="username"/> used to authenticate.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the password for the username
+    ///   associated with the credentials.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> or an empty string if not necessary.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// This instance is not a client.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="url"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="url"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> is not an absolute URI string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The scheme of <paramref name="url"/> is not http.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="url"/> includes the path segments.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="username"/> contains an invalid character.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="password"/> contains an invalid character.
+    ///   </para>
+    /// </exception>
     public void SetProxy (string url, string username, string password)
     {
       string msg = null;
