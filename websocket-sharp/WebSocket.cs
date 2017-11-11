@@ -3761,9 +3761,6 @@ namespace WebSocketSharp
         }
 
         if (username.IsNullOrEmpty ()) {
-          msg = "The credentials are initialized.";
-          _logger.Warn (msg);
-
           _credentials = null;
           _preAuth = false;
 
