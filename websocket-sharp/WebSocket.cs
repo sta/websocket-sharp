@@ -3690,27 +3690,31 @@ namespace WebSocketSharp
     /// Sets the credentials for the HTTP authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   The credentials are initialized if <paramref name="username"/> is
-    ///   <see langword="null"/> or an empty string.
-    ///   </para>
-    ///   <para>
-    ///   This method does nothing if the connection has already been
-    ///   established or it is closing.
-    ///   </para>
+    /// This method does nothing if the connection has already been
+    /// established or it is closing.
     /// </remarks>
     /// <param name="username">
-    /// A <see cref="string"/> that represents the username associated with
-    /// the credentials.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the username associated with
+    ///   the credentials.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> or an empty string if initializes
+    ///   the credentials.
+    ///   </para>
     /// </param>
     /// <param name="password">
-    /// A <see cref="string"/> that represents the password for the username
-    /// associated with the credentials.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the password for the username
+    ///   associated with the credentials.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> or an empty string if not necessary.
+    ///   </para>
     /// </param>
     /// <param name="preAuth">
-    /// <c>true</c> if this instance sends the credentials for the Basic
-    /// authentication with the first handshake request before receiving
-    /// an authentication challenge; otherwise, <c>false</c>.
+    /// <c>true</c> if sends the credentials for the Basic authentication in
+    /// advance with the first handshake request; otherwise, <c>false</c>.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// This instance is not a client.
