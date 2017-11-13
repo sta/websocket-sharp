@@ -3866,26 +3866,23 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (url == null)
-        throw new ArgumentNullException ("url");
+      Uri uri = null;
 
-      if (url.Length == 0)
-        throw new ArgumentException ("An empty string.", "url");
+      if (!url.IsNullOrEmpty ()) {
+        if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
+          msg = "Not an absolute URI string.";
+          throw new ArgumentException (msg, "url");
+        }
 
-      Uri uri;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out uri)) {
-        msg = "Not an absolute URI string.";
-        throw new ArgumentException (msg, "url");
-      }
+        if (uri.Scheme != "http") {
+          msg = "The scheme part is not http.";
+          throw new ArgumentException (msg, "url");
+        }
 
-      if (uri.Scheme != "http") {
-        msg = "The scheme part is not http.";
-        throw new ArgumentException (msg, "url");
-      }
-
-      if (uri.Segments.Length > 1) {
-        msg = "It includes the path segments.";
-        throw new ArgumentException (msg, "url");
+        if (uri.Segments.Length > 1) {
+          msg = "It includes the path segments.";
+          throw new ArgumentException (msg, "url");
+        }
       }
 
       if (!username.IsNullOrEmpty ()) {
@@ -3910,6 +3907,13 @@ namespace WebSocketSharp
       lock (_forState) {
         if (!canSet (out msg)) {
           _logger.Warn (msg);
+          return;
+        }
+
+        if (url.IsNullOrEmpty ()) {
+          _proxyUri = null;
+          _proxyCredentials = null;
+
           return;
         }
 
