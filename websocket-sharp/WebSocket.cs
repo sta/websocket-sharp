@@ -3780,9 +3780,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sets the HTTP proxy server URL through which to connect and
-    /// the credentials for the HTTP authentication (Basic/Digest) by
-    /// the proxy server.
+    /// Sets the URL of the HTTP proxy server through which to connect and
+    /// the credentials for the HTTP proxy authentication (Basic/Digest).
     /// </summary>
     /// <remarks>
     /// This method does nothing if the connection has already been
@@ -3790,11 +3789,15 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="url">
     ///   <para>
-    ///   A <see cref="string"/> that represents the proxy server URL through
-    ///   which to connect.
+    ///   A <see cref="string"/> that represents the URL of the proxy server
+    ///   through which to connect.
     ///   </para>
     ///   <para>
     ///   The syntax is http://&lt;host&gt;[:&lt;port&gt;].
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> or an empty string if initializes the URL and
+    ///   the credentials.
     ///   </para>
     /// </param>
     /// <param name="username">
@@ -3819,16 +3822,7 @@ namespace WebSocketSharp
     /// <exception cref="InvalidOperationException">
     /// This instance is not a client.
     /// </exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="url"/> is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="url"/> is an empty string.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
     ///   <para>
     ///   <paramref name="url"/> is not an absolute URI string.
     ///   </para>
