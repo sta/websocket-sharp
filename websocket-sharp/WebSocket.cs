@@ -3099,11 +3099,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Establishes a WebSocket connection.
+    /// Establishes a connection.
     /// </summary>
     /// <remarks>
-    /// This method is not available in a server.
+    /// This method does nothing if the current state of the connection is
+    /// Open or Closing.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// This instance is not a client.
+    /// </exception>
     public void Connect ()
     {
       if (!_client) {
