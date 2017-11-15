@@ -3134,16 +3134,20 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Establishes a WebSocket connection asynchronously.
+    /// Establishes a connection asynchronously.
     /// </summary>
     /// <remarks>
     ///   <para>
     ///   This method does not wait for the connect to be complete.
     ///   </para>
     ///   <para>
-    ///   This method is not available in a server.
+    ///   This method does nothing if the current state of the connection is
+    ///   Open or Closing.
     ///   </para>
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// This instance is not a client.
+    /// </exception>
     public void ConnectAsync ()
     {
       if (!_client) {
