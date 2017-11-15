@@ -3106,10 +3106,21 @@ namespace WebSocketSharp
     /// </remarks>
     public void Connect ()
     {
-      string msg;
-      if (!checkIfAvailable (true, false, true, false, false, true, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in connecting.", null);
+      if (!_client) {
+        var msg = "This instance is not a client.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (_readyState == WebSocketState.Open) {
+        var msg = "The connection has already been established.";
+        _logger.Warn (msg);
+
+        return;
+      }
+
+      if (_readyState == WebSocketState.Closing) {
+        var msg = "The close process is in progress.";
+        _logger.Warn (msg);
 
         return;
       }
