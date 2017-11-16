@@ -1220,17 +1220,25 @@ namespace WebSocketSharp
     private bool connect ()
     {
       lock (_forState) {
-        string msg;
-        if (!checkIfAvailable (true, false, false, true, out msg)) {
-          _logger.Error (msg);
-          error ("An error has occurred in connecting.", null);
+        if (_readyState == WebSocketState.Open) {
+          var msg = "The connection has already been established.";
+          _logger.Warn (msg);
+
+          return false;
+        }
+
+        if (_readyState == WebSocketState.Closing) {
+          var msg = "The close process is in progress.";
+          _logger.Warn (msg);
 
           return false;
         }
 
         if (_retryCountForConnect > _maxRetryCountForConnect) {
           _retryCountForConnect = 0;
-          _logger.Fatal ("A series of reconnecting has failed.");
+
+          var msg = "A series of reconnecting has failed.";
+          _logger.Fatal (msg);
 
           return false;
         }
@@ -1242,8 +1250,12 @@ namespace WebSocketSharp
         }
         catch (Exception ex) {
           _retryCountForConnect++;
-          _logger.Fatal (ex.ToString ());
-          fatal ("An exception has occurred while connecting.", ex);
+
+          _logger.Fatal (ex.Message);
+          _logger.Debug (ex.ToString ());
+
+          var msg = "An exception has occurred while connecting.";
+          fatal (msg, ex);
 
           return false;
         }
