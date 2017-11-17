@@ -1219,6 +1219,13 @@ namespace WebSocketSharp
     // As client
     private bool connect ()
     {
+      if (_readyState == WebSocketState.Open) {
+        var msg = "The connection has already been established.";
+        _logger.Warn (msg);
+
+        return false;
+      }
+
       lock (_forState) {
         if (_readyState == WebSocketState.Open) {
           var msg = "The connection has already been established.";
@@ -1228,8 +1235,11 @@ namespace WebSocketSharp
         }
 
         if (_readyState == WebSocketState.Closing) {
-          var msg = "The close process is in progress.";
-          _logger.Warn (msg);
+          var msg = "The close process has set in.";
+          _logger.Error (msg);
+
+          msg = "An interruption has occurred while attempting to connect.";
+          error (msg, null);
 
           return false;
         }
@@ -3127,18 +3137,9 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_readyState == WebSocketState.Open) {
-        var msg = "The connection has already been established.";
-        _logger.Warn (msg);
-
-        return;
-      }
-
       if (_readyState == WebSocketState.Closing) {
         var msg = "The close process is in progress.";
-        _logger.Warn (msg);
-
-        return;
+        throw new InvalidOperationException (msg);
       }
 
       if (connect ())
@@ -3167,18 +3168,9 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
-      if (_readyState == WebSocketState.Open) {
-        var msg = "The connection has already been established.";
-        _logger.Warn (msg);
-
-        return;
-      }
-
       if (_readyState == WebSocketState.Closing) {
         var msg = "The close process is in progress.";
-        _logger.Warn (msg);
-
-        return;
+        throw new InvalidOperationException (msg);
       }
 
       Func<bool> connector = connect;
