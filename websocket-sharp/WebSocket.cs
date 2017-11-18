@@ -3158,15 +3158,23 @@ namespace WebSocketSharp
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   This method does not wait for the connect to be complete.
+    ///   This method does not wait for the connect process to be complete.
     ///   </para>
     ///   <para>
-    ///   This method does nothing if the current state of the connection is
-    ///   Open or Closing.
+    ///   This method does nothing if the connection has already been
+    ///   established.
     ///   </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">
-    /// This instance is not a client.
+    ///   <para>
+    ///   This instance is not a client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The close process is in progress.
+    ///   </para>
     /// </exception>
     public void ConnectAsync ()
     {
