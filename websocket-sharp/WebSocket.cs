@@ -1245,10 +1245,11 @@ namespace WebSocketSharp
         }
 
         if (_retryCountForConnect > _maxRetryCountForConnect) {
-          _retryCountForConnect = 0;
+          var msg = "An opportunity for reconnecting has been lost.";
+          _logger.Error (msg);
 
-          var msg = "A series of reconnecting has failed.";
-          _logger.Fatal (msg);
+          msg = "An interruption has occurred while attempting to connect.";
+          error (msg, null);
 
           return false;
         }
@@ -3149,6 +3150,11 @@ namespace WebSocketSharp
         throw new InvalidOperationException (msg);
       }
 
+      if (_retryCountForConnect > _maxRetryCountForConnect) {
+        var msg = "A series of reconnecting has failed.";
+        throw new InvalidOperationException (msg);
+      }
+
       if (connect ())
         open ();
     }
@@ -3185,6 +3191,11 @@ namespace WebSocketSharp
 
       if (_readyState == WebSocketState.Closing) {
         var msg = "The close process is in progress.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (_retryCountForConnect > _maxRetryCountForConnect) {
+        var msg = "A series of reconnecting has failed.";
         throw new InvalidOperationException (msg);
       }
 
