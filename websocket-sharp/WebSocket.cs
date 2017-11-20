@@ -1265,7 +1265,7 @@ namespace WebSocketSharp
           _logger.Fatal (ex.Message);
           _logger.Debug (ex.ToString ());
 
-          var msg = "An exception has occurred while connecting.";
+          var msg = "An exception has occurred while attempting to connect.";
           fatal (msg, ex);
 
           return false;
