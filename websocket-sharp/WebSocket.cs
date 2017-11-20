@@ -3137,6 +3137,12 @@ namespace WebSocketSharp
     ///   <para>
     ///   The close process is in progress.
     ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   A series of reconnecting has failed.
+    ///   </para>
     /// </exception>
     public void Connect ()
     {
