@@ -1412,7 +1412,8 @@ namespace WebSocketSharp
         OnError.Emit (this, new ErrorEventArgs (message, exception));
       }
       catch (Exception ex) {
-        _logger.Error (ex.ToString ());
+        _logger.Error (ex.Message);
+        _logger.Debug (ex.ToString ());
       }
     }
 
