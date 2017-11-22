@@ -991,35 +991,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool checkIfAvailable (
-      bool connecting, bool open, bool closing, bool closed, out string message
-    )
-    {
-      message = null;
-
-      if (!connecting && _readyState == WebSocketState.Connecting) {
-        message = "This operation is not available in: connecting";
-        return false;
-      }
-
-      if (!open && _readyState == WebSocketState.Open) {
-        message = "This operation is not available in: open";
-        return false;
-      }
-
-      if (!closing && _readyState == WebSocketState.Closing) {
-        message = "This operation is not available in: closing";
-        return false;
-      }
-
-      if (!closed && _readyState == WebSocketState.Closed) {
-        message = "This operation is not available in: closed";
-        return false;
-      }
-
-      return true;
-    }
-
     private static bool checkProtocols (string[] protocols, out string message)
     {
       message = null;
