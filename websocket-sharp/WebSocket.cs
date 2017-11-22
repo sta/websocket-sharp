@@ -1020,31 +1020,6 @@ namespace WebSocketSharp
       return true;
     }
 
-    private bool checkIfAvailable (
-      bool client,
-      bool server,
-      bool connecting,
-      bool open,
-      bool closing,
-      bool closed,
-      out string message
-    )
-    {
-      message = null;
-
-      if (!client && _client) {
-        message = "This operation is not available in: client";
-        return false;
-      }
-
-      if (!server && !_client) {
-        message = "This operation is not available in: server";
-        return false;
-      }
-
-      return checkIfAvailable (connecting, open, closing, closed, out message);
-    }
-
     private static bool checkProtocols (string[] protocols, out string message)
     {
       message = null;
