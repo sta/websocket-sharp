@@ -2457,11 +2457,29 @@ namespace WebSocketSharp
     #region Public Methods
 
     /// <summary>
-    /// Accepts the WebSocket handshake request.
+    /// Accepts the handshake request.
     /// </summary>
     /// <remarks>
-    /// This method is not available in a client.
+    /// This method does nothing if the handshake request has already been
+    /// accepted.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    ///   <para>
+    ///   This instance is a client.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The close process is in progress.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The connection has already been closed.
+    ///   </para>
+    /// </exception>
     public void Accept ()
     {
       if (_client) {
