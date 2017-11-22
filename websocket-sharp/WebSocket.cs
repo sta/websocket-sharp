@@ -800,11 +800,37 @@ namespace WebSocketSharp
     // As server
     private bool accept ()
     {
+      if (_readyState == WebSocketState.Open) {
+        var msg = "The handshake request has already been accepted.";
+        _logger.Warn (msg);
+
+        return false;
+      }
+
       lock (_forState) {
-        string msg;
-        if (!checkIfAvailable (true, false, false, false, out msg)) {
+        if (_readyState == WebSocketState.Open) {
+          var msg = "The handshake request has already been accepted.";
+          _logger.Warn (msg);
+
+          return false;
+        }
+
+        if (_readyState == WebSocketState.Closing) {
+          var msg = "The close process has set in.";
           _logger.Error (msg);
-          error ("An error has occurred in accepting.", null);
+
+          msg = "An interruption has occurred while attempting to accept.";
+          error (msg, null);
+
+          return false;
+        }
+
+        if (_readyState == WebSocketState.Closed) {
+          var msg = "The connection has been closed.";
+          _logger.Error (msg);
+
+          msg = "An interruption has occurred while attempting to accept.";
+          error (msg, null);
 
           return false;
         }
@@ -812,16 +838,18 @@ namespace WebSocketSharp
         try {
           if (!acceptHandshake ())
             return false;
-
-          _readyState = WebSocketState.Open;
         }
         catch (Exception ex) {
-          _logger.Fatal (ex.ToString ());
-          fatal ("An exception has occurred while accepting.", ex);
+          _logger.Fatal (ex.Message);
+          _logger.Debug (ex.ToString ());
+
+          var msg = "An exception has occurred while attempting to accept.";
+          fatal (msg, ex);
 
           return false;
         }
 
+        _readyState = WebSocketState.Open;
         return true;
       }
     }
@@ -2436,12 +2464,19 @@ namespace WebSocketSharp
     /// </remarks>
     public void Accept ()
     {
-      string msg;
-      if (!checkIfAvailable (false, true, true, false, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in accepting.", null);
+      if (_client) {
+        var msg = "This instance is a client.";
+        throw new InvalidOperationException (msg);
+      }
 
-        return;
+      if (_readyState == WebSocketState.Closing) {
+        var msg = "The close process is in progress.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (_readyState == WebSocketState.Closed) {
+        var msg = "The connection has already been closed.";
+        throw new InvalidOperationException (msg);
       }
 
       if (accept ())
@@ -2461,12 +2496,19 @@ namespace WebSocketSharp
     /// </remarks>
     public void AcceptAsync ()
     {
-      string msg;
-      if (!checkIfAvailable (false, true, true, false, false, false, out msg)) {
-        _logger.Error (msg);
-        error ("An error has occurred in accepting.", null);
+      if (_client) {
+        var msg = "This instance is a client.";
+        throw new InvalidOperationException (msg);
+      }
 
-        return;
+      if (_readyState == WebSocketState.Closing) {
+        var msg = "The close process is in progress.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (_readyState == WebSocketState.Closed) {
+        var msg = "The connection has already been closed.";
+        throw new InvalidOperationException (msg);
       }
 
       Func<bool> acceptor = accept;
