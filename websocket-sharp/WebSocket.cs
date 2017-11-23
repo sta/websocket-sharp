@@ -2305,15 +2305,18 @@ namespace WebSocketSharp
       try {
         if (!acceptHandshake ())
           return;
-
-        _readyState = WebSocketState.Open;
       }
       catch (Exception ex) {
-        _logger.Fatal (ex.ToString ());
-        fatal ("An exception has occurred while accepting.", ex);
+        _logger.Fatal (ex.Message);
+        _logger.Debug (ex.ToString ());
+
+        var msg = "An exception has occurred while attempting to accept.";
+        fatal (msg, ex);
 
         return;
       }
+
+      _readyState = WebSocketState.Open;
 
       open ();
     }
