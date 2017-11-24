@@ -857,23 +857,34 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      _logger.Debug (String.Format ("A request from {0}:\n{1}", _context.UserEndPoint, _context));
+      var msg = String.Format (
+                  "A handshake request from {0}:\n{1}",
+                  _context.UserEndPoint,
+                  _context
+                );
 
-      string msg;
+      _logger.Debug (msg);
+
       if (!checkHandshakeRequest (_context, out msg)) {
-        sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
+        var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
+        sendHttpResponse (res);
 
         _logger.Fatal (msg);
-        fatal ("An error has occurred while accepting.", CloseStatusCode.ProtocolError);
+
+        msg = "A fatal error has occurred while attempting to accept.";
+        fatal (msg, CloseStatusCode.ProtocolError);
 
         return false;
       }
 
       if (!customCheckHandshakeRequest (_context, out msg)) {
-        sendHttpResponse (createHandshakeFailureResponse (HttpStatusCode.BadRequest));
+        var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
+        sendHttpResponse (res);
 
         _logger.Fatal (msg);
-        fatal ("An error has occurred while accepting.", CloseStatusCode.PolicyViolation);
+
+        msg = "A fatal error has occurred while attempting to accept.";
+        fatal (msg, CloseStatusCode.PolicyViolation);
 
         return false;
       }
@@ -883,8 +894,10 @@ namespace WebSocketSharp
       if (_protocol != null)
         processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
 
-      if (!_ignoreExtensions)
-        processSecWebSocketExtensionsClientHeader (_context.Headers["Sec-WebSocket-Extensions"]);
+      if (!_ignoreExtensions) {
+        var val = _context.Headers["Sec-WebSocket-Extensions"];
+        processSecWebSocketExtensionsClientHeader (val);
+      }
 
       return sendHttpResponse (createHandshakeResponse ());
     }
