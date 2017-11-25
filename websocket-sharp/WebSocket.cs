@@ -920,41 +920,58 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool checkHandshakeRequest (WebSocketContext context, out string message)
+    private bool checkHandshakeRequest (
+      WebSocketContext context, out string message
+    )
     {
       message = null;
 
-      if (context.RequestUri == null) {
-        message = "Specifies an invalid Request-URI.";
+      if (!context.IsWebSocketRequest) {
+        message = "Not a handshake request.";
         return false;
       }
 
-      if (!context.IsWebSocketRequest) {
-        message = "Not a WebSocket handshake request.";
+      if (context.RequestUri == null) {
+        message = "It specifies an invalid Request-URI.";
         return false;
       }
 
       var headers = context.Headers;
-      if (!validateSecWebSocketKeyHeader (headers["Sec-WebSocket-Key"])) {
-        message = "Includes no Sec-WebSocket-Key header, or it has an invalid value.";
+
+      var key = headers["Sec-WebSocket-Key"];
+      if (key == null) {
+        message = "It includes no Sec-WebSocket-Key header.";
         return false;
       }
 
-      if (!validateSecWebSocketVersionClientHeader (headers["Sec-WebSocket-Version"])) {
-        message = "Includes no Sec-WebSocket-Version header, or it has an invalid value.";
+      if (key.Length == 0) {
+        message = "It includes an invalid Sec-WebSocket-Key header.";
         return false;
       }
 
-      if (!validateSecWebSocketProtocolClientHeader (headers["Sec-WebSocket-Protocol"])) {
-        message = "Includes an invalid Sec-WebSocket-Protocol header.";
+      var version = headers["Sec-WebSocket-Version"];
+      if (version == null) {
+        message = "It includes no Sec-WebSocket-Version header.";
         return false;
       }
 
-      if (!_ignoreExtensions
-          && !validateSecWebSocketExtensionsClientHeader (headers["Sec-WebSocket-Extensions"])
-      ) {
-        message = "Includes an invalid Sec-WebSocket-Extensions header.";
+      if (!validateSecWebSocketVersionClientHeader (version)) {
+        message = "It includes an invalid Sec-WebSocket-Version header.";
         return false;
+      }
+
+      var protocol = headers["Sec-WebSocket-Protocol"];
+      if (!validateSecWebSocketProtocolClientHeader (protocol)) {
+        message = "It includes an invalid Sec-WebSocket-Protocol header.";
+        return false;
+      }
+
+      if (!_ignoreExtensions) {
+        var extensions = headers["Sec-WebSocket-Extensions"];
+        if (!validateSecWebSocketExtensionsClientHeader (extensions)) {
+          message = "It includes an invalid Sec-WebSocket-Extensions header.";
+          return false;
+        }
       }
 
       return true;
