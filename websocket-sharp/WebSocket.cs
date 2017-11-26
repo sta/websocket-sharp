@@ -955,7 +955,7 @@ namespace WebSocketSharp
         return false;
       }
 
-      if (!validateSecWebSocketVersionClientHeader (version)) {
+      if (version != _version) {
         message = "It includes an invalid Sec-WebSocket-Version header.";
         return false;
       }
