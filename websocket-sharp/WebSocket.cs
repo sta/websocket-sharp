@@ -2204,12 +2204,6 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool validateSecWebSocketKeyHeader (string value)
-    {
-      return value != null && value.Length > 0;
-    }
-
-    // As server
     private bool validateSecWebSocketProtocolClientHeader (string value)
     {
       return value == null || value.Length > 0;
