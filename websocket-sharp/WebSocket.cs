@@ -2221,12 +2221,6 @@ namespace WebSocketSharp
       return _protocolsRequested && _protocols.Contains (p => p == value);
     }
 
-    // As server
-    private bool validateSecWebSocketVersionClientHeader (string value)
-    {
-      return value != null && value == _version;
-    }
-
     // As client
     private bool validateSecWebSocketVersionServerHeader (string value)
     {
