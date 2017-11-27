@@ -2151,12 +2151,6 @@ namespace WebSocketSharp
       return value != null && value == CreateResponseKey (_base64Key);
     }
 
-    // As server
-    private bool validateSecWebSocketExtensionsClientHeader (string value)
-    {
-      return value == null || value.Length > 0;
-    }
-
     // As client
     private bool validateSecWebSocketExtensionsServerHeader (string value)
     {
