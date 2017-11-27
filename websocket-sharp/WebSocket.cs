@@ -961,7 +961,7 @@ namespace WebSocketSharp
       }
 
       var protocol = headers["Sec-WebSocket-Protocol"];
-      if (!validateSecWebSocketProtocolClientHeader (protocol)) {
+      if (protocol != null && protocol.Length == 0) {
         message = "It includes an invalid Sec-WebSocket-Protocol header.";
         return false;
       }
