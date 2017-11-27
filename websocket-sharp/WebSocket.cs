@@ -968,7 +968,7 @@ namespace WebSocketSharp
 
       if (!_ignoreExtensions) {
         var extensions = headers["Sec-WebSocket-Extensions"];
-        if (!validateSecWebSocketExtensionsClientHeader (extensions)) {
+        if (extensions != null && extensions.Length == 0) {
           message = "It includes an invalid Sec-WebSocket-Extensions header.";
           return false;
         }
