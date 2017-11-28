@@ -1372,11 +1372,17 @@ namespace WebSocketSharp
     }
 
     // As server
-    private bool customCheckHandshakeRequest (WebSocketContext context, out string message)
+    private bool customCheckHandshakeRequest (
+      WebSocketContext context, out string message
+    )
     {
       message = null;
-      return _handshakeRequestChecker == null
-             || (message = _handshakeRequestChecker (context)) == null;
+
+      if (_handshakeRequestChecker == null)
+        return true;
+
+      message = _handshakeRequestChecker (context);
+      return message == null;
     }
 
     private MessageEventArgs dequeueFromMessageEventQueue ()
