@@ -866,12 +866,12 @@ namespace WebSocketSharp
       _logger.Debug (msg);
 
       if (!checkHandshakeRequest (_context, out msg)) {
+        _logger.Error (msg);
+
         var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
         sendHttpResponse (res);
 
-        _logger.Fatal (msg);
-
-        msg = "A fatal error has occurred while attempting to accept.";
+        msg = "A handshake error has occurred while attempting to accept.";
         fatal (msg, CloseStatusCode.ProtocolError);
 
         return false;
