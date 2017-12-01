@@ -879,11 +879,10 @@ namespace WebSocketSharp
       if (!customCheckHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
-        var res = createHandshakeFailureResponse (HttpStatusCode.BadRequest);
-        sendHttpResponse (res);
-
-        msg = "A handshake error has occurred while attempting to accept.";
-        fatal (msg, CloseStatusCode.PolicyViolation);
+        refuseHandshake (
+          CloseStatusCode.PolicyViolation,
+          "A handshake error has occurred while attempting to accept."
+        );
 
         return false;
       }
