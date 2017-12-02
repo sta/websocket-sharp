@@ -857,14 +857,13 @@ namespace WebSocketSharp
     // As server
     private bool acceptHandshake ()
     {
-      var msg = String.Format (
-                  "A handshake request from {0}:\n{1}",
-                  _context.UserEndPoint,
-                  _context
-                );
+      _logger.Debug (
+        String.Format (
+          "A handshake request from {0}:\n{1}", _context.UserEndPoint, _context
+        )
+      );
 
-      _logger.Debug (msg);
-
+      string msg;
       if (!checkHandshakeRequest (_context, out msg)) {
         _logger.Error (msg);
 
