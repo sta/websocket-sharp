@@ -1747,7 +1747,7 @@ namespace WebSocketSharp
     // As server
     private void processSecWebSocketProtocolHeader (IEnumerable<string> values)
     {
-      if (values.Contains (p => p == _protocol))
+      if (values.Contains (val => val == _protocol))
         return;
 
       _protocol = null;
