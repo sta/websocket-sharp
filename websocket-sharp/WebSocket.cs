@@ -2048,7 +2048,12 @@ namespace WebSocketSharp
     // As server
     private bool sendHttpResponse (HttpResponse response)
     {
-      _logger.Debug ("A response to this request:\n" + response.ToString ());
+      _logger.Debug (
+        String.Format (
+          "A response to {0}:\n{1}", _context.UserEndPoint, response
+        )
+      );
+
       return sendBytes (response.ToByteArray ());
     }
 
