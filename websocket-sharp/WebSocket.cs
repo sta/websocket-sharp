@@ -888,8 +888,10 @@ namespace WebSocketSharp
 
       _base64Key = _context.Headers["Sec-WebSocket-Key"];
 
-      if (_protocol != null)
-        processSecWebSocketProtocolHeader (_context.SecWebSocketProtocols);
+      if (_protocol != null) {
+        var vals = _context.SecWebSocketProtocols;
+        processSecWebSocketProtocolClientHeader (vals);
+      }
 
       if (!_ignoreExtensions) {
         var val = _context.Headers["Sec-WebSocket-Extensions"];
@@ -1745,7 +1747,9 @@ namespace WebSocketSharp
     }
 
     // As server
-    private void processSecWebSocketProtocolHeader (IEnumerable<string> values)
+    private void processSecWebSocketProtocolClientHeader (
+      IEnumerable<string> values
+    )
     {
       if (values.Contains (val => val == _protocol))
         return;
