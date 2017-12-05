@@ -1711,28 +1711,33 @@ namespace WebSocketSharp
         return;
 
       var buff = new StringBuilder (80);
-
       var comp = false;
-      foreach (var e in value.SplitHeaderValue (',')) {
-        var ext = e.Trim ();
-        if (!comp && ext.IsCompressionExtension (CompressionMethod.Deflate)) {
-          _compression = CompressionMethod.Deflate;
-          buff.AppendFormat (
-            "{0}, ",
-            _compression.ToExtensionString (
-              "client_no_context_takeover", "server_no_context_takeover"
-            )
-          );
 
-          comp = true;
+      foreach (var val in value.SplitHeaderValue (',')) {
+        var ext = val.Trim ();
+
+        if (!comp) {
+          if (ext.IsCompressionExtension (CompressionMethod.Deflate)) {
+            _compression = CompressionMethod.Deflate;
+
+            buff.AppendFormat (
+              "{0}, ",
+              _compression.ToExtensionString (
+                "client_no_context_takeover", "server_no_context_takeover"
+              )
+            );
+
+            comp = true;
+          }
         }
       }
 
       var len = buff.Length;
-      if (len > 2) {
-        buff.Length = len - 2;
-        _extensions = buff.ToString ();
-      }
+      if (len <= 2)
+        return;
+
+      buff.Length = len - 2;
+      _extensions = buff.ToString ();
     }
 
     // As client
