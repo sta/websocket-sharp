@@ -147,15 +147,18 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string SecWebSocketKey { get; }
 
     /// <summary>
-    /// Gets the values of the Sec-WebSocket-Protocol header included in the request.
+    /// Gets the value of the Sec-WebSocket-Protocol header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property represents the subprotocols requested by the client.
-    /// </remarks>
     /// <value>
-    /// An <see cref="T:System.Collections.Generic.IEnumerable{string}"/> instance that provides
-    /// an enumerator which supports the iteration over the values of the Sec-WebSocket-Protocol
-    /// header.
+    ///   <para>
+    ///   An <see cref="T:System.Collections.Generic.IEnumerable{string}"/>
+    ///   instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the names of the subprotocols.
+    ///   </para>
     /// </value>
     public abstract IEnumerable<string> SecWebSocketProtocols { get; }
 
