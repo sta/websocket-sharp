@@ -147,8 +147,8 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string SecWebSocketKey { get; }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Protocol header included in
-    /// the handshake request.
+    /// Gets the names of the subprotocols from the Sec-WebSocket-Protocol
+    /// header included in the handshake request.
     /// </summary>
     /// <value>
     ///   <para>
