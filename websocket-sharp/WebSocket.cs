@@ -1713,11 +1713,13 @@ namespace WebSocketSharp
       var buff = new StringBuilder (80);
       var comp = false;
 
-      foreach (var val in value.SplitHeaderValue (',')) {
-        var ext = val.Trim ();
+      foreach (var elm in value.SplitHeaderValue (',')) {
+        var extension = elm.Trim ();
+        if (extension.Length == 0)
+          continue;
 
         if (!comp) {
-          if (ext.IsCompressionExtension (CompressionMethod.Deflate)) {
+          if (extension.IsCompressionExtension (CompressionMethod.Deflate)) {
             _compression = CompressionMethod.Deflate;
 
             buff.AppendFormat (
