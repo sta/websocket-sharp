@@ -754,7 +754,8 @@ namespace WebSocketSharp
     }
 
     internal static IEnumerable<string> SplitHeaderValue (
-      this string value, params char[] separators)
+      this string value, params char[] separators
+    )
     {
       var len = value.Length;
       var seps = new string (separators);
@@ -778,8 +779,8 @@ namespace WebSocketSharp
         else if (seps.Contains (c)) {
           if (!quoted) {
             yield return buff.ToString ();
-            buff.Length = 0;
 
+            buff.Length = 0;
             continue;
           }
         }
@@ -789,8 +790,7 @@ namespace WebSocketSharp
         buff.Append (c);
       }
 
-      if (buff.Length > 0)
-        yield return buff.ToString ();
+      yield return buff.ToString ();
     }
 
     internal static byte[] ToByteArray (this Stream stream)
