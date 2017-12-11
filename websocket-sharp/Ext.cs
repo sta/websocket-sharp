@@ -816,16 +816,19 @@ namespace WebSocketSharp
     }
 
     internal static string ToExtensionString (
-      this CompressionMethod method, params string[] parameters)
+      this CompressionMethod method, params string[] parameters
+    )
     {
       if (method == CompressionMethod.None)
         return String.Empty;
 
-      var m = String.Format ("permessage-{0}", method.ToString ().ToLower ());
-      if (parameters == null || parameters.Length == 0)
-        return m;
+      var name = String.Format (
+                   "permessage-{0}", method.ToString ().ToLower ()
+                 );
 
-      return String.Format ("{0}; {1}", m, parameters.ToString ("; "));
+      return parameters != null && parameters.Length > 0
+             ? String.Format ("{0}; {1}", name, parameters.ToString ("; "))
+             : name;
     }
 
     internal static System.Net.IPAddress ToIPAddress (this string value)
