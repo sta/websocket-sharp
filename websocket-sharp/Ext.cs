@@ -1900,7 +1900,9 @@ namespace WebSocketSharp
         separator = String.Empty;
 
       var buff = new StringBuilder (64);
-      (len - 1).Times (i => buff.AppendFormat ("{0}{1}", array[i].ToString (), separator));
+
+      for (var i = 0; i < len - 1; i++)
+        buff.AppendFormat ("{0}{1}", array[i], separator);
 
       buff.Append (array[len - 1].ToString ());
       return buff.ToString ();
