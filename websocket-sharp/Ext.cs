@@ -1867,19 +1867,23 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified <paramref name="array"/> to a <see cref="string"/> that
-    /// concatenates the each element of <paramref name="array"/> across the specified
-    /// <paramref name="separator"/>.
+    /// Converts the specified array to a <see cref="string"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> converted from <paramref name="array"/>,
-    /// or <see cref="String.Empty"/> if <paramref name="array"/> is empty.
+    ///   <para>
+    ///   A <see cref="string"/> converted by concatenating each element of
+    ///   <paramref name="array"/> across <paramref name="separator"/>.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if <paramref name="array"/> is an empty array.
+    ///   </para>
     /// </returns>
     /// <param name="array">
     /// An array of T to convert.
     /// </param>
     /// <param name="separator">
-    /// A <see cref="string"/> that represents the separator string.
+    /// A <see cref="string"/> used to separate each element of
+    /// <paramref name="array"/>.
     /// </param>
     /// <typeparam name="T">
     /// The type of elements in <paramref name="array"/>.
