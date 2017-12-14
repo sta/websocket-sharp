@@ -1863,7 +1863,10 @@ namespace WebSocketSharp
       if (source == null)
         throw new ArgumentNullException ("source");
 
-      return source.Length > 1 && !sourceOrder.IsHostOrder () ? source.Reverse () : source;
+      if (source.Length < 2)
+        return source;
+
+      return !sourceOrder.IsHostOrder () ? source.Reverse () : source;
     }
 
     /// <summary>
