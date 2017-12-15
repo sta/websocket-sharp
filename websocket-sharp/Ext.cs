@@ -1843,17 +1843,30 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the order of the specified array of <see cref="byte"/> to the host byte order.
+    /// Converts the order of elements in the specified byte array to
+    /// host (this computer architecture) byte order.
     /// </summary>
     /// <returns>
-    /// An array of <see cref="byte"/> converted from <paramref name="source"/>.
+    ///   <para>
+    ///   An array of <see cref="byte"/> converted from
+    ///   <paramref name="source"/>.
+    ///   </para>
+    ///   <para>
+    ///   Or <paramref name="source"/> if the number of elements in it
+    ///   is less than 2 or <paramref name="sourceOrder"/> is same as
+    ///   host byte order.
+    ///   </para>
     /// </returns>
     /// <param name="source">
     /// An array of <see cref="byte"/> to convert.
     /// </param>
     /// <param name="sourceOrder">
-    /// One of the <see cref="ByteOrder"/> enum values, specifies the byte order of
-    /// <paramref name="source"/>.
+    ///   <para>
+    ///   One of the <see cref="ByteOrder"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It specifies the order of elements in <paramref name="source"/>.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="source"/> is <see langword="null"/>.
