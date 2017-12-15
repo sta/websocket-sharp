@@ -730,19 +730,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal static string RemovePrefix (this string value, params string[] prefixes)
-    {
-      var idx = 0;
-      foreach (var prefix in prefixes) {
-        if (value.StartsWith (prefix)) {
-          idx = prefix.Length;
-          break;
-        }
-      }
-
-      return idx > 0 ? value.Substring (idx) : value;
-    }
-
     internal static T[] Reverse<T> (this T[] array)
     {
       var len = array.Length;
