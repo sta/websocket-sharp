@@ -746,13 +746,13 @@ namespace WebSocketSharp
     internal static T[] Reverse<T> (this T[] array)
     {
       var len = array.Length;
-      var reverse = new T[len];
+      var ret = new T[len];
 
       var end = len - 1;
       for (var i = 0; i <= end; i++)
-        reverse[i] = array[end - i];
+        ret[i] = array[end - i];
 
-      return reverse;
+      return ret;
     }
 
     internal static IEnumerable<string> SplitHeaderValue (
