@@ -1391,8 +1391,8 @@ namespace WebSocketSharp
     /// an empty string.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the string is <see langword="null"/> or an empty string;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="value"/> is <see langword="null"/> or
+    /// an empty string; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to test.
