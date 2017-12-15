@@ -1339,14 +1339,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="ByteOrder"/> is host (this computer
+    /// Determines whether the specified byte order is host (this computer
     /// architecture) byte order.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="order"/> is host byte order; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="order"/> is host byte order; otherwise,
+    /// <c>false</c>.
     /// </returns>
     /// <param name="order">
-    /// One of the <see cref="ByteOrder"/> enum values, to test.
+    /// One of the <see cref="ByteOrder"/> enum values to test.
     /// </param>
     public static bool IsHostOrder (this ByteOrder order)
     {
