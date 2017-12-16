@@ -1304,8 +1304,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="string"/> is
-    /// enclosed in the specified <see cref="char"/>.
+    /// Determines whether the specified string is enclosed in
+    /// the specified character.
     /// </summary>
     /// <returns>
     /// <c>true</c> if <paramref name="value"/> is enclosed in
