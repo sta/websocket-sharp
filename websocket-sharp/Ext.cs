@@ -1344,14 +1344,13 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="System.Net.IPAddress"/>
-    /// represents a local IP address.
+    /// Determines whether the specified IP address is a local IP address.
     /// </summary>
     /// <remarks>
     /// This local means NOT REMOTE for the current host.
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if <paramref name="address"/> represents a local IP address;
+    /// <c>true</c> if <paramref name="address"/> is a local IP address;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="address">
