@@ -1264,8 +1264,8 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="ushort"/> is in the
-    /// range of the status code for the WebSocket connection close.
+    /// Determines whether the specified ushort is in the range of
+    /// the status code for the WebSocket connection close.
     /// </summary>
     /// <remarks>
     ///   <para>
