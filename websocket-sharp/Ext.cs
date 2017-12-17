@@ -1470,7 +1470,9 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     /// <paramref name="protocol"/> is empty.
     /// </exception>
-    public static bool IsUpgradeTo (this HttpListenerRequest request, string protocol)
+    public static bool IsUpgradeTo (
+      this HttpListenerRequest request, string protocol
+    )
     {
       if (request == null)
         throw new ArgumentNullException ("request");
@@ -1481,8 +1483,9 @@ namespace WebSocketSharp
       if (protocol.Length == 0)
         throw new ArgumentException ("An empty string.", "protocol");
 
-      return request.Headers.Contains ("Upgrade", protocol) &&
-             request.Headers.Contains ("Connection", "Upgrade");
+      var headers = request.Headers;
+      return headers.Contains ("Upgrade", protocol)
+             && headers.Contains ("Connection", "Upgrade");
     }
 
     /// <summary>
