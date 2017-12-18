@@ -1443,18 +1443,18 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="HttpListenerRequest"/> is
-    /// an HTTP Upgrade request to switch to the specified <paramref name="protocol"/>.
+    /// Determines whether the specified HTTP request is an upgrade request to
+    /// switch to the specified protocol.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if <paramref name="request"/> is an HTTP Upgrade request to switch to
-    /// <paramref name="protocol"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if <paramref name="request"/> is an upgrade request to
+    /// switch to <paramref name="protocol"/>; otherwise, <c>false</c>.
     /// </returns>
     /// <param name="request">
-    /// A <see cref="HttpListenerRequest"/> that represents the HTTP request.
+    /// A <see cref="HttpListenerRequest"/> to test.
     /// </param>
     /// <param name="protocol">
-    /// A <see cref="string"/> that represents the protocol name.
+    /// A <see cref="string"/> that represents the name of the protocol.
     /// </param>
     /// <exception cref="ArgumentNullException">
     ///   <para>
@@ -1468,7 +1468,7 @@ namespace WebSocketSharp
     ///   </para>
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="protocol"/> is empty.
+    /// <paramref name="protocol"/> is an empty string.
     /// </exception>
     public static bool IsUpgradeTo (
       this HttpListenerRequest request, string protocol
