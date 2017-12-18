@@ -128,7 +128,13 @@ namespace WebSocketSharp.Net
 
     private static IPAddress convertToIPAddress (string hostname)
     {
-      return hostname == "*" || hostname == "+" ? IPAddress.Any : hostname.ToIPAddress ();
+      if (hostname == "*")
+        return IPAddress.Any;
+
+      if (hostname == "+")
+        return IPAddress.Any;
+
+      return hostname.ToIPAddress ();
     }
 
     private static void removePrefix (string uriPrefix, HttpListener listener)
