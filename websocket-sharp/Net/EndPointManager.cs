@@ -136,6 +136,9 @@ namespace WebSocketSharp.Net
       var pref = new HttpListenerPrefix (uriPrefix);
 
       var addr = convertToIPAddress (pref.Host);
+      if (addr == null)
+        return;
+
       if (!addr.IsLocal ())
         return;
 
