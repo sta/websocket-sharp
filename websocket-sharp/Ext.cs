@@ -1359,7 +1359,7 @@ namespace WebSocketSharp
     public static bool IsLocal (this System.Net.IPAddress address)
     {
       if (address == null)
-        return false;
+        throw new ArgumentNullException ("address");
 
       if (address.Equals (System.Net.IPAddress.Any))
         return true;
