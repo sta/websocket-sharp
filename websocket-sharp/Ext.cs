@@ -197,6 +197,25 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
+    internal static bool Contains (
+      this NameValueCollection collection,
+      string name,
+      string value,
+      StringComparison comparisonTypeForValue
+    )
+    {
+      var val = collection[name];
+      if (val == null)
+        return false;
+
+      foreach (var elm in val.Split (',')) {
+        if (elm.Trim ().Equals (value, comparisonTypeForValue))
+          return true;
+      }
+
+      return false;
+    }
+
     internal static bool Contains<T> (
       this IEnumerable<T> source, Func<T, bool> condition
     )
