@@ -1506,8 +1506,10 @@ namespace WebSocketSharp
         throw new ArgumentException ("An empty string.", "protocol");
 
       var headers = request.Headers;
-      return headers.Contains ("Upgrade", protocol)
-             && headers.Contains ("Connection", "Upgrade");
+      var comparison = StringComparison.OrdinalIgnoreCase;
+
+      return headers.Contains ("Upgrade", protocol, comparison)
+             && headers.Contains ("Connection", "Upgrade", comparison);
     }
 
     /// <summary>
