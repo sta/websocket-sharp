@@ -1022,6 +1022,15 @@ namespace WebSocketSharp
                : value.Substring (start + 1, len).Replace ("\\\"", "\"");
     }
 
+    internal static bool Upgrades (
+      this NameValueCollection headers, string protocol
+    )
+    {
+      var comparison = StringComparison.OrdinalIgnoreCase;
+      return headers.Contains ("Upgrade", protocol, comparison)
+             && headers.Contains ("Connection", "Upgrade", comparison);
+    }
+
     internal static string UTF8Decode (this byte[] bytes)
     {
       try {
