@@ -496,18 +496,14 @@ namespace WebSocketSharp
 
     internal static bool IsReserved (this ushort code)
     {
-      return code == 1004
-             || code == 1005
-             || code == 1006
-             || code == 1015;
+      return !( (code > 999 && code < 1004)
+                || (code > 1006 && code < 1012)
+                || (code > 2999 && code < 5000) );
     }
 
     internal static bool IsReserved (this CloseStatusCode code)
     {
-      return code == CloseStatusCode.Undefined
-             || code == CloseStatusCode.NoStatus
-             || code == CloseStatusCode.Abnormal
-             || code == CloseStatusCode.TlsHandshakeFailure;
+      return IsReserved ((ushort)code);
     }
 
     internal static bool IsSupported (this byte opcode)
