@@ -270,10 +270,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket connection request.
+    /// Gets a value indicating whether the request is a WebSocket handshake
+    /// request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket connection request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool IsWebSocketRequest {
       get {
