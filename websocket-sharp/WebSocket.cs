@@ -1065,6 +1065,11 @@ namespace WebSocketSharp
         return false;
       }
 
+      if (frame.Opcode == 0x0 && !_inContinuation) {
+        message = "A continuation frame has been received but there is nothing to continue.";
+        return false;
+      }
+
       if (frame.Rsv2 == Rsv.On) {
         message = "The RSV2 of a frame is non-zero without any negotiation for it.";
         return false;
