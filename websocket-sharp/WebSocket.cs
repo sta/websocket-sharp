@@ -1580,8 +1580,19 @@ namespace WebSocketSharp
 
     private bool processCloseFrame (WebSocketFrame frame)
     {
-      var payload = frame.PayloadData;
-      close (payload, !payload.HasReservedCode, false, true);
+      try {
+        PayloadData payload;
+
+        if (frame.PayloadData.Length > 1)
+          payload = new PayloadData (frame.PayloadData.Code, frame.PayloadData.Reason);
+        else
+          payload = frame.PayloadData;
+
+        close (payload, !payload.HasReservedCode, false, true);
+      }
+      catch {
+        close (1002, String.Empty);
+      }
 
       return false;
     }
