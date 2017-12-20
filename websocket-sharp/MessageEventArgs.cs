@@ -61,6 +61,7 @@ namespace WebSocketSharp
     {
       _opcode = frame.Opcode;
       _rawData = frame.PayloadData.ApplicationData;
+      setData ();
     }
 
     internal MessageEventArgs (Opcode opcode, byte[] rawData)
@@ -70,6 +71,7 @@ namespace WebSocketSharp
 
       _opcode = opcode;
       _rawData = rawData;
+      setData ();
     }
 
     #endregion
@@ -103,7 +105,6 @@ namespace WebSocketSharp
     /// </value>
     public string Data {
       get {
-        setData ();
         return _data;
       }
     }
@@ -152,7 +153,6 @@ namespace WebSocketSharp
     /// </value>
     public byte[] RawData {
       get {
-        setData ();
         return _rawData;
       }
     }

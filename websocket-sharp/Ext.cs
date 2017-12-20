@@ -69,6 +69,7 @@ namespace WebSocketSharp
     private static readonly byte[] _last = new byte[] { 0x00 };
     private static readonly int    _retry = 5;
     private const string           _tspecials = "()<>@,;:\\\"/[]?={} \t";
+    private static UTF8Encoding    _utf8 = new UTF8Encoding (false, true);
 
     #endregion
 
@@ -156,7 +157,7 @@ namespace WebSocketSharp
       var ret = code.InternalToByteArray (ByteOrder.Big);
       if (reason != null && reason.Length > 0) {
         var buff = new List<byte> (ret);
-        buff.AddRange (Encoding.UTF8.GetBytes (reason));
+        buff.AddRange (_utf8.GetBytes (reason));
         ret = buff.ToArray ();
       }
 
@@ -957,7 +958,7 @@ namespace WebSocketSharp
       s = null;
 
       try {
-        s = Encoding.UTF8.GetString (bytes);
+        s = _utf8.GetString (bytes);
       }
       catch {
         return false;
@@ -971,7 +972,7 @@ namespace WebSocketSharp
       bytes = null;
 
       try {
-        bytes = Encoding.UTF8.GetBytes (s);
+        bytes = _utf8.GetBytes (s);
       }
       catch {
         return false;
@@ -1014,17 +1015,12 @@ namespace WebSocketSharp
 
     internal static string UTF8Decode (this byte[] bytes)
     {
-      try {
-        return Encoding.UTF8.GetString (bytes);
-      }
-      catch {
-        return null;
-      }
+      return _utf8.GetString (bytes);
     }
 
     internal static byte[] UTF8Encode (this string s)
     {
-      return Encoding.UTF8.GetBytes (s);
+      return _utf8.GetBytes (s);
     }
 
     internal static void WriteBytes (this Stream stream, byte[] bytes, int bufferLength)
