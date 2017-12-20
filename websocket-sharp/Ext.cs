@@ -1514,11 +1514,7 @@ namespace WebSocketSharp
       if (protocol.Length == 0)
         throw new ArgumentException ("An empty string.", "protocol");
 
-      var headers = request.Headers;
-      var comparison = StringComparison.OrdinalIgnoreCase;
-
-      return headers.Contains ("Upgrade", protocol, comparison)
-             && headers.Contains ("Connection", "Upgrade", comparison);
+      return request.Headers.Upgrades (protocol);
     }
 
     /// <summary>
