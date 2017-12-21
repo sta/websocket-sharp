@@ -944,7 +944,7 @@ namespace WebSocketSharp.Server
           ThreadPool.QueueUserWorkItem (
             state => {
               try {
-                if (ctx.Request.IsUpgradeTo ("websocket")) {
+                if (ctx.Request.IsUpgradeRequest ("websocket")) {
                   processRequest (ctx.AcceptWebSocket (null));
                   return;
                 }

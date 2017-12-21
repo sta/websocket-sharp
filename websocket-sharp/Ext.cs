@@ -1501,7 +1501,7 @@ namespace WebSocketSharp
     /// <exception cref="ArgumentException">
     /// <paramref name="protocol"/> is an empty string.
     /// </exception>
-    public static bool IsUpgradeTo (
+    public static bool IsUpgradeRequest (
       this HttpListenerRequest request, string protocol
     )
     {
