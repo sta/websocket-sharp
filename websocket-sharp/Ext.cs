@@ -1485,7 +1485,7 @@ namespace WebSocketSharp
     /// A <see cref="HttpListenerRequest"/> to test.
     /// </param>
     /// <param name="protocol">
-    /// A <see cref="string"/> that represents the name of the protocol.
+    /// A <see cref="string"/> that specifies the name of the protocol.
     /// </param>
     /// <exception cref="ArgumentNullException">
     ///   <para>
