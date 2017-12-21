@@ -282,7 +282,7 @@ namespace WebSocketSharp.Net
         if (!_websocketRequestSet) {
           _websocketRequest = _method == "GET"
                               && _version > HttpVersion.Version10
-                              && this.IsUpgradeTo ("websocket");
+                              && _headers.Upgrades ("websocket");
 
           _websocketRequestSet = true;
         }
