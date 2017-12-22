@@ -464,6 +464,14 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private bool keepAlive ()
+    {
+      var comparison = StringComparison.OrdinalIgnoreCase;
+      return _version > HttpVersion.Version10
+             ? !_headers.Contains ("Connection", "close", comparison)
+             : _headers.Contains ("Connection", "keep-alive", comparison);
+    }
+
     private static bool tryCreateVersion (string version, out Version result)
     {
       try {
