@@ -300,11 +300,7 @@ namespace WebSocketSharp.Net
     public bool KeepAlive {
       get {
         if (!_keepAliveSet) {
-          string keepAlive;
-          _keepAlive = _version > HttpVersion.Version10 ||
-                       _headers.Contains ("Connection", "keep-alive") ||
-                       ((keepAlive = _headers["Keep-Alive"]) != null && keepAlive != "closed");
-
+          _keepAlive = keepAlive ();
           _keepAliveSet = true;
         }
 
