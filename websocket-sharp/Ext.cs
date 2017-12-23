@@ -1119,39 +1119,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="NameValueCollection"/> contains the entry with
-    /// the specified both <paramref name="name"/> and <paramref name="value"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="collection"/> contains the entry with both
-    /// <paramref name="name"/> and <paramref name="value"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="collection">
-    /// A <see cref="NameValueCollection"/> to test.
-    /// </param>
-    /// <param name="name">
-    /// A <see cref="string"/> that represents the key of the entry to find.
-    /// </param>
-    /// <param name="value">
-    /// A <see cref="string"/> that represents the value of the entry to find.
-    /// </param>
-    public static bool Contains (this NameValueCollection collection, string name, string value)
-    {
-      if (collection == null || collection.Count == 0)
-        return false;
-
-      var vals = collection[name];
-      if (vals == null)
-        return false;
-
-      foreach (var val in vals.Split (','))
-        if (val.Trim ().Equals (value, StringComparison.OrdinalIgnoreCase))
-          return true;
-
-      return false;
-    }
-
-    /// <summary>
     /// Emits the specified <see cref="EventHandler"/> delegate if it isn't <see langword="null"/>.
     /// </summary>
     /// <param name="eventHandler">
