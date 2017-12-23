@@ -99,11 +99,9 @@ namespace WebSocketSharp
     public bool IsWebSocketRequest {
       get {
         if (!_websocketRequestSet) {
-          var headers = Headers;
-          _websocketRequest = _method == "GET" &&
-                              ProtocolVersion > HttpVersion.Version10 &&
-                              headers.Contains ("Upgrade", "websocket") &&
-                              headers.Contains ("Connection", "Upgrade");
+          _websocketRequest = _method == "GET"
+                              && ProtocolVersion > HttpVersion.Version10
+                              && Headers.Upgrades ("websocket");
 
           _websocketRequestSet = true;
         }
