@@ -292,10 +292,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client requests a persistent connection.
+    /// Gets a value indicating whether the client requests a persistent
+    /// connection.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client requests a persistent connection; otherwise, <c>false</c>.
+    /// <c>true</c> if the request specifies that the connection is kept open;
+    /// otherwise, <c>false</c>.
     /// </value>
     public bool KeepAlive {
       get {
