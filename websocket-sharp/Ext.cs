@@ -1474,50 +1474,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Determines whether the specified HTTP request is an upgrade request to
-    /// switch to the specified protocol.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="request"/> is an upgrade request to
-    /// switch to <paramref name="protocol"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="request">
-    /// A <see cref="HttpListenerRequest"/> to test.
-    /// </param>
-    /// <param name="protocol">
-    /// A <see cref="string"/> that specifies the name of the protocol.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="request"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="protocol"/> is <see langword="null"/>.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="protocol"/> is an empty string.
-    /// </exception>
-    public static bool IsUpgradeRequest (
-      this HttpListenerRequest request, string protocol
-    )
-    {
-      if (request == null)
-        throw new ArgumentNullException ("request");
-
-      if (protocol == null)
-        throw new ArgumentNullException ("protocol");
-
-      if (protocol.Length == 0)
-        throw new ArgumentException ("An empty string.", "protocol");
-
-      return request.Headers.Upgrades (protocol);
-    }
-
-    /// <summary>
     /// Determines whether the specified string is a URI string.
     /// </summary>
     /// <returns>

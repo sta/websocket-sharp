@@ -610,6 +610,11 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal bool IsUpgradeRequest (string protocol)
+    {
+      return _headers.Upgrades (protocol);
+    }
+
     internal void SetRequestLine (string requestLine)
     {
       var parts = requestLine.Split (new[] { ' ' }, 3);
