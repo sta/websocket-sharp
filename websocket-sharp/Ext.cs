@@ -388,6 +388,16 @@ namespace WebSocketSharp
       return idx > 0 ? original.Substring (0, idx) : original;
     }
 
+    internal static CookieCollection GetCookies (
+      this NameValueCollection headers, bool response
+    )
+    {
+      var val = headers[response ? "Set-Cookie" : "Cookie"];
+      return val != null
+             ? CookieCollection.Parse (val, response)
+             : new CookieCollection ();
+    }
+
     internal static string GetDnsSafeHost (this Uri uri, bool bracketIPv6)
     {
       return bracketIPv6 && uri.HostNameType == UriHostNameType.IPv6
@@ -1146,27 +1156,6 @@ namespace WebSocketSharp
     {
       if (eventHandler != null)
         eventHandler (sender, e);
-    }
-
-    /// <summary>
-    /// Gets the collection of the HTTP cookies from the specified HTTP <paramref name="headers"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="CookieCollection"/> that receives a collection of the HTTP cookies.
-    /// </returns>
-    /// <param name="headers">
-    /// A <see cref="NameValueCollection"/> that contains a collection of the HTTP headers.
-    /// </param>
-    /// <param name="response">
-    /// <c>true</c> if <paramref name="headers"/> is a collection of the response headers;
-    /// otherwise, <c>false</c>.
-    /// </param>
-    public static CookieCollection GetCookies (this NameValueCollection headers, bool response)
-    {
-      var name = response ? "Set-Cookie" : "Cookie";
-      return headers != null && headers.Contains (name)
-             ? CookieCollection.Parse (headers[name], response)
-             : new CookieCollection ();
     }
 
     /// <summary>
