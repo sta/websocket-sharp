@@ -198,6 +198,13 @@ namespace WebSocketSharp
     }
 
     internal static bool Contains (
+      this NameValueCollection collection, string name
+    )
+    {
+      return collection[name] != null;
+    }
+
+    internal static bool Contains (
       this NameValueCollection collection,
       string name,
       string value,
@@ -1097,25 +1104,6 @@ namespace WebSocketSharp
              : value == null || value.Length == 0
                ? false
                : value.IndexOfAny (chars) > -1;
-    }
-
-    /// <summary>
-    /// Determines whether the specified <see cref="NameValueCollection"/> contains
-    /// the entry with the specified <paramref name="name"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="collection"/> contains the entry with
-    /// <paramref name="name"/>; otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="collection">
-    /// A <see cref="NameValueCollection"/> to test.
-    /// </param>
-    /// <param name="name">
-    /// A <see cref="string"/> that represents the key of the entry to find.
-    /// </param>
-    public static bool Contains (this NameValueCollection collection, string name)
-    {
-      return collection != null && collection.Count > 0 ? collection[name] != null : false;
     }
 
     /// <summary>
