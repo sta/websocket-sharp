@@ -79,7 +79,8 @@ namespace WebSocketSharp
 
     public bool HasConnectionClose {
       get {
-        return Headers.Contains ("Connection", "close");
+        var comparison = StringComparison.OrdinalIgnoreCase;
+        return Headers.Contains ("Connection", "close", comparison);
       }
     }
 
