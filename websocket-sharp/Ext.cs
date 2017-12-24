@@ -597,6 +597,16 @@ namespace WebSocketSharp
       return true;
     }
 
+    internal static bool KeepsAlive (
+      this NameValueCollection headers, Version version
+    )
+    {
+      var comparison = StringComparison.OrdinalIgnoreCase;
+      return version < HttpVersion.Version11
+             ? headers.Contains ("Connection", "keep-alive", comparison)
+             : !headers.Contains ("Connection", "close", comparison);
+    }
+
     internal static string Quote (this string value)
     {
       return String.Format ("\"{0}\"", value.Replace ("\"", "\\\""));
