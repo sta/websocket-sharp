@@ -302,7 +302,7 @@ namespace WebSocketSharp.Net
     public bool KeepAlive {
       get {
         if (!_keepAliveSet) {
-          _keepAlive = keepAlive ();
+          _keepAlive = _headers.KeepsAlive (_version);
           _keepAliveSet = true;
         }
 
