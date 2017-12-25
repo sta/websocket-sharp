@@ -464,14 +464,16 @@ namespace WebSocketSharp.Net
 
     private static bool tryCreateVersion (string version, out Version result)
     {
+      result = null;
+
       try {
         result = new Version (version);
-        return true;
       }
       catch {
-        result = null;
         return false;
       }
+
+      return true;
     }
 
     #endregion
