@@ -612,25 +612,53 @@ namespace WebSocketSharp.Net
     internal void SetRequestLine (string requestLine)
     {
       var parts = requestLine.Split (new[] { ' ' }, 3);
-      if (parts.Length != 3) {
+      if (parts.Length < 3) {
         _context.ErrorMessage = "Invalid request line (parts)";
         return;
       }
 
-      _method = parts[0];
-      if (!_method.IsToken ()) {
+      var method = parts[0];
+      if (method.Length == 0) {
         _context.ErrorMessage = "Invalid request line (method)";
         return;
       }
 
-      _uri = parts[1];
+      if (!method.IsToken ()) {
+        _context.ErrorMessage = "Invalid request line (method)";
+        return;
+      }
 
-      var ver = parts[2];
-      if (ver.Length != 8 ||
-          !ver.StartsWith ("HTTP/") ||
-          !tryCreateVersion (ver.Substring (5), out _version) ||
-          _version.Major < 1)
+      var uri = parts[1];
+      if (uri.Length == 0) {
+        _context.ErrorMessage = "Invalid request line (uri)";
+        return;
+      }
+
+      var rawVer = parts[2];
+      if (rawVer.Length != 8) {
         _context.ErrorMessage = "Invalid request line (version)";
+        return;
+      }
+
+      if (rawVer.IndexOf ("HTTP/") != 0) {
+        _context.ErrorMessage = "Invalid request line (version)";
+        return;
+      }
+
+      Version ver;
+      if (!tryCreateVersion (rawVer.Substring (5), out ver)) {
+        _context.ErrorMessage = "Invalid request line (version)";
+        return;
+      }
+
+      if (ver.Major < 1) {
+        _context.ErrorMessage = "Invalid request line (version)";
+        return;
+      }
+
+      _method = method;
+      _uri = uri;
+      _version = ver;
     }
 
     #endregion
