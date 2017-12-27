@@ -918,6 +918,22 @@ namespace WebSocketSharp
       return ret.Length > 0 ? ret : value[0].ToString ();
     }
 
+    internal static bool TryCreateVersion (
+      this string versionString, out Version result
+    )
+    {
+      result = null;
+
+      try {
+        result = new Version (versionString);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     /// <summary>
     /// Tries to create a new <see cref="Uri"/> for WebSocket with
     /// the specified <paramref name="uriString"/>.

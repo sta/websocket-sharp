@@ -460,24 +460,6 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Private Methods
-
-    private static bool tryCreateVersion (string version, out Version result)
-    {
-      result = null;
-
-      try {
-        result = new Version (version);
-      }
-      catch {
-        return false;
-      }
-
-      return true;
-    }
-
-    #endregion
-
     #region Internal Methods
 
     internal void AddHeader (string header)
@@ -646,7 +628,7 @@ namespace WebSocketSharp.Net
       }
 
       Version ver;
-      if (!tryCreateVersion (rawVer.Substring (5), out ver)) {
+      if (!rawVer.Substring (5).TryCreateVersion (out ver)) {
         _context.ErrorMessage = "Invalid request line (version)";
         return;
       }
