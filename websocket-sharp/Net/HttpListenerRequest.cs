@@ -462,21 +462,24 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void AddHeader (string header)
+    internal void AddHeader (string headerLine)
     {
-      var colon = header.IndexOf (':');
-      if (colon == -1) {
-        _context.ErrorMessage = "Invalid header";
+      var colon = headerLine.IndexOf (':');
+      if (colon < 1) {
+        _context.ErrorMessage = "Invalid header line";
         return;
       }
 
-      var name = header.Substring (0, colon).Trim ();
-      var val = header.Substring (colon + 1).Trim ();
+      var name = headerLine.Substring (0, colon).Trim ();
+      var val = colon < headerLine.Length - 1
+                ? headerLine.Substring (colon + 1).Trim ()
+                : String.Empty;
+
       _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "accept") {
-        _acceptTypes = new List<string> (val.SplitHeaderValue (',')).ToArray ();
+        _acceptTypes = val.SplitHeaderValue (',').ToList ().ToArray ();
         return;
       }
 
@@ -509,8 +512,17 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (lower == "referer")
-        _referer = val.ToUri ();
+      if (lower == "referer") {
+        var referer = val.ToUri ();
+        if (referer != null) {
+          _referer = referer;
+        }
+        else {
+          _context.ErrorMessage = "Invalid Referer header";
+        }
+
+        return;
+      }
     }
 
     internal void FinishInitialization ()
