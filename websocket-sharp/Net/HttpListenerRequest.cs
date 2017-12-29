@@ -528,35 +528,44 @@ namespace WebSocketSharp.Net
     internal void FinishInitialization ()
     {
       var host = _headers["Host"];
-      var nohost = host == null || host.Length == 0;
-      if (_version > HttpVersion.Version10 && nohost) {
+      var hasHost = host != null && host.Length > 0;
+      if (_version > HttpVersion.Version10 && !hasHost) {
         _context.ErrorMessage = "Invalid Host header";
         return;
       }
 
-      if (nohost)
-        host = UserHostAddress;
+      _url = HttpUtility.CreateRequestUrl (
+               _uri,
+               hasHost ? host : UserHostAddress,
+               IsWebSocketRequest,
+               IsSecureConnection
+             );
 
-      _url = HttpUtility.CreateRequestUrl (_uri, host, IsWebSocketRequest, IsSecureConnection);
       if (_url == null) {
         _context.ErrorMessage = "Invalid request url";
         return;
       }
 
-      var enc = Headers["Transfer-Encoding"];
-      if (_version > HttpVersion.Version10 && enc != null && enc.Length > 0) {
-        _chunked = enc.ToLower () == "chunked";
-        if (!_chunked) {
+      var transferEnc = _headers["Transfer-Encoding"];
+      if (transferEnc != null) {
+        if (_version < HttpVersion.Version11) {
+          _context.ErrorMessage = "Invalid Transfer-Encoding header";
+          return;
+        }
+
+        var comparison = StringComparison.OrdinalIgnoreCase;
+        if (!transferEnc.Equals ("chunked", comparison)) {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 501;
 
           return;
         }
+
+        _chunked = true;
       }
 
       if (!_chunked && !_contentLengthSet) {
-        var method = _method.ToLower ();
-        if (method == "post" || method == "put") {
+        if (_method == "POST" || _method == "PUT") {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 411;
 
@@ -564,8 +573,14 @@ namespace WebSocketSharp.Net
         }
       }
 
-      var expect = Headers["Expect"];
-      if (expect != null && expect.Length > 0 && expect.ToLower () == "100-continue") {
+      var expect = _headers["Expect"];
+      if (_version > HttpVersion.Version10 && expect != null) {
+        var comparison = StringComparison.OrdinalIgnoreCase;
+        if (!expect.Equals ("100-continue", comparison)) {
+          _context.ErrorMessage = "Invalid Expect header";
+          return;
+        }
+
         var output = _context.Connection.GetResponseStream ();
         output.InternalWrite (_100continue, 0, _100continue.Length);
       }
