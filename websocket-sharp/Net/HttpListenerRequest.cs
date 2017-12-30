@@ -586,23 +586,25 @@ namespace WebSocketSharp.Net
       }
     }
 
-    // Returns true is the stream could be reused.
     internal bool FlushInput ()
     {
       if (!HasEntityBody)
         return true;
 
       var len = 2048;
-      if (_contentLength > 0)
-        len = (int) Math.Min (_contentLength, (long) len);
+      if (_contentLength > 0 && _contentLength < len)
+        len = (int) _contentLength;
 
       var buff = new byte[len];
+
       while (true) {
-        // TODO: Test if MS has a timeout when doing this.
         try {
           var ares = InputStream.BeginRead (buff, 0, len, null, null);
-          if (!ares.IsCompleted && !ares.AsyncWaitHandle.WaitOne (100))
-            return false;
+          if (!ares.IsCompleted) {
+            var timeout = 100;
+            if (!ares.AsyncWaitHandle.WaitOne (timeout))
+              return false;
+          }
 
           if (InputStream.EndRead (ares) <= 0)
             return true;
