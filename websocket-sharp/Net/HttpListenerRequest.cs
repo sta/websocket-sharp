@@ -462,17 +462,17 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    internal void AddHeader (string headerLine)
+    internal void AddHeader (string headerField)
     {
-      var colon = headerLine.IndexOf (':');
+      var colon = headerField.IndexOf (':');
       if (colon < 1) {
-        _context.ErrorMessage = "Invalid header line";
+        _context.ErrorMessage = "Invalid header field";
         return;
       }
 
-      var name = headerLine.Substring (0, colon).Trim ();
-      var val = colon < headerLine.Length - 1
-                ? headerLine.Substring (colon + 1).Trim ()
+      var name = headerField.Substring (0, colon).Trim ();
+      var val = colon < headerField.Length - 1
+                ? headerField.Substring (colon + 1).Trim ()
                 : String.Empty;
 
       _headers.InternalSet (name, val, false);
@@ -490,13 +490,13 @@ namespace WebSocketSharp.Net
 
       if (lower == "content-length") {
         long len;
-        if (Int64.TryParse (val, out len) && len >= 0) {
-          _contentLength = len;
-          _contentLengthSet = true;
-        }
-        else {
+        if (!Int64.TryParse (val, out len) || len < 0) {
           _context.ErrorMessage = "Invalid Content-Length header";
+          return;
         }
+
+        _contentLength = len;
+        _contentLengthSet = true;
 
         return;
       }
@@ -514,13 +514,12 @@ namespace WebSocketSharp.Net
 
       if (lower == "referer") {
         var referer = val.ToUri ();
-        if (referer != null) {
-          _referer = referer;
-        }
-        else {
+        if (referer == null) {
           _context.ErrorMessage = "Invalid Referer header";
+          return;
         }
 
+        _referer = referer;
         return;
       }
     }
