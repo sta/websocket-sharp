@@ -471,6 +471,11 @@ namespace WebSocketSharp.Net
       }
 
       var name = headerField.Substring (0, colon).Trim ();
+      if (name.Length == 0 || !name.IsToken ()) {
+        _context.ErrorMessage = "Invalid header name";
+        return;
+      }
+
       var val = colon < headerField.Length - 1
                 ? headerField.Substring (colon + 1).Trim ()
                 : String.Empty;
