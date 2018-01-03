@@ -751,6 +751,22 @@ namespace WebSocketSharp.Net
       }
     }
 
+    internal static bool TryGetEncoding (
+      string contentType, out Encoding result
+    )
+    {
+      result = null;
+
+      try {
+        result = GetEncoding (contentType);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Public Methods
