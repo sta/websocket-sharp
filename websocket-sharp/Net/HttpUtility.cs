@@ -764,7 +764,7 @@ namespace WebSocketSharp.Net
         return false;
       }
 
-      return true;
+      return result != null;
     }
 
     #endregion
