@@ -135,9 +135,14 @@ namespace WebSocketSharp.Net
     /// Gets the encoding for the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Encoding"/> that represents the encoding for the entity body data,
-    /// or <see cref="Encoding.Default"/> if the request didn't include the information about
-    /// the encoding.
+    ///   <para>
+    ///   A <see cref="Encoding"/> that represents the encoding for the entity
+    ///   body data.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="Encoding.UTF8"/> if the charset value from the Content-Type
+    ///   header is not available.
+    ///   </para>
     /// </value>
     public Encoding ContentEncoding {
       get {
