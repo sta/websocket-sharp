@@ -347,8 +347,10 @@ namespace WebSocketSharp.Net
     /// </value>
     public NameValueCollection QueryString {
       get {
+        //fix bug, if ContentEncoding is GB2312 ,UrlDecode will return ??? 
+        //TODO,how to get paratermers when method is POST
         return _queryString ??
-               (_queryString = HttpUtility.InternalParseQueryString (_url.Query, Encoding.UTF8));
+               (_queryString = HttpUtility.InternalParseQueryString (_url.Query,this.ContentEncoding));
       }
     }
 
