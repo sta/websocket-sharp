@@ -141,7 +141,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Encoding ContentEncoding {
       get {
-        return _contentEncoding ?? (_contentEncoding = Encoding.Default);
+        return _contentEncoding ?? Encoding.UTF8;
       }
     }
 
