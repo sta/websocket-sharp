@@ -136,12 +136,11 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="Encoding"/> that represents the encoding for the entity
-    ///   body data.
+    ///   A <see cref="Encoding"/> from the charset value of the Content-Type
+    ///   header.
     ///   </para>
     ///   <para>
-    ///   <see cref="Encoding.UTF8"/> if the charset value from the Content-Type
-    ///   header is not available.
+    ///   <see cref="Encoding.UTF8"/> if the charset value is not available.
     ///   </para>
     /// </value>
     public Encoding ContentEncoding {
