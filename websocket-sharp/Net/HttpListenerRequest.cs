@@ -228,10 +228,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a <see cref="Stream"/> that contains the entity body data included in the request.
+    /// Gets a stream that contains the entity body data included in
+    /// the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Stream"/> that contains the entity body data included in the request.
+    ///   <para>
+    ///   A <see cref="Stream"/> that contains the entity body data.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="Stream.Null"/> if no entity body data is included.
+    ///   </para>
     /// </value>
     public Stream InputStream {
       get {
