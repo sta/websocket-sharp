@@ -192,10 +192,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request has the entity body.
+    /// Gets a value indicating whether the request has the entity body data.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request has the entity body; otherwise, <c>false</c>.
+    /// <c>true</c> if the request has the entity body data; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool HasEntityBody {
       get {
