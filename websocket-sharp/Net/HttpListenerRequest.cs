@@ -235,10 +235,16 @@ namespace WebSocketSharp.Net
     /// </value>
     public Stream InputStream {
       get {
-        return _inputStream ??
-               (_inputStream = HasEntityBody
-                               ? _context.Connection.GetRequestStream (_contentLength, _chunked)
-                               : Stream.Null);
+        if (!HasEntityBody)
+          return Stream.Null;
+
+        if (_inputStream == null) {
+          _inputStream = _context.Connection.GetRequestStream (
+                           _contentLength, _chunked
+                         );
+        }
+
+        return _inputStream;
       }
     }
 
