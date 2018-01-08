@@ -62,7 +62,6 @@ namespace WebSocketSharp.Net
     private bool                   _chunked;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
-    private bool                   _contentLengthSet;
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
@@ -523,8 +522,6 @@ namespace WebSocketSharp.Net
         }
 
         _contentLength = len;
-        _contentLengthSet = true;
-
         return;
       }
 
