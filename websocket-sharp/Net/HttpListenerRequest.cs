@@ -516,7 +516,12 @@ namespace WebSocketSharp.Net
 
       if (lower == "content-length") {
         long len;
-        if (!Int64.TryParse (val, out len) || len < 0) {
+        if (!Int64.TryParse (val, out len)) {
+          _context.ErrorMessage = "Invalid Content-Length header";
+          return;
+        }
+
+        if (len < 0) {
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
