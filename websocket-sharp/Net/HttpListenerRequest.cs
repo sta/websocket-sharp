@@ -590,7 +590,7 @@ namespace WebSocketSharp.Net
         _chunked = true;
       }
 
-      if (!_chunked && !_contentLengthSet) {
+      if (_contentLength == -1 && !_chunked) {
         if (_method == "POST" || _method == "PUT") {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 411;
