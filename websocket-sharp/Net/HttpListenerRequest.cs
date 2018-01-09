@@ -246,7 +246,7 @@ namespace WebSocketSharp.Net
           return Stream.Null;
 
         if (_inputStream == null) {
-          _inputStream = _context.Connection.GetRequestStream (
+          _inputStream = _connection.GetRequestStream (
                            _contentLength, _chunked
                          );
         }
