@@ -311,8 +311,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client requests a persistent
-    /// connection.
+    /// Gets a value indicating whether a persistent connection is requested.
     /// </summary>
     /// <value>
     /// <c>true</c> if the request specifies that the connection is kept open;
