@@ -60,6 +60,7 @@ namespace WebSocketSharp.Net
     private static readonly byte[] _100continue;
     private string[]               _acceptTypes;
     private bool                   _chunked;
+    private HttpConnection         _connection;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
     private HttpListenerContext    _context;
@@ -93,6 +94,8 @@ namespace WebSocketSharp.Net
     internal HttpListenerRequest (HttpListenerContext context)
     {
       _context = context;
+
+      _connection = context.Connection;
       _contentLength = -1;
       _headers = new WebHeaderCollection ();
       _identifier = Guid.NewGuid ();
