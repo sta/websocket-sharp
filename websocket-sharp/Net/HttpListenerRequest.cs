@@ -67,8 +67,6 @@ namespace WebSocketSharp.Net
     private WebHeaderCollection    _headers;
     private Guid                   _identifier;
     private Stream                 _inputStream;
-    private bool                   _keepAlive;
-    private bool                   _keepAliveSet;
     private string                 _method;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
