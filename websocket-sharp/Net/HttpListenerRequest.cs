@@ -280,10 +280,12 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the HTTP connection is secured using the SSL protocol.
+    /// Gets a value indicating whether a secure connection is used to send
+    /// the request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the HTTP connection is secured; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection is a secure connection; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool IsSecureConnection {
       get {
