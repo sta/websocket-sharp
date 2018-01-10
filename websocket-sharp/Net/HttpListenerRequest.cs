@@ -287,7 +287,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsSecureConnection {
       get {
-        return _context.Connection.IsSecure;
+        return _connection.IsSecure;
       }
     }
 
