@@ -336,7 +336,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public System.Net.IPEndPoint LocalEndPoint {
       get {
-        return _context.Connection.LocalEndPoint;
+        return _connection.LocalEndPoint;
       }
     }
 
