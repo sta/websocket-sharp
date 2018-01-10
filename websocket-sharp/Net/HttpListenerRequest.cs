@@ -386,7 +386,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public System.Net.IPEndPoint RemoteEndPoint {
       get {
-        return _context.Connection.RemoteEndPoint;
+        return _connection.RemoteEndPoint;
       }
     }
 
