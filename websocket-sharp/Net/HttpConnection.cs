@@ -137,6 +137,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public bool IsLocal {
+      get {
+        return ((IPEndPoint) _remoteEndPoint).Address.IsLocal ();
+      }
+    }
+
     public bool IsSecure {
       get {
         return _secure;
