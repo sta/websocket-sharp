@@ -90,20 +90,25 @@ namespace WebSocketSharp.Net
     {
       _socket = socket;
       _listener = listener;
-      _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (_secure) {
-        var conf = listener.SslConfiguration;
-        var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
+      if (listener.IsSecure) {
+        var sslConf = listener.SslConfiguration;
+        var sslStream = new SslStream (
+                          netStream,
+                          false,
+                          sslConf.ClientCertificateValidationCallback
+                        );
+
         sslStream.AuthenticateAsServer (
-          conf.ServerCertificate,
-          conf.ClientCertificateRequired,
-          conf.EnabledSslProtocols,
-          conf.CheckCertificateRevocation
+          sslConf.ServerCertificate,
+          sslConf.ClientCertificateRequired,
+          sslConf.EnabledSslProtocols,
+          sslConf.CheckCertificateRevocation
         );
 
         _stream = sslStream;
+        _secure = true;
       }
       else {
         _stream = netStream;
