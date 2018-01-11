@@ -73,6 +73,7 @@ namespace WebSocketSharp.Net
     private EndPoint              _localEndPoint;
     private ResponseStream        _outputStream;
     private int                   _position;
+    private EndPoint              _remoteEndPoint;
     private MemoryStream          _requestBuffer;
     private int                   _reuses;
     private bool                  _secure;
@@ -93,6 +94,7 @@ namespace WebSocketSharp.Net
       _listener = listener;
 
       _localEndPoint = socket.LocalEndPoint;
+      _remoteEndPoint = socket.RemoteEndPoint;
 
       var netStream = new NetworkStream (socket, false);
       if (listener.IsSecure) {
@@ -149,7 +151,7 @@ namespace WebSocketSharp.Net
 
     public IPEndPoint RemoteEndPoint {
       get {
-        return (IPEndPoint) _socket.RemoteEndPoint;
+        return (IPEndPoint) _remoteEndPoint;
       }
     }
 
