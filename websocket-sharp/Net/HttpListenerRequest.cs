@@ -450,7 +450,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string UserHostAddress {
       get {
-        return LocalEndPoint.ToString ();
+        return _connection.LocalEndPoint.ToString ();
       }
     }
 
