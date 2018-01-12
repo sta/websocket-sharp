@@ -275,7 +275,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsLocal {
       get {
-        return RemoteEndPoint.Address.IsLocal ();
+        return _connection.IsLocal;
       }
     }
 
