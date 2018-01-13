@@ -187,7 +187,10 @@ namespace WebSocketSharp.Net
     /// </value>
     public CookieCollection Cookies {
       get {
-        return _cookies ?? (_cookies = _headers.GetCookies (false));
+        if (_cookies == null)
+          _cookies = _headers.GetCookies (false);
+
+        return _cookies;
       }
     }
 
