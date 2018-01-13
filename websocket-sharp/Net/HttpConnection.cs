@@ -93,9 +93,6 @@ namespace WebSocketSharp.Net
       _socket = socket;
       _listener = listener;
 
-      _localEndPoint = socket.LocalEndPoint;
-      _remoteEndPoint = socket.RemoteEndPoint;
-
       var netStream = new NetworkStream (socket, false);
       if (listener.IsSecure) {
         var sslConf = listener.SslConfiguration;
@@ -112,13 +109,15 @@ namespace WebSocketSharp.Net
           sslConf.CheckCertificateRevocation
         );
 
-        _stream = sslStream;
         _secure = true;
+        _stream = sslStream;
       }
       else {
         _stream = netStream;
       }
 
+      _localEndPoint = socket.LocalEndPoint;
+      _remoteEndPoint = socket.RemoteEndPoint;
       _sync = new object ();
       _timeout = 90000; // 90k ms for first request, 15k ms from then on.
       _timeoutCanceled = new Dictionary<int, bool> ();
