@@ -183,7 +183,12 @@ namespace WebSocketSharp.Net
     /// Gets the cookies included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="CookieCollection"/> that contains the cookies included in the request.
+    ///   <para>
+    ///   A <see cref="CookieCollection"/> that contains the cookies.
+    ///   </para>
+    ///   <para>
+    ///   An empty <see cref="CookieCollection"/> if not included.
+    ///   </para>
     /// </value>
     public CookieCollection Cookies {
       get {
