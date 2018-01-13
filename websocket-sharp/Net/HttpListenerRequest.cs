@@ -443,10 +443,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the server endpoint as an IP address and a port number.
+    /// Gets the IP address and port number to which the request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the server endpoint.
+    /// A <see cref="string"/> that represents the server IP address and port
+    /// number.
     /// </value>
     public string UserHostAddress {
       get {
