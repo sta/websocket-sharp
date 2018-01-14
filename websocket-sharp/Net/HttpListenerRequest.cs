@@ -371,8 +371,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public NameValueCollection QueryString {
       get {
-        return _queryString ??
-               (_queryString = HttpUtility.InternalParseQueryString (_url.Query, Encoding.UTF8));
+        if (_queryString == null) {
+          _queryString = HttpUtility.InternalParseQueryString (
+                           _url.Query, Encoding.UTF8
+                         );
+        }
+
+        return _queryString;
       }
     }
 
