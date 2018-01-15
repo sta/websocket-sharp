@@ -187,7 +187,7 @@ namespace WebSocketSharp.Net
     ///   A <see cref="CookieCollection"/> that contains the cookies.
     ///   </para>
     ///   <para>
-    ///   An empty <see cref="CookieCollection"/> if not included.
+    ///   An empty collection if not included.
     ///   </para>
     /// </value>
     public CookieCollection Cookies {
