@@ -106,12 +106,16 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the media types which are acceptable for the response.
+    /// Gets the media types which are acceptable for the client.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the media type names in
-    /// the Accept request-header, or <see langword="null"/> if the request didn't include
-    /// the Accept header.
+    ///   <para>
+    ///   An array of <see cref="string"/> that contains the names of the media
+    ///   types specified in the value of the Accept header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the request includes no Accept header.
+    ///   </para>
     /// </value>
     public string[] AcceptTypes {
       get {
