@@ -131,7 +131,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public int ClientCertificateError {
       get {
-        return 0; // TODO: Always returns 0.
+        throw new NotSupportedException ();
       }
     }
 
