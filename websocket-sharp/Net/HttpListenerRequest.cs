@@ -222,10 +222,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the HTTP headers used in the request.
+    /// Gets the headers included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the HTTP headers used in the request.
+    /// A <see cref="NameValueCollection"/> that contains the headers.
     /// </value>
     public NameValueCollection Headers {
       get {
