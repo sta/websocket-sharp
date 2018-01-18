@@ -66,9 +66,9 @@ namespace WebSocketSharp.Net
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
+    private string                 _httpMethod;
     private Guid                   _identifier;
     private Stream                 _inputStream;
-    private string                 _method;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
     private string                 _uri;
@@ -241,7 +241,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string HttpMethod {
       get {
-        return _method;
+        return _httpMethod;
       }
     }
 
@@ -323,7 +323,7 @@ namespace WebSocketSharp.Net
     public bool IsWebSocketRequest {
       get {
         if (!_websocketRequestSet) {
-          _websocketRequest = _method == "GET"
+          _websocketRequest = _httpMethod == "GET"
                               && _version > HttpVersion.Version10
                               && _headers.Upgrades ("websocket");
 
@@ -623,7 +623,7 @@ namespace WebSocketSharp.Net
       }
 
       if (_contentLength == -1 && !_chunked) {
-        if (_method == "POST" || _method == "PUT") {
+        if (_httpMethod == "POST" || _httpMethod == "PUT") {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 411;
 
@@ -725,7 +725,7 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      _method = method;
+      _httpMethod = method;
       _uri = uri;
       _version = ver;
     }
@@ -810,7 +810,7 @@ namespace WebSocketSharp.Net
     public override string ToString ()
     {
       var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _method, _uri, _version);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _httpMethod, _uri, _version);
       buff.Append (_headers.ToString ());
 
       return buff.ToString ();
