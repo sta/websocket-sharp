@@ -124,11 +124,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets an error code that identifies a problem with the client's certificate.
+    /// Gets an error code that identifies a problem with the certificate
+    /// provided by the client.
     /// </summary>
     /// <value>
-    /// Always returns <c>0</c>.
+    /// An <see cref="int"/> that represents an error code.
     /// </value>
+    /// <exception cref="NotSupportedException">
+    /// This property is not supported.
+    /// </exception>
     public int ClientCertificateError {
       get {
         throw new NotSupportedException ();
