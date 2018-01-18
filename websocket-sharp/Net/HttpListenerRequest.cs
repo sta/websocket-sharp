@@ -179,7 +179,8 @@ namespace WebSocketSharp.Net
     /// Gets the media type of the entity body data included in the request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> from the value of the Content-Type header.
+    /// A <see cref="string"/> that represents the value of the Content-Type
+    /// header.
     /// </value>
     public string ContentType {
       get {
