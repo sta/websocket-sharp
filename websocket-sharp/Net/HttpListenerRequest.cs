@@ -234,10 +234,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the HTTP method used in the request.
+    /// Gets the HTTP method specified by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the HTTP method used in the request.
+    /// A <see cref="string"/> that represents the HTTP method.
     /// </value>
     public string HttpMethod {
       get {
