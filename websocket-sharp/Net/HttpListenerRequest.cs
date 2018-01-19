@@ -273,7 +273,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client that sent the request is authenticated.
+    /// Gets a value indicating whether the client is authenticated.
     /// </summary>
     /// <value>
     /// <c>true</c> if the client is authenticated; otherwise, <c>false</c>.
