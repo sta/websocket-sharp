@@ -361,10 +361,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the HTTP version used in the request.
+    /// Gets the HTTP version specified by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Version"/> that represents the HTTP version used in the request.
+    /// A <see cref="Version"/> that represents the HTTP version specified in
+    /// the request line.
     /// </value>
     public Version ProtocolVersion {
       get {
