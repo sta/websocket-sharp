@@ -237,7 +237,8 @@ namespace WebSocketSharp.Net
     /// Gets the HTTP method specified by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the HTTP method.
+    /// A <see cref="string"/> that represents the HTTP method specified in
+    /// the request line.
     /// </value>
     public string HttpMethod {
       get {
