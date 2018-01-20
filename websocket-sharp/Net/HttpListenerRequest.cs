@@ -69,12 +69,12 @@ namespace WebSocketSharp.Net
     private string                 _httpMethod;
     private Guid                   _identifier;
     private Stream                 _inputStream;
+    private Version                _protocolVersion;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
     private string                 _uri;
     private Uri                    _url;
     private string[]               _userLanguages;
-    private Version                _version;
     private bool                   _websocketRequest;
     private bool                   _websocketRequestSet;
 
@@ -324,7 +324,7 @@ namespace WebSocketSharp.Net
       get {
         if (!_websocketRequestSet) {
           _websocketRequest = _httpMethod == "GET"
-                              && _version > HttpVersion.Version10
+                              && _protocolVersion > HttpVersion.Version10
                               && _headers.Upgrades ("websocket");
 
           _websocketRequestSet = true;
@@ -343,7 +343,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool KeepAlive {
       get {
-        return _headers.KeepsAlive (_version);
+        return _headers.KeepsAlive (_protocolVersion);
       }
     }
 
@@ -368,7 +368,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Version ProtocolVersion {
       get {
-        return _version;
+        return _protocolVersion;
       }
     }
 
@@ -587,7 +587,7 @@ namespace WebSocketSharp.Net
     {
       var host = _headers["Host"];
       var hasHost = host != null && host.Length > 0;
-      if (_version > HttpVersion.Version10 && !hasHost) {
+      if (_protocolVersion > HttpVersion.Version10 && !hasHost) {
         _context.ErrorMessage = "Invalid Host header";
         return;
       }
@@ -606,7 +606,7 @@ namespace WebSocketSharp.Net
 
       var transferEnc = _headers["Transfer-Encoding"];
       if (transferEnc != null) {
-        if (_version < HttpVersion.Version11) {
+        if (_protocolVersion < HttpVersion.Version11) {
           _context.ErrorMessage = "Invalid Transfer-Encoding header";
           return;
         }
@@ -632,7 +632,7 @@ namespace WebSocketSharp.Net
       }
 
       var expect = _headers["Expect"];
-      if (_version > HttpVersion.Version10 && expect != null) {
+      if (_protocolVersion > HttpVersion.Version10 && expect != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
         if (!expect.Equals ("100-continue", comparison)) {
           _context.ErrorMessage = "Invalid Expect header";
@@ -727,7 +727,7 @@ namespace WebSocketSharp.Net
 
       _httpMethod = method;
       _uri = uri;
-      _version = ver;
+      _protocolVersion = ver;
     }
 
     #endregion
@@ -810,7 +810,7 @@ namespace WebSocketSharp.Net
     public override string ToString ()
     {
       var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _httpMethod, _uri, _version);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _httpMethod, _uri, _protocolVersion);
       buff.Append (_headers.ToString ());
 
       return buff.ToString ();
