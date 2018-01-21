@@ -67,11 +67,11 @@ namespace WebSocketSharp.Net
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
     private string                 _httpMethod;
-    private Guid                   _identifier;
     private Stream                 _inputStream;
     private Version                _protocolVersion;
     private NameValueCollection    _queryString;
     private Uri                    _referer;
+    private Guid                   _requestTraceIdentifier;
     private string                 _uri;
     private Uri                    _url;
     private string[]               _userLanguages;
@@ -98,7 +98,7 @@ namespace WebSocketSharp.Net
       _connection = context.Connection;
       _contentLength = -1;
       _headers = new WebHeaderCollection ();
-      _identifier = Guid.NewGuid ();
+      _requestTraceIdentifier = Guid.NewGuid ();
     }
 
     #endregion
@@ -438,7 +438,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Guid RequestTraceIdentifier {
       get {
-        return _identifier;
+        return _requestTraceIdentifier;
       }
     }
 
