@@ -431,10 +431,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the request identifier of a incoming HTTP request.
+    /// Gets the trace identifier of the request.
     /// </summary>
     /// <value>
-    /// A <see cref="Guid"/> that represents the identifier of a request.
+    /// A <see cref="Guid"/> that represents the trace identifier.
     /// </value>
     public Guid RequestTraceIdentifier {
       get {
