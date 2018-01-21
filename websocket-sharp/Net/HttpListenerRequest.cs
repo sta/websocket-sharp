@@ -399,10 +399,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the raw URL (without the scheme, host, and port) requested by the client.
+    /// Gets the raw URL (without the scheme, host, and port) requested by
+    /// the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the raw URL requested by the client.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the raw URL specified in
+    ///   the request.
+    ///   </para>
+    ///   <para>
+    ///   It includes the query string if present.
+    ///   </para>
     /// </value>
     public string RawUrl {
       get {
