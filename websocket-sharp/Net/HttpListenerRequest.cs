@@ -406,7 +406,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        return _url.PathAndQuery; // TODO: Should decode?
+        return _url.PathAndQuery;
       }
     }
 
