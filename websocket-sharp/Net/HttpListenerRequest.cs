@@ -455,11 +455,15 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the URL of the resource from which the requested URL was obtained.
+    /// Gets the URI of the resource from which the requested URL was obtained.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the value of the Referer request-header,
-    /// or <see langword="null"/> if the request didn't include an Referer header.
+    ///   <para>
+    ///   A <see cref="Uri"/> from the value of the Referer header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the Referer header is not present.
+    ///   </para>
     /// </value>
     public Uri UrlReferrer {
       get {
