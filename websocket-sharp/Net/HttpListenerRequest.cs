@@ -446,7 +446,7 @@ namespace WebSocketSharp.Net
     /// Gets the URL requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the URL requested by the client.
+    /// A <see cref="Uri"/> that represents the URL specified in the request.
     /// </value>
     public Uri Url {
       get {
