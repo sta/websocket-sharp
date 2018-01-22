@@ -70,10 +70,10 @@ namespace WebSocketSharp.Net
     private Stream                 _inputStream;
     private Version                _protocolVersion;
     private NameValueCollection    _queryString;
-    private Uri                    _referer;
     private Guid                   _requestTraceIdentifier;
     private string                 _uri;
     private Uri                    _url;
+    private Uri                    _urlReferrer;
     private string[]               _userLanguages;
     private bool                   _websocketRequest;
     private bool                   _websocketRequestSet;
@@ -463,7 +463,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Uri UrlReferrer {
       get {
-        return _referer;
+        return _urlReferrer;
       }
     }
 
@@ -587,7 +587,7 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        _referer = referer;
+        _urlReferrer = referer;
         return;
       }
     }
