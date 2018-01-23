@@ -472,10 +472,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the information about the user agent originating the request.
+    /// Gets the user agent from which the request is originated.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the User-Agent request-header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the User-Agent
+    ///   header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the User-Agent header is not present.
+    ///   </para>
     /// </value>
     public string UserAgent {
       get {
