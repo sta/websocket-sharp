@@ -503,10 +503,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the internet host name and port number (if present) specified by the client.
+    /// Gets the server host name requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Host request-header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the Host header.
+    ///   </para>
+    ///   <para>
+    ///   It includes the port number if provided.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the Host header is not present.
+    ///   </para>
     /// </value>
     public string UserHostName {
       get {
