@@ -523,12 +523,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the natural languages which are preferred for the response.
+    /// Gets the natural languages which are acceptable for the client.
     /// </summary>
     /// <value>
-    /// An array of <see cref="string"/> that contains the natural language names in
-    /// the Accept-Language request-header, or <see langword="null"/> if the request
-    /// didn't include an Accept-Language header.
+    ///   <para>
+    ///   An array of <see cref="string"/> that contains the names of the
+    ///   natural languages specified in the value of the Accept-Language
+    ///   header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the Accept-Language header is not present.
+    ///   </para>
     /// </value>
     public string[] UserLanguages {
       get {
