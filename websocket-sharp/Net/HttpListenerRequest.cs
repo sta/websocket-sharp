@@ -537,6 +537,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public string[] UserLanguages {
       get {
+        var val = _headers["Accept-Language"];
+        if (val == null)
+          return null;
+
+        if (_userLanguages == null)
+          _userLanguages = val.Split (',');
+
         return _userLanguages;
       }
     }
@@ -568,11 +575,6 @@ namespace WebSocketSharp.Net
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "accept") {
         _acceptTypes = val.SplitHeaderValue (',').ToList ().ToArray ();
-        return;
-      }
-
-      if (lower == "accept-language") {
-        _userLanguages = val.Split (',');
         return;
       }
 
