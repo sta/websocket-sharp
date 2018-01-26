@@ -542,7 +542,7 @@ namespace WebSocketSharp.Net
           return null;
 
         if (_userLanguages == null)
-          _userLanguages = val.Split (',');
+          _userLanguages = val.Split (',').Trim ().ToList ().ToArray ();
 
         return _userLanguages;
       }
