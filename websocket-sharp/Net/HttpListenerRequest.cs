@@ -523,7 +523,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the natural languages which are acceptable for the client.
+    /// Gets the natural languages that are acceptable for the client.
     /// </summary>
     /// <value>
     ///   <para>
