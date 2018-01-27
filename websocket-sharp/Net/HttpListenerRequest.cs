@@ -119,6 +119,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public string[] AcceptTypes {
       get {
+        var val = _headers["Accept"];
+        if (val == null)
+          return null;
+
+        if (_acceptTypes == null)
+          _acceptTypes = val.SplitHeaderValue (',').ToList ().ToArray ();
+
         return _acceptTypes;
       }
     }
@@ -573,11 +580,6 @@ namespace WebSocketSharp.Net
       _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
-      if (lower == "accept") {
-        _acceptTypes = val.SplitHeaderValue (',').ToList ().ToArray ();
-        return;
-      }
-
       if (lower == "content-length") {
         long len;
         if (!Int64.TryParse (val, out len)) {
