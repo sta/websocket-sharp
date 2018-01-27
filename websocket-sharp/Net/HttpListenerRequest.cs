@@ -123,8 +123,13 @@ namespace WebSocketSharp.Net
         if (val == null)
           return null;
 
-        if (_acceptTypes == null)
-          _acceptTypes = val.SplitHeaderValue (',').ToList ().ToArray ();
+        if (_acceptTypes == null) {
+          _acceptTypes = val
+                         .SplitHeaderValue (',')
+                         .Trim ()
+                         .ToList ()
+                         .ToArray ();
+        }
 
         return _acceptTypes;
       }
