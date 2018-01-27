@@ -106,7 +106,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets the media types which are acceptable for the client.
+    /// Gets the media types that are acceptable for the client.
     /// </summary>
     /// <value>
     ///   <para>
