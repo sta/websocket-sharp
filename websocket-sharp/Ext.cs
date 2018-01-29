@@ -1879,11 +1879,15 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Converts the specified <see cref="string"/> to a <see cref="Uri"/>.
+    /// Converts the specified string to a <see cref="Uri"/>.
     /// </summary>
     /// <returns>
-    /// A <see cref="Uri"/> converted from <paramref name="value"/> or
-    /// <see langword="null"/> if the convert has failed.
+    ///   <para>
+    ///   A <see cref="Uri"/> converted from <paramref name="value"/>.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the conversion has failed.
+    ///   </para>
     /// </returns>
     /// <param name="value">
     /// A <see cref="string"/> to convert.
