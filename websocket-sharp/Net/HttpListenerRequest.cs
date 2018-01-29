@@ -484,6 +484,13 @@ namespace WebSocketSharp.Net
     /// </value>
     public Uri UrlReferrer {
       get {
+        var val = _headers["Referer"];
+        if (val == null)
+          return null;
+
+        if (_urlReferrer == null)
+          _urlReferrer = val.ToUri ();
+
         return _urlReferrer;
       }
     }
@@ -614,17 +621,6 @@ namespace WebSocketSharp.Net
           _context.ErrorMessage = "Invalid Content-Type header";
         }
 
-        return;
-      }
-
-      if (lower == "referer") {
-        var referer = val.ToUri ();
-        if (referer == null) {
-          _context.ErrorMessage = "Invalid Referer header";
-          return;
-        }
-
-        _urlReferrer = referer;
         return;
       }
     }
