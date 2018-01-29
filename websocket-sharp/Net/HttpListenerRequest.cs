@@ -476,10 +476,11 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="Uri"/> from the value of the Referer header.
+    ///   A <see cref="Uri"/> converted from the value of the Referer header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the Referer header is not present.
+    ///   <see langword="null"/> if the Referer header is not present or
+    ///   the conversion has failed.
     ///   </para>
     /// </value>
     public Uri UrlReferrer {
