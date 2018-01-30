@@ -430,7 +430,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string RawUrl {
       get {
-        return _url.PathAndQuery;
+        return _rawUrl;
       }
     }
 
