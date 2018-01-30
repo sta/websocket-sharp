@@ -70,8 +70,8 @@ namespace WebSocketSharp.Net
     private Stream                 _inputStream;
     private Version                _protocolVersion;
     private NameValueCollection    _queryString;
+    private string                 _rawUrl;
     private Guid                   _requestTraceIdentifier;
-    private string                 _uri;
     private Uri                    _url;
     private Uri                    _urlReferrer;
     private string[]               _userLanguages;
@@ -636,7 +636,7 @@ namespace WebSocketSharp.Net
       }
 
       _url = HttpUtility.CreateRequestUrl (
-               _uri,
+               _rawUrl,
                hasHost ? host : UserHostAddress,
                IsWebSocketRequest,
                IsSecureConnection
@@ -740,9 +740,9 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      var uri = parts[1];
-      if (uri.Length == 0) {
-        _context.ErrorMessage = "Invalid request line (uri)";
+      var target = parts[1];
+      if (target.Length == 0) {
+        _context.ErrorMessage = "Invalid request line (target)";
         return;
       }
 
@@ -769,7 +769,7 @@ namespace WebSocketSharp.Net
       }
 
       _httpMethod = method;
-      _uri = uri;
+      _rawUrl = target;
       _protocolVersion = ver;
     }
 
@@ -853,7 +853,7 @@ namespace WebSocketSharp.Net
     public override string ToString ()
     {
       var buff = new StringBuilder (64);
-      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _httpMethod, _uri, _protocolVersion);
+      buff.AppendFormat ("{0} {1} HTTP/{2}\r\n", _httpMethod, _rawUrl, _protocolVersion);
       buff.Append (_headers.ToString ());
 
       return buff.ToString ();
