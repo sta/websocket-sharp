@@ -569,6 +569,22 @@ namespace WebSocketSharp.Net
 
     #endregion
 
+    #region Private Methods
+
+    private Encoding getContentEncoding ()
+    {
+      var val = _headers["Content-Type"];
+      if (val == null)
+        return null;
+
+      Encoding ret;
+      HttpUtility.TryGetEncoding (val, out ret);
+
+      return ret;
+    }
+
+    #endregion
+
     #region Internal Methods
 
     internal void AddHeader (string headerField)
