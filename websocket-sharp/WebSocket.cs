@@ -320,7 +320,7 @@ namespace WebSocketSharp
       }
     }
 
-    internal bool IsConnected {
+    public bool IsConnected {
       get {
         return _readyState == WebSocketState.Open || _readyState == WebSocketState.Closing;
       }
