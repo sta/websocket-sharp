@@ -165,7 +165,10 @@ namespace WebSocketSharp.Net
     /// </value>
     public Encoding ContentEncoding {
       get {
-        return _contentEncoding ?? Encoding.UTF8;
+        if (_contentEncoding == null)
+          _contentEncoding = getContentEncoding () ?? Encoding.UTF8;
+
+        return _contentEncoding;
       }
     }
 
@@ -621,17 +624,6 @@ namespace WebSocketSharp.Net
         }
 
         _contentLength = len;
-        return;
-      }
-
-      if (lower == "content-type") {
-        try {
-          _contentEncoding = HttpUtility.GetEncoding (val);
-        }
-        catch {
-          _context.ErrorMessage = "Invalid Content-Type header";
-        }
-
         return;
       }
     }
