@@ -464,10 +464,7 @@ namespace WebSocketSharp
     /// </param>
     internal static string GetValue (this string nameAndValue, char separator)
     {
-      var idx = nameAndValue.IndexOf (separator);
-      return idx > -1 && idx < nameAndValue.Length - 1
-             ? nameAndValue.Substring (idx + 1).Trim ()
-             : null;
+      return nameAndValue.GetValue (separator, false);
     }
 
     internal static string GetValue (
