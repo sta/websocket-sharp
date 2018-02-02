@@ -156,8 +156,8 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="Encoding"/> from the charset value of the Content-Type
-    ///   header.
+    ///   A <see cref="Encoding"/> converted from the charset value of the
+    ///   Content-Type header.
     ///   </para>
     ///   <para>
     ///   <see cref="Encoding.UTF8"/> if the charset value is not available.
