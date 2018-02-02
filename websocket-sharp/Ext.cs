@@ -470,7 +470,9 @@ namespace WebSocketSharp
              : null;
     }
 
-    internal static string GetValue (this string nameAndValue, char separator, bool unquote)
+    internal static string GetValue (
+      this string nameAndValue, char separator, bool unquote
+    )
     {
       var idx = nameAndValue.IndexOf (separator);
       if (idx < 0 || idx == nameAndValue.Length - 1)
