@@ -449,18 +449,22 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the value from the specified <see cref="string"/> that contains a pair of name and
-    /// value separated by a separator character.
+    /// Gets the value from the specified string that contains a pair of
+    /// name and value separated by a character.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents the value if any; otherwise, <c>null</c>.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the value is not present.
+    ///   </para>
     /// </returns>
     /// <param name="nameAndValue">
-    /// A <see cref="string"/> that contains a pair of name and value separated by
-    /// a separator character.
+    /// A <see cref="string"/> that contains a pair of name and value.
     /// </param>
     /// <param name="separator">
-    /// A <see cref="char"/> that represents the separator character.
+    /// A <see cref="char"/> used to separate name and value.
     /// </param>
     internal static string GetValue (this string nameAndValue, char separator)
     {
