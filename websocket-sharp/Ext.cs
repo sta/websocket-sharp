@@ -1087,17 +1087,17 @@ namespace WebSocketSharp
     internal static string Unquote (this string value)
     {
       var start = value.IndexOf ('"');
-      if (start < 0)
+      if (start == -1)
         return value;
 
       var end = value.LastIndexOf ('"');
-      var len = end - start - 1;
+      if (end == start)
+        return value;
 
-      return len < 0
-             ? value
-             : len == 0
-               ? String.Empty
-               : value.Substring (start + 1, len).Replace ("\\\"", "\"");
+      var len = end - start - 1;
+      return len > 0
+             ? value.Substring (start + 1, len).Replace ("\\\"", "\"")
+             : String.Empty;
     }
 
     internal static bool Upgrades (
