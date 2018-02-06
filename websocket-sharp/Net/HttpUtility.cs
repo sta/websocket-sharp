@@ -612,12 +612,19 @@ namespace WebSocketSharp.Net
 
     internal static Encoding GetEncoding (string contentType)
     {
-      foreach (var elm in contentType.Split (';')) {
+      var name = "charset=";
+      var comparison = StringComparison.OrdinalIgnoreCase;
+
+      foreach (var elm in contentType.SplitHeaderValue (';')) {
         var part = elm.Trim ();
-        if (part.IndexOf ("charset", StringComparison.OrdinalIgnoreCase) != 0)
+        if (part.IndexOf (name, comparison) != 0)
           continue;
 
-        return Encoding.GetEncoding (part.GetValue ('=', true));
+        var val = part.GetValue ('=', true);
+        if (val == null || val.Length == 0)
+          return null;
+
+        return Encoding.GetEncoding (val);
       }
 
       return null;
