@@ -825,33 +825,44 @@ namespace WebSocketSharp
       var seps = new string (separators);
 
       var buff = new StringBuilder (32);
+      var end = len - 1;
       var escaped = false;
       var quoted = false;
 
-      for (var i = 0; i < len; i++) {
+      for (var i = 0; i <= end; i++) {
         var c = value[i];
-        if (c == '"') {
-          if (escaped)
-            escaped = !escaped;
-          else
-            quoted = !quoted;
-        }
-        else if (c == '\\') {
-          if (i < len - 1 && value[i + 1] == '"')
-            escaped = true;
-        }
-        else if (seps.Contains (c)) {
-          if (!quoted) {
-            yield return buff.ToString ();
+        buff.Append (c);
 
-            buff.Length = 0;
+        if (c == '"') {
+          if (escaped) {
+            escaped = false;
             continue;
           }
-        }
-        else {
+
+          quoted = !quoted;
+          continue;
         }
 
-        buff.Append (c);
+        if (c == '\\') {
+          if (i == end)
+            break;
+
+          if (value[i + 1] == '"')
+            escaped = true;
+
+          continue;
+        }
+
+        if (seps.Contains (c)) {
+          if (quoted)
+            continue;
+
+          buff.Length -= 1;
+          yield return buff.ToString ();
+
+          buff.Length = 0;
+          continue;
+        }
       }
 
       yield return buff.ToString ();
