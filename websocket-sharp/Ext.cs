@@ -197,6 +197,27 @@ namespace WebSocketSharp
              : stream.ToByteArray ();
     }
 
+    /// <summary>
+    /// Determines whether the specified <see cref="string"/> contains any of characters in
+    /// the specified array of <see cref="char"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if <paramref name="value"/> contains any of <paramref name="anyOf"/>;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="value">
+    /// A <see cref="string"/> to test.
+    /// </param>
+    /// <param name="anyOf">
+    /// An array of <see cref="char"/> that contains characters to find.
+    /// </param>
+    internal static bool Contains (this string value, params char[] anyOf)
+    {
+      return anyOf != null && anyOf.Length > 0
+             ? value.IndexOfAny (anyOf) > -1
+             : false;
+    }
+
     internal static bool Contains (
       this NameValueCollection collection, string name
     )
@@ -1164,29 +1185,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Methods
-
-    /// <summary>
-    /// Determines whether the specified <see cref="string"/> contains any of characters in
-    /// the specified array of <see cref="char"/>.
-    /// </summary>
-    /// <returns>
-    /// <c>true</c> if <paramref name="value"/> contains any of <paramref name="chars"/>;
-    /// otherwise, <c>false</c>.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to test.
-    /// </param>
-    /// <param name="chars">
-    /// An array of <see cref="char"/> that contains characters to find.
-    /// </param>
-    public static bool Contains (this string value, params char[] chars)
-    {
-      return chars == null || chars.Length == 0
-             ? true
-             : value == null || value.Length == 0
-               ? false
-               : value.IndexOfAny (chars) > -1;
-    }
 
     /// <summary>
     /// Emits the specified <see cref="EventHandler"/> delegate if it isn't <see langword="null"/>.
