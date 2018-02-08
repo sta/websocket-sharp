@@ -822,7 +822,7 @@ namespace WebSocketSharp
     )
     {
       var len = value.Length;
-      var seps = new string (separators);
+      var separator = new string (separators);
 
       var buff = new StringBuilder (32);
       var end = len - 1;
@@ -853,7 +853,7 @@ namespace WebSocketSharp
           continue;
         }
 
-        if (seps.Contains (c)) {
+        if (separator.Contains (c)) {
           if (quoted)
             continue;
 
