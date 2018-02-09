@@ -875,7 +875,7 @@ namespace WebSocketSharp
           continue;
         }
 
-        if (separator.Contains (c)) {
+        if (separator.IndexOf (c) > -1) {
           if (quoted)
             continue;
 
