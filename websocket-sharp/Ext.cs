@@ -844,7 +844,6 @@ namespace WebSocketSharp
     )
     {
       var len = value.Length;
-      var separator = new string (separators);
 
       var buff = new StringBuilder (32);
       var end = len - 1;
@@ -875,7 +874,7 @@ namespace WebSocketSharp
           continue;
         }
 
-        if (separator.IndexOf (c) > -1) {
+        if (Array.IndexOf (separators, c) > -1) {
           if (quoted)
             continue;
 
