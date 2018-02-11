@@ -609,7 +609,7 @@ namespace WebSocketSharp
       for (var i = 0; i < len; i++) {
         var c = value[i];
         if (c < 0x20) {
-          if (!"\r\n\t".Contains (c))
+          if ("\r\n\t".IndexOf (c) == -1)
             return false;
 
           if (c == '\n') {
@@ -618,7 +618,7 @@ namespace WebSocketSharp
               break;
 
             c = value[i];
-            if (!" \t".Contains (c))
+            if (" \t".IndexOf (c) == -1)
               return false;
           }
 
