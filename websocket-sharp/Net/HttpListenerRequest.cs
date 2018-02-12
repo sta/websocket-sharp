@@ -63,6 +63,7 @@ namespace WebSocketSharp.Net
     private HttpConnection         _connection;
     private Encoding               _contentEncoding;
     private long                   _contentLength;
+    private bool                   _contentLengthSet;
     private HttpListenerContext    _context;
     private CookieCollection       _cookies;
     private WebHeaderCollection    _headers;
@@ -612,6 +613,11 @@ namespace WebSocketSharp.Net
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "content-length") {
+        if (_contentLengthSet) {
+          _context.ErrorMessage = "Invalid Content-Length header";
+          return;
+        }
+
         long len;
         if (!Int64.TryParse (val, out len)) {
           _context.ErrorMessage = "Invalid Content-Length header";
@@ -624,6 +630,8 @@ namespace WebSocketSharp.Net
         }
 
         _contentLength = len;
+        _contentLengthSet = true;
+
         return;
       }
     }
