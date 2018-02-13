@@ -75,6 +75,8 @@ namespace WebSocketSharp.Net
     private Guid                   _requestTraceIdentifier;
     private Uri                    _url;
     private Uri                    _urlReferrer;
+    private string                 _userHostName;
+    private bool                   _userHostNameSet;
     private string[]               _userLanguages;
     private bool                   _websocketRequest;
     private bool                   _websocketRequestSet;
@@ -541,7 +543,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public string UserHostName {
       get {
-        return _headers["Host"];
+        return _userHostName;
       }
     }
 
@@ -612,6 +614,23 @@ namespace WebSocketSharp.Net
       _headers.InternalSet (name, val, false);
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
+      if (lower == "host") {
+        if (_userHostNameSet) {
+          _context.ErrorMessage = "Invalid Host header";
+          return;
+        }
+
+        if (val.Length == 0) {
+          _context.ErrorMessage = "Invalid Host header";
+          return;
+        }
+
+        _userHostName = val;
+        _userHostNameSet = true;
+
+        return;
+      }
+
       if (lower == "content-length") {
         if (_contentLengthSet) {
           _context.ErrorMessage = "Invalid Content-Length header";
