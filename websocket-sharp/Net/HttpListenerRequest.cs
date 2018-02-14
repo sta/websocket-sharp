@@ -75,6 +75,7 @@ namespace WebSocketSharp.Net
     private Guid                   _requestTraceIdentifier;
     private Uri                    _url;
     private Uri                    _urlReferrer;
+    private bool                   _urlSet;
     private string                 _userHostName;
     private bool                   _userHostNameSet;
     private string[]               _userLanguages;
@@ -412,8 +413,10 @@ namespace WebSocketSharp.Net
     public NameValueCollection QueryString {
       get {
         if (_queryString == null) {
+          var url = Url;
           _queryString = HttpUtility.InternalParseQueryString (
-                           _url.Query, Encoding.UTF8
+                           url != null ? url.Query : null,
+                           Encoding.UTF8
                          );
         }
 
@@ -467,6 +470,17 @@ namespace WebSocketSharp.Net
     /// </value>
     public Uri Url {
       get {
+        if (!_urlSet) {
+          _url = HttpUtility.CreateRequestUrl (
+                   _rawUrl,
+                   _userHostName ?? UserHostAddress,
+                   IsWebSocketRequest,
+                   IsSecureConnection
+                 );
+
+          _urlSet = true;
+        }
+
         return _url;
       }
     }
@@ -661,18 +675,6 @@ namespace WebSocketSharp.Net
       var hasHost = host != null && host.Length > 0;
       if (_protocolVersion > HttpVersion.Version10 && !hasHost) {
         _context.ErrorMessage = "Invalid Host header";
-        return;
-      }
-
-      _url = HttpUtility.CreateRequestUrl (
-               _rawUrl,
-               hasHost ? host : UserHostAddress,
-               IsWebSocketRequest,
-               IsSecureConnection
-             );
-
-      if (_url == null) {
-        _context.ErrorMessage = "Invalid request url";
         return;
       }
 

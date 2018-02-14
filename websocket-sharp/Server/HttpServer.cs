@@ -924,7 +924,13 @@ namespace WebSocketSharp.Server
 
     private void processRequest (HttpListenerWebSocketContext context)
     {
-      var path = context.RequestUri.AbsolutePath;
+      var uri = context.RequestUri;
+      if (uri == null) {
+        context.Close (HttpStatusCode.BadRequest);
+        return;
+      }
+
+      var path = uri.AbsolutePath;
 
       WebSocketServiceHost host;
       if (!_services.InternalTryGetServiceHost (path, out host)) {
