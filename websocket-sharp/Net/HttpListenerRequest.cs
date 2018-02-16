@@ -676,10 +676,8 @@ namespace WebSocketSharp.Net
 
     internal void FinishInitialization ()
     {
-      var host = _headers["Host"];
-      var hasHost = host != null && host.Length > 0;
-      if (_protocolVersion > HttpVersion.Version10 && !hasHost) {
-        _context.ErrorMessage = "Invalid Host header";
+      if (_protocolVersion > HttpVersion.Version10 && !_userHostNameSet) {
+        _context.ErrorMessage = "No Host header";
         return;
       }
 
