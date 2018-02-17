@@ -596,6 +596,36 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private void finishInitialization10 ()
+    {
+      var validMethod = _httpMethod == "GET"
+                        || _httpMethod == "HEAD"
+                        || _httpMethod == "POST";
+
+      if (!validMethod) {
+        _context.ErrorMessage = "Invalid request line (method)";
+        return;
+      }
+
+      if (_httpMethod == "POST") {
+        if (_contentLength == -1) {
+          _context.ErrorMessage = "Content-Length header required";
+          return;
+        }
+
+        if (_contentLength == 0) {
+          _context.ErrorMessage = "Invalid Content-Length header";
+          return;
+        }
+      }
+
+      var transferEnc = _headers["Transfer-Encoding"];
+      if (transferEnc != null) {
+        _context.ErrorMessage = "Invalid Transfer-Encoding header";
+        return;
+      }
+    }
+
     private Encoding getContentEncoding ()
     {
       var val = _headers["Content-Type"];
