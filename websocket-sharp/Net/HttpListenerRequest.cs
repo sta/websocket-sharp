@@ -77,7 +77,6 @@ namespace WebSocketSharp.Net
     private Uri                    _urlReferrer;
     private bool                   _urlSet;
     private string                 _userHostName;
-    private bool                   _userHostNameSet;
     private string[]               _userLanguages;
     private bool                   _websocketRequest;
     private bool                   _websocketRequestSet;
@@ -664,7 +663,7 @@ namespace WebSocketSharp.Net
 
       var lower = name.ToLower (CultureInfo.InvariantCulture);
       if (lower == "host") {
-        if (_userHostNameSet) {
+        if (_userHostName != null) {
           _context.ErrorMessage = "Invalid Host header";
           return;
         }
@@ -675,8 +674,6 @@ namespace WebSocketSharp.Net
         }
 
         _userHostName = val;
-        _userHostNameSet = true;
-
         return;
       }
 
