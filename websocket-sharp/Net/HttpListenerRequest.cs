@@ -706,18 +706,18 @@ namespace WebSocketSharp.Net
 
     internal void FinishInitialization ()
     {
-      if (_protocolVersion > HttpVersion.Version10 && !_userHostNameSet) {
-        _context.ErrorMessage = "No Host header";
+      if (_protocolVersion == HttpVersion.Version10) {
+        finishInitialization10 ();
+        return;
+      }
+
+      if (_userHostName == null) {
+        _context.ErrorMessage = "Host header required";
         return;
       }
 
       var transferEnc = _headers["Transfer-Encoding"];
       if (transferEnc != null) {
-        if (_protocolVersion < HttpVersion.Version11) {
-          _context.ErrorMessage = "Invalid Transfer-Encoding header";
-          return;
-        }
-
         var comparison = StringComparison.OrdinalIgnoreCase;
         if (!transferEnc.Equals ("chunked", comparison)) {
           _context.ErrorMessage = String.Empty;
@@ -729,8 +729,8 @@ namespace WebSocketSharp.Net
         _chunked = true;
       }
 
-      if (_contentLength == -1 && !_chunked) {
-        if (_httpMethod == "POST" || _httpMethod == "PUT") {
+      if (_httpMethod == "POST" || _httpMethod == "PUT") {
+        if (_contentLength <= 0 && !_chunked) {
           _context.ErrorMessage = String.Empty;
           _context.ErrorStatus = 411;
 
@@ -739,7 +739,7 @@ namespace WebSocketSharp.Net
       }
 
       var expect = _headers["Expect"];
-      if (_protocolVersion > HttpVersion.Version10 && expect != null) {
+      if (expect != null) {
         var comparison = StringComparison.OrdinalIgnoreCase;
         if (!expect.Equals ("100-continue", comparison)) {
           _context.ErrorMessage = "Invalid Expect header";
