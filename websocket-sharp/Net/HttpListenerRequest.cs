@@ -77,8 +77,6 @@ namespace WebSocketSharp.Net
     private bool                   _urlSet;
     private string                 _userHostName;
     private string[]               _userLanguages;
-    private bool                   _websocketRequest;
-    private bool                   _websocketRequestSet;
 
     #endregion
 
@@ -345,15 +343,9 @@ namespace WebSocketSharp.Net
     /// </value>
     public bool IsWebSocketRequest {
       get {
-        if (!_websocketRequestSet) {
-          _websocketRequest = _httpMethod == "GET"
-                              && _protocolVersion > HttpVersion.Version10
-                              && _headers.Upgrades ("websocket");
-
-          _websocketRequestSet = true;
-        }
-
-        return _websocketRequest;
+        return _httpMethod == "GET"
+               && _protocolVersion > HttpVersion.Version10
+               && _headers.Upgrades ("websocket");
       }
     }
 
