@@ -502,25 +502,33 @@ namespace WebSocketSharp.Net
 
     public RequestStream GetRequestStream (long contentLength, bool chunked)
     {
-      if (_inputStream != null || _socket == null)
-        return _inputStream;
-
       lock (_sync) {
         if (_socket == null)
+          return _inputStream;
+
+        if (_inputStream != null)
           return _inputStream;
 
         var buff = _requestBuffer.GetBuffer ();
         var len = (int) _requestBuffer.Length;
         disposeRequestBuffer ();
+
         if (chunked) {
           _context.Response.SendChunked = true;
-          _inputStream =
-            new ChunkedRequestStream (_stream, buff, _position, len - _position, _context);
+          _inputStream = new ChunkedRequestStream (
+                           _stream, buff, _position, len - _position, _context
+                         );
+
+          return _inputStream;
         }
-        else {
-          _inputStream =
-            new RequestStream (_stream, buff, _position, len - _position, contentLength);
-        }
+
+        _inputStream = new RequestStream (
+                         _stream,
+                         buff,
+                         _position,
+                         len - _position,
+                         contentLength
+                       );
 
         return _inputStream;
       }
