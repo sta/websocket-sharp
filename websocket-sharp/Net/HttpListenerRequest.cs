@@ -280,14 +280,8 @@ namespace WebSocketSharp.Net
     /// </value>
     public Stream InputStream {
       get {
-        if (!HasEntityBody)
-          return Stream.Null;
-
-        if (_inputStream == null) {
-          _inputStream = _connection.GetRequestStream (
-                           _contentLength, _chunked
-                         );
-        }
+        if (_inputStream == null)
+          _inputStream = getInputStream () ?? Stream.Null;
 
         return _inputStream;
       }
