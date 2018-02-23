@@ -275,7 +275,7 @@ namespace WebSocketSharp.Net
     ///   A <see cref="Stream"/> that contains the entity body data.
     ///   </para>
     ///   <para>
-    ///   <see cref="Stream.Null"/> if not included.
+    ///   <see cref="Stream.Null"/> if the entity body data is not available.
     ///   </para>
     /// </value>
     public Stream InputStream {
