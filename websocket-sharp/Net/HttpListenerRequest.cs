@@ -740,7 +740,8 @@ namespace WebSocketSharp.Net
 
     internal bool FlushInput ()
     {
-      if (!HasEntityBody)
+      var input = InputStream;
+      if (input == Stream.Null)
         return true;
 
       var len = 2048;
@@ -751,14 +752,14 @@ namespace WebSocketSharp.Net
 
       while (true) {
         try {
-          var ares = InputStream.BeginRead (buff, 0, len, null, null);
+          var ares = input.BeginRead (buff, 0, len, null, null);
           if (!ares.IsCompleted) {
             var timeout = 100;
             if (!ares.AsyncWaitHandle.WaitOne (timeout))
               return false;
           }
 
-          if (InputStream.EndRead (ares) <= 0)
+          if (input.EndRead (ares) <= 0)
             return true;
         }
         catch {
