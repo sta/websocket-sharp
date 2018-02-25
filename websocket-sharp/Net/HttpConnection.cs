@@ -504,7 +504,7 @@ namespace WebSocketSharp.Net
     {
       lock (_sync) {
         if (_socket == null)
-          return _inputStream;
+          return null;
 
         if (_inputStream != null)
           return _inputStream;
