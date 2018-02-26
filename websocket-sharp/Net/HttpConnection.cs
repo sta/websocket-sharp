@@ -538,11 +538,11 @@ namespace WebSocketSharp.Net
     {
       // TODO: Can we get this stream before reading the input?
 
-      if (_outputStream != null || _socket == null)
-        return _outputStream;
-
       lock (_sync) {
         if (_socket == null)
+          return null;
+
+        if (_outputStream != null)
           return _outputStream;
 
         var lsnr = _context.Listener;
