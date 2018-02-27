@@ -452,24 +452,32 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return;
 
-        if (!force) {
-          GetResponseStream ().Close (false);
-          if (!_context.Response.CloseConnection && _context.Request.FlushInput ()) {
-            // Don't close. Keep working.
-            _reuses++;
-            disposeRequestBuffer ();
-            unregisterContext ();
-            init ();
-            BeginReadRequest ();
+        if (force) {
+          if (_outputStream != null)
+            _outputStream.Close (true);
 
-            return;
-          }
-        }
-        else if (_outputStream != null) {
-          _outputStream.Close (true);
+          close ();
+          return;
         }
 
-        close ();
+        GetResponseStream ().Close (false);
+
+        if (_context.Response.CloseConnection) {
+          close ();
+          return;
+        }
+
+        if (!_context.Request.FlushInput ()) {
+          close ();
+          return;
+        }
+
+        disposeRequestBuffer ();
+        unregisterContext ();
+        init ();
+
+        _reuses++;
+        BeginReadRequest ();
       }
     }
 
