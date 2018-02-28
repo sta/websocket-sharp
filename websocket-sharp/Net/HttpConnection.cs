@@ -522,7 +522,6 @@ namespace WebSocketSharp.Net
         disposeRequestBuffer ();
 
         if (chunked) {
-          _context.Response.SendChunked = true;
           _inputStream = new ChunkedRequestStream (
                            _stream, buff, _position, len - _position, _context
                          );
