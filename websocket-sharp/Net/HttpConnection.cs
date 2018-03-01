@@ -519,23 +519,16 @@ namespace WebSocketSharp.Net
 
         var buff = _requestBuffer.GetBuffer ();
         var len = (int) _requestBuffer.Length;
+        var cnt = len - _position;
         disposeRequestBuffer ();
 
-        if (chunked) {
-          _inputStream = new ChunkedRequestStream (
-                           _stream, buff, _position, len - _position, _context
+        _inputStream = chunked
+                       ? new ChunkedRequestStream (
+                           _stream, buff, _position, cnt, _context
+                         )
+                       : new RequestStream (
+                           _stream, buff, _position, cnt, contentLength
                          );
-
-          return _inputStream;
-        }
-
-        _inputStream = new RequestStream (
-                         _stream,
-                         buff,
-                         _position,
-                         len - _position,
-                         contentLength
-                       );
 
         return _inputStream;
       }
