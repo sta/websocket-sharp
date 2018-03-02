@@ -881,13 +881,14 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the client's X.509 v.3 certificate.
+    /// Gets the certificate provided by the client.
     /// </summary>
     /// <returns>
-    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
+    /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
+    /// provided by the client.
     /// </returns>
-    /// <exception cref="NotImplementedException">
-    /// This method isn't implemented.
+    /// <exception cref="NotSupportedException">
+    /// This method is not supported.
     /// </exception>
     public X509Certificate2 GetClientCertificate ()
     {
