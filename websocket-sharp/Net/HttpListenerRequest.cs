@@ -851,10 +851,11 @@ namespace WebSocketSharp.Net
     /// <exception cref="NotImplementedException">
     /// This method isn't implemented.
     /// </exception>
-    public IAsyncResult BeginGetClientCertificate (AsyncCallback requestCallback, object state)
+    public IAsyncResult BeginGetClientCertificate (
+      AsyncCallback requestCallback, object state
+    )
     {
-      // TODO: Not implemented.
-      throw new NotImplementedException ();
+      throw new NotSupportedException ();
     }
 
     /// <summary>
