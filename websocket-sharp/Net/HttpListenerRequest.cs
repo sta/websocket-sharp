@@ -830,26 +830,22 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Begins getting the client's X.509 v.3 certificate asynchronously.
+    /// Begins getting the certificate provided by the client asynchronously.
     /// </summary>
-    /// <remarks>
-    /// This asynchronous operation must be completed by calling
-    /// the <see cref="EndGetClientCertificate"/> method. Typically,
-    /// that method is invoked by the <paramref name="requestCallback"/> delegate.
-    /// </remarks>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that contains the status of the asynchronous operation.
+    /// An <see cref="IAsyncResult"/> that indicates the status of the
+    /// operation.
     /// </returns>
     /// <param name="requestCallback">
-    /// An <see cref="AsyncCallback"/> delegate that references the method(s) called when
-    /// the asynchronous operation completes.
+    /// An <see cref="AsyncCallback"/> delegate that invokes the method called
+    /// when the operation is complete.
     /// </param>
     /// <param name="state">
-    /// An <see cref="object"/> that contains a user defined object to pass to
-    /// the <paramref name="requestCallback"/> delegate.
+    /// An <see cref="object"/> that represents a user defined object to pass to
+    /// the callback delegate.
     /// </param>
-    /// <exception cref="NotImplementedException">
-    /// This method isn't implemented.
+    /// <exception cref="NotSupportedException">
+    /// This method is not supported.
     /// </exception>
     public IAsyncResult BeginGetClientCertificate (
       AsyncCallback requestCallback, object state
