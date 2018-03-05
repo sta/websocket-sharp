@@ -873,8 +873,7 @@ namespace WebSocketSharp.Net
     /// </exception>
     public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
     {
-      // TODO: Not implemented.
-      throw new NotImplementedException ();
+      throw new NotSupportedException ();
     }
 
     /// <summary>
