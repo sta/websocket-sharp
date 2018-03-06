@@ -855,21 +855,19 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Ends an asynchronous operation to get the client's X.509 v.3 certificate.
+    /// Ends an asynchronous operation to get the certificate provided by the
+    /// client.
     /// </summary>
-    /// <remarks>
-    /// This method completes an asynchronous operation started by calling
-    /// the <see cref="BeginGetClientCertificate"/> method.
-    /// </remarks>
     /// <returns>
-    /// A <see cref="X509Certificate2"/> that contains the client's X.509 v.3 certificate.
+    /// A <see cref="X509Certificate2"/> that represents an X.509 certificate
+    /// provided by the client.
     /// </returns>
     /// <param name="asyncResult">
-    /// An <see cref="IAsyncResult"/> obtained by calling
-    /// the <see cref="BeginGetClientCertificate"/> method.
+    /// An <see cref="IAsyncResult"/> instance returned when the operation
+    /// started.
     /// </param>
-    /// <exception cref="NotImplementedException">
-    /// This method isn't implemented.
+    /// <exception cref="NotSupportedException">
+    /// This method is not supported.
     /// </exception>
     public X509Certificate2 EndGetClientCertificate (IAsyncResult asyncResult)
     {
