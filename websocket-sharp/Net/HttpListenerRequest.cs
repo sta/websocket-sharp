@@ -833,7 +833,7 @@ namespace WebSocketSharp.Net
     /// Begins getting the certificate provided by the client asynchronously.
     /// </summary>
     /// <returns>
-    /// An <see cref="IAsyncResult"/> that indicates the status of the
+    /// An <see cref="IAsyncResult"/> instance that indicates the status of the
     /// operation.
     /// </returns>
     /// <param name="requestCallback">
