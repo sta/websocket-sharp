@@ -114,7 +114,7 @@ namespace WebSocketSharp.Net
     ///   types specified in the value of the Accept header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the Accept header is not present.
+    ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
     public string[] AcceptTypes {
