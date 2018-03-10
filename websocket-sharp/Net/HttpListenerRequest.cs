@@ -200,7 +200,7 @@ namespace WebSocketSharp.Net
     ///   header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the Content-Type header is not present.
+    ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
     public string ContentType {
