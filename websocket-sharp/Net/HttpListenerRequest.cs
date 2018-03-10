@@ -173,15 +173,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the length in bytes of the entity body data included in
-    /// the request.
+    /// Gets the length in bytes of the entity body data included in the
+    /// request.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="long"/> from the value of the Content-Length header.
+    ///   A <see cref="long"/> converted from the value of the Content-Length
+    ///   header.
     ///   </para>
     ///   <para>
-    ///   -1 if the value is not known.
+    ///   -1 if the header is not present.
     ///   </para>
     /// </value>
     public long ContentLength64 {
