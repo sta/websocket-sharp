@@ -508,7 +508,7 @@ namespace WebSocketSharp.Net
     ///   header.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the User-Agent header is not present.
+    ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
     public string UserAgent {
@@ -541,7 +541,7 @@ namespace WebSocketSharp.Net
     ///   It includes the port number if provided.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the Host header is not present.
+    ///   <see langword="null"/> if the header is not present.
     ///   </para>
     /// </value>
     public string UserHostName {
