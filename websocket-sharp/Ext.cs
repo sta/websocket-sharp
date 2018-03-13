@@ -141,6 +141,18 @@ namespace WebSocketSharp
       }
     }
 
+    private static bool isHttpMethod (this string value)
+    {
+      return value == "GET"
+             || value == "HEAD"
+             || value == "POST"
+             || value == "PUT"
+             || value == "DELETE"
+             || value == "CONNECT"
+             || value == "OPTIONS"
+             || value == "TRACE";
+    }
+
     private static void times (this ulong n, Action action)
     {
       for (ulong i = 0; i < n; i++)
