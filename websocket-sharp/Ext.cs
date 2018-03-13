@@ -153,6 +153,13 @@ namespace WebSocketSharp
              || value == "TRACE";
     }
 
+    private static bool isHttpMethod10 (this string value)
+    {
+      return value == "GET"
+             || value == "HEAD"
+             || value == "POST";
+    }
+
     private static void times (this ulong n, Action action)
     {
       for (ulong i = 0; i < n; i++)
