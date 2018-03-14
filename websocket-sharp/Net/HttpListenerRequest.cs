@@ -582,15 +582,6 @@ namespace WebSocketSharp.Net
 
     private void finishInitialization10 ()
     {
-      var validMethod = _httpMethod == "GET"
-                        || _httpMethod == "HEAD"
-                        || _httpMethod == "POST";
-
-      if (!validMethod) {
-        _context.ErrorMessage = "Invalid request line (method)";
-        return;
-      }
-
       if (_httpMethod == "POST") {
         if (_contentLength == -1) {
           _context.ErrorMessage = "Content-Length header required";
@@ -817,6 +808,11 @@ namespace WebSocketSharp.Net
 
       if (ver.Major < 1) {
         _context.ErrorMessage = "Invalid request line (version)";
+        return;
+      }
+
+      if (!method.IsHttpMethod (ver)) {
+        _context.ErrorMessage = "Invalid request line (method)";
         return;
       }
 
