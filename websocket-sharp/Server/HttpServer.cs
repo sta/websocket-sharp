@@ -766,11 +766,6 @@ namespace WebSocketSharp.Server
     public event EventHandler<HttpRequestEventArgs> OnOptions;
 
     /// <summary>
-    /// Occurs when the server receives an HTTP PATCH request.
-    /// </summary>
-    public event EventHandler<HttpRequestEventArgs> OnPatch;
-
-    /// <summary>
     /// Occurs when the server receives an HTTP POST request.
     /// </summary>
     public event EventHandler<HttpRequestEventArgs> OnPost;
@@ -910,9 +905,7 @@ namespace WebSocketSharp.Server
                             ? OnTrace
                             : method == "CONNECT"
                               ? OnConnect
-                              : method == "PATCH"
-                                ? OnPatch
-                                : null;
+                              : null;
 
       if (evt != null)
         evt (this, new HttpRequestEventArgs (context, _docRootPath));
