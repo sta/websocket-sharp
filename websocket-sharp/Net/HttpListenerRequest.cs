@@ -582,6 +582,12 @@ namespace WebSocketSharp.Net
 
     private void finishInitialization10 ()
     {
+      var transferEnc = _headers["Transfer-Encoding"];
+      if (transferEnc != null) {
+        _context.ErrorMessage = "Invalid Transfer-Encoding header";
+        return;
+      }
+
       if (_httpMethod == "POST") {
         if (_contentLength == -1) {
           _context.ErrorMessage = "Content-Length header required";
@@ -592,12 +598,6 @@ namespace WebSocketSharp.Net
           _context.ErrorMessage = "Invalid Content-Length header";
           return;
         }
-      }
-
-      var transferEnc = _headers["Transfer-Encoding"];
-      if (transferEnc != null) {
-        _context.ErrorMessage = "Invalid Transfer-Encoding header";
-        return;
       }
     }
 
