@@ -899,12 +899,12 @@ namespace WebSocketSharp.Server
                       ? OnPut
                       : method == "DELETE"
                         ? OnDelete
-                        : method == "OPTIONS"
-                          ? OnOptions
-                          : method == "TRACE"
-                            ? OnTrace
-                            : method == "CONNECT"
-                              ? OnConnect
+                        : method == "CONNECT"
+                          ? OnConnect
+                          : method == "OPTIONS"
+                            ? OnOptions
+                            : method == "TRACE"
+                              ? OnTrace
                               : null;
 
       if (evt != null)
