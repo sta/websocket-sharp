@@ -626,6 +626,12 @@ namespace WebSocketSharp.Net
 
     internal void AddHeader (string headerField)
     {
+      var start = headerField[0];
+      if (start == ' ' || start == '\t') {
+        _context.ErrorMessage = "Invalid header field";
+        return;
+      }
+
       var colon = headerField.IndexOf (':');
       if (colon < 1) {
         _context.ErrorMessage = "Invalid header field";
