@@ -784,11 +784,6 @@ namespace WebSocketSharp.Net
         return;
       }
 
-      if (!method.IsToken ()) {
-        _context.ErrorMessage = "Invalid request line (method)";
-        return;
-      }
-
       var target = parts[1];
       if (target.Length == 0) {
         _context.ErrorMessage = "Invalid request line (target)";
