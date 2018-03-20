@@ -100,10 +100,15 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Host header included in the request.
+    /// Gets the value of the Host header included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Host header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the Host header.
+    ///   </para>
+    ///   <para>
+    ///   It includes the port number if provided.
+    ///   </para>
     /// </value>
     public override string Host {
       get {
