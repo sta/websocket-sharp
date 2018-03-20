@@ -107,7 +107,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override string Host {
       get {
-        return _context.Request.Headers["Host"];
+        return _context.Request.UserHostName;
       }
     }
 
