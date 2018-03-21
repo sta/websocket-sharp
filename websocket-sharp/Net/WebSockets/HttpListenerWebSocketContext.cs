@@ -124,7 +124,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsAuthenticated {
       get {
-        return _context.User != null;
+        return _context.Request.IsAuthenticated;
       }
     }
 
