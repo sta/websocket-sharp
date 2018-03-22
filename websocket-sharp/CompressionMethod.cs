@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2013-2016 sta.blockhead
+ * Copyright (c) 2013-2017 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,18 +31,17 @@ using System;
 namespace WebSocketSharp
 {
   /// <summary>
-  /// Specifies the compression method used to compress a message on
-  /// the WebSocket connection.
+  /// Specifies the method for compression.
   /// </summary>
   /// <remarks>
-  /// The compression methods that can be used are defined in
+  /// The methods are defined in
   /// <see href="https://tools.ietf.org/html/rfc7692">
   /// Compression Extensions for WebSocket</see>.
   /// </remarks>
   public enum CompressionMethod : byte
   {
     /// <summary>
-    /// Specifies non compression.
+    /// Specifies no compression.
     /// </summary>
     None,
     /// <summary>

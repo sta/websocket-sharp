@@ -269,22 +269,31 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the values of the Sec-WebSocket-Protocol header included in the request.
+    /// Gets the names of the subprotocols from the Sec-WebSocket-Protocol
+    /// header included in the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property represents the subprotocols requested by the client.
-    /// </remarks>
     /// <value>
-    /// An <see cref="T:System.Collections.Generic.IEnumerable{string}"/> instance that provides
-    /// an enumerator which supports the iteration over the values of the Sec-WebSocket-Protocol
-    /// header.
+    ///   <para>
+    ///   An <see cref="T:System.Collections.Generic.IEnumerable{string}"/>
+    ///   instance.
+    ///   </para>
+    ///   <para>
+    ///   It provides an enumerator which supports the iteration over
+    ///   the collection of the names of the subprotocols.
+    ///   </para>
     /// </value>
     public override IEnumerable<string> SecWebSocketProtocols {
       get {
-        var protocols = _request.Headers["Sec-WebSocket-Protocol"];
-        if (protocols != null) {
-          foreach (var protocol in protocols.Split (','))
-            yield return protocol.Trim ();
+        var val = _request.Headers["Sec-WebSocket-Protocol"];
+        if (val == null || val.Length == 0)
+          yield break;
+
+        foreach (var elm in val.Split (',')) {
+          var protocol = elm.Trim ();
+          if (protocol.Length == 0)
+            continue;
+
+          yield return protocol;
         }
       }
     }

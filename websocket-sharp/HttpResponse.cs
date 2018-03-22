@@ -79,7 +79,8 @@ namespace WebSocketSharp
 
     public bool HasConnectionClose {
       get {
-        return Headers.Contains ("Connection", "close");
+        var comparison = StringComparison.OrdinalIgnoreCase;
+        return Headers.Contains ("Connection", "close", comparison);
       }
     }
 
@@ -103,11 +104,9 @@ namespace WebSocketSharp
 
     public bool IsWebSocketResponse {
       get {
-        var headers = Headers;
-        return ProtocolVersion > HttpVersion.Version10 &&
-               _code == "101" &&
-               headers.Contains ("Upgrade", "websocket") &&
-               headers.Contains ("Connection", "Upgrade");
+        return ProtocolVersion > HttpVersion.Version10
+               && _code == "101"
+               && Headers.Upgrades ("websocket");
       }
     }
 

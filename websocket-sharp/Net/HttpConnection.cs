@@ -70,8 +70,10 @@ namespace WebSocketSharp.Net
     private HttpListener          _lastListener;
     private LineState             _lineState;
     private EndPointListener      _listener;
+    private EndPoint              _localEndPoint;
     private ResponseStream        _outputStream;
     private int                   _position;
+    private EndPoint              _remoteEndPoint;
     private MemoryStream          _requestBuffer;
     private int                   _reuses;
     private bool                  _secure;
@@ -90,25 +92,32 @@ namespace WebSocketSharp.Net
     {
       _socket = socket;
       _listener = listener;
-      _secure = listener.IsSecure;
 
       var netStream = new NetworkStream (socket, false);
-      if (_secure) {
-        var conf = listener.SslConfiguration;
-        var sslStream = new SslStream (netStream, false, conf.ClientCertificateValidationCallback);
+      if (listener.IsSecure) {
+        var sslConf = listener.SslConfiguration;
+        var sslStream = new SslStream (
+                          netStream,
+                          false,
+                          sslConf.ClientCertificateValidationCallback
+                        );
+
         sslStream.AuthenticateAsServer (
-          conf.ServerCertificate,
-          conf.ClientCertificateRequired,
-          conf.EnabledSslProtocols,
-          conf.CheckCertificateRevocation
+          sslConf.ServerCertificate,
+          sslConf.ClientCertificateRequired,
+          sslConf.EnabledSslProtocols,
+          sslConf.CheckCertificateRevocation
         );
 
+        _secure = true;
         _stream = sslStream;
       }
       else {
         _stream = netStream;
       }
 
+      _localEndPoint = socket.LocalEndPoint;
+      _remoteEndPoint = socket.RemoteEndPoint;
       _sync = new object ();
       _timeout = 90000; // 90k ms for first request, 15k ms from then on.
       _timeoutCanceled = new Dictionary<int, bool> ();
@@ -127,6 +136,12 @@ namespace WebSocketSharp.Net
       }
     }
 
+    public bool IsLocal {
+      get {
+        return ((IPEndPoint) _remoteEndPoint).Address.IsLocal ();
+      }
+    }
+
     public bool IsSecure {
       get {
         return _secure;
@@ -135,13 +150,13 @@ namespace WebSocketSharp.Net
 
     public IPEndPoint LocalEndPoint {
       get {
-        return (IPEndPoint) _socket.LocalEndPoint;
+        return (IPEndPoint) _localEndPoint;
       }
     }
 
     public IPEndPoint RemoteEndPoint {
       get {
-        return (IPEndPoint) _socket.RemoteEndPoint;
+        return (IPEndPoint) _remoteEndPoint;
       }
     }
 
@@ -437,24 +452,32 @@ namespace WebSocketSharp.Net
         if (_socket == null)
           return;
 
-        if (!force) {
-          GetResponseStream ().Close (false);
-          if (!_context.Response.CloseConnection && _context.Request.FlushInput ()) {
-            // Don't close. Keep working.
-            _reuses++;
-            disposeRequestBuffer ();
-            unregisterContext ();
-            init ();
-            BeginReadRequest ();
+        if (force) {
+          if (_outputStream != null)
+            _outputStream.Close (true);
 
-            return;
-          }
-        }
-        else if (_outputStream != null) {
-          _outputStream.Close (true);
+          close ();
+          return;
         }
 
-        close ();
+        GetResponseStream ().Close (false);
+
+        if (_context.Response.CloseConnection) {
+          close ();
+          return;
+        }
+
+        if (!_context.Request.FlushInput ()) {
+          close ();
+          return;
+        }
+
+        disposeRequestBuffer ();
+        unregisterContext ();
+        init ();
+
+        _reuses++;
+        BeginReadRequest ();
       }
     }
 
@@ -487,25 +510,25 @@ namespace WebSocketSharp.Net
 
     public RequestStream GetRequestStream (long contentLength, bool chunked)
     {
-      if (_inputStream != null || _socket == null)
-        return _inputStream;
-
       lock (_sync) {
         if (_socket == null)
+          return null;
+
+        if (_inputStream != null)
           return _inputStream;
 
         var buff = _requestBuffer.GetBuffer ();
         var len = (int) _requestBuffer.Length;
+        var cnt = len - _position;
         disposeRequestBuffer ();
-        if (chunked) {
-          _context.Response.SendChunked = true;
-          _inputStream =
-            new ChunkedRequestStream (_stream, buff, _position, len - _position, _context);
-        }
-        else {
-          _inputStream =
-            new RequestStream (_stream, buff, _position, len - _position, contentLength);
-        }
+
+        _inputStream = chunked
+                       ? new ChunkedRequestStream (
+                           _stream, buff, _position, cnt, _context
+                         )
+                       : new RequestStream (
+                           _stream, buff, _position, cnt, contentLength
+                         );
 
         return _inputStream;
       }
@@ -515,11 +538,11 @@ namespace WebSocketSharp.Net
     {
       // TODO: Can we get this stream before reading the input?
 
-      if (_outputStream != null || _socket == null)
-        return _outputStream;
-
       lock (_sync) {
         if (_socket == null)
+          return null;
+
+        if (_outputStream != null)
           return _outputStream;
 
         var lsnr = _context.Listener;

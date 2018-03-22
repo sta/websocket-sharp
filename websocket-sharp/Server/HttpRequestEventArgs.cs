@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2015 sta.blockhead
+ * Copyright (c) 2012-2017 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,41 +27,48 @@
 #endregion
 
 using System;
+using System.IO;
+using System.Security.Principal;
+using System.Text;
 using WebSocketSharp.Net;
 
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Represents the event data for the HTTP request event that the <see cref="HttpServer"/> emits.
+  /// Represents the event data for the HTTP request events of
+  /// the <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   An HTTP request event occurs when the <see cref="HttpServer"/> receives an HTTP request.
+  ///   An HTTP request event occurs when the <see cref="HttpServer"/>
+  ///   receives an HTTP request.
   ///   </para>
   ///   <para>
-  ///   If you would like to get the request data sent from a client,
-  ///   you should access the <see cref="Request"/> property.
+  ///   You should access the <see cref="Request"/> property if you would
+  ///   like to get the request data sent from a client.
   ///   </para>
   ///   <para>
-  ///   And if you would like to get the response data used to return a response,
-  ///   you should access the <see cref="Response"/> property.
+  ///   And you should access the <see cref="Response"/> property if you would
+  ///   like to get the response data to return to the client.
   ///   </para>
   /// </remarks>
   public class HttpRequestEventArgs : EventArgs
   {
     #region Private Fields
 
-    private HttpListenerRequest  _request;
-    private HttpListenerResponse _response;
+    private HttpListenerContext _context;
+    private string              _docRootPath;
 
     #endregion
 
     #region Internal Constructors
 
-    internal HttpRequestEventArgs (HttpListenerContext context)
+    internal HttpRequestEventArgs (
+      HttpListenerContext context, string documentRootPath
+    )
     {
-      _request = context.Request;
-      _response = context.Response;
+      _context = context;
+      _docRootPath = documentRootPath;
     }
 
     #endregion
@@ -69,27 +76,178 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP request data sent from a client.
+    /// Gets the request data sent from a client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerRequest"/> that represents the request data.
+    /// A <see cref="HttpListenerRequest"/> that provides the methods and
+    /// properties for the request data.
     /// </value>
     public HttpListenerRequest Request {
       get {
-        return _request;
+        return _context.Request;
       }
     }
 
     /// <summary>
-    /// Gets the HTTP response data used to return a response to the client.
+    /// Gets the response data to return to the client.
     /// </summary>
     /// <value>
-    /// A <see cref="HttpListenerResponse"/> that represents the response data.
+    /// A <see cref="HttpListenerResponse"/> that provides the methods and
+    /// properties for the response data.
     /// </value>
     public HttpListenerResponse Response {
       get {
-        return _response;
+        return _context.Response;
       }
+    }
+
+    /// <summary>
+    /// Gets the information for the client.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
+    ///   if not authenticated.
+    ///   </para>
+    ///   <para>
+    ///   That instance describes the identity, authentication scheme,
+    ///   and security roles for the client.
+    ///   </para>
+    /// </value>
+    public IPrincipal User {
+      get {
+        return _context.User;
+      }
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private string createFilePath (string childPath)
+    {
+      childPath = childPath.TrimStart ('/', '\\');
+      return new StringBuilder (_docRootPath, 32)
+             .AppendFormat ("/{0}", childPath)
+             .ToString ()
+             .Replace ('\\', '/');
+    }
+
+    private static bool tryReadFile (string path, out byte[] contents)
+    {
+      contents = null;
+
+      if (!File.Exists (path))
+        return false;
+
+      try {
+        contents = File.ReadAllBytes (path);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    /// <summary>
+    /// Reads the specified file from the document folder of
+    /// the <see cref="HttpServer"/>.
+    /// </summary>
+    /// <returns>
+    ///   <para>
+    ///   An array of <see cref="byte"/> or <see langword="null"/>
+    ///   if it fails.
+    ///   </para>
+    ///   <para>
+    ///   That array receives the contents of the file.
+    ///   </para>
+    /// </returns>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents a virtual path to
+    /// find the file from the document folder.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> contains "..".
+    ///   </para>
+    /// </exception>
+    public byte[] ReadFile (string path)
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path.IndexOf ("..") > -1)
+        throw new ArgumentException ("It contains '..'.", "path");
+
+      byte[] contents;
+      tryReadFile (createFilePath (path), out contents);
+
+      return contents;
+    }
+
+    /// <summary>
+    /// Tries to read the specified file from the document folder of
+    /// the <see cref="HttpServer"/>.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="path">
+    /// A <see cref="string"/> that represents a virtual path to
+    /// find the file from the document folder.
+    /// </param>
+    /// <param name="contents">
+    ///   <para>
+    ///   When this method returns, an array of <see cref="byte"/> or
+    ///   <see langword="null"/> if it fails.
+    ///   </para>
+    ///   <para>
+    ///   That array receives the contents of the file.
+    ///   </para>
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="path"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="path"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="path"/> contains "..".
+    ///   </para>
+    /// </exception>
+    public bool TryReadFile (string path, out byte[] contents)
+    {
+      if (path == null)
+        throw new ArgumentNullException ("path");
+
+      if (path.Length == 0)
+        throw new ArgumentException ("An empty string.", "path");
+
+      if (path.IndexOf ("..") > -1)
+        throw new ArgumentException ("It contains '..'.", "path");
+
+      return tryReadFile (createFilePath (path), out contents);
     }
 
     #endregion
