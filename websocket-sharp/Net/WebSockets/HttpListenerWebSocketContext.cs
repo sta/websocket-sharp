@@ -150,7 +150,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _context.Connection.IsSecure;
+        return _context.Request.IsSecureConnection;
       }
     }
 
