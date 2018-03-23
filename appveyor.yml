@@ -1,4 +1,4 @@
-version: 2.{build}
+version: 2.0.{build}
 
 branches:
   only:
@@ -30,16 +30,16 @@ after_build:
 test: off
 
 artifacts:
-  - path: websocket-sharp\DataVisualization\bin\Release\*.dll
-  - path: websocket-sharp\DataVisualization\bin\Release\*.pdb
+  - path: websocket-sharp\bin\Release\net45\*.dll
+  - path: websocket-sharp\bin\Release\net45\*.pdb
   - path: '**\DotNetProjects.*.nupkg'
 
 #uncomment to publish to NuGet
-#deploy:
-#  provider: NuGet
-#  api_key:
-#    secure: OrhpK2cLXXcoWW+hU6xAv3eeKIbATEFbenteoFsi9EfM1yyDof6ZuNKAsA3Vy6vb
-#  artifact: /.*\.nupkg/
+deploy:
+  provider: NuGet
+  api_key:
+    secure: OrhpK2cLXXcoWW+hU6xAv3eeKIbATEFbenteoFsi9EfM1yyDof6ZuNKAsA3Vy6vb
+  artifact: /.*\.nupkg/
   
   
   
