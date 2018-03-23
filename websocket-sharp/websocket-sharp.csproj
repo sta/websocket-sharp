@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net35;net40;net45</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
-    <AssemblyName>websocket-sharp</AssemblyName>
+    <AssemblyName>DotNetProjects.websocket-sharp</AssemblyName>
     <RootNamespace>WebSocketSharp</RootNamespace>
     <AssemblyOriginatorKeyFile>websocket-sharp.snk</AssemblyOriginatorKeyFile>
     <PackageId>DotNetProjects.websocket-sharp</PackageId>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <AssemblyVersion>1.0.4.0</AssemblyVersion>
     <FileVersion>1.0.4.0</FileVersion>
-    <Version>1.0.4</Version>
+    <Version>2.0</Version>
     <Description>A C# implementation of the WebSocket protocol client and server</Description>
     <Product>websocket-sharp.dll</Product>
     <Authors>DotNetProjects.websocket-sharp</Authors>

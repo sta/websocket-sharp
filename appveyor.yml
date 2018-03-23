@@ -1,4 +1,4 @@
-version: 1.0.4.{build}
+version: 2.{build}
 
 branches:
   only:
@@ -6,12 +6,15 @@ branches:
 
 image: Visual Studio 2017
 
-assembly_info:
+ 
+dotnet_csproj:
   patch: true
-  file: AssemblyInfo.*
-  assembly_version: "{version}"
-  assembly_file_version: "{version}"
-  assembly_informational_version: "{version}"
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 
 configuration: Release
 
@@ -21,10 +24,15 @@ before_build:
 build:
   project: websocket-sharp.sln
 
+after_build:
+  - ps: .\nuget\pack.ps1
+  
 test: off
 
 artifacts:
-  - path: 'websocket-sharp\bin\Release\DotNetProjects.*.nupkg'
+  - path: websocket-sharp\DataVisualization\bin\Release\*.dll
+  - path: websocket-sharp\DataVisualization\bin\Release\*.pdb
+  - path: '**\DotNetProjects.*.nupkg'
 
 #uncomment to publish to NuGet
 #deploy:

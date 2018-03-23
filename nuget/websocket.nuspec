@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DotNetProjects.websocket-sharp</id>
+    <version>$version$</version>
+    <authors>DotNetProjects</authors>
+    <owners>DotNetProjects</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/dotnetprojects/websocket-sharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>a fork of websocket sharp</description>
+    <copyright>Copyright 2018</copyright>
+  </metadata>
+  <files>
+    <file src="..\websocket-sharp\bin\Release\net45\DotNetProjects.websocket-sharp.dll" target="lib\net45" />
+    <file src="..\websocket-sharp\bin\Release\net45\DotNetProjects.websocket-sharp.pdb" target="lib\net45" />
+  </files>
+</package>
