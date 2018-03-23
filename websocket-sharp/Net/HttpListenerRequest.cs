@@ -319,8 +319,7 @@ namespace WebSocketSharp.Net
     /// the request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection is a secure connection; otherwise,
-    /// <c>false</c>.
+    /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
     /// </value>
     public bool IsSecureConnection {
       get {
