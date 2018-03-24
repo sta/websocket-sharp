@@ -170,7 +170,7 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Origin header included in the request.
+    /// Gets the value of the Origin header included in the handshake request.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the value of the Origin header.
