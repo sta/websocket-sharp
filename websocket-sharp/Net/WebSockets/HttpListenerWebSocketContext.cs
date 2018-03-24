@@ -182,10 +182,16 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the query string included in the request.
+    /// Gets the query string included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
+    ///   <para>
+    ///   A <see cref="NameValueCollection"/> that contains the query
+    ///   parameters.
+    ///   </para>
+    ///   <para>
+    ///   An empty collection if not included.
+    ///   </para>
     /// </value>
     public override NameValueCollection QueryString {
       get {
