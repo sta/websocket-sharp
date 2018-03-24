@@ -299,6 +299,20 @@ namespace WebSocketSharp.Server
       }
     }
 
+    /// <summary>
+    /// Gets the compression-method of the <see cref="WebSocket"/> used in a session.
+    /// </summary>
+    /// <value>
+    /// One of the <see cref="CompressionMethod"/> enum values, indicates the compression of
+    /// the <see cref="WebSocket"/>.
+    /// </value>
+    public CompressionMethod Compression
+    {
+      get
+      {
+        return _websocket.Compression;
+      }
+    }
     #endregion
 
     #region Private Methods
