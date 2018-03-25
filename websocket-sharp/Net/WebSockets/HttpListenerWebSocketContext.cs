@@ -203,7 +203,12 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the URI requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the requested URI.
+    ///   <para>
+    ///   A <see cref="Uri"/> that represents the URI parsed from the request.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the URI cannot be parsed.
+    ///   </para>
     /// </value>
     public override Uri RequestUri {
       get {
