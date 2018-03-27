@@ -278,10 +278,11 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the server endpoint as an IP address and a port number.
+    /// Gets the endpoint to which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
+    /// address and port number.
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
