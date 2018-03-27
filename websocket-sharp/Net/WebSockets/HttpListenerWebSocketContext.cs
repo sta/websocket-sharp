@@ -316,7 +316,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override System.Net.IPEndPoint UserEndPoint {
       get {
-        return _context.Connection.RemoteEndPoint;
+        return _context.Request.RemoteEndPoint;
       }
     }
 
