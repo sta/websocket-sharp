@@ -285,7 +285,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
-        return _context.Connection.LocalEndPoint;
+        return _context.Request.LocalEndPoint;
       }
     }
 
