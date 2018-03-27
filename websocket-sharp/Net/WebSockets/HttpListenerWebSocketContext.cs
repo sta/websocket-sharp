@@ -291,10 +291,16 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the client information (identity, authentication, and security roles).
+    /// Gets the client information.
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> instance that represents the client information.
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance that represents identity,
+    ///   authentication, and security roles for the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the client is not authenticated.
+    ///   </para>
     /// </value>
     public override IPrincipal User {
       get {
