@@ -76,10 +76,16 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP cookies included in the request.
+    /// Gets the HTTP cookies included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+    ///   <para>
+    ///   A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains
+    ///   the cookies.
+    ///   </para>
+    ///   <para>
+    ///   An empty collection if not included.
+    ///   </para>
     /// </value>
     public override CookieCollection CookieCollection {
       get {
