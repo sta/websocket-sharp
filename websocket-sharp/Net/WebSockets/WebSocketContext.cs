@@ -34,7 +34,7 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Exposes the properties used to access the information in a WebSocket handshake request.
+  /// Exposes the access to the information in a WebSocket handshake request.
   /// </summary>
   /// <remarks>
   /// This class is an abstract class.
