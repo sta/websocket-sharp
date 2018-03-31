@@ -35,8 +35,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the properties used to access the information in
-  /// a WebSocket handshake request received by the <see cref="HttpListener"/>.
+  /// Provides the access to the information in a WebSocket handshake request to
+  /// a <see cref="HttpListener"/> instance.
   /// </summary>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
