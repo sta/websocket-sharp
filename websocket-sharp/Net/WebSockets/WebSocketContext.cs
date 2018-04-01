@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract CookieCollection CookieCollection { get; }
 
     /// <summary>
-    /// Gets the HTTP headers included in the request.
+    /// Gets the HTTP headers included in the handshake request.
     /// </summary>
     /// <value>
     /// A <see cref="NameValueCollection"/> that contains the headers.
