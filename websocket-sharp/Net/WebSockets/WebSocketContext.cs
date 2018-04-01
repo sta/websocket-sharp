@@ -72,10 +72,11 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract NameValueCollection Headers { get; }
 
     /// <summary>
-    /// Gets the value of the Host header included in the request.
+    /// Gets the value of the Host header included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Host header.
+    /// A <see cref="string"/> that represents the server host name requested by
+    /// the client.
     /// </value>
     public abstract string Host { get; }
 
