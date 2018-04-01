@@ -89,10 +89,12 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract bool IsAuthenticated { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the client connected from the local computer.
+    /// Gets a value indicating whether the handshake request is sent from
+    /// the local computer.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+    /// <c>true</c> if the handshake request is sent from the same computer
+    /// as the server; otherwise, <c>false</c>.
     /// </value>
     public abstract bool IsLocal { get; }
 
