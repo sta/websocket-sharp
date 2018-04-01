@@ -112,7 +112,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the Host header.
+    ///   A <see cref="string"/> that represents the server host name requested
+    ///   by the client.
     ///   </para>
     ///   <para>
     ///   It includes the port number if provided.
