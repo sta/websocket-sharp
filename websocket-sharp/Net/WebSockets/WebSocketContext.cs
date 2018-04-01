@@ -75,8 +75,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Host header included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the server host name requested by
-    /// the client.
+    /// A <see cref="string"/> that represents the server host name requested
+    /// by the client.
     /// </value>
     public abstract string Host { get; }
 
