@@ -55,10 +55,11 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP cookies included in the request.
+    /// Gets the HTTP cookies included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains
+    /// the cookies.
     /// </value>
     public abstract CookieCollection CookieCollection { get; }
 
