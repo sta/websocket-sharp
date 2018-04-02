@@ -108,10 +108,12 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract bool IsSecureConnection { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket handshake request.
+    /// Gets a value indicating whether the request is a WebSocket handshake
+    /// request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket handshake request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise,
+    /// <c>false</c>.
     /// </value>
     public abstract bool IsWebSocketRequest { get; }
 
