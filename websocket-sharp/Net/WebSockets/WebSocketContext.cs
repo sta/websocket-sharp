@@ -137,7 +137,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the URI requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the requested URI.
+    /// A <see cref="Uri"/> that represents the URI parsed from the request.
     /// </value>
     public abstract Uri RequestUri { get; }
 
