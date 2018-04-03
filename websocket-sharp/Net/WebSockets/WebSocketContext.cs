@@ -126,10 +126,10 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract string Origin { get; }
 
     /// <summary>
-    /// Gets the query string included in the request.
+    /// Gets the query string included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
+    /// A <see cref="NameValueCollection"/> that contains the query parameters.
     /// </value>
     public abstract NameValueCollection QueryString { get; }
 
