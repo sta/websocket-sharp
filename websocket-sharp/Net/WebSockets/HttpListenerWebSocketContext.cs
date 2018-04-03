@@ -182,7 +182,12 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the value of the Origin header included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Origin header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the Origin header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the header is not present.
+    ///   </para>
     /// </value>
     public override string Origin {
       get {
