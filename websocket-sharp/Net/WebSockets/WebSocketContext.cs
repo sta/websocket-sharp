@@ -142,14 +142,18 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract Uri RequestUri { get; }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Key header included in the request.
+    /// Gets the value of the Sec-WebSocket-Key header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property provides a part of the information used by the server to prove that
-    /// it received a valid WebSocket handshake request.
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of
+    ///   the Sec-WebSocket-Key header.
+    ///   </para>
+    ///   <para>
+    ///   The value is used to prove that the server received
+    ///   a valid WebSocket handshake request.
+    ///   </para>
     /// </value>
     public abstract string SecWebSocketKey { get; }
 
