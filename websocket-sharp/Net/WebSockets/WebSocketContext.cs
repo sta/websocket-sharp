@@ -193,10 +193,11 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract System.Net.IPEndPoint ServerEndPoint { get; }
 
     /// <summary>
-    /// Gets the client information (identity, authentication, and security roles).
+    /// Gets the client information.
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> instance that represents the client information.
+    /// A <see cref="IPrincipal"/> instance that represents identity,
+    /// authentication, and security roles for the client.
     /// </value>
     public abstract IPrincipal User { get; }
 
