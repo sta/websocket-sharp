@@ -174,13 +174,12 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract IEnumerable<string> SecWebSocketProtocols { get; }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Version header included in the request.
+    /// Gets the value of the Sec-WebSocket-Version header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property represents the WebSocket protocol version.
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
+    /// A <see cref="string"/> that represents the WebSocket protocol
+    /// version specified by the client.
     /// </value>
     public abstract string SecWebSocketVersion { get; }
 
