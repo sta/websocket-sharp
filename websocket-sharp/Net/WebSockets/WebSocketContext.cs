@@ -202,10 +202,11 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract IPrincipal User { get; }
 
     /// <summary>
-    /// Gets the client endpoint as an IP address and a port number.
+    /// Gets the endpoint from which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the client endpoint.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
+    /// address and port number.
     /// </value>
     public abstract System.Net.IPEndPoint UserEndPoint { get; }
 
