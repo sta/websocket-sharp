@@ -211,11 +211,12 @@ namespace WebSocketSharp.Net.WebSockets
     public abstract System.Net.IPEndPoint UserEndPoint { get; }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
-    /// two-way communication between client and server.
+    /// Gets the WebSocket instance used for two-way communication between
+    /// the client and server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WebSocket"/>.
+    /// A <see cref="WebSocketSharp.WebSocket"/> used for two-way communication
+    /// using the WebSocket protocol.
     /// </value>
     public abstract WebSocket WebSocket { get; }
 
