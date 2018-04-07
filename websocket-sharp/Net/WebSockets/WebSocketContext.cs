@@ -215,8 +215,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// the client and server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WebSocket"/> used for two-way communication
-    /// using the WebSocket protocol.
+    /// A <see cref="WebSocketSharp.WebSocket"/>.
     /// </value>
     public abstract WebSocket WebSocket { get; }
 
