@@ -347,12 +347,11 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the WebSocket interface for two-way communication between the
-    /// client and server.
+    /// Gets the WebSocket instance used for two-way communication between
+    /// the client and server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WebSocket"/> that provides a set of methods
-    /// and properties for two-way communication using the WebSocket protocol.
+    /// A <see cref="WebSocketSharp.WebSocket"/>.
     /// </value>
     public override WebSocket WebSocket {
       get {
