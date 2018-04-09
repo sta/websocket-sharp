@@ -81,8 +81,11 @@ namespace WebSocketSharp.Net.WebSockets
 
       var netStream = tcpClient.GetStream ();
       if (secure) {
-        var sslStream =
-          new SslStream (netStream, false, sslConfig.ClientCertificateValidationCallback);
+        var sslStream = new SslStream (
+                          netStream,
+                          false,
+                          sslConfig.ClientCertificateValidationCallback
+                        );
 
         sslStream.AuthenticateAsServer (
           sslConfig.ServerCertificate,
@@ -98,10 +101,12 @@ namespace WebSocketSharp.Net.WebSockets
       }
 
       _request = HttpRequest.Read (_stream, 90000);
-      _uri =
-        HttpUtility.CreateRequestUrl (
-          _request.RequestUri, _request.Headers["Host"], _request.IsWebSocketRequest, secure
-        );
+      _uri = HttpUtility.CreateRequestUrl (
+               _request.RequestUri,
+               _request.Headers["Host"],
+               _request.IsWebSocketRequest,
+               secure
+             );
 
       _websocket = new WebSocket (this, protocol);
     }
