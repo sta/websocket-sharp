@@ -101,13 +101,6 @@ namespace WebSocketSharp.Net.WebSockets
       }
 
       _request = HttpRequest.Read (_stream, 90000);
-      _uri = HttpUtility.CreateRequestUrl (
-               _request.RequestUri,
-               _request.Headers["Host"],
-               _request.IsWebSocketRequest,
-               secure
-             );
-
       _websocket = new WebSocket (this, protocol);
     }
 
@@ -261,6 +254,15 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override Uri RequestUri {
       get {
+        if (_uri == null) {
+          _uri = HttpUtility.CreateRequestUrl (
+                   _request.RequestUri,
+                   _request.Headers["Host"],
+                   _request.IsWebSocketRequest,
+                   _secure
+                 );
+        }
+
         return _uri;
       }
     }
