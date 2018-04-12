@@ -456,12 +456,11 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Methods
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents
-    /// the current <see cref="TcpListenerWebSocketContext"/>.
+    /// Returns a string that represents the current instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> that represents
-    /// the current <see cref="TcpListenerWebSocketContext"/>.
+    /// A <see cref="string"/> that contains the request line and headers
+    /// included in the handshake request.
     /// </returns>
     public override string ToString ()
     {
