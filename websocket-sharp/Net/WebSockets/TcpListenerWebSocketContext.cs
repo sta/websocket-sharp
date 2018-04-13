@@ -52,7 +52,6 @@ namespace WebSocketSharp.Net.WebSockets
   {
     #region Private Fields
 
-    private CookieCollection    _cookies;
     private Logger              _log;
     private NameValueCollection _queryString;
     private HttpRequest         _request;
@@ -132,7 +131,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override CookieCollection CookieCollection {
       get {
-        return _cookies ?? (_cookies = _request.Cookies);
+        return _request.Cookies;
       }
     }
 

@@ -45,10 +45,11 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private string _method;
-    private string _uri;
-    private bool   _websocketRequest;
-    private bool   _websocketRequestSet;
+    private CookieCollection _cookies;
+    private string           _method;
+    private string           _uri;
+    private bool             _websocketRequest;
+    private bool             _websocketRequestSet;
 
     #endregion
 
@@ -86,7 +87,10 @@ namespace WebSocketSharp
 
     public CookieCollection Cookies {
       get {
-        return Headers.GetCookies (false);
+        if (_cookies == null)
+          _cookies = Headers.GetCookies (false);
+
+        return _cookies;
       }
     }
 
