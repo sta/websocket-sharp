@@ -198,10 +198,11 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection is secured.
+    /// Gets a value indicating whether a secure connection is used to send
+    /// the handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection is secured; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
     /// </value>
     public override bool IsSecureConnection {
       get {
