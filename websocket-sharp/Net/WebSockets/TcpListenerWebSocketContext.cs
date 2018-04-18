@@ -347,13 +347,17 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Version header included in the request.
+    /// Gets the value of the Sec-WebSocket-Version header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property represents the WebSocket protocol version.
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the WebSocket protocol
+    ///   version specified by the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the header is not present.
+    ///   </para>
     /// </value>
     public override string SecWebSocketVersion {
       get {
