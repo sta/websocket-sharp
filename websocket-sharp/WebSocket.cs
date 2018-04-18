@@ -2133,6 +2133,9 @@ namespace WebSocketSharp
             conf.ServerCertificateValidationCallback,
             conf.ClientCertificateSelectionCallback);
 
+          sslStream.ReadTimeout = (int)WaitTime.TotalMilliseconds;
+          sslStream.WriteTimeout = (int)WaitTime.TotalMilliseconds;
+
           sslStream.AuthenticateAsClient (
             host,
             conf.ClientCertificates,
