@@ -481,7 +481,12 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void Close (HttpStatusCode code)
     {
-      _websocket.Close (HttpResponse.CreateCloseResponse (code));
+      var res = HttpResponse.CreateCloseResponse (code);
+      var bytes = res.ToByteArray ();
+      _stream.Write (bytes, 0, bytes.Length);
+
+      _stream.Close ();
+      _tcpClient.Close ();
     }
 
     internal void SendAuthenticationChallenge (string challenge)
