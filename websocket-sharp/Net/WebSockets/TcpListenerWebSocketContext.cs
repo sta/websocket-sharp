@@ -491,8 +491,10 @@ namespace WebSocketSharp.Net.WebSockets
 
     internal void SendAuthenticationChallenge (string challenge)
     {
-      var buff = HttpResponse.CreateUnauthorizedResponse (challenge).ToByteArray ();
-      _stream.Write (buff, 0, buff.Length);
+      var res = HttpResponse.CreateUnauthorizedResponse (challenge);
+      var bytes = res.ToByteArray ();
+      _stream.Write (bytes, 0, bytes.Length);
+
       _request = HttpRequest.Read (_stream, 15000);
     }
 
