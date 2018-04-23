@@ -452,22 +452,21 @@ namespace WebSocketSharp.Net.WebSockets
             return false;
           }
 
-          var user =
-            HttpUtility.CreateUser (
-              _request.Headers["Authorization"],
-              scheme,
-              realm,
-              _request.HttpMethod,
-              credentialsFinder
-            );
+          var user = HttpUtility.CreateUser (
+                       _request.Headers["Authorization"],
+                       scheme,
+                       realm,
+                       _request.HttpMethod,
+                       credentialsFinder
+                     );
 
-          if (user == null || !user.Identity.IsAuthenticated) {
-            SendAuthenticationChallenge (chal);
-            return auth ();
+          if (user != null && user.Identity.IsAuthenticated) {
+            _user = user;
+            return true;
           }
 
-          _user = user;
-          return true;
+          SendAuthenticationChallenge (chal);
+          return auth ();
         };
 
       return auth ();
