@@ -55,10 +55,10 @@ namespace WebSocketSharp.Net.WebSockets
     private Logger              _log;
     private NameValueCollection _queryString;
     private HttpRequest         _request;
+    private Uri                 _requestUri;
     private bool                _secure;
     private Stream              _stream;
     private TcpClient           _tcpClient;
-    private Uri                 _uri;
     private IPrincipal          _user;
     private WebSocket           _websocket;
 
@@ -280,16 +280,16 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override Uri RequestUri {
       get {
-        if (_uri == null) {
-          _uri = HttpUtility.CreateRequestUrl (
-                   _request.RequestUri,
-                   _request.Headers["Host"],
-                   _request.IsWebSocketRequest,
-                   _secure
-                 );
+        if (_requestUri == null) {
+          _requestUri = HttpUtility.CreateRequestUrl (
+                          _request.RequestUri,
+                          _request.Headers["Host"],
+                          _request.IsWebSocketRequest,
+                          _secure
+                        );
         }
 
-        return _uri;
+        return _requestUri;
       }
     }
 
