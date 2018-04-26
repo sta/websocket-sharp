@@ -724,6 +724,17 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool authenticateClient (TcpListenerWebSocketContext context)
+    {
+      if (_authSchemes == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (_authSchemes == AuthenticationSchemes.None)
+        return false;
+
+      return context.Authenticate (_authSchemes, _realmInUse, _userCredFinder);
+    }
+
     private bool canSet (out string message)
     {
       message = null;
