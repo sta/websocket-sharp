@@ -438,14 +438,6 @@ namespace WebSocketSharp.Net.WebSockets
       Func<IIdentity, NetworkCredential> credentialsFinder
     )
     {
-      if (scheme == AuthenticationSchemes.Anonymous)
-        return true;
-
-      if (scheme == AuthenticationSchemes.None) {
-        Close (HttpStatusCode.Forbidden);
-        return false;
-      }
-
       var chal = new AuthenticationChallenge (scheme, realm).ToString ();
 
       var retry = -1;
@@ -453,10 +445,8 @@ namespace WebSocketSharp.Net.WebSockets
       auth =
         () => {
           retry++;
-          if (retry > 99) {
-            Close (HttpStatusCode.Forbidden);
+          if (retry > 99)
             return false;
-          }
 
           var user = HttpUtility.CreateUser (
                        _request.Headers["Authorization"],

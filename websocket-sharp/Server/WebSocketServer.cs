@@ -806,6 +806,11 @@ namespace WebSocketSharp.Server
 
     private void processRequest (TcpListenerWebSocketContext context)
     {
+      if (!authenticateClient (context)) {
+        context.Close (HttpStatusCode.Forbidden);
+        return;
+      }
+
       var uri = context.RequestUri;
       if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
@@ -845,9 +850,6 @@ namespace WebSocketSharp.Server
                 var ctx = new TcpListenerWebSocketContext (
                             cl, null, _secure, _sslConfigInUse, _log
                           );
-
-                if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
-                  return;
 
                 processRequest (ctx);
               }
