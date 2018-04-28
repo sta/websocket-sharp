@@ -430,6 +430,19 @@ namespace WebSocketSharp.Net.WebSockets
 
     #endregion
 
+    #region Private Methods
+
+    private HttpRequest sendAuthenticationChallenge (string challenge)
+    {
+      var res = HttpResponse.CreateUnauthorizedResponse (challenge);
+      var bytes = res.ToByteArray ();
+      _stream.Write (bytes, 0, bytes.Length);
+
+      return HttpRequest.Read (_stream, 15000);
+    }
+
+    #endregion
+
     #region Internal Methods
 
     internal bool Authenticate (
