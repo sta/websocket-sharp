@@ -474,7 +474,7 @@ namespace WebSocketSharp.Net.WebSockets
             return true;
           }
 
-          SendAuthenticationChallenge (chal);
+          _request = sendAuthenticationChallenge (chal);
           return auth ();
         };
 
