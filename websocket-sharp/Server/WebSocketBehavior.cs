@@ -34,11 +34,12 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the methods and properties used to define the behavior of a WebSocket service
-  /// provided by the <see cref="WebSocketServer"/> or <see cref="HttpServer"/>.
+  /// Exposes a set of methods and properties used to define the behavior of
+  /// a WebSocket service provided by the <see cref="WebSocketServer"/> or
+  /// <see cref="HttpServer"/>.
   /// </summary>
   /// <remarks>
-  /// The WebSocketBehavior class is an abstract class.
+  /// This class is an abstract class.
   /// </remarks>
   public abstract class WebSocketBehavior : IWebSocketSession
   {
