@@ -399,8 +399,13 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Error (string message, Exception exception)
     {
-      if (message != null && message.Length > 0)
-        OnError (new ErrorEventArgs (message, exception));
+      if (message == null)
+        throw new ArgumentNullException ("message");
+
+      if (message.Length == 0)
+        throw new ArgumentException ("An empty string.", "message");
+
+      OnError (new ErrorEventArgs (message, exception));
     }
 
     /// <summary>
