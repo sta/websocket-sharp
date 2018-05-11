@@ -61,6 +61,7 @@ namespace WebSocketSharp.Net
   {
     #region Private Fields
 
+    private bool                                                 _allowForwardedRequest;
     private AuthenticationSchemes                                _authSchemes;
     private Func<HttpListenerRequest, AuthenticationSchemes>     _authSchemeSelector;
     private string                                               _certFolderPath;
@@ -143,6 +144,29 @@ namespace WebSocketSharp.Net
     #endregion
 
     #region Public Properties
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the server accepts every
+    /// handshake request without checking the request URI.
+    /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   <c>true</c> if the server accepts every handshake request without
+    ///   checking the request URI; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
+    /// </value>
+    public bool AllowForwardedRequest
+    {
+        get { return _allowForwardedRequest; }
+        set { _allowForwardedRequest = value; }
+    }
 
     /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.

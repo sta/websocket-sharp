@@ -308,6 +308,29 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the server accepts every
+    /// handshake request without checking the request URI.
+    /// </summary>
+    /// <remarks>
+    /// The set operation does nothing if the server has already started or
+    /// it is shutting down.
+    /// </remarks>
+    /// <value>
+    ///   <para>
+    ///   <c>true</c> if the server accepts every handshake request without
+    ///   checking the request URI; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
+    /// </value>
+    public bool AllowForwardedRequest
+    {
+        get { return _listener.AllowForwardedRequest; }
+        set { _listener.AllowForwardedRequest = value; }
+    }
+
+    /// <summary>
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <remarks>
