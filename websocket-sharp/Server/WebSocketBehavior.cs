@@ -444,8 +444,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Called when the WebSocket connection used in a session has been
-    /// established.
+    /// Called when the WebSocket connection for a session has been established.
     /// </summary>
     protected virtual void OnOpen ()
     {
