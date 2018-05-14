@@ -451,14 +451,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> to the client on a session.
+    /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
-    /// <remarks>
-    /// This method is available after the WebSocket connection has been established.
-    /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     protected void Send (byte[] data)
     {
       if (_websocket == null) {
