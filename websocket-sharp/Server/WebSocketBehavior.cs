@@ -481,14 +481,14 @@ namespace WebSocketSharp.Server
     /// <param name="file">
     /// A <see cref="FileInfo"/> that represents the file to send.
     /// </param>
-    protected void Send (FileInfo file)
+    protected void Send (FileInfo fileInfo)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
         throw new InvalidOperationException (msg);
       }
 
-      _websocket.Send (file);
+      _websocket.Send (fileInfo);
     }
 
     /// <summary>
