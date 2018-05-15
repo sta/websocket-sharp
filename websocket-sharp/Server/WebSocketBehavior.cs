@@ -483,8 +483,12 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void Send (FileInfo file)
     {
-      if (_websocket != null)
-        _websocket.Send (file);
+      if (_websocket == null) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.Send (file);
     }
 
     /// <summary>
