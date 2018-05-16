@@ -473,14 +473,33 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as binary data to the client on a session.
+    /// Sends the specified file to a client using the WebSocket connection.
     /// </summary>
-    /// <remarks>
-    /// This method is available after the WebSocket connection has been established.
-    /// </remarks>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> that represents the file to send.
+    /// <param name="fileInfo">
+    ///   <para>
+    ///   A <see cref="FileInfo"/> that specifies the file to send.
+    ///   </para>
+    ///   <para>
+    ///   The file is sent as the binary data.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="fileInfo"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   The file does not exist.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The file could not be opened.
+    ///   </para>
+    /// </exception>
     protected void Send (FileInfo fileInfo)
     {
       if (_websocket == null) {
