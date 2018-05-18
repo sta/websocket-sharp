@@ -511,14 +511,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends text <paramref name="data"/> to the client on a session.
+    /// Sends the specified data to a client using the WebSocket connection.
     /// </summary>
-    /// <remarks>
-    /// This method is available after the WebSocket connection has been established.
-    /// </remarks>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="data"/> could not be UTF-8-encoded.
+    /// </exception>
     protected void Send (string data)
     {
       if (_websocket == null) {
