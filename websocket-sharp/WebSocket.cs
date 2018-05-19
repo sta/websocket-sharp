@@ -3378,11 +3378,13 @@ namespace WebSocketSharp
     /// <summary>
     /// Sends the specified file using the WebSocket connection.
     /// </summary>
-    /// <remarks>
-    /// The file is sent as the binary data.
-    /// </remarks>
     /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies the file to send.
+    ///   <para>
+    ///   A <see cref="FileInfo"/> that specifies the file to send.
+    ///   </para>
+    ///   <para>
+    ///   The file is sent as the binary data.
+    ///   </para>
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// The current state of the connection is not Open.
