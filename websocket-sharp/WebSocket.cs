@@ -3428,7 +3428,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> using the WebSocket connection.
+    /// Sends the specified data using the WebSocket connection.
     /// </summary>
     /// <param name="data">
     /// A <see cref="string"/> that represents the text data to send.
