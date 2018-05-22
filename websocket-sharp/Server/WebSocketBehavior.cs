@@ -536,24 +536,34 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends binary <paramref name="data"/> asynchronously to the client on a session.
+    /// Sends the specified data to a client asynchronously using the WebSocket
+    /// connection.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   This method is available after the WebSocket connection has been established.
-    ///   </para>
-    ///   <para>
-    ///   This method doesn't wait for the send to be complete.
-    ///   </para>
+    /// This method does not wait for the send to be complete.
     /// </remarks>
     /// <param name="data">
     /// An array of <see cref="byte"/> that represents the binary data to send.
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
+    ///   <para>
+    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
+    ///   if not needed.
+    ///   </para>
+    ///   <para>
+    ///   The delegate invokes the method called when the send is complete.
+    ///   </para>
+    ///   <para>
+    ///   <c>true</c> is passed to the method if the send has done with
+    ///   no error; otherwise, <c>false</c>.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="data"/> is <see langword="null"/>.
+    /// </exception>
     protected void SendAsync (byte[] data, Action<bool> completed)
     {
       if (_websocket == null) {
