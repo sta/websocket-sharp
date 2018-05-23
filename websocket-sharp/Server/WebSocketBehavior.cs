@@ -594,14 +594,14 @@ namespace WebSocketSharp.Server
     /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
     /// if the send is complete successfully.
     /// </param>
-    protected void SendAsync (FileInfo file, Action<bool> completed)
+    protected void SendAsync (FileInfo fileInfo, Action<bool> completed)
     {
       if (_websocket == null) {
         var msg = "The current state of the connection is not Open.";
         throw new InvalidOperationException (msg);
       }
 
-      _websocket.SendAsync (file, completed);
+      _websocket.SendAsync (fileInfo, completed);
     }
 
     /// <summary>
