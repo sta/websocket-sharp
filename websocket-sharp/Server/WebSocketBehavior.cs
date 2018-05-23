@@ -596,8 +596,12 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (FileInfo file, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (file, completed);
+      if (_websocket == null) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.SendAsync (file, completed);
     }
 
     /// <summary>
