@@ -575,25 +575,50 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified <paramref name="file"/> as binary data asynchronously to
-    /// the client on a session.
+    /// Sends the specified file to a client asynchronously using the WebSocket
+    /// connection.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   This method is available after the WebSocket connection has been established.
-    ///   </para>
-    ///   <para>
-    ///   This method doesn't wait for the send to be complete.
-    ///   </para>
+    /// This method does not wait for the send to be complete.
     /// </remarks>
-    /// <param name="file">
-    /// A <see cref="FileInfo"/> that represents the file to send.
+    /// <param name="fileInfo">
+    ///   <para>
+    ///   A <see cref="FileInfo"/> that specifies the file to send.
+    ///   </para>
+    ///   <para>
+    ///   The file is sent as the binary data.
+    ///   </para>
     /// </param>
     /// <param name="completed">
-    /// An <c>Action&lt;bool&gt;</c> delegate that references the method(s) called when
-    /// the send is complete. A <see cref="bool"/> passed to this delegate is <c>true</c>
-    /// if the send is complete successfully.
+    ///   <para>
+    ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
+    ///   if not needed.
+    ///   </para>
+    ///   <para>
+    ///   The delegate invokes the method called when the send is complete.
+    ///   </para>
+    ///   <para>
+    ///   <c>true</c> is passed to the method if the send has done with
+    ///   no error; otherwise, <c>false</c>.
+    ///   </para>
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="fileInfo"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   The file does not exist.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The file could not be opened.
+    ///   </para>
+    /// </exception>
     protected void SendAsync (FileInfo fileInfo, Action<bool> completed)
     {
       if (_websocket == null) {
