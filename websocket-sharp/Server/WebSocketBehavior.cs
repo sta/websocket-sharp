@@ -696,8 +696,12 @@ namespace WebSocketSharp.Server
     /// </param>
     protected void SendAsync (Stream stream, int length, Action<bool> completed)
     {
-      if (_websocket != null)
-        _websocket.SendAsync (stream, length, completed);
+      if (_websocket == null) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.SendAsync (stream, length, completed);
     }
 
     #endregion
