@@ -575,8 +575,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Sends the specified file to a client asynchronously using the WebSocket
-    /// connection.
+    /// Sends the specified file to a client asynchronously using
+    /// the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
