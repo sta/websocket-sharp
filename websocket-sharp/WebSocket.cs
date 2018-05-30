@@ -3538,8 +3538,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends <paramref name="data"/> asynchronously using the WebSocket
-    /// connection.
+    /// Sends the specified data asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
     /// This method does not wait for the send to be complete.
