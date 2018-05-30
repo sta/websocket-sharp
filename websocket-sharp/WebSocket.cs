@@ -3582,15 +3582,15 @@ namespace WebSocketSharp
     /// Sends the specified file asynchronously using the WebSocket connection.
     /// </summary>
     /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="fileInfo">
+    ///   <para>
+    ///   A <see cref="FileInfo"/> that specifies the file to send.
+    ///   </para>
     ///   <para>
     ///   The file is sent as the binary data.
     ///   </para>
-    ///   <para>
-    ///   This method does not wait for the send to be complete.
-    ///   </para>
-    /// </remarks>
-    /// <param name="fileInfo">
-    /// A <see cref="FileInfo"/> that specifies the file to send.
     /// </param>
     /// <param name="completed">
     ///   <para>
