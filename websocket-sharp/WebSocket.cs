@@ -3697,19 +3697,19 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Sends the data from <paramref name="stream"/> asynchronously using
+    /// Sends the data from the specified stream asynchronously using
     /// the WebSocket connection.
     /// </summary>
     /// <remarks>
+    /// This method does not wait for the send to be complete.
+    /// </remarks>
+    /// <param name="stream">
+    ///   <para>
+    ///   A <see cref="Stream"/> instance from which to read the data to send.
+    ///   </para>
     ///   <para>
     ///   The data is sent as the binary data.
     ///   </para>
-    ///   <para>
-    ///   This method does not wait for the send to be complete.
-    ///   </para>
-    /// </remarks>
-    /// <param name="stream">
-    /// A <see cref="Stream"/> instance from which to read the data to send.
     /// </param>
     /// <param name="length">
     /// An <see cref="int"/> that specifies the number of bytes to send.
