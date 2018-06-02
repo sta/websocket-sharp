@@ -536,6 +536,54 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Sends the data from the specified stream to a client using
+    /// the WebSocket connection.
+    /// </summary>
+    /// <param name="stream">
+    ///   <para>
+    ///   A <see cref="Stream"/> instance from which to read the data to send.
+    ///   </para>
+    ///   <para>
+    ///   The data is sent as the binary data.
+    ///   </para>
+    /// </param>
+    /// <param name="length">
+    /// An <see cref="int"/> that specifies the number of bytes to send.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The current state of the connection is not Open.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="stream"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="stream"/> cannot be read.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than 1.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   No data could be read from <paramref name="stream"/>.
+    ///   </para>
+    /// </exception>
+    protected void Send (Stream stream, int length)
+    {
+      if (_websocket == null) {
+        var msg = "The current state of the connection is not Open.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.Send (stream, length);
+    }
+
+    /// <summary>
     /// Sends the specified data to a client asynchronously using
     /// the WebSocket connection.
     /// </summary>
