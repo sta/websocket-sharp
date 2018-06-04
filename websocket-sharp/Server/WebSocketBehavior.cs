@@ -399,6 +399,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="ArgumentException">
     /// <paramref name="message"/> is an empty string.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     protected void Error (string message, Exception exception)
     {
       if (message == null)
