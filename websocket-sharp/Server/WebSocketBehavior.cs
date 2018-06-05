@@ -296,7 +296,9 @@ namespace WebSocketSharp.Server
     /// </value>
     public WebSocketState State {
       get {
-        return _websocket != null ? _websocket.ReadyState : WebSocketState.Connecting;
+        return _websocket != null
+               ? _websocket.ReadyState
+               : WebSocketState.Connecting;
       }
     }
 
