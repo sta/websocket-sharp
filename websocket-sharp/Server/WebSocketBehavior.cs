@@ -288,11 +288,19 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the state of the <see cref="WebSocket"/> used in a session.
+    /// Gets the current state of the WebSocket connection for a session.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
-    /// the <see cref="WebSocket"/>.
+    ///   <para>
+    ///   One of the <see cref="WebSocketState"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It indicates the current state of the connection.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="WebSocketState.Connecting"/> if the session has not
+    ///   started yet.
+    ///   </para>
     /// </value>
     public WebSocketState State {
       get {
