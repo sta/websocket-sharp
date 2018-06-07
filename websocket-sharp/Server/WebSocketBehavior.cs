@@ -278,8 +278,13 @@ namespace WebSocketSharp.Server
     /// Gets the time that a session has started.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time that the session has started,
-    /// or <see cref="DateTime.MaxValue"/> if the WebSocket connection isn't established.
+    ///   <para>
+    ///   A <see cref="DateTime"/> that represents the time that the session
+    ///   has started.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="DateTime.MaxValue"/> if the session has not started yet.
+    ///   </para>
     /// </value>
     public DateTime StartTime {
       get {
