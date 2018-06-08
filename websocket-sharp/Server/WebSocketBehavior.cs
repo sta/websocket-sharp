@@ -260,7 +260,7 @@ namespace WebSocketSharp.Server
     /// </value>
     public string Protocol {
       get {
-        return _websocket != null ? _websocket.Protocol : (_protocol ?? String.Empty);
+        return _protocol ?? String.Empty;
       }
 
       set {
