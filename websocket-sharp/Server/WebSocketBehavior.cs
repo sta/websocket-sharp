@@ -264,11 +264,18 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (State != WebSocketState.Connecting)
-          return;
+        if (State != WebSocketState.Connecting) {
+          var msg = "The session has already started.";
+          throw new InvalidOperationException (msg);
+        }
 
-        if (value != null && (value.Length == 0 || !value.IsToken ()))
+        if (value == null || value.Length == 0) {
+          _protocol = null;
           return;
+        }
+
+        if (!value.IsToken ())
+          throw new ArgumentException ("Not a token.", "value");
 
         _protocol = value;
       }
