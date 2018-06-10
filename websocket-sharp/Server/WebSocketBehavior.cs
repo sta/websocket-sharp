@@ -242,22 +242,27 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the WebSocket subprotocol used in the WebSocket service.
+    /// Gets or sets the name of subprotocol used in the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// Set operation of this property is available before the WebSocket connection has
-    /// been established.
-    /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the subprotocol if any.
-    ///   The default value is <see cref="String.Empty"/>.
+    ///   A <see cref="string"/> that represents the name of subprotocol.
     ///   </para>
     ///   <para>
-    ///   The value to set must be a token defined in
-    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">RFC 2616</see>.
+    ///   The value specified for a set must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
+    ///   RFC 2616</see>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is an empty string.
     ///   </para>
     /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The set operation is not available if the session has already started.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is not a token.
+    /// </exception>
     public string Protocol {
       get {
         return _protocol ?? String.Empty;
