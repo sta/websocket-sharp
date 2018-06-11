@@ -641,11 +641,16 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Gets the name of the subprotocol selected by server.
+    /// Gets the name of subprotocol selected by the server.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that will be one of the names of the subprotocols
-    /// specified by client, or an empty string if not specified or selected.
+    ///   <para>
+    ///   A <see cref="string"/> that will be one of the names of
+    ///   subprotocols specified by client.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if not specified or selected.
+    ///   </para>
     /// </value>
     public string Protocol {
       get {
