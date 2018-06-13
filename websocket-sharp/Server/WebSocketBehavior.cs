@@ -208,27 +208,28 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the Origin header included in
-    /// a handshake request to the WebSocket service.
+    /// Gets or sets the delegate used to validate the Origin header included
+    /// in a handshake request to the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the handshake request.
-    /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;string, bool&gt;</c> delegate that references the method(s) used to
-    ///   validate the origin header.
+    ///   A <c>Func&lt;string, bool&gt;</c> delegate or <see langword="null"/>
+    ///   if not needed.
     ///   </para>
     ///   <para>
-    ///   <see cref="string"/> parameter passed to this delegate represents the value of
-    ///   the origin header to validate if any.
+    ///   The delegate invokes the method called when the WebSocket instance
+    ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
-    ///   This delegate should return <c>true</c> if the origin header is valid.
+    ///   The <see cref="string"/> parameter passed to the method is the value
+    ///   of the Origin header or <see langword="null"/> if the header is not
+    ///   present.
     ///   </para>
     ///   <para>
-    ///   The default value is <see langword="null"/>, and it does nothing to validate.
+    ///   The method must return <c>true</c> if the header value is valid.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
     public Func<string, bool> OriginValidator {
