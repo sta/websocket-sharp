@@ -194,8 +194,13 @@ namespace WebSocketSharp.Server
     /// the Sec-WebSocket-Extensions header included in a handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the WebSocket service ignores the extensions requested from
-    /// a client; otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the service ignores the extensions requested from
+    ///   a client; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool IgnoreExtensions {
       get {
