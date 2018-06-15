@@ -180,8 +180,12 @@ namespace WebSocketSharp.Server
     /// Gets the unique ID of a session.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the unique ID of the session,
-    /// or <see langword="null"/> if the WebSocket connection isn't established.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the unique ID of the session.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
     /// </value>
     public string ID {
       get {
