@@ -154,12 +154,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the <see cref="WebSocket"/> used in a session emits
-    /// a <see cref="WebSocket.OnMessage"/> event when receives a Ping.
+    /// Gets or sets a value indicating whether the WebSocket instance for
+    /// a session emits the message event when receives a ping.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the <see cref="WebSocket"/> emits a <see cref="WebSocket.OnMessage"/> event
-    /// when receives a Ping; otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the WebSocket instance emits the message event
+    ///   when receives a ping; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool EmitOnPing {
       get {
