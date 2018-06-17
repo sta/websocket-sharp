@@ -116,31 +116,31 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate called to validate the HTTP cookies included in
+    /// Gets or sets the delegate used to validate the HTTP cookies included in
     /// a handshake request to the WebSocket service.
     /// </summary>
-    /// <remarks>
-    /// This delegate is called when the <see cref="WebSocket"/> used in a session validates
-    /// the handshake request.
-    /// </remarks>
     /// <value>
     ///   <para>
-    ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate that references
-    ///   the method(s) used to validate the cookies.
+    ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate
+    ///   or <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   1st <see cref="CookieCollection"/> parameter passed to this delegate contains
-    ///   the cookies to validate if any.
+    ///   The delegate invokes the method called when the WebSocket instance
+    ///   for a session validates the handshake request.
     ///   </para>
     ///   <para>
-    ///   2nd <see cref="CookieCollection"/> parameter passed to this delegate receives
-    ///   the cookies to send to the client.
+    ///   1st <see cref="CookieCollection"/> parameter passed to the method
+    ///   contains the cookies to validate if present.
     ///   </para>
     ///   <para>
-    ///   This delegate should return <c>true</c> if the cookies are valid.
+    ///   2nd <see cref="CookieCollection"/> parameter passed to the method
+    ///   receives the cookies to send to the client.
     ///   </para>
     ///   <para>
-    ///   The default value is <see langword="null"/>, and it does nothing to validate.
+    ///   The method must return <c>true</c> if the cookies are valid.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
     public Func<CookieCollection, CookieCollection, bool> CookiesValidator {
