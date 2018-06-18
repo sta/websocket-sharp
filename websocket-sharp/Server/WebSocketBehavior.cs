@@ -106,8 +106,13 @@ namespace WebSocketSharp.Server
     /// Gets the information in a handshake request to the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketContext"/> instance that provides the access to the handshake request,
-    /// or <see langword="null"/> if the WebSocket connection isn't established.
+    ///   <para>
+    ///   A <see cref="WebSocketContext"/> instance that provides the access to
+    ///   the information in the handshake request.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
     /// </value>
     public WebSocketContext Context {
       get {
