@@ -84,13 +84,18 @@ namespace WebSocketSharp.Server
         return _websocket != null ? _websocket.Log : null;
       }
     }
-    
+
     /// <summary>
-    /// Gets the access to the sessions in the WebSocket service.
+    /// Gets the management function for the sessions in the WebSocket service.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSessionManager"/> that provides the access to the sessions,
-    /// or <see langword="null"/> if the WebSocket connection isn't established.
+    ///   <para>
+    ///   A <see cref="WebSocketSessionManager"/> that manages the sessions in
+    ///   the service.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
     /// </value>
     protected WebSocketSessionManager Sessions {
       get {
