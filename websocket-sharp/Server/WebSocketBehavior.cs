@@ -73,11 +73,15 @@ namespace WebSocketSharp.Server
     #region Protected Properties
 
     /// <summary>
-    /// Gets the logging functions.
+    /// Gets the logging function.
     /// </summary>
     /// <value>
-    /// A <see cref="Logger"/> that provides the logging functions,
-    /// or <see langword="null"/> if the WebSocket connection isn't established.
+    ///   <para>
+    ///   A <see cref="Logger"/> that provides the logging function.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
     /// </value>
     protected Logger Log {
       get {
