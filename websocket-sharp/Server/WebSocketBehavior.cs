@@ -83,6 +83,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if the session has not started yet.
     ///   </para>
     /// </value>
+    [Obsolete ("This property will be removed.")]
     protected Logger Log {
       get {
         return _websocket != null ? _websocket.Log : null;
