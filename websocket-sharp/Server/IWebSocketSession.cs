@@ -32,7 +32,7 @@ using WebSocketSharp.Net.WebSockets;
 namespace WebSocketSharp.Server
 {
   /// <summary>
-  /// Exposes the properties used to access the information in a session in a WebSocket service.
+  /// Exposes the access to the information in a WebSocket session.
   /// </summary>
   public interface IWebSocketSession
   {
