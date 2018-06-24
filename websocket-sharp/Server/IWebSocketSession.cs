@@ -68,7 +68,8 @@ namespace WebSocketSharp.Server
     /// Gets the time that the session has started.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time that the session has started.
+    /// A <see cref="DateTime"/> that represents the time that the session
+    /// has started.
     /// </value>
     DateTime StartTime { get; }
 
