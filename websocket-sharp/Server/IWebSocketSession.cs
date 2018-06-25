@@ -74,11 +74,15 @@ namespace WebSocketSharp.Server
     DateTime StartTime { get; }
 
     /// <summary>
-    /// Gets the state of the <see cref="WebSocket"/> used in the session.
+    /// Gets the current state of the WebSocket connection for the session.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketState"/> enum values, indicates the state of
-    /// the <see cref="WebSocket"/> used in the session.
+    ///   <para>
+    ///   One of the <see cref="WebSocketState"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It indicates the current state of the connection.
+    ///   </para>
     /// </value>
     WebSocketState State { get; }
 
