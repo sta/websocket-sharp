@@ -39,6 +39,19 @@ namespace WebSocketSharp.Server
     #region Properties
 
     /// <summary>
+    /// Gets the current state of the WebSocket connection for the session.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   One of the <see cref="WebSocketState"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It indicates the current state of the connection.
+    ///   </para>
+    /// </value>
+    WebSocketState ConnectionState { get; }
+
+    /// <summary>
     /// Gets the information in the WebSocket handshake request.
     /// </summary>
     /// <value>
@@ -72,19 +85,6 @@ namespace WebSocketSharp.Server
     /// has started.
     /// </value>
     DateTime StartTime { get; }
-
-    /// <summary>
-    /// Gets the current state of the WebSocket connection for the session.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   One of the <see cref="WebSocketState"/> enum values.
-    ///   </para>
-    ///   <para>
-    ///   It indicates the current state of the connection.
-    ///   </para>
-    /// </value>
-    WebSocketState State { get; }
 
     #endregion
   }

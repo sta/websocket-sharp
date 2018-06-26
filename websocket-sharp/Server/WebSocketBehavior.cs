@@ -113,6 +113,29 @@ namespace WebSocketSharp.Server
     #region Public Properties
 
     /// <summary>
+    /// Gets the current state of the WebSocket connection for a session.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   One of the <see cref="WebSocketState"/> enum values.
+    ///   </para>
+    ///   <para>
+    ///   It indicates the current state of the connection.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="WebSocketState.Connecting"/> if the session has not
+    ///   started yet.
+    ///   </para>
+    /// </value>
+    public WebSocketState ConnectionState {
+      get {
+        return _websocket != null
+               ? _websocket.ReadyState
+               : WebSocketState.Connecting;
+      }
+    }
+
+    /// <summary>
     /// Gets the information in a handshake request to the WebSocket service.
     /// </summary>
     /// <value>
@@ -299,7 +322,7 @@ namespace WebSocketSharp.Server
       }
 
       set {
-        if (State != WebSocketState.Connecting) {
+        if (ConnectionState != WebSocketState.Connecting) {
           var msg = "The session has already started.";
           throw new InvalidOperationException (msg);
         }
@@ -331,29 +354,6 @@ namespace WebSocketSharp.Server
     public DateTime StartTime {
       get {
         return _startTime;
-      }
-    }
-
-    /// <summary>
-    /// Gets the current state of the WebSocket connection for a session.
-    /// </summary>
-    /// <value>
-    ///   <para>
-    ///   One of the <see cref="WebSocketState"/> enum values.
-    ///   </para>
-    ///   <para>
-    ///   It indicates the current state of the connection.
-    ///   </para>
-    ///   <para>
-    ///   <see cref="WebSocketState.Connecting"/> if the session has not
-    ///   started yet.
-    ///   </para>
-    /// </value>
-    public WebSocketState State {
-      get {
-        return _websocket != null
-               ? _websocket.ReadyState
-               : WebSocketState.Connecting;
       }
     }
 
