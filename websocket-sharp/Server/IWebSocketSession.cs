@@ -69,7 +69,7 @@ namespace WebSocketSharp.Server
     string ID { get; }
 
     /// <summary>
-    /// Gets the name of the WebSocket subprotocol used in the session.
+    /// Gets the name of the WebSocket subprotocol for the session.
     /// </summary>
     /// <value>
     /// A <see cref="string"/> that represents the name of the subprotocol
