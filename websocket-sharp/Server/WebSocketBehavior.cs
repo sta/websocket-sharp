@@ -295,11 +295,11 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the name of subprotocol used in the WebSocket service.
+    /// Gets or sets the name of the WebSocket subprotocol for the service.
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the name of subprotocol.
+    ///   A <see cref="string"/> that represents the name of the subprotocol.
     ///   </para>
     ///   <para>
     ///   The value specified for a set must be a token defined in
