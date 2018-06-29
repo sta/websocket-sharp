@@ -91,7 +91,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the management function for the sessions in the WebSocket service.
+    /// Gets the management function for the sessions in the service.
     /// </summary>
     /// <value>
     ///   <para>
