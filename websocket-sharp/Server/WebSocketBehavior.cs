@@ -136,7 +136,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the information in a handshake request to the WebSocket service.
+    /// Gets the information in a WebSocket handshake request to the service.
     /// </summary>
     /// <value>
     ///   <para>
