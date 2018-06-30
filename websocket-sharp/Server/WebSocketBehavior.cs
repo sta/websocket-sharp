@@ -155,7 +155,7 @@ namespace WebSocketSharp.Server
 
     /// <summary>
     /// Gets or sets the delegate used to validate the HTTP cookies included in
-    /// a handshake request to the WebSocket service.
+    /// a WebSocket handshake request to the service.
     /// </summary>
     /// <value>
     ///   <para>
