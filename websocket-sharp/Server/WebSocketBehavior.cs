@@ -261,8 +261,8 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets or sets the delegate used to validate the Origin header included
-    /// in a handshake request to the WebSocket service.
+    /// Gets or sets the delegate used to validate the Origin header included in
+    /// a WebSocket handshake request to the service.
     /// </summary>
     /// <value>
     ///   <para>
