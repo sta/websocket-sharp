@@ -319,7 +319,9 @@ namespace WebSocketSharp.Server
     /// </exception>
     public string Protocol {
       get {
-        return _protocol ?? String.Empty;
+        return _websocket != null
+               ? _websocket.Protocol
+               : (_protocol ?? String.Empty);
       }
 
       set {
