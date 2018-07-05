@@ -366,12 +366,19 @@ namespace WebSocketSharp.Server
 
     private string checkHandshakeRequest (WebSocketContext context)
     {
-      return _originValidator != null && !_originValidator (context.Origin)
-             ? "Includes no Origin header, or it has an invalid value."
-             : _cookiesValidator != null
-               && !_cookiesValidator (context.CookieCollection, context.WebSocket.CookieCollection)
-               ? "Includes no cookie, or an invalid cookie exists."
-               : null;
+      if (_originValidator != null) {
+        if (!_originValidator (context.Origin))
+          return "It includes no Origin header or an invalid one.";
+      }
+
+      if (_cookiesValidator != null) {
+        var req = context.CookieCollection;
+        var res = context.WebSocket.CookieCollection;
+        if (!_cookiesValidator (req, res))
+          return "It includes no cookie or an invalid one.";
+      }
+
+      return null;
     }
 
     private void onClose (object sender, CloseEventArgs e)
