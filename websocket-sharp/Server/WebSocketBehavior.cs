@@ -451,6 +451,26 @@ namespace WebSocketSharp.Server
     #region Protected Methods
 
     /// <summary>
+    /// Closes the WebSocket connection for a session.
+    /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected void Close ()
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.Close ();
+    }
+
+    /// <summary>
     /// Calls the <see cref="OnError"/> method with the specified message.
     /// </summary>
     /// <param name="message">
