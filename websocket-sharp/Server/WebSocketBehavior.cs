@@ -471,6 +471,75 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Closes the WebSocket connection for a session with the specified
+    /// code and reason.
+    /// </summary>
+    /// <remarks>
+    /// This method does nothing if the current state of the connection is
+    /// Closing or Closed.
+    /// </remarks>
+    /// <param name="code">
+    ///   <para>
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
+    ///   </para>
+    ///   <para>
+    ///   The status codes are defined in
+    ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
+    ///   Section 7.4</see> of RFC 6455.
+    ///   </para>
+    /// </param>
+    /// <param name="reason">
+    ///   <para>
+    ///   A <see cref="string"/> that represents the reason for the close.
+    ///   </para>
+    ///   <para>
+    ///   The size must be 123 bytes or less in UTF-8.
+    ///   </para>
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <para>
+    ///   <paramref name="code"/> is less than 1000 or greater than 4999.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The size of <paramref name="reason"/> is greater than 123 bytes.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="code"/> is 1010 (mandatory extension).
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="code"/> is 1005 (no status) and there is
+    ///   <paramref name="reason"/>.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="reason"/> could not be UTF-8-encoded.
+    ///   </para>
+    /// </exception>
+    protected void Close (ushort code, string reason)
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.Close (code, reason);
+    }
+
+    /// <summary>
     /// Calls the <see cref="OnError"/> method with the specified message.
     /// </summary>
     /// <param name="message">
