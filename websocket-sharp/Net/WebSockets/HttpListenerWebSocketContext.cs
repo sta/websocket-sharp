@@ -4,7 +4,7 @@
  *
  * The MIT License
  *
- * Copyright (c) 2012-2016 sta.blockhead
+ * Copyright (c) 2012-2018 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ using System.Security.Principal;
 namespace WebSocketSharp.Net.WebSockets
 {
   /// <summary>
-  /// Provides the properties used to access the information in
-  /// a WebSocket handshake request received by the <see cref="HttpListener"/>.
+  /// Provides the access to the information in a WebSocket handshake request to
+  /// a <see cref="HttpListener"/> instance.
   /// </summary>
   public class HttpListenerWebSocketContext : WebSocketContext
   {
@@ -49,7 +49,9 @@ namespace WebSocketSharp.Net.WebSockets
 
     #region Internal Constructors
 
-    internal HttpListenerWebSocketContext (HttpListenerContext context, string protocol)
+    internal HttpListenerWebSocketContext (
+      HttpListenerContext context, string protocol
+    )
     {
       _context = context;
       _websocket = new WebSocket (this, protocol);
@@ -76,10 +78,16 @@ namespace WebSocketSharp.Net.WebSockets
     #region Public Properties
 
     /// <summary>
-    /// Gets the HTTP cookies included in the request.
+    /// Gets the HTTP cookies included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains the cookies.
+    ///   <para>
+    ///   A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains
+    ///   the cookies.
+    ///   </para>
+    ///   <para>
+    ///   An empty collection if not included.
+    ///   </para>
     /// </value>
     public override CookieCollection CookieCollection {
       get {
@@ -88,7 +96,7 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the HTTP headers included in the request.
+    /// Gets the HTTP headers included in the handshake request.
     /// </summary>
     /// <value>
     /// A <see cref="NameValueCollection"/> that contains the headers.
@@ -104,7 +112,8 @@ namespace WebSocketSharp.Net.WebSockets
     /// </summary>
     /// <value>
     ///   <para>
-    ///   A <see cref="string"/> that represents the value of the Host header.
+    ///   A <see cref="string"/> that represents the server host name requested
+    ///   by the client.
     ///   </para>
     ///   <para>
     ///   It includes the port number if provided.
@@ -124,15 +133,17 @@ namespace WebSocketSharp.Net.WebSockets
     /// </value>
     public override bool IsAuthenticated {
       get {
-        return _context.User != null;
+        return _context.Request.IsAuthenticated;
       }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the client connected from the local computer.
+    /// Gets a value indicating whether the handshake request is sent from
+    /// the local computer.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client connected from the local computer; otherwise, <c>false</c>.
+    /// <c>true</c> if the handshake request is sent from the same computer
+    /// as the server; otherwise, <c>false</c>.
     /// </value>
     public override bool IsLocal {
       get {
@@ -141,22 +152,25 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets a value indicating whether the WebSocket connection is secured.
+    /// Gets a value indicating whether a secure connection is used to send
+    /// the handshake request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection is secured; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection is secure; otherwise, <c>false</c>.
     /// </value>
     public override bool IsSecureConnection {
       get {
-        return _context.Connection.IsSecure;
+        return _context.Request.IsSecureConnection;
       }
     }
 
     /// <summary>
-    /// Gets a value indicating whether the request is a WebSocket handshake request.
+    /// Gets a value indicating whether the request is a WebSocket handshake
+    /// request.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the request is a WebSocket handshake request; otherwise, <c>false</c>.
+    /// <c>true</c> if the request is a WebSocket handshake request; otherwise,
+    /// <c>false</c>.
     /// </value>
     public override bool IsWebSocketRequest {
       get {
@@ -165,10 +179,15 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Origin header included in the request.
+    /// Gets the value of the Origin header included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Origin header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of the Origin header.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the header is not present.
+    ///   </para>
     /// </value>
     public override string Origin {
       get {
@@ -177,10 +196,16 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the query string included in the request.
+    /// Gets the query string included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="NameValueCollection"/> that contains the query string parameters.
+    ///   <para>
+    ///   A <see cref="NameValueCollection"/> that contains the query
+    ///   parameters.
+    ///   </para>
+    ///   <para>
+    ///   An empty collection if not included.
+    ///   </para>
     /// </value>
     public override NameValueCollection QueryString {
       get {
@@ -192,7 +217,12 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the URI requested by the client.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the requested URI.
+    ///   <para>
+    ///   A <see cref="Uri"/> that represents the URI parsed from the request.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the URI cannot be parsed.
+    ///   </para>
     /// </value>
     public override Uri RequestUri {
       get {
@@ -201,14 +231,21 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Key header included in the request.
+    /// Gets the value of the Sec-WebSocket-Key header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property provides a part of the information used by the server to prove that
-    /// it received a valid WebSocket handshake request.
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Key header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the value of
+    ///   the Sec-WebSocket-Key header.
+    ///   </para>
+    ///   <para>
+    ///   The value is used to prove that the server received
+    ///   a valid WebSocket handshake request.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the header is not present.
+    ///   </para>
     /// </value>
     public override string SecWebSocketKey {
       get {
@@ -247,13 +284,17 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the value of the Sec-WebSocket-Version header included in the request.
+    /// Gets the value of the Sec-WebSocket-Version header included in
+    /// the handshake request.
     /// </summary>
-    /// <remarks>
-    /// This property represents the WebSocket protocol version.
-    /// </remarks>
     /// <value>
-    /// A <see cref="string"/> that represents the value of the Sec-WebSocket-Version header.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the WebSocket protocol
+    ///   version specified by the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the header is not present.
+    ///   </para>
     /// </value>
     public override string SecWebSocketVersion {
       get {
@@ -262,22 +303,29 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the server endpoint as an IP address and a port number.
+    /// Gets the endpoint to which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the server endpoint.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the server IP
+    /// address and port number.
     /// </value>
     public override System.Net.IPEndPoint ServerEndPoint {
       get {
-        return _context.Connection.LocalEndPoint;
+        return _context.Request.LocalEndPoint;
       }
     }
 
     /// <summary>
-    /// Gets the client information (identity, authentication, and security roles).
+    /// Gets the client information.
     /// </summary>
     /// <value>
-    /// A <see cref="IPrincipal"/> instance that represents the client information.
+    ///   <para>
+    ///   A <see cref="IPrincipal"/> instance that represents identity,
+    ///   authentication, and security roles for the client.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the client is not authenticated.
+    ///   </para>
     /// </value>
     public override IPrincipal User {
       get {
@@ -286,20 +334,21 @@ namespace WebSocketSharp.Net.WebSockets
     }
 
     /// <summary>
-    /// Gets the client endpoint as an IP address and a port number.
+    /// Gets the endpoint from which the handshake request is sent.
     /// </summary>
     /// <value>
-    /// A <see cref="System.Net.IPEndPoint"/> that represents the client endpoint.
+    /// A <see cref="System.Net.IPEndPoint"/> that represents the client IP
+    /// address and port number.
     /// </value>
     public override System.Net.IPEndPoint UserEndPoint {
       get {
-        return _context.Connection.RemoteEndPoint;
+        return _context.Request.RemoteEndPoint;
       }
     }
 
     /// <summary>
-    /// Gets the <see cref="WebSocketSharp.WebSocket"/> instance used for
-    /// two-way communication between client and server.
+    /// Gets the WebSocket instance used for two-way communication between
+    /// the client and server.
     /// </summary>
     /// <value>
     /// A <see cref="WebSocketSharp.WebSocket"/>.

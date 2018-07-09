@@ -724,6 +724,17 @@ namespace WebSocketSharp.Server
       _state = ServerState.Stop;
     }
 
+    private bool authenticateClient (TcpListenerWebSocketContext context)
+    {
+      if (_authSchemes == AuthenticationSchemes.Anonymous)
+        return true;
+
+      if (_authSchemes == AuthenticationSchemes.None)
+        return false;
+
+      return context.Authenticate (_authSchemes, _realmInUse, _userCredFinder);
+    }
+
     private bool canSet (out string message)
     {
       message = null;
@@ -799,6 +810,11 @@ namespace WebSocketSharp.Server
 
     private void processRequest (TcpListenerWebSocketContext context)
     {
+      if (!authenticateClient (context)) {
+        context.Close (HttpStatusCode.Forbidden);
+        return;
+      }
+
       var uri = context.RequestUri;
       if (uri == null) {
         context.Close (HttpStatusCode.BadRequest);
@@ -838,9 +854,6 @@ namespace WebSocketSharp.Server
                 var ctx = new TcpListenerWebSocketContext (
                             cl, null, _secure, _sslConfigInUse, _log
                           );
-
-                if (!ctx.Authenticate (_authSchemes, _realmInUse, _userCredFinder))
-                  return;
 
                 processRequest (ctx);
               }
