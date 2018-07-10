@@ -2774,8 +2774,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Closes the connection with the specified code and reason.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2816,8 +2815,7 @@ namespace WebSocketSharp
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and
-    ///   there is <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
