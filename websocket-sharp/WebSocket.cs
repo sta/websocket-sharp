@@ -2572,7 +2572,7 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Closes the connection with the specified <paramref name="code"/>.
+    /// Closes the connection with the specified code.
     /// </summary>
     /// <remarks>
     /// This method does nothing if the current state of the connection is
@@ -2580,8 +2580,8 @@ namespace WebSocketSharp
     /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
