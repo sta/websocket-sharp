@@ -519,8 +519,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and there is
-    ///   <paramref name="reason"/>.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
