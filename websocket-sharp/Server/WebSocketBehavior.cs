@@ -578,8 +578,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and there is
-    ///   <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
