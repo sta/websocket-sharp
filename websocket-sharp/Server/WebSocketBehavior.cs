@@ -598,6 +598,31 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Closes the WebSocket connection for a session asynchronously.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   This method does not wait for the close to be complete.
+    ///   </para>
+    ///   <para>
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
+    ///   </para>
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">
+    /// The session has not started yet.
+    /// </exception>
+    protected void CloseAsync ()
+    {
+      if (_websocket == null) {
+        var msg = "The session has not started yet.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _websocket.CloseAsync ();
+    }
+
+    /// <summary>
     /// Calls the <see cref="OnError"/> method with the specified message.
     /// </summary>
     /// <param name="message">
