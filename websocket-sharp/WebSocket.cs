@@ -2871,8 +2871,8 @@ namespace WebSocketSharp
     ///   This method does not wait for the close to be complete.
     ///   </para>
     ///   <para>
-    ///   And this method does nothing if the current state of
-    ///   the connection is Closing or Closed.
+    ///   This method does nothing if the current state of the connection is
+    ///   Closing or Closed.
     ///   </para>
     /// </remarks>
     public void CloseAsync ()
