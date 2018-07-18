@@ -152,7 +152,6 @@ namespace WebSocketSharp
     /// </value>
     public byte[] RawData {
       get {
-        setData ();
         return _rawData;
       }
     }
