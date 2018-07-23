@@ -1405,6 +1405,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (ushort code, string reason)
     {
       if (!code.IsCloseStatusCode ()) {
