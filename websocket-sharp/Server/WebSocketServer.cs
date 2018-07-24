@@ -1440,13 +1440,12 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving incoming handshake requests and closes each
-    /// connection with the specified <paramref name="code"/> and
-    /// <paramref name="reason"/>.
+    /// Stops receiving incoming handshake requests and closes each connection
+    /// with the specified code and reason.
     /// </summary>
     /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
+    /// This method does nothing if the server is not started, it is shutting
+    /// down, or it has already stopped.
     /// </remarks>
     /// <param name="code">
     ///   <para>
@@ -1474,8 +1473,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and
-    ///   there is <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
