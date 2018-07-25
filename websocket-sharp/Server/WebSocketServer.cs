@@ -1488,6 +1488,7 @@ namespace WebSocketSharp.Server
     /// <exception cref="InvalidOperationException">
     /// The underlying <see cref="TcpListener"/> has failed to stop.
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (CloseStatusCode code, string reason)
     {
       if (code == CloseStatusCode.MandatoryExtension) {
