@@ -1346,10 +1346,6 @@ namespace WebSocketSharp.Server
     /// Stops receiving incoming handshake requests and closes each connection
     /// with the specified code and reason.
     /// </summary>
-    /// <remarks>
-    /// This method does nothing if the server is not started, it is shutting
-    /// down, or it has already stopped.
-    /// </remarks>
     /// <param name="code">
     ///   <para>
     ///   A <see cref="ushort"/> that represents the status code indicating
