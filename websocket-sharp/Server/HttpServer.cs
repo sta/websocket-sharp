@@ -1547,6 +1547,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (ushort code, string reason)
     {
       if (!code.IsCloseStatusCode ()) {
