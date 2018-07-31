@@ -1494,14 +1494,10 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Stops receiving incoming requests and closes each connection.
     /// </summary>
-    /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
-    /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the WebSocket connection close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the WebSocket connection close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -1511,8 +1507,8 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for
-    ///   the WebSocket connection close.
+    ///   A <see cref="string"/> that represents the reason for the WebSocket
+    ///   connection close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -1537,8 +1533,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   there is <paramref name="reason"/>.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
