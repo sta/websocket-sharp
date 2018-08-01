@@ -1624,6 +1624,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (CloseStatusCode code, string reason)
     {
       if (code == CloseStatusCode.MandatoryExtension) {
