@@ -1488,7 +1488,7 @@ namespace WebSocketSharp.Server
     /// </remarks>
     public void Stop ()
     {
-      stop (1005, String.Empty);
+      stop (1001, String.Empty);
     }
 
     /// <summary>
