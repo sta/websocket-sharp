@@ -835,13 +835,13 @@ namespace WebSocketSharp.Server
 
       var both = byUser && withPort;
       if (both) {
-        _log.Warn ("A server certificate associated with the port is used.");
+        _log.Warn ("The server certificate associated with the port is used.");
         return true;
       }
 
       var either = byUser || withPort;
       if (!either) {
-        message = "There is no server certificate for secure connections.";
+        message = "There is no server certificate for secure connection.";
         return false;
       }
 
