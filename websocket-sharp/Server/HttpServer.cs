@@ -833,17 +833,13 @@ namespace WebSocketSharp.Server
       var path = _listener.CertificateFolderPath;
       var withPort = EndPointListener.CertificateExists (_port, path);
 
-      var both = byUser && withPort;
-      if (both) {
-        _log.Warn ("The server certificate associated with the port is used.");
-        return true;
-      }
-
-      var either = byUser || withPort;
-      if (!either) {
+      if (!(byUser || withPort)) {
         message = "There is no server certificate for secure connection.";
         return false;
       }
+
+      if (byUser && withPort)
+        _log.Warn ("The server certificate associated with the port is used.");
 
       return true;
     }
