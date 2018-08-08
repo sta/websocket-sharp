@@ -802,6 +802,9 @@ namespace WebSocketSharp.Server
 //#if NET40 || NET45
 //      if (address == System.Net.IPAddress.IPv6Any)
 //        _listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, false);
+//#else
+//      if (address == System.Net.IPAddress.IPv6Any)
+//        _listener.Server.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName)27, false);
 //#endif
       _log = new Logger ();
       _services = new WebSocketServiceManager (_log);
