@@ -1480,28 +1480,20 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Stops receiving incoming requests and closes each connection.
+    /// Stops receiving incoming requests.
     /// </summary>
-    /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
-    /// </remarks>
     public void Stop ()
     {
-      stop (1005, String.Empty);
+      stop (1001, String.Empty);
     }
 
     /// <summary>
     /// Stops receiving incoming requests and closes each connection.
     /// </summary>
-    /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
-    /// </remarks>
     /// <param name="code">
     ///   <para>
-    ///   A <see cref="ushort"/> that represents the status code
-    ///   indicating the reason for the WebSocket connection close.
+    ///   A <see cref="ushort"/> that represents the status code indicating
+    ///   the reason for the WebSocket connection close.
     ///   </para>
     ///   <para>
     ///   The status codes are defined in
@@ -1511,8 +1503,8 @@ namespace WebSocketSharp.Server
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for
-    ///   the WebSocket connection close.
+    ///   A <see cref="string"/> that represents the reason for the WebSocket
+    ///   connection close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -1537,8 +1529,7 @@ namespace WebSocketSharp.Server
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   <paramref name="code"/> is 1005 (no status) and
-    ///   there is <paramref name="reason"/>.
+    ///   <paramref name="code"/> is 1005 (no status) and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -1547,6 +1538,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (ushort code, string reason)
     {
       if (!code.IsCloseStatusCode ()) {
@@ -1583,23 +1575,19 @@ namespace WebSocketSharp.Server
     /// <summary>
     /// Stops receiving incoming requests and closes each connection.
     /// </summary>
-    /// <remarks>
-    /// This method does nothing if the server is not started,
-    /// it is shutting down, or it has already stopped.
-    /// </remarks>
     /// <param name="code">
     ///   <para>
     ///   One of the <see cref="CloseStatusCode"/> enum values.
     ///   </para>
     ///   <para>
-    ///   It represents the status code indicating the reason for
-    ///   the WebSocket connection close.
+    ///   It represents the status code indicating the reason for the WebSocket
+    ///   connection close.
     ///   </para>
     /// </param>
     /// <param name="reason">
     ///   <para>
-    ///   A <see cref="string"/> that represents the reason for
-    ///   the WebSocket connection close.
+    ///   A <see cref="string"/> that represents the reason for the WebSocket
+    ///   connection close.
     ///   </para>
     ///   <para>
     ///   The size must be 123 bytes or less in UTF-8.
@@ -1618,8 +1606,7 @@ namespace WebSocketSharp.Server
     ///   </para>
     ///   <para>
     ///   <paramref name="code"/> is
-    ///   <see cref="CloseStatusCode.NoStatus"/> and
-    ///   there is <paramref name="reason"/>.
+    ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
     ///   </para>
     ///   <para>
     ///   -or-
@@ -1628,6 +1615,7 @@ namespace WebSocketSharp.Server
     ///   <paramref name="reason"/> could not be UTF-8-encoded.
     ///   </para>
     /// </exception>
+    [Obsolete ("This method will be removed.")]
     public void Stop (CloseStatusCode code, string reason)
     {
       if (code == CloseStatusCode.MandatoryExtension) {
