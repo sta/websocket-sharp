@@ -27,6 +27,7 @@
 #endregion
 
 using System;
+using System.Collections.Specialized;
 using System.IO;
 using WebSocketSharp.Net;
 using WebSocketSharp.Net.WebSockets;
@@ -71,6 +72,23 @@ namespace WebSocketSharp.Server
     #endregion
 
     #region Protected Properties
+
+    /// <summary>
+    /// Gets the HTTP headers included in a WebSocket handshake request.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="NameValueCollection"/> that contains the headers.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
+    /// </value>
+    protected NameValueCollection Headers {
+      get {
+        return _context != null ? _context.Headers : null;
+      }
+    }
 
     /// <summary>
     /// Gets the logging function.
