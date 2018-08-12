@@ -109,6 +109,27 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
+    /// Gets the query string included in a WebSocket handshake request.
+    /// </summary>
+    /// <value>
+    ///   <para>
+    ///   A <see cref="NameValueCollection"/> that contains the query
+    ///   parameters.
+    ///   </para>
+    ///   <para>
+    ///   An empty collection if not included.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if the session has not started yet.
+    ///   </para>
+    /// </value>
+    protected NameValueCollection QueryString {
+      get {
+        return _context != null ? _context.QueryString : null;
+      }
+    }
+
+    /// <summary>
     /// Gets the management function for the sessions in the service.
     /// </summary>
     /// <value>
