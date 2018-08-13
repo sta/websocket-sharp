@@ -50,19 +50,18 @@ namespace WebSocketSharp.Net
   {
     public override string ToString ()
     {
-      var cnt = Count;
-      if (cnt == 0)
+      if (Count == 0)
         return String.Empty;
 
-      var output = new StringBuilder ();
-      var keys = AllKeys;
-      foreach (var key in keys)
-        output.AppendFormat ("{0}={1}&", key, this [key]);
+      var buff = new StringBuilder ();
 
-      if (output.Length > 0)
-        output.Length--;
+      foreach (var key in AllKeys)
+        buff.AppendFormat ("{0}={1}&", key, this[key]);
 
-      return output.ToString ();
+      if (buff.Length > 0)
+        buff.Length--;
+
+      return buff.ToString ();
     }
   }
 }
