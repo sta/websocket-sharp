@@ -48,6 +48,45 @@ namespace WebSocketSharp.Net
 {
   internal sealed class QueryStringCollection : NameValueCollection
   {
+    public static QueryStringCollection Parse (string query, Encoding encoding)
+    {
+      var ret = new QueryStringCollection ();
+
+      if (query == null)
+        return ret;
+
+      var len = query.Length;
+      if (len == 0)
+        return ret;
+
+      if (len == 1 && query[0] == '?')
+        return ret;
+
+      if (query[0] == '?')
+        query = query.Substring (1);
+
+      if (encoding == null)
+        encoding = Encoding.UTF8;
+
+      var components = query.Split ('&');
+      foreach (var component in components) {
+        var i = component.IndexOf ('=');
+        if (i < 0) {
+          ret.Add (null, HttpUtility.UrlDecode (component, encoding));
+          continue;
+        }
+
+        var name = HttpUtility.UrlDecode (component.Substring (0, i), encoding);
+        var val = component.Length > i + 1
+                  ? HttpUtility.UrlDecode (component.Substring (i + 1), encoding)
+                  : String.Empty;
+
+        ret.Add (name, val);
+      }
+
+      return ret;
+    }
+
     public override string ToString ()
     {
       if (Count == 0)
