@@ -48,6 +48,11 @@ namespace WebSocketSharp.Net
 {
   internal sealed class QueryStringCollection : NameValueCollection
   {
+    public static QueryStringCollection Parse (string query)
+    {
+      return Parse (query, Encoding.UTF8);
+    }
+
     public static QueryStringCollection Parse (string query, Encoding encoding)
     {
       var ret = new QueryStringCollection ();
