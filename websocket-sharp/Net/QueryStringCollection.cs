@@ -64,7 +64,7 @@ namespace WebSocketSharp.Net
       if (len == 0)
         return ret;
 
-      if (len == 1 && query[0] == '?')
+      if (query == "?")
         return ret;
 
       if (query[0] == '?')
@@ -75,15 +75,34 @@ namespace WebSocketSharp.Net
 
       var components = query.Split ('&');
       foreach (var component in components) {
+        len = component.Length;
+        if (len == 0)
+          continue;
+
+        if (component == "=")
+          continue;
+
         var i = component.IndexOf ('=');
         if (i < 0) {
           ret.Add (null, HttpUtility.UrlDecode (component, encoding));
           continue;
         }
 
+        if (i == 0) {
+          ret.Add (
+            null, HttpUtility.UrlDecode (component.Substring (1), encoding)
+          );
+
+          continue;
+        }
+
         var name = HttpUtility.UrlDecode (component.Substring (0, i), encoding);
-        var val = component.Length > i + 1
-                  ? HttpUtility.UrlDecode (component.Substring (i + 1), encoding)
+
+        var start = i + 1;
+        var val = start < len
+                  ? HttpUtility.UrlDecode (
+                      component.Substring (start), encoding
+                    )
                   : String.Empty;
 
         ret.Add (name, val);
