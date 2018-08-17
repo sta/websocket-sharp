@@ -48,6 +48,8 @@ namespace WebSocketSharp.Net
 {
   internal sealed class QueryStringCollection : NameValueCollection
   {
+    #region Public Methods
+
     public static QueryStringCollection Parse (string query)
     {
       return Parse (query, Encoding.UTF8);
@@ -126,5 +128,7 @@ namespace WebSocketSharp.Net
 
       return buff.ToString ();
     }
+
+    #endregion
   }
 }
