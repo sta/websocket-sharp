@@ -43,12 +43,14 @@ namespace WebSocketSharp
 
             if (_isClosed)
             {
+                _waitHandle.Release();
                 return null;
             }
 
             header = await ReadHeader(cancellationToken).ConfigureAwait(false);
             if (header == null)
             {
+                _waitHandle.Release();
                 return null;
             }
 
@@ -59,6 +61,8 @@ namespace WebSocketSharp
             {
                 _isClosed = true;
             }
+                
+            _waitHandle.Release();
 
             return msg;
         }
