@@ -48,6 +48,19 @@ namespace WebSocketSharp.Net
 {
   internal sealed class QueryStringCollection : NameValueCollection
   {
+    #region Public Constructors
+
+    public QueryStringCollection ()
+    {
+    }
+
+    public QueryStringCollection (int capacity)
+      : base (capacity)
+    {
+    }
+
+    #endregion
+
     #region Public Methods
 
     public static QueryStringCollection Parse (string query)
