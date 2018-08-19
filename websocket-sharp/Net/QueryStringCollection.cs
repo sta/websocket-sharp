@@ -70,23 +70,23 @@ namespace WebSocketSharp.Net
 
     public static QueryStringCollection Parse (string query, Encoding encoding)
     {
-      var ret = new QueryStringCollection ();
-
       if (query == null)
-        return ret;
+        return new QueryStringCollection (1);
 
       var len = query.Length;
       if (len == 0)
-        return ret;
+        return new QueryStringCollection (1);
 
       if (query == "?")
-        return ret;
+        return new QueryStringCollection (1);
 
       if (query[0] == '?')
         query = query.Substring (1);
 
       if (encoding == null)
         encoding = Encoding.UTF8;
+
+      var ret = new QueryStringCollection ();
 
       var components = query.Split ('&');
       foreach (var component in components) {
