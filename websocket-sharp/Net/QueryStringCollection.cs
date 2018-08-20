@@ -2,7 +2,7 @@
 /*
  * QueryStringCollection.cs
  *
- * This code is derived from System.Net.HttpUtility.cs of Mono
+ * This code is derived from HttpUtility.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
