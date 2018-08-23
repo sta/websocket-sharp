@@ -1019,11 +1019,6 @@ namespace WebSocketSharp.Net
       output.Write (HtmlEncode (s));
     }
 
-    public static NameValueCollection ParseQueryString (string query)
-    {
-      return ParseQueryString (query, Encoding.UTF8);
-    }
-
     public static NameValueCollection ParseQueryString (string query, Encoding encoding)
     {
       if (query == null)
