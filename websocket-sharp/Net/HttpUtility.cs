@@ -630,35 +630,6 @@ namespace WebSocketSharp.Net
       return null;
     }
 
-    internal static NameValueCollection InternalParseQueryString (string query, Encoding encoding)
-    {
-      int len;
-      if (query == null || (len = query.Length) == 0 || (len == 1 && query[0] == '?'))
-        return new NameValueCollection (1);
-
-      if (query[0] == '?')
-        query = query.Substring (1);
-
-      var res = new QueryStringCollection ();
-      var components = query.Split ('&');
-      foreach (var component in components) {
-        var i = component.IndexOf ('=');
-        if (i > -1) {
-          var name = UrlDecode (component.Substring (0, i), encoding);
-          var val = component.Length > i + 1
-                    ? UrlDecode (component.Substring (i + 1), encoding)
-                    : String.Empty;
-
-          res.Add (name, val);
-        }
-        else {
-          res.Add (null, UrlDecode (component, encoding));
-        }
-      }
-
-      return res;
-    }
-
     internal static string InternalUrlDecode (
       byte[] bytes, int offset, int count, Encoding encoding)
     {
