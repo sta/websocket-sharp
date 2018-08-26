@@ -56,8 +56,18 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private static Dictionary<string, char> _entities;
-    private static char[]                   _hexChars = "0123456789abcdef".ToCharArray ();
-    private static object                   _sync = new object ();
+    private static char[]                   _hexChars;
+    private static object                   _sync;
+
+    #endregion
+
+    #region Static Constructor
+
+    static HttpUtility ()
+    {
+      _hexChars = "0123456789abcdef".ToCharArray ();
+      _sync = new object ();
+    }
 
     #endregion
 
