@@ -51,7 +51,7 @@ using System.Text;
 
 namespace WebSocketSharp.Net
 {
-  internal sealed class HttpUtility
+  internal static class HttpUtility
   {
     #region Private Fields
 
