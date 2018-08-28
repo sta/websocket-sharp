@@ -761,12 +761,16 @@ namespace WebSocketSharp.Net
 
     public static string HtmlAttributeEncode (string s)
     {
-      if (s == null || s.Length == 0 || !s.Contains ('&', '"', '<', '>'))
-        return s;
+      if (s == null)
+        return null;
 
-      var output = new StringBuilder ();
-      foreach (var c in s)
-        output.Append (
+      if (s.Length == 0)
+        return String.Empty;
+
+      var buff = new StringBuilder ();
+
+      foreach (var c in s) {
+        buff.Append (
           c == '&'
           ? "&amp;"
           : c == '"'
@@ -775,9 +779,11 @@ namespace WebSocketSharp.Net
               ? "&lt;"
               : c == '>'
                 ? "&gt;"
-                : c.ToString ());
+                : c.ToString ()
+        );
+      }
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
     public static void HtmlAttributeEncode (string s, TextWriter output)
