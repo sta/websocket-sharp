@@ -761,11 +761,8 @@ namespace WebSocketSharp.Net
 
     public static string HtmlAttributeEncode (string s)
     {
-      if (s == null)
-        return null;
-
-      if (s.Length == 0)
-        return String.Empty;
+      if (s == null || s.Length == 0)
+        return s;
 
       var buff = new StringBuilder ();
 
