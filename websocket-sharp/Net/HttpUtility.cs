@@ -930,59 +930,49 @@ namespace WebSocketSharp.Net
       output.Write (HtmlDecode (s));
     }
 
-    /// <summary>
-    /// HTML-encodes a <see cref="string"/> and returns the encoded <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that represents the encoded string.
-    /// </returns>
-    /// <param name="s">
-    /// A <see cref="string"/> to encode.
-    /// </param>
     public static string HtmlEncode (string s)
     {
       if (s == null || s.Length == 0)
         return s;
 
-      var needEncode = false;
-      foreach (var c in s) {
-        if (c == '&' || c == '"' || c == '<' || c == '>' || c > 159) {
-          needEncode = true;
-          break;
-        }
-      }
+      var buff = new StringBuilder ();
 
-      if (!needEncode)
-        return s;
-
-      var output = new StringBuilder ();
       foreach (var c in s) {
         if (c == '&') {
-          output.Append ("&amp;");
+          buff.Append ("&amp;");
+          continue;
         }
-        else if (c == '"') {
-          output.Append ("&quot;");
+
+        if (c == '"') {
+          buff.Append ("&quot;");
+          continue;
         }
-        else if (c == '<') {
-          output.Append ("&lt;");
+
+        if (c == '<') {
+          buff.Append ("&lt;");
+          continue;
         }
-        else if (c == '>') {
-          output.Append ("&gt;");
+
+        if (c == '>') {
+          buff.Append ("&gt;");
+          continue;
         }
-        else if (c > 159) {
+
+        if (c > 159) {
           // MS starts encoding with &# from 160 and stops at 255.
-          // We don't do that. One reason is the 65308/65310 unicode
+          // We do not do that. One reason is the 65308/65310 unicode
           // characters that look like '<' and '>'.
-          output.Append ("&#");
-          output.Append (((int) c).ToString (CultureInfo.InvariantCulture));
-          output.Append (";");
+          buff.Append ("&#");
+          buff.Append (((int) c).ToString (CultureInfo.InvariantCulture));
+          buff.Append (";");
+
+          continue;
         }
-        else {
-          output.Append (c);
-        }
+
+        buff.Append (c);
       }
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
     /// <summary>
