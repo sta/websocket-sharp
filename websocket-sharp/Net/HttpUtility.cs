@@ -959,13 +959,11 @@ namespace WebSocketSharp.Net
         }
 
         if (c > 159) {
-          // MS starts encoding with &# from 160 and stops at 255.
+          // MS .NET starts encoding with &# from 160 and stops at 255.
           // We do not do that. One reason is the 65308/65310 unicode
           // characters that look like '<' and '>'.
-          buff.Append ("&#");
-          buff.Append (((int) c).ToString (CultureInfo.InvariantCulture));
-          buff.Append (";");
 
+          buff.AppendFormat ("&#{0};", (int) c);
           continue;
         }
 
