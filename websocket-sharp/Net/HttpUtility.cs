@@ -973,16 +973,6 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
-    /// <summary>
-    /// HTML-encodes a <see cref="string"/> and sends the encoded <see cref="string"/>
-    /// to the specified <see cref="TextWriter"/>.
-    /// </summary>
-    /// <param name="s">
-    /// A <see cref="string"/> to encode.
-    /// </param>
-    /// <param name="output">
-    /// A <see cref="TextWriter"/> that receives the encoded string.
-    /// </param>
     public static void HtmlEncode (string s, TextWriter output)
     {
       if (output == null)
