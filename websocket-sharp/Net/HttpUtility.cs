@@ -1223,12 +1223,12 @@ namespace WebSocketSharp.Net
       if (s == null || s.Length == 0)
         return s;
 
-      using (var res = new MemoryStream ()) {
+      using (var buff = new MemoryStream ()) {
         foreach (var c in s)
-          urlPathEncode (c, res);
+          urlPathEncode (c, buff);
 
-        res.Close ();
-        return Encoding.ASCII.GetString (res.ToArray ());
+        buff.Close ();
+        return Encoding.ASCII.GetString (buff.ToArray ());
       }
     }
 
