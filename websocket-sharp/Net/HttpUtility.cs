@@ -1161,8 +1161,11 @@ namespace WebSocketSharp.Net
 
     public static byte[] UrlEncodeToBytes (byte[] bytes)
     {
-      int len;
-      return bytes != null && (len = bytes.Length) > 0
+      if (bytes == null)
+        return null;
+
+      var len = bytes.Length;
+      return len > 0
              ? InternalUrlEncodeToBytes (bytes, 0, len)
              : bytes;
     }
