@@ -1170,6 +1170,34 @@ namespace WebSocketSharp.Net
              : bytes;
     }
 
+    public static byte[] UrlEncodeToBytes (byte[] bytes, int offset, int count)
+    {
+      if (bytes == null) {
+        if (count != 0)
+          throw new ArgumentNullException ("bytes");
+
+        return null;
+      }
+
+      var len = bytes.Length;
+      if (len == 0) {
+        if (offset != 0 || count != 0)
+          throw new ArgumentException ("An empty byte array.", "bytes");
+
+        return bytes;
+      }
+
+      if (offset < 0 || offset >= len)
+        throw new ArgumentOutOfRangeException ("offset");
+
+      if (count < 0 || count > len - offset)
+        throw new ArgumentOutOfRangeException ("count");
+
+      return count > 0
+             ? InternalUrlEncodeToBytes (bytes, offset, count)
+             : new byte[0];
+    }
+
     public static byte[] UrlEncodeToBytes (string s)
     {
       return UrlEncodeToBytes (s, Encoding.UTF8);
@@ -1185,24 +1213,6 @@ namespace WebSocketSharp.Net
 
       var bytes = (encoding ?? Encoding.UTF8).GetBytes (s);
       return InternalUrlEncodeToBytes (bytes, 0, bytes.Length);
-    }
-
-    public static byte[] UrlEncodeToBytes (byte[] bytes, int offset, int count)
-    {
-      int len;
-      if (bytes == null || (len = bytes.Length) == 0)
-        return bytes;
-
-      if (count == 0)
-        return new byte[0];
-
-      if (offset < 0 || offset >= len)
-        throw new ArgumentOutOfRangeException ("offset");
-
-      if (count < 0 || count > len - offset)
-        throw new ArgumentOutOfRangeException ("count");
-
-      return InternalUrlEncodeToBytes (bytes, offset, count);
     }
 
     public static string UrlEncodeUnicode (string s)
