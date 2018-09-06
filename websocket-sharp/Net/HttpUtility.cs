@@ -1106,12 +1106,15 @@ namespace WebSocketSharp.Net
 
     public static string UrlEncode (byte[] bytes)
     {
-      int len;
-      return bytes == null
-             ? null
-             : (len = bytes.Length) == 0
-               ? String.Empty
-               : Encoding.ASCII.GetString (InternalUrlEncodeToBytes (bytes, 0, len));
+      if (bytes == null)
+        return null;
+
+      var len = bytes.Length;
+      return len > 0
+             ? Encoding.ASCII.GetString (
+                 InternalUrlEncodeToBytes (bytes, 0, len)
+               )
+             : String.Empty;
     }
 
     public static string UrlEncode (string s)
