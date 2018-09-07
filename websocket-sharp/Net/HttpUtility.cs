@@ -1121,37 +1121,27 @@ namespace WebSocketSharp.Net
     {
       return UrlEncode (s, Encoding.UTF8);
     }
-  
+
     public static string UrlEncode (string s, Encoding encoding)
     {
-      int len;
-      if (s == null || (len = s.Length) == 0)
+      if (s == null)
         return s;
 
-      var needEncode = false;
-      foreach (var c in s) {
-        if ((c < '0') || (c < 'A' && c > '9') || (c > 'Z' && c < 'a') || (c > 'z')) {
-          if (notEncoded (c))
-            continue;
-
-          needEncode = true;
-          break;
-        }
-      }
-
-      if (!needEncode)
+      var len = s.Length;
+      if (len == 0)
         return s;
 
       if (encoding == null)
         encoding = Encoding.UTF8;
 
-      // Avoided GetByteCount call.
       var bytes = new byte[encoding.GetMaxByteCount (len)];
       var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
 
-      return Encoding.ASCII.GetString (InternalUrlEncodeToBytes (bytes, 0, realLen));
+      return Encoding.ASCII.GetString (
+               InternalUrlEncodeToBytes (bytes, 0, realLen)
+             );
     }
-  
+
     public static string UrlEncode (byte[] bytes, int offset, int count)
     {
       var encoded = UrlEncodeToBytes (bytes, offset, count);
