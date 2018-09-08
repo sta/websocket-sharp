@@ -1117,6 +1117,36 @@ namespace WebSocketSharp.Net
              : String.Empty;
     }
 
+    public static string UrlEncode (byte[] bytes, int offset, int count)
+    {
+      if (bytes == null) {
+        if (count != 0)
+          throw new ArgumentNullException ("bytes");
+
+        return null;
+      }
+
+      var len = bytes.Length;
+      if (len == 0) {
+        if (offset != 0 || count != 0)
+          throw new ArgumentException ("An empty byte array.", "bytes");
+
+        return String.Empty;
+      }
+
+      if (offset < 0 || offset >= len)
+        throw new ArgumentOutOfRangeException ("offset");
+
+      if (count < 0 || count > len - offset)
+        throw new ArgumentOutOfRangeException ("count");
+
+      return count > 0
+             ? Encoding.ASCII.GetString (
+                 InternalUrlEncodeToBytes (bytes, offset, count)
+               )
+             : String.Empty;
+    }
+
     public static string UrlEncode (string s)
     {
       return UrlEncode (s, Encoding.UTF8);
@@ -1140,16 +1170,6 @@ namespace WebSocketSharp.Net
       return Encoding.ASCII.GetString (
                InternalUrlEncodeToBytes (bytes, 0, realLen)
              );
-    }
-
-    public static string UrlEncode (byte[] bytes, int offset, int count)
-    {
-      var encoded = UrlEncodeToBytes (bytes, offset, count);
-      return encoded == null
-             ? null
-             : encoded.Length == 0
-               ? String.Empty
-               : Encoding.ASCII.GetString (encoded);
     }
 
     public static byte[] UrlEncodeToBytes (byte[] bytes)
