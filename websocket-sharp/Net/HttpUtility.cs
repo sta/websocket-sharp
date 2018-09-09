@@ -716,15 +716,17 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal static byte[] InternalUrlEncodeToBytes (byte[] bytes, int offset, int count)
+    internal static byte[] InternalUrlEncodeToBytes (
+      byte[] bytes, int offset, int count
+    )
     {
-      using (var res = new MemoryStream ()) {
+      using (var buff = new MemoryStream ()) {
         var end = offset + count;
         for (var i = offset; i < end; i++)
-          urlEncode ((char) bytes[i], res, false);
+          urlEncode ((char) bytes[i], buff, false);
 
-        res.Close ();
-        return res.ToArray ();
+        buff.Close ();
+        return buff.ToArray ();
       }
     }
 
