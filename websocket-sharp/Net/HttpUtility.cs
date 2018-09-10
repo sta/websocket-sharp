@@ -393,6 +393,11 @@ namespace WebSocketSharp.Net
       _entities.Add ("euro", '\u20AC');
     }
 
+    private static bool isNumeric (char c)
+    {
+      return c >= '0' && c <= '9';
+    }
+
     private static bool notEncoded (char c)
     {
       return c == '!' ||
