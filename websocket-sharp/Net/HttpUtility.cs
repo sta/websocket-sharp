@@ -412,6 +412,19 @@ namespace WebSocketSharp.Net
              || c == '_';
     }
 
+    private static bool isUnreservedInRfc2396 (char c)
+    {
+      return c == '!'
+             || c == '\''
+             || c == '('
+             || c == ')'
+             || c == '*'
+             || c == '-'
+             || c == '.'
+             || c == '_'
+             || c == '~';
+    }
+
     private static bool notEncoded (char c)
     {
       return c == '!' ||
