@@ -393,6 +393,12 @@ namespace WebSocketSharp.Net
       _entities.Add ("euro", '\u20AC');
     }
 
+    private static bool isAlphabet (byte b)
+    {
+      return (b >= 65 && b <= 90)
+             || (b >= 97 && b <= 122);
+    }
+
     private static bool isAlphabet (char c)
     {
       return (c >= 'A' && c <= 'Z')
