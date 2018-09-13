@@ -425,6 +425,14 @@ namespace WebSocketSharp.Net
              || c == '~';
     }
 
+    private static bool isUnreservedInRfc3986 (char c)
+    {
+      return c == '-'
+             || c == '.'
+             || c == '_'
+             || c == '~';
+    }
+
     private static bool notEncoded (char c)
     {
       return c == '!' ||
