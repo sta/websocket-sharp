@@ -415,6 +415,14 @@ namespace WebSocketSharp.Net
       return c >= '0' && c <= '9';
     }
 
+    private static bool isUnreserved (byte b)
+    {
+      return b == 42
+             || b == 45
+             || b == 46
+             || b == 95;
+    }
+
     private static bool isUnreserved (char c)
     {
       return c == '*'
