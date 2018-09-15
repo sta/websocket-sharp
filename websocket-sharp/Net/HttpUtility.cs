@@ -464,6 +464,40 @@ namespace WebSocketSharp.Net
              c == '_';
     }
 
+    private static void urlEncode (byte b, Stream output)
+    {
+      if (b > 31 && b < 127) {
+        if (b == 32) {
+          output.WriteByte ((byte) '+');
+          return;
+        }
+
+        if (isNumeric (b)) {
+          output.WriteByte (b);
+          return;
+        }
+
+        if (isAlphabet (b)) {
+          output.WriteByte (b);
+          return;
+        }
+
+        if (isUnreserved (b)) {
+          output.WriteByte (b);
+          return;
+        }
+      }
+
+      output.WriteByte ((byte) '%');
+
+      var i = (int) b;
+      var idx = i >> 4;
+      output.WriteByte ((byte) _hexChars[idx]);
+
+      idx = i & 0x0F;
+      output.WriteByte ((byte) _hexChars[idx]);
+    }
+
     private static void urlEncode (char c, Stream result, bool unicode)
     {
       if (c > 255) {
