@@ -561,6 +561,47 @@ namespace WebSocketSharp.Net
       result.WriteByte ((byte) c);
     }
 
+    private static void urlEncodeUnicode (char c, Stream output)
+    {
+      if (c > 31 && c < 127) {
+        if (c == ' ') {
+          output.WriteByte ((byte) '+');
+          return;
+        }
+
+        if (isNumeric (c)) {
+          output.WriteByte ((byte) c);
+          return;
+        }
+
+        if (isAlphabet (c)) {
+          output.WriteByte ((byte) c);
+          return;
+        }
+
+        if (isUnreserved (c)) {
+          output.WriteByte ((byte) c);
+          return;
+        }
+      }
+
+      output.WriteByte ((byte) '%');
+      output.WriteByte ((byte) 'u');
+
+      var i = (int) c;
+      var idx = i >> 12;
+      output.WriteByte ((byte) _hexChars[idx]);
+
+      idx = (i >> 8) & 0x0F;
+      output.WriteByte ((byte) _hexChars[idx]);
+
+      idx = (i >> 4) & 0x0F;
+      output.WriteByte ((byte) _hexChars[idx]);
+
+      idx = i & 0x0F;
+      output.WriteByte ((byte) _hexChars[idx]);
+    }
+
     private static void urlPathEncode (char c, Stream result)
     {
       if (c < 33 || c > 126) {
