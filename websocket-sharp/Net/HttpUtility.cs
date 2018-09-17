@@ -868,7 +868,7 @@ namespace WebSocketSharp.Net
     {
       using (var res = new MemoryStream ()) {
         foreach (var c in s)
-          urlEncode (c, res, true);
+          urlEncodeUnicode (c, res);
 
         res.Close ();
         return res.ToArray ();
