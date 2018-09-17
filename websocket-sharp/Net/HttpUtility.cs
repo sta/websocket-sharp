@@ -857,7 +857,7 @@ namespace WebSocketSharp.Net
       using (var buff = new MemoryStream ()) {
         var end = offset + count;
         for (var i = offset; i < end; i++)
-          urlEncode ((char) bytes[i], buff, false);
+          urlEncode (bytes[i], buff);
 
         buff.Close ();
         return buff.ToArray ();
