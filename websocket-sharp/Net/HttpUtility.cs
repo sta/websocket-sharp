@@ -498,69 +498,6 @@ namespace WebSocketSharp.Net
       output.WriteByte ((byte) _hexChars[idx]);
     }
 
-    private static void urlEncode (char c, Stream result, bool unicode)
-    {
-      if (c > 255) {
-        // FIXME: What happens when there is an internal error?
-        //if (!unicode)
-        //  throw new ArgumentOutOfRangeException ("c", c, "Greater than 255.");
-
-        result.WriteByte ((byte) '%');
-        result.WriteByte ((byte) 'u');
-
-        var i = (int) c;
-        var idx = i >> 12;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        idx = (i >> 8) & 0x0F;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        idx = (i >> 4) & 0x0F;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        idx = i & 0x0F;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        return;
-      }
-
-      if (c > ' ' && notEncoded (c)) {
-        result.WriteByte ((byte) c);
-        return;
-      }
-
-      if (c == ' ') {
-        result.WriteByte ((byte) '+');
-        return;
-      }
-
-      if ((c < '0') ||
-          (c < 'A' && c > '9') ||
-          (c > 'Z' && c < 'a') ||
-          (c > 'z')) {
-        if (unicode && c > 127) {
-          result.WriteByte ((byte) '%');
-          result.WriteByte ((byte) 'u');
-          result.WriteByte ((byte) '0');
-          result.WriteByte ((byte) '0');
-        }
-        else {
-          result.WriteByte ((byte) '%');
-        }
-
-        var i = (int) c;
-        var idx = i >> 4;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        idx = i & 0x0F;
-        result.WriteByte ((byte) _hexChars[idx]);
-
-        return;
-      }
-
-      result.WriteByte ((byte) c);
-    }
-
     private static void urlEncodeUnicode (char c, Stream output)
     {
       if (c > 31 && c < 127) {
