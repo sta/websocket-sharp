@@ -866,12 +866,12 @@ namespace WebSocketSharp.Net
 
     internal static byte[] InternalUrlEncodeUnicodeToBytes (string s)
     {
-      using (var res = new MemoryStream ()) {
+      using (var buff = new MemoryStream ()) {
         foreach (var c in s)
-          urlEncodeUnicode (c, res);
+          urlEncodeUnicode (c, buff);
 
-        res.Close ();
-        return res.ToArray ();
+        buff.Close ();
+        return buff.ToArray ();
       }
     }
 
