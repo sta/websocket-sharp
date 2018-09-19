@@ -539,33 +539,24 @@ namespace WebSocketSharp.Net
       output.WriteByte ((byte) _hexChars[idx]);
     }
 
-    private static void urlPathEncode (char c, Stream result)
+    private static void urlPathEncode (char c, Stream output)
     {
-      if (c < 33 || c > 126) {
-        var bytes = Encoding.UTF8.GetBytes (c.ToString ());
-        foreach (var b in bytes) {
-          result.WriteByte ((byte) '%');
-
-          var i = (int) b;
-          var idx = i >> 4;
-          result.WriteByte ((byte) _hexChars[idx]);
-
-          idx = i & 0x0F;
-          result.WriteByte ((byte) _hexChars[idx]);
-        }
-
+      if (c > 32 && c < 127) {
+        output.WriteByte ((byte) c);
         return;
       }
 
-      if (c == ' ') {
-        result.WriteByte ((byte) '%');
-        result.WriteByte ((byte) '2');
-        result.WriteByte ((byte) '0');
+      var bytes = Encoding.UTF8.GetBytes (c.ToString ());
+      foreach (var b in bytes) {
+        output.WriteByte ((byte) '%');
 
-        return;
+        var i = (int) b;
+        var idx = i >> 4;
+        output.WriteByte ((byte) _hexChars[idx]);
+
+        idx = i & 0x0F;
+        output.WriteByte ((byte) _hexChars[idx]);
       }
-
-      result.WriteByte ((byte) c);
     }
 
     private static void writeCharBytes (char c, IList buffer, Encoding encoding)
