@@ -1328,13 +1328,12 @@ namespace WebSocketSharp.Net
       if (s == null || s.Length == 0)
         return s;
 
-      using (var buff = new MemoryStream ()) {
-        foreach (var c in s)
-          urlPathEncode (c, buff);
+      var buff = new StringBuilder ();
 
-        buff.Close ();
-        return Encoding.ASCII.GetString (buff.ToArray ());
-      }
+      foreach (var c in s)
+        urlPathEncode (c, buff);
+
+      return buff.ToString ();
     }
 
     #endregion
