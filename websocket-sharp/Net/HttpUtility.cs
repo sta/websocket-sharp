@@ -1165,7 +1165,7 @@ namespace WebSocketSharp.Net
     public static string UrlEncode (byte[] bytes)
     {
       if (bytes == null)
-        return null;
+        throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
       return len > 0
