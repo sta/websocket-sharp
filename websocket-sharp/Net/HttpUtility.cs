@@ -1209,7 +1209,7 @@ namespace WebSocketSharp.Net
     public static string UrlEncode (string s, Encoding encoding)
     {
       if (s == null)
-        return s;
+        throw new ArgumentNullException ("s");
 
       var len = s.Length;
       if (len == 0)
