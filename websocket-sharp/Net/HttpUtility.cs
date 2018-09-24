@@ -1239,12 +1239,8 @@ namespace WebSocketSharp.Net
 
     public static byte[] UrlEncodeToBytes (byte[] bytes, int offset, int count)
     {
-      if (bytes == null) {
-        if (count != 0)
-          throw new ArgumentNullException ("bytes");
-
-        return null;
-      }
+      if (bytes == null)
+        throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
       if (len == 0) {
