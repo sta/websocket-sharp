@@ -119,8 +119,8 @@ namespace WebSocketSharp
     private Uri                            _uri;
     private const string                   _version = "13";
     private TimeSpan                       _waitTime;
-    private int                            _connectTimeout;
-    private int                            _readWriteTimeout;
+    private int                            _connectTimeout = 5000;
+    private int                            _readWriteTimeout = 5000;
 
     #endregion
 
@@ -1911,8 +1911,8 @@ namespace WebSocketSharp
           error ("An error has occurred during a send.", ex);
         }
         finally {
-          if (compressed) { 
-            try { 
+          if (compressed) {
+            try {
               stream.Dispose ();
             }
             catch { }
