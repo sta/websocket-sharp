@@ -996,7 +996,10 @@ namespace WebSocketSharp.Net
 
     public static string HtmlEncode (string s)
     {
-      if (s == null || s.Length == 0)
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      if (s.Length == 0)
         return s;
 
       var buff = new StringBuilder ();
