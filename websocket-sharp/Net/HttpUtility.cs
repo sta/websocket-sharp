@@ -846,23 +846,7 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return s;
 
-      var buff = new StringBuilder ();
-
-      foreach (var c in s) {
-        buff.Append (
-          c == '&'
-          ? "&amp;"
-          : c == '"'
-            ? "&quot;"
-            : c == '<'
-              ? "&lt;"
-              : c == '>'
-                ? "&gt;"
-                : c.ToString ()
-        );
-      }
-
-      return buff.ToString ();
+      return htmlAttributeEncode (s);
     }
 
     public static void HtmlAttributeEncode (string s, TextWriter output)
