@@ -854,7 +854,10 @@ namespace WebSocketSharp.Net
       if (output == null)
         throw new ArgumentNullException ("output");
 
-      output.Write (s.Length > 0 ? htmlAttributeEncode (s) : s);
+      if (s.Length == 0)
+        return;
+
+      output.Write (htmlAttributeEncode (s));
     }
 
     /// <summary>
