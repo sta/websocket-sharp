@@ -155,6 +155,29 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
+    private static string htmlEncode (string s)
+    {
+      var buff = new StringBuilder ();
+
+      foreach (var c in s) {
+        buff.Append (
+          c == '"'
+          ? "&quot;"
+          : c == '&'
+            ? "&amp;"
+            : c == '<'
+              ? "&lt;"
+              : c == '>'
+                ? "&gt;"
+                : c > 159
+                  ? String.Format ("&#{0};", (int) c)
+                  : c.ToString ()
+        );
+      }
+
+      return buff.ToString ();
+    }
+
     private static void initEntities ()
     {
       // Build the dictionary of HTML entity references.
