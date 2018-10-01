@@ -1027,45 +1027,7 @@ namespace WebSocketSharp.Net
       if (s == null)
         throw new ArgumentNullException ("s");
 
-      if (s.Length == 0)
-        return s;
-
-      var buff = new StringBuilder ();
-
-      foreach (var c in s) {
-        if (c == '&') {
-          buff.Append ("&amp;");
-          continue;
-        }
-
-        if (c == '"') {
-          buff.Append ("&quot;");
-          continue;
-        }
-
-        if (c == '<') {
-          buff.Append ("&lt;");
-          continue;
-        }
-
-        if (c == '>') {
-          buff.Append ("&gt;");
-          continue;
-        }
-
-        if (c > 159) {
-          // MS .NET starts encoding with &# from 160 and stops at 255.
-          // We do not do that. One reason is the 65308/65310 unicode
-          // characters that look like '<' and '>'.
-
-          buff.AppendFormat ("&#{0};", (int) c);
-          continue;
-        }
-
-        buff.Append (c);
-      }
-
-      return buff.ToString ();
+      return s.Length > 0 ? htmlEncode (s) : s;
     }
 
     public static void HtmlEncode (string s, TextWriter output)
