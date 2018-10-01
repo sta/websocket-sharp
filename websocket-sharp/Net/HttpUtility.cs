@@ -1038,7 +1038,10 @@ namespace WebSocketSharp.Net
       if (output == null)
         throw new ArgumentNullException ("output");
 
-      output.Write (HtmlEncode (s));
+      if (s.Length == 0)
+        return;
+
+      output.Write (htmlEncode (s));
     }
 
     public static string UrlDecode (string s)
