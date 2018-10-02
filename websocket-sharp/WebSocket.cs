@@ -2140,13 +2140,13 @@ namespace WebSocketSharp
           
           // The connection couldn't be established if the certificates are empty 
           if (conf.ClientCertificates != null)
-						sslStream.AuthenticateAsClient(
-						  host,
-						  conf.ClientCertificates,
-						  conf.EnabledSslProtocols,
-						  conf.CheckCertificateRevocation);
-					else
-						sslStream.AuthenticateAsClient(host);
+            sslStream.AuthenticateAsClient(
+              host,
+              conf.ClientCertificates,
+              conf.EnabledSslProtocols,
+              conf.CheckCertificateRevocation);
+          else
+            sslStream.AuthenticateAsClient(host);
 
           _stream = sslStream;
         }
