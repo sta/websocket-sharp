@@ -889,7 +889,7 @@ namespace WebSocketSharp.Net
       if (s == null)
         throw new ArgumentNullException ("s");
 
-      return s.Length > 0 ? htmlAttributeEncode (s) : s;
+      return s.Length > 0 ? htmlEncode (s, true) : s;
     }
 
     public static void HtmlAttributeEncode (string s, TextWriter output)
