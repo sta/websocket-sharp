@@ -903,7 +903,7 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return;
 
-      output.Write (htmlAttributeEncode (s));
+      output.Write (htmlEncode (s, true));
     }
 
     /// <summary>
