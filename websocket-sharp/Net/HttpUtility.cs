@@ -1029,7 +1029,7 @@ namespace WebSocketSharp.Net
       if (s == null)
         throw new ArgumentNullException ("s");
 
-      return s.Length > 0 ? htmlEncode (s) : s;
+      return s.Length > 0 ? htmlEncode (s, false) : s;
     }
 
     public static void HtmlEncode (string s, TextWriter output)
