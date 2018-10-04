@@ -1043,7 +1043,7 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return;
 
-      output.Write (htmlEncode (s));
+      output.Write (htmlEncode (s, false));
     }
 
     public static string UrlDecode (string s)
