@@ -134,29 +134,6 @@ namespace WebSocketSharp.Net
                  : -1;
     }
 
-    private static string htmlEncode (string s)
-    {
-      var buff = new StringBuilder ();
-
-      foreach (var c in s) {
-        buff.Append (
-          c == '"'
-          ? "&quot;"
-          : c == '&'
-            ? "&amp;"
-            : c == '<'
-              ? "&lt;"
-              : c == '>'
-                ? "&gt;"
-                : c > 159
-                  ? String.Format ("&#{0};", (int) c)
-                  : c.ToString ()
-        );
-      }
-
-      return buff.ToString ();
-    }
-
     private static string htmlEncode (string s, bool attribute)
     {
       var buff = new StringBuilder ();
