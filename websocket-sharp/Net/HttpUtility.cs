@@ -475,18 +475,6 @@ namespace WebSocketSharp.Net
              || c == '~';
     }
 
-    private static bool notEncoded (char c)
-    {
-      return c == '!' ||
-             c == '\'' ||
-             c == '(' ||
-             c == ')' ||
-             c == '*' ||
-             c == '-' ||
-             c == '.' ||
-             c == '_';
-    }
-
     private static void urlEncode (byte b, Stream output)
     {
       if (b > 31 && b < 127) {
