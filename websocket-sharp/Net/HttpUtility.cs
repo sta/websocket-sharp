@@ -134,7 +134,7 @@ namespace WebSocketSharp.Net
                  : -1;
     }
 
-    private static string htmlEncode (string s, bool attribute)
+    private static string htmlEncode (string s, bool minimal)
     {
       var buff = new StringBuilder ();
 
@@ -148,7 +148,7 @@ namespace WebSocketSharp.Net
               ? "&lt;"
               : c == '>'
                 ? "&gt;"
-                : !attribute && c > 159
+                : !minimal && c > 159
                   ? String.Format ("&#{0};", (int) c)
                   : c.ToString ()
         );
