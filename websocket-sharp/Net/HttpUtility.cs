@@ -134,6 +134,17 @@ namespace WebSocketSharp.Net
                  : -1;
     }
 
+    private static int getNumber (char c)
+    {
+      return c >= '0' && c <= '9'
+             ? c - '0'
+             : c >= 'A' && c <= 'F'
+               ? c - 'A' + 10
+               : c >= 'a' && c <= 'f'
+                 ? c - 'a' + 10
+                 : -1;
+    }
+
     private static string htmlEncode (string s, bool minimal)
     {
       var buff = new StringBuilder ();
