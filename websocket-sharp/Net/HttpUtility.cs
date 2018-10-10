@@ -145,6 +145,22 @@ namespace WebSocketSharp.Net
                  : -1;
     }
 
+    private static int getNumber (byte[] bytes, int offset, int count)
+    {
+      var ret = 0;
+
+      var end = offset + count - 1;
+      for (var i = offset; i <= end; i++) {
+        var num = getNumber ((char) bytes[i]);
+        if (num == -1)
+          return -1;
+
+        ret = (ret << 4) + num;
+      }
+
+      return ret;
+    }
+
     private static int getNumber (string s, int offset, int count)
     {
       var ret = 0;
