@@ -1189,20 +1189,26 @@ namespace WebSocketSharp.Net
 
     public static byte[] UrlDecodeToBytes (byte[] bytes, int offset, int count)
     {
-      int len;
-      if (bytes == null || (len = bytes.Length) == 0)
-        return bytes;
+      if (bytes == null)
+        throw new ArgumentNullException ("bytes");
 
-      if (count == 0)
-        return new byte[0];
+      var len = bytes.Length;
+      if (len == 0) {
+        if (offset != 0 || count != 0)
+          throw new ArgumentException ("An empty byte array.", "bytes");
+
+        return bytes;
+      }
 
       if (offset < 0 || offset >= len)
         throw new ArgumentOutOfRangeException ("offset");
 
-      if (count < 0 || count > len - offset )
+      if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return InternalUrlDecodeToBytes (bytes, offset, count);
+      return count > 0
+             ? InternalUrlDecodeToBytes (bytes, offset, count)
+             : new byte[0];
     }
 
     public static string UrlEncode (byte[] bytes)
