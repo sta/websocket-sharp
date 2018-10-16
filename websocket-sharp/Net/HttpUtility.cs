@@ -1234,8 +1234,11 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
       if (len == 0) {
-        if (offset != 0 || count != 0)
-          throw new ArgumentException ("An empty byte array.", "bytes");
+        if (offset != 0)
+          throw new ArgumentOutOfRangeException ("offset");
+
+        if (count != 0)
+          throw new ArgumentOutOfRangeException ("count");
 
         return String.Empty;
       }
