@@ -1141,14 +1141,23 @@ namespace WebSocketSharp.Net
                : InternalUrlDecode (bytes, 0, len, encoding ?? Encoding.UTF8);
     }
 
-    public static string UrlDecode (byte[] bytes, int offset, int count, Encoding encoding)
+    public static string UrlDecode (
+      byte[] bytes, int offset, int count, Encoding encoding
+    )
     {
       if (bytes == null)
-        return null;
+        throw new ArgumentNullException ("bytes");
 
       var len = bytes.Length;
-      if (len == 0 || count == 0)
+      if (len == 0) {
+        if (offset != 0)
+          throw new ArgumentOutOfRangeException ("offset");
+
+        if (count != 0)
+          throw new ArgumentOutOfRangeException ("count");
+
         return String.Empty;
+      }
 
       if (offset < 0 || offset >= len)
         throw new ArgumentOutOfRangeException ("offset");
@@ -1156,7 +1165,11 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return InternalUrlDecode (bytes, offset, count, encoding ?? Encoding.UTF8);
+      return count > 0
+             ? InternalUrlDecode (
+                 bytes, offset, count, encoding ?? Encoding.UTF8
+               )
+             : String.Empty;
     }
 
     public static byte[] UrlDecodeToBytes (byte[] bytes)
