@@ -1133,12 +1133,13 @@ namespace WebSocketSharp.Net
 
     public static string UrlDecode (byte[] bytes, Encoding encoding)
     {
-      int len;
-      return bytes == null
-             ? null
-             : (len = bytes.Length) == 0
-               ? String.Empty
-               : InternalUrlDecode (bytes, 0, len, encoding ?? Encoding.UTF8);
+      if (bytes == null)
+        throw new ArgumentNullException ("bytes");
+
+      var len = bytes.Length;
+      return len > 0
+             ? InternalUrlDecode (bytes, 0, len, encoding ?? Encoding.UTF8)
+             : String.Empty;
     }
 
     public static string UrlDecode (
