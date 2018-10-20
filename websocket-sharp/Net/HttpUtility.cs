@@ -529,6 +529,37 @@ namespace WebSocketSharp.Net
       output.WriteByte ((byte) num);
     }
 
+    private static byte[] urlDecodeToBytes (byte[] bytes, int offset, int count)
+    {
+      using (var buff = new MemoryStream ()) {
+        var end = offset + count - 1;
+        for (var i = offset; i <= end; i++) {
+          var b = bytes[i];
+          if (b == '%') {
+            if (i > end - 2) {
+              buff.Write (bytes, i, end - i + 1);
+              break;
+            }
+
+            urlDecode (bytes, i, buff);
+            i += 2;
+
+            continue;
+          }
+
+          if (b == '+') {
+            buff.WriteByte ((byte) ' ');
+            continue;
+          }
+
+          buff.WriteByte (b);
+        }
+
+        buff.Close ();
+        return buff.ToArray ();
+      }
+    }
+
     private static void urlDecodeUnicode (
       byte[] bytes, int offset, Stream output
     )
