@@ -1255,7 +1255,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("count");
 
       return count > 0
-             ? InternalUrlDecodeToBytes (bytes, offset, count)
+             ? urlDecodeToBytes (bytes, offset, count)
              : new byte[0];
     }
 
