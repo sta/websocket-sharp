@@ -1211,7 +1211,7 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
       return len > 0
-             ? InternalUrlDecodeToBytes (bytes, 0, len)
+             ? urlDecodeToBytes (bytes, 0, len)
              : bytes;
     }
 
