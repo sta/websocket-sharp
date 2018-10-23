@@ -1197,10 +1197,11 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
+      if (encoding == null)
+        encoding = Encoding.UTF8;
+
       return count > 0
-             ? InternalUrlDecode (
-                 bytes, offset, count, encoding ?? Encoding.UTF8
-               )
+             ? encoding.GetString (urlDecodeToBytes (bytes, offset, count))
              : String.Empty;
     }
 
