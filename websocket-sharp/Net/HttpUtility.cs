@@ -1169,7 +1169,9 @@ namespace WebSocketSharp.Net
 
       var len = bytes.Length;
       return len > 0
-             ? InternalUrlDecode (bytes, 0, len, encoding ?? Encoding.UTF8)
+             ? (encoding ?? Encoding.UTF8).GetString (
+                 urlDecodeToBytes (bytes, 0, len)
+               )
              : String.Empty;
     }
 
