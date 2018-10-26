@@ -806,57 +806,6 @@ namespace WebSocketSharp.Net
       return null;
     }
 
-    internal static string InternalUrlDecode (
-      byte[] bytes, int offset, int count, Encoding encoding)
-    {
-      var output = new StringBuilder ();
-      using (var acc = new MemoryStream ()) {
-        var end = count + offset;
-        for (var i = offset; i < end; i++) {
-          if (bytes[i] == '%' && i + 2 < count && bytes[i + 1] != '%') {
-            int xchar;
-            if (bytes[i + 1] == (byte) 'u' && i + 5 < end) {
-              if (acc.Length > 0) {
-                output.Append (getChars (acc, encoding));
-                acc.SetLength (0);
-              }
-
-              xchar = getChar (bytes, i + 2, 4);
-              if (xchar != -1) {
-                output.Append ((char) xchar);
-                i += 5;
-
-                continue;
-              }
-            }
-            else if ((xchar = getChar (bytes, i + 1, 2)) != -1) {
-              acc.WriteByte ((byte) xchar);
-              i += 2;
-
-              continue;
-            }
-          }
-
-          if (acc.Length > 0) {
-            output.Append (getChars (acc, encoding));
-            acc.SetLength (0);
-          }
-
-          if (bytes[i] == '+') {
-            output.Append (' ');
-            continue;
-          }
-
-          output.Append ((char) bytes[i]);
-        }
-
-        if (acc.Length > 0)
-          output.Append (getChars (acc, encoding));
-      }
-
-      return output.ToString ();
-    }
-
     internal static byte[] InternalUrlDecodeToBytes (byte[] bytes, int offset, int count)
     {
       using (var res = new MemoryStream ()) {
