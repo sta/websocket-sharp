@@ -560,20 +560,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static void urlDecodeUnicode (
-      byte[] bytes, int offset, Stream output
-    )
-    {
-      var num = getNumber (bytes, offset + 2, 4);
-      if (num == -1) {
-        output.Write (bytes, offset, 6);
-        return;
-      }
-
-      var decoded = Encoding.Unicode.GetBytes (new[] { (char) num });
-      output.Write (decoded, 0, decoded.Length);
-    }
-
     private static void urlEncode (byte b, Stream output)
     {
       if (b > 31 && b < 127) {
