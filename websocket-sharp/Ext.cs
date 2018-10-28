@@ -1167,6 +1167,11 @@ namespace WebSocketSharp
              && headers.Contains ("Connection", "Upgrade", comparison);
     }
 
+    internal static string UrlEncode (this string value, Encoding encoding)
+    {
+      return HttpUtility.UrlEncode (value, encoding);
+    }
+
     internal static string UTF8Decode (this byte[] bytes)
     {
       try {
