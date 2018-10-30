@@ -670,7 +670,7 @@ namespace WebSocketSharp.Net
       }
 
       if (!_comment.IsNullOrEmpty ())
-        output.AppendFormat ("; Comment={0}", _comment.UrlEncode ());
+        output.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
 
       if (_commentUri != null) {
         var url = _commentUri.OriginalString;
