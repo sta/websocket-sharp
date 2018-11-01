@@ -1994,23 +1994,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// URL-encodes the specified <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that receives the encoded string or
-    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to encode.
-    /// </param>
-    public static string UrlEncode (this string value)
-    {
-      return value != null && value.Length > 0
-             ? HttpUtility.UrlEncode (value)
-             : value;
-    }
-
-    /// <summary>
     /// Writes and sends the specified <paramref name="content"/> data with the specified
     /// <see cref="HttpListenerResponse"/>.
     /// </summary>
