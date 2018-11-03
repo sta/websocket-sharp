@@ -1977,23 +1977,6 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// URL-decodes the specified <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that receives the decoded string or
-    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to decode.
-    /// </param>
-    public static string UrlDecode (this string value)
-    {
-      return value != null && value.Length > 0
-             ? HttpUtility.UrlDecode (value)
-             : value;
-    }
-
-    /// <summary>
     /// Writes and sends the specified <paramref name="content"/> data with the specified
     /// <see cref="HttpListenerResponse"/>.
     /// </summary>
