@@ -1154,7 +1154,14 @@ namespace WebSocketSharp.Net
 
     public static byte[] UrlDecodeToBytes (string s)
     {
-      return UrlDecodeToBytes (s, Encoding.UTF8);
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      if (s.Length == 0)
+        return new byte[0];
+
+      var bytes = Encoding.ASCII.GetBytes (s);
+      return urlDecodeToBytes (bytes, 0, bytes.Length);
     }
 
     public static byte[] UrlDecodeToBytes (string s, Encoding encoding)
