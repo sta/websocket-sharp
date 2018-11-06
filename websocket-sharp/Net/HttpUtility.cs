@@ -792,31 +792,6 @@ namespace WebSocketSharp.Net
       return null;
     }
 
-    internal static byte[] InternalUrlDecodeToBytes (byte[] bytes, int offset, int count)
-    {
-      using (var res = new MemoryStream ()) {
-        var end = offset + count;
-        for (var i = offset; i < end; i++) {
-          var c = (char) bytes[i];
-          if (c == '+') {
-            c = ' ';
-          }
-          else if (c == '%' && i < end - 2) {
-            var xchar = getChar (bytes, i + 1, 2);
-            if (xchar != -1) {
-              c = (char) xchar;
-              i += 2;
-            }
-          }
-
-          res.WriteByte ((byte) c);
-        }
-
-        res.Close ();
-        return res.ToArray ();
-      }
-    }
-
     internal static byte[] InternalUrlEncodeToBytes (
       byte[] bytes, int offset, int count
     )
