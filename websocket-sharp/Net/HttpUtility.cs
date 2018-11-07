@@ -1288,16 +1288,6 @@ namespace WebSocketSharp.Net
       return InternalUrlEncodeToBytes (bytes, 0, bytes.Length);
     }
 
-    public static byte[] UrlEncodeUnicodeToBytes (string s)
-    {
-      if (s == null)
-        throw new ArgumentNullException ("s");
-
-      return s.Length > 0
-             ? InternalUrlEncodeUnicodeToBytes (s)
-             : new byte[0];
-    }
-
     public static string UrlPathEncode (string s)
     {
       if (s == null)
