@@ -806,17 +806,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    internal static byte[] InternalUrlEncodeUnicodeToBytes (string s)
-    {
-      using (var buff = new MemoryStream ()) {
-        foreach (var c in s)
-          urlEncodeUnicode (c, buff);
-
-        buff.Close ();
-        return buff.ToArray ();
-      }
-    }
-
     internal static bool TryGetEncoding (
       string contentType, out Encoding result
     )
