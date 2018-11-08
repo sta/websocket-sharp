@@ -1278,7 +1278,7 @@ namespace WebSocketSharp.Net
         return new byte[0];
 
       var bytes = (encoding ?? Encoding.UTF8).GetBytes (s);
-      return InternalUrlEncodeToBytes (bytes, 0, bytes.Length);
+      return urlEncodeToBytes (bytes, 0, bytes.Length);
     }
 
     public static string UrlPathEncode (string s)
