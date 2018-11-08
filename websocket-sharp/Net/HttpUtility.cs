@@ -1202,7 +1202,7 @@ namespace WebSocketSharp.Net
 
       return count > 0
              ? Encoding.ASCII.GetString (
-                 InternalUrlEncodeToBytes (bytes, offset, count)
+                 urlEncodeToBytes (bytes, offset, count)
                )
              : String.Empty;
     }
