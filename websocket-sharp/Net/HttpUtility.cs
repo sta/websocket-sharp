@@ -1261,9 +1261,7 @@ namespace WebSocketSharp.Net
       if (count < 0 || count > len - offset)
         throw new ArgumentOutOfRangeException ("count");
 
-      return count > 0
-             ? InternalUrlEncodeToBytes (bytes, offset, count)
-             : new byte[0];
+      return count > 0 ? urlEncodeToBytes (bytes, offset, count) : new byte[0];
     }
 
     public static byte[] UrlEncodeToBytes (string s)
