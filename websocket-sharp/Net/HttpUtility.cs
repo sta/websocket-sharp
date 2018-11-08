@@ -1227,9 +1227,7 @@ namespace WebSocketSharp.Net
       var bytes = new byte[encoding.GetMaxByteCount (len)];
       var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
 
-      return Encoding.ASCII.GetString (
-               InternalUrlEncodeToBytes (bytes, 0, realLen)
-             );
+      return Encoding.ASCII.GetString (urlEncodeToBytes (bytes, 0, realLen));
     }
 
     public static byte[] UrlEncodeToBytes (byte[] bytes)
