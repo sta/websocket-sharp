@@ -594,6 +594,18 @@ namespace WebSocketSharp.Net
       output.WriteByte ((byte) _hexChars[idx]);
     }
 
+    private static byte[] urlEncodeToBytes (byte[] bytes, int offset, int count)
+    {
+      using (var buff = new MemoryStream ()) {
+        var end = offset + count - 1;
+        for (var i = offset; i <= end; i++)
+          urlEncode (bytes[i], buff);
+
+        buff.Close ();
+        return buff.ToArray ();
+      }
+    }
+
     private static void urlEncodeUnicode (char c, Stream output)
     {
       if (c > 31 && c < 127) {
