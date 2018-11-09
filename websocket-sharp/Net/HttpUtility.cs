@@ -804,20 +804,6 @@ namespace WebSocketSharp.Net
       return null;
     }
 
-    internal static byte[] InternalUrlEncodeToBytes (
-      byte[] bytes, int offset, int count
-    )
-    {
-      using (var buff = new MemoryStream ()) {
-        var end = offset + count;
-        for (var i = offset; i < end; i++)
-          urlEncode (bytes[i], buff);
-
-        buff.Close ();
-        return buff.ToArray ();
-      }
-    }
-
     internal static bool TryGetEncoding (
       string contentType, out Encoding result
     )
