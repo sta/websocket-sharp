@@ -563,22 +563,23 @@ namespace WebSocketSharp.Net
     private static void urlEncode (byte b, Stream output)
     {
       if (b > 31 && b < 127) {
-        if (b == 32) {
+        var c = (char) b;
+        if (c == ' ') {
           output.WriteByte ((byte) '+');
           return;
         }
 
-        if (isNumeric (b)) {
+        if (isNumeric (c)) {
           output.WriteByte (b);
           return;
         }
 
-        if (isAlphabet (b)) {
+        if (isAlphabet (c)) {
           output.WriteByte (b);
           return;
         }
 
-        if (isUnreserved (b)) {
+        if (isUnreserved (c)) {
           output.WriteByte (b);
           return;
         }
