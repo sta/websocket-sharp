@@ -471,11 +471,6 @@ namespace WebSocketSharp.Net
              || (c >= 'a' && c <= 'z');
     }
 
-    private static bool isNumeric (byte b)
-    {
-      return b >= 48 && b <= 57;
-    }
-
     private static bool isNumeric (char c)
     {
       return c >= '0' && c <= '9';
