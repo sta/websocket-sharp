@@ -569,11 +569,8 @@ namespace WebSocketSharp.Net
       output.WriteByte ((byte) '%');
 
       var i = (int) b;
-      var idx = i >> 4;
-      output.WriteByte ((byte) _hexChars[idx]);
-
-      idx = i & 0x0F;
-      output.WriteByte ((byte) _hexChars[idx]);
+      output.WriteByte ((byte) _hexChars[i >> 4]);
+      output.WriteByte ((byte) _hexChars[i & 0x0F]);
     }
 
     private static byte[] urlEncodeToBytes (byte[] bytes, int offset, int count)
