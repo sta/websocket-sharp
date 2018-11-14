@@ -516,19 +516,29 @@ namespace WebSocketSharp.Net
         var end = offset + count - 1;
         for (var i = offset; i <= end; i++) {
           var b = bytes[i];
-          if (b == '%') {
+
+          var c = (char) b;
+          if (c == '%') {
             if (i > end - 2) {
               buff.Write (bytes, i, end - i + 1);
               break;
             }
 
-            urlDecode (bytes, i, buff);
+            var num = getNumber (bytes, i + 1, 2);
+            if (num == -1) {
+              buff.Write (bytes, i, 3);
+              i += 2;
+
+              continue;
+            }
+
+            buff.WriteByte ((byte) num);
             i += 2;
 
             continue;
           }
 
-          if (b == '+') {
+          if (c == '+') {
             buff.WriteByte ((byte) ' ');
             continue;
           }
