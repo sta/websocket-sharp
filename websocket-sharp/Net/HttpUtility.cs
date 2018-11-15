@@ -499,17 +499,6 @@ namespace WebSocketSharp.Net
              || c == '~';
     }
 
-    private static void urlDecode (byte[] bytes, int offset, Stream output)
-    {
-      var num = getNumber (bytes, offset + 1, 2);
-      if (num == -1) {
-        output.Write (bytes, offset, 3);
-        return;
-      }
-
-      output.WriteByte ((byte) num);
-    }
-
     private static byte[] urlDecodeToBytes (byte[] bytes, int offset, int count)
     {
       using (var buff = new MemoryStream ()) {
