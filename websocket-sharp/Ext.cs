@@ -756,7 +756,7 @@ namespace WebSocketSharp
               return;
             }
 
-            if (nread == 0 || nread == length) {
+            if (nread == length) {
               if (completed != null)
                 completed (buff.SubArray (0, offset + nread));
 
