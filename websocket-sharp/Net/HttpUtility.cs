@@ -508,18 +508,12 @@ namespace WebSocketSharp.Net
 
           var c = (char) b;
           if (c == '%') {
-            if (i > end - 2) {
-              buff.Write (bytes, i, end - i + 1);
+            if (i > end - 2)
               break;
-            }
 
             var num = getNumber (bytes, i + 1, 2);
-            if (num == -1) {
-              buff.Write (bytes, i, 3);
-              i += 2;
-
-              continue;
-            }
+            if (num == -1)
+              break;
 
             buff.WriteByte ((byte) num);
             i += 2;
