@@ -409,7 +409,7 @@ namespace WebSocketSharp.Server
     internal void Add<TBehavior> (string path, Func<TBehavior> creator)
       where TBehavior : WebSocketBehavior
     {
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       lock (_sync) {
         WebSocketServiceHost host;
