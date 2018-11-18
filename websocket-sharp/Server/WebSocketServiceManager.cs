@@ -437,7 +437,7 @@ namespace WebSocketSharp.Server
       string path, out WebSocketServiceHost host
     )
     {
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       lock (_sync)
         return _hosts.TryGetValue (path, out host);
