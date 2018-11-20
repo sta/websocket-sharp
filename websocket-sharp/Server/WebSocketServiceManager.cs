@@ -473,13 +473,14 @@ namespace WebSocketSharp.Server
     /// Adds a WebSocket service with the specified behavior,
     /// <paramref name="path"/>, and <paramref name="initializer"/>.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// / is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to add.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to add.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <param name="initializer">
     ///   <para>
