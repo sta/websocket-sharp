@@ -931,22 +931,21 @@ namespace WebSocketSharp.Server
     /// Removes a WebSocket service with the specified <paramref name="path"/>.
     /// </summary>
     /// <remarks>
-    ///   <para>
-    ///   <paramref name="path"/> is converted to a URL-decoded string and
-    ///   / is trimmed from the end of the converted string if any.
-    ///   </para>
-    ///   <para>
-    ///   The service is stopped with close status 1001 (going away)
-    ///   if it has already started.
-    ///   </para>
+    /// The service is stopped with close status 1001 (going away)
+    /// if it has already started.
     /// </remarks>
     /// <returns>
     /// <c>true</c> if the service is successfully found and removed;
     /// otherwise, <c>false</c>.
     /// </returns>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to remove.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to remove.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
