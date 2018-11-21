@@ -985,7 +985,7 @@ namespace WebSocketSharp.Server
         throw new ArgumentException (msg, "path");
       }
 
-      path = HttpUtility.UrlDecode (path).TrimSlashFromEnd ();
+      path = path.TrimSlashFromEnd ();
 
       WebSocketServiceHost host;
       lock (_sync) {
