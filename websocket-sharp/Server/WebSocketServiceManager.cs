@@ -106,8 +106,7 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Gets the host instance for a WebSocket service with
-    /// the specified <paramref name="path"/>.
+    /// Gets the host instance for a WebSocket service with the specified path.
     /// </summary>
     /// <value>
     ///   <para>
@@ -115,7 +114,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not found.
     ///   </para>
     ///   <para>
-    ///   That host instance provides the function to access
+    ///   The host instance provides the function to access
     ///   the information in the service.
     ///   </para>
     /// </value>
