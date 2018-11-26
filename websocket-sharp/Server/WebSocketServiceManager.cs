@@ -470,8 +470,8 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior, path,
+    /// and delegate.
     /// </summary>
     /// <param name="path">
     ///   <para>
@@ -488,14 +488,20 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called for initializing
+    ///   The delegate invokes the method called when initializing
     ///   a new session instance for the service.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
-    /// The type of the behavior for the service. It must inherit
-    /// the <see cref="WebSocketBehavior"/> class and it must have
-    /// a public parameterless constructor.
+    ///   <para>
+    ///   The type of the behavior for the service.
+    ///   </para>
+    ///   <para>
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class.
+    ///   </para>
+    ///   <para>
+    ///   And also, it must have a public parameterless constructor.
+    ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="path"/> is <see langword="null"/>.
