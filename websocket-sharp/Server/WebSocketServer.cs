@@ -1133,24 +1133,26 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior and
-    /// <paramref name="path"/>.
+    /// Adds a WebSocket service with the specified behavior and path.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// '/' is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to add.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to add.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <typeparam name="TBehaviorWithNew">
     ///   <para>
     ///   The type of the behavior for the service.
     ///   </para>
     ///   <para>
-    ///   It must inherit the <see cref="WebSocketBehavior"/> class and
-    ///   have a public parameterless constructor.
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class.
+    ///   </para>
+    ///   <para>
+    ///   And also, it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
