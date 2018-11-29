@@ -2201,7 +2201,7 @@ namespace WebSocketSharp
     }
 
     private static TcpClient connectTcpClient(string hostname, int port, int connectTimeout) {
-      var client = new TcpClient();
+      var client = new TcpClient(AddressFamily.InterNetworkV6);
       var result = client.BeginConnect(hostname, port, onEndConnect, client);
       bool success = result.AsyncWaitHandle.WaitOne(connectTimeout, true);
 
