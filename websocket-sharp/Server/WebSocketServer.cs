@@ -1189,16 +1189,17 @@ namespace WebSocketSharp.Server
     }
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="initializer"/>.
+    /// Adds a WebSocket service with the specified behavior, path,
+    /// and delegate.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// '/' is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to add.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to add.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <param name="initializer">
     ///   <para>
@@ -1206,7 +1207,7 @@ namespace WebSocketSharp.Server
     ///   <see langword="null"/> if not needed.
     ///   </para>
     ///   <para>
-    ///   That delegate invokes the method called for initializing
+    ///   The delegate invokes the method called when initializing
     ///   a new session instance for the service.
     ///   </para>
     /// </param>
@@ -1215,8 +1216,10 @@ namespace WebSocketSharp.Server
     ///   The type of the behavior for the service.
     ///   </para>
     ///   <para>
-    ///   It must inherit the <see cref="WebSocketBehavior"/> class and
-    ///   have a public parameterless constructor.
+    ///   It must inherit the <see cref="WebSocketBehavior"/> class.
+    ///   </para>
+    ///   <para>
+    ///   And also, it must have a public parameterless constructor.
     ///   </para>
     /// </typeparam>
     /// <exception cref="ArgumentNullException">
