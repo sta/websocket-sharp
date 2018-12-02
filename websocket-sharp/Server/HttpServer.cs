@@ -1139,28 +1139,29 @@ namespace WebSocketSharp.Server
     #region Public Methods
 
     /// <summary>
-    /// Adds a WebSocket service with the specified behavior,
-    /// <paramref name="path"/>, and <paramref name="creator"/>.
+    /// Adds a WebSocket service with the specified behavior, path,
+    /// and delegate.
     /// </summary>
-    /// <remarks>
-    /// <paramref name="path"/> is converted to a URL-decoded string and
-    /// '/' is trimmed from the end of the converted string if any.
-    /// </remarks>
     /// <param name="path">
-    /// A <see cref="string"/> that represents an absolute path to
-    /// the service to add.
+    ///   <para>
+    ///   A <see cref="string"/> that represents an absolute path to
+    ///   the service to add.
+    ///   </para>
+    ///   <para>
+    ///   / is trimmed from the end of the string if present.
+    ///   </para>
     /// </param>
     /// <param name="creator">
     ///   <para>
     ///   A <c>Func&lt;TBehavior&gt;</c> delegate.
     ///   </para>
     ///   <para>
-    ///   It invokes the method called for creating
-    ///   a new session instance for the service.
+    ///   It invokes the method called when creating a new session
+    ///   instance for the service.
     ///   </para>
     ///   <para>
-    ///   The method must create a new instance of
-    ///   the specified behavior class and return it.
+    ///   The method must create a new instance of the specified
+    ///   behavior class and return it.
     ///   </para>
     /// </param>
     /// <typeparam name="TBehavior">
