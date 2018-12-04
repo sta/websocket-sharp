@@ -16,6 +16,18 @@
     <Authors>DotNetProjects.websocket-sharp</Authors>
   </PropertyGroup>
 
+  <ItemGroup Label="dotnet pack instructions">
+    <Content Include="$(OutputPath)/net45/DotNetProjects.websocket-sharp.pdb">
+      <Pack>true</Pack>
+      <PackagePath>lib/net45</PackagePath>
+    </Content>
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="doc\**" />
     <EmbeddedResource Remove="doc\**" />
