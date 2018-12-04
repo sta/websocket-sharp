@@ -96,6 +96,8 @@ namespace WebSocketSharp.Net
       Logger logger
     )
     {
+      _logger = logger;
+
       if (secure) {
         var cert =
           getCertificate (endpoint.Port, certificateFolderPath, sslConfig.ServerCertificate);
