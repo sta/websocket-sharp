@@ -16,7 +16,7 @@ dotnet_csproj:
   file_version: '{version}'
   informational_version: '{version}'
 
-configuration: Release
+configuration: Debug
 
 before_build:
   - nuget restore
@@ -30,8 +30,8 @@ after_build:
 test: off
 
 artifacts:
-  - path: websocket-sharp\bin\Release\net45\*.dll
-  - path: websocket-sharp\bin\Release\net45\*.pdb
+  - path: websocket-sharp\bin\Debug\net45\*.dll
+  - path: websocket-sharp\bin\Debug\net45\*.pdb
   - path: '**\DotNetProjects.*.nupkg'
 
 #uncomment to publish to NuGet
