@@ -117,7 +117,8 @@ namespace WebSocketSharp.Net
             pref.IsSecure,
             listener.CertificateFolderPath,
             listener.SslConfiguration,
-            listener.ReuseAddress
+            listener.ReuseAddress,
+            listener.Log
           );
 
         _endpoints.Add (endpoint, lsnr);

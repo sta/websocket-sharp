@@ -71,6 +71,7 @@ namespace WebSocketSharp.Net
     private List<HttpListenerPrefix>                     _unhandled; // host == '*'
     private Dictionary<HttpConnection, HttpConnection>   _unregistered;
     private object                                       _unregisteredSync;
+    private Logger                                       _logger;
 
     #endregion
 
@@ -91,7 +92,8 @@ namespace WebSocketSharp.Net
       bool secure,
       string certificateFolderPath,
       ServerSslConfiguration sslConfig,
-      bool reuseAddress
+      bool reuseAddress,
+      Logger logger
     )
     {
       if (secure) {
@@ -258,7 +260,9 @@ namespace WebSocketSharp.Net
 
         conn.BeginReadRequest ();
       }
-      catch {
+      catch (Exception ex){
+        if (listener._logger != null)
+          listener._logger.Error(ex.ToString());
         if (conn != null) {
           conn.Close (true);
           return;
