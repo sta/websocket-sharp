@@ -920,6 +920,8 @@ namespace WebSocketSharp.Server
       }
 
       var path = uri.AbsolutePath;
+      if (path.IndexOfAny (new[] { '%', '+' }) > -1)
+        path = HttpUtility.UrlDecode (path, Encoding.UTF8);
 
       WebSocketServiceHost host;
       if (!_services.InternalTryGetServiceHost (path, out host)) {
