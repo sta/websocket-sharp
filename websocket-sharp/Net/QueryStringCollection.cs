@@ -110,25 +110,20 @@ namespace WebSocketSharp.Net
 
         var i = component.IndexOf ('=');
         if (i < 0) {
-          ret.Add (null, HttpUtility.UrlDecode (component, encoding));
+          ret.Add (null, urlDecode (component, encoding));
           continue;
         }
 
         if (i == 0) {
-          ret.Add (
-            null, HttpUtility.UrlDecode (component.Substring (1), encoding)
-          );
-
+          ret.Add (null, urlDecode (component.Substring (1), encoding));
           continue;
         }
 
-        var name = HttpUtility.UrlDecode (component.Substring (0, i), encoding);
+        var name = urlDecode (component.Substring (0, i), encoding);
 
         var start = i + 1;
         var val = start < len
-                  ? HttpUtility.UrlDecode (
-                      component.Substring (start), encoding
-                    )
+                  ? urlDecode (component.Substring (start), encoding)
                   : String.Empty;
 
         ret.Add (name, val);
