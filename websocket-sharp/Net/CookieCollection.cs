@@ -403,6 +403,25 @@ namespace WebSocketSharp.Net
       return new List<string> (value.SplitHeaderValue (',', ';')).ToArray ();
     }
 
+    private static string urlDecode (string s, Encoding encoding)
+    {
+      if (s == null)
+        return s;
+
+      if (s.Length == 0)
+        return s;
+
+      if (s.IndexOfAny (new[] { '%', '+' }) == -1)
+        return s;
+
+      try {
+        return HttpUtility.UrlDecode (s, encoding);
+      }
+      catch {
+        return null;
+      }
+    }
+
     #endregion
 
     #region Internal Methods
