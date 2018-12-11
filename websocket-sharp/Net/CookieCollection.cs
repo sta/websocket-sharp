@@ -332,7 +332,7 @@ namespace WebSocketSharp.Net
         }
         else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
-            cookie.Comment = HttpUtility.UrlDecode (pair.GetValue ('='));
+            cookie.Comment = urlDecode (pair.GetValue ('='), Encoding.UTF8);
         }
         else if (pair.StartsWith ("commenturl", StringComparison.InvariantCultureIgnoreCase)) {
           if (cookie != null)
