@@ -945,7 +945,10 @@ namespace WebSocketSharp.Net
 
     public static string UrlDecode (string s, Encoding encoding)
     {
-      if (s == null || s.Length == 0 || !s.Contains ('%', '+'))
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      if (s.Length == 0)
         return s;
 
       if (encoding == null)
