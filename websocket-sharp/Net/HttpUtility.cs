@@ -954,43 +954,8 @@ namespace WebSocketSharp.Net
       if (encoding == null)
         encoding = Encoding.UTF8;
 
-      var buff = new List<byte> ();
-      var len = s.Length;
-      for (var i = 0; i < len; i++) {
-        var c = s[i];
-        if (c == '%' && i + 2 < len && s[i + 1] != '%') {
-          int xchar;
-          if (s[i + 1] == 'u' && i + 5 < len) {
-            // Unicode hex sequence.
-            xchar = getChar (s, i + 2, 4);
-            if (xchar != -1) {
-              writeCharBytes ((char) xchar, buff, encoding);
-              i += 5;
-            }
-            else {
-              writeCharBytes ('%', buff, encoding);
-            }
-          }
-          else if ((xchar = getChar (s, i + 1, 2)) != -1) {
-            writeCharBytes ((char) xchar, buff, encoding);
-            i += 2;
-          }
-          else {
-            writeCharBytes ('%', buff, encoding);
-          }
-
-          continue;
-        }
-
-        if (c == '+') {
-          writeCharBytes (' ', buff, encoding);
-          continue;
-        }
-
-        writeCharBytes (c, buff, encoding);
-      }
-
-      return encoding.GetString (buff.ToArray ());
+      var bytes = Encoding.ASCII.GetBytes (s);
+      return encoding.GetString (urlDecodeToBytes (bytes, 0, bytes.Length));
     }
 
     public static string UrlDecode (byte[] bytes, Encoding encoding)
