@@ -951,11 +951,10 @@ namespace WebSocketSharp.Net
       if (s.Length == 0)
         return s;
 
-      if (encoding == null)
-        encoding = Encoding.UTF8;
-
       var bytes = Encoding.ASCII.GetBytes (s);
-      return encoding.GetString (urlDecodeToBytes (bytes, 0, bytes.Length));
+      return (encoding ?? Encoding.UTF8).GetString (
+               urlDecodeToBytes (bytes, 0, bytes.Length)
+             );
     }
 
     public static string UrlDecode (byte[] bytes, Encoding encoding)
