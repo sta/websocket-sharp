@@ -592,18 +592,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static void writeCharBytes (char c, IList buffer, Encoding encoding)
-    {
-      if (c > 255) {
-        foreach (var b in encoding.GetBytes (new[] { c }))
-          buffer.Add (b);
-
-        return;
-      }
-
-      buffer.Add ((byte) c);
-    }
-
     #endregion
 
     #region Internal Methods
