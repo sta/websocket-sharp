@@ -406,10 +406,7 @@ namespace WebSocketSharp.Net
     private static string urlDecode (string s, Encoding encoding)
     {
       if (s == null)
-        return s;
-
-      if (s.Length == 0)
-        return s;
+        return null;
 
       if (s.IndexOfAny (new[] { '%', '+' }) == -1)
         return s;
