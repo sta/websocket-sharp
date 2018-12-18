@@ -901,6 +901,9 @@ namespace WebSocketSharp.Net
     /// </param>
     public static void HtmlDecode (string s, TextWriter output)
     {
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
       if (output == null)
         throw new ArgumentNullException ("output");
 
