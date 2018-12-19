@@ -907,6 +907,9 @@ namespace WebSocketSharp.Net
       if (output == null)
         throw new ArgumentNullException ("output");
 
+      if (s.Length == 0)
+        return;
+
       output.Write (HtmlDecode (s));
     }
 
