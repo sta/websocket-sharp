@@ -889,16 +889,6 @@ namespace WebSocketSharp.Net
       return output.ToString ();
     }
 
-    /// <summary>
-    /// Decodes an HTML-encoded <see cref="string"/> and sends the decoded <see cref="string"/>
-    /// to the specified <see cref="TextWriter"/>.
-    /// </summary>
-    /// <param name="s">
-    /// A <see cref="string"/> to decode.
-    /// </param>
-    /// <param name="output">
-    /// A <see cref="TextWriter"/> that receives the decoded string.
-    /// </param>
     public static void HtmlDecode (string s, TextWriter output)
     {
       if (s == null)
