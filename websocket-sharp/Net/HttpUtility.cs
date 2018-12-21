@@ -779,7 +779,10 @@ namespace WebSocketSharp.Net
     /// </param>
     public static string HtmlDecode (string s)
     {
-      if (s == null || s.Length == 0 || !s.Contains ('&'))
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      if (s.Length == 0)
         return s;
 
       var entity = new StringBuilder ();
