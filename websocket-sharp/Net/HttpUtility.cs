@@ -768,15 +768,6 @@ namespace WebSocketSharp.Net
       output.Write (htmlEncode (s, true));
     }
 
-    /// <summary>
-    /// Decodes an HTML-encoded <see cref="string"/> and returns the decoded <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that represents the decoded string.
-    /// </returns>
-    /// <param name="s">
-    /// A <see cref="string"/> to decode.
-    /// </param>
     public static string HtmlDecode (string s)
     {
       if (s == null)
