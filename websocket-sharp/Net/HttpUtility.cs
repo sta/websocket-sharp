@@ -177,6 +177,126 @@ namespace WebSocketSharp.Net
       return ret;
     }
 
+    private static string htmlDecode (string s)
+    {
+      var buff = new StringBuilder ();
+
+      // 0: Nothing
+      // 1: Right after '&'
+      // 2: Between '&' and ';' but no '#'
+      // 3: '#' found after '&' and getting numbers
+      var state = 0;
+
+      var entity = new StringBuilder ();
+      var number = 0;
+      var haveTrailingDigits = false;
+
+      foreach (var c in s) {
+        if (state == 0) {
+          if (c == '&') {
+            entity.Append ('&');
+            state = 1;
+
+            continue;
+          }
+
+          buff.Append (c);
+          continue;
+        }
+
+        if (c == '&') {
+          if (haveTrailingDigits) {
+            entity.Append (number.ToString (CultureInfo.InvariantCulture));
+            haveTrailingDigits = false;
+          }
+
+          buff.Append (entity.ToString ());
+
+          entity.Length = 0;
+          entity.Append ('&');
+          state = 1;
+
+          continue;
+        }
+
+        if (state == 1) {
+          if (c == ';') {
+            buff.AppendFormat ("{0};", entity.ToString ());
+
+            entity.Length = 0;
+            state = 0;
+
+            continue;
+          }
+
+          number = 0;
+
+          entity.Append (c);
+          state = c != '#' ? 2 : 3;
+
+          continue;
+        }
+
+        if (state == 2) {
+          if (c == ';') {
+            var key = entity.ToString ().Substring (1);
+            var entities = getEntities ();
+            if (entities.ContainsKey (key))
+              buff.Append (entities[key]);
+            else
+              buff.AppendFormat ("&{0};", key);
+
+            entity.Length = 0;
+            state = 0;
+
+            continue;
+          }
+
+          entity.Append (c);
+          continue;
+        }
+
+        if (state == 3) {
+          if (c == ';') {
+            if (number > 65535) {
+              buff.AppendFormat (
+                "&#{0};", number.ToString (CultureInfo.InvariantCulture)
+              );
+            }
+            else {
+              buff.Append ((char) number);
+            }
+
+            entity.Length = 0;
+            haveTrailingDigits = false;
+            state = 0;
+          }
+          else if (Char.IsDigit (c)) {
+            number = number * 10 + ((int) c - '0');
+            haveTrailingDigits = true;
+          }
+          else {
+            if (haveTrailingDigits) {
+              entity.Append (number.ToString (CultureInfo.InvariantCulture));
+              haveTrailingDigits = false;
+            }
+
+            entity.Append (c);
+            state = 2;
+          }
+
+          continue;
+        }
+      }
+
+      if (entity.Length > 0)
+        buff.Append (entity.ToString ());
+      else if (haveTrailingDigits)
+        buff.Append (number.ToString (CultureInfo.InvariantCulture));
+
+      return buff.ToString ();
+    }
+
     private static string htmlEncode (string s, bool minimal)
     {
       var buff = new StringBuilder ();
