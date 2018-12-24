@@ -267,15 +267,14 @@ namespace WebSocketSharp.Net
               buff.Append ((char) number);
             }
 
-            entity.Length = 0;
             haveTrailingDigits = false;
+            entity.Length = 0;
             state = 0;
+
+            continue;
           }
-          else if (Char.IsDigit (c)) {
-            number = number * 10 + ((int) c - '0');
-            haveTrailingDigits = true;
-          }
-          else {
+
+          if (!Char.IsDigit (c)) {
             if (haveTrailingDigits) {
               entity.Append (number.ToString (CultureInfo.InvariantCulture));
               haveTrailingDigits = false;
@@ -283,7 +282,12 @@ namespace WebSocketSharp.Net
 
             entity.Append (c);
             state = 2;
+
+            continue;
           }
+
+          number = number * 10 + (c - '0');
+          haveTrailingDigits = true;
 
           continue;
         }
