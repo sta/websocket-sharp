@@ -293,10 +293,12 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (entity.Length > 0)
+      if (entity.Length > 0) {
         buff.Append (entity.ToString ());
-      else if (haveTrailingDigits)
-        buff.Append (number.ToString (CultureInfo.InvariantCulture));
+
+        if (haveTrailingDigits)
+          buff.Append (number.ToString (CultureInfo.InvariantCulture));
+      }
 
       return buff.ToString ();
     }
