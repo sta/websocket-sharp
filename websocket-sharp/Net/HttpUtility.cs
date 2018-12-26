@@ -189,7 +189,6 @@ namespace WebSocketSharp.Net
 
       var entity = new StringBuilder ();
       var number = 0;
-      var haveTrailingDigits = false;
 
       foreach (var c in s) {
         if (state == 0) {
@@ -205,11 +204,6 @@ namespace WebSocketSharp.Net
         }
 
         if (c == '&') {
-          if (haveTrailingDigits) {
-            entity.Append (number.ToString (CultureInfo.InvariantCulture));
-            haveTrailingDigits = false;
-          }
-
           buff.Append (entity.ToString ());
 
           entity.Length = 0;
@@ -219,9 +213,11 @@ namespace WebSocketSharp.Net
           continue;
         }
 
+        entity.Append (c);
+
         if (state == 1) {
           if (c == ';') {
-            buff.AppendFormat ("{0};", entity.ToString ());
+            buff.Append (entity.ToString ());
 
             entity.Length = 0;
             state = 0;
@@ -230,8 +226,6 @@ namespace WebSocketSharp.Net
           }
 
           number = 0;
-
-          entity.Append (c);
           state = c != '#' ? 2 : 3;
 
           continue;
@@ -239,7 +233,7 @@ namespace WebSocketSharp.Net
 
         if (state == 2) {
           if (c == ';') {
-            var key = entity.ToString ().Substring (1);
+            var key = entity.ToString ().Substring (1, entity.Length - 2);
             var entities = getEntities ();
             if (entities.ContainsKey (key))
               buff.Append (entities[key]);
@@ -252,22 +246,16 @@ namespace WebSocketSharp.Net
             continue;
           }
 
-          entity.Append (c);
           continue;
         }
 
         if (state == 3) {
           if (c == ';') {
-            if (number > 65535) {
-              buff.AppendFormat (
-                "&#{0};", number.ToString (CultureInfo.InvariantCulture)
-              );
-            }
-            else {
+            if (number < 160 || number > 65535)
+              buff.Append (entity.ToString ());
+            else
               buff.Append ((char) number);
-            }
 
-            haveTrailingDigits = false;
             entity.Length = 0;
             state = 0;
 
@@ -275,30 +263,16 @@ namespace WebSocketSharp.Net
           }
 
           if (!Char.IsDigit (c)) {
-            if (haveTrailingDigits) {
-              entity.Append (number.ToString (CultureInfo.InvariantCulture));
-              haveTrailingDigits = false;
-            }
-
-            entity.Append (c);
             state = 2;
-
             continue;
           }
 
           number = number * 10 + (c - '0');
-          haveTrailingDigits = true;
-
-          continue;
         }
       }
 
-      if (entity.Length > 0) {
+      if (entity.Length > 0)
         buff.Append (entity.ToString ());
-
-        if (haveTrailingDigits)
-          buff.Append (number.ToString (CultureInfo.InvariantCulture));
-      }
 
       return buff.ToString ();
     }
