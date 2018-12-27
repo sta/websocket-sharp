@@ -187,13 +187,13 @@ namespace WebSocketSharp.Net
       // 3: '#' found after '&' and getting numbers
       var state = 0;
 
-      var entity = new StringBuilder ();
+      var reference = new StringBuilder ();
       var number = 0;
 
       foreach (var c in s) {
         if (state == 0) {
           if (c == '&') {
-            entity.Append ('&');
+            reference.Append ('&');
             state = 1;
 
             continue;
@@ -204,22 +204,22 @@ namespace WebSocketSharp.Net
         }
 
         if (c == '&') {
-          buff.Append (entity.ToString ());
+          buff.Append (reference.ToString ());
 
-          entity.Length = 0;
-          entity.Append ('&');
+          reference.Length = 0;
+          reference.Append ('&');
           state = 1;
 
           continue;
         }
 
-        entity.Append (c);
+        reference.Append (c);
 
         if (state == 1) {
           if (c == ';') {
-            buff.Append (entity.ToString ());
+            buff.Append (reference.ToString ());
 
-            entity.Length = 0;
+            reference.Length = 0;
             state = 0;
 
             continue;
@@ -233,14 +233,14 @@ namespace WebSocketSharp.Net
 
         if (state == 2) {
           if (c == ';') {
-            var key = entity.ToString ().Substring (1, entity.Length - 2);
+            var key = reference.ToString ().Substring (1, reference.Length - 2);
             var entities = getEntities ();
             if (entities.ContainsKey (key))
               buff.Append (entities[key]);
             else
               buff.AppendFormat ("&{0};", key);
 
-            entity.Length = 0;
+            reference.Length = 0;
             state = 0;
 
             continue;
@@ -252,11 +252,11 @@ namespace WebSocketSharp.Net
         if (state == 3) {
           if (c == ';') {
             if (number < 160 || number > 65535)
-              buff.Append (entity.ToString ());
+              buff.Append (reference.ToString ());
             else
               buff.Append ((char) number);
 
-            entity.Length = 0;
+            reference.Length = 0;
             state = 0;
 
             continue;
@@ -271,8 +271,8 @@ namespace WebSocketSharp.Net
         }
       }
 
-      if (entity.Length > 0)
-        buff.Append (entity.ToString ());
+      if (reference.Length > 0)
+        buff.Append (reference.ToString ());
 
       return buff.ToString ();
     }
