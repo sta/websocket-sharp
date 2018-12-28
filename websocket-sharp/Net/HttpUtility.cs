@@ -233,12 +233,14 @@ namespace WebSocketSharp.Net
 
         if (state == 2) {
           if (c == ';') {
-            var key = reference.ToString ().Substring (1, reference.Length - 2);
+            var entity = reference.ToString ();
+            var name = entity.Substring (1, entity.Length - 2);
+
             var entities = getEntities ();
-            if (entities.ContainsKey (key))
-              buff.Append (entities[key]);
+            if (entities.ContainsKey (name))
+              buff.Append (entities[name]);
             else
-              buff.AppendFormat ("&{0};", key);
+              buff.Append (entity);
 
             reference.Length = 0;
             state = 0;
