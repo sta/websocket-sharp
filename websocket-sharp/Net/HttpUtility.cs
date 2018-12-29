@@ -226,7 +226,7 @@ namespace WebSocketSharp.Net
           }
 
           number = 0;
-          state = c != '#' ? 2 : 3;
+          state = c == '#' ? 3 : 2;
 
           continue;
         }
