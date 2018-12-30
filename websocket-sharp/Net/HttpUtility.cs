@@ -253,10 +253,10 @@ namespace WebSocketSharp.Net
 
         if (state == 3) {
           if (c == ';') {
-            if (number < 160 || number > 65535)
-              buff.Append (reference.ToString ());
-            else
+            if (reference.Length > 3 && number < 65536)
               buff.Append ((char) number);
+            else
+              buff.Append (reference.ToString ());
 
             reference.Length = 0;
             state = 0;
