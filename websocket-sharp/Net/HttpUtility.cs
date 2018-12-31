@@ -185,6 +185,7 @@ namespace WebSocketSharp.Net
       // 1: Right after '&'
       // 2: Between '&' and ';' but no '#'
       // 3: '#' found after '&' and getting numbers
+      // 4: 'x' found after "&#" and getting numbers
       var state = 0;
 
       var reference = new StringBuilder ();
@@ -264,12 +265,40 @@ namespace WebSocketSharp.Net
             continue;
           }
 
+          if (c == 'x') {
+            state = reference.Length == 3 ? 4 : 2;
+            continue;
+          }
+
           if (!Char.IsDigit (c)) {
             state = 2;
             continue;
           }
 
           number = number * 10 + (c - '0');
+          continue;
+        }
+
+        if (state == 4) {
+          if (c == ';') {
+            if (reference.Length > 4 && number < 65536)
+              buff.Append ((char) number);
+            else
+              buff.Append (reference.ToString ());
+
+            reference.Length = 0;
+            state = 0;
+
+            continue;
+          }
+
+          var n = getNumber (c);
+          if (n == -1) {
+            state = 2;
+            continue;
+          }
+
+          number = (number << 4) + n;
         }
       }
 
