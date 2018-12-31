@@ -189,7 +189,7 @@ namespace WebSocketSharp.Net
       var state = 0;
 
       var reference = new StringBuilder ();
-      var number = 0;
+      var num = 0;
 
       foreach (var c in s) {
         if (state == 0) {
@@ -226,7 +226,7 @@ namespace WebSocketSharp.Net
             continue;
           }
 
-          number = 0;
+          num = 0;
           state = c == '#' ? 3 : 2;
 
           continue;
@@ -254,8 +254,8 @@ namespace WebSocketSharp.Net
 
         if (state == 3) {
           if (c == ';') {
-            if (reference.Length > 3 && number < 65536)
-              buff.Append ((char) number);
+            if (reference.Length > 3 && num < 65536)
+              buff.Append ((char) num);
             else
               buff.Append (reference.ToString ());
 
@@ -275,14 +275,14 @@ namespace WebSocketSharp.Net
             continue;
           }
 
-          number = number * 10 + (c - '0');
+          num = num * 10 + (c - '0');
           continue;
         }
 
         if (state == 4) {
           if (c == ';') {
-            if (reference.Length > 4 && number < 65536)
-              buff.Append ((char) number);
+            if (reference.Length > 4 && num < 65536)
+              buff.Append ((char) num);
             else
               buff.Append (reference.ToString ());
 
@@ -298,7 +298,7 @@ namespace WebSocketSharp.Net
             continue;
           }
 
-          number = (number << 4) + n;
+          num = (num << 4) + n;
         }
       }
 
