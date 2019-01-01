@@ -904,10 +904,7 @@ namespace WebSocketSharp.Net
       if (s == null)
         throw new ArgumentNullException ("s");
 
-      if (s.Length == 0)
-        return s;
-
-      return htmlDecode (s);
+      return s.Length > 0 ? htmlDecode (s) : s;
     }
 
     public static void HtmlDecode (string s, TextWriter output)
