@@ -73,11 +73,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static char[] getChars (MemoryStream buffer, Encoding encoding)
-    {
-      return encoding.GetChars (buffer.GetBuffer (), 0, (int) buffer.Length);
-    }
-
     private static Dictionary<string, char> getEntities ()
     {
       lock (_sync) {
