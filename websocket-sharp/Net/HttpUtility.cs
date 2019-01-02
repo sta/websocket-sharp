@@ -73,25 +73,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static int getChar (string s, int offset, int length)
-    {
-      var val = 0;
-      var end = length + offset;
-      for (var i = offset; i < end; i++) {
-        var c = s[i];
-        if (c > 127)
-          return -1;
-
-        var current = getInt ((byte) c);
-        if (current == -1)
-          return -1;
-
-        val = (val << 4) + current;
-      }
-
-      return val;
-    }
-
     private static char[] getChars (MemoryStream buffer, Encoding encoding)
     {
       return encoding.GetChars (buffer.GetBuffer (), 0, (int) buffer.Length);
