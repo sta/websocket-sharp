@@ -73,21 +73,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static int getChar (byte[] bytes, int offset, int length)
-    {
-      var val = 0;
-      var end = length + offset;
-      for (var i = offset; i < end; i++) {
-        var current = getInt (bytes[i]);
-        if (current == -1)
-          return -1;
-
-        val = (val << 4) + current;
-      }
-
-      return val;
-    }
-
     private static int getChar (string s, int offset, int length)
     {
       var val = 0;
