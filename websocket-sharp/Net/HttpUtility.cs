@@ -1119,22 +1119,6 @@ namespace WebSocketSharp.Net
       return urlEncodeToBytes (bytes, 0, bytes.Length);
     }
 
-    public static string UrlPathEncode (string s)
-    {
-      if (s == null)
-        throw new ArgumentNullException ("s");
-
-      if (s.Length == 0)
-        return s;
-
-      var buff = new StringBuilder ();
-
-      foreach (var c in s)
-        urlPathEncode (c, buff);
-
-      return buff.ToString ();
-    }
-
     #endregion
   }
 }
