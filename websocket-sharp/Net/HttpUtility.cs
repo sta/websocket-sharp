@@ -661,20 +661,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static void urlPathEncode (char c, StringBuilder output)
-    {
-      if (c > 32 && c < 127) {
-        output.Append (c);
-        return;
-      }
-
-      var bytes = Encoding.UTF8.GetBytes (new[] { c });
-      foreach (var b in bytes) {
-        var i = (int) b;
-        output.AppendFormat ("%{0}{1}", _hexChars[i >> 4], _hexChars[i & 0x0F]);
-      }
-    }
-
     #endregion
 
     #region Internal Methods
