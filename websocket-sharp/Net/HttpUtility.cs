@@ -83,18 +83,6 @@ namespace WebSocketSharp.Net
       }
     }
 
-    private static int getInt (byte b)
-    {
-      var c = (char) b;
-      return c >= '0' && c <= '9'
-             ? c - '0'
-             : c >= 'a' && c <= 'f'
-               ? c - 'a' + 10
-               : c >= 'A' && c <= 'F'
-                 ? c - 'A' + 10
-                 : -1;
-    }
-
     private static int getNumber (char c)
     {
       return c >= '0' && c <= '9'
