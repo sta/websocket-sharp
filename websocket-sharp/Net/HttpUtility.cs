@@ -640,13 +640,13 @@ namespace WebSocketSharp.Net
       }
 
       var i = (int) b;
+      var bytes = new byte[] {
+                    (byte) '%',
+                    (byte) _hexChars[i >> 4],
+                    (byte) _hexChars[i & 0x0F]
+                  };
 
-      var buff = new byte[3];
-      buff[0] = (byte) '%';
-      buff[1] = (byte) _hexChars[i >> 4];
-      buff[2] = (byte) _hexChars[i & 0x0F];
-
-      output.Write (buff, 0, 3);
+      output.Write (bytes, 0, 3);
     }
 
     private static byte[] urlEncodeToBytes (byte[] bytes, int offset, int count)
