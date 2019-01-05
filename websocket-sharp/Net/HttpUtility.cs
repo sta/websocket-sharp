@@ -65,7 +65,7 @@ namespace WebSocketSharp.Net
 
     static HttpUtility ()
     {
-      _hexChars = "0123456789abcdef".ToCharArray ();
+      _hexChars = "0123456789ABCDEF".ToCharArray ();
       _sync = new object ();
     }
 
