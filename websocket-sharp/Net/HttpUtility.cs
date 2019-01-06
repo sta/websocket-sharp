@@ -219,7 +219,7 @@ namespace WebSocketSharp.Net
             continue;
           }
 
-          if (!Char.IsDigit (c)) {
+          if (!isNumeric (c)) {
             state = 2;
             continue;
           }
