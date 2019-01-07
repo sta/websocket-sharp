@@ -130,11 +130,11 @@ namespace WebSocketSharp.Net
     {
       var buff = new StringBuilder ();
 
-      // 0: Nothing
+      // 0: None
       // 1: Right after '&'
-      // 2: Between '&' and ';' but no '#'
+      // 2: Between '&' and ';' but no NCR
       // 3: '#' found after '&' and getting numbers
-      // 4: 'x' found after "&#" and getting numbers
+      // 4: 'x' found after '#' and getting numbers
       var state = 0;
 
       var reference = new StringBuilder ();
