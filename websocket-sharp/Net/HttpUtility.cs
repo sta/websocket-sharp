@@ -280,10 +280,15 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
+    /// <summary>
+    /// Initializes the _entities field.
+    /// </summary>
+    /// <remarks>
+    /// This method builds a dictionary of HTML character entity references.
+    /// This dictionary comes from the HTML 4.01 W3C recommendation.
+    /// </remarks>
     private static void initEntities ()
     {
-      // Build the dictionary of HTML entity references.
-      // This list comes from the HTML 4.01 W3C recommendation.
       _entities = new Dictionary<string, char> ();
       _entities.Add ("nbsp", '\u00A0');
       _entities.Add ("iexcl", '\u00A1');
