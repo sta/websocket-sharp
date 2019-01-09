@@ -257,6 +257,29 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
+    /// <summary>
+    /// Converts the specified string to an HTML-encoded string.
+    /// </summary>
+    /// <remarks>
+    ///   <para>
+    ///   MS .NET starts encoding with &amp;# from the character code 160 and
+    ///   stops at the character code 255.
+    ///   </para>
+    ///   <para>
+    ///   This method does not do that. One reason is the unicode characters
+    ///   65308 and 65310 that look like &lt; and &gt;.
+    ///   </para>
+    /// </remarks>
+    /// <returns>
+    /// A <see cref="string"/> that represents an encoded string.
+    /// </returns>
+    /// <param name="s">
+    /// A <see cref="string"/> to encode.
+    /// </param>
+    /// <param name="minimal">
+    /// A <see cref="bool"/>: <c>true</c> if encodes without a NCR;
+    /// otherwise, <c>false</c>.
+    /// </param>
     private static string htmlEncode (string s, bool minimal)
     {
       var buff = new StringBuilder ();
