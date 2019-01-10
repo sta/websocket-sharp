@@ -262,12 +262,12 @@ namespace WebSocketSharp.Net
     /// </summary>
     /// <remarks>
     ///   <para>
-    ///   MS .NET starts encoding with &amp;# from the character code 160 and
-    ///   stops at the character code 255.
+    ///   This method starts encoding with a NCR from the character code 160
+    ///   but does not stop at the character code 255.
     ///   </para>
     ///   <para>
-    ///   This method does not do that. One reason is the unicode characters
-    ///   65308 and 65310 that look like &lt; and &gt;.
+    ///   One reason is the unicode characters &#65308; and &#65310; that
+    ///   look like &lt; and &gt;.
     ///   </para>
     /// </remarks>
     /// <returns>
