@@ -1091,6 +1091,23 @@ namespace WebSocketSharp.Net
       return len > 0 ? urlEncodeToBytes (bytes, 0, len) : bytes;
     }
 
+    public static byte[] UrlEncodeToBytes (string s)
+    {
+      return UrlEncodeToBytes (s, Encoding.UTF8);
+    }
+
+    public static byte[] UrlEncodeToBytes (string s, Encoding encoding)
+    {
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      if (s.Length == 0)
+        return new byte[0];
+
+      var bytes = (encoding ?? Encoding.UTF8).GetBytes (s);
+      return urlEncodeToBytes (bytes, 0, bytes.Length);
+    }
+
     public static byte[] UrlEncodeToBytes (byte[] bytes, int offset, int count)
     {
       if (bytes == null)
@@ -1114,23 +1131,6 @@ namespace WebSocketSharp.Net
         throw new ArgumentOutOfRangeException ("count");
 
       return count > 0 ? urlEncodeToBytes (bytes, offset, count) : new byte[0];
-    }
-
-    public static byte[] UrlEncodeToBytes (string s)
-    {
-      return UrlEncodeToBytes (s, Encoding.UTF8);
-    }
-
-    public static byte[] UrlEncodeToBytes (string s, Encoding encoding)
-    {
-      if (s == null)
-        throw new ArgumentNullException ("s");
-
-      if (s.Length == 0)
-        return new byte[0];
-
-      var bytes = (encoding ?? Encoding.UTF8).GetBytes (s);
-      return urlEncodeToBytes (bytes, 0, bytes.Length);
     }
 
     #endregion
