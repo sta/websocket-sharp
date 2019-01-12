@@ -1030,6 +1030,29 @@ namespace WebSocketSharp.Net
              : String.Empty;
     }
 
+    public static string UrlEncode (string s)
+    {
+      return UrlEncode (s, Encoding.UTF8);
+    }
+
+    public static string UrlEncode (string s, Encoding encoding)
+    {
+      if (s == null)
+        throw new ArgumentNullException ("s");
+
+      var len = s.Length;
+      if (len == 0)
+        return s;
+
+      if (encoding == null)
+        encoding = Encoding.UTF8;
+
+      var bytes = new byte[encoding.GetMaxByteCount (len)];
+      var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
+
+      return Encoding.ASCII.GetString (urlEncodeToBytes (bytes, 0, realLen));
+    }
+
     public static string UrlEncode (byte[] bytes, int offset, int count)
     {
       if (bytes == null)
@@ -1057,29 +1080,6 @@ namespace WebSocketSharp.Net
                  urlEncodeToBytes (bytes, offset, count)
                )
              : String.Empty;
-    }
-
-    public static string UrlEncode (string s)
-    {
-      return UrlEncode (s, Encoding.UTF8);
-    }
-
-    public static string UrlEncode (string s, Encoding encoding)
-    {
-      if (s == null)
-        throw new ArgumentNullException ("s");
-
-      var len = s.Length;
-      if (len == 0)
-        return s;
-
-      if (encoding == null)
-        encoding = Encoding.UTF8;
-
-      var bytes = new byte[encoding.GetMaxByteCount (len)];
-      var realLen = encoding.GetBytes (s, 0, len, bytes, 0);
-
-      return Encoding.ASCII.GetString (urlEncodeToBytes (bytes, 0, realLen));
     }
 
     public static byte[] UrlEncodeToBytes (byte[] bytes)
