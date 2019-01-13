@@ -911,6 +911,19 @@ namespace WebSocketSharp.Net
       return UrlDecode (s, Encoding.UTF8);
     }
 
+    public static string UrlDecode (byte[] bytes, Encoding encoding)
+    {
+      if (bytes == null)
+        throw new ArgumentNullException ("bytes");
+
+      var len = bytes.Length;
+      return len > 0
+             ? (encoding ?? Encoding.UTF8).GetString (
+                 urlDecodeToBytes (bytes, 0, len)
+               )
+             : String.Empty;
+    }
+
     public static string UrlDecode (string s, Encoding encoding)
     {
       if (s == null)
@@ -923,19 +936,6 @@ namespace WebSocketSharp.Net
       return (encoding ?? Encoding.UTF8).GetString (
                urlDecodeToBytes (bytes, 0, bytes.Length)
              );
-    }
-
-    public static string UrlDecode (byte[] bytes, Encoding encoding)
-    {
-      if (bytes == null)
-        throw new ArgumentNullException ("bytes");
-
-      var len = bytes.Length;
-      return len > 0
-             ? (encoding ?? Encoding.UTF8).GetString (
-                 urlDecodeToBytes (bytes, 0, len)
-               )
-             : String.Empty;
     }
 
     public static string UrlDecode (
