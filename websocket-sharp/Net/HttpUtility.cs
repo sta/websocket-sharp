@@ -694,21 +694,37 @@ namespace WebSocketSharp.Net
     #region Internal Methods
 
     internal static Uri CreateRequestUrl (
-      string requestUri, string host, bool websocketRequest, bool secure)
+      string requestUri, string host, bool websocketRequest, bool secure
+    )
     {
-      if (requestUri == null || requestUri.Length == 0 || host == null || host.Length == 0)
+      if (requestUri == null)
+        return null;
+
+      if (host == null)
+        return null;
+
+      if (requestUri.Length == 0)
+        return null;
+
+      if (host.Length == 0)
         return null;
 
       string schm = null;
       string path = null;
+
       if (requestUri.StartsWith ("/")) {
         path = requestUri;
       }
       else if (requestUri.MaybeUri ()) {
         Uri uri;
-        var valid = Uri.TryCreate (requestUri, UriKind.Absolute, out uri) &&
-                    (((schm = uri.Scheme).StartsWith ("http") && !websocketRequest) ||
-                     (schm.StartsWith ("ws") && websocketRequest));
+        var valid = Uri.TryCreate (requestUri, UriKind.Absolute, out uri)
+                    && (
+                         (
+                           (schm = uri.Scheme).StartsWith ("http")
+                           && !websocketRequest
+                         )
+                         || (schm.StartsWith ("ws") && websocketRequest)
+                       );
 
         if (!valid)
           return null;
@@ -723,20 +739,25 @@ namespace WebSocketSharp.Net
         host = requestUri;
       }
 
-      if (schm == null)
-        schm = (websocketRequest ? "ws" : "http") + (secure ? "s" : String.Empty);
+      if (schm == null) {
+        schm = (websocketRequest ? "ws" : "http")
+               + (secure ? "s" : String.Empty);
+      }
 
       var colon = host.IndexOf (':');
-      if (colon == -1)
-        host = String.Format ("{0}:{1}", host, schm == "http" || schm == "ws" ? 80 : 443);
+      if (colon == -1) {
+        host = String.Format (
+                 "{0}:{1}", host, schm == "http" || schm == "ws" ? 80 : 443
+               );
+      }
 
       var url = String.Format ("{0}://{1}{2}", schm, host, path);
 
-      Uri res;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out res))
+      Uri ret;
+      if (!Uri.TryCreate (url, UriKind.Absolute, out ret))
         return null;
 
-      return res;
+      return ret;
     }
 
     internal static IPrincipal CreateUser (
