@@ -744,11 +744,8 @@ namespace WebSocketSharp.Net
                + (secure ? "s" : String.Empty);
       }
 
-      if (host.IndexOf (':') == -1) {
-        host = String.Format (
-                 "{0}:{1}", host, schm == "http" || schm == "ws" ? 80 : 443
-               );
-      }
+      if (host.IndexOf (':') == -1)
+        host = String.Format ("{0}:{1}", host, secure ? 443 : 80);
 
       var url = String.Format ("{0}://{1}{2}", schm, host, path);
 
