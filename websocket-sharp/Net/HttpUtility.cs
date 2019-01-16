@@ -740,8 +740,9 @@ namespace WebSocketSharp.Net
       }
 
       if (schm == null) {
-        schm = (websocketRequest ? "ws" : "http")
-               + (secure ? "s" : String.Empty);
+        schm = websocketRequest
+               ? (secure ? "wss" : "ws")
+               : (secure ? "https" : "http");
       }
 
       if (host.IndexOf (':') == -1)
