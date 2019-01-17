@@ -712,7 +712,7 @@ namespace WebSocketSharp.Net
       string schm = null;
       string path = null;
 
-      if (requestUri.StartsWith ("/")) {
+      if (requestUri.IndexOf ('/') == 0) {
         path = requestUri;
       }
       else if (requestUri.MaybeUri ()) {
