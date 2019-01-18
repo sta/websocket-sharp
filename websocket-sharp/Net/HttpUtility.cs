@@ -717,14 +717,12 @@ namespace WebSocketSharp.Net
       }
       else if (requestUri.MaybeUri ()) {
         Uri uri;
-        var valid = Uri.TryCreate (requestUri, UriKind.Absolute, out uri)
-                    && (
-                         (
-                           (schm = uri.Scheme).StartsWith ("http")
-                           && !websocketRequest
-                         )
-                         || (schm.StartsWith ("ws") && websocketRequest)
-                       );
+        if (!Uri.TryCreate (requestUri, UriKind.Absolute, out uri))
+          return null;
+
+        schm = uri.Scheme;
+        var valid = (schm.StartsWith ("http") && !websocketRequest)
+                    || (schm.StartsWith ("ws") && websocketRequest);
 
         if (!valid)
           return null;
