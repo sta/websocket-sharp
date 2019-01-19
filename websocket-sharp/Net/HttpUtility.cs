@@ -721,8 +721,9 @@ namespace WebSocketSharp.Net
           return null;
 
         schm = uri.Scheme;
-        var valid = (schm.StartsWith ("http") && !websocketRequest)
-                    || (schm.StartsWith ("ws") && websocketRequest);
+        var valid = websocketRequest
+                    ? schm == "ws" || schm == "wss"
+                    : schm == "http" || schm == "https";
 
         if (!valid)
           return null;
