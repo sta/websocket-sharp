@@ -750,10 +750,7 @@ namespace WebSocketSharp.Net
       var url = String.Format ("{0}://{1}{2}", schm, host, path);
 
       Uri ret;
-      if (!Uri.TryCreate (url, UriKind.Absolute, out ret))
-        return null;
-
-      return ret;
+      return Uri.TryCreate (url, UriKind.Absolute, out ret) ? ret : null;
     }
 
     internal static IPrincipal CreateUser (
