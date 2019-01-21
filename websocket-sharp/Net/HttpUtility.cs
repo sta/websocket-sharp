@@ -734,7 +734,7 @@ namespace WebSocketSharp.Net
       else if (requestUri == "*") {
       }
       else {
-        // As authority form
+        // As the authority form.
         host = requestUri;
       }
 
