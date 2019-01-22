@@ -784,6 +784,70 @@ namespace WebSocketSharp
       }
     }
 
+    /// <summary>
+    /// Gets or sets the time to wait for a Timeout when writing data.
+    /// </summary>
+    public int WriteTimeout
+    {
+      get
+      {
+        if (_stream is NetworkStream)
+        {
+          return ((NetworkStream)_stream).WriteTimeout;
+        }
+        else if (_stream is SslStream)
+        {
+          return ((SslStream)_stream).WriteTimeout;
+        }
+
+        return Timeout.Infinite;
+      }
+
+      set
+      {
+        if (_stream is NetworkStream)
+        {
+          ((NetworkStream)_stream).WriteTimeout = value;
+        }
+        else if (_stream is SslStream)
+        {
+          ((SslStream)_stream).WriteTimeout = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets or sets the time to wait for a Timeout when reading data.
+    /// </summary>
+    public int ReadTimeout
+    {
+      get
+      {
+        if (_stream is NetworkStream)
+        {
+          return ((NetworkStream)_stream).ReadTimeout;
+        }
+        else if (_stream is SslStream)
+        {
+          return ((NetworkStream)_stream).ReadTimeout;
+        }
+
+        return Timeout.Infinite;
+      }
+
+      set
+      {
+        if (_stream is NetworkStream)
+        {
+          ((NetworkStream)_stream).ReadTimeout = value;
+        }
+        else if (_stream is SslStream)
+        {
+          ((SslStream)_stream).ReadTimeout = value;
+        }
+      }
+    }
+
     #endregion
 
     #region Public Events
@@ -1987,7 +2051,7 @@ namespace WebSocketSharp
     private bool sendBytes (byte[] bytes)
     {
       try {
-        _stream.Write (bytes, 0, bytes.Length);
+       _stream.Write (bytes, 0, bytes.Length);
       }
       catch (Exception ex) {
         _logger.Error (ex.Message);
