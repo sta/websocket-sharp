@@ -779,7 +779,8 @@ namespace WebSocketSharp.Net
       if (credentialsFinder == null)
         return null;
 
-      if (!response.StartsWith (scheme.ToString (), StringComparison.OrdinalIgnoreCase))
+      var comparison = StringComparison.OrdinalIgnoreCase;
+      if (response.IndexOf (scheme.ToString (), comparison) != 0)
         return null;
 
       var res = AuthenticationResponse.Parse (response);
