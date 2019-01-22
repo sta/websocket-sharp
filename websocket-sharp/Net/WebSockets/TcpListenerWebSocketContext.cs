@@ -263,7 +263,7 @@ namespace WebSocketSharp.Net.WebSockets
       get {
         if (_queryString == null) {
           var uri = RequestUri;
-          _queryString = HttpUtility.InternalParseQueryString (
+          _queryString = QueryStringCollection.Parse (
                            uri != null ? uri.Query : null,
                            Encoding.UTF8
                          );

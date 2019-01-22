@@ -2,13 +2,13 @@
 /*
  * QueryStringCollection.cs
  *
- * This code is derived from System.Net.HttpUtility.cs of Mono
+ * This code is derived from HttpUtility.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
  *
  * Copyright (c) 2005-2009 Novell, Inc. (http://www.novell.com)
- * Copyright (c) 2014 sta.blockhead
+ * Copyright (c) 2018 sta.blockhead
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -48,21 +48,103 @@ namespace WebSocketSharp.Net
 {
   internal sealed class QueryStringCollection : NameValueCollection
   {
+    #region Public Constructors
+
+    public QueryStringCollection ()
+    {
+    }
+
+    public QueryStringCollection (int capacity)
+      : base (capacity)
+    {
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private static string urlDecode (string s, Encoding encoding)
+    {
+      return s.IndexOfAny (new[] { '%', '+' }) > -1
+             ? HttpUtility.UrlDecode (s, encoding)
+             : s;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public static QueryStringCollection Parse (string query)
+    {
+      return Parse (query, Encoding.UTF8);
+    }
+
+    public static QueryStringCollection Parse (string query, Encoding encoding)
+    {
+      if (query == null)
+        return new QueryStringCollection (1);
+
+      var len = query.Length;
+      if (len == 0)
+        return new QueryStringCollection (1);
+
+      if (query == "?")
+        return new QueryStringCollection (1);
+
+      if (query[0] == '?')
+        query = query.Substring (1);
+
+      if (encoding == null)
+        encoding = Encoding.UTF8;
+
+      var ret = new QueryStringCollection ();
+
+      var components = query.Split ('&');
+      foreach (var component in components) {
+        len = component.Length;
+        if (len == 0)
+          continue;
+
+        if (component == "=")
+          continue;
+
+        var i = component.IndexOf ('=');
+        if (i < 0) {
+          ret.Add (null, urlDecode (component, encoding));
+          continue;
+        }
+
+        if (i == 0) {
+          ret.Add (null, urlDecode (component.Substring (1), encoding));
+          continue;
+        }
+
+        var name = urlDecode (component.Substring (0, i), encoding);
+
+        var start = i + 1;
+        var val = start < len
+                  ? urlDecode (component.Substring (start), encoding)
+                  : String.Empty;
+
+        ret.Add (name, val);
+      }
+
+      return ret;
+    }
+
     public override string ToString ()
     {
-      var cnt = Count;
-      if (cnt == 0)
-        return String.Empty;
+      var buff = new StringBuilder ();
 
-      var output = new StringBuilder ();
-      var keys = AllKeys;
-      foreach (var key in keys)
-        output.AppendFormat ("{0}={1}&", key, this [key]);
+      foreach (var key in AllKeys)
+        buff.AppendFormat ("{0}={1}&", key, this[key]);
 
-      if (output.Length > 0)
-        output.Length--;
+      if (buff.Length > 0)
+        buff.Length--;
 
-      return output.ToString ();
+      return buff.ToString ();
     }
+
+    #endregion
   }
 }

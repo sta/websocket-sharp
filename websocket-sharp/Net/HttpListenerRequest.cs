@@ -398,7 +398,7 @@ namespace WebSocketSharp.Net
       get {
         if (_queryString == null) {
           var url = Url;
-          _queryString = HttpUtility.InternalParseQueryString (
+          _queryString = QueryStringCollection.Parse (
                            url != null ? url.Query : null,
                            Encoding.UTF8
                          );

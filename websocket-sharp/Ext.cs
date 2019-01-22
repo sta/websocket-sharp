@@ -1167,6 +1167,16 @@ namespace WebSocketSharp
              && headers.Contains ("Connection", "Upgrade", comparison);
     }
 
+    internal static string UrlDecode (this string value, Encoding encoding)
+    {
+      return HttpUtility.UrlDecode (value, encoding);
+    }
+
+    internal static string UrlEncode (this string value, Encoding encoding)
+    {
+      return HttpUtility.UrlEncode (value, encoding);
+    }
+
     internal static string UTF8Decode (this byte[] bytes)
     {
       try {
@@ -1964,40 +1974,6 @@ namespace WebSocketSharp
       );
 
       return ret;
-    }
-
-    /// <summary>
-    /// URL-decodes the specified <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that receives the decoded string or
-    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to decode.
-    /// </param>
-    public static string UrlDecode (this string value)
-    {
-      return value != null && value.Length > 0
-             ? HttpUtility.UrlDecode (value)
-             : value;
-    }
-
-    /// <summary>
-    /// URL-encodes the specified <see cref="string"/>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="string"/> that receives the encoded string or
-    /// <paramref name="value"/> if it is <see langword="null"/> or empty.
-    /// </returns>
-    /// <param name="value">
-    /// A <see cref="string"/> to encode.
-    /// </param>
-    public static string UrlEncode (this string value)
-    {
-      return value != null && value.Length > 0
-             ? HttpUtility.UrlEncode (value)
-             : value;
     }
 
     /// <summary>
