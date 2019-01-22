@@ -463,6 +463,7 @@ namespace WebSocketSharp.Server
 
       _startTime = DateTime.Now;
       OnOpen ();
+      OnOpen (_websocket);
     }
 
     #endregion
@@ -877,6 +878,13 @@ namespace WebSocketSharp.Server
     /// Called when the WebSocket connection for a session has been established.
     /// </summary>
     protected virtual void OnOpen ()
+    {
+    }
+
+    /// <summary>
+    /// Called when the WebSocket connection for a session has been established.
+    /// </summary>
+    protected virtual void OnOpen(WebSocket webSocket)
     {
     }
 
