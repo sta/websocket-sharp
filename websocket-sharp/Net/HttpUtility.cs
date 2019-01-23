@@ -801,16 +801,16 @@ namespace WebSocketSharp.Net
       if (cred == null)
         return null;
 
-      if (scheme == AuthenticationSchemes.Basic
-          && ((HttpBasicIdentity) id).Password != cred.Password
-      ) {
-        return null;
+      if (scheme == AuthenticationSchemes.Basic) {
+        var basicId = (HttpBasicIdentity) id;
+        if (basicId.Password != cred.Password)
+          return null;
       }
 
-      if (scheme == AuthenticationSchemes.Digest
-          && !((HttpDigestIdentity) id).IsValid (cred.Password, realm, method, null)
-      ) {
-        return null;
+      if (scheme == AuthenticationSchemes.Digest) {
+        var digestId = (HttpDigestIdentity) id;
+        if (!digestId.IsValid (cred.Password, realm, method, null))
+          return null;
       }
 
       return new GenericPrincipal (id, cred.Roles);
