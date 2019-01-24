@@ -803,16 +803,15 @@ namespace WebSocketSharp.Net
 
       if (scheme == AuthenticationSchemes.Basic) {
         var basicId = (HttpBasicIdentity) id;
-        if (basicId.Password != cred.Password)
-          return null;
-      }
-      else {
-        var digestId = (HttpDigestIdentity) id;
-        if (!digestId.IsValid (cred.Password, realm, method, null))
-          return null;
+        return basicId.Password == cred.Password
+               ? new GenericPrincipal (id, cred.Roles)
+               : null;
       }
 
-      return new GenericPrincipal (id, cred.Roles);
+      var digestId = (HttpDigestIdentity) id;
+      return digestId.IsValid (cred.Password, realm, method, null)
+             ? new GenericPrincipal (id, cred.Roles)
+             : null;
     }
 
     internal static Encoding GetEncoding (string contentType)
