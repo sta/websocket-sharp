@@ -806,8 +806,7 @@ namespace WebSocketSharp.Net
         if (basicId.Password != cred.Password)
           return null;
       }
-
-      if (scheme == AuthenticationSchemes.Digest) {
+      else {
         var digestId = (HttpDigestIdentity) id;
         if (!digestId.IsValid (cred.Password, realm, method, null))
           return null;
