@@ -817,11 +817,11 @@ namespace WebSocketSharp.Net
     internal static Encoding GetEncoding (string contentType)
     {
       var name = "charset=";
-      var comparison = StringComparison.OrdinalIgnoreCase;
+      var compType = StringComparison.OrdinalIgnoreCase;
 
       foreach (var elm in contentType.SplitHeaderValue (';')) {
         var part = elm.Trim ();
-        if (part.IndexOf (name, comparison) != 0)
+        if (part.IndexOf (name, compType) != 0)
           continue;
 
         var val = part.GetValue ('=', true);
