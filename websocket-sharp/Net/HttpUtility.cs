@@ -697,16 +697,10 @@ namespace WebSocketSharp.Net
       string requestUri, string host, bool websocketRequest, bool secure
     )
     {
-      if (requestUri == null)
+      if (requestUri == null || requestUri.Length == 0)
         return null;
 
-      if (host == null)
-        return null;
-
-      if (requestUri.Length == 0)
-        return null;
-
-      if (host.Length == 0)
+      if (host == null || host.Length == 0)
         return null;
 
       string schm = null;
