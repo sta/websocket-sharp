@@ -928,9 +928,11 @@ namespace WebSocketSharp
 
     internal static CompressionMethod ToCompressionMethod (this string value)
     {
-      foreach (CompressionMethod method in Enum.GetValues (typeof (CompressionMethod)))
+      var methods = Enum.GetValues (typeof (CompressionMethod));
+      foreach (CompressionMethod method in methods) {
         if (method.ToExtensionString () == value)
           return method;
+      }
 
       return CompressionMethod.None;
     }
