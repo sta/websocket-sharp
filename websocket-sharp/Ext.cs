@@ -971,7 +971,9 @@ namespace WebSocketSharp
       }
     }
 
-    internal static List<TSource> ToList<TSource> (this IEnumerable<TSource> source)
+    internal static List<TSource> ToList<TSource> (
+      this IEnumerable<TSource> source
+    )
     {
       return new List<TSource> (source);
     }
