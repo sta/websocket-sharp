@@ -982,7 +982,8 @@ namespace WebSocketSharp
       this System.Net.IPAddress address, bool bracketIPv6
     )
     {
-      return bracketIPv6 && address.AddressFamily == AddressFamily.InterNetworkV6
+      return bracketIPv6
+             && address.AddressFamily == AddressFamily.InterNetworkV6
              ? String.Format ("[{0}]", address.ToString ())
              : address.ToString ();
     }
