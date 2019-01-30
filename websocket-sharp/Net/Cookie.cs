@@ -774,15 +774,23 @@ namespace WebSocketSharp.Net
     /// <c>true</c> if <paramref name="comparand"/> is equal to the current <see cref="Cookie"/>;
     /// otherwise, <c>false</c>.
     /// </returns>
-    public override bool Equals (Object comparand)
+    public override bool Equals (object comparand)
     {
       var cookie = comparand as Cookie;
-      return cookie != null &&
-             _name.Equals (cookie.Name, StringComparison.InvariantCultureIgnoreCase) &&
-             _value.Equals (cookie.Value, StringComparison.InvariantCulture) &&
-             _path.Equals (cookie.Path, StringComparison.InvariantCulture) &&
-             _domain.Equals (cookie.Domain, StringComparison.InvariantCultureIgnoreCase) &&
-             _version == cookie.Version;
+      return cookie != null
+             && _name.Equals (
+                  cookie._name, StringComparison.InvariantCultureIgnoreCase
+                )
+             && _value.Equals (
+                  cookie._value, StringComparison.InvariantCulture
+                )
+             && _path.Equals (
+                  cookie._path, StringComparison.InvariantCulture
+                )
+             && _domain.Equals (
+                  cookie._domain, StringComparison.InvariantCultureIgnoreCase
+                )
+             && _version == cookie._version;
     }
 
     /// <summary>
