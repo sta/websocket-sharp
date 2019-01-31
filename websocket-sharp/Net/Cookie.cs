@@ -764,15 +764,21 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Determines whether the specified <see cref="Object"/> is equal to the current
-    /// <see cref="Cookie"/>.
+    /// Determines whether the current cookie instance is equal to
+    /// the specified <see cref="object"/> instance.
     /// </summary>
     /// <param name="comparand">
-    /// An <see cref="Object"/> to compare with the current <see cref="Cookie"/>.
+    ///   <para>
+    ///   An <see cref="object"/> instance to compare with
+    ///   the current cookie instance.
+    ///   </para>
+    ///   <para>
+    ///   An reference to a <see cref="Cookie"/> instance.
+    ///   </para>
     /// </param>
     /// <returns>
-    /// <c>true</c> if <paramref name="comparand"/> is equal to the current <see cref="Cookie"/>;
-    /// otherwise, <c>false</c>.
+    /// <c>true</c> if the current cookie instance is equal to
+    /// <paramref name="comparand"/>; otherwise, <c>false</c>.
     /// </returns>
     public override bool Equals (object comparand)
     {
