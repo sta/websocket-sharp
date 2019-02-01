@@ -808,11 +808,12 @@ namespace WebSocketSharp.Net
     public override int GetHashCode ()
     {
       return hash (
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
-        _value.GetHashCode (),
-        _path.GetHashCode (),
-        StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
-        _version);
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_name),
+               _value.GetHashCode (),
+               _path.GetHashCode (),
+               StringComparer.InvariantCultureIgnoreCase.GetHashCode (_domain),
+               _version
+             );
     }
 
     /// <summary>
