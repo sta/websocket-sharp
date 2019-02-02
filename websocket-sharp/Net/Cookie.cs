@@ -800,10 +800,10 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Serves as a hash function for a <see cref="Cookie"/> object.
+    /// Gets a hash code for the current cookie instance.
     /// </summary>
     /// <returns>
-    /// An <see cref="int"/> that represents the hash code for the current <see cref="Cookie"/>.
+    /// An <see cref="int"/> that represents the hash code.
     /// </returns>
     public override int GetHashCode ()
     {
