@@ -817,14 +817,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Returns a <see cref="string"/> that represents the current <see cref="Cookie"/>.
+    /// Returns a string that represents the current cookie instance.
     /// </summary>
-    /// <remarks>
-    /// This method returns a <see cref="string"/> to use to send an HTTP Cookie to
-    /// an origin server.
-    /// </remarks>
     /// <returns>
-    /// A <see cref="string"/> that represents the current <see cref="Cookie"/>.
+    /// A <see cref="string"/> to use to send an HTTP cookie to
+    /// an origin server.
     /// </returns>
     public override string ToString ()
     {
