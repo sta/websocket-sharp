@@ -820,14 +820,10 @@ namespace WebSocketSharp.Net
     /// Returns a string that represents the current cookie instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="string"/> to use to send an HTTP cookie to
-    /// an origin server.
+    /// A <see cref="string"/> that is suitable for the Cookie request header.
     /// </returns>
     public override string ToString ()
     {
-      // i.e., only used for clients
-      // See para 4.2.2 of RFC 2109 and para 3.3.4 of RFC 2965
-      // See also bug #316017
       return ToRequestString (null);
     }
 
