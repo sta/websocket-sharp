@@ -755,7 +755,11 @@ namespace WebSocketSharp.Net
     internal string ToResponseString ()
     {
       return _name.Length > 0
-             ? (_version == 0 ? toResponseStringVersion0 () : toResponseStringVersion1 ())
+             ? (
+                 _version == 0
+                 ? toResponseStringVersion0 ()
+                 : toResponseStringVersion1 ()
+               )
              : String.Empty;
     }
 
