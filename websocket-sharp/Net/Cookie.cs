@@ -754,13 +754,11 @@ namespace WebSocketSharp.Net
     // From server to client
     internal string ToResponseString ()
     {
-      return _name.Length > 0
-             ? (
-                 _version == 0
-                 ? toResponseStringVersion0 ()
-                 : toResponseStringVersion1 ()
-               )
-             : String.Empty;
+      return _name.Length == 0
+             ? String.Empty
+             : _version == 0
+               ? toResponseStringVersion0 ()
+               : toResponseStringVersion1 ();
     }
 
     #endregion
