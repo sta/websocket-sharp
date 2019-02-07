@@ -727,28 +727,30 @@ namespace WebSocketSharp.Net
       if (_version == 0)
         return String.Format ("{0}={1}", _name, _value);
 
-      var output = new StringBuilder (64);
-      output.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
+      var buff = new StringBuilder (64);
+
+      buff.AppendFormat ("$Version={0}; {1}={2}", _version, _name, _value);
 
       if (!_path.IsNullOrEmpty ())
-        output.AppendFormat ("; $Path={0}", _path);
+        buff.AppendFormat ("; $Path={0}", _path);
       else if (uri != null)
-        output.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
+        buff.AppendFormat ("; $Path={0}", uri.GetAbsolutePath ());
       else
-        output.Append ("; $Path=/");
+        buff.Append ("; $Path=/");
 
-      var appendDomain = uri == null || uri.Host != _domain;
-      if (appendDomain && !_domain.IsNullOrEmpty ())
-        output.AppendFormat ("; $Domain={0}", _domain);
-
-      if (!_port.IsNullOrEmpty ()) {
-        if (_port == "\"\"")
-          output.Append ("; $Port");
-        else
-          output.AppendFormat ("; $Port={0}", _port);
+      if (!_domain.IsNullOrEmpty ()) {
+        if (uri == null || uri.Host != _domain)
+          buff.AppendFormat ("; $Domain={0}", _domain);
       }
 
-      return output.ToString ();
+      if (!_port.IsNullOrEmpty ()) {
+        if (_port != "\"\"")
+          buff.AppendFormat ("; $Port={0}", _port);
+        else
+          buff.Append ("; $Port");
+      }
+
+      return buff.ToString ();
     }
 
     // From server to client
