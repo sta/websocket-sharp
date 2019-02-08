@@ -623,29 +623,33 @@ namespace WebSocketSharp.Net
 
     private string toResponseStringVersion0 ()
     {
-      var output = new StringBuilder (64);
-      output.AppendFormat ("{0}={1}", _name, _value);
+      var buff = new StringBuilder (64);
 
-      if (_expires != DateTime.MinValue)
-        output.AppendFormat (
+      buff.AppendFormat ("{0}={1}", _name, _value);
+
+      if (_expires != DateTime.MinValue) {
+        buff.AppendFormat (
           "; Expires={0}",
           _expires.ToUniversalTime ().ToString (
             "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'",
-            CultureInfo.CreateSpecificCulture ("en-US")));
+            CultureInfo.CreateSpecificCulture ("en-US")
+          )
+        );
+      }
 
       if (!_path.IsNullOrEmpty ())
-        output.AppendFormat ("; Path={0}", _path);
+        buff.AppendFormat ("; Path={0}", _path);
 
       if (!_domain.IsNullOrEmpty ())
-        output.AppendFormat ("; Domain={0}", _domain);
+        buff.AppendFormat ("; Domain={0}", _domain);
 
       if (_secure)
-        output.Append ("; Secure");
+        buff.Append ("; Secure");
 
       if (_httpOnly)
-        output.Append ("; HttpOnly");
+        buff.Append ("; HttpOnly");
 
-      return output.ToString ();
+      return buff.ToString ();
     }
 
     private string toResponseStringVersion1 ()
