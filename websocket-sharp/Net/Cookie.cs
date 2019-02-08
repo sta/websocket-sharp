@@ -668,9 +668,10 @@ namespace WebSocketSharp.Net
         buff.AppendFormat ("; Domain={0}", _domain);
 
       if (!_port.IsNullOrEmpty ()) {
-        buff.Append (
-          _port != "\"\"" ? String.Format ("; Port={0}", _port) : "; Port"
-        );
+        if (_port != "\"\"")
+          buff.AppendFormat ("; Port={0}", _port);
+        else
+          buff.Append ("; Port");
       }
 
       if (!_comment.IsNullOrEmpty ())
