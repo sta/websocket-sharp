@@ -723,7 +723,6 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
-    // From client to server
     internal string ToRequestString (Uri uri)
     {
       if (_name.Length == 0)
