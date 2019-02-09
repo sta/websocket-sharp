@@ -757,7 +757,13 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
-    // From server to client
+    /// <summary>
+    /// Returns a string that represents the current cookie instance.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="string"/> that is suitable for the Set-Cookie response
+    /// header.
+    /// </returns>
     internal string ToResponseString ()
     {
       return _name.Length == 0
