@@ -614,11 +614,11 @@ namespace WebSocketSharp.Net
 
     private static int hash (int i, int j, int k, int l, int m)
     {
-      return i ^
-             (j << 13 | j >> 19) ^
-             (k << 26 | k >>  6) ^
-             (l <<  7 | l >> 25) ^
-             (m << 20 | m >> 12);
+      return i
+             ^ (j << 13 | j >> 19)
+             ^ (k << 26 | k >>  6)
+             ^ (l <<  7 | l >> 25)
+             ^ (m << 20 | m >> 12);
     }
 
     private string toResponseStringVersion0 ()
