@@ -699,6 +699,29 @@ namespace WebSocketSharp.Net
       return buff.ToString ();
     }
 
+    private static bool tryCreatePorts (string value, out int[] result)
+    {
+      result = null;
+
+      var ports = value.Trim ('"').Split (',');
+      var len = ports.Length;
+      var res = new int[len];
+
+      for (var i = 0; i < len; i++) {
+        var port = ports[i].Trim ();
+        if (port.Length == 0) {
+          res[i] = Int32.MinValue;
+          continue;
+        }
+
+        if (!Int32.TryParse (port, out res[i]))
+          return false;
+      }
+
+      result = res;
+      return true;
+    }
+
     private static bool tryCreatePorts (string value, out int[] result, out string parseError)
     {
       var ports = value.Trim ('"').Split (',');
