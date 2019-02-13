@@ -479,13 +479,8 @@ namespace WebSocketSharp.Net
             "The value specified for the Port attribute isn't enclosed in double quotes.");
 
         int[] ports;
-        string err;
-        if (!tryCreatePorts (value, out ports, out err)) {
-          var msg = String.Format (
-                      "The value specified for the Port attribute contains an invalid value: {0}",
-                      err
-                    );
-
+        if (!tryCreatePorts (value, out ports)) {
+          var msg = "The value specified for the Port attribute contains an invalid value.";
           throw new CookieException (msg);
         }
 
