@@ -474,13 +474,14 @@ namespace WebSocketSharp.Net
           return;
         }
 
-        if (!value.IsEnclosedIn ('"'))
-          throw new CookieException (
-            "The value specified for the Port attribute isn't enclosed in double quotes.");
+        if (!value.IsEnclosedIn ('"')) {
+          var msg = "The value is not enclosed in double quotes.";
+          throw new CookieException (msg);
+        }
 
         int[] ports;
         if (!tryCreatePorts (value, out ports)) {
-          var msg = "The value specified for the Port attribute contains an invalid value.";
+          var msg = "The value could not be parsed.";
           throw new CookieException (msg);
         }
 
