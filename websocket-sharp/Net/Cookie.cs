@@ -455,11 +455,25 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Port attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the list of TCP ports to which the cookie applies.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the list of TCP ports
+    ///   that the cookie applies to.
+    ///   </para>
+    ///   <para>
+    ///   The default value is an empty string.
+    ///   </para>
     /// </value>
     /// <exception cref="CookieException">
-    /// The value specified for a set operation isn't enclosed in double quotes or
-    /// couldn't be parsed.
+    ///   <para>
+    ///   The value specified for a set operation is not enclosed in
+    ///   double quotes.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation could not be parsed.
+    ///   </para>
     /// </exception>
     public string Port {
       get {
