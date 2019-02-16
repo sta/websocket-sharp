@@ -732,32 +732,6 @@ namespace WebSocketSharp.Net
       return true;
     }
 
-    private static bool tryCreatePorts (string value, out int[] result, out string parseError)
-    {
-      var ports = value.Trim ('"').Split (',');
-      var len = ports.Length;
-      var res = new int[len];
-      for (var i = 0; i < len; i++) {
-        res[i] = Int32.MinValue;
-
-        var port = ports[i].Trim ();
-        if (port.Length == 0)
-          continue;
-
-        if (!Int32.TryParse (port, out res[i])) {
-          result = new int[0];
-          parseError = port;
-
-          return false;
-        }
-      }
-
-      result = res;
-      parseError = String.Empty;
-
-      return true;
-    }
-
     #endregion
 
     #region Internal Methods
