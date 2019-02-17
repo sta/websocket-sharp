@@ -713,18 +713,18 @@ namespace WebSocketSharp.Net
     {
       result = null;
 
-      var ports = value.Trim ('"').Split (',');
-      var len = ports.Length;
+      var arr = value.Trim ('"').Split (',');
+      var len = arr.Length;
       var res = new int[len];
 
       for (var i = 0; i < len; i++) {
-        var port = ports[i].Trim ();
-        if (port.Length == 0) {
+        var s = arr[i].Trim ();
+        if (s.Length == 0) {
           res[i] = Int32.MinValue;
           continue;
         }
 
-        if (!Int32.TryParse (port, out res[i]))
+        if (!Int32.TryParse (s, out res[i]))
           return false;
       }
 
