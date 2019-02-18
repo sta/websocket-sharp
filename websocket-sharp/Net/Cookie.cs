@@ -109,7 +109,6 @@ namespace WebSocketSharp.Net
       _name = String.Empty;
       _path = String.Empty;
       _port = String.Empty;
-      _ports = new int[0];
       _timestamp = DateTime.Now;
       _value = String.Empty;
       _version = 0;
@@ -272,7 +271,7 @@ namespace WebSocketSharp.Net
 
     internal int[] Ports {
       get {
-        return _ports;
+        return _ports ?? _emptyPorts;
       }
     }
 
@@ -485,7 +484,7 @@ namespace WebSocketSharp.Net
       set { 
         if (value.IsNullOrEmpty ()) {
           _port = String.Empty;
-          _ports = new int[0];
+          _ports = null;
 
           return;
         }
