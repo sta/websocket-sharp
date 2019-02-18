@@ -69,6 +69,7 @@ namespace WebSocketSharp.Net
     private Uri                    _commentUri;
     private bool                   _discard;
     private string                 _domain;
+    private static readonly int[]  _emptyPorts;
     private DateTime               _expires;
     private bool                   _httpOnly;
     private string                 _name;
@@ -88,6 +89,7 @@ namespace WebSocketSharp.Net
 
     static Cookie ()
     {
+      _emptyPorts = new int[0];
       _reservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
       _reservedCharsForValue = new[] { ';', ',' };
     }
