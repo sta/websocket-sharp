@@ -108,7 +108,6 @@ namespace WebSocketSharp.Net
       _expires = DateTime.MinValue;
       _name = String.Empty;
       _path = String.Empty;
-      _port = String.Empty;
       _timestamp = DateTime.Now;
       _value = String.Empty;
       _version = 0;
@@ -478,12 +477,12 @@ namespace WebSocketSharp.Net
     /// </exception>
     public string Port {
       get {
-        return _port;
+        return _port ?? String.Empty;
       }
 
       set { 
         if (value.IsNullOrEmpty ()) {
-          _port = String.Empty;
+          _port = value;
           _ports = null;
 
           return;
