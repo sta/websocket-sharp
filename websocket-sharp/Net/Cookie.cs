@@ -281,7 +281,13 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Comment attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the comment to document intended use of the cookie.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the comment to document
+    ///   intended use of the cookie.
+    ///   </para>
+    ///   <para>
+    ///   The default value is an empty string.
+    ///   </para>
     /// </value>
     public string Comment {
       get {
