@@ -103,7 +103,6 @@ namespace WebSocketSharp.Net
     /// </summary>
     public Cookie ()
     {
-      _comment = String.Empty;
       _domain = String.Empty;
       _expires = DateTime.MinValue;
       _name = String.Empty;
@@ -286,11 +285,11 @@ namespace WebSocketSharp.Net
     /// </value>
     public string Comment {
       get {
-        return _comment;
+        return _comment ?? String.Empty;
       }
 
       set {
-        _comment = value ?? String.Empty;
+        _comment = value;
       }
     }
 
