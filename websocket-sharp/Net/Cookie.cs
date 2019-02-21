@@ -303,8 +303,16 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the CommentURL attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="Uri"/> that represents the URI that provides the comment to document intended
-    /// use of the cookie.
+    ///   <para>
+    ///   A <see cref="Uri"/> that represents the URI that provides
+    ///   the comment to document intended use of the cookie.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if this attribute is not needed.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see langword="null"/>.
+    ///   </para>
     /// </value>
     public Uri CommentUri {
       get {
