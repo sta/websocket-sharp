@@ -286,6 +286,9 @@ namespace WebSocketSharp.Net
     ///   intended use of the cookie.
     ///   </para>
     ///   <para>
+    ///   An empty string if this attribute is not needed.
+    ///   </para>
+    ///   <para>
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
