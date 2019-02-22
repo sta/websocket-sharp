@@ -328,12 +328,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the client discards the cookie unconditionally
-    /// when the client terminates.
+    /// Gets or sets a value indicating whether the client discards the cookie
+    /// unconditionally when the client terminates.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the client discards the cookie unconditionally when the client terminates;
-    /// otherwise, <c>false</c>. The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the client discards the cookie unconditionally
+    ///   when the client terminates; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool Discard {
       get {
