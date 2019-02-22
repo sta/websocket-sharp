@@ -394,8 +394,16 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Expires attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the date and time at which the cookie expires.
-    /// The default value is <see cref="DateTime.MinValue"/>.
+    ///   <para>
+    ///   A <see cref="DateTime"/> that represents the date and time that
+    ///   the cookie expires on.
+    ///   </para>
+    ///   <para>
+    ///   <see cref="DateTime.MinValue"/> if this attribute is not needed.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <see cref="DateTime.MinValue"/>.
+    ///   </para>
     /// </value>
     public DateTime Expires {
       get {
