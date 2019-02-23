@@ -420,11 +420,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether non-HTTP APIs can access the cookie.
+    /// Gets or sets a value indicating whether non-HTTP APIs can access
+    /// the cookie.
     /// </summary>
     /// <value>
-    /// <c>true</c> if non-HTTP APIs cannot access the cookie; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if non-HTTP APIs cannot access the cookie; otherwise,
+    ///   <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool HttpOnly {
       get {
