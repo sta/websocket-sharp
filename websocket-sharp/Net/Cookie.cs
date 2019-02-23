@@ -377,8 +377,12 @@ namespace WebSocketSharp.Net
     /// Gets or sets a value indicating whether the cookie has expired.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool Expired {
       get {
