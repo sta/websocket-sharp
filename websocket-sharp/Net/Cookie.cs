@@ -499,6 +499,9 @@ namespace WebSocketSharp.Net
     ///   that the cookie applies to.
     ///   </para>
     ///   <para>
+    ///   An empty string if this attribute is not needed.
+    ///   </para>
+    ///   <para>
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
