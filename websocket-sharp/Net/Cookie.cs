@@ -547,15 +547,21 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the security level of the cookie is secure.
+    /// Gets or sets a value indicating whether the security level of
+    /// the cookie is secure.
     /// </summary>
     /// <remarks>
-    /// When this property is <c>true</c>, the cookie may be included in the HTTP request
-    /// only if the request is transmitted over the HTTPS.
+    /// When this property is <c>true</c>, the cookie may be included in
+    /// the request only if the request is transmitted over HTTPS.
     /// </remarks>
     /// <value>
-    /// <c>true</c> if the security level of the cookie is secure; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the security level of the cookie is secure;
+    ///   otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool Secure {
       get {
