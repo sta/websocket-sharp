@@ -577,7 +577,8 @@ namespace WebSocketSharp.Net
     /// Gets the time when the cookie was issued.
     /// </summary>
     /// <value>
-    /// A <see cref="DateTime"/> that represents the time when the cookie was issued.
+    /// A <see cref="DateTime"/> that represents the time when
+    /// the cookie was issued.
     /// </value>
     public DateTime TimeStamp {
       get {
