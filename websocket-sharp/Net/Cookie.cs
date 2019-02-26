@@ -79,7 +79,7 @@ namespace WebSocketSharp.Net
     private static readonly char[] _reservedCharsForName;
     private static readonly char[] _reservedCharsForValue;
     private bool                   _secure;
-    private DateTime               _timestamp;
+    private DateTime               _timeStamp;
     private string                 _value;
     private int                    _version;
 
@@ -107,7 +107,7 @@ namespace WebSocketSharp.Net
       _expires = DateTime.MinValue;
       _name = String.Empty;
       _path = String.Empty;
-      _timestamp = DateTime.Now;
+      _timeStamp = DateTime.Now;
       _value = String.Empty;
       _version = 0;
     }
@@ -582,7 +582,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public DateTime TimeStamp {
       get {
-        return _timestamp;
+        return _timeStamp;
       }
     }
 
