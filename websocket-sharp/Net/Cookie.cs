@@ -635,7 +635,7 @@ namespace WebSocketSharp.Net
 
       set {
         if (value < 0 || value > 1)
-          throw new ArgumentOutOfRangeException ("value", "Not 0 or 1.");
+          throw new ArgumentOutOfRangeException ("value", "Not allowed.");
 
         _version = value;
       }
