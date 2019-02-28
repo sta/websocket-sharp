@@ -109,7 +109,6 @@ namespace WebSocketSharp.Net
       _path = String.Empty;
       _timeStamp = DateTime.Now;
       _value = String.Empty;
-      _version = 0;
     }
 
     /// <summary>
