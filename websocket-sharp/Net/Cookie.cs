@@ -622,11 +622,19 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Version attribute of the cookie.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the version of the HTTP state management
-    /// to which the cookie conforms.
+    ///   <para>
+    ///   An <see cref="int"/> that represents the version of HTTP state
+    ///   management that the cookie conforms to.
+    ///   </para>
+    ///   <para>
+    ///   0 or 1.
+    ///   </para>
+    ///   <para>
+    ///   The default value is 0.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The value specified for a set operation isn't 0 or 1.
+    /// The value specified for a set operation is not allowed.
     /// </exception>
     public int Version {
       get {
