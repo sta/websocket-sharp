@@ -361,14 +361,8 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        if (value.IsNullOrEmpty ()) {
-          _domain = String.Empty;
-          ExactDomain = true;
-        }
-        else {
-          _domain = value;
-          ExactDomain = value[0] != '.';
-        }
+        _domain = value ?? String.Empty;
+        ExactDomain = _domain.Length == 0 || _domain[0] != '.';
       }
     }
 
