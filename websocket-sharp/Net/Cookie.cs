@@ -247,7 +247,9 @@ namespace WebSocketSharp.Net
     #region Internal Properties
 
     internal bool ExactDomain {
-      get; set;
+      get {
+        return _domain.Length == 0 || _domain[0] != '.';
+      }
     }
 
     internal int MaxAge {
@@ -362,7 +364,6 @@ namespace WebSocketSharp.Net
 
       set {
         _domain = value ?? String.Empty;
-        ExactDomain = _domain.Length == 0 || _domain[0] != '.';
       }
     }
 
