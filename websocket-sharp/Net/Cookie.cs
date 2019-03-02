@@ -355,7 +355,13 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Domain attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the URI for which the cookie is valid.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the domain name that
+    ///   the cookie is valid for.
+    ///   </para>
+    ///   <para>
+    ///   An empty string if this attribute is not needed.
+    ///   </para>
     /// </value>
     public string Domain {
       get {
