@@ -477,8 +477,8 @@ namespace WebSocketSharp.Net
     /// Gets or sets the value of the Path attribute of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the subset of URI on the origin server
-    /// to which the cookie applies.
+    /// A <see cref="string"/> that represents the subset of URI on
+    /// the origin server that the cookie applies to.
     /// </value>
     public string Path {
       get {
