@@ -694,6 +694,17 @@ namespace WebSocketSharp.Net
              ^ (m << 20 | m >> 12);
     }
 
+    private void init (string name, string value, string path, string domain)
+    {
+      _name = name;
+      _value = value;
+      _path = path;
+      _domain = domain;
+
+      _expires = DateTime.MinValue;
+      _timeStamp = DateTime.Now;
+    }
+
     private string toResponseStringVersion0 ()
     {
       var buff = new StringBuilder (64);
