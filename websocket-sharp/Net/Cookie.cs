@@ -237,9 +237,29 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     public Cookie (string name, string value, string path, string domain)
-      : this (name, value, path)
     {
-      Domain = domain;
+      if (name == null)
+        throw new ArgumentNullException ("name");
+
+      if (value == null)
+        throw new ArgumentNullException ("value");
+
+      if (name.Length == 0)
+        throw new ArgumentException ("An empty string.", "name");
+
+      if (name[0] == '$' || name.Contains (_reservedCharsForName)) {
+        var msg = "It contains an invalid character.";
+        throw new ArgumentException (msg, "name");
+      }
+
+      if (value.Contains (_reservedCharsForValue)) {
+        if (!value.IsEnclosedIn ('"')) {
+          var msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "value");
+        }
+      }
+
+      init (name, value, path ?? String.Empty, domain ?? String.Empty);
     }
 
     #endregion
