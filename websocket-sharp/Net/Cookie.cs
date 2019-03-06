@@ -247,14 +247,19 @@ namespace WebSocketSharp.Net
       if (name.Length == 0)
         throw new ArgumentException ("An empty string.", "name");
 
-      if (name[0] == '$' || name.Contains (_reservedCharsForName)) {
+      if (name[0] == '$') {
+        var msg = "It starts with a dollar sign.";
+        throw new ArgumentException (msg, "name");
+      }
+
+      if (name.Contains (_reservedCharsForName)) {
         var msg = "It contains an invalid character.";
         throw new ArgumentException (msg, "name");
       }
 
       if (value.Contains (_reservedCharsForValue)) {
         if (!value.IsEnclosedIn ('"')) {
-          var msg = "It contains an invalid character.";
+          var msg = "A string not enclosed in double quotes.";
           throw new ArgumentException (msg, "value");
         }
       }
