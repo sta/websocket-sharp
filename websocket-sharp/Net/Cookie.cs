@@ -196,25 +196,43 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Cookie"/> class with the specified
-    /// <paramref name="name"/>, <paramref name="value"/>, <paramref name="path"/>, and
-    /// <paramref name="domain"/>.
+    /// Initializes a new instance of the <see cref="Cookie"/> class with
+    /// the specified name, value, path, and domain.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the Name of the cookie.
+    /// A <see cref="string"/> that specifies the Name of the cookie.
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that represents the Value of the cookie.
+    /// A <see cref="string"/> that specifies the Value of the cookie.
     /// </param>
     /// <param name="path">
-    /// A <see cref="string"/> that represents the value of the Path attribute of the cookie.
+    /// A <see cref="string"/> that specifies the value of the Path
+    /// attribute of the cookie.
     /// </param>
     /// <param name="domain">
-    /// A <see cref="string"/> that represents the value of the Domain attribute of the cookie.
+    /// A <see cref="string"/> that specifies the value of the Domain
+    /// attribute of the cookie.
     /// </param>
-    /// <exception cref="CookieException">
+    /// <exception cref="ArgumentNullException">
     ///   <para>
-    ///   <paramref name="name"/> is <see langword="null"/> or empty.
+    ///   <paramref name="name"/> is <see langword="null"/>.
+    ///   </para>
+    ///   <para>
+    ///   - or -
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="value"/> is <see langword="null"/>.
+    ///   </para>
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///   <para>
+    ///   <paramref name="name"/> is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   - or -
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="name"/> starts with a dollar sign.
     ///   </para>
     ///   <para>
     ///   - or -
@@ -226,13 +244,7 @@ namespace WebSocketSharp.Net
     ///   - or -
     ///   </para>
     ///   <para>
-    ///   <paramref name="value"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   - or -
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="value"/> contains a string not enclosed in double quotes
+    ///   <paramref name="value"/> is a string not enclosed in double quotes
     ///   that contains an invalid character.
     ///   </para>
     /// </exception>
