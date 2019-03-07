@@ -141,10 +141,8 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </exception>
     public Cookie (string name, string value)
-      : this ()
+      : this (name, value, String.Empty, String.Empty)
     {
-      Name = name;
-      Value = value;
     }
 
     /// <summary>
