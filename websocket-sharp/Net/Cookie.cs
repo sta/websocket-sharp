@@ -103,12 +103,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     public Cookie ()
     {
-      _domain = String.Empty;
-      _expires = DateTime.MinValue;
-      _name = String.Empty;
-      _path = String.Empty;
-      _timeStamp = DateTime.Now;
-      _value = String.Empty;
+      init (String.Empty, String.Empty, String.Empty, String.Empty);
     }
 
     /// <summary>
