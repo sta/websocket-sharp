@@ -106,6 +106,7 @@
     <Compile Include="Net\HttpHeaderInfo.cs" />
     <Compile Include="CompressionMethod.cs" />
     <Compile Include="WebSocketException.cs" />
+    <Compile Include="ThrottledStream.cs" />
     <Compile Include="LogData.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Logger.cs" />
