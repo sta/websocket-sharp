@@ -141,7 +141,7 @@ namespace WebSocketSharp
     ///   <c>Int32.MaxValue - 14</c> inclusive.
     ///   </para>
     /// </remarks>
-    internal static readonly int FragmentLength;
+    public static int FragmentLength { get; set; }
 
     /// <summary>
     /// Represents the random number generator used internally.
