@@ -517,9 +517,21 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        string msg;
-        if (!canSetName (value, out msg))
-          throw new CookieException (msg);
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Length == 0)
+          throw new ArgumentException ("An empty string.", "value");
+
+        if (value[0] == '$') {
+          var msg = "It starts with a dollar sign.";
+          throw new ArgumentException (msg, "value");
+        }
+
+        if (value.Contains (_reservedCharsForName)) {
+          var msg = "It contains an invalid character.";
+          throw new ArgumentException (msg, "value");
+        }
 
         _name = value;
       }
