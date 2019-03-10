@@ -500,9 +500,18 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="string"/> that represents the Name of the cookie.
     /// </value>
-    /// <exception cref="CookieException">
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
     ///   <para>
-    ///   The value specified for a set operation is <see langword="null"/> or empty.
+    ///   The value specified for a set operation is an empty string.
+    ///   </para>
+    ///   <para>
+    ///   - or -
+    ///   </para>
+    ///   <para>
+    ///   The value specified for a set operation starts with a dollar sign.
     ///   </para>
     ///   <para>
     ///   - or -
