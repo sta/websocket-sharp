@@ -683,9 +683,15 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        string msg;
-        if (!canSetValue (value, out msg))
-          throw new CookieException (msg);
+        if (value == null)
+          throw new ArgumentNullException ("value");
+
+        if (value.Contains (_reservedCharsForValue)) {
+          if (!value.IsEnclosedIn ('"')) {
+            var msg = "A string not enclosed in double quotes.";
+            throw new ArgumentException (msg, "value");
+          }
+        }
 
         _value = value.Length > 0 ? value : "\"\"";
       }
