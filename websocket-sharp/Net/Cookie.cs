@@ -665,17 +665,12 @@ namespace WebSocketSharp.Net
     /// <value>
     /// A <see cref="string"/> that represents the Value of the cookie.
     /// </value>
-    /// <exception cref="CookieException">
-    ///   <para>
-    ///   The value specified for a set operation is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   - or -
-    ///   </para>
-    ///   <para>
-    ///   The value specified for a set operation contains a string not enclosed in double quotes
-    ///   that contains an invalid character.
-    ///   </para>
+    /// <exception cref="ArgumentNullException">
+    /// The value specified for a set operation is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The value specified for a set operation is a string not enclosed in
+    /// double quotes that contains an invalid character.
     /// </exception>
     public string Value {
       get {
