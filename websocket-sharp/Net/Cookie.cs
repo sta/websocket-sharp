@@ -291,7 +291,12 @@ namespace WebSocketSharp.Net
         }
       }
 
-      init (name, value, path ?? String.Empty, domain ?? String.Empty);
+      init (
+        name,
+        value.Length > 0 ? value : "\"\"",
+        path ?? String.Empty,
+        domain ?? String.Empty
+      );
     }
 
     #endregion
