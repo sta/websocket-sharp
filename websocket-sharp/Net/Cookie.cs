@@ -103,7 +103,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     public Cookie ()
     {
-      init (String.Empty, String.Empty, String.Empty, String.Empty);
+      init (String.Empty, "\"\"", String.Empty, String.Empty);
     }
 
     /// <summary>
