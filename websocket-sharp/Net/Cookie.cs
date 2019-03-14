@@ -583,7 +583,7 @@ namespace WebSocketSharp.Net
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
-    /// <exception cref="CookieException">
+    /// <exception cref="ArgumentException">
     ///   <para>
     ///   The value specified for a set operation is not enclosed in
     ///   double quotes.
