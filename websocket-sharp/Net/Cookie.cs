@@ -609,14 +609,14 @@ namespace WebSocketSharp.Net
         }
 
         if (!value.IsEnclosedIn ('"')) {
-          var msg = "The value is not enclosed in double quotes.";
-          throw new CookieException (msg);
+          var msg = "A string not enclosed in double quotes.";
+          throw new ArgumentException (msg, "value");
         }
 
         int[] ports;
         if (!tryCreatePorts (value, out ports)) {
-          var msg = "The value could not be parsed.";
-          throw new CookieException (msg);
+          var msg = "It could not be parsed.";
+          throw new ArgumentException (msg, "value");
         }
 
         _port = value;
