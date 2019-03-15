@@ -609,7 +609,7 @@ namespace WebSocketSharp.Net
         }
 
         if (!value.IsEnclosedIn ('"')) {
-          var msg = "A string not enclosed in double quotes.";
+          var msg = "It is not enclosed in double quotes.";
           throw new ArgumentException (msg, "value");
         }
 
