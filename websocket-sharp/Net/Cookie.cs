@@ -734,22 +734,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool canSetValue (string value, out string message)
-    {
-      if (value == null) {
-        message = "The value specified for the Value is null.";
-        return false;
-      }
-
-      if (value.Contains (_reservedCharsForValue) && !value.IsEnclosedIn ('"')) {
-        message = "The value specified for the Value contains an invalid character.";
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
-    }
-
     private static int hash (int i, int j, int k, int l, int m)
     {
       return i
