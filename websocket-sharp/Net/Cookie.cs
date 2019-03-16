@@ -734,22 +734,6 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
-    private static bool canSetName (string name, out string message)
-    {
-      if (name.IsNullOrEmpty ()) {
-        message = "The value specified for the Name is null or empty.";
-        return false;
-      }
-
-      if (name[0] == '$' || name.Contains (_reservedCharsForName)) {
-        message = "The value specified for the Name contains an invalid character.";
-        return false;
-      }
-
-      message = String.Empty;
-      return true;
-    }
-
     private static bool canSetValue (string value, out string message)
     {
       if (value == null) {
