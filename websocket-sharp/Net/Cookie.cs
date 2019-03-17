@@ -47,17 +47,31 @@ using System.Text;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides a set of methods and properties used to manage an HTTP Cookie.
+  /// Provides a set of methods and properties used to manage an HTTP cookie.
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   The Cookie class supports the following cookie formats:
-  ///   <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>,
-  ///   <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see>, and
-  ///   <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>
+  ///   This class supports the following cookie formats:
   ///   </para>
+  ///   <list type="bullet">
+  ///     <item>
+  ///       <term>
+  ///       <see href="http://web.archive.org/web/20020803110822/http://wp.netscape.com/newsref/std/cookie_spec.html">Netscape specification</see>
+  ///       </term>
+  ///     </item>
+  ///     <item>
+  ///       <term>
+  ///       <see href="http://www.ietf.org/rfc/rfc2109.txt">RFC 2109</see>
+  ///       </term>
+  ///     </item>
+  ///     <item>
+  ///       <term>
+  ///       <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>
+  ///       </term>
+  ///     </item>
+  ///   </list>
   ///   <para>
-  ///   The Cookie class cannot be inherited.
+  ///   This class cannot be inherited.
   ///   </para>
   /// </remarks>
   [Serializable]
