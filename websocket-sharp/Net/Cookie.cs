@@ -51,7 +51,7 @@ namespace WebSocketSharp.Net
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///   This class supports the following cookie formats:
+  ///   This class refers to the following specifications:
   ///   </para>
   ///   <list type="bullet">
   ///     <item>
