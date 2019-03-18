@@ -66,7 +66,7 @@ namespace WebSocketSharp.Net
   ///     </item>
   ///     <item>
   ///       <term>
-  ///       <see href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</see>
+  ///       <see href="https://tools.ietf.org/html/rfc2965">RFC 2965</see>
   ///       </term>
   ///     </item>
   ///   </list>
