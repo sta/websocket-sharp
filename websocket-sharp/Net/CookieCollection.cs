@@ -190,7 +190,7 @@ namespace WebSocketSharp.Net
     /// <value>
     /// An <see cref="Object"/> used to synchronize access to the collection.
     /// </value>
-    public Object SyncRoot {
+    public object SyncRoot {
       get {
         return _sync;
       }
