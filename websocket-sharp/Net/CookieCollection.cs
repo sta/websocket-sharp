@@ -68,6 +68,7 @@ namespace WebSocketSharp.Net
     public CookieCollection ()
     {
       _list = new List<Cookie> ();
+      _sync = ((ICollection) _list).SyncRoot;
     }
 
     #endregion
@@ -191,7 +192,7 @@ namespace WebSocketSharp.Net
     /// </value>
     public Object SyncRoot {
       get {
-        return _sync ?? (_sync = ((ICollection) _list).SyncRoot);
+        return _sync;
       }
     }
 
