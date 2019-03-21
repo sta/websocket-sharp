@@ -176,9 +176,12 @@ namespace WebSocketSharp.Net
         if (name == null)
           throw new ArgumentNullException ("name");
 
-        foreach (var cookie in Sorted)
-          if (cookie.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase))
+        var compType = StringComparison.InvariantCultureIgnoreCase;
+
+        foreach (var cookie in Sorted) {
+          if (cookie.Name.Equals (name, compType))
             return cookie;
+        }
 
         return null;
       }
