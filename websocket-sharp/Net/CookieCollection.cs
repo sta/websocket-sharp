@@ -188,7 +188,7 @@ namespace WebSocketSharp.Net
     /// Gets an object used to synchronize access to the collection.
     /// </summary>
     /// <value>
-    /// An <see cref="Object"/> used to synchronize access to the collection.
+    /// An <see cref="object"/> used to synchronize access to the collection.
     /// </value>
     public object SyncRoot {
       get {
