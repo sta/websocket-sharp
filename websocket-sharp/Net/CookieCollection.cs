@@ -159,14 +159,18 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the <see cref="Cookie"/> with the specified <paramref name="name"/> from
-    /// the collection.
+    /// Gets the cookie with the specified name from the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="Cookie"/> with the specified <paramref name="name"/> in the collection.
+    ///   <para>
+    ///   A <see cref="Cookie"/> with the specified name in the collection.
+    ///   </para>
+    ///   <para>
+    ///   <see langword="null"/> if not found.
+    ///   </para>
     /// </value>
     /// <param name="name">
-    /// A <see cref="string"/> that represents the name of the <see cref="Cookie"/> to find.
+    /// A <see cref="string"/> that specifies the name of the cookie to find.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="name"/> is <see langword="null"/>.
