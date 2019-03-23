@@ -136,18 +136,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the <see cref="Cookie"/> at the specified <paramref name="index"/> from
-    /// the collection.
+    /// Gets the cookie at the specified index from the collection.
     /// </summary>
     /// <value>
-    /// A <see cref="Cookie"/> at the specified <paramref name="index"/> in the collection.
+    /// A <see cref="Cookie"/> at the specified index in the collection.
     /// </value>
     /// <param name="index">
-    /// An <see cref="int"/> that represents the zero-based index of the <see cref="Cookie"/>
+    /// An <see cref="int"/> that specifies the zero-based index of the cookie
     /// to find.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> is out of allowable range of indexes for the collection.
+    /// <paramref name="index"/> is out of allowable range for the collection.
     /// </exception>
     public Cookie this[int index] {
       get {
