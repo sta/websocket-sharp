@@ -123,11 +123,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets a value indicating whether the access to the collection is thread safe.
+    /// Gets a value indicating whether the access to the collection is
+    /// thread safe.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the access to the collection is thread safe; otherwise, <c>false</c>.
-    /// The default value is <c>false</c>.
+    ///   <para>
+    ///   <c>true</c> if the access to the collection is thread safe;
+    ///   otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>false</c>.
+    ///   </para>
     /// </value>
     public bool IsSynchronized {
       get {
