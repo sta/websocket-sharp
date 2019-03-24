@@ -111,12 +111,14 @@ namespace WebSocketSharp.Net
     /// Gets a value indicating whether the collection is read-only.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the collection is read-only; otherwise, <c>false</c>.
-    /// The default value is <c>true</c>.
+    ///   <para>
+    ///   <c>true</c> if the collection is read-only; otherwise, <c>false</c>.
+    ///   </para>
+    ///   <para>
+    ///   The default value is <c>true</c>.
+    ///   </para>
     /// </value>
     public bool IsReadOnly {
-      // LAMESPEC: So how is one supposed to create a writable CookieCollection instance?
-      // We simply ignore this property, as this collection is always writable.
       get {
         return true;
       }
