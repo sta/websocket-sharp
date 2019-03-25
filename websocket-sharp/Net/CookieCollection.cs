@@ -99,7 +99,8 @@ namespace WebSocketSharp.Net
     /// Gets the number of cookies in the collection.
     /// </summary>
     /// <value>
-    /// An <see cref="int"/> that represents the number of cookies in the collection.
+    /// An <see cref="int"/> that represents the number of cookies in
+    /// the collection.
     /// </value>
     public int Count {
       get {
