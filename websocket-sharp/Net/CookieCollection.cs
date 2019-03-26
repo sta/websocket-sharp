@@ -56,6 +56,7 @@ namespace WebSocketSharp.Net
     #region Private Fields
 
     private List<Cookie> _list;
+    private bool         _readOnly;
     private object       _sync;
 
     #endregion
@@ -116,12 +117,16 @@ namespace WebSocketSharp.Net
     ///   <c>true</c> if the collection is read-only; otherwise, <c>false</c>.
     ///   </para>
     ///   <para>
-    ///   The default value is <c>true</c>.
+    ///   The default value is <c>false</c>.
     ///   </para>
     /// </value>
     public bool IsReadOnly {
       get {
-        return true;
+        return _readOnly;
+      }
+
+      internal set {
+        _readOnly = value;
       }
     }
 
