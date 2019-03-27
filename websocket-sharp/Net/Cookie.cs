@@ -867,6 +867,17 @@ namespace WebSocketSharp.Net
 
     #region Internal Methods
 
+    internal bool EqualsWithoutValue (Cookie cookie)
+    {
+      var caseSensitive = StringComparison.InvariantCulture;
+      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+
+      return _name.Equals (cookie._name, caseInsensitive)
+             && _path.Equals (cookie._path, caseSensitive)
+             && _domain.Equals (cookie._domain, caseInsensitive)
+             && _version == cookie._version;
+    }
+
     internal string ToRequestString (Uri uri)
     {
       if (_name.Length == 0)
