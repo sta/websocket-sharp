@@ -402,17 +402,8 @@ namespace WebSocketSharp.Net
 
     private int searchCookie (Cookie cookie)
     {
-      var name = cookie.Name;
-      var path = cookie.Path;
-      var domain = cookie.Domain;
-      var ver = cookie.Version;
-
       for (var i = _list.Count - 1; i >= 0; i--) {
-        var c = _list[i];
-        if (c.Name.Equals (name, StringComparison.InvariantCultureIgnoreCase) &&
-            c.Path.Equals (path, StringComparison.InvariantCulture) &&
-            c.Domain.Equals (domain, StringComparison.InvariantCultureIgnoreCase) &&
-            c.Version == ver)
+        if (_list[i].EqualsWithoutValue (cookie))
           return i;
       }
 
