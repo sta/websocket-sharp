@@ -509,7 +509,7 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookies"/> is <see langword="null"/>.
     /// </exception>
-    public void Add (CookieCollection cookies) 
+    public void Add (CookieCollection cookies)
     {
       if (cookies == null)
         throw new ArgumentNullException ("cookies");
