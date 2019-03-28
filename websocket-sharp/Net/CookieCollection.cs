@@ -486,18 +486,18 @@ namespace WebSocketSharp.Net
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
-    public void Add (Cookie cookie) 
+    public void Add (Cookie cookie)
     {
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
-      var pos = searchCookie (cookie);
-      if (pos == -1) {
+      var idx = searchCookie (cookie);
+      if (idx == -1) {
         _list.Add (cookie);
         return;
       }
 
-      _list[pos] = cookie;
+      _list[idx] = cookie;
     }
 
     /// <summary>
