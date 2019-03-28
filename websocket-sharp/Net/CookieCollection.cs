@@ -444,20 +444,21 @@ namespace WebSocketSharp.Net
 
     internal void SetOrRemove (Cookie cookie)
     {
-      var pos = searchCookie (cookie);
-      if (pos == -1) {
-        if (!cookie.Expired)
-          _list.Add (cookie);
+      var idx = searchCookie (cookie);
+      if (idx == -1) {
+        if (cookie.Expired)
+          return;
 
+        _list.Add (cookie);
         return;
       }
 
-      if (!cookie.Expired) {
-        _list[pos] = cookie;
+      if (cookie.Expired) {
+        _list.RemoveAt (idx);
         return;
       }
 
-      _list.RemoveAt (pos);
+      _list[idx] = cookie;
     }
 
     internal void SetOrRemove (CookieCollection cookies)
