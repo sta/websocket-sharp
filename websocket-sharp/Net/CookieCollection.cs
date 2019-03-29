@@ -478,7 +478,7 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Adds the specified <paramref name="cookie"/> to the collection.
+    /// Adds the specified cookie to the collection.
     /// </summary>
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to add.
