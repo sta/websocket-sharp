@@ -501,7 +501,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Adds the specified <paramref name="cookies"/> to the collection.
+    /// Adds the specified cookies to the collection.
     /// </summary>
     /// <param name="cookies">
     /// A <see cref="CookieCollection"/> that contains the cookies to add.
