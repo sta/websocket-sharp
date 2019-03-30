@@ -520,7 +520,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentNullException ("cookies");
 
       foreach (Cookie cookie in cookies)
-        Add (cookie);
+        add (cookie);
     }
 
     /// <summary>
