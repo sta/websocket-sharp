@@ -502,13 +502,7 @@ namespace WebSocketSharp.Net
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
-      var idx = searchCookie (cookie);
-      if (idx == -1) {
-        _list.Add (cookie);
-        return;
-      }
-
-      _list[idx] = cookie;
+      add (cookie);
     }
 
     /// <summary>
