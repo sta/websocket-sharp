@@ -220,6 +220,17 @@ namespace WebSocketSharp.Net
 
     #region Private Methods
 
+    private void add (Cookie cookie)
+    {
+      var idx = searchCookie (cookie);
+      if (idx == -1) {
+        _list.Add (cookie);
+        return;
+      }
+
+      _list[idx] = cookie;
+    }
+
     private static int compareCookieWithinSort (Cookie x, Cookie y)
     {
       return (x.Name.Length + x.Value.Length) - (y.Name.Length + y.Value.Length);
