@@ -233,7 +233,8 @@ namespace WebSocketSharp.Net
 
     private static int compareCookieWithinSort (Cookie x, Cookie y)
     {
-      return (x.Name.Length + x.Value.Length) - (y.Name.Length + y.Value.Length);
+      return (x.Name.Length + x.Value.Length)
+             - (y.Name.Length + y.Value.Length);
     }
 
     private static int compareCookieWithinSorted (Cookie x, Cookie y)
