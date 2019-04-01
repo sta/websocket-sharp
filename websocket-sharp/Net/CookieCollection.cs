@@ -239,8 +239,8 @@ namespace WebSocketSharp.Net
 
     private static int compareCookieWithinSorted (Cookie x, Cookie y)
     {
-      var ret = 0;
-      return (ret = x.Version - y.Version) != 0
+      var ret = x.Version - y.Version;
+      return ret != 0
              ? ret
              : (ret = x.Name.CompareTo (y.Name)) != 0
                ? ret
