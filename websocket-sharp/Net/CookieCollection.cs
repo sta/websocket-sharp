@@ -222,7 +222,7 @@ namespace WebSocketSharp.Net
 
     private void add (Cookie cookie)
     {
-      var idx = searchCookie (cookie);
+      var idx = search (cookie);
       if (idx == -1) {
         _list.Add (cookie);
         return;
@@ -412,7 +412,7 @@ namespace WebSocketSharp.Net
       return cookies;
     }
 
-    private int searchCookie (Cookie cookie)
+    private int search (Cookie cookie)
     {
       for (var i = _list.Count - 1; i >= 0; i--) {
         if (_list[i].EqualsWithoutValue (cookie))
@@ -456,7 +456,7 @@ namespace WebSocketSharp.Net
 
     internal void SetOrRemove (Cookie cookie)
     {
-      var idx = searchCookie (cookie);
+      var idx = search (cookie);
       if (idx == -1) {
         if (cookie.Expired)
           return;
