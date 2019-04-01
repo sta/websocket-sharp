@@ -231,7 +231,7 @@ namespace WebSocketSharp.Net
       _list[idx] = cookie;
     }
 
-    private static int compareCookieWithinSort (Cookie x, Cookie y)
+    private static int compareForSort (Cookie x, Cookie y)
     {
       return (x.Name.Length + x.Value.Length)
              - (y.Name.Length + y.Value.Length);
@@ -482,7 +482,7 @@ namespace WebSocketSharp.Net
     internal void Sort ()
     {
       if (_list.Count > 1)
-        _list.Sort (compareCookieWithinSort);
+        _list.Sort (compareForSort);
     }
 
     #endregion
