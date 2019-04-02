@@ -86,7 +86,7 @@ namespace WebSocketSharp.Net
       get {
         var list = new List<Cookie> (_list);
         if (list.Count > 1)
-          list.Sort (compareCookieWithinSorted);
+          list.Sort (compareForSorted);
 
         return list;
       }
@@ -237,7 +237,7 @@ namespace WebSocketSharp.Net
              - (y.Name.Length + y.Value.Length);
     }
 
-    private static int compareCookieWithinSorted (Cookie x, Cookie y)
+    private static int compareForSorted (Cookie x, Cookie y)
     {
       var ret = x.Version - y.Version;
       return ret != 0
