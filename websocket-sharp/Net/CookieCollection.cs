@@ -621,7 +621,8 @@ namespace WebSocketSharp.Net
     /// Gets the enumerator used to iterate through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through the collection.
+    /// An <see cref="IEnumerator"/> instance used to iterate through
+    /// the collection.
     /// </returns>
     public IEnumerator GetEnumerator ()
     {
