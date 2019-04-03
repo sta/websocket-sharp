@@ -610,9 +610,10 @@ namespace WebSocketSharp.Net
       if (index < 0)
         throw new ArgumentOutOfRangeException ("index", "Less than zero.");
 
-      if (array.Length - index < _list.Count)
-        throw new ArgumentException (
-          "The number of elements in this collection is greater than the available space of the destination array.");
+      if (array.Length - index < _list.Count) {
+        var msg = "The available space of the destination array is not enough.";
+        throw new ArgumentException (msg);
+      }
 
       _list.CopyTo (array, index);
     }
