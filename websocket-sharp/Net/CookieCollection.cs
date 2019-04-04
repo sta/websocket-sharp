@@ -581,16 +581,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the elements of the collection to the specified array of <see cref="Cookie"/>,
-    /// starting at the specified <paramref name="index"/> in the <paramref name="array"/>.
+    /// Copies the elements of the collection to the specified array,
+    /// starting at the specified index of the array.
     /// </summary>
     /// <param name="array">
-    /// An array of <see cref="Cookie"/> that represents the destination of the elements
-    /// copied from the collection.
+    /// An array of <see cref="Cookie"/> that specifies the destination of
+    /// the elements copied from the collection.
     /// </param>
     /// <param name="index">
-    /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-    /// at which copying begins.
+    /// An <see cref="int"/> that specifies the zero-based index of
+    /// the array at which copying starts.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="array"/> is <see langword="null"/>.
@@ -599,8 +599,8 @@ namespace WebSocketSharp.Net
     /// <paramref name="index"/> is less than zero.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// The number of elements in the collection is greater than the available space from
-    /// <paramref name="index"/> to the end of the destination <paramref name="array"/>.
+    /// The space from <paramref name="index"/> to the end of
+    /// <paramref name="array"/> is not enough to copy to.
     /// </exception>
     public void CopyTo (Cookie[] array, int index)
     {
