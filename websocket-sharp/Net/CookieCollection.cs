@@ -569,13 +569,16 @@ namespace WebSocketSharp.Net
       if (array.Rank > 1)
         throw new ArgumentException ("Multidimensional.", "array");
 
-      if (array.Length - index < _list.Count)
-        throw new ArgumentException (
-          "The number of elements in this collection is greater than the available space of the destination array.");
+      if (array.Length - index < _list.Count) {
+        var msg = "The available space of the array is not enough to copy to.";
+        throw new ArgumentException (msg);
+      }
 
-      if (!array.GetType ().GetElementType ().IsAssignableFrom (typeof (Cookie)))
-        throw new InvalidCastException (
-          "The elements in this collection cannot be cast automatically to the type of the destination array.");
+      var elmType = array.GetType ().GetElementType ();
+      if (!elmType.IsAssignableFrom (typeof (Cookie))) {
+        var msg = "The element type of the array cannot be assigned.";
+        throw new InvalidCastException (msg);
+      }
 
       ((IList) _list).CopyTo (array, index);
     }
