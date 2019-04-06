@@ -584,14 +584,14 @@ namespace WebSocketSharp.Net
 
     /// <summary>
     /// Copies the elements of the collection to the specified array,
-    /// starting at the specified index of the array.
+    /// starting at the specified index.
     /// </summary>
     /// <param name="array">
     /// An array of <see cref="Cookie"/> that specifies the destination of
     /// the elements copied from the collection.
     /// </param>
     /// <param name="index">
-    /// An <see cref="int"/> that specifies the zero-based index of
+    /// An <see cref="int"/> that specifies the zero-based index in
     /// the array at which copying starts.
     /// </param>
     /// <exception cref="ArgumentNullException">
