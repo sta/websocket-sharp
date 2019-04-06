@@ -525,16 +525,16 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Copies the elements of the collection to the specified <see cref="Array"/>, starting at
-    /// the specified <paramref name="index"/> in the <paramref name="array"/>.
+    /// Copies the elements of the collection to the specified array,
+    /// starting at the specified index.
     /// </summary>
     /// <param name="array">
-    /// An <see cref="Array"/> that represents the destination of the elements copied from
-    /// the collection.
+    /// An <see cref="Array"/> that specifies the destination of
+    /// the elements copied from the collection.
     /// </param>
     /// <param name="index">
-    /// An <see cref="int"/> that represents the zero-based index in <paramref name="array"/>
-    /// at which copying begins.
+    /// An <see cref="int"/> that specifies the zero-based index in
+    /// the array at which copying starts.
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="array"/> is <see langword="null"/>.
@@ -550,13 +550,12 @@ namespace WebSocketSharp.Net
     ///   -or-
     ///   </para>
     ///   <para>
-    ///   The number of elements in the collection is greater than the available space from
-    ///   <paramref name="index"/> to the end of the destination <paramref name="array"/>.
+    ///   The space from <paramref name="index"/> to the end of
+    ///   <paramref name="array"/> is not enough to copy to.
     ///   </para>
     /// </exception>
     /// <exception cref="InvalidCastException">
-    /// The elements in the collection cannot be cast automatically to the type of the destination
-    /// <paramref name="array"/>.
+    /// The element type of <paramref name="array"/> cannot be assigned.
     /// </exception>
     public void CopyTo (Array array, int index)
     {
