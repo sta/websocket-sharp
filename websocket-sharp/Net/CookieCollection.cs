@@ -48,7 +48,7 @@ using System.Text;
 namespace WebSocketSharp.Net
 {
   /// <summary>
-  /// Provides a collection container for instances of the <see cref="Cookie"/> class.
+  /// Provides a collection of instances of the <see cref="Cookie"/> class.
   /// </summary>
   [Serializable]
   public class CookieCollection : ICollection, IEnumerable
