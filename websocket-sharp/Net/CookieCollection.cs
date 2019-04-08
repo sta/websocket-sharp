@@ -2,7 +2,7 @@
 /*
  * CookieCollection.cs
  *
- * This code is derived from System.Net.CookieCollection.cs of Mono
+ * This code is derived from CookieCollection.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
