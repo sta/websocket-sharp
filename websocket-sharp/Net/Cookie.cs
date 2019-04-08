@@ -952,19 +952,16 @@ namespace WebSocketSharp.Net
     public override bool Equals (object comparand)
     {
       var cookie = comparand as Cookie;
-      return cookie != null
-             && _name.Equals (
-                  cookie._name, StringComparison.InvariantCultureIgnoreCase
-                )
-             && _value.Equals (
-                  cookie._value, StringComparison.InvariantCulture
-                )
-             && _path.Equals (
-                  cookie._path, StringComparison.InvariantCulture
-                )
-             && _domain.Equals (
-                  cookie._domain, StringComparison.InvariantCultureIgnoreCase
-                )
+      if (cookie == null)
+        return false;
+
+      var caseSensitive = StringComparison.InvariantCulture;
+      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
+
+      return _name.Equals (cookie._name, caseInsensitive)
+             && _value.Equals (cookie._value, caseSensitive)
+             && _path.Equals (cookie._path, caseSensitive)
+             && _domain.Equals (cookie._domain, caseInsensitive)
              && _version == cookie._version;
     }
 
