@@ -249,64 +249,75 @@ namespace WebSocketSharp.Net
 
     private static CookieCollection parseRequest (string value)
     {
-      var cookies = new CookieCollection ();
+      var ret = new CookieCollection ();
 
       Cookie cookie = null;
+      var compType = StringComparison.InvariantCultureIgnoreCase;
       var ver = 0;
+
       var pairs = splitCookieHeaderValue (value);
+
       for (var i = 0; i < pairs.Length; i++) {
         var pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
 
-        if (pair.StartsWith ("$version", StringComparison.InvariantCultureIgnoreCase)) {
+        if (pair.StartsWith ("$version", compType)) {
           ver = Int32.Parse (pair.GetValue ('=', true));
+          continue;
         }
-        else if (pair.StartsWith ("$path", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.StartsWith ("$path", compType)) {
           if (cookie != null)
             cookie.Path = pair.GetValue ('=');
+
+          continue;
         }
-        else if (pair.StartsWith ("$domain", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.StartsWith ("$domain", compType)) {
           if (cookie != null)
             cookie.Domain = pair.GetValue ('=');
-        }
-        else if (pair.StartsWith ("$port", StringComparison.InvariantCultureIgnoreCase)) {
-          var port = pair.Equals ("$port", StringComparison.InvariantCultureIgnoreCase)
-                     ? "\"\""
-                     : pair.GetValue ('=');
 
-          if (cookie != null)
-            cookie.Port = port;
+          continue;
+        }
+
+        if (pair.StartsWith ("$port", compType)) {
+          if (cookie != null) {
+            cookie.Port = !pair.Equals ("$port", compType)
+                          ? pair.GetValue ('=')
+                          : "\"\"";
+          }
+
+          continue;
+        }
+
+        if (cookie != null)
+          ret.Add (cookie);
+
+        string name = null;
+        string val = String.Empty;
+
+        var idx = pair.IndexOf ('=');
+        if (idx == -1) {
+          name = pair;
+        }
+        else if (idx == pair.Length - 1) {
+          name = pair.Substring (0, idx).TrimEnd (' ');
         }
         else {
-          if (cookie != null)
-            cookies.Add (cookie);
-
-          string name;
-          string val = String.Empty;
-
-          var pos = pair.IndexOf ('=');
-          if (pos == -1) {
-            name = pair;
-          }
-          else if (pos == pair.Length - 1) {
-            name = pair.Substring (0, pos).TrimEnd (' ');
-          }
-          else {
-            name = pair.Substring (0, pos).TrimEnd (' ');
-            val = pair.Substring (pos + 1).TrimStart (' ');
-          }
-
-          cookie = new Cookie (name, val);
-          if (ver != 0)
-            cookie.Version = ver;
+          name = pair.Substring (0, idx).TrimEnd (' ');
+          val = pair.Substring (idx + 1).TrimStart (' ');
         }
+
+        cookie = new Cookie (name, val);
+        if (ver != 0)
+          cookie.Version = ver;
       }
 
       if (cookie != null)
-        cookies.Add (cookie);
+        ret.Add (cookie);
 
-      return cookies;
+      return ret;
     }
 
     private static CookieCollection parseResponse (string value)
