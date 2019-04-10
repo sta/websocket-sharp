@@ -262,26 +262,26 @@ namespace WebSocketSharp.Net
         if (pair.Length == 0)
           continue;
 
-        if (pair.StartsWith ("$version", compType)) {
+        if (pair.IndexOf ("$version", compType) == 0) {
           ver = Int32.Parse (pair.GetValue ('=', true));
           continue;
         }
 
-        if (pair.StartsWith ("$path", compType)) {
+        if (pair.IndexOf ("$path", compType) == 0) {
           if (cookie != null)
             cookie.Path = pair.GetValue ('=');
 
           continue;
         }
 
-        if (pair.StartsWith ("$domain", compType)) {
+        if (pair.IndexOf ("$domain", compType) == 0) {
           if (cookie != null)
             cookie.Domain = pair.GetValue ('=');
 
           continue;
         }
 
-        if (pair.StartsWith ("$port", compType)) {
+        if (pair.IndexOf ("$port", compType) == 0) {
           if (cookie != null) {
             cookie.Port = !pair.Equals ("$port", compType)
                           ? pair.GetValue ('=')
