@@ -291,25 +291,22 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (cookie != null)
+        if (cookie != null) {
           ret.Add (cookie);
-
-        string name = null;
-        string val = String.Empty;
+          cookie = null;
+        }
 
         var idx = pair.IndexOf ('=');
-        if (idx == -1) {
-          name = pair;
-        }
-        else if (idx == pair.Length - 1) {
-          name = pair.Substring (0, idx).TrimEnd (' ');
-        }
-        else {
-          name = pair.Substring (0, idx).TrimEnd (' ');
-          val = pair.Substring (idx + 1).TrimStart (' ');
-        }
+        if (idx == -1)
+          continue;
 
+        if (idx == pair.Length - 1)
+          continue;
+
+        var name = pair.Substring (0, idx).TrimEnd (' ');
+        var val = pair.Substring (idx + 1).TrimStart (' ');
         cookie = new Cookie (name, val);
+
         if (ver != 0)
           cookie.Version = ver;
       }
