@@ -319,105 +319,147 @@ namespace WebSocketSharp.Net
 
     private static CookieCollection parseResponse (string value)
     {
-      var cookies = new CookieCollection ();
+      var ret = new CookieCollection ();
 
       Cookie cookie = null;
+      var compType = StringComparison.InvariantCultureIgnoreCase;
+
       var pairs = splitCookieHeaderValue (value);
+
       for (var i = 0; i < pairs.Length; i++) {
         var pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
 
-        if (pair.StartsWith ("version", StringComparison.InvariantCultureIgnoreCase)) {
+        if (pair.IndexOf ("version", compType) == 0) {
           if (cookie != null)
             cookie.Version = Int32.Parse (pair.GetValue ('=', true));
+
+          continue;
         }
-        else if (pair.StartsWith ("expires", StringComparison.InvariantCultureIgnoreCase)) {
-          var buff = new StringBuilder (pair.GetValue ('='), 32);
-          if (i < pairs.Length - 1)
-            buff.AppendFormat (", {0}", pairs[++i].Trim ());
 
-          DateTime expires;
-          if (!DateTime.TryParseExact (
-            buff.ToString (),
-            new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
-            CultureInfo.CreateSpecificCulture ("en-US"),
-            DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
-            out expires))
-            expires = DateTime.Now;
+        if (pair.IndexOf ("expires", compType) == 0) {
+          if (i == pairs.Length - 1)
+            break;
 
-          if (cookie != null && cookie.Expires == DateTime.MinValue)
+          i++;
+
+          if (cookie != null) {
+            if (cookie.Expires != DateTime.MinValue)
+              continue;
+
+            var buff = new StringBuilder (pair.GetValue ('='), 32);
+            buff.AppendFormat (", {0}", pairs[i].Trim ());
+
+            DateTime expires;
+            if (
+              !DateTime.TryParseExact (
+                buff.ToString (),
+                new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
+                CultureInfo.CreateSpecificCulture ("en-US"),
+                DateTimeStyles.AdjustToUniversal
+                | DateTimeStyles.AssumeUniversal,
+                out expires
+              )
+            )
+              expires = DateTime.Now;
+
             cookie.Expires = expires.ToLocalTime ();
+          }
+
+          continue;
         }
-        else if (pair.StartsWith ("max-age", StringComparison.InvariantCultureIgnoreCase)) {
-          var max = Int32.Parse (pair.GetValue ('=', true));
-          var expires = DateTime.Now.AddSeconds ((double) max);
-          if (cookie != null)
+
+        if (pair.IndexOf ("max-age", compType) == 0) {
+          if (cookie != null) {
+            var max = Int32.Parse (pair.GetValue ('=', true));
+            var expires = DateTime.Now.AddSeconds ((double) max);
             cookie.Expires = expires;
+          }
+
+          continue;
         }
-        else if (pair.StartsWith ("path", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("path", compType) == 0) {
           if (cookie != null)
             cookie.Path = pair.GetValue ('=');
+
+          continue;
         }
-        else if (pair.StartsWith ("domain", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("domain", compType) == 0) {
           if (cookie != null)
             cookie.Domain = pair.GetValue ('=');
-        }
-        else if (pair.StartsWith ("port", StringComparison.InvariantCultureIgnoreCase)) {
-          var port = pair.Equals ("port", StringComparison.InvariantCultureIgnoreCase)
-                     ? "\"\""
-                     : pair.GetValue ('=');
 
-          if (cookie != null)
-            cookie.Port = port;
+          continue;
         }
-        else if (pair.StartsWith ("comment", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("port", compType) == 0) {
+          if (cookie != null) {
+            cookie.Port = !pair.Equals ("port", compType)
+                          ? pair.GetValue ('=')
+                          : "\"\"";
+          }
+
+          continue;
+        }
+
+        if (pair.IndexOf ("comment", compType) == 0) {
           if (cookie != null)
             cookie.Comment = urlDecode (pair.GetValue ('='), Encoding.UTF8);
+
+          continue;
         }
-        else if (pair.StartsWith ("commenturl", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("commenturl", compType) == 0) {
           if (cookie != null)
             cookie.CommentUri = pair.GetValue ('=', true).ToUri ();
+
+          continue;
         }
-        else if (pair.StartsWith ("discard", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("discard", compType) == 0) {
           if (cookie != null)
             cookie.Discard = true;
+
+          continue;
         }
-        else if (pair.StartsWith ("secure", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("secure", compType) == 0) {
           if (cookie != null)
             cookie.Secure = true;
+
+          continue;
         }
-        else if (pair.StartsWith ("httponly", StringComparison.InvariantCultureIgnoreCase)) {
+
+        if (pair.IndexOf ("httponly", compType) == 0) {
           if (cookie != null)
             cookie.HttpOnly = true;
+
+          continue;
         }
-        else {
-          if (cookie != null)
-            cookies.Add (cookie);
 
-          string name;
-          string val = String.Empty;
-
-          var pos = pair.IndexOf ('=');
-          if (pos == -1) {
-            name = pair;
-          }
-          else if (pos == pair.Length - 1) {
-            name = pair.Substring (0, pos).TrimEnd (' ');
-          }
-          else {
-            name = pair.Substring (0, pos).TrimEnd (' ');
-            val = pair.Substring (pos + 1).TrimStart (' ');
-          }
-
-          cookie = new Cookie (name, val);
+        if (cookie != null) {
+          ret.Add (cookie);
+          cookie = null;
         }
+
+        var idx = pair.IndexOf ('=');
+        if (idx == -1)
+          continue;
+
+        if (idx == pair.Length - 1)
+          continue;
+
+        var name = pair.Substring (0, idx).TrimEnd (' ');
+        var val = pair.Substring (idx + 1).TrimStart (' ');
+        cookie = new Cookie (name, val);
       }
 
       if (cookie != null)
-        cookies.Add (cookie);
+        ret.Add (cookie);
 
-      return cookies;
+      return ret;
     }
 
     private int search (Cookie cookie)
