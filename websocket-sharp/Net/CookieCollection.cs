@@ -418,21 +418,21 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (pair.IndexOf ("discard", compType) == 0) {
+        if (pair.Equals ("discard", compType)) {
           if (cookie != null)
             cookie.Discard = true;
 
           continue;
         }
 
-        if (pair.IndexOf ("secure", compType) == 0) {
+        if (pair.Equals ("secure", compType)) {
           if (cookie != null)
             cookie.Secure = true;
 
           continue;
         }
 
-        if (pair.IndexOf ("httponly", compType) == 0) {
+        if (pair.Equals ("httponly", compType)) {
           if (cookie != null)
             cookie.HttpOnly = true;
 
