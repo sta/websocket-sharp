@@ -448,11 +448,14 @@ namespace WebSocketSharp.Net
         if (idx == -1)
           continue;
 
-        if (idx == pair.Length - 1)
+        if (idx == 0)
           continue;
 
         var name = pair.Substring (0, idx).TrimEnd (' ');
-        var val = pair.Substring (idx + 1).TrimStart (' ');
+        var val = idx < pair.Length - 1
+                  ? pair.Substring (idx + 1).TrimStart (' ')
+                  : String.Empty;
+
         cookie = new Cookie (name, val);
       }
 
