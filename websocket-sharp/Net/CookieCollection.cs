@@ -331,111 +331,160 @@ namespace WebSocketSharp.Net
         if (pair.Length == 0)
           continue;
 
-        if (pair.IndexOf ("version", compType) == 0) {
-          if (cookie != null)
-            cookie.Version = Int32.Parse (pair.GetValue ('=', true));
+        var idx = pair.IndexOf ('=');
+        if (idx == -1) {
+          if (cookie == null)
+            continue;
+
+          if (pair.Equals ("port", compType)) {
+            cookie.Port = "\"\"";
+            continue;
+          }
+
+          if (pair.Equals ("discard", compType)) {
+            cookie.Discard = true;
+            continue;
+          }
+
+          if (pair.Equals ("secure", compType)) {
+            cookie.Secure = true;
+            continue;
+          }
+
+          if (pair.Equals ("httponly", compType)) {
+            cookie.HttpOnly = true;
+            continue;
+          }
 
           continue;
         }
 
-        if (pair.IndexOf ("expires", compType) == 0) {
+        if (idx == 0) {
+          if (cookie != null) {
+            ret.Add (cookie);
+            cookie = null;
+          }
+
+          continue;
+        }
+
+        var name = pair.Substring (0, idx).TrimEnd (' ');
+        var val = idx < pair.Length - 1
+                  ? pair.Substring (idx + 1).TrimStart (' ')
+                  : String.Empty;
+
+        if (name.Equals ("version", compType)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          cookie.Version = Int32.Parse (val.Unquote ());
+          continue;
+        }
+
+        if (name.Equals ("expires", compType)) {
+          if (val.Length == 0)
+            continue;
+
           if (i == pairs.Length - 1)
             break;
 
           i++;
 
-          if (cookie != null) {
-            if (cookie.Expires != DateTime.MinValue)
-              continue;
+          if (cookie == null)
+            continue;
 
-            var buff = new StringBuilder (pair.GetValue ('='), 32);
-            buff.AppendFormat (", {0}", pairs[i].Trim ());
+          if (cookie.Expires != DateTime.MinValue)
+            continue;
 
-            DateTime expires;
-            if (
-              !DateTime.TryParseExact (
-                buff.ToString (),
-                new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
-                CultureInfo.CreateSpecificCulture ("en-US"),
-                DateTimeStyles.AdjustToUniversal
-                | DateTimeStyles.AssumeUniversal,
-                out expires
-              )
+          var buff = new StringBuilder (val, 32);
+          buff.AppendFormat (", {0}", pairs[i].Trim ());
+
+          DateTime expires;
+          if (
+            !DateTime.TryParseExact (
+              buff.ToString (),
+              new[] { "ddd, dd'-'MMM'-'yyyy HH':'mm':'ss 'GMT'", "r" },
+              CultureInfo.CreateSpecificCulture ("en-US"),
+              DateTimeStyles.AdjustToUniversal
+              | DateTimeStyles.AssumeUniversal,
+              out expires
             )
-              expires = DateTime.Now;
+          )
+            expires = DateTime.Now;
 
-            cookie.Expires = expires.ToLocalTime ();
-          }
+          cookie.Expires = expires.ToLocalTime ();
+          continue;
+        }
+
+        if (name.Equals ("max-age", compType)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          var max = Int32.Parse (val.Unquote ());
+          var expires = DateTime.Now.AddSeconds ((double) max);
+          cookie.Expires = expires;
 
           continue;
         }
 
-        if (pair.IndexOf ("max-age", compType) == 0) {
-          if (cookie != null) {
-            var max = Int32.Parse (pair.GetValue ('=', true));
-            var expires = DateTime.Now.AddSeconds ((double) max);
-            cookie.Expires = expires;
-          }
+        if (name.Equals ("path", compType)) {
+          if (cookie == null)
+            continue;
 
+          if (val.Length == 0)
+            continue;
+
+          cookie.Path = val;
           continue;
         }
 
-        if (pair.IndexOf ("path", compType) == 0) {
-          if (cookie != null)
-            cookie.Path = pair.GetValue ('=');
+        if (name.Equals ("domain", compType)) {
+          if (cookie == null)
+            continue;
 
+          if (val.Length == 0)
+            continue;
+
+          cookie.Domain = val;
           continue;
         }
 
-        if (pair.IndexOf ("domain", compType) == 0) {
-          if (cookie != null)
-            cookie.Domain = pair.GetValue ('=');
+        if (name.Equals ("port", compType)) {
+          if (cookie == null)
+            continue;
 
+          if (val.Length == 0)
+            continue;
+
+          cookie.Port = val;
           continue;
         }
 
-        if (pair.IndexOf ("port", compType) == 0) {
-          if (cookie != null) {
-            cookie.Port = !pair.Equals ("port", compType)
-                          ? pair.GetValue ('=')
-                          : "\"\"";
-          }
+        if (name.Equals ("comment", compType)) {
+          if (cookie == null)
+            continue;
 
+          if (val.Length == 0)
+            continue;
+
+          cookie.Comment = urlDecode (val, Encoding.UTF8);
           continue;
         }
 
-        if (pair.IndexOf ("comment", compType) == 0) {
-          if (cookie != null)
-            cookie.Comment = urlDecode (pair.GetValue ('='), Encoding.UTF8);
+        if (name.Equals ("commenturl", compType)) {
+          if (cookie == null)
+            continue;
 
-          continue;
-        }
+          if (val.Length == 0)
+            continue;
 
-        if (pair.IndexOf ("commenturl", compType) == 0) {
-          if (cookie != null)
-            cookie.CommentUri = pair.GetValue ('=', true).ToUri ();
-
-          continue;
-        }
-
-        if (pair.Equals ("discard", compType)) {
-          if (cookie != null)
-            cookie.Discard = true;
-
-          continue;
-        }
-
-        if (pair.Equals ("secure", compType)) {
-          if (cookie != null)
-            cookie.Secure = true;
-
-          continue;
-        }
-
-        if (pair.Equals ("httponly", compType)) {
-          if (cookie != null)
-            cookie.HttpOnly = true;
-
+          cookie.CommentUri = val.Unquote ().ToUri ();
           continue;
         }
 
@@ -443,18 +492,6 @@ namespace WebSocketSharp.Net
           ret.Add (cookie);
           cookie = null;
         }
-
-        var idx = pair.IndexOf ('=');
-        if (idx == -1)
-          continue;
-
-        if (idx == 0)
-          continue;
-
-        var name = pair.Substring (0, idx).TrimEnd (' ');
-        var val = idx < pair.Length - 1
-                  ? pair.Substring (idx + 1).TrimStart (' ')
-                  : String.Empty;
 
         cookie = new Cookie (name, val);
       }
