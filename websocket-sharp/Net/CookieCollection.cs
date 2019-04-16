@@ -324,9 +324,9 @@ namespace WebSocketSharp.Net
       Cookie cookie = null;
       var compType = StringComparison.InvariantCultureIgnoreCase;
 
-      var pairs = splitCookieHeaderValue (value);
+      var pairs = value.SplitHeaderValue (',', ';').ToList ();
 
-      for (var i = 0; i < pairs.Length; i++) {
+      for (var i = 0; i < pairs.Count; i++) {
         var pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
@@ -388,7 +388,7 @@ namespace WebSocketSharp.Net
           if (val.Length == 0)
             continue;
 
-          if (i == pairs.Length - 1)
+          if (i == pairs.Count - 1)
             break;
 
           i++;
