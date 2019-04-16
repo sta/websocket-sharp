@@ -488,10 +488,8 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (cookie != null) {
+        if (cookie != null)
           ret.Add (cookie);
-          cookie = null;
-        }
 
         cookie = new Cookie (name, val);
       }
