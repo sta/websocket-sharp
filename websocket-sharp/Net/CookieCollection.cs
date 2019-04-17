@@ -262,49 +262,74 @@ namespace WebSocketSharp.Net
         if (pair.Length == 0)
           continue;
 
-        if (pair.IndexOf ("$version", compType) == 0) {
-          ver = Int32.Parse (pair.GetValue ('=', true));
-          continue;
-        }
+        var idx = pair.IndexOf ('=');
+        if (idx == -1) {
+          if (cookie == null)
+            continue;
 
-        if (pair.IndexOf ("$path", compType) == 0) {
-          if (cookie != null)
-            cookie.Path = pair.GetValue ('=');
-
-          continue;
-        }
-
-        if (pair.IndexOf ("$domain", compType) == 0) {
-          if (cookie != null)
-            cookie.Domain = pair.GetValue ('=');
-
-          continue;
-        }
-
-        if (pair.IndexOf ("$port", compType) == 0) {
-          if (cookie != null) {
-            cookie.Port = !pair.Equals ("$port", compType)
-                          ? pair.GetValue ('=')
-                          : "\"\"";
+          if (pair.Equals ("$port", compType)) {
+            cookie.Port = "\"\"";
+            continue;
           }
 
           continue;
         }
 
-        if (cookie != null) {
-          ret.Add (cookie);
-          cookie = null;
+        if (idx == 0) {
+          if (cookie != null) {
+            ret.Add (cookie);
+            cookie = null;
+          }
+
+          continue;
         }
 
-        var idx = pair.IndexOf ('=');
-        if (idx == -1)
-          continue;
-
-        if (idx == pair.Length - 1)
-          continue;
-
         var name = pair.Substring (0, idx).TrimEnd (' ');
-        var val = pair.Substring (idx + 1).TrimStart (' ');
+        var val = idx < pair.Length - 1
+                  ? pair.Substring (idx + 1).TrimStart (' ')
+                  : String.Empty;
+
+        if (name.Equals ("$version", compType)) {
+          ver = val.Length > 0 ? Int32.Parse (val.Unquote ()) : 0;
+          continue;
+        }
+
+        if (name.Equals ("$path", compType)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          cookie.Path = val;
+          continue;
+        }
+
+        if (name.Equals ("$domain", compType)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          cookie.Domain = val;
+          continue;
+        }
+
+        if (name.Equals ("$port", compType)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          cookie.Port = val;
+          continue;
+        }
+
+        if (cookie != null)
+          ret.Add (cookie);
+
         cookie = new Cookie (name, val);
 
         if (ver != 0)
