@@ -255,9 +255,9 @@ namespace WebSocketSharp.Net
       var compType = StringComparison.InvariantCultureIgnoreCase;
       var ver = 0;
 
-      var pairs = splitCookieHeaderValue (value);
+      var pairs = value.SplitHeaderValue (',', ';').ToList ();
 
-      for (var i = 0; i < pairs.Length; i++) {
+      for (var i = 0; i < pairs.Count; i++) {
         var pair = pairs[i].Trim ();
         if (pair.Length == 0)
           continue;
