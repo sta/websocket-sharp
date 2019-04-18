@@ -535,11 +535,6 @@ namespace WebSocketSharp.Net
       return -1;
     }
 
-    private static string[] splitCookieHeaderValue (string value)
-    {
-      return new List<string> (value.SplitHeaderValue (',', ';')).ToArray ();
-    }
-
     private static string urlDecode (string s, Encoding encoding)
     {
       if (s == null)
