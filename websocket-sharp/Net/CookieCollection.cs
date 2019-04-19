@@ -347,8 +347,8 @@ namespace WebSocketSharp.Net
       var ret = new CookieCollection ();
 
       Cookie cookie = null;
-      var compType = StringComparison.InvariantCultureIgnoreCase;
 
+      var caseInsensitive = StringComparison.InvariantCultureIgnoreCase;
       var pairs = value.SplitHeaderValue (',', ';').ToList ();
 
       for (var i = 0; i < pairs.Count; i++) {
@@ -361,22 +361,22 @@ namespace WebSocketSharp.Net
           if (cookie == null)
             continue;
 
-          if (pair.Equals ("port", compType)) {
+          if (pair.Equals ("port", caseInsensitive)) {
             cookie.Port = "\"\"";
             continue;
           }
 
-          if (pair.Equals ("discard", compType)) {
+          if (pair.Equals ("discard", caseInsensitive)) {
             cookie.Discard = true;
             continue;
           }
 
-          if (pair.Equals ("secure", compType)) {
+          if (pair.Equals ("secure", caseInsensitive)) {
             cookie.Secure = true;
             continue;
           }
 
-          if (pair.Equals ("httponly", compType)) {
+          if (pair.Equals ("httponly", caseInsensitive)) {
             cookie.HttpOnly = true;
             continue;
           }
@@ -398,7 +398,7 @@ namespace WebSocketSharp.Net
                   ? pair.Substring (idx + 1).TrimStart (' ')
                   : String.Empty;
 
-        if (name.Equals ("version", compType)) {
+        if (name.Equals ("version", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -409,7 +409,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("expires", compType)) {
+        if (name.Equals ("expires", caseInsensitive)) {
           if (val.Length == 0)
             continue;
 
@@ -444,7 +444,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("max-age", compType)) {
+        if (name.Equals ("max-age", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -458,7 +458,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("path", compType)) {
+        if (name.Equals ("path", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -469,7 +469,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("domain", compType)) {
+        if (name.Equals ("domain", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -480,7 +480,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("port", compType)) {
+        if (name.Equals ("port", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -491,7 +491,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("comment", compType)) {
+        if (name.Equals ("comment", caseInsensitive)) {
           if (cookie == null)
             continue;
 
@@ -502,7 +502,7 @@ namespace WebSocketSharp.Net
           continue;
         }
 
-        if (name.Equals ("commenturl", compType)) {
+        if (name.Equals ("commenturl", caseInsensitive)) {
           if (cookie == null)
             continue;
 
