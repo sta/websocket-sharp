@@ -603,11 +603,19 @@ namespace WebSocketSharp.Net
     /// <param name="cookie">
     /// A <see cref="Cookie"/> to add.
     /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The collection is read-only.
+    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cookie"/> is <see langword="null"/>.
     /// </exception>
     public void Add (Cookie cookie)
     {
+      if (_readOnly) {
+        var msg = "The collection is read-only.";
+        throw new InvalidOperationException (msg);
+      }
+
       if (cookie == null)
         throw new ArgumentNullException ("cookie");
 
