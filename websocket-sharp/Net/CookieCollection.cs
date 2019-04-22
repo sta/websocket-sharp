@@ -644,7 +644,7 @@ namespace WebSocketSharp.Net
       if (cookies == null)
         throw new ArgumentNullException ("cookies");
 
-      foreach (Cookie cookie in cookies)
+      foreach (var cookie in cookies._list)
         add (cookie);
     }
 
