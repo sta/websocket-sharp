@@ -649,6 +649,22 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
+    /// Removes all cookies from the collection.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The collection is read-only.
+    /// </exception>
+    public void Clear ()
+    {
+      if (_readOnly) {
+        var msg = "The collection is read-only.";
+        throw new InvalidOperationException (msg);
+      }
+
+      _list.Clear ();
+    }
+
+    /// <summary>
     /// Copies the elements of the collection to the specified array,
     /// starting at the specified index.
     /// </summary>
