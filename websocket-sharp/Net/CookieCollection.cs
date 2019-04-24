@@ -772,6 +772,40 @@ namespace WebSocketSharp.Net
       return _list.GetEnumerator ();
     }
 
+    /// <summary>
+    /// Removes the specified cookie from the collection.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the cookie is successfully found and removed;
+    /// otherwise, <c>false</c>.
+    /// </returns>
+    /// <param name="cookie">
+    /// A <see cref="Cookie"/> to remove.
+    /// </param>
+    /// <exception cref="InvalidOperationException">
+    /// The collection is read-only.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="cookie"/> is <see langword="null"/>.
+    /// </exception>
+    public bool Remove (Cookie cookie)
+    {
+      if (_readOnly) {
+        var msg = "The collection is read-only.";
+        throw new InvalidOperationException (msg);
+      }
+
+      if (cookie == null)
+        throw new ArgumentNullException ("cookie");
+
+      var idx = search (cookie);
+      if (idx == -1)
+        return false;
+
+      _list.RemoveAt (idx);
+      return true;
+    }
+
     #endregion
   }
 }
