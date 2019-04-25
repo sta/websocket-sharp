@@ -665,6 +665,27 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
+    /// Determines whether the collection contains the specified cookie.
+    /// </summary>
+    /// <returns>
+    /// <c>true</c> if the cookie is found in the collection; otherwise,
+    /// <c>false</c>.
+    /// </returns>
+    /// <param name="cookie">
+    /// A <see cref="Cookie"/> to find.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="cookie"/> is <see langword="null"/>.
+    /// </exception>
+    public bool Contains (Cookie cookie)
+    {
+      if (cookie == null)
+        throw new ArgumentNullException ("cookie");
+
+      return search (cookie) > -1;
+    }
+
+    /// <summary>
     /// Copies the elements of the collection to the specified array,
     /// starting at the specified index.
     /// </summary>
