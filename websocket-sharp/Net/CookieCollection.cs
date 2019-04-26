@@ -51,7 +51,7 @@ namespace WebSocketSharp.Net
   /// Provides a collection of instances of the <see cref="Cookie"/> class.
   /// </summary>
   [Serializable]
-  public class CookieCollection : ICollection, IEnumerable
+  public class CookieCollection : ICollection<Cookie>
   {
     #region Private Fields
 
@@ -782,13 +782,13 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets the enumerator used to iterate through the collection.
+    /// Gets the enumerator that iterates through the collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="IEnumerator"/> instance used to iterate through
-    /// the collection.
+    /// An <see cref="T:System.Collections.Generic.IEnumerator{Cookie}"/>
+    /// instance that can be used to iterate through the collection.
     /// </returns>
-    public IEnumerator GetEnumerator ()
+    public IEnumerator<Cookie> GetEnumerator ()
     {
       return _list.GetEnumerator ();
     }
@@ -830,6 +830,22 @@ namespace WebSocketSharp.Net
 
       _list.RemoveAt (idx);
       return true;
+    }
+
+    #endregion
+
+    #region Explicit Interface Implementations
+
+    /// <summary>
+    /// Gets the enumerator that iterates through the collection.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IEnumerator"/> instance that can be used to iterate
+    /// through the collection.
+    /// </returns>
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return _list.GetEnumerator ();
     }
 
     #endregion
