@@ -583,7 +583,7 @@ namespace WebSocketSharp.Net
 
     internal void SetOrRemove (CookieCollection cookies)
     {
-      foreach (Cookie cookie in cookies)
+      foreach (var cookie in cookies._list)
         SetOrRemove (cookie);
     }
 
