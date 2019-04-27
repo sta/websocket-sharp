@@ -690,64 +690,6 @@ namespace WebSocketSharp.Net
     /// starting at the specified index.
     /// </summary>
     /// <param name="array">
-    /// An <see cref="Array"/> that specifies the destination of
-    /// the elements copied from the collection.
-    /// </param>
-    /// <param name="index">
-    /// An <see cref="int"/> that specifies the zero-based index in
-    /// the array at which copying starts.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="array"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index"/> is less than zero.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   <paramref name="array"/> is multidimensional.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The space from <paramref name="index"/> to the end of
-    ///   <paramref name="array"/> is not enough to copy to.
-    ///   </para>
-    /// </exception>
-    /// <exception cref="InvalidCastException">
-    /// The element type of <paramref name="array"/> cannot be assigned.
-    /// </exception>
-    public void CopyTo (Array array, int index)
-    {
-      if (array == null)
-        throw new ArgumentNullException ("array");
-
-      if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", "Less than zero.");
-
-      if (array.Rank > 1)
-        throw new ArgumentException ("Multidimensional.", "array");
-
-      if (array.Length - index < _list.Count) {
-        var msg = "The available space of the array is not enough to copy to.";
-        throw new ArgumentException (msg);
-      }
-
-      var elmType = array.GetType ().GetElementType ();
-      if (!elmType.IsAssignableFrom (typeof (Cookie))) {
-        var msg = "The element type of the array cannot be assigned.";
-        throw new InvalidCastException (msg);
-      }
-
-      ((IList) _list).CopyTo (array, index);
-    }
-
-    /// <summary>
-    /// Copies the elements of the collection to the specified array,
-    /// starting at the specified index.
-    /// </summary>
-    /// <param name="array">
     /// An array of <see cref="Cookie"/> that specifies the destination of
     /// the elements copied from the collection.
     /// </param>
