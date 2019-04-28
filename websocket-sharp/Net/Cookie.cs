@@ -110,15 +110,19 @@ namespace WebSocketSharp.Net
 
     #endregion
 
-    #region Public Constructors
+    #region Internal Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class.
     /// </summary>
-    public Cookie ()
+    internal Cookie ()
     {
       init (String.Empty, "\"\"", String.Empty, String.Empty);
     }
+
+    #endregion
+
+    #region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cookie"/> class with
