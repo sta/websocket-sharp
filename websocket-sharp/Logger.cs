@@ -54,9 +54,8 @@ namespace WebSocketSharp
   {
     #region Private Fields
 
-    private volatile string         _file;
     private volatile LogLevel       _level;
-    private Action<LogData, string> _output;
+    private Action<LogLevel, string> _output;
     private object                  _sync;
 
     #endregion
@@ -102,10 +101,9 @@ namespace WebSocketSharp
     /// output a log. A <see cref="string"/> parameter passed to this delegate is
     /// <paramref name="file"/>.
     /// </param>
-    public Logger (LogLevel level, string file, Action<LogData, string> output)
+    public Logger (LogLevel level, string file, Action<LogLevel, string> output)
     {
       _level = level;
-      _file = file;
       _output = output ?? defaultOutput;
       _sync = new object ();
     }
@@ -113,26 +111,6 @@ namespace WebSocketSharp
     #endregion
 
     #region Public Properties
-
-    /// <summary>
-    /// Gets or sets the current path to the log file.
-    /// </summary>
-    /// <value>
-    /// A <see cref="string"/> that represents the current path to the log file if any.
-    /// </value>
-    public string File {
-      get {
-        return _file;
-      }
-
-      set {
-        lock (_sync) {
-          _file = value;
-          Warn (
-            String.Format ("The current path to the log file has been changed to {0}.", _file));
-        }
-      }
-    }
 
     /// <summary>
     /// Gets or sets the current logging level.
@@ -151,7 +129,6 @@ namespace WebSocketSharp
       set {
         lock (_sync) {
           _level = value;
-          Warn (String.Format ("The current logging level has been changed to {0}.", _level));
         }
       }
     }
@@ -170,7 +147,7 @@ namespace WebSocketSharp
     ///   the default output action.
     ///   </para>
     /// </value>
-    public Action<LogData, string> Output {
+    public Action<LogLevel, string> Output {
       get {
         return _output;
       }
@@ -178,7 +155,6 @@ namespace WebSocketSharp
       set {
         lock (_sync) {
           _output = value ?? defaultOutput;
-          Warn ("The current output action has been changed.");
         }
       }
     }
@@ -187,37 +163,18 @@ namespace WebSocketSharp
 
     #region Private Methods
 
-    private static void defaultOutput (LogData data, string path)
+    private static void defaultOutput (LogLevel level, string message)
     {
-      var log = data.ToString ();
-      Console.WriteLine (log);
-      if (path != null && path.Length > 0)
-        writeToFile (log, path);
+      Console.WriteLine ($"WebSocket-Sharp: {level} {message}");
     }
 
     private void output (string message, LogLevel level)
     {
+      if (_level > level)
+        return;
       lock (_sync) {
-        if (_level > level)
-          return;
-
-        LogData data = null;
-        try {
-          data = new LogData (level, new StackFrame (2, true), message);
-          _output (data, _file);
-        }
-        catch (Exception ex) {
-          data = new LogData (LogLevel.Fatal, new StackFrame (0, true), ex.Message);
-          Console.WriteLine (data.ToString ());
-        }
+          _output (level, message);
       }
-    }
-
-    private static void writeToFile (string value, string path)
-    {
-      using (var writer = new StreamWriter (path, true))
-      using (var syncWriter = TextWriter.Synchronized (writer))
-        syncWriter.WriteLine (value);
     }
 
     #endregion
