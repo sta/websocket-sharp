@@ -90,7 +90,6 @@ namespace WebSocketSharp.Net
     private string                 _path;
     private string                 _port;
     private int[]                  _ports;
-    private static readonly char[] _reservedCharsForName;
     private static readonly char[] _reservedCharsForValue;
     private bool                   _secure;
     private DateTime               _timeStamp;
@@ -104,7 +103,6 @@ namespace WebSocketSharp.Net
     static Cookie ()
     {
       _emptyPorts = new int[0];
-      _reservedCharsForName = new[] { ' ', '=', ';', ',', '\n', '\r', '\t' };
       _reservedCharsForValue = new[] { ';', ',' };
     }
 
@@ -297,7 +295,7 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "name");
       }
 
-      if (name.Contains (_reservedCharsForName)) {
+      if (!name.IsToken ()) {
         var msg = "It contains an invalid character.";
         throw new ArgumentException (msg, "name");
       }
@@ -560,7 +558,7 @@ namespace WebSocketSharp.Net
           throw new ArgumentException (msg, "value");
         }
 
-        if (value.Contains (_reservedCharsForName)) {
+        if (!value.IsToken ()) {
           var msg = "It contains an invalid character.";
           throw new ArgumentException (msg, "value");
         }
