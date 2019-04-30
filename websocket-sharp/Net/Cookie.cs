@@ -523,10 +523,17 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the Name of the cookie.
+    /// Gets or sets the name of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the Name of the cookie.
+    ///   <para>
+    ///   A <see cref="string"/> that represents the name of the cookie.
+    ///   </para>
+    ///   <para>
+    ///   The name must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
+    ///   RFC 2616</see>.
+    ///   </para>
     /// </value>
     /// <exception cref="ArgumentNullException">
     /// The value specified for a set operation is <see langword="null"/>.
