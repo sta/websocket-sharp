@@ -231,7 +231,14 @@ namespace WebSocketSharp.Net
     /// the specified name, value, path, and domain.
     /// </summary>
     /// <param name="name">
-    /// A <see cref="string"/> that specifies the Name of the cookie.
+    ///   <para>
+    ///   A <see cref="string"/> that specifies the name of the cookie.
+    ///   </para>
+    ///   <para>
+    ///   The name must be a token defined in
+    ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
+    ///   RFC 2616</see>.
+    ///   </para>
     /// </param>
     /// <param name="value">
     /// A <see cref="string"/> that specifies the Value of the cookie.
