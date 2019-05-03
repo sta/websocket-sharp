@@ -115,7 +115,7 @@ namespace WebSocketSharp.Net
     /// </summary>
     internal Cookie ()
     {
-      init (String.Empty, "\"\"", String.Empty, String.Empty);
+      init (String.Empty, String.Empty, String.Empty, String.Empty);
     }
 
     #endregion
@@ -305,9 +305,6 @@ namespace WebSocketSharp.Net
       if (name == null)
         throw new ArgumentNullException ("name");
 
-      if (value == null)
-        throw new ArgumentNullException ("value");
-
       if (name.Length == 0)
         throw new ArgumentException ("An empty string.", "name");
 
@@ -321,6 +318,9 @@ namespace WebSocketSharp.Net
         throw new ArgumentException (msg, "name");
       }
 
+      if (value == null)
+        value = String.Empty;
+
       if (value.Contains (_reservedCharsForValue)) {
         if (!value.IsEnclosedIn ('"')) {
           var msg = "A string not enclosed in double quotes.";
@@ -328,12 +328,7 @@ namespace WebSocketSharp.Net
         }
       }
 
-      init (
-        name,
-        value.Length > 0 ? value : "\"\"",
-        path ?? String.Empty,
-        domain ?? String.Empty
-      );
+      init (name, value, path ?? String.Empty, domain ?? String.Empty);
     }
 
     #endregion
@@ -728,7 +723,7 @@ namespace WebSocketSharp.Net
 
       set {
         if (value == null)
-          throw new ArgumentNullException ("value");
+          value = String.Empty;
 
         if (value.Contains (_reservedCharsForValue)) {
           if (!value.IsEnclosedIn ('"')) {
@@ -737,7 +732,7 @@ namespace WebSocketSharp.Net
           }
         }
 
-        _value = value.Length > 0 ? value : "\"\"";
+        _value = value;
       }
     }
 
