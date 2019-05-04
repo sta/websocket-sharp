@@ -239,7 +239,7 @@ namespace WebSocketSharp.Net
     ///   </para>
     /// </param>
     /// <param name="value">
-    /// A <see cref="string"/> that specifies the Value of the cookie.
+    /// A <see cref="string"/> that specifies the value of the cookie.
     /// </param>
     /// <param name="path">
     /// A <see cref="string"/> that specifies the value of the Path
@@ -250,15 +250,7 @@ namespace WebSocketSharp.Net
     /// attribute of the cookie.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    ///   <para>
-    ///   <paramref name="name"/> is <see langword="null"/>.
-    ///   </para>
-    ///   <para>
-    ///   - or -
-    ///   </para>
-    ///   <para>
-    ///   <paramref name="value"/> is <see langword="null"/>.
-    ///   </para>
+    /// <paramref name="name"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///   <para>
