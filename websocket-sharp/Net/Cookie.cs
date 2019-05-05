@@ -680,14 +680,11 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the Value of the cookie.
+    /// Gets or sets the value of the cookie.
     /// </summary>
     /// <value>
-    /// A <see cref="string"/> that represents the Value of the cookie.
+    /// A <see cref="string"/> that represents the value of the cookie.
     /// </value>
-    /// <exception cref="ArgumentNullException">
-    /// The value specified for a set operation is <see langword="null"/>.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// The value specified for a set operation is a string not enclosed in
     /// double quotes that contains an invalid character.
