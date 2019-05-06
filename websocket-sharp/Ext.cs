@@ -664,7 +664,7 @@ namespace WebSocketSharp
         if (c < 0x20)
           return false;
 
-        if (c >= 0x7f)
+        if (c > 0x7e)
           return false;
 
         if (_tspecials.IndexOf (c) > -1)
