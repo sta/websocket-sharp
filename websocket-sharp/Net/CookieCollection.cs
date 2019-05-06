@@ -537,9 +537,6 @@ namespace WebSocketSharp.Net
 
     private static string urlDecode (string s, Encoding encoding)
     {
-      if (s == null)
-        return null;
-
       if (s.IndexOfAny (new[] { '%', '+' }) == -1)
         return s;
 
