@@ -97,15 +97,19 @@ namespace WebSocketSharp.Net
     #region Public Methods
 
     /// <summary>
-    /// Populates the specified <see cref="SerializationInfo"/> with the data needed to serialize
-    /// the current <see cref="CookieException"/>.
+    /// Populates the specified <see cref="SerializationInfo"/> instance with
+    /// the data needed to serialize the current instance.
     /// </summary>
     /// <param name="serializationInfo">
     /// A <see cref="SerializationInfo"/> that holds the serialized object data.
     /// </param>
     /// <param name="streamingContext">
-    /// A <see cref="StreamingContext"/> that specifies the destination for the serialization.
+    /// A <see cref="StreamingContext"/> that specifies the destination for
+    /// the serialization.
     /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="serializationInfo"/> is <see langword="null"/>.
+    /// </exception>
     [
       SecurityPermission (
         SecurityAction.LinkDemand,
