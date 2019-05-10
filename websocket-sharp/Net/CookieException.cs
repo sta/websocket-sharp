@@ -2,7 +2,7 @@
 /*
  * CookieException.cs
  *
- * This code is derived from System.Net.CookieException.cs of Mono
+ * This code is derived from CookieException.cs (System.Net) of Mono
  * (http://www.mono-project.com).
  *
  * The MIT License
