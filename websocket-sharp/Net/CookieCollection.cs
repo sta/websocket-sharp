@@ -554,9 +554,14 @@ namespace WebSocketSharp.Net
 
     internal static CookieCollection Parse (string value, bool response)
     {
-      return response
-             ? parseResponse (value)
-             : parseRequest (value);
+      try {
+        return response
+               ? parseResponse (value)
+               : parseRequest (value);
+      }
+      catch (Exception ex) {
+        throw new CookieException ("It could not be parsed.", ex);
+      }
     }
 
     internal void SetOrRemove (Cookie cookie)
