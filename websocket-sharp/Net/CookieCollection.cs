@@ -386,7 +386,7 @@ namespace WebSocketSharp.Net
 
         if (idx == 0) {
           if (cookie != null) {
-            ret.Add (cookie);
+            ret.add (cookie);
             cookie = null;
           }
 
@@ -514,13 +514,13 @@ namespace WebSocketSharp.Net
         }
 
         if (cookie != null)
-          ret.Add (cookie);
+          ret.add (cookie);
 
         cookie = new Cookie (name, val);
       }
 
       if (cookie != null)
-        ret.Add (cookie);
+        ret.add (cookie);
 
       return ret;
     }
