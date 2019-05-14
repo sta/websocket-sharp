@@ -69,6 +69,11 @@ namespace WebSocketSharp.Net
   ///       <see href="https://tools.ietf.org/html/rfc2965">RFC 2965</see>
   ///       </term>
   ///     </item>
+  ///     <item>
+  ///       <term>
+  ///       <see href="https://tools.ietf.org/html/rfc6265">RFC 6265</see>
+  ///       </term>
+  ///     </item>
   ///   </list>
   ///   <para>
   ///   This class cannot be inherited.
