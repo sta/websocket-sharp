@@ -715,7 +715,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the value of the Version attribute of the cookie.
+    /// Gets the value of the Version attribute of the cookie.
     /// </summary>
     /// <value>
     ///   <para>
@@ -723,21 +723,18 @@ namespace WebSocketSharp.Net
     ///   management that the cookie conforms to.
     ///   </para>
     ///   <para>
-    ///   0 or 1.
+    ///   0 or 1. 0 if the cookie has no Version attribute.
     ///   </para>
     ///   <para>
     ///   The default value is 0.
     ///   </para>
     /// </value>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// The value specified for a set operation is not allowed.
-    /// </exception>
     public int Version {
       get {
         return _version;
       }
 
-      set {
+      internal set {
         if (value < 0 || value > 1) {
           var msg = "It is not allowed.";
           throw new ArgumentOutOfRangeException ("value", msg);
