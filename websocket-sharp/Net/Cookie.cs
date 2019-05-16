@@ -349,7 +349,7 @@ namespace WebSocketSharp.Net
     #region Public Properties
 
     /// <summary>
-    /// Gets or sets the value of the Comment attribute of the cookie.
+    /// Gets the value of the Comment attribute of the cookie.
     /// </summary>
     /// <value>
     ///   <para>
@@ -357,7 +357,7 @@ namespace WebSocketSharp.Net
     ///   intended use of the cookie.
     ///   </para>
     ///   <para>
-    ///   An empty string if this attribute is not needed.
+    ///   An empty string if the cookie has no Comment attribute.
     ///   </para>
     ///   <para>
     ///   The default value is an empty string.
@@ -368,7 +368,7 @@ namespace WebSocketSharp.Net
         return _comment ?? String.Empty;
       }
 
-      set {
+      internal set {
         _comment = value;
       }
     }
