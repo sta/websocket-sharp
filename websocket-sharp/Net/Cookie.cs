@@ -374,7 +374,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the value of the CommentURL attribute of the cookie.
+    /// Gets the value of the CommentURL attribute of the cookie.
     /// </summary>
     /// <value>
     ///   <para>
@@ -382,7 +382,7 @@ namespace WebSocketSharp.Net
     ///   the comment to document intended use of the cookie.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if this attribute is not needed.
+    ///   <see langword="null"/> if the cookie has no CommentURL attribute.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
@@ -393,7 +393,7 @@ namespace WebSocketSharp.Net
         return _commentUri;
       }
 
-      set {
+      internal set {
         _commentUri = value;
       }
     }
