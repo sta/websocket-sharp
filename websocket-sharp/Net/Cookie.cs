@@ -399,7 +399,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the client discards the cookie
+    /// Gets a value indicating whether the client discards the cookie
     /// unconditionally when the client terminates.
     /// </summary>
     /// <value>
@@ -416,7 +416,7 @@ namespace WebSocketSharp.Net
         return _discard;
       }
 
-      set {
+      internal set {
         _discard = value;
       }
     }
