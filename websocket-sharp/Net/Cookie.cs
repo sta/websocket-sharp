@@ -382,7 +382,7 @@ namespace WebSocketSharp.Net
     ///   the comment to document intended use of the cookie.
     ///   </para>
     ///   <para>
-    ///   <see langword="null"/> if the cookie has no CommentURL attribute.
+    ///   <see langword="null"/> if not present.
     ///   </para>
     ///   <para>
     ///   The default value is <see langword="null"/>.
