@@ -357,15 +357,15 @@ namespace WebSocketSharp.Net
     ///   intended use of the cookie.
     ///   </para>
     ///   <para>
-    ///   An empty string if not present.
+    ///   <see langword="null"/> if not present.
     ///   </para>
     ///   <para>
-    ///   The default value is an empty string.
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
     public string Comment {
       get {
-        return _comment ?? String.Empty;
+        return _comment;
       }
 
       internal set {
