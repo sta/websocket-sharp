@@ -357,7 +357,7 @@ namespace WebSocketSharp.Net
     ///   intended use of the cookie.
     ///   </para>
     ///   <para>
-    ///   An empty string if the cookie has no Comment attribute.
+    ///   An empty string if not present.
     ///   </para>
     ///   <para>
     ///   The default value is an empty string.
