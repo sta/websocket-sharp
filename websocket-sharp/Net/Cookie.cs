@@ -589,7 +589,7 @@ namespace WebSocketSharp.Net
     }
 
     /// <summary>
-    /// Gets or sets the value of the Port attribute of the cookie.
+    /// Gets the value of the Port attribute of the cookie.
     /// </summary>
     /// <value>
     ///   <para>
@@ -597,30 +597,18 @@ namespace WebSocketSharp.Net
     ///   that the cookie applies to.
     ///   </para>
     ///   <para>
-    ///   An empty string if this attribute is not needed.
+    ///   An empty string if not present.
     ///   </para>
     ///   <para>
     ///   The default value is an empty string.
     ///   </para>
     /// </value>
-    /// <exception cref="ArgumentException">
-    ///   <para>
-    ///   The value specified for a set operation is not enclosed in
-    ///   double quotes.
-    ///   </para>
-    ///   <para>
-    ///   -or-
-    ///   </para>
-    ///   <para>
-    ///   The value specified for a set operation could not be parsed.
-    ///   </para>
-    /// </exception>
     public string Port {
       get {
         return _port ?? String.Empty;
       }
 
-      set { 
+      internal set {
         if (value.IsNullOrEmpty ()) {
           _port = value;
           _ports = null;
