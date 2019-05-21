@@ -597,15 +597,15 @@ namespace WebSocketSharp.Net
     ///   that the cookie applies to.
     ///   </para>
     ///   <para>
-    ///   An empty string if not present.
+    ///   <see langword="null"/> if not present.
     ///   </para>
     ///   <para>
-    ///   The default value is an empty string.
+    ///   The default value is <see langword="null"/>.
     ///   </para>
     /// </value>
     public string Port {
       get {
-        return _port ?? String.Empty;
+        return _port;
       }
 
       internal set {
