@@ -609,13 +609,6 @@ namespace WebSocketSharp.Net
       }
 
       internal set {
-        if (value.IsNullOrEmpty ()) {
-          _port = value;
-          _ports = null;
-
-          return;
-        }
-
         if (!value.IsEnclosedIn ('"')) {
           var msg = "It is not enclosed in double quotes.";
           throw new ArgumentException (msg, "value");
