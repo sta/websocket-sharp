@@ -704,7 +704,7 @@ namespace WebSocketSharp.Net
     ///   management that the cookie conforms to.
     ///   </para>
     ///   <para>
-    ///   0 or 1. 0 if the cookie has no Version attribute.
+    ///   0 or 1. 0 if not present.
     ///   </para>
     ///   <para>
     ///   The default value is 0.
