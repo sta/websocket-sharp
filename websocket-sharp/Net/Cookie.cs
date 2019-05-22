@@ -802,7 +802,7 @@ namespace WebSocketSharp.Net
           buff.Append ("; Port");
       }
 
-      if (!_comment.IsNullOrEmpty ())
+      if (_comment != null)
         buff.AppendFormat ("; Comment={0}", HttpUtility.UrlEncode (_comment));
 
       if (_commentUri != null) {
