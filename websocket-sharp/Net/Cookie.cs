@@ -883,7 +883,7 @@ namespace WebSocketSharp.Net
           buff.AppendFormat ("; $Domain={0}", _domain);
       }
 
-      if (!_port.IsNullOrEmpty ()) {
+      if (_port != null) {
         if (_port != "\"\"")
           buff.AppendFormat ("; $Port={0}", _port);
         else
