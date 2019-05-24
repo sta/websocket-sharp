@@ -336,6 +336,10 @@ namespace WebSocketSharp.Net
                ? (int) span.TotalSeconds
                : 0;
       }
+
+      set {
+        _expires = DateTime.Now.AddSeconds ((double) value);
+      }
     }
 
     internal int[] Ports {

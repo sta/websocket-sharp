@@ -451,10 +451,7 @@ namespace WebSocketSharp.Net
           if (val.Length == 0)
             continue;
 
-          var max = Int32.Parse (val.Unquote ());
-          var expires = DateTime.Now.AddSeconds ((double) max);
-          cookie.Expires = expires;
-
+          cookie.MaxAge = Int32.Parse (val.Unquote ());
           continue;
         }
 
