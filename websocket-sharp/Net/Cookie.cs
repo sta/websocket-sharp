@@ -720,10 +720,8 @@ namespace WebSocketSharp.Net
       }
 
       internal set {
-        if (value < 0 || value > 1) {
-          var msg = "It is not allowed.";
-          throw new ArgumentOutOfRangeException ("value", msg);
-        }
+        if (value < 0 || value > 1)
+          return;
 
         _version = value;
       }
