@@ -405,7 +405,11 @@ namespace WebSocketSharp.Net
           if (val.Length == 0)
             continue;
 
-          cookie.Version = Int32.Parse (val.Unquote ());
+          int num;
+          if (!Int32.TryParse (val.Unquote (), out num))
+            continue;
+
+          cookie.Version = num;
           continue;
         }
 
