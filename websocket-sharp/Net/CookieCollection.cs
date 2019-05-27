@@ -290,7 +290,14 @@ namespace WebSocketSharp.Net
                   : String.Empty;
 
         if (name.Equals ("$version", caseInsensitive)) {
-          ver = val.Length > 0 ? Int32.Parse (val.Unquote ()) : 0;
+          if (val.Length == 0)
+            continue;
+
+          int num;
+          if (!Int32.TryParse (val.Unquote (), out num))
+            continue;
+
+          ver = num;
           continue;
         }
 
