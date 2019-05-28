@@ -613,16 +613,12 @@ namespace WebSocketSharp.Net
       }
 
       internal set {
-        if (!value.IsEnclosedIn ('"')) {
-          var msg = "It is not enclosed in double quotes.";
-          throw new ArgumentException (msg, "value");
-        }
+        if (!value.IsEnclosedIn ('"'))
+          return;
 
         int[] ports;
-        if (!tryCreatePorts (value, out ports)) {
-          var msg = "It could not be parsed.";
-          throw new ArgumentException (msg, "value");
-        }
+        if (!tryCreatePorts (value, out ports))
+          return;
 
         _port = value;
         _ports = ports;
