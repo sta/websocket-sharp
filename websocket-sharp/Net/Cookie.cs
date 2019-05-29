@@ -613,9 +613,6 @@ namespace WebSocketSharp.Net
       }
 
       internal set {
-        if (!value.IsEnclosedIn ('"'))
-          return;
-
         int[] ports;
         if (!tryCreatePorts (value, out ports))
           return;
