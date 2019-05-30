@@ -462,7 +462,11 @@ namespace WebSocketSharp.Net
           if (val.Length == 0)
             continue;
 
-          cookie.MaxAge = Int32.Parse (val.Unquote ());
+          int num;
+          if (!Int32.TryParse (val.Unquote (), out num))
+            continue;
+
+          cookie.MaxAge = num;
           continue;
         }
 
