@@ -338,7 +338,9 @@ namespace WebSocketSharp.Net
       }
 
       set {
-        _expires = DateTime.Now.AddSeconds ((double) value);
+        _expires = value > 0
+                   ? DateTime.Now.AddSeconds ((double) value)
+                   : DateTime.Now;
       }
     }
 
