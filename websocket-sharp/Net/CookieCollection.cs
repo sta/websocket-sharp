@@ -449,7 +449,7 @@ namespace WebSocketSharp.Net
               out expires
             )
           )
-            expires = DateTime.Now;
+            continue;
 
           cookie.Expires = expires.ToLocalTime ();
           continue;
