@@ -906,6 +906,22 @@ namespace WebSocketSharp.Net
                : toResponseStringVersion1 ();
     }
 
+    internal static bool TryCreateCookie (
+      string name, string value, out Cookie result
+    )
+    {
+      result = null;
+
+      try {
+        result = new Cookie (name, value);
+      }
+      catch {
+        return false;
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Public Methods
