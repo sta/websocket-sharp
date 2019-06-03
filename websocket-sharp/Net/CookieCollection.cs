@@ -337,7 +337,8 @@ namespace WebSocketSharp.Net
         if (cookie != null)
           ret.add (cookie);
 
-        cookie = new Cookie (name, val);
+        if (!Cookie.TryCreateCookie (name, val, out cookie))
+          continue;
 
         if (ver != 0)
           cookie.Version = ver;
