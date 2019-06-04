@@ -529,7 +529,7 @@ namespace WebSocketSharp.Net
         if (cookie != null)
           ret.add (cookie);
 
-        cookie = new Cookie (name, val);
+        Cookie.TryCreateCookie (name, val, out cookie);
       }
 
       if (cookie != null)
