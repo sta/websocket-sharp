@@ -906,7 +906,7 @@ namespace WebSocketSharp.Net
                : toResponseStringVersion1 ();
     }
 
-    internal static bool TryCreateCookie (
+    internal static bool TryCreate (
       string name, string value, out Cookie result
     )
     {

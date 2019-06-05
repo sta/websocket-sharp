@@ -337,7 +337,7 @@ namespace WebSocketSharp.Net
         if (cookie != null)
           ret.add (cookie);
 
-        if (!Cookie.TryCreateCookie (name, val, out cookie))
+        if (!Cookie.TryCreate (name, val, out cookie))
           continue;
 
         if (ver != 0)
@@ -529,7 +529,7 @@ namespace WebSocketSharp.Net
         if (cookie != null)
           ret.add (cookie);
 
-        Cookie.TryCreateCookie (name, val, out cookie);
+        Cookie.TryCreate (name, val, out cookie);
       }
 
       if (cookie != null)
