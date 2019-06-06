@@ -526,6 +526,17 @@ namespace WebSocketSharp.Net
           continue;
         }
 
+        if (name.Equals ("samesite", caseInsensitive)) {
+          if (cookie == null)
+            continue;
+
+          if (val.Length == 0)
+            continue;
+
+          cookie.SameSite = val.Unquote ();
+          continue;
+        }
+
         if (cookie != null)
           ret.add (cookie);
 

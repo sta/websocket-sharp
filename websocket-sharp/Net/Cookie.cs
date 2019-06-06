@@ -96,6 +96,7 @@ namespace WebSocketSharp.Net
     private string                 _port;
     private int[]                  _ports;
     private static readonly char[] _reservedCharsForValue;
+    private string                 _sameSite;
     private bool                   _secure;
     private DateTime               _timeStamp;
     private string                 _value;
@@ -347,6 +348,16 @@ namespace WebSocketSharp.Net
     internal int[] Ports {
       get {
         return _ports ?? _emptyPorts;
+      }
+    }
+
+    internal string SameSite {
+      get {
+        return _sameSite;
+      }
+
+      set {
+        _sameSite = value;
       }
     }
 
@@ -767,6 +778,9 @@ namespace WebSocketSharp.Net
 
       if (!_domain.IsNullOrEmpty ())
         buff.AppendFormat ("; Domain={0}", _domain);
+
+      if (!_sameSite.IsNullOrEmpty ())
+        buff.AppendFormat ("; SameSite={0}", _sameSite);
 
       if (_secure)
         buff.Append ("; Secure");
