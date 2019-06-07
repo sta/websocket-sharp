@@ -1402,10 +1402,14 @@ namespace WebSocketSharp
     /// </param>
     public static bool IsEnclosedIn (this string value, char c)
     {
-      return value != null
-             && value.Length > 1
-             && value[0] == c
-             && value[value.Length - 1] == c;
+      if (value == null)
+        return false;
+
+      var len = value.Length;
+      if (len < 2)
+        return false;
+
+      return value[0] == c && value[len - 1] == c;
     }
 
     /// <summary>
