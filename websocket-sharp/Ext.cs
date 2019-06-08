@@ -1544,7 +1544,10 @@ namespace WebSocketSharp
     /// </param>
     public static bool MaybeUri (this string value)
     {
-      if (value == null || value.Length == 0)
+      if (value == null)
+        return false;
+
+      if (value.Length == 0)
         return false;
 
       var idx = value.IndexOf (':');
