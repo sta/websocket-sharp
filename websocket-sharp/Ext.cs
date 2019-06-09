@@ -1584,15 +1584,25 @@ namespace WebSocketSharp
     /// </typeparam>
     public static T[] SubArray<T> (this T[] array, int startIndex, int length)
     {
-      int len;
-      if (array == null || (len = array.Length) == 0)
-        return new T[0];
+      if (array == null)
+        throw new ArgumentNullException ("array");
 
-      if (startIndex < 0 || length <= 0 || startIndex + length > len)
-        return new T[0];
+      var len = array.Length;
+      if (len == 0) {
+        if (startIndex != 0)
+          throw new ArgumentOutOfRangeException ("startIndex");
 
-      if (startIndex == 0 && length == len)
+        if (length != 0)
+          throw new ArgumentOutOfRangeException ("length");
+
         return array;
+      }
+
+      if (startIndex < 0 || startIndex > len - 1)
+        throw new ArgumentOutOfRangeException ("startIndex");
+
+      if (length < 0 || length > len - startIndex)
+        throw new ArgumentOutOfRangeException ("length");
 
       var subArray = new T[length];
       Array.Copy (array, startIndex, subArray, 0, length);
