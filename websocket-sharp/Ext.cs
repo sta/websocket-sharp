@@ -1618,7 +1618,7 @@ namespace WebSocketSharp
         return array;
       }
 
-      if (startIndex < 0 || startIndex > len - 1)
+      if (startIndex < 0 || startIndex >= len)
         throw new ArgumentOutOfRangeException ("startIndex");
 
       if (length < 0 || length > len - startIndex)
