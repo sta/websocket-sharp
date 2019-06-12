@@ -1624,6 +1624,12 @@ namespace WebSocketSharp
       if (length < 0 || length > len - startIndex)
         throw new ArgumentOutOfRangeException ("length");
 
+      if (length == 0)
+        return new T[0];
+
+      if (length == len)
+        return array;
+
       var subArray = new T[length];
       Array.Copy (array, startIndex, subArray, 0, length);
 
