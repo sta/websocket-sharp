@@ -1586,7 +1586,13 @@ namespace WebSocketSharp
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     ///   <para>
-    ///   <paramref name="startIndex"/> is out of range for the array.
+    ///   <paramref name="startIndex"/> is less than zero.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="startIndex"/> is greater than the end of the array.
     ///   </para>
     ///   <para>
     ///   -or-
