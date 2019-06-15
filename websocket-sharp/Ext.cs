@@ -1643,26 +1643,52 @@ namespace WebSocketSharp
     }
 
     /// <summary>
-    /// Retrieves a sub-array from the specified <paramref name="array"/>. A sub-array starts at
-    /// the specified element position in <paramref name="array"/>.
+    /// Retrieves a sub-array from the specified array. A sub-array starts at
+    /// the specified index in the array.
     /// </summary>
     /// <returns>
-    /// An array of T that receives a sub-array, or an empty array of T if any problems with
-    /// the parameters.
+    /// An array of T that receives a sub-array.
     /// </returns>
     /// <param name="array">
     /// An array of T from which to retrieve a sub-array.
     /// </param>
     /// <param name="startIndex">
-    /// A <see cref="long"/> that represents the zero-based starting position of
-    /// a sub-array in <paramref name="array"/>.
+    /// A <see cref="long"/> that represents the zero-based index in the array
+    /// at which retrieving starts.
     /// </param>
     /// <param name="length">
     /// A <see cref="long"/> that represents the number of elements to retrieve.
     /// </param>
     /// <typeparam name="T">
-    /// The type of elements in <paramref name="array"/>.
+    /// The type of elements in the array.
     /// </typeparam>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///   <para>
+    ///   <paramref name="startIndex"/> is less than zero.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="startIndex"/> is greater than the end of the array.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is less than zero.
+    ///   </para>
+    ///   <para>
+    ///   -or-
+    ///   </para>
+    ///   <para>
+    ///   <paramref name="length"/> is greater than the number of elements from
+    ///   <paramref name="startIndex"/> to the end of the array.
+    ///   </para>
+    /// </exception>
     public static T[] SubArray<T> (this T[] array, long startIndex, long length)
     {
       if (array == null)
