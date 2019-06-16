@@ -737,7 +737,10 @@ namespace WebSocketSharp
     }
 
     internal static void ReadBytesAsync (
-      this Stream stream, int length, Action<byte[]> completed, Action<Exception> error
+      this Stream stream,
+      int length,
+      Action<byte[]> completed,
+      Action<Exception> error
     )
     {
       var buff = new byte[length];
