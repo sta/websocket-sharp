@@ -752,16 +752,23 @@ namespace WebSocketSharp
         ar => {
           try {
             var nread = stream.EndRead (ar);
-            if (nread == 0 && retry < _retry) {
-              retry++;
-              stream.BeginRead (buff, offset, length, callback, null);
+            if (nread == 0) {
+              if (retry < _retry) {
+                retry++;
+                stream.BeginRead (buff, offset, length, callback, null);
+
+                return;
+              }
+
+              if (completed != null)
+                completed (buff.SubArray (0, offset));
 
               return;
             }
 
-            if (nread == 0 || nread == length) {
+            if (nread == length) {
               if (completed != null)
-                completed (buff.SubArray (0, offset + nread));
+                completed (buff);
 
               return;
             }
