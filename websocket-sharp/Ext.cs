@@ -693,21 +693,17 @@ namespace WebSocketSharp
     {
       var buff = new byte[length];
       var offset = 0;
-      try {
-        var nread = 0;
-        while (length > 0) {
-          nread = stream.Read (buff, offset, length);
-          if (nread == 0)
-            break;
+      var nread = 0;
+      while (length > 0) {
+        nread = stream.Read (buff, offset, length);
+        if (nread == 0)
+          return buff.SubArray (0, offset);
 
-          offset += nread;
-          length -= nread;
-        }
-      }
-      catch {
+        offset += nread;
+        length -= nread;
       }
 
-      return buff.SubArray (0, offset);
+      return buff;
     }
 
     internal static byte[] ReadBytes (this Stream stream, long length, int bufferLength)
