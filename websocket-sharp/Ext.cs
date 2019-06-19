@@ -706,25 +706,23 @@ namespace WebSocketSharp
       return buff;
     }
 
-    internal static byte[] ReadBytes (this Stream stream, long length, int bufferLength)
+    internal static byte[] ReadBytes (
+      this Stream stream, long length, int bufferLength
+    )
     {
       using (var dest = new MemoryStream ()) {
-        try {
-          var buff = new byte[bufferLength];
-          var nread = 0;
-          while (length > 0) {
-            if (length < bufferLength)
-              bufferLength = (int) length;
+        var buff = new byte[bufferLength];
+        var nread = 0;
+        while (length > 0) {
+          if (length < bufferLength)
+            bufferLength = (int) length;
 
-            nread = stream.Read (buff, 0, bufferLength);
-            if (nread == 0)
-              break;
+          nread = stream.Read (buff, 0, bufferLength);
+          if (nread == 0)
+            break;
 
-            dest.Write (buff, 0, nread);
-            length -= nread;
-          }
-        }
-        catch {
+          dest.Write (buff, 0, nread);
+          length -= nread;
         }
 
         dest.Close ();
