@@ -693,11 +693,21 @@ namespace WebSocketSharp
     {
       var buff = new byte[length];
       var offset = 0;
+      var retry = 0;
       var nread = 0;
+
       while (length > 0) {
         nread = stream.Read (buff, offset, length);
-        if (nread == 0)
+        if (nread <= 0) {
+          if (retry < _retry) {
+            retry++;
+            continue;
+          }
+
           return buff.SubArray (0, offset);
+        }
+
+        retry = 0;
 
         offset += nread;
         length -= nread;
