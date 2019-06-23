@@ -834,17 +834,26 @@ namespace WebSocketSharp
             ar => {
               try {
                 var nread = stream.EndRead (ar);
-                if (nread > 0)
-                  dest.Write (buff, 0, nread);
+                if (nread <= 0) {
+                  if (retry < _retry) {
+                    retry++;
+                    read (len);
 
-                if (nread == 0 && retry < _retry) {
-                  retry++;
-                  read (len);
+                    return;
+                  }
 
+                  if (completed != null) {
+                    dest.Close ();
+                    completed (dest.ToArray ());
+                  }
+
+                  dest.Dispose ();
                   return;
                 }
 
-                if (nread == 0 || nread == len) {
+                dest.Write (buff, 0, nread);
+
+                if (nread == len) {
                   if (completed != null) {
                     dest.Close ();
                     completed (dest.ToArray ());
@@ -855,6 +864,7 @@ namespace WebSocketSharp
                 }
 
                 retry = 0;
+
                 read (len - nread);
               }
               catch (Exception ex) {
