@@ -1240,7 +1240,12 @@ namespace WebSocketSharp
     }
 
     internal static void WriteBytesAsync (
-      this Stream stream, byte[] bytes, int bufferLength, Action completed, Action<Exception> error)
+      this Stream stream,
+      byte[] bytes,
+      int bufferLength,
+      Action completed,
+      Action<Exception> error
+    )
     {
       var input = new MemoryStream (bytes);
       input.CopyToAsync (
@@ -1256,7 +1261,8 @@ namespace WebSocketSharp
           input.Dispose ();
           if (error != null)
             error (ex);
-        });
+        }
+      );
     }
 
     #endregion
