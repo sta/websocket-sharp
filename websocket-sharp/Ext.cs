@@ -1231,7 +1231,9 @@ namespace WebSocketSharp
       return Encoding.UTF8.GetBytes (s);
     }
 
-    internal static void WriteBytes (this Stream stream, byte[] bytes, int bufferLength)
+    internal static void WriteBytes (
+      this Stream stream, byte[] bytes, int bufferLength
+    )
     {
       using (var input = new MemoryStream (bytes))
         input.CopyTo (stream, bufferLength);
