@@ -314,12 +314,16 @@ namespace WebSocketSharp
       return dest;
     }
 
-    internal static void CopyTo (this Stream source, Stream destination, int bufferLength)
+    internal static void CopyTo (
+      this Stream source, Stream destination, int bufferLength
+    )
     {
       var buff = new byte[bufferLength];
-      var nread = 0;
-      while ((nread = source.Read (buff, 0, bufferLength)) > 0)
+      var nread = source.Read (buff, 0, bufferLength);
+      while (nread > 0) {
         destination.Write (buff, 0, nread);
+        nread = source.Read (buff, 0, bufferLength);
+      }
     }
 
     internal static void CopyToAsync (
