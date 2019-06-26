@@ -331,29 +331,31 @@ namespace WebSocketSharp
       Stream destination,
       int bufferLength,
       Action completed,
-      Action<Exception> error)
+      Action<Exception> error
+    )
     {
       var buff = new byte[bufferLength];
 
       AsyncCallback callback = null;
-      callback = ar => {
-        try {
-          var nread = source.EndRead (ar);
-          if (nread <= 0) {
-            if (completed != null)
-              completed ();
+      callback =
+        ar => {
+          try {
+            var nread = source.EndRead (ar);
+            if (nread <= 0) {
+              if (completed != null)
+                completed ();
 
-            return;
+              return;
+            }
+
+            destination.Write (buff, 0, nread);
+            source.BeginRead (buff, 0, bufferLength, callback, null);
           }
-
-          destination.Write (buff, 0, nread);
-          source.BeginRead (buff, 0, bufferLength, callback, null);
-        }
-        catch (Exception ex) {
-          if (error != null)
-            error (ex);
-        }
-      };
+          catch (Exception ex) {
+            if (error != null)
+              error (ex);
+          }
+        };
 
       try {
         source.BeginRead (buff, 0, bufferLength, callback, null);
