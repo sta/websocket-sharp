@@ -319,10 +319,14 @@ namespace WebSocketSharp
     )
     {
       var buff = new byte[bufferLength];
-      var nread = source.Read (buff, 0, bufferLength);
-      while (nread > 0) {
-        destination.Write (buff, 0, nread);
+      var nread = 0;
+
+      while (true) {
         nread = source.Read (buff, 0, bufferLength);
+        if (nread <= 0)
+          break;
+
+        destination.Write (buff, 0, nread);
       }
     }
 
