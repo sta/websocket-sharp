@@ -1245,8 +1245,8 @@ namespace WebSocketSharp
       this Stream stream, byte[] bytes, int bufferLength
     )
     {
-      using (var input = new MemoryStream (bytes))
-        input.CopyTo (stream, bufferLength);
+      using (var src = new MemoryStream (bytes))
+        src.CopyTo (stream, bufferLength);
     }
 
     internal static void WriteBytesAsync (
