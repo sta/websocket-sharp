@@ -1257,18 +1257,18 @@ namespace WebSocketSharp
       Action<Exception> error
     )
     {
-      var input = new MemoryStream (bytes);
-      input.CopyToAsync (
+      var src = new MemoryStream (bytes);
+      src.CopyToAsync (
         stream,
         bufferLength,
         () => {
           if (completed != null)
             completed ();
 
-          input.Dispose ();
+          src.Dispose ();
         },
         ex => {
-          input.Dispose ();
+          src.Dispose ();
           if (error != null)
             error (ex);
         }
