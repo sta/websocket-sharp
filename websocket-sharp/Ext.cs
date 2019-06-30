@@ -503,6 +503,11 @@ namespace WebSocketSharp
       return idx > 0 ? nameAndValue.Substring (0, idx).Trim () : null;
     }
 
+    internal static string GetUTF8DecodedString (this byte[] bytes)
+    {
+      return Encoding.UTF8.GetString (bytes);
+    }
+
     /// <summary>
     /// Gets the value from the specified string that contains a pair of
     /// name and value separated by a character.
