@@ -508,6 +508,11 @@ namespace WebSocketSharp
       return Encoding.UTF8.GetString (bytes);
     }
 
+    internal static byte[] GetUTF8EncodedBytes (this string s)
+    {
+      return Encoding.UTF8.GetBytes (s);
+    }
+
     /// <summary>
     /// Gets the value from the specified string that contains a pair of
     /// name and value separated by a character.
