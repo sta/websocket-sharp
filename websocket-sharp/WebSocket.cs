@@ -2347,7 +2347,7 @@ namespace WebSocketSharp
       var buff = new StringBuilder (base64Key, 64);
       buff.Append (_guid);
       SHA1 sha1 = new SHA1CryptoServiceProvider ();
-      var src = sha1.ComputeHash (buff.ToString ().UTF8Encode ());
+      var src = sha1.ComputeHash (buff.ToString ().GetUTF8EncodedBytes ());
 
       return Convert.ToBase64String (src);
     }
