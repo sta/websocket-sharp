@@ -1246,11 +1246,6 @@ namespace WebSocketSharp
       }
     }
 
-    internal static byte[] UTF8Encode (this string s)
-    {
-      return Encoding.UTF8.GetBytes (s);
-    }
-
     internal static void WriteBytes (
       this Stream stream, byte[] bytes, int bufferLength
     )
