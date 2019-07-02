@@ -1070,6 +1070,11 @@ namespace WebSocketSharp
         return false;
       }
 
+      if (frame.Opcode == 0x0 && !_inContinuation) {
+        message = "A continuation frame has been received but there is nothing to continue.";
+        return false;
+      }
+
       if (frame.Rsv2 == Rsv.On) {
         message = "The RSV2 of a frame is non-zero without any negotiation for it.";
         return false;
@@ -1580,8 +1585,19 @@ namespace WebSocketSharp
 
     private bool processCloseFrame (WebSocketFrame frame)
     {
-      var payload = frame.PayloadData;
-      close (payload, !payload.HasReservedCode, false, true);
+      try {
+        PayloadData payload;
+
+        if (frame.PayloadData.Length > 1)
+          payload = new PayloadData (frame.PayloadData.Code, frame.PayloadData.Reason);
+        else
+          payload = frame.PayloadData;
+
+        close (payload, !payload.HasReservedCode, false, true);
+      }
+      catch {
+        close (1002, String.Empty);
+      }
 
       return false;
     }
