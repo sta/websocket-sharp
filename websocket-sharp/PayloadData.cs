@@ -153,9 +153,18 @@ namespace WebSocketSharp
     internal string Reason {
       get {
         if (!_reasonSet) {
-          _reason = _length > 2
-                    ? _data.SubArray (2, _length - 2).UTF8Decode ()
-                    : String.Empty;
+          if (_length > 2) {
+            var raw = _data.SubArray (2, _length - 2);
+
+            string reason;
+            if (!raw.TryGetUTF8DecodedString (out reason))
+              reason = String.Empty;
+
+            _reason = reason;
+          }
+          else {
+            _reason = String.Empty;
+          }
 
           _reasonSet = true;
         }
