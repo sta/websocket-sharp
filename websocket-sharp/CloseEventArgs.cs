@@ -117,7 +117,7 @@ namespace WebSocketSharp
     /// </value>
     public string Reason {
       get {
-        return _payloadData.Reason ?? String.Empty;
+        return _payloadData.Reason;
       }
     }
 
