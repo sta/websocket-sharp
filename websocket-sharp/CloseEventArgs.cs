@@ -101,7 +101,8 @@ namespace WebSocketSharp
     /// Gets the status code for the close.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that represents the status code for the close if any.
+    /// A <see cref="ushort"/> that represents the status code for the close
+    /// if present.
     /// </value>
     public ushort Code {
       get {
