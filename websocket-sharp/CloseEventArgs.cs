@@ -127,7 +127,8 @@ namespace WebSocketSharp
     /// Gets a value indicating whether the connection has been closed cleanly.
     /// </summary>
     /// <value>
-    /// <c>true</c> if the connection has been closed cleanly; otherwise, <c>false</c>.
+    /// <c>true</c> if the connection has been closed cleanly; otherwise,
+    /// <c>false</c>.
     /// </value>
     public bool WasClean {
       get {
