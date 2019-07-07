@@ -98,11 +98,11 @@ namespace WebSocketSharp
     #region Public Properties
 
     /// <summary>
-    /// Gets the status code for the close.
+    /// Gets the status code for the connection close.
     /// </summary>
     /// <value>
-    /// A <see cref="ushort"/> that represents the status code for the close
-    /// if present.
+    /// A <see cref="ushort"/> that represents the status code for
+    /// the connection close if present.
     /// </value>
     public ushort Code {
       get {
